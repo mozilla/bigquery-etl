@@ -12795,7 +12795,8 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Happy Eyeballs: number of connection attempts started before one
-        succeeded or all failed.
+        succeeded or all failed, keyed by whether the algorithm ultimately succeeded
+        or failed.
 
         '
     - name: netwerk_happy_eyeballs_connection_establishment_time
@@ -12821,7 +12822,8 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Happy Eyeballs: end-to-end time in milliseconds from algorithm
-        start to a successful connection or final failure.
+        start to a successful connection or final failure, keyed by whether the algorithm
+        ultimately succeeded or failed.
 
         '
     - name: netwerk_happy_eyeballs_time_to_first_attempt
@@ -13360,8 +13362,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -51006,6 +51007,74 @@ fields:
       description: 'HTTP3: Records how often SEARCH observes zero bytes sent in the
         previous RTT. Provides insight into app-limited behavior. Is labeled by slow
         start outcome to help reason about results.
+
+        '
+    - name: netwerk_happy_eyeballs_connection_attempt_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Happy Eyeballs: number of connection attempts started before one
+        succeeded or all failed, keyed by whether the algorithm ultimately succeeded
+        or failed.
+
+        '
+    - name: netwerk_happy_eyeballs_connection_establishment_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Happy Eyeballs: end-to-end time in milliseconds from algorithm
+        start to a successful connection or final failure, keyed by whether the algorithm
+        ultimately succeeded or failed.
 
         '
   - name: labeled_quantity

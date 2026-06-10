@@ -1853,7 +1853,9 @@ SELECT
       metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time,
       metrics.labeled_custom_distribution.networking_http_3_search_max_norm_diff,
       metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
-      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent
+      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -3793,7 +3795,9 @@ SELECT
       metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time,
       metrics.labeled_custom_distribution.networking_http_3_search_max_norm_diff,
       metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
-      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent
+      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -5733,7 +5737,9 @@ SELECT
       metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time,
       metrics.labeled_custom_distribution.networking_http_3_search_max_norm_diff,
       metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
-      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent
+      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,

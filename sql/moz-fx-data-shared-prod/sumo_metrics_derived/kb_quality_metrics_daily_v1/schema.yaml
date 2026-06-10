@@ -6,19 +6,19 @@ fields:
 - name: daily_fresh_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of in-scope articles that were fresh (fresh_ind = 1) on `day`
+  description: Number of in-scope articles that were fresh (fresh_ind = 1) on `event_date`
 - name: daily_article_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of in-scope articles present on `day`
+  description: Number of in-scope articles present on `event_date`
 - name: daily_helpful_votes
   type: INTEGER
   mode: NULLABLE
-  description: Total helpful votes cast across all articles on `day`
+  description: Total helpful votes cast across all articles on `event_date`
 - name: daily_total_votes
   type: INTEGER
   mode: NULLABLE
-  description: Total votes cast across all articles on `day`
+  description: Total votes cast across all articles on `event_date`
 - name: fresh_count_14_ma
   type: FLOAT
   mode: NULLABLE

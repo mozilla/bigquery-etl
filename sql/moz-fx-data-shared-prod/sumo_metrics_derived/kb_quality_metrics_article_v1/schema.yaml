@@ -28,11 +28,11 @@ fields:
 - name: last_revision_date
   type: DATE
   mode: NULLABLE
-  description: Date of the most recent approved revision on or before `day`
+  description: Date of the most recent approved revision on or before `event_date`
 - name: days_since_last_revision
   type: INTEGER
   mode: NULLABLE
-  description: Days between `day` and last_revision_date
+  description: Days between `event_date` and last_revision_date
 - name: fresh_ind
   type: INTEGER
   mode: NULLABLE
@@ -40,7 +40,7 @@ fields:
 - name: url
   type: STRING
   mode: NULLABLE
-  description: Article URL associated with the day's votes (from the votes source)
+  description: Article URL associated with the votes on `event_date` (from the votes source)
 - name: share_link
   type: STRING
   mode: NULLABLE
@@ -48,16 +48,16 @@ fields:
 - name: helpful_votes
   type: INTEGER
   mode: NULLABLE
-  description: Number of helpful votes cast on `day`
+  description: Number of helpful votes cast on `event_date`
 - name: total_votes
   type: INTEGER
   mode: NULLABLE
-  description: Total number of votes cast on `day`
+  description: Total number of votes cast on `event_date`
 - name: running_helpful_votes
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative helpful votes through `day`, seeded with pre-window totals
+  description: Cumulative helpful votes through `event_date`, seeded with pre-window totals
 - name: running_total_votes
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative total votes through `day`, seeded with pre-window totals
+  description: Cumulative total votes through `event_date`, seeded with pre-window totals

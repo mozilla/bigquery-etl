@@ -35,11 +35,6 @@ For each Firefox application (`firefox_desktop`, `org_mozilla_fenix_nightly`,
   `mozfun.gecko_trace.calculate_signature()`
 - **Source**: `gecko_trace_spans_v1` table
 
-#### `gecko_trace_signatures_v1`
-
-- **Purpose**: Statistics grouped by trace signature
-- **Schema**: Signature hash, average duration, and hit counts
-- **Source**: `gecko_trace_traces_v1` table
 
 ### Aggregate Views
 
@@ -57,8 +52,9 @@ Located in `moz-fx-data-shared-prod.gecko_trace_aggregates`:
 
 #### `signatures`
 
-- Unified view of all signature statistics across Firefox applications
-- UNION ALL of all `gecko_trace_signatures_v1` tables
+- View of signature statistics aggregated from trace data
+- Aggregates trace data by signature, computing average duration and hit counts
+- Built on top of the `traces` view (not a separate derived table)
 
 ## Usage
 
@@ -89,8 +85,7 @@ Located in `moz-fx-data-shared-prod.gecko_trace_aggregates`:
 │   │   │   ├── query.sql
 │   │   │   ├── metadata.yaml
 │   │   │   └── schema.yaml
-│   │   ├── gecko_trace_traces_v1/
-│   │   └── gecko_trace_signatures_v1/
+│   │   └── gecko_trace_traces_v1/
 │   └── gecko_trace_aggregates/
 │       ├── dataset_metadata.yaml
 │       ├── spans/
@@ -110,9 +105,8 @@ gecko_trace_spans_v1 (individual spans)
     ↓
 gecko_trace_traces_v1 (complete traces with root_span + signature)
     ↓
-gecko_trace_signatures_v1 (signature statistics)
-    ↓
-gecko_trace_aggregates.* (unified views across applications)
+gecko_trace_aggregates.* (unified views across applications, including
+                           on-demand aggregation for signatures)
 ```
 
 ## Example Queries

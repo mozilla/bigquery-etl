@@ -144,10 +144,10 @@ Paste a JSON config (both keys optional):
 {"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}
 ```
 
-- `date` — profiling date, `YYYY-MM-DD`. Written as the `profiled_at` partition;
-  the source data scanned is `date` − 7 days. Omit → the run's logical date.
+- `date` — profiling date, (format: `YYYY-MM-DD`). Written as the `profiled_at` partition;
+  the source data scanned is `date` − 7 days. [Omit → the run's logical date].
 - `source_datasets` — comma-separated dataset names (commas only) whose tables are
-  profiled. Omit → the job's scheduled default (set in `metadata.yaml`).
+  profiled. [Omit → the job's scheduled default (set in `metadata.yaml`)].
 
 ### For permanent job runs:
 Edit the `source_datasets` in

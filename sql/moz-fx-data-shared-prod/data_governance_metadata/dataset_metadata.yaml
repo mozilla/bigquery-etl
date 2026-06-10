@@ -4,7 +4,7 @@ description: |-
   lineage, probe definitions) for schema enrichment tooling. Access is
   restricted to the dataplatform/data-governance-developers workgroup.
 dataset_base_acl: view_restricted
-user_facing: false
+user_facing: true
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

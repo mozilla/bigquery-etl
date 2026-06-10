@@ -14,7 +14,7 @@ all rows to **one table**, `column_profiles_v1`, tagged with
 
 ```mermaid
 flowchart LR
-    DS(["Source datasets<br/><b>--source-datasets</b><br/>telemetry_derived, telemetry"])
+    DS(["Source datasets<br/><b>--source-datasets</b><br/>e.g. telemetry_derived, telemetry"])
     JOB["<b>bqetl_data_governance_metadata</b><br/>weekly · single task<br/>profile → one WRITE_TRUNCATE load"]
 
     subgraph BQ["data_governance_metadata_derived"]
@@ -126,52 +126,44 @@ skipped (too wide to profile in one pass) and simply produce no rows.
 ## Scheduling
 
 The job runs on the **`bqetl_data_governance_metadata`** DAG, weekly (Mondays
-04:00 UTC). By default it profiles `telemetry_derived` and `telemetry`; each run
-profiles every base table in those datasets (1% `sample_id` sampling and a
-7-day partition filter bound the scan) and overwrites that run's `profiled_at`
-partition.
+04:00 UTC). It profiles the datasets configured in `metadata.yaml` (e.g.
+`telemetry_derived`, `telemetry`); each run profiles every base table in those
+datasets (1% `sample_id` sampling and a 7-day partition filter bound the scan)
+and overwrites that run's `profiled_at` partition.
 
 ## Running with a custom date / datasets
 
-`date` and `source_datasets` are **per-run parameters**, not separate tables, so
-you rarely need to edit the job.
+`date` and `source_datasets` are **per-run parameters**.
 
-**Ad-hoc, in Airflow — "Trigger DAG w/ config":** trigger
-`bqetl_data_governance_metadata` and paste a JSON config (both keys optional):
+### Ad-hoc, in Airflow — "Trigger DAG w/ config" trigger for DAG `bqetl_data_governance_metadata`
+Paste a JSON config (both keys optional):
 
 ```json
-{"date": "2026-06-01", "source_datasets": "fenix firefox_desktop"}
+{"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}
 ```
 
-- `date` — (date format: `YYYY-MM-DD`) the `profiled_at` partition written (source scanned is
-  `date` − 7 days). Omit → the run's logical date.
-- `source_datasets` — space or comma-separated string. Omit → the default
-  `telemetry_derived telemetry`.
+- `date` — profiling date, `YYYY-MM-DD`. Written as the `profiled_at` partition;
+  the source data scanned is `date` − 7 days. Omit → the run's logical date.
+- `source_datasets` — comma-separated dataset names (commas only) whose tables are
+  profiled. Omit → the job's scheduled default (set in `metadata.yaml`).
 
-(The same guidance is on the DAG's docs panel in the Airflow UI.)
-
-**Permanently (the scheduled default):** edit the `source_datasets` fallback in
-the scheduled `arguments` in
+### For permanent job runs:
+Edit the `source_datasets` in
 [`../column_profiles_v1/metadata.yaml`](../column_profiles_v1/metadata.yaml):
 
 ```yaml
 scheduling:
   arguments: [
     "--date", "{{ dag_run.conf.get('date', ds) }}",
-    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived telemetry firefox_desktop') }}"
+    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry,firefox_desktop') }}"
   ]
 ```
-
 then regenerate the DAG (`./bqetl dag generate bqetl_data_governance_metadata`).
-No new table, view, or schema deploy is needed — rows land in `column_profiles_v1`
-tagged by `source_dataset`. Confirm the Airflow workload-identity SA
-(`default-workloads@moz-fx-data-airflow-gke-prod`) has read on any new dataset
-(standard `derived`/`derived_restricted` datasets grant it via their base ACL;
-verify with `bq show <project>:<dataset>`).
 
-> `--source-datasets` takes a **single** space- or comma-separated value (so it
-> can be driven by `dag_run.conf`), e.g. `"telemetry_derived telemetry"` — quote
-> it on the CLI when listing more than one.
+
+> `--source-datasets` takes a **single comma-separated** value (so it can be
+> driven by `dag_run.conf`), e.g. `"telemetry_derived,telemetry"`. Commas are the
+> only separator — a space-separated value is rejected as an invalid dataset name.
 
 ### Profiling a subset of tables (manual / scoped runs)
 

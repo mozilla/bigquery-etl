@@ -2765,12 +2765,11 @@ bqetl_data_governance_metadata:
     - `date` — profiling date as `YYYY-MM-DD`. This is the `profiled_at` partition
       written; the source data scanned is `date` minus 7 days. Omit to use the
       run's logical date.
-    - `source_datasets` — datasets to profile, as a single space- or
-      comma-separated string, e.g. `"telemetry_derived telemetry"` or
-      `"fenix,firefox_desktop"`. Omit to use the default
-      `telemetry_derived telemetry`.
+    - `source_datasets` — datasets to profile, as a single comma-separated
+      string, e.g. `"fenix,firefox_desktop"`. Omit to use the job's scheduled
+      default (set in metadata.yaml).
 
-    Example config: `{"date": "2026-06-01", "source_datasets": "fenix firefox_desktop"}`
+    Example config: `{"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}`
 
     A run overwrites only the `profiled_at` partition for the chosen date
     (idempotent). Leaving both unset reproduces the scheduled behaviour.

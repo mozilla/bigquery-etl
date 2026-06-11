@@ -5,7 +5,7 @@
 Writes one row per profiled column to a single destination table
 (``column_profiles_v1``) in ``data_governance_metadata_derived``, tagged with
 ``source_dataset``/``source_table``. Profiles every base table in each
-``--source-datasets`` entry (default ``telemetry_derived telemetry``), or a
+``--source-datasets`` entry (default ``telemetry_derived,telemetry``), or a
 ``--tables`` subset. A single run accumulates all rows and overwrites its own
 ``profiled_at`` date partition in one load, so the job is idempotent.
 
@@ -687,9 +687,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-project", default="moz-fx-data-shared-prod")
     parser.add_argument(
         "--source-datasets",
-        nargs="+",
-        default=["telemetry_derived", "telemetry"],
-        help="Source datasets to profile (default: telemetry_derived telemetry).",
+        default="telemetry_derived,telemetry",
+        help=(
+            "Source datasets to profile, comma-separated as a single value "
+            "(default: 'telemetry_derived,telemetry'). Passed as one string so it "
+            "can be driven by an Airflow dag_run.conf override."
+        ),
     )
     parser.add_argument("--destination-project", default="moz-fx-data-shared-prod")
     parser.add_argument(
@@ -719,6 +722,20 @@ def parse_args() -> argparse.Namespace:
         datetime.date.fromisoformat(args.date)
     except ValueError:
         parser.error(f"--date must be an ISO date (YYYY-MM-DD); got {args.date!r}")
+    # A single comma-separated string (so it can be driven by one CLI value or an
+    # Airflow dag_run.conf override); normalize to a list. Commas are the only
+    # separator — a space-separated value is rejected as an invalid dataset name.
+    args.source_datasets = [
+        d.strip() for d in args.source_datasets.split(",") if d.strip()
+    ]
+    if not args.source_datasets:
+        parser.error("--source-datasets must list at least one dataset.")
+    invalid = [d for d in args.source_datasets if not _BQ_IDENTIFIER_RE.match(d)]
+    if invalid:
+        parser.error(
+            "--source-datasets must be comma-separated dataset names; "
+            f"invalid entr{'y' if len(invalid) == 1 else 'ies'}: {invalid}"
+        )
     if args.tables and len(args.source_datasets) > 1:
         parser.error(
             "--tables requires exactly one --source-datasets entry "

@@ -1,3 +1,11 @@
+# NOTE: private-bigquery-etl ships its own requirements-private.txt, which the
+# Dockerfile installs (with --no-deps) AFTER requirements.txt. Because the two
+# are pinned and compiled separately rather than together, a shared transitive
+# dependency pinned to a different version in requirements-private.txt will
+# silently OVERRIDE the version installed from requirements.txt (pip installs
+# the private file second). If you see dependency weirdness in the private
+# image, check for version overlaps between requirements.txt and
+# requirements-private.txt first.
 attrs==25.4.0
 authlib==1.6.12
 beautifulsoup4==4.14.3

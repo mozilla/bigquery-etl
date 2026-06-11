@@ -1,0 +1,32 @@
+friendly_name: KB Quality Metrics — Daily
+description: |
+  Day-level SUMO knowledge base quality metrics, aggregated from
+  kb_quality_metrics_article_v1.
+
+  Grain: Day
+
+  Per day across all in-scope en-US articles:
+  - daily_fresh_count / daily_article_count: freshness counts
+  - daily_helpful_votes / daily_total_votes: vote counts
+  - *_14_ma: 14-day moving averages of the above
+  - freshness_14_ma / helpful_percentage_14_ma: smoothed rate metrics
+  - lagged_*_14_ma: the same moving averages shifted back 14 days, for
+    period-over-period comparison
+
+  Recomputed in full each run (relative-date window, no date partition).
+
+  Article scope and product mapping are defined upstream in
+  kb_quality_metrics_article_v1.
+
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  type: aggregate
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

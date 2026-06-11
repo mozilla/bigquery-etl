@@ -98,6 +98,11 @@ This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-1005
 
 4. Watchers need to join the #dataops-alerts Slack channel. They will be notified via Slack when processing is complete, and you can validate your backfill data.
 
+**Something to watch out for:** If the `end_date` of a backfill is the current day (e.g. `end_date = entry_date`)
+and the backfill is started, the ETL for the upstream tables likely will not have run yet, causing the backfill to
+create an empty partition. If the backfill is completed on a later day, it will copy the empty partition into the
+production table, causing an empty partition in production.
+
 ## Backfilling with a Python script:
 
 Tables that use a `query.py` file instead of `query.sql` are also supported with backfills, but have additional considerations.

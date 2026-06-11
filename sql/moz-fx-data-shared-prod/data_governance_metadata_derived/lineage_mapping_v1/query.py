@@ -420,6 +420,15 @@ def main() -> None:
         f"Resolved {len(rows)} tables; skipped {skipped} due to transient errors."
     )
 
+    # A DataHub-wide outage (token expiration, network outage) would otherwise
+    # log warnings and exit 0, hiding the failure from triage. Fail loudly when
+    # nothing resolved AND at least one worker hard-failed.
+    if not rows and skipped > 0:
+        raise RuntimeError(
+            f"All {skipped} lineage resolutions failed (0 tables resolved) — "
+            f"failing the task. Likely DataHub outage or token issue."
+        )
+
     if not rows:
         logger.warning("No lineage rows produced; nothing to write.")
         return

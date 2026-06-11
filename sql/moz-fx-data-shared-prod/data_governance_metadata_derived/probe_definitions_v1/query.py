@@ -144,6 +144,11 @@ def list_pings(
     (the lineage job runs weekly; this job may run on a date with no fresh
     resolution).
     """
+    # MAX(stable_urn) picks the alphabetically-latest URN when multiple source
+    # tables sharing a legacy ping point to different _stable tables (rare —
+    # usually only across schema version bumps, e.g. main_v4 vs main_v5).
+    # Deterministic (unlike ANY_VALUE) and typically selects the newest version.
+    # Glean rows are unaffected because their stable_urn is always NULL.
     query = f"""
         WITH latest AS (
           SELECT MAX(resolved_at) AS d
@@ -155,7 +160,7 @@ def list_pings(
         SELECT
           ping_platform,
           source_ping,
-          ANY_VALUE(stable_urn) AS stable_urn
+          MAX(stable_urn) AS stable_urn
         FROM `{source_table_fq}`
         WHERE resolved_at = (SELECT d FROM latest)
           AND source_ping IS NOT NULL
@@ -179,24 +184,25 @@ def list_pings(
 def fetch_for_ping(
     ping: dict[str, Any], token: str, fetched_at: str
 ) -> list[dict[str, Any]]:
-    """Fetch all probes for one ping and return destination-row dicts."""
+    """Fetch all probes for one ping and return destination-row dicts.
+
+    Returns an empty list for benign "no probes" cases (Glean Dictionary 404,
+    legacy ping without a stable_urn, unknown platform). Transport / HTTP
+    errors propagate so the caller can distinguish hard failures from
+    legitimately-empty pings (mirrors the lineage_mapping skip-on-error
+    semantics).
+    """
     platform = ping["ping_platform"]
     source_ping = ping["source_ping"]
-    try:
-        if platform == "glean":
-            probes = fetch_glean_probes(source_ping)
-        elif platform == "legacy_telemetry":
-            if not ping.get("stable_urn"):
-                logger.warning(
-                    f"Legacy ping {source_ping} has no stable_urn; skipping."
-                )
-                return []
-            probes = fetch_legacy_probes(ping["stable_urn"], token)
-        else:
-            logger.warning(f"Unknown ping_platform {platform!r}; skipping.")
+    if platform == "glean":
+        probes = fetch_glean_probes(source_ping)
+    elif platform == "legacy_telemetry":
+        if not ping.get("stable_urn"):
+            logger.warning(f"Legacy ping {source_ping} has no stable_urn; skipping.")
             return []
-    except Exception as e:
-        logger.warning(f"Probe fetch failed for {platform}/{source_ping}: {e}")
+        probes = fetch_legacy_probes(ping["stable_urn"], token)
+    else:
+        logger.warning(f"Unknown ping_platform {platform!r}; skipping.")
         return []
 
     return [
@@ -327,6 +333,7 @@ def main() -> None:
         return
 
     rows: list[dict[str, Any]] = []
+    hard_failures = 0
     with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
         futures = {
             executor.submit(fetch_for_ping, p, token, args.date): p for p in pings
@@ -345,6 +352,23 @@ def main() -> None:
                     f"Worker failed for {ping['ping_platform']}/"
                     f"{ping['source_ping']}: {e}"
                 )
+                hard_failures += 1
+
+    logger.info(
+        f"Fetched probes for {len(pings) - hard_failures} ping(s); "
+        f"{hard_failures} hard failure(s); {len(rows)} total probe rows."
+    )
+
+    # Distinguish "every fetch hard-failed" (catastrophic — DataHub/Glean
+    # outage, token issue) from "every fetch legitimately empty" (benign —
+    # Glean Dictionary has no entries for the input pings). Fail loudly only
+    # in the catastrophic case, mirroring column_profiles_v1's pattern.
+    if not rows and hard_failures > 0:
+        raise RuntimeError(
+            f"All probe fetches failed ({hard_failures} hard failure(s), "
+            f"0 probes fetched) — failing the task. Likely DataHub or Glean "
+            f"Dictionary outage."
+        )
 
     if not rows:
         logger.warning("No probe rows produced; nothing to write.")

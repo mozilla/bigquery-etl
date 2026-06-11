@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 from collections import defaultdict
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -289,10 +289,10 @@ def create(
         click.echo("\n".join(errors))
         sys.exit(1)
 
-    if end_date.date() == datetime.now(timezone.utc).date():
+    if end_date.date() == date.today():
         click.echo(
             click.style(
-                "WARNING: end_date is today (UTC). The upstream table may not have data "
+                "WARNING: end_date is today. The upstream table may not have data "
                 "for today yet if its daily ETL hasn't run, in which case the backfill "
                 "writes an empty partition that gets copied into production on complete. "
                 "Consider using an end_date whose upstream data is already available.",

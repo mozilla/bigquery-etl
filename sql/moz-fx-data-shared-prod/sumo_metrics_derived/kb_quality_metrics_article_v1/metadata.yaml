@@ -1,0 +1,46 @@
+friendly_name: "KB Quality Metrics \u2014 Article (Daily)"
+description: |
+  Daily article-level knowledge base quality metrics for SUMO, combining content
+  freshness and helpfulness vote signals.
+
+  Grain: Day x Article (document_id)
+
+  For each in-scope en-US article and each day in the trailing 1-year window:
+  - days_since_last_revision / fresh_ind: freshness vs. a 365-day window
+  - helpful_votes / total_votes: votes cast that day
+  - running_helpful_votes / running_total_votes: cumulative votes (seeded with
+    pre-window totals)
+
+  Article scope (matching the KB quality dashboard query):
+  - parent_id IS NULL (original, non-translated), is_archived = FALSE
+  - category < 30, html NOT LIKE '%REDIRECT%'
+  - products NOT LIKE '%thunderbird%', locale = 'en-US'
+  - product (via mozfun.customer_experience.normalize_product) != 'Other'
+
+  Recomputed in full each run (relative-date window, no date partition).
+
+  Used by:
+  - kb_quality_metrics_daily_v1 (day-level aggregation + moving averages)
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  application: sumo
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision
+  - moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details

@@ -48,9 +48,16 @@ fields:
 - name: product
   type: STRING
   mode: NULLABLE
-  description: Mozilla product, normalized at read time. Firefox-family raw values are mapped
-    to canonical names (`firefox` → `Firefox Desktop`, `mobile` → `Fenix`, `ios` → `Firefox iOS`,
-    `firefox-enterprise` → `Firefox Enterprise`); all other raw values collapse to `Non Firefox`.
+  description: Mozilla product the ticket is about, normalized at read time via
+    `mozfun.customer_experience.cx_normalize_product`. Raw Zendesk `custom_product` values are
+    mapped to canonical product names (e.g. `Fenix`, `Firefox iOS`,
+    `Mozilla VPN`, `Firefox Relay`, `Mozilla Account`). Known-but-unsupported products return
+    `Other`, unrecognized values return `unclassified`, and NULL is preserved.
+- name: product_version
+  type: STRING
+  mode: NULLABLE
+  description: Product version reported on the ticket, from the Zendesk
+    `custom_product_version` custom field. User-supplied; NULL when not provided.
 - name: locale
   type: STRING
   mode: NULLABLE

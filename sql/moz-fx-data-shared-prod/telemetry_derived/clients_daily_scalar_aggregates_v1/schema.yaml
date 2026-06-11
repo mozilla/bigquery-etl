@@ -28,6 +28,7 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application in YYYYMMDDHHMMSS format.
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -36,21 +37,27 @@ fields:
   - mode: NULLABLE
     name: metric
     type: STRING
+    description: The name of the scalar metric being aggregated (e.g., 'browser_engagement_total_uri_count').
   - mode: NULLABLE
     name: metric_type
     type: STRING
+    description: The type of the scalar metric (e.g., 'scalar', 'keyed-scalar').
   - mode: NULLABLE
     name: key
     type: STRING
+    description: For keyed scalars, the string key identifying the specific sub-metric. Null for non-keyed scalars.
   - mode: NULLABLE
     name: process
     type: STRING
+    description: The Firefox process (e.g., 'parent', 'content', 'gpu') from which this scalar was collected.
   - mode: NULLABLE
     name: agg_type
     type: STRING
+    description: The aggregation type applied to the scalar values across subsessions (e.g., 'sum', 'max', 'mean').
   - mode: NULLABLE
     name: value
     type: FLOAT
+    description: The aggregated scalar value computed according to agg_type for this metric on the submission date.
   mode: REPEATED
   name: scalar_aggregates
   type: RECORD

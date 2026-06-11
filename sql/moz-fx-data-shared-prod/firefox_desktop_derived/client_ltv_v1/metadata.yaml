@@ -19,4 +19,6 @@ bigquery:
   clustering:
     fields:
     - sample_id
+schema:
+  allow_field_addition: true
 require_column_descriptions: false

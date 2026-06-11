@@ -2,6 +2,8 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the Firefox application variant (e.g., 'Fenix', 'Firefox Desktop', 'Firefox iOS'). Set to 'Other' if the app name
+    was not recognized.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -13,21 +15,27 @@ fields:
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The campaign this client/install was attributed to (utm_campaign value, identifying a specific marketing campaign or promotion).
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: The attribution content associated with the install; similar or the same as UTM content.
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: The attribution experiment key associated with the install, used to track install-time experiment assignments.
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The attribution medium associated with the install; similar or the same as UTM medium.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The attribution source associated with the install; similar or the same as UTM source.
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: The attribution variation key associated with the install, identifying which experiment variation the user was exposed to.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -36,6 +44,7 @@ fields:
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The hardware device model identifier for the client, primarily populated for mobile clients (e.g., 'iPhone14,5', 'SM-A165F').
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -56,36 +65,48 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: The operating system version normalized to a consistent format at ingestion (e.g., '10.0' for Windows, '16' for Android, '26.3.1' for
+    iOS).
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
+  description: The Adjust ad group that attributed this installation, available for mobile clients only.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
+  description: The Adjust campaign that attributed this installation, available for mobile clients only.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
+  description: The Adjust creative asset that attributed this installation, available for mobile clients only.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store campaign parameter associated with the installation referral, available for Android clients only.
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store medium parameter associated with the installation referral, available for Android clients only.
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store source parameter associated with the installation referral, available for Android clients only.
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store content parameter associated with the installation referral, available for Android clients only.
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store search term associated with the installation referral, available for Android clients only.
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
+  description: The full raw install referrer string returned by the Google Play Store for Android installations, containing all UTM and other attribution
+    parameters.
 - name: cohort_date_week
   type: DATE
   mode: NULLABLE

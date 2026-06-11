@@ -1,0 +1,63 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Observation date (point-in-time snapshot within the trailing 1-year window)
+- name: document_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Kitsune wiki document ID of the article
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Article locale (always 'en-US' in this table)
+- name: slug
+  type: STRING
+  mode: NULLABLE
+  description: URL slug of the article
+- name: products
+  type: STRING
+  mode: NULLABLE
+  description: Raw slash-delimited product path from the source document
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Canonical CX product name from mozfun.customer_experience.normalize_product
+    (e.g. 'Firefox', 'Firefox Android'). 'Other' rows are excluded.
+- name: last_revision_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the most recent approved revision on or before `event_date`
+- name: days_since_last_revision
+  type: INTEGER
+  mode: NULLABLE
+  description: Days between `event_date` and last_revision_date
+- name: fresh_ind
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if the article had an approved revision within the prior 365 days, else 0
+- name: url
+  type: STRING
+  mode: NULLABLE
+  description: Article URL associated with the votes on `event_date` (from the votes source)
+- name: share_link
+  type: STRING
+  mode: NULLABLE
+  description: Shareable link to the article
+- name: helpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of helpful votes cast on `event_date`
+- name: total_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of votes cast on `event_date`
+- name: running_helpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Cumulative helpful votes through `event_date`, seeded with pre-window totals
+- name: running_total_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Cumulative total votes through `event_date`, seeded with pre-window totals

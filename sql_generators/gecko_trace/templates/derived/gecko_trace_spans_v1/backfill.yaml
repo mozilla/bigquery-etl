@@ -1,7 +1,0 @@
-2026-06-10:
-  start_date: 2026-06-01
-  end_date: 2026-06-10
-  reason: New table, initial backfill.
-  watchers:
-  - jjalkanen@mozilla.com
-  status: Complete

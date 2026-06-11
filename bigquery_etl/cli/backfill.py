@@ -289,6 +289,17 @@ def create(
         click.echo("\n".join(errors))
         sys.exit(1)
 
+    if end_date.date() == date.today():
+        click.echo(
+            click.style(
+                "WARNING: end_date is today. The upstream table may not have data "
+                "for today yet if its daily ETL hasn't run, in which case the backfill "
+                "writes an empty partition that gets copied into production on complete. "
+                "Consider using an end_date whose upstream data is already available.",
+                fg="yellow",
+            )
+        )
+
     existing_backfills = get_entries_from_qualified_table_name(
         sql_dir, qualified_table_name, table_not_exists_ok=True
     )

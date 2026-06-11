@@ -1,0 +1,25 @@
+---
+friendly_name: Gecko Trace Events Bridge
+description: |-
+  Many-to-many relationship between traces and events.
+
+  One row per (stable_trace_id, stable_event_id) pair observed.
+  Enables querying all traces that went through a specific event,
+  and all events in a specific trace, with occurrence counts.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  clustering:
+    fields:
+      - stable_trace_id
+      - stable_event_id

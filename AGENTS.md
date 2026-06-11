@@ -38,6 +38,7 @@ A target-based dev environment lets queries run against real data in a non-produ
 Never run, deploy, or backfill against production.
 
 ## Documentation
+- Backfilling a table: `docs/cookbooks/backfilling_a_table.md`
 - Creating queries: `docs/cookbooks/creating_a_derived_dataset.md`
 - Common workflows: `docs/cookbooks/common_workflows.md`
 - Development workflows (target-based dev environment): `docs/cookbooks/development_workflows.md`

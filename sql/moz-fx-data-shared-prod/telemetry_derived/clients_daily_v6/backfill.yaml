@@ -1,0 +1,14 @@
+2026-06-11:
+  start_date: 2025-06-08
+  end_date: 2026-06-09
+  reason: |-
+    https://mozilla-hub.atlassian.net/browse/DENG-10914
+    Populate the newly added nested field attribution.msstoresignedin for historical clients_daily_v6 partitions.
+  watchers:
+  - wichan@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  custom_query_path: sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/backfill_deng10914.sql

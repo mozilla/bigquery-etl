@@ -1,8 +1,0 @@
-friendly_name: Column Profiles
-description: |-
-  Unversioned read surface over column_profiles_v1 in
-  data_governance_metadata_derived: weekly per-column profiling statistics
-  (null rate, approximate distinct count, cardinality, example value, and
-  value/frequency pairs) consumed by schema enrichment tooling.
-owners:
-- gkatre@mozilla.com

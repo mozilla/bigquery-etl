@@ -166,8 +166,10 @@ leaf_sigs AS (
 trace_signature_cte AS (
   SELECT
     ls.trace_id,
-    SHA256(
-      STRING_AGG(TO_BASE64(chain_sig) ORDER BY chain_sig)
+    TO_BASE64(
+      SHA256(
+        STRING_AGG(TO_BASE64(chain_sig) ORDER BY chain_sig)
+      )
     ) AS trace_signature
   FROM
     leaf_sigs ls

@@ -47,10 +47,12 @@ SELECT
       (
         SELECT AS STRUCT
           cd.attribution.* REPLACE (
-            -- Take the recomputed msstoresignedin only when the other 9 attribution
-            -- fields match prod exactly (NULL-safe). Otherwise keep prod's value.
+            -- Only fill when prod's msstoresignedin is NULL; never overwrite an
+            -- existing value. Take the recomputed value only when the other 9
+            -- attribution fields match prod exactly (NULL-safe). Otherwise keep prod's.
             IF(
-              ra.client_id IS NOT NULL
+              cd.attribution.msstoresignedin IS NULL
+              AND ra.client_id IS NOT NULL
               AND TO_JSON_STRING(
                 (SELECT AS STRUCT ra.attribution.* EXCEPT (msstoresignedin))
               ) = TO_JSON_STRING((SELECT AS STRUCT cd.attribution.* EXCEPT (msstoresignedin))),

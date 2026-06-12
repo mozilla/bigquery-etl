@@ -1791,7 +1791,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
-      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
+      metrics.timing_distribution.longfox_game_played_length
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4003,7 +4004,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
-      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
+      metrics.timing_distribution.longfox_game_played_length
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -6235,7 +6237,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
-      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
+      metrics.timing_distribution.longfox_game_played_length
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

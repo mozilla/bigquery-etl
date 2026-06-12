@@ -88,10 +88,12 @@ SELECT
     ) AS `boolean`,
     STRUCT(
       LAX_INT64(event_extra.active_this_session) AS `active_this_session`,
+      LAX_INT64(event_extra.address_books) AS `address_books`,
       LAX_INT64(event_extra.attemptCount) AS `attemptCount`,
       LAX_INT64(event_extra.average_words_per_request) AS `average_words_per_request`,
       LAX_INT64(event_extra.average_words_per_second) AS `average_words_per_second`,
       LAX_INT64(event_extra.buffering_time) AS `buffering_time`,
+      LAX_INT64(event_extra.calendars) AS `calendars`,
       LAX_INT64(event_extra.channel_status) AS `channel_status`,
       LAX_INT64(event_extra.character_count) AS `character_count`,
       LAX_INT64(event_extra.columnnumber) AS `columnnumber`,
@@ -173,6 +175,7 @@ SELECT
       LAX_INT64(event_extra.words_removed) AS `words_removed`
     ) AS `quantity`,
     STRUCT(
+      JSON_VALUE(event_extra.account_type) AS `account_type`,
       JSON_VALUE(event_extra.acFieldName) AS `acFieldName`,
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.active) AS `active`,

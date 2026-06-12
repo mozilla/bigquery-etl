@@ -9,13 +9,14 @@ fields:
     mode: NULLABLE
     description: Stable UUID assigned on first occurrence of this trace pattern.
   - name: trace_signature
-    type: BYTES
+    type: STRING
     mode: NULLABLE
     description: |-
-      Combined SHA256 of all root-to-leaf event signatures in this trace.
+      Combined SHA256 of all root-to-leaf event signatures in this trace,
+      base64-encoded.
       For single-path traces, this is the last event's chain signature.
       For multi-path traces, combines all leaf signatures in sorted order.
-      Unique identifier for this trace pattern. MERGE key.
+      Unique identifier for this trace pattern. MERGE key and clustering key.
   - name: hit_count
     type: INT64
     mode: NULLABLE

@@ -9,7 +9,7 @@ trace_event_aggregates AS (
   SELECT
     submission_date,
     ts.trace_signature,
-    ec.event_hash AS event_signature,
+    TO_BASE64(ec.event_hash) AS event_signature,
     COUNT(*) AS hit_count,
     MIN(ec.position) AS position
   FROM

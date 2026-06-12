@@ -2,36 +2,54 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: submission_date
 - name: release_channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: release_channel
 - name: country
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: country
 - name: country_name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: country_name
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: locale
 - name: version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: version
 - name: mau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: mau
 - name: wau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: wau
 - name: dau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: dau

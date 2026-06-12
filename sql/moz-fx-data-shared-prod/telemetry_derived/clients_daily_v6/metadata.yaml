@@ -50,6 +50,9 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
+  backfill_deng10914.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5
   query.sql:
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
 require_column_descriptions: false

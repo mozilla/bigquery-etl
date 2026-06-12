@@ -2,7 +2,9 @@ fields:
 - name: additional_properties
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: additional_properties
 - name: client_info
   type: RECORD
   mode: NULLABLE
@@ -113,7 +115,9 @@ fields:
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: document_id
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -239,23 +243,33 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_app_name
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_channel
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_country_code
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_os
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_os_version
 - name: ping_info
   type: RECORD
   mode: NULLABLE
@@ -288,43 +302,53 @@ fields:
 - name: sample_id
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: sample_id
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: submission_timestamp
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: client_id
 - name: reason
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The reason the events ping was submitted; 'startup', 'inactive', 'max_capacity', or 'background'.
 - name: experiments
   type: JSON
   mode: NULLABLE
-  description: ''
+  description: A JSON object mapping Nimbus experiment slugs to their assigned branch and optional enrollment metadata, reflecting the active experiments
+    at the time of ping submission.
 - name: event_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: ''
+  description: The absolute UTC timestamp of when this event occurred, derived by adding the Glean event's relative timestamp to the ping start time.
 - name: event_category
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The Glean event category portion of the event identifier (e.g. 'onboarding', 'media_state', 'nimbus_events'), identifying the feature
+    area.
 - name: event_name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The Glean event name portion of the event identifier (e.g. 'play', 'enrollment', 'terms_of_service_accepted'), identifying the specific
+    action.
 - name: event
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The fully-qualified event identifier in 'category.name' format (e.g. 'media_state.play'), combining event_category and event_name.
 - name: event_extra
   type: JSON
   mode: NULLABLE
-  description: ''
+  description: A JSON object containing additional key-value metadata associated with the event, such as addon_id, source, or step. Keys vary by event
+    type. Null for events with no extra data.
 - name: metrics
   type: JSON
   mode: NULLABLE
@@ -332,32 +356,45 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: profile_group_id
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: legacy_telemetry_client_id
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: app_version_major
 - name: app_version_minor
   type: NUMERIC
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: app_version_minor
 - name: app_version_patch
   type: NUMERIC
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: app_version_patch
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: is_bot_generated
 - name: document_event_number
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The sequential position of this event within its source ping document, used together with document_id to construct event_id and preserve
+    event ordering.
 - name: event_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: A unique identifier for this individual event row, constructed as '<document_id>-<document_event_number>'.

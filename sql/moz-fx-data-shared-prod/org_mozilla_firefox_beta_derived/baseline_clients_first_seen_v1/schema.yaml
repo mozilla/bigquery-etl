@@ -2,19 +2,27 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: submission_date
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: Date when the server first received a ping from this client.
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: first_seen_date
 - name: sample_id
   type: INT64
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: sample_id
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: client_id
 - name: attribution
   type: RECORD
   mode: NULLABLE

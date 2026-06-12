@@ -29,13 +29,15 @@ event_hashes AS (
     COALESCE(JSON_VALUE(e, '$.attributes["source.file"]'), '') AS source_file,
     SAFE_CAST(JSON_VALUE(e, '$.attributes["source.line"]') AS INT64) AS source_line,
     COALESCE(JSON_VALUE(e, '$.attributes.result'), '') AS result,
-    SHA256(
-      CONCAT(
-        COALESCE(JSON_VALUE(e, '$.attributes["source.file"]'), ''),
-        '\x00',
-        COALESCE(JSON_VALUE(e, '$.attributes["source.line"]'), ''),
-        '\x00',
-        COALESCE(JSON_VALUE(e, '$.attributes.result'), '')
+    TO_BASE64(
+      SHA256(
+        CONCAT(
+          COALESCE(JSON_VALUE(e, '$.attributes["source.file"]'), ''),
+          '\x00',
+          COALESCE(JSON_VALUE(e, '$.attributes["source.line"]'), ''),
+          '\x00',
+          COALESCE(JSON_VALUE(e, '$.attributes.result'), '')
+        )
       )
     ) AS event_signature
   FROM

@@ -2,32 +2,46 @@ fields:
 - name: category
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: category
 - name: event
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: event
 - name: first_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: first_timestamp
 - name: numeric_index
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: numeric_index
 - name: index
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: index
 - name: event_properties
   type: RECORD
   mode: REPEATED
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: event_properties
   fields:
   - name: index
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+      field: index
   - name: key
     type: STRING
     mode: NULLABLE
@@ -40,7 +54,9 @@ fields:
     - name: index
       type: INT64
       mode: NULLABLE
-      description: ''
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+        field: index
     - name: key
       type: STRING
       mode: NULLABLE
@@ -52,4 +68,6 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: submission_date

@@ -1,0 +1,13 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Numeric identifier.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: Short name.
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: Free-text description.

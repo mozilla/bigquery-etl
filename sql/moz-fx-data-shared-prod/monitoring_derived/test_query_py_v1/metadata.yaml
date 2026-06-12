@@ -1,0 +1,9 @@
+friendly_name: Test Query Py
+description: |-
+  Loads a few static rows to exercise the Python query code path
+owners:
+  - bewu@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_monitoring

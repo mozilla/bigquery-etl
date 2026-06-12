@@ -1,0 +1,573 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: ''
+- name: normalized_app_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: client_info
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: android_sdk_version
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: app_build
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: app_channel
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: app_display_version
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: architecture
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: content
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: source
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: term
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: device_manufacturer
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: device_model
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: first_run_date
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: os
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: session_count
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: telemetry_sdk_build
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: windows_build_number
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: events
+  type: RECORD
+  mode: REPEATED
+  description: ''
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    description: ''
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: name
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: session
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: event_seq
+      type: INT64
+      mode: NULLABLE
+      description: ''
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: session_sample_rate
+      type: FLOAT64
+      mode: NULLABLE
+      description: ''
+    - name: session_seq
+      type: INT64
+      mode: NULLABLE
+      description: ''
+    - name: session_start_time
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: timestamp
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: country
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: os
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: version
+      type: STRING
+      mode: NULLABLE
+      description: ''
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: client_deduplication_valid_advertising_id
+      type: BOOLEAN
+      mode: NULLABLE
+      description: ''
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: events_normal_and_private_uri_count
+      type: INT64
+      mode: NULLABLE
+      description: ''
+    - name: metrics_tabs_open_count
+      type: INT64
+      mode: NULLABLE
+      description: ''
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: browser_search_ad_clicks
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: browser_search_in_content
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: browser_search_with_ads
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+    - name: metrics_search_count
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: INT64
+        mode: NULLABLE
+        description: ''
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: activation_identifier
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: client_deduplication_experiment_timeframe
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: client_deduplication_hashed_gaid
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: search_default_engine_code
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: search_default_engine_name
+      type: STRING
+      mode: NULLABLE
+      description: ''
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
+      description: ''
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: ping_info
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: end_time
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: experiments
+    type: RECORD
+    mode: REPEATED
+    description: ''
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: value
+      type: RECORD
+      mode: NULLABLE
+      description: ''
+      fields:
+      - name: branch
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: extra
+        type: RECORD
+        mode: NULLABLE
+        description: ''
+        fields:
+        - name: enrollment_id
+          type: STRING
+          mode: NULLABLE
+          description: ''
+        - name: type
+          type: STRING
+          mode: NULLABLE
+          description: ''
+  - name: ping_type
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: reason
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: seq
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: server_knobs_config
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: event_threshold
+      type: INT64
+      mode: NULLABLE
+      description: ''
+    - name: metrics_enabled
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+        description: ''
+    - name: pings_enabled
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+        description: ''
+  - name: start_time
+    type: STRING
+    mode: NULLABLE
+    description: ''
+- name: sample_id
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: ''

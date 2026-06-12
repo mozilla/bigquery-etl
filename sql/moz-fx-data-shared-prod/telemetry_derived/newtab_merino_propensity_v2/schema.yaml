@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: snapshot_date
+  type: DATE
+- mode: NULLABLE
+  name: snapshot_at
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: layout
+  type: STRING
+- mode: NULLABLE
+  name: section_position
+  type: INTEGER
+- mode: NULLABLE
+  name: position
+  type: INTEGER
+- mode: NULLABLE
+  name: tile_format
+  type: STRING
+- mode: NULLABLE
+  name: impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: weight
+  type: FLOAT

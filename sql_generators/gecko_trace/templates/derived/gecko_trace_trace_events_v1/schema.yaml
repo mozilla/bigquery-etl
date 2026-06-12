@@ -16,3 +16,7 @@ fields:
     type: INT64
     mode: NULLABLE
     description: Number of times this event occurred in this trace pattern.
+  - name: event_position
+    type: INT64
+    mode: NULLABLE
+    description: Position of this event in the trace's Merkle chain (1-based, first to last).

@@ -104,7 +104,8 @@ event_chain AS (
     ehd.event_offset,
     ehd.span_event_count,
     ehd.event_hash,
-    SHA256(ehd.event_hash) AS chain_sig
+    SHA256(ehd.event_hash) AS chain_sig,
+    1 AS position
   FROM
     event_hash_with_date ehd
   LEFT JOIN
@@ -122,7 +123,8 @@ event_chain AS (
     ehd.event_hash,
     SHA256(
       CONCAT(parent_ec.chain_sig, b'\x00', ehd.event_hash)
-    ) AS chain_sig
+    ) AS chain_sig,
+    parent_ec.position + 1
   FROM
     event_hash_with_date ehd
   JOIN
@@ -144,7 +146,8 @@ event_chain AS (
     ehd.event_hash,
     SHA256(
       CONCAT(prev_ec.chain_sig, b'\x00', ehd.event_hash)
-    ) AS chain_sig
+    ) AS chain_sig,
+    prev_ec.position + 1
   FROM
     event_hash_with_date ehd
   JOIN
@@ -188,7 +191,8 @@ trace_event_aggregates AS (
     submission_date,
     ts.trace_signature,
     ec.event_hash AS event_signature,
-    COUNT(*) AS hit_count
+    COUNT(*) AS hit_count,
+    MIN(ec.position) AS position
   FROM
     trace_signature_cte ts
   JOIN
@@ -204,7 +208,8 @@ with_stable_ids AS (
     tea.submission_date,
     t.stable_trace_id,
     e.stable_event_id,
-    tea.hit_count
+    tea.hit_count,
+    tea.position
   FROM
     trace_event_aggregates tea
   JOIN
@@ -225,13 +230,15 @@ WHEN NOT MATCHED BY TARGET THEN
     submission_date,
     stable_trace_id,
     stable_event_id,
-    hit_count
+    hit_count,
+    event_position
   )
   VALUES (
     S.submission_date,
     S.stable_trace_id,
     S.stable_event_id,
-    S.hit_count
+    S.hit_count,
+    S.position
   )
 WHEN MATCHED THEN
   UPDATE SET

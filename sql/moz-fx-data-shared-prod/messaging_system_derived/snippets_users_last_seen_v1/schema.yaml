@@ -2,26 +2,38 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The date for which this aggregation row was computed. Each row represents
+    activity counts for a specific combination of dimensions on this date.
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer representing the days on which the user was seen sending
+    CFR pings over the past 28 days. Each bit corresponds to one day, with the rightmost
+    bit representing the most recent day; a set bit indicates the user was active
+    on that day.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: The Telemetry client identifier for the Firefox profile. Used together
+    with impression_id to deduplicate CFR pings to one row per user per day; may be
+    null when not present in the source ping.
 - name: release_channel
   type: STRING
   mode: NULLABLE
+  description: The Firefox release channel of the client (e.g. "release", "beta",
+    "nightly", "esr"). Used to segment engagement metrics by update channel.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The browser locale of the client at the time of the CFR impression
+    (e.g. "en-US", "fr", "es-ES"). Used to segment engagement by language.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
+  description: The two-letter ISO 3166-1 alpha-2 country code of the client, as inferred
+    from their IP address at submission time.
 - name: version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The Firefox application version string of the client at the time of
+    the CFR impression (e.g. "115.0.3").

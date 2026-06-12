@@ -1,0 +1,67 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date for which this aggregation row was computed. Each row represents
+    activity counts for a specific combination of dimensions on this date.
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel of the client (e.g. "release", "beta",
+    "nightly", "esr"). Used to segment engagement metrics by update channel.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The two-letter ISO 3166-1 alpha-2 country code of the client, as inferred
+    from their IP address at submission time.
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: The full human-readable country name corresponding to the `country`
+    code, resolved via a static country codes lookup table. Null if the country code
+    is unrecognized.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: The browser locale of the client at the time of the CFR impression
+    (e.g. "en-US", "fr", "es-ES"). Used to segment engagement by language.
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox application version string of the client at the time of
+    the CFR impression (e.g. "115.0.3").
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: The count of unique clients (by client_id or impression_id) in this
+    dimension group who had a CFR event recorded within the last 28 days relative
+    to the submission_date (Monthly Active Users).
+- name: wau
+  type: INT64
+  mode: NULLABLE
+  description: The count of unique clients in this dimension group who had a CFR event
+    recorded within the last 7 days relative to the submission_date (Weekly Active
+    Users).
+- name: dau
+  type: INT64
+  mode: NULLABLE
+  description: The count of unique clients in this dimension group who had a CFR event
+    recorded within the last 1 day relative to the submission_date (Daily Active Users).
+- name: whats_new_mau
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that had a CFR What's New panel interaction within
+    the past 28 days of the submission date (i.e. days_since_seen_whats_new < 28).
+    Represents the monthly active user count scoped to What's New CFR activity.
+- name: whats_new_wau
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that had a CFR What's New panel interaction within
+    the past 7 days of the submission date (i.e. days_since_seen_whats_new < 7). Represents
+    the weekly active user count scoped to What's New CFR activity.
+- name: whats_new_dau
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that had a CFR What's New panel interaction on the
+    submission date (i.e. days_since_seen_whats_new < 1). Represents the daily active
+    user count scoped to What's New CFR activity.

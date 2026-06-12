@@ -4,13 +4,6 @@ fields:
   mode: NULLABLE
   description: The date for which this aggregation row was computed. Each row represents
     activity counts for a specific combination of dimensions on this date.
-- name: days_seen_bits
-  type: INTEGER
-  mode: NULLABLE
-  description: A 28-bit integer representing the days on which the user was seen sending
-    CFR pings over the past 28 days. Each bit corresponds to one day, with the rightmost
-    bit representing the most recent day; a set bit indicates the user was active
-    on that day.
 - name: client_id
   type: STRING
   mode: NULLABLE

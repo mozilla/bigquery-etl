@@ -2775,7 +2775,7 @@ bqetl_data_governance_metadata:
     (idempotent). Leaving both unset reproduces the scheduled behaviour.
   default_args:
     owner: gkatre@mozilla.com
-    start_date: "2026-06-15"
+    start_date: "2026-06-08"
     email: ["gkatre@mozilla.com"]
     retries: 1
     retry_delay: 30m

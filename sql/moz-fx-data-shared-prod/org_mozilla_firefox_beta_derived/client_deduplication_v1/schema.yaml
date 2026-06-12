@@ -2,15 +2,21 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: submission_date
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_app_id
 - name: additional_properties
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: additional_properties
 - name: client_info
   type: RECORD
   mode: NULLABLE
@@ -121,7 +127,9 @@ fields:
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: document_id
 - name: events
   type: RECORD
   mode: REPEATED
@@ -455,23 +463,33 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_app_name
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_channel
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_country_code
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_os
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: normalized_os_version
 - name: ping_info
   type: RECORD
   mode: NULLABLE
@@ -566,8 +584,12 @@ fields:
 - name: sample_id
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: sample_id
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: /bigquery_etl/schema/org_mozilla_firefox_beta_derived.yaml
+    field: submission_timestamp

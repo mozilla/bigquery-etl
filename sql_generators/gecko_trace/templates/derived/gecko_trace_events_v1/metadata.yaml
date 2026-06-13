@@ -1,0 +1,25 @@
+---
+friendly_name: Gecko Trace Events
+description: |-
+  Unique event types with occurrence counts.
+
+  One row per unique event, identified by source location and result code.
+  Each occurrence of that event across all traces is counted in hit_count.
+  Stable event IDs enable querying all traces that experienced a specific event.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true

@@ -6,7 +6,7 @@
     Populate the newly added nested field attribution.msstoresignedin for historical clients_daily_v6 partitions.
   watchers:
   - wichan@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

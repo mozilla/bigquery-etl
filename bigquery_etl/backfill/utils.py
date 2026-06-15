@@ -211,13 +211,15 @@ def validate_depends_on_past(
             table_metadata.scheduling["depends_on_past"]
             and table_metadata.scheduling["date_partition_parameter"] is None
         )
-        if depends_on_past_null_partition and override_depends_on_past:
+        if not depends_on_past_null_partition:
             return True
-        if depends_on_past_null_partition and reinitialize_table:
+        if override_depends_on_past:
+            return True
+        if reinitialize_table:
             # The reinitialize path rebuilds the whole table from its is_init() query;
             # require that the query actually supports it.
             return query_supports_reinitialize(sql_dir, qualified_table_name)
-        return not depends_on_past_null_partition
+        return False
 
     return True
 

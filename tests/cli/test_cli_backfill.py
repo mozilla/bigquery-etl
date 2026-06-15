@@ -981,6 +981,43 @@ class TestBackfill:
         assert result.exit_code == 1
         assert "custom_query_path" in result.output
 
+    def test_validate_backfill_override_depends_on_past_with_reinitialize_fails(
+        self, runner, mock_date
+    ):
+        """override_depends_on_past and reinitialize_table are mutually exclusive: setting
+        both must fail rather than silently letting the override win."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE
+            + "  override_depends_on_past: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+            + "  reinitialize_table: true\n"
+            + f"  custom_query_path: {custom_query_path}\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 1
+        assert "mutually exclusive" in result.output
+
     def test_validate_backfill_reinitialize_reads_initiate_entry_not_newest(
         self, runner, mock_date
     ):

@@ -5,57 +5,51 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
     field: submission_date
-- name: days_seen_bits
-  type: INTEGER
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
-    field: days_seen_bits
-- name: days_seen_whats_new_bits
-  type: INTEGER
-  mode: NULLABLE
-  description: A 28-bit integer representing the history of days on which the user saw the "What's New" panel, with the rightmost bit corresponding to
-    the current submission date and each bit to the left representing one day further in the past. Built by casting the boolean `seen_whats_new` flag
-    for the current day and combining it with the shifted previous day's value using `combine_adjacent_days_28_bits`.
-- name: impression_id
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
-    field: impression_id
-- name: client_id
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
-    field: client_id
-- name: seen_whats_new
-  type: BOOLEAN
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
-    field: seen_whats_new
 - name: release_channel
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
     field: release_channel
-- name: locale
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
-    field: locale
 - name: country
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
     field: country
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: country_name
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: locale
 - name: version
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
     field: version
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: mau
+- name: wau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: wau
+- name: dau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: dau

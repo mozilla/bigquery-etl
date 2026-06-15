@@ -21873,6 +21873,20 @@ fields:
         rate.
 
         '
+    - name: use_counter_doc_midiaccess_granted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has requestMIDIAccess granted. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_midiaccess_granted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has requestMIDIAccess granted. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

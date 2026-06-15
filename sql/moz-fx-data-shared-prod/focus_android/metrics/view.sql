@@ -701,7 +701,8 @@ SELECT
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
       metrics.labeled_counter.networking_http_3_search_rtt_inflated,
       metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
-      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features,
+      metrics.labeled_counter.geolocation_network_failures
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2643,7 +2644,8 @@ SELECT
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
       metrics.labeled_counter.networking_http_3_search_rtt_inflated,
       metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
-      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features,
+      metrics.labeled_counter.geolocation_network_failures
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4585,7 +4587,8 @@ SELECT
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
       metrics.labeled_counter.networking_http_3_search_rtt_inflated,
       metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
-      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features,
+      metrics.labeled_counter.geolocation_network_failures
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

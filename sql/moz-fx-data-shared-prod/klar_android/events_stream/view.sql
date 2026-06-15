@@ -480,6 +480,7 @@ SELECT
       JSON_VALUE(event_extra.shortcut) AS `shortcut`,
       JSON_VALUE(event_extra.signature) AS `signature`,
       JSON_VALUE(event_extra.signed_date) AS `signed_date`,
+      JSON_VALUE(event_extra.site_permission) AS `site_permission`,
       JSON_VALUE(event_extra.skip_reason) AS `skip_reason`,
       JSON_VALUE(event_extra.slug) AS `slug`,
       JSON_VALUE(event_extra.sort_key) AS `sort_key`,

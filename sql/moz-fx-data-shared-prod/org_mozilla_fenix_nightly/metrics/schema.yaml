@@ -3693,8 +3693,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -9566,6 +9565,22 @@ fields:
         connection whose combined records carried that feature. "ech" and the address
         hints can only be delivered ahead of the first connection via the DNS record,
         not via an Alt-Svc header.
+
+        '
+    - name: geolocation_network_failures
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many network geolocation requests received an error response.  The
+        number of successful network geolocation requests should resemble the the
+        values for these labels in the geolocation_service probe, minus these failure
+        counts.  Not all failures can be known.
 
         '
   - name: string
@@ -51942,10 +51957,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The result of attempting to open a sqlite file.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram SQLITE_STORE_OPEN.
+      description: 'The result of attempting to open a SQLite file.
 
         Initially this metric also recorded the "success" category, but due to the
         high volume of recording those, only failure categories are now tracked.
@@ -51968,10 +51980,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The result of attempting to query a sqlite file.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram SQLITE_STORE_QUERY.
+      description: 'The result of attempting to query a SQLite file.
 
         Initially this metric also recorded the "success" category, but due to the
         high volume of recording those, only failure categories are now tracked.

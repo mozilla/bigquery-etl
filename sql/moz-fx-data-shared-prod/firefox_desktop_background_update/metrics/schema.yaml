@@ -8347,6 +8347,22 @@ fields:
         not via an Alt-Svc header.
 
         '
+    - name: geolocation_network_failures
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many network geolocation requests received an error response.  The
+        number of successful network geolocation requests should resemble the the
+        values for these labels in the geolocation_service probe, minus these failure
+        counts.  Not all failures can be known.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -46897,10 +46913,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The result of attempting to open a sqlite file.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram SQLITE_STORE_OPEN.
+      description: 'The result of attempting to open a SQLite file.
 
         Initially this metric also recorded the "success" category, but due to the
         high volume of recording those, only failure categories are now tracked.
@@ -46923,10 +46936,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The result of attempting to query a sqlite file.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram SQLITE_STORE_QUERY.
+      description: 'The result of attempting to query a SQLite file.
 
         Initially this metric also recorded the "success" category, but due to the
         high volume of recording those, only failure categories are now tracked.

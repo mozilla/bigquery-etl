@@ -2902,7 +2902,9 @@ SELECT
       metrics.counter.use_counter_css_page_css_corner_start_start_shape,
       metrics.counter.use_counter_css_page_css_corner_top_left_shape,
       metrics.counter.use_counter_css_page_css_corner_top_right_shape,
-      metrics.counter.use_counter_css_page_css_corner_top_shape
+      metrics.counter.use_counter_css_page_css_corner_top_shape,
+      metrics.counter.use_counter_doc_midiaccess_granted,
+      metrics.counter.use_counter_page_midiaccess_granted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5828,7 +5830,9 @@ SELECT
       metrics.counter.use_counter_css_page_css_corner_start_start_shape,
       metrics.counter.use_counter_css_page_css_corner_top_left_shape,
       metrics.counter.use_counter_css_page_css_corner_top_right_shape,
-      metrics.counter.use_counter_css_page_css_corner_top_shape
+      metrics.counter.use_counter_css_page_css_corner_top_shape,
+      metrics.counter.use_counter_doc_midiaccess_granted,
+      metrics.counter.use_counter_page_midiaccess_granted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8754,7 +8758,9 @@ SELECT
       metrics.counter.use_counter_css_page_css_corner_start_start_shape,
       metrics.counter.use_counter_css_page_css_corner_top_left_shape,
       metrics.counter.use_counter_css_page_css_corner_top_right_shape,
-      metrics.counter.use_counter_css_page_css_corner_top_shape
+      metrics.counter.use_counter_css_page_css_corner_top_shape,
+      metrics.counter.use_counter_doc_midiaccess_granted,
+      metrics.counter.use_counter_page_midiaccess_granted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11680,7 +11686,9 @@ SELECT
       metrics.counter.use_counter_css_page_css_corner_start_start_shape,
       metrics.counter.use_counter_css_page_css_corner_top_left_shape,
       metrics.counter.use_counter_css_page_css_corner_top_right_shape,
-      metrics.counter.use_counter_css_page_css_corner_top_shape
+      metrics.counter.use_counter_css_page_css_corner_top_shape,
+      metrics.counter.use_counter_doc_midiaccess_granted,
+      metrics.counter.use_counter_page_midiaccess_granted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14606,7 +14614,9 @@ SELECT
       metrics.counter.use_counter_css_page_css_corner_start_start_shape,
       metrics.counter.use_counter_css_page_css_corner_top_left_shape,
       metrics.counter.use_counter_css_page_css_corner_top_right_shape,
-      metrics.counter.use_counter_css_page_css_corner_top_shape
+      metrics.counter.use_counter_css_page_css_corner_top_shape,
+      metrics.counter.use_counter_doc_midiaccess_granted,
+      metrics.counter.use_counter_page_midiaccess_granted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

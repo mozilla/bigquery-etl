@@ -46,6 +46,7 @@ MIN_CELL_IMPRESSIONS = 10
 MIN_OUTPUT_IMPRESSIONS = 2000
 ALS_ITERATIONS = 30
 LAYOUT = "SECTION_GRID"
+COUNTRY = "US"
 
 HISTORICAL_IMPRESSIONS_SQL = """
 WITH
@@ -422,6 +423,7 @@ def main():
     result.insert(0, "snapshot_date", args.date)
     result.insert(1, "snapshot_at", datetime.now(timezone.utc))
     result.insert(2, "layout", LAYOUT)
+    result.insert(3, "country", COUNTRY)
 
     destination = (
         f"{args.project}.{args.destination_dataset}."

@@ -12,3 +12,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
+# Scoped read-only access for the Customer Experience RAG service account.
+# https://mozilla-hub.atlassian.net/browse/DENG-11241
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/customer-experience-viewer

@@ -102,6 +102,7 @@ def generate(target_project, output_dir, use_cloud_function):
     view_template = env.get_template("view.sql")
     # metadata template
     metadata_template = "metadata.yaml"
+    focus_metadata_template = "focus_android_metadata.yaml"
     # schema templates
     desktop_table_schema_template = "desktop_table_schema.yaml"
     desktop_view_schema_template = "desktop_view_schema.yaml"
@@ -338,12 +339,17 @@ def generate(target_project, output_dir, use_cloud_function):
             )
 
         # Write metadata YAML.
+        # Focus Android uses a dedicated template (shredder_mitigation disabled).
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="metadata.yaml",
             sql=render(
-                metadata_template,
+                (
+                    focus_metadata_template
+                    if browser.name == "focus_android"
+                    else metadata_template
+                ),
                 template_folder=THIS_PATH / "templates",
                 app_value=browser.value,
                 app_name=browser.name,

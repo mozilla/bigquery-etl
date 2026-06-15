@@ -16,7 +16,7 @@
     Related Bug https://bugzilla.mozilla.org/show_bug.cgi?id=2042189. 
     
     This backfill does not use shredder mitigation because it requires an update of the metrics (not preserve),
-    thus a decrease is expected in the originally calculated metrics is expected after completing this backfill
+    thus a decrease is expected in the originally calculated metrics after completing this backfill
     and only for this period, due to shredder effect.
     
     This is not expected to affect company KPIS [dau, wau, mau], because it only updates data already excluded

@@ -13,6 +13,14 @@
   start_date: 2026-04-15
   end_date: 2026-05-25
   reason: Fix inflated Focus Android metrics caused by duplicate client_ids in core_clients_last_seen_v1.
+    
+    This backfill does not use shredder mitigation because it requires an update of the metrics (not preserve),
+    thus a decrease is expected in the originally calculated metrics is expected after completing this backfill
+    and only for this period, due to shredder effect.
+    
+    This is not expected to affect company KPIS [dau, wau, mau], because it only updates data already excluded
+    from the KPI reporting view `focus_android.active_users_aggregates`.
+    https://github.com/mozilla/bigquery-etl/blob/cdf99147d40bb70e072715bc54e50fd51f7b55c6/sql/moz-fx-data-shared-prod/focus_android/active_users_aggregates/view.sql#L18
   watchers:
   - ascholtz@mozilla.com
   - lvargas@mozilla.com

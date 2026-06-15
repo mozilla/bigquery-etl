@@ -18,6 +18,27 @@ No deep familiarity with the command line is required. The examples below can be
 - Authenticated to GCP: `gcloud auth application-default login`
 - Access to a personal sandbox project (e.g., `dev-sandbox-user`) or the shared dev project `moz-fx-data-proto`
 
+## Impersonating the shared sandbox service account
+
+A shared service account can be impersonated to run development work without holding broad
+production access directly. The service account is granted write access to the dev/sandbox
+projects and **read-only** access to production (so dev queries can still read prod sources),
+but **no** production write or deploy permissions — so nothing run through it can modify prod.
+
+To use it, after authenticating, point application-default credentials at the service account
+(ask a data platform admin for the exact address and to be granted
+`roles/iam.serviceAccountTokenCreator` on it):
+
+```bash
+export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bqetl-dev-sandbox@<admin-project>.iam.gserviceaccount.com
+```
+
+`bqetl` picks this up automatically (it uses application-default credentials), so no extra flags
+are needed. This is also what makes it safe for coding agents to run, deploy, and backfill: those
+commands are permitted only against an allow-listed non-prod `--target`
+(`DEV_PROJECT_ALLOWLIST` in `bigquery_etl/util/common.py`), and the service account's IAM is the
+backstop that prevents any production writes regardless.
+
 ## Target-Based Development
 
 Configure a target in `./bqetl_targets.yaml`. When running commands from `private-bigquery-etl`, targets are still read from `bigquery-etl/bqetl_targets.yaml`.

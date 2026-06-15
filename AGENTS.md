@@ -29,13 +29,15 @@ Generate SQL files with `./bqetl generate`. When running locally, add `--output_
 ### Development Environment (Targets)
 A target-based dev environment lets queries run against real data in a non-production project before a PR is opened. It is configured in `bqetl_targets.yaml` (see `bqetl_targets.yaml.example`), where a `default_target` avoids passing `--target` on every command. See `docs/cookbooks/development_workflows.md` for the full workflow.
 
-**For coding agents:** running, deploying, and backfilling are blocked for coding agents (`query run`, `deploy`, `query backfill`, etc.) — even with `--target` — as a safeguard against modifying production. To check a new or changed query, use `./bqetl query validate <dataset>.<table>` (dry run, no writes). When a query needs to actually run against the dev environment, do not attempt it; ask the user to run it themselves, e.g.:
+**For coding agents:** running, deploying, and backfilling (`query run`, `deploy`, `query backfill`, etc.) are allowed **only** when scoped to a non-prod `--target` (an allow-listed dev/sandbox project such as `moz-fx-data-proto` or `dev-sandbox-*`; see `DEV_PROJECT_ALLOWLIST` in `bigquery_etl/util/common.py`). Without a target — or against a production target — these commands are refused. This pairs with impersonating a sandbox service account that has no production write access, so agent runs cannot modify prod.
+
+Set a `default_target` in `bqetl_targets.yaml` (or pass `--target dev`) so these commands run against the dev environment, e.g.:
 
 ```
-! ./bqetl --target dev query run <dataset>.<table> --parameter=submission_date:DATE:<date> --write
+./bqetl --target dev query run <dataset>.<table> --parameter=submission_date:DATE:<date> --write
 ```
 
-Never run, deploy, or backfill against production.
+To only check a query without writing, use `./bqetl query validate <dataset>.<table>` (dry run; works without a target). Never run, deploy, or backfill against production.
 
 ## Documentation
 - Backfilling a table: `docs/cookbooks/backfilling_a_table.md`

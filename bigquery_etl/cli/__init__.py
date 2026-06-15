@@ -33,6 +33,7 @@ from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
+from ..util.common import set_resolved_target_project
 from ..util.target import get_default_target_name, get_target
 
 
@@ -118,6 +119,9 @@ def cli(prog_name=None):
             if target:
                 parsed_target = get_target(target, run_id=run_id)
                 ctx.obj["target"] = parsed_target
+                # Let the coding-agent gate see which project this invocation
+                # is scoped to, so agents may run against dev/sandbox targets.
+                set_resolved_target_project(parsed_target.project_id)
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )

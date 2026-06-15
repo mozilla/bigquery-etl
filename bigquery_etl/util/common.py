@@ -485,15 +485,64 @@ def is_running_under_coding_agent():
     )
 
 
+# Projects coding agents are allowed to operate against. Operating against any
+# of these via `--target` is considered safe because they hold no production
+# data; combined with impersonating a sandbox service account that lacks
+# production write access, this guarantees agent runs can't modify prod.
+# Strict allow-list (not a prod denylist): new dev projects must be added here.
+DEV_PROJECT_ALLOWLIST = ("moz-fx-data-proto",)
+DEV_PROJECT_PREFIXES = ("dev-sandbox-",)
+
+# Set from the CLI group callback once the `--target` (or BQETL_TARGET /
+# default_target) has been resolved, so the coding-agent gate can tell whether
+# the current invocation is scoped to a non-prod target.
+_resolved_target_project: Optional[str] = None
+
+
+def set_resolved_target_project(project_id: Optional[str]) -> None:
+    """Record the resolved target project for the coding-agent gate."""
+    global _resolved_target_project
+    _resolved_target_project = project_id
+
+
+def is_dev_project(project_id: Optional[str]) -> bool:
+    """Return whether `project_id` is an allow-listed non-prod dev/sandbox project."""
+    if not project_id:
+        return False
+    return project_id in DEV_PROJECT_ALLOWLIST or project_id.startswith(
+        DEV_PROJECT_PREFIXES
+    )
+
+
 def exit_if_running_under_coding_agent():
-    """Exit if `bqetl` is running under a coding agent."""
-    if is_running_under_coding_agent():
-        click.echo("Coding agents aren't allowed to run this command.", err=True)
-        sys.exit(1)
+    """Exit if a coding agent runs a blocked command outside a dev target.
+
+    Coding agents may run otherwise-blocked commands only when the invocation
+    is scoped to an allow-listed non-prod `--target` (see
+    `DEV_PROJECT_ALLOWLIST`). Bare invocations, or ones targeting production,
+    are refused so agents can't run/deploy/backfill against prod.
+    """
+    if not is_running_under_coding_agent():
+        return
+    if is_dev_project(_resolved_target_project):
+        return
+    target_desc = (
+        f"target project '{_resolved_target_project}'"
+        if _resolved_target_project
+        else "no target"
+    )
+    click.echo(
+        "Coding agents may only run this command against a non-prod --target "
+        f"(one of {DEV_PROJECT_ALLOWLIST} or '{DEV_PROJECT_PREFIXES[0]}*'); "
+        f"got {target_desc}. Set --target / BQETL_TARGET / default_target to a "
+        "dev project (and impersonate the sandbox service account).",
+        err=True,
+    )
+    sys.exit(1)
 
 
 def block_coding_agents(function: Callable) -> Callable:
-    """Wrap a function so that it exits if `bqetl` is running under a coding agent."""
+    """Wrap a function so coding agents can only run it against a dev target."""
 
     @wraps(function)
     def wrapper(*args, **kwargs):

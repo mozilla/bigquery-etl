@@ -169,6 +169,20 @@ def validate_reinitialize_sampling_batch_size(backfill_entry: Backfill) -> None:
     )
 
 
+def validate_override_depends_on_past(backfill_entry: Backfill) -> None:
+    """Check that override_depends_on_past is only used with a custom_query_path.
+
+    The override bypasses the depends_on_past + null date_partition_parameter guard. That
+    is only safe for a custom query that processes each partition independently; the
+    table's own scheduled query relies on the depends-on-past replay and must not be run
+    per-partition.
+    """
+    if backfill_entry.override_depends_on_past and not backfill_entry.custom_query_path:
+        raise ValueError(
+            "override_depends_on_past is only allowed on entries with a custom_query_path."
+        )
+
+
 def validate_query_script_options(
     backfill_entry: Backfill, backfill_file: Path
 ) -> None:
@@ -209,6 +223,7 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
         validate_retention_range(backfill_entry, backfill_file)
         validate_query_script_options(backfill_entry, backfill_file)
         validate_reinitialize_sampling_batch_size(backfill_entry)
+        validate_override_depends_on_past(backfill_entry)
     validate_entries_are_sorted(backfills)
 
 

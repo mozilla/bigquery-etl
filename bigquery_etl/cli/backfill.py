@@ -207,6 +207,15 @@ def backfill(ctx):
     "In some cases, this can cause inconsistencies in the data.",
 )
 @click.option(
+    "--override-depends-on-past",
+    "--override_depends_on_past",
+    is_flag=True,
+    help="If set, allow a custom_query_path backfill on a depends_on_past table with a "
+    "null date_partition_parameter to run per-partition instead of requiring "
+    "--reinitialize-table. Only valid with --custom-query-path, since the custom query "
+    "must process each partition independently of prior partitions.",
+)
+@click.option(
     "--reinitialize-table",
     "--reinitialize_table",
     flag_value=True,
@@ -248,6 +257,7 @@ def create(
     shredder_mitigation,
     override_retention_range_limit,
     override_depends_on_past_end_date,
+    override_depends_on_past,
     reinitialize_table,
     reinitialize_sampling_batch_size,
     billing_project,
@@ -275,6 +285,7 @@ def create(
         override_depends_on_past_end_date = opts.get(
             "override_depends_on_past_end_date", False
         )
+        override_depends_on_past = opts.get("override_depends_on_past", False)
         reinitialize_table = opts.get("reinitialize_table", None)
         reinitialize_sampling_batch_size = opts.get(
             "reinitialize_sampling_batch_size", None
@@ -285,6 +296,7 @@ def create(
         qualified_table_name,
         ignore_missing_metadata=True,
         reinitialize_table=reinitialize_table,
+        override_depends_on_past=override_depends_on_past,
     ):
         click.echo("\n".join(errors))
         sys.exit(1)
@@ -329,6 +341,7 @@ def create(
         reinitialize_sampling_batch_size=reinitialize_sampling_batch_size,
         override_retention_limit=override_retention_range_limit,
         override_depends_on_past_end_date=override_depends_on_past_end_date,
+        override_depends_on_past=override_depends_on_past,
         billing_project=billing_project,
         query_script_entrypoint=query_script_entrypoint or None,
         query_script_date_arg=query_script_date_arg or None,
@@ -419,11 +432,17 @@ def validate(
             for entry in table_entries
             if entry.status == BackfillStatus.INITIATE
         )
+        override_depends_on_past = any(
+            entry.override_depends_on_past
+            for entry in table_entries
+            if entry.status == BackfillStatus.INITIATE
+        )
         if metadata_errors := validate_table_metadata(
             sql_dir,
             table_name,
             ignore_missing_metadata,
             reinitialize_table=reinitialize_table,
+            override_depends_on_past=override_depends_on_past,
         ):
             click.echo("\n".join(metadata_errors))
             raise MetadataValidationError(str(metadata_errors))
@@ -1338,6 +1357,19 @@ def _copy_backfill_staging_to_prod(
             )
             if not entry.ignore_date_partition_offset:
                 offset = table_metadata.scheduling.get("date_partition_offset", offset)
+
+        # An override_depends_on_past backfill ran per-partition against a table whose
+        # date_partition_parameter is null. With a null partition param, get_backfill_partition
+        # would treat the target as the whole table and return None (raising below). The data
+        # was written one partition at a time, so resolve the partition from the partitioning
+        # field instead and copy each backfilled partition individually.
+        if (
+            entry.override_depends_on_past
+            and partition_param is None
+            and table_metadata.bigquery
+            and table_metadata.bigquery.time_partitioning
+        ):
+            partition_param = table_metadata.bigquery.time_partitioning.field
 
         for backfill_date in backfill_date_range:
             if (

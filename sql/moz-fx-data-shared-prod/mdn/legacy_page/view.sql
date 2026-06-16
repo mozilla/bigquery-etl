@@ -39,7 +39,14 @@ CREATE OR REPLACE VIEW
               source STRING,
               extra ARRAY<STRUCT<key STRING, value STRING>>,
               name STRING,
-              `timestamp` INTEGER
+              `timestamp` INTEGER,
+              session STRUCT<
+                event_seq INT64,
+                session_id STRING,
+                session_sample_rate FLOAT64,
+                session_seq INT64,
+                session_start_time STRING
+              >
             >
           >
       ) AS events,

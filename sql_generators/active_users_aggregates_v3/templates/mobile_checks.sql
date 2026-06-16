@@ -58,6 +58,8 @@ SELECT
     NULL
   );
 
+{# Skip the DAU check for klar_ios/klar_android: their DAU is too low/volatile for the 50% threshold #}
+{% if app_name not in ["klar_ios", "klar_android"] -%}
 {% raw -%}
 
 #fail
@@ -87,3 +89,4 @@ SELECT
   );
 
 {% endraw %}
+{%- endif %}

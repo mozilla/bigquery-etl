@@ -23,6 +23,8 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application, identifying the specific build associated with this client's histogram aggregates. May be '*'
+    when aggregated across all build IDs.
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -65,3 +67,5 @@ fields:
   mode: REPEATED
   name: histogram_aggregates
   type: RECORD
+  description: Array of per-client histogram aggregates, one entry per unique combination of metric, process, key, and histogram bucketing parameters.
+    Each entry contains the summed histogram across the rolling aggregation window.

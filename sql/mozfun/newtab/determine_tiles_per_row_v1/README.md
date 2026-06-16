@@ -7,7 +7,7 @@ based on the layout type and window width.
 
 | Parameter Name             | Type    | Description                                                                                                                                                                                                                                                                        |
 |---------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `layout_type`             | STRING  | The layout style of the Newtab page. Can be one of `SECTION_GRID`, `NEW_GRID`, or `OLD_GRID` and is computed using the UDF `determine_grid_layout`.<br/> [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF |
+| `layout_type`             | STRING  | The layout style of the Newtab page. Can be one of `NOVA`, `SECTION_GRID`, `NEW_GRID`, or `OLD_GRID` and is computed using the UDF `determine_grid_layout`.<br/> [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF |
 | `newtab_window_inner_width` | INTEGER | The width (in pixels) of the Firefox browser window. An attribute of the newtab `opened` event.                                                                                                                                                                                    |
 
 ## 📤 Output
@@ -35,7 +35,17 @@ based on the layout type and window width.
 | `1122 ≤ width < 1698` or layout is `OLD_GRID` | 3 |
 | `≥ 1698` and layout is `NEW_GRID` | 4              |
 
-> Note: `OLD_GRID` always returns 3 or fewer tiles regardless of width.
+### For layout type: `Nova`
+
+| `newtab_window_inner_width`        | Tiles per row |
+|-----------------------------------|----------------|
+| `< 1024`                           | 1              |
+| `1024≤ width < 1366`              | 2              |
+| `1366 ≤ width < 1920`             | 3              |
+| `1920 ≤ width < 2650`             | 4              |
+| `≥ 2650`                          | 6              |
+
+> Note: The largest bin does have room for 6 tiles, skipping width 5
 
 ## ✅ Example Usage
 

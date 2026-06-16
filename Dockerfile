@@ -9,9 +9,10 @@ WORKDIR /app
 # build typed-ast in separate stage because it requires gcc and libc-dev
 FROM base AS python-deps
 RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev
-COPY requirements.txt ./
+COPY requirements.txt requirements-private.txt* ./
 # use --no-deps to work around https://github.com/pypa/pip/issues/9644
-RUN pip install --no-deps -r requirements.txt
+RUN pip install --no-deps -r requirements.txt && \
+    if [ -f requirements-private.txt ]; then pip install --no-deps -r requirements-private.txt; fi
 
 FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 
@@ -21,6 +22,8 @@ RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy 
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=python-deps /usr/local /usr/local
+# some jobs require a browser to be installed
+RUN playwright install --with-deps firefox
 COPY .bigqueryrc /root/
 COPY . .
 RUN pip install .

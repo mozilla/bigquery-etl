@@ -20,17 +20,18 @@ No deep familiarity with the command line is required. The examples below can be
 
 ## Impersonating the shared sandbox service account
 
-A shared service account can be impersonated to run development work without holding broad
-production access directly. The service account is granted write access to the dev/sandbox
-projects and **read-only** access to production (so dev queries can still read prod sources),
-but **no** production write or deploy permissions — so nothing run through it can modify prod.
+A shared service account, `bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com`, can be
+impersonated to run development work without holding broad production access directly. It lives
+in the shared dev project `moz-fx-data-proto`, is granted write access there and **read-only**
+access to production (so dev queries can still read prod sources), but has **no** production
+write or deploy permissions — so nothing run through it can modify prod.
 
-To use it, after authenticating, point application-default credentials at the service account
-(ask a data platform admin for the exact address and to be granted
-`roles/iam.serviceAccountTokenCreator` on it):
+Members of the `dataplatform/developers` workgroup can impersonate it. After authenticating,
+point application-default credentials at it (ask a data platform admin to be granted
+`roles/iam.serviceAccountTokenCreator` on it if you aren't already in that workgroup):
 
 ```bash
-export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bqetl-dev-sandbox@<admin-project>.iam.gserviceaccount.com
+export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 ```
 
 `bqetl` picks this up automatically (it uses application-default credentials), so no extra flags

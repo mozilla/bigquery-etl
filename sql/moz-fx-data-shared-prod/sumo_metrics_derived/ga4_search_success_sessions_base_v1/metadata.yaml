@@ -1,0 +1,45 @@
+friendly_name: GA4 Search Success Sessions (Base)
+description: |
+  Session-level KB search success signals for Mozilla Support (SUMO), derived
+  from GA4 events.
+
+  Grain: Search session (user_pseudo_id x ga_session_id) x day
+
+  A search session is any GA4 session containing a `search` event. A search is
+  considered "successful" when the same session also views a KB article
+  (content_group = 'kb-article') AFTER a search event:
+  - is_successful_search: any KB view after a search in the session
+  - is_successful_search_1min / _2min: KB view within 60 / 120 seconds of the
+    closest preceding search event
+
+  search_locale is taken from the session's first search event.
+
+  Used by:
+  - sumo_search_success_kpis (daily search success rate + moving averages)
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  incremental: true
+  application: sumo
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: session_date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - mozdata.sumo_ga.ga4_events

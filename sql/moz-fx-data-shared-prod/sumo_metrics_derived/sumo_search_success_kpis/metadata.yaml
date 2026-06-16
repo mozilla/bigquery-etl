@@ -1,0 +1,16 @@
+friendly_name: SUMO KB Search Success Rate KPIs
+description: |
+  Daily knowledge base search success rate (SSR) KPIs for SUMO, broken down by search locale. SSR is the share of search sessions that go on to view a KB article; the `_1min` / `_2min` variants tighten that to KB views within 60 / 120 seconds of a search. Also exposes an overall (all-locale) day-level 14-day moving average and its 14-day-lagged comparison. Built on ga4_search_success_sessions_base_v1.
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  owner1: phlee
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.sumo_metrics_derived.ga4_search_success_sessions_base_v1

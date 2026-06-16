@@ -37,7 +37,7 @@ from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..schema import SCHEMA_FILE, Schema
 from ..view import View
 from . import extract_from_query_path
-from .common import get_bqetl_project_root
+from .common import get_bqetl_project_root, get_unimpersonated_credentials
 from .common import render as render_template
 
 VIEW_FILE = "view.sql"
@@ -288,13 +288,14 @@ def _get_git_context() -> dict:
 
 @cache
 def _get_gcloud_account() -> str:
-    """Return the active GCP account email from credentials, cached after first call.
+    """Return the human operator's GCP account email, cached after first call.
 
-    Returns an empty string if the account cannot be determined.
+    Resolved from un-impersonated credentials so dataset ownership and the
+    `account.username` template are attributed to the human, not an impersonated
+    service account. Returns an empty string if it can't be determined.
     """
     try:
-        client = bigquery.Client()
-        credentials = client._credentials
+        credentials = get_unimpersonated_credentials()
         if not credentials.valid:
             credentials.refresh(google.auth.transport.requests.Request())
         return (

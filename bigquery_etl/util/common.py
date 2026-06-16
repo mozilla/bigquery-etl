@@ -16,8 +16,11 @@ from typing import Callable, List, Optional, Set, Tuple
 from uuid import uuid4
 
 import click
+import google.auth
+import google.auth.transport.requests
 import sqlglot
 import yaml
+from google.auth import impersonated_credentials
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
@@ -505,6 +508,52 @@ def set_resolved_target_project(project_id: Optional[str]) -> None:
     """Record the resolved target project for the coding-agent gate."""
     global _resolved_target_project
     _resolved_target_project = project_id
+
+
+_CLOUD_PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
+
+
+def enable_impersonation(target_principal: str) -> None:
+    """Impersonate `target_principal` for all google-cloud clients in this process.
+
+    `google.auth.default()` (used by every `bigquery.Client()`) ignores the
+    gcloud `CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` env var, so we wrap it to
+    return impersonated credentials built from the caller's ADC.
+    """
+    current = google.auth.default
+    # Unwrap if already wrapped so re-targeting doesn't stack/recurse.
+    original = getattr(current, "_bqetl_original_default", current)
+
+    def _impersonated_default(scopes=None, request=None, **kwargs):
+        source_credentials, project_id = original()
+        # Refresh the source first: impersonated-credential refresh calls
+        # source._refresh_token(request), which breaks for user ADC (whose
+        # _refresh_token is the OAuth token *string*). Keeping the source valid
+        # skips that branch.
+        if not source_credentials.valid:
+            source_credentials.refresh(google.auth.transport.requests.Request())
+        creds = impersonated_credentials.Credentials(
+            source_credentials=source_credentials,
+            target_principal=target_principal,
+            target_scopes=list(scopes) if scopes else [_CLOUD_PLATFORM_SCOPE],
+        )
+        return creds, project_id
+
+    _impersonated_default._bqetl_original_default = original
+    google.auth.default = _impersonated_default
+
+
+def get_unimpersonated_credentials():
+    """Return the caller's own ADC, bypassing any active impersonation wrapper.
+
+    Use this to resolve the human operator's identity (e.g. for dataset
+    ownership) so it isn't attributed to an impersonated service account.
+    """
+    default = getattr(
+        google.auth.default, "_bqetl_original_default", google.auth.default
+    )
+    credentials, _ = default()
+    return credentials
 
 
 def is_dev_project(project_id: Optional[str]) -> bool:

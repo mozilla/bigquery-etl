@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import google.auth
 import pytest
 from click.testing import CliRunner
 
@@ -618,3 +619,38 @@ class TestCodingAgentGate:
             exit_if_running_under_coding_agent()
         assert exc.value.code == 1
         assert "must impersonate" in capsys.readouterr().err
+
+
+class _FakeSourceCreds:
+    # impersonated_credentials.Credentials reads universe_domain at construction;
+    # `valid` short-circuits the pre-refresh so no network call is made.
+    universe_domain = "googleapis.com"
+    valid = True
+
+
+class TestEnableImpersonation:
+    """`enable_impersonation` wraps google.auth.default so Python clients impersonate."""
+
+    def test_wraps_google_auth_default(self, monkeypatch):
+        from google.auth import impersonated_credentials
+
+        monkeypatch.setattr(
+            google.auth, "default", lambda *a, **k: (_FakeSourceCreds(), "proj")
+        )
+        common.enable_impersonation("sa@p.iam.gserviceaccount.com")
+        creds, project = google.auth.default(scopes=["scope-a"])
+        assert isinstance(creds, impersonated_credentials.Credentials)
+        assert creds._target_principal == "sa@p.iam.gserviceaccount.com"
+        assert creds._target_scopes == ["scope-a"]
+        assert project == "proj"
+
+    def test_retarget_does_not_stack(self, monkeypatch):
+        monkeypatch.setattr(
+            google.auth, "default", lambda *a, **k: (_FakeSourceCreds(), "proj")
+        )
+        common.enable_impersonation("first@p.iam.gserviceaccount.com")
+        common.enable_impersonation("second@p.iam.gserviceaccount.com")
+        creds, _ = google.auth.default()
+        assert creds._target_principal == "second@p.iam.gserviceaccount.com"
+        # Source stays the original ADC, not impersonated-of-impersonated.
+        assert isinstance(creds._source_credentials, _FakeSourceCreds)

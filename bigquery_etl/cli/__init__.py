@@ -33,7 +33,7 @@ from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
-from ..util.common import set_resolved_target_project
+from ..util.common import enable_impersonation, set_resolved_target_project
 from ..util.target import get_default_target_name, get_target
 
 
@@ -131,6 +131,7 @@ def cli(prog_name=None):
             if not target and not no_target:
                 target = get_default_target_name()
 
+            parsed_target = None
             if target:
                 parsed_target = get_target(target, run_id=run_id)
                 ctx.obj["target"] = parsed_target
@@ -139,10 +140,16 @@ def cli(prog_name=None):
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
-                # Impersonate the target's SA automatically; an explicit env var wins.
-                sa = parsed_target.impersonate_service_account
-                if not no_impersonate and sa and not os.environ.get(env_var):
+
+            # Impersonate the target's SA (explicit env var wins): env var for
+            # `bq`/`gcloud` shell-outs, enable_impersonation for Python clients.
+            if not no_impersonate:
+                sa = os.environ.get(env_var) or (
+                    parsed_target.impersonate_service_account if parsed_target else None
+                )
+                if sa:
                     os.environ[env_var] = sa
+                    enable_impersonation(sa)
                     click.echo(f"ℹ️  Impersonating service account: {sa}")
         except Exception as e:
             raise click.ClickException(f"Failed to load target '{target}': {e}")

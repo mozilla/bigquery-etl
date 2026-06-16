@@ -491,7 +491,6 @@ def is_running_under_coding_agent():
 # production write access, this guarantees agent runs can't modify prod.
 # Strict allow-list (not a prod denylist): new dev projects must be added here.
 DEV_PROJECT_ALLOWLIST = ("moz-fx-data-proto",)
-DEV_PROJECT_PREFIXES = ("dev-sandbox-",)
 
 # Set from the CLI group callback once the `--target` (or BQETL_TARGET /
 # default_target) has been resolved, so the coding-agent gate can tell whether
@@ -509,9 +508,7 @@ def is_dev_project(project_id: Optional[str]) -> bool:
     """Return whether `project_id` is an allow-listed non-prod dev/sandbox project."""
     if not project_id:
         return False
-    return project_id in DEV_PROJECT_ALLOWLIST or project_id.startswith(
-        DEV_PROJECT_PREFIXES
-    )
+    return project_id in DEV_PROJECT_ALLOWLIST
 
 
 def exit_if_running_under_coding_agent():
@@ -533,9 +530,9 @@ def exit_if_running_under_coding_agent():
     )
     click.echo(
         "Coding agents may only run this command against a non-prod --target "
-        f"(one of {DEV_PROJECT_ALLOWLIST} or '{DEV_PROJECT_PREFIXES[0]}*'); "
-        f"got {target_desc}. Set --target / BQETL_TARGET / default_target to a "
-        "dev project (and impersonate the sandbox service account).",
+        f"(one of {DEV_PROJECT_ALLOWLIST}); got {target_desc}. Set --target / "
+        "BQETL_TARGET / default_target to a dev project (and impersonate the "
+        "sandbox service account).",
         err=True,
     )
     sys.exit(1)

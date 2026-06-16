@@ -16,7 +16,7 @@ No deep familiarity with the command line is required. The examples below can be
 ## Prerequisites
 
 - Authenticated to GCP: `gcloud auth application-default login`
-- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or the shared dev project `moz-fx-data-proto`
+- Access to a personal sandbox project (e.g., `my-sandbox-project`) or the shared dev project `moz-fx-data-proto`
 
 ## Impersonating the shared sandbox service account
 
@@ -46,14 +46,14 @@ Configure a target in `./bqetl_targets.yaml`. When running commands from `privat
 **Per-source-dataset deployment** (one target dataset per source dataset, keeps datasets separate):
 ```yaml
 dev:
-  project_id: dev-sandbox-user
+  project_id: my-sandbox-project
   dataset_prefix: user_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}
 ```
 
 **Single-dataset deployment** (all artifacts land in one dataset, use `artifact_prefix` to avoid name collisions):
 ```yaml
 dev:
-  project_id: dev-sandbox-user
+  project_id: my-sandbox-project
   dataset: anna_dev
   artifact_prefix: "{{ git.branch }}_{{ git.commit }}_"
 ```
@@ -81,7 +81,7 @@ To avoid passing `--target` on every invocation, set a default using one of thes
    default_target: dev
 
    dev:
-     project_id: dev-sandbox-user
+     project_id: my-sandbox-project
      dataset: anna_dev
    ```
 
@@ -94,9 +94,9 @@ Use `--target dev` to run and deploy artifacts to the dev environment:
 
 What happens automatically:
 
-1. Copies to `sql/dev-sandbox-user/user_<branch>_<commit>_moz_fx_data_shared_prod_telemetry_derived/clients_daily_v6/`
+1. Copies to `sql/my-sandbox-project/user_<branch>_<commit>_moz_fx_data_shared_prod_telemetry_derived/clients_daily_v6/`
 2. Rewrites references if `--defer-to-target` is specified (deployed tables → dev, others → prod)
-3. Deploys schema to `dev-sandbox-user.user_<branch>_<commit>_..._telemetry_derived.clients_daily_v6`
+3. Deploys schema to `my-sandbox-project.user_<branch>_<commit>_..._telemetry_derived.clients_daily_v6`
 4. Runs query and populates data
 
 Generated target directories are already covered by `.gitignore`. If your dev project path isn't excluded by the standard patterns, add it to `.git/info/exclude` (a local, untracked gitignore) rather than modifying `.gitignore`.

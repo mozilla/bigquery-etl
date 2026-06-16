@@ -678,6 +678,7 @@ SELECT
       JSON_VALUE(event_extra.prompt_enabled) AS `prompt_enabled`,
       JSON_VALUE(event_extra.prompt_type) AS `prompt_type`,
       JSON_VALUE(event_extra.prompt_version) AS `prompt_version`,
+      JSON_VALUE(event_extra.protocol) AS `protocol`,
       JSON_VALUE(event_extra.provider) AS `provider`,
       JSON_VALUE(event_extra.provider_id) AS `provider_id`,
       JSON_VALUE(event_extra.provider_key) AS `provider_key`,

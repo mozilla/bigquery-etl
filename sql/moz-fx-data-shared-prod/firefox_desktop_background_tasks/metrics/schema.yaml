@@ -960,6 +960,20 @@ fields:
         undocumented IOpenWithLauncher API for pdfs.
 
         '
+    - name: browser_set_default_protocol_handler_modern_settings_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Result of each attempt to set the default protocol handler by
+        opening modern settings through the ms-settings protocol (ms-settings:defaultapps).
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

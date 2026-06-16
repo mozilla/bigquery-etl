@@ -62,6 +62,12 @@ are permitted **only** when scoped to an allow-listed non-prod `--target`
 service account — so `--no-impersonate` (or a missing SA) disables them for agents. The service
 account's IAM is the backstop that prevents any production writes regardless.
 
+The shared service account is only needed for the shared dev project. If you work in a **personal
+sandbox project** you own, you can skip impersonation and instead grant the needed permissions
+(e.g. `roles/bigquery.user`, `roles/aiplatform.user`) directly to your own account — or to a
+service account in that project — as needed. Run without `impersonate_service_account` set (or
+with `--no-impersonate`) to use your own credentials.
+
 ## Target-Based Development
 
 Configure a target in `./bqetl_targets.yaml`. When running commands from `private-bigquery-etl`, targets are still read from `bigquery-etl/bqetl_targets.yaml`.

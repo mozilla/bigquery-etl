@@ -520,10 +520,15 @@ def exit_if_running_under_coding_agent():
     Coding agents may run otherwise-blocked commands only when both hold:
     the invocation is scoped to an allow-listed non-prod `--target` (managed in
     `bqetl_project.yaml`, see `get_dev_project_allowlist`), and a service account
-    is being impersonated (`CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` set). The
-    allow-list redirects writes to a dev project; impersonation ensures those
-    writes use a SA without production access. Bare invocations, ones targeting
-    production, or ones with `--no-impersonate` are refused.
+    is being impersonated (`CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` set).
+
+    IMPORTANT: these checks are advisory guardrails, NOT the write boundary.
+    They only inspect the resolved `--target`, but `deploy` / `query backfill`
+    write to the `--project-id` / `--project_ids` they're invoked with, which
+    can differ from the target (e.g. `--target dev --project-id <prod>`). The
+    actual enforcement is the impersonated SA's IAM: it has no production write
+    access, so writes elsewhere fail regardless of these checks. Don't extend
+    trust to the project allow-list beyond "nudge agents toward a dev target".
     """
     if not is_running_under_coding_agent():
         return
@@ -534,17 +539,20 @@ def exit_if_running_under_coding_agent():
             else "no target"
         )
         click.echo(
-            "Coding agents may only run this command against a non-prod --target "
-            f"(one of {get_dev_project_allowlist()}); got {target_desc}. Set "
-            "--target / BQETL_TARGET / default_target to a dev project.",
+            "Coding agents must scope this command to a non-prod --target "
+            f"(one of {', '.join(get_dev_project_allowlist())}); got {target_desc}. "
+            "Set --target / BQETL_TARGET / default_target to a dev project. (Note: "
+            "this checks only --target, not --project-id; the impersonated SA's "
+            "IAM is what actually prevents production writes.)",
             err=True,
         )
         sys.exit(1)
     if not os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"):
         click.echo(
             "Coding agents must impersonate the sandbox service account to run "
-            "this command. Set `impersonate_service_account` on the target (and "
-            "don't pass --no-impersonate).",
+            "this command (its IAM is what prevents production writes). Set "
+            "`impersonate_service_account` on the target (and don't pass "
+            "--no-impersonate).",
             err=True,
         )
         sys.exit(1)

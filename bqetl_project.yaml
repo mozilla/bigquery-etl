@@ -21,7 +21,9 @@ default:
   public_project: mozilla-public-data
 
 coding_agents:
-  # Projects coding agents may run/deploy/backfill against via --target.
+  # Non-prod projects coding agents may set as --target. Advisory guardrail only
+  # (not checked against --project-id); the impersonated SA's IAM is the real
+  # write boundary. See exit_if_running_under_coding_agent in util/common.py.
   dev_project_allowlist:
   - moz-fx-data-proto
 

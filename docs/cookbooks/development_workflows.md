@@ -26,19 +26,33 @@ in the shared dev project `moz-fx-data-proto`, is granted write access there and
 access to production (so dev queries can still read prod sources), but has **no** production
 write or deploy permissions — so nothing run through it can modify prod.
 
-Members of the `dataplatform/developers` workgroup can impersonate it. After authenticating,
-point application-default credentials at it (ask a data platform admin to be granted
-`roles/iam.serviceAccountTokenCreator` on it if you aren't already in that workgroup):
+Members of the `dataplatform/developers` workgroup can impersonate it (ask a data platform admin
+to be granted `roles/iam.serviceAccountTokenCreator` on it if you aren't already in that
+workgroup).
+
+The easiest way to use it is to set `impersonate_service_account` on your target in
+`bqetl_targets.yaml` — `bqetl` then impersonates it automatically for every command run against
+that target, with no manual `export` needed:
+
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  dataset: '{{ account.username }}_{{ git.branch }}'
+  impersonate_service_account: bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+```
+
+Alternatively, point application-default credentials at it directly via the environment (an
+explicit env var takes precedence over the target config):
 
 ```bash
 export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 ```
 
-`bqetl` picks this up automatically (it uses application-default credentials), so no extra flags
-are needed. This is also what makes it safe for coding agents to run, deploy, and backfill: those
-commands are permitted only against an allow-listed non-prod `--target`
-(`DEV_PROJECT_ALLOWLIST` in `bigquery_etl/util/common.py`), and the service account's IAM is the
-backstop that prevents any production writes regardless.
+Either way `bqetl` uses application-default credentials, so no extra flags are needed. This is also
+what makes it safe for coding agents to run, deploy, and backfill: those commands are permitted
+only against an allow-listed non-prod `--target` (`DEV_PROJECT_ALLOWLIST` in
+`bigquery_etl/util/common.py`), and the service account's IAM is the backstop that prevents any
+production writes regardless.
 
 ## Target-Based Development
 

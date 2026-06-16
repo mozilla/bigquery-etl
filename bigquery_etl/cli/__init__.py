@@ -125,6 +125,16 @@ def cli(prog_name=None):
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
+                # Impersonate the target's service account for all downstream GCP
+                # calls so users don't have to export this by hand. google.auth
+                # picks the env var up automatically. An explicit env var (or a
+                # gcloud --impersonate-service-account) still wins.
+                sa = parsed_target.impersonate_service_account
+                if sa and not os.environ.get(
+                    "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+                ):
+                    os.environ["CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"] = sa
+                    click.echo(f"ℹ️  Impersonating service account: {sa}")
         except Exception as e:
             raise click.ClickException(f"Failed to load target '{target}': {e}")
 

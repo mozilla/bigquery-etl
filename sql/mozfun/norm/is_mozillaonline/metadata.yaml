@@ -5,9 +5,12 @@ description: |
   on distribution_id and app_version.
 
   A client is considered MozillaOnline if distribution_id is 'MozillaOnline'
-  (case-insensitive) and app_version is prior to 151.0.3, which is when the
-  MozillaOnline migration shipped (June 2, 2026). Users on 151.0.3+ are
-  post-migration canonical Firefox users and return FALSE.
+  (case-insensitive) and app_version is below the migration threshold for
+  its channel. Migration thresholds: release 151.0.3 (June 2, 2026),
+  ESR 140: 140.12.0 (June 16, 2026), ESR 115: 115.37.0 (June 16, 2026).
+  Users at or above these versions are post-migration canonical Firefox
+  users and return FALSE. Release and ESR versions are disambiguated by
+  minor version (release never exceeded 140.0.4 or 115.0.3).
 
   Returns FALSE if distribution_id or app_version is NULL or if distribution_id
   is not 'MozillaOnline'. Returns TRUE if distribution_id is 'MozillaOnline'

@@ -485,17 +485,20 @@ def is_running_under_coding_agent():
     )
 
 
-# Projects coding agents are allowed to operate against. Operating against any
-# of these via `--target` is considered safe because they hold no production
-# data; combined with impersonating a sandbox service account that lacks
-# production write access, this guarantees agent runs can't modify prod.
-# Strict allow-list (not a prod denylist): new dev projects must be added here.
-DEV_PROJECT_ALLOWLIST = ("moz-fx-data-proto",)
-
 # Set from the CLI group callback once the `--target` (or BQETL_TARGET /
 # default_target) has been resolved, so the coding-agent gate can tell whether
 # the current invocation is scoped to a non-prod target.
 _resolved_target_project: Optional[str] = None
+
+
+def get_dev_project_allowlist() -> Tuple[str, ...]:
+    """Non-prod projects coding agents may target, from `bqetl_project.yaml`.
+
+    Strict allow-list; defaults to empty (deny) if unset.
+    """
+    return tuple(
+        ConfigLoader.get("coding_agents", "dev_project_allowlist", fallback=[])
+    )
 
 
 def set_resolved_target_project(project_id: Optional[str]) -> None:
@@ -508,34 +511,43 @@ def is_dev_project(project_id: Optional[str]) -> bool:
     """Return whether `project_id` is an allow-listed non-prod dev/sandbox project."""
     if not project_id:
         return False
-    return project_id in DEV_PROJECT_ALLOWLIST
+    return project_id in get_dev_project_allowlist()
 
 
 def exit_if_running_under_coding_agent():
-    """Exit if a coding agent runs a blocked command outside a dev target.
+    """Exit if a coding agent runs a blocked command unsafely.
 
-    Coding agents may run otherwise-blocked commands only when the invocation
-    is scoped to an allow-listed non-prod `--target` (see
-    `DEV_PROJECT_ALLOWLIST`). Bare invocations, or ones targeting production,
-    are refused so agents can't run/deploy/backfill against prod.
+    Coding agents may run otherwise-blocked commands only when both hold:
+    the invocation is scoped to an allow-listed non-prod `--target` (managed in
+    `bqetl_project.yaml`, see `get_dev_project_allowlist`), and a service account
+    is being impersonated (`CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` set). The
+    allow-list redirects writes to a dev project; impersonation ensures those
+    writes use a SA without production access. Bare invocations, ones targeting
+    production, or ones with `--no-impersonate` are refused.
     """
     if not is_running_under_coding_agent():
         return
-    if is_dev_project(_resolved_target_project):
-        return
-    target_desc = (
-        f"target project '{_resolved_target_project}'"
-        if _resolved_target_project
-        else "no target"
-    )
-    click.echo(
-        "Coding agents may only run this command against a non-prod --target "
-        f"(one of {DEV_PROJECT_ALLOWLIST}); got {target_desc}. Set --target / "
-        "BQETL_TARGET / default_target to a dev project (and impersonate the "
-        "sandbox service account).",
-        err=True,
-    )
-    sys.exit(1)
+    if not is_dev_project(_resolved_target_project):
+        target_desc = (
+            f"target project '{_resolved_target_project}'"
+            if _resolved_target_project
+            else "no target"
+        )
+        click.echo(
+            "Coding agents may only run this command against a non-prod --target "
+            f"(one of {get_dev_project_allowlist()}); got {target_desc}. Set "
+            "--target / BQETL_TARGET / default_target to a dev project.",
+            err=True,
+        )
+        sys.exit(1)
+    if not os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"):
+        click.echo(
+            "Coding agents must impersonate the sandbox service account to run "
+            "this command. Set `impersonate_service_account` on the target (and "
+            "don't pass --no-impersonate).",
+            err=True,
+        )
+        sys.exit(1)
 
 
 def block_coding_agents(function: Callable) -> Callable:

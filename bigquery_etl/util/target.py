@@ -108,10 +108,8 @@ class Target:
     # When True, --target deploys copy and rename SQL tests under tests/sql/
     # to match target paths so pytest can run against staged artifacts.
     rewrite_tests: bool = attr.ib(default=False)
-    # Service account to impersonate for all GCP calls made while this target is
-    # active. When set, bqetl exports CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT
-    # automatically (see bigquery_etl/cli/__init__.py) so users don't have to set
-    # it by hand. Application-default credentials must hold
+    # SA to impersonate while this target is active; bqetl sets
+    # CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT automatically. ADC must hold
     # roles/iam.serviceAccountTokenCreator on it.
     impersonate_service_account: Optional[str] = attr.ib(default=None)
 

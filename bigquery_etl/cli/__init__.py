@@ -88,6 +88,14 @@ def cli(prog_name=None):
         help="Disable the default target, ignoring BQETL_TARGET and default_target in bqetl_targets.yaml.",
     )
     @click.option(
+        "--no-impersonate",
+        "--no_impersonate",
+        is_flag=True,
+        default=False,
+        help="Run with your own credentials instead of impersonating the target's "
+        "service account. Not available to coding agents for write/deploy/backfill.",
+    )
+    @click.option(
         "--run-id",
         "--run_id",
         "run_id",
@@ -97,7 +105,7 @@ def cli(prog_name=None):
         "(e.g. concurrent CI runs). Defaults to $BQETL_RUN_ID if set.",
     )
     @click.pass_context
-    def group(ctx, log_level, target, no_target, run_id):
+    def group(ctx, log_level, target, no_target, no_impersonate, run_id):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
 
@@ -112,6 +120,13 @@ def cli(prog_name=None):
         ctx.obj["target"] = None
         ctx.obj["run_id"] = run_id
 
+        # --no-impersonate opts out for this process, even if the env var was
+        # exported externally. The agent gate refuses write/deploy/backfill
+        # without impersonation.
+        env_var = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+        if no_impersonate:
+            os.environ.pop(env_var, None)
+
         try:
             if not target and not no_target:
                 target = get_default_target_name()
@@ -119,21 +134,15 @@ def cli(prog_name=None):
             if target:
                 parsed_target = get_target(target, run_id=run_id)
                 ctx.obj["target"] = parsed_target
-                # Let the coding-agent gate see which project this invocation
-                # is scoped to, so agents may run against dev/sandbox targets.
+                # Expose the target project to the coding-agent gate.
                 set_resolved_target_project(parsed_target.project_id)
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
-                # Impersonate the target's service account for all downstream GCP
-                # calls so users don't have to export this by hand. google.auth
-                # picks the env var up automatically. An explicit env var (or a
-                # gcloud --impersonate-service-account) still wins.
+                # Impersonate the target's SA automatically; an explicit env var wins.
                 sa = parsed_target.impersonate_service_account
-                if sa and not os.environ.get(
-                    "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
-                ):
-                    os.environ["CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"] = sa
+                if not no_impersonate and sa and not os.environ.get(env_var):
+                    os.environ[env_var] = sa
                     click.echo(f"ℹ️  Impersonating service account: {sa}")
         except Exception as e:
             raise click.ClickException(f"Failed to load target '{target}': {e}")

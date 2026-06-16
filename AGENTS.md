@@ -29,7 +29,7 @@ Generate SQL files with `./bqetl generate`. When running locally, add `--output_
 ### Development Environment (Targets)
 A target-based dev environment lets queries run against real data in a non-production project before a PR is opened. It is configured in `bqetl_targets.yaml` (see `bqetl_targets.yaml.example`), where a `default_target` avoids passing `--target` on every command. See `docs/cookbooks/development_workflows.md` for the full workflow.
 
-**For coding agents:** running, deploying, and backfilling (`query run`, `deploy`, `query backfill`, etc.) are allowed **only** when scoped to a non-prod `--target` (an allow-listed dev/sandbox project such as `moz-fx-data-proto`; see `DEV_PROJECT_ALLOWLIST` in `bigquery_etl/util/common.py`). Without a target — or against a production target — these commands are refused. This pairs with impersonating a sandbox service account that has no production write access, so agent runs cannot modify prod.
+**For coding agents:** running, deploying, and backfilling (`query run`, `deploy`, `query backfill`, etc.) are allowed **only** when both: (1) scoped to a non-prod `--target` whose project is allow-listed (`coding_agents.dev_project_allowlist` in `bqetl_project.yaml`, e.g. `moz-fx-data-proto`), and (2) impersonating the target's sandbox service account (which has no production write access). Without a target, against a production target, or with `--no-impersonate`, these commands are refused — so agent runs cannot modify prod.
 
 Set a `default_target` in `bqetl_targets.yaml` (or pass `--target dev`) so these commands run against the dev environment, e.g.:
 

@@ -48,11 +48,19 @@ explicit env var takes precedence over the target config):
 export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 ```
 
+To run a single command with your own credentials instead — e.g. when the sandbox SA lacks access
+you personally have — pass `--no-impersonate`:
+
+```bash
+./bqetl --target dev --no-impersonate query run <dataset>.<table> --write
+```
+
 Either way `bqetl` uses application-default credentials, so no extra flags are needed. This is also
-what makes it safe for coding agents to run, deploy, and backfill: those commands are permitted
-only against an allow-listed non-prod `--target` (`DEV_PROJECT_ALLOWLIST` in
-`bigquery_etl/util/common.py`), and the service account's IAM is the backstop that prevents any
-production writes regardless.
+what makes it safe for coding agents to run, deploy, and backfill: for an agent those commands
+are permitted **only** when scoped to an allow-listed non-prod `--target`
+(`coding_agents.dev_project_allowlist` in `bqetl_project.yaml`) **and** impersonating the sandbox
+service account — so `--no-impersonate` (or a missing SA) disables them for agents. The service
+account's IAM is the backstop that prevents any production writes regardless.
 
 ## Target-Based Development
 

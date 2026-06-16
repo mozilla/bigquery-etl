@@ -20,6 +20,11 @@ default:
   - moz-fx-glam-prod
   public_project: mozilla-public-data
 
+coding_agents:
+  # Projects coding agents may run/deploy/backfill against via --target.
+  dev_project_allowlist:
+  - moz-fx-data-proto
+
 monitoring:
   bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection

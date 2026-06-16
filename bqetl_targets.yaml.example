@@ -8,9 +8,7 @@ shared_dev:
   project_id: moz-fx-data-proto
   dataset: '{{ account.username }}_{{ git.branch }}'
   artifact_prefix: '{{ artifact.project_id }}__{{ artifact.dataset_id }}__'
-  # Impersonate the shared sandbox SA automatically (no manual CLOUDSDK_AUTH_
-  # IMPERSONATE_SERVICE_ACCOUNT export needed). Your application-default
-  # credentials must hold roles/iam.serviceAccountTokenCreator on it.
+  # Auto-impersonate the sandbox SA (no manual export); ADC needs tokenCreator on it.
   impersonate_service_account: bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 
 dev:

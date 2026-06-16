@@ -54,6 +54,7 @@ def get_distribution_metrics(
         "custom_distribution",
         "labeled_timing_distribution",
         "labeled_custom_distribution",
+        "labeled_memory_distribution",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")

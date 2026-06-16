@@ -20,7 +20,7 @@ No deep familiarity with the command line is required. The examples below can be
 
 ## Impersonating the shared sandbox service account
 
-A shared service account, `bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com`, can be
+A shared service account, `bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com`, can be
 impersonated to run development work without holding broad production access directly. It lives
 in the shared dev project `moz-fx-data-proto`, is granted write access there and **read-only**
 access to production (so dev queries can still read prod sources), but has **no** production
@@ -38,14 +38,14 @@ that target, with no manual `export` needed:
 dev:
   project_id: moz-fx-data-proto
   dataset: '{{ account.username }}_{{ git.branch }}'
-  impersonate_service_account: bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+  impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 ```
 
 Alternatively, point application-default credentials at it directly via the environment (an
 explicit env var takes precedence over the target config):
 
 ```bash
-export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 ```
 
 To run a single command with your own credentials instead — e.g. when the sandbox SA lacks access

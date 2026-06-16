@@ -1,7 +1,7 @@
 # target_name:
 #   project_id: moz-fx-data-proto # or personal sandbox
 #   dataset_prefix: 'dev_{{ account.username }}_{{ git.branch }}_{{ git.commit }}_'  # optional prefix
-#   impersonate_service_account: bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com  # optional
+#   impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com  # optional
 # Supported variables:  account.username, artifact.project_id, artifact.dataset_id, git.branch, git.commit
 
 shared_dev:
@@ -9,7 +9,7 @@ shared_dev:
   dataset: '{{ account.username }}_{{ git.branch }}'
   artifact_prefix: '{{ artifact.project_id }}__{{ artifact.dataset_id }}__'
   # Auto-impersonate the sandbox SA (no manual export); ADC needs tokenCreator on it.
-  impersonate_service_account: bqetl-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+  impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
 
 dev:
   project_id: your-sandbox-project  # TODO: specify your personal sandbox project

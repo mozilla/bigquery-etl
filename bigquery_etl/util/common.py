@@ -539,8 +539,10 @@ def enable_impersonation(target_principal: str) -> None:
         )
         return creds, project_id
 
-    _impersonated_default._bqetl_original_default = original
-    google.auth.default = _impersonated_default
+    # setattr/getattr (not typed attribute access) since we're monkeypatching a
+    # third-party function and stashing the original on the wrapper.
+    setattr(_impersonated_default, "_bqetl_original_default", original)
+    setattr(google.auth, "default", _impersonated_default)
 
 
 def get_unimpersonated_credentials():

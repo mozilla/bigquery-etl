@@ -38,7 +38,9 @@ search_sessions AS (
   SELECT
     user_pseudo_id,
     ga_session_id,
-    ARRAY_AGG(search_locale ORDER BY event_timestamp LIMIT 1)[OFFSET(0)] AS search_locale
+    ARRAY_AGG(search_locale IGNORE NULLS ORDER BY event_timestamp LIMIT 1)[
+      SAFE_OFFSET(0)
+    ] AS search_locale
   FROM
     search_events
   WHERE

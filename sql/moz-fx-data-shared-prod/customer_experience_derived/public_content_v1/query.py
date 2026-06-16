@@ -30,9 +30,8 @@ class URL_SETTINGS(Enum):
     PAGE_SIZE = 25
     MAX_POSTS = 1000
     HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:153.0) Gecko/20100101 Firefox/153.0",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
+        "User-Agent": "mozilla-firefox-community-ingestion/1.0",
+        "Accept": "application/json, text/plain, */*",
     }
     SCHEMA_PATH = THIS_PATH.parent / "schema.yaml"
 

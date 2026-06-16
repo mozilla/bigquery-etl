@@ -1,0 +1,158 @@
+fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+    description: Unique identifier for the post.
+  - name: title
+    type: STRING
+    mode: NULLABLE
+    description: Title of the post.
+  - name: selftext
+    type: STRING
+    mode: NULLABLE
+    description: Body text of the post (for text posts).
+  - name: subreddit
+    type: STRING
+    mode: NULLABLE
+    description: Name of the subreddit the post was submitted to.
+  - name: subreddit_type
+    type: STRING
+    mode: NULLABLE
+    description: Type of subreddit (e.g. public, private, restricted).
+  - name: subreddit_subscribers
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of subscribers to the subreddit at time of fetch.
+  - name: score
+    type: INTEGER
+    mode: NULLABLE
+    description: Net score of the post (upvotes minus downvotes).
+  - name: upvote_ratio
+    type: FLOAT
+    mode: NULLABLE
+    description: Ratio of upvotes to total votes.
+  - name: ups
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of upvotes.
+  - name: downs
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of downvotes.
+  - name: num_comments
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of comments on the post.
+  - name: num_crossposts
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of times the post has been crossposted.
+  - name: total_awards_received
+    type: INTEGER
+    mode: NULLABLE
+    description: Total number of awards received by the post. Most likely NULL as Reddit has deprecated awards.
+  - name: url
+    type: STRING
+    mode: NULLABLE
+    description: URL the post links to, or the post URL if self post.
+  - name: permalink
+    type: STRING
+    mode: NULLABLE
+    description: Relative permalink to the post on Reddit.
+  - name: domain
+    type: STRING
+    mode: NULLABLE
+    description: Domain of the linked URL (e.g. self.firefox for text posts).
+  - name: is_self
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is a self/text post.
+  - name: is_video
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post contains a Reddit-hosted video.
+  - name: is_original_content
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is marked as original content.
+  - name: stickied
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is stickied in the subreddit.
+  - name: pinned
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is pinned.
+  - name: locked
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is locked for comments.
+  - name: over_18
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is marked as NSFW.
+  - name: spoiler
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is marked as a spoiler.
+  - name: hidden
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is hidden.
+  - name: archived
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the post is archived and no longer accepts votes or comments.
+  - name: link_flair_text
+    type: STRING
+    mode: NULLABLE
+    description: Text of the link flair assigned to the post. Useful for product feature categorisation.
+  - name: link_flair_type
+    type: STRING
+    mode: NULLABLE
+    description: Type of the link flair (text or richtext).
+  - name: distinguished
+    type: STRING
+    mode: NULLABLE
+    description: Whether the post is distinguished (e.g. moderator, admin). Useful for identifying official Mozilla posts.
+  - name: suggested_sort
+    type: STRING
+    mode: NULLABLE
+    description: Suggested comment sort order for the post.
+  - name: created_utc
+    type: FLOAT
+    mode: NULLABLE
+    description: Unix timestamp of when the post was created (UTC).
+  - name: creation_date
+    type: DATE
+    mode: NULLABLE
+    description: Date when the post was created (UTC), derived from created_utc. Used as the BigQuery partition key.
+  - name: edited
+    type: FLOAT
+    mode: NULLABLE
+    description: Unix timestamp of when the post was last edited, or null if not edited.
+  - name: view_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of views on the post. Most likely NULL as Reddit has deprecated this field.
+  - name: num_reports
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of reports on the post. Most likely NULL for unauthenticated requests.
+  - name: report_reasons
+    type: STRING
+    mode: NULLABLE
+    description: Reasons the post has been reported. Most likely NULL for unauthenticated requests.
+  - name: source
+    type: STRING
+    mode: NULLABLE
+    description: Source platform the data was fetched from (e.g. reddit, x, facebook).
+  - name: metadata
+    type: RECORD
+    mode: NULLABLE
+    description: Technical metadata about the ingestion pipeline, including ingestion timestamp and partition date.
+    fields:
+      - name: analysis_timestamp
+        type: TIMESTAMP
+        mode: NULLABLE
+        description: UTC timestamp of when the row was ingested by the pipeline.

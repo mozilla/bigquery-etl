@@ -1,0 +1,16 @@
+friendly_name: Public Content
+description: |-
+  Content retrieved from public posts available in diferent platforms, initially Reddit.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_tables
+bigquery:
+  time_partitioning:
+    type: day
+    field: creation_date
+    require_partition_filter: false
+require_column_descriptions: true

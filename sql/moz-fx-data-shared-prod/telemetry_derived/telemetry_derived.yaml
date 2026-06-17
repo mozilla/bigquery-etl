@@ -945,3 +945,194 @@ fields:
 - name: event_map_values_key
   description: The key component of a key-value pair within the event_map_values array, identifying a specific metadata attribute associated with
     a telemetry event (e.g., 'source', 'trigger', 'networkID'). Keys are used to look up corresponding values in the event's extra metadata.
+- name: event_map_values_value
+  description: The value component of a key-value pair within an event's map of extra attributes. Common values include boolean strings (e.g.
+    'false'), numeric strings, 'unavailable', or empty strings, depending on the attribute being recorded.
+- name: event_method
+  description: The method or action that triggered the event, describing what occurred (e.g. 'detected', 'submitted', 'show'). This categorizes
+    the type of interaction or lifecycle step associated with the event.
+  type: STRING
+- name: event_object
+  description: The UI element or component that was the target of the event (e.g. 'address_form', 'cc_form_v2', 'capture_doorhanger'). This identifies
+    which part of the product the event is associated with.
+  type: STRING
+- name: event_process
+  description: The Firefox process type in which the event was recorded (e.g. 'parent', 'content', 'extension', 'dynamic'). This indicates the
+    browser process context from which the event originated.
+  type: STRING
+- name: event_properties
+  description: An array of structured key-value properties associated with an event, where each value may itself be an array of sub-properties
+    with an ordering index. This captures additional metadata dimensions attached to a single event record.
+  type: RECORD
+- name: event_properties_index
+  description: The positional index of a property entry within the event_properties array, used to preserve or reconstruct ordering of nested
+    property items. Values start at 1 and increase sequentially.
+- name: event_properties_key
+  description: The key name of a property within the event_properties array, identifying the dimension or attribute being described (e.g. 'os',
+    'source', 'session_id', 'reason'). Each key is paired with a corresponding value in the same property struct.
+- name: event_string_value
+  description: An optional free-text string value associated with an event, providing additional context such as an error code or identifier (e.g.
+    'SSL_ERROR_BAD_CERT_DOMAIN'). This field may be null or contain the literal string 'null' when no value is applicable.
+  type: STRING
+- name: event_timestamp
+  description: The time offset in milliseconds from the start of the browser session at which the event occurred. This is a relative timestamp,
+    not an absolute wall-clock time.
+  type: INT64
+- name: events
+  description: A serialized or structured representation of one or more browser events recorded in the telemetry payload. This field serves as
+    a container for event data associated with a given submission.
+- name: experiment
+  description: The slug or identifier of a Nimbus or Normandy experiment the client was enrolled in at the time of the ping. This field is null
+    when the client was not enrolled in any experiment.
+  type: STRING
+- name: experiment_branch
+  description: The branch of an experiment that the client was assigned to (e.g. 'control', 'treatment'). This identifies which variant of the
+    experiment the client experienced.
+  type: STRING
+- name: experiment_id
+  description: The unique identifier for a specific experiment or study the client participated in (e.g. 'daily-briefing-v1', 'e10sCohort'). This
+    is used to join enrollment data across tables.
+  type: STRING
+- name: experiments
+  description: An array of key-value pairs representing all active experiment enrollments for the client at the time of the ping, where the key
+    is the experiment slug and the value is the assigned branch. This captures the full set of concurrent experiment enrollments.
+- name: experiments_key
+  description: The slug or unique identifier of an experiment the client is enrolled in, used as the key in the experiments map (e.g. 'fx-accounts-ping-release-rollout-2').
+    This corresponds to the experiment's canonical name in Nimbus or Normandy.
+- name: experiments_key_value
+  description: A nested array of key-value pairs associated with an experiment entry, capturing additional structured metadata beyond the branch
+    assignment. This may be empty when no extra metadata is available.
+- name: experiments_value
+  description: The branch name assigned to the client for a given experiment enrollment (e.g. 'control', 'treatment-a', 'rollout-branch'). This
+    is the value component of the experiments map keyed by experiment slug.
+- name: experiments_value_branch
+  description: The branch of an experiment that the client was assigned to, stored as a nested field within the experiments value struct (e.g.
+    'control', 'treatment-a', 'rollout-branch'). This is the primary field used to segment clients by experimental condition.
+- name: experiments_value_enrollment_id
+  description: A unique identifier for the client's specific enrollment instance in an experiment, allowing individual enrollment events to be
+    tracked. This field is null for the vast majority of records and '__NO_ENROLLMENT_ID__' when an enrollment ID was expected but not available.
+- name: experiments_value_extra_enrollment_id
+  description: An additional enrollment ID associated with an experiment entry, capturing a secondary or supplementary enrollment identifier for
+    the client. This field is almost always null and is populated only for a small subset of enrollments.
+- name: experiments_value_extra_type
+  description: The type classification of an experiment from an extra or secondary enrollment record, indicating whether it is a Nimbus rollout
+    or a standard Nimbus experiment (e.g. 'nimbus-rollout', 'nimbus-nimbus'). This mirrors the primary type field for supplemental enrollment
+    entries.
+- name: experiments_value_type
+  description: The type or system classification of the experiment enrollment (e.g. 'nimbus-rollout', 'nimbus-nimbus', 'normandy-prefrollout',
+    'normandy-exp'). This identifies the experimentation platform and delivery mechanism that managed the enrollment.
+- name: exposure_count
+  description: The number of times the client was exposed to an experiment treatment during the observation period. A value of 0 indicates the
+    client was enrolled but not yet exposed.
+  type: INT64
+- name: extra_regressors_additive
+  description: The additive contribution of extra regressors (e.g. external signals or covariates) to a time-series forecast model. A value of
+    0.0 indicates no additive regressor effect was applied.
+  type: FLOAT64
+- name: extra_regressors_additive_lower
+  description: The lower bound of the additive extra regressors component from a time-series forecast model, representing the lower end of the
+    uncertainty interval for that contribution. A value of 0.0 indicates no lower-bound regressor effect.
+  type: FLOAT64
+- name: extra_regressors_additive_upper
+  description: The upper bound of the additive extra regressors component from a time-series forecast model, representing the upper end of the
+    uncertainty interval for that contribution. A value of 0.0 indicates no upper-bound regressor effect.
+  type: FLOAT64
+- name: fill_counts
+  description: The total number of form field fill events recorded in the aggregation period. This represents the volume of autofill or user-fill
+    interactions captured across the dataset.
+  type: INT64
+- name: first_bucket
+  description: The lower bound of the first bucket in a histogram, defining the minimum value range captured by the histogram's first bin. Different
+    histograms use different starting bucket sizes (e.g. 1, 50, 1024).
+  type: INT64
+- name: first_document_id
+  description: The document ID (UUID) of the first ping submitted by a client in the relevant period or cohort. This uniquely identifies the initial
+    telemetry submission associated with the record.
+  type: STRING
+- name: first_paint_mean
+  description: The mean time in milliseconds from browser start to first paint, averaged over the relevant aggregation period. A null value indicates
+    no first-paint timing data was available for the record.
+  type: FLOAT64
+- name: first_seen_date
+  description: The calendar date on which the client profile was first observed in telemetry data. This is used to determine client tenure and
+    cohort assignment.
+  type: DATE
+- name: first_seen_year
+  description: The calendar year in which the client profile was first observed in telemetry data, derived from the first_seen_date. This is used
+    for coarser cohort analyses and long-term retention reporting.
+  type: INT64
+- name: first_timestamp
+  description: The timestamp of the earliest event or ping recorded for the client within the relevant period. This field may be null when no
+    qualifying events were observed.
+  type: TIMESTAMP
+- name: flash_usage
+  description: The count of Flash plugin usage events recorded for the client. A value of 0 indicates Flash was present or configured but not
+    actively used during the session.
+  type: INT64
+- name: flash_version
+  description: The version string of the Adobe Flash plugin installed in the browser (e.g. '32.0.0.465'). This field is null when no Flash plugin
+    is detected or when version information is unavailable.
+  type: STRING
+- name: follow_on_search_ad_clicks
+  description: The number of times a user clicked on a search advertisement following an initial search query originating from the browser's search
+    features. A value of 0 indicates the user performed searches but did not click any follow-on ads.
+  type: INT64
+- name: follow_on_search_ad_impressions
+  description: The number of search advertisement impressions shown to the user as a result of follow-on searches initiated from the browser's
+    search features. A value of 0 indicates no ad impressions were recorded for the period.
+  type: INT64
+- name: forecast_date
+  description: The calendar date to which a forecast value corresponds, stored as a string in ISO 8601 format (YYYY-MM-DD). This is the predicted
+    future date within a time-series forecasting output.
+  type: STRING
+- name: forecast_parameters
+  description: A JSON-serialized string containing the model type and hyperparameters used to generate the forecast (e.g. Prophet model settings
+    such as seasonality and changepoint priors). This allows forecast results to be traced back to the exact model configuration that produced
+    them.
+  type: STRING
+- name: form_factor
+  description: The physical form factor of the device running Firefox (e.g. 'desktop', 'phone', 'tablet', 'other'). This field is null when the
+    form factor could not be determined from the telemetry payload.
+  type: STRING
+- name: funnel_date
+  description: The date associated with a funnel analysis snapshot, representing the point in time at which funnel stage counts were computed.
+    Stored as a DATE type.
+  type: DATE
+- name: funnel_derived
+  description: A categorical label describing the acquisition channel or funnel through which a user was obtained (e.g. 'mozorg windows funnel',
+    'mozorg mac funnel', 'partner', 'other'). This is used to segment users by how they came to install Firefox.
+  type: STRING
+- name: fxa_configured
+  description: Indicates whether the client has a Firefox Accounts (FxA) account configured at the time of the ping. True means FxA is set up;
+    false means it is not; null means the status was unknown or the field was not applicable.
+  type: BOOLEAN
+- name: geo_country_code
+  description: The ISO 3166-1 alpha-2 country code derived from the client's IP address at ping submission time. This represents the country-level
+    geographic location of the client.
+  type: STRING
+- name: geo_db_version
+  description: The version timestamp of the GeoIP database used to resolve the client's geographic location, formatted as an ISO 8601 datetime
+    string. This allows geo lookups to be audited and compared across database releases.
+  type: STRING
+- name: geo_subdivision1
+  description: The first-level administrative subdivision (e.g. state, province, or region) of the client's location, derived from the GeoIP database.
+    This field may be null when subdivision-level data is unavailable for the client's geography.
+  type: STRING
+- name: geo_subdivision2
+  description: The second-level administrative subdivision (e.g. county, department, or district) of the client's location, derived from the GeoIP
+    database. This field is null for the majority of records where fine-grained subdivision data is not available.
+  type: STRING
+- name: gfx_compositor
+  description: The graphics compositor backend used by Firefox (e.g. WebRender, OpenGL, or Direct3D) as reported in the client's telemetry environment.
+    This identifies the rendering pipeline active during the session.
+  type: STRING
+- name: gfx_features_advanced_layers_status
+  description: The status of the Advanced Layers graphics feature in Firefox, indicating whether it is available, disabled, blocked, or unavailable
+    on the client's hardware and software configuration. Blocked statuses often include a reason code explaining why the feature was prevented
+    from running.
+  type: STRING
+- name: gfx_features_d2d_status
+  description: The status of the Direct2D (D2D) hardware acceleration feature in Firefox, indicating whether it is available, disabled, blocked,
+    or unavailable on the client's system. Blocked or unavailable statuses typically include a reason code identifying the specific failure or
+    blocklist entry responsible.
+  type: STRING

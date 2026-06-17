@@ -86,10 +86,10 @@ fields:
 - name: aggregates
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: aggregates
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -105,10 +105,10 @@ fields:
 - name: non_norm_aggregates
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: non_norm_aggregates
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE

@@ -75,10 +75,10 @@ fields:
   - name: value
     type: RECORD
     mode: NULLABLE
-    fields:
     description: !include-field-description
       file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
       field: value
+    fields:
     - name: branch
       type: STRING
       mode: NULLABLE

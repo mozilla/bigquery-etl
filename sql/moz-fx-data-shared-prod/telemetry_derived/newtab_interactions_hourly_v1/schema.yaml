@@ -29,29 +29,18 @@ fields:
     description: !include-field-description
       file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
       field: product
-
-      This field is only populated for data coming in from the UAPI.
   - name: placement
     type: STRING
     mode: NULLABLE
     description: !include-field-description
       file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
       field: placement
-
-      For example, within the tile product there could be a placement of one of the following
-      newtab_tile_1, newtab_tile_2, newtab_tile_3, newtab_mobile_tile_1, etc.
-
-      This field is only populated for data coming in from the UAPI.
-
-      A full list of placements can be found at https://github.com/mozilla-services/mars/blob/main/unified_ads_api/models/constants.go
   - name: os
     type: STRING
     mode: NULLABLE
     description: !include-field-description
       file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
       field: os
-
-      This field is only populated for data coming in from the UAPI.
   - name: form_factor
     type: STRING
     mode: NULLABLE

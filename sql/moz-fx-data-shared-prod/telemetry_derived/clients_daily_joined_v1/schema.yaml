@@ -3604,10 +3604,10 @@ fields:
 - name: scalar_parent_library_link_sum
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: scalar_parent_library_link_sum
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -3623,10 +3623,10 @@ fields:
 - name: scalar_parent_library_opened_sum
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: scalar_parent_library_opened_sum
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -3642,10 +3642,10 @@ fields:
 - name: scalar_parent_library_search_sum
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: scalar_parent_library_search_sum
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE

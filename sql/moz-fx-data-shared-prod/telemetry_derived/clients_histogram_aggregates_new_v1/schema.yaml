@@ -41,10 +41,10 @@ fields:
 - name: histogram_aggregates
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: histogram_aggregates
+  fields:
   - name: first_bucket
     type: INTEGER
     mode: NULLABLE
@@ -102,10 +102,10 @@ fields:
   - name: aggregates
     type: RECORD
     mode: REPEATED
-    fields:
     description: !include-field-description
       file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
       field: aggregates
+    fields:
     - name: key
       type: STRING
       mode: NULLABLE

@@ -134,10 +134,10 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: experiments
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -147,10 +147,10 @@ fields:
   - name: value
     type: RECORD
     mode: NULLABLE
-    fields:
     description: !include-field-description
       file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
       field: value
+    fields:
     - name: branch
       type: STRING
       mode: NULLABLE

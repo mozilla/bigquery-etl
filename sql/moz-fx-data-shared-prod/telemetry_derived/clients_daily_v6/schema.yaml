@@ -537,19 +537,12 @@ fields:
   mode: NULLABLE
   name: gfx_features_d3d11_status
   type: STRING
-- description: Information about the out-of-process compositing ("GPU Process") GFX
-    feature. unused - This feature has not been requested. unavailable - Safe Mode
-    or OS restriction prevents use. blocked - An internal condition (such as safe
-    mode) prevents use. blocklisted - Blocked due to a blocklist restriction. denied"
-    - Blocked due to allowlist restrictions. disabled - User explicitly disabled this
-    default feature. failed - Feature failed to initialize. available - User has this
-    feature available by default and it's in use.
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: gfx_features_gpu_process_status
   mode: NULLABLE
   name: gfx_features_gpu_process_status
   type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: gfx_features_gpu_process_status
 - description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: histogram_parent_devtools_aboutdebugging_opened_count_sum
@@ -3552,10 +3545,10 @@ fields:
 - name: scalar_parent_library_link_sum
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: scalar_parent_library_link_sum
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -3571,10 +3564,10 @@ fields:
 - name: scalar_parent_library_opened_sum
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: scalar_parent_library_opened_sum
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -3590,10 +3583,10 @@ fields:
 - name: scalar_parent_library_search_sum
   type: RECORD
   mode: REPEATED
-  fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: scalar_parent_library_search_sum
+  fields:
   - name: key
     type: STRING
     mode: NULLABLE
@@ -3696,11 +3689,6 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: browser_backup_scheduler_enabled
-
-    If there is a tie, the value seen last according to submission_timestamp.
-
-    True if the BackupService is configured to automatically create backups in the
-    background.'
 - name: browser_backup_archive_enabled
   type: BOOLEAN
   mode: NULLABLE

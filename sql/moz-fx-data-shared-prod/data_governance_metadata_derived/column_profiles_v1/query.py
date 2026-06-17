@@ -682,7 +682,7 @@ def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--date", required=True, help="Run date (YYYY-MM-DD); the partition key."
+        "--date", default="", help="Run date (YYYY-MM-DD); the partition key."
     )
     parser.add_argument("--source-project", default="moz-fx-data-shared-prod")
     parser.add_argument(
@@ -718,6 +718,13 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     args = parser.parse_args()
+    if not args.date:
+        parser.error(
+            "--date is required (YYYY-MM-DD). Pass it directly on the command "
+            'line, or — in an Airflow manual run — via the trigger config ("date"); '
+            "scheduled/backfill runs derive it from the run's interval-end date "
+            "automatically."
+        )
     try:
         datetime.date.fromisoformat(args.date)
     except ValueError:
@@ -729,7 +736,12 @@ def parse_args() -> argparse.Namespace:
         d.strip() for d in args.source_datasets.split(",") if d.strip()
     ]
     if not args.source_datasets:
-        parser.error("--source-datasets must list at least one dataset.")
+        parser.error(
+            "--source-datasets must list at least one dataset (comma-separated). "
+            "Pass it directly on the command line, or — in an Airflow manual run — "
+            'via the trigger config ("source_datasets"); scheduled/backfill runs '
+            "use the default set automatically."
+        )
     invalid = [d for d in args.source_datasets if not _BQ_IDENTIFIER_RE.match(d)]
     if invalid:
         parser.error(

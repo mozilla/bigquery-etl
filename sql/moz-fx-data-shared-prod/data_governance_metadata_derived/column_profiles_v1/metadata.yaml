@@ -16,9 +16,11 @@ scheduling:
   dag_name: bqetl_data_governance_metadata
   arguments:
   - --date
-  - '{{ dag_run.conf.get(''date'', ds) }}'
+  - '{{ dag_run.conf.get(''date'', (data_interval_end | ds) if dag_run.run_type !=
+    ''manual'' else '''') }}'
   - --source-datasets
-  - '{{ dag_run.conf.get(''source_datasets'', ''telemetry_derived,telemetry'') }}'
+  - '{{ dag_run.conf.get(''source_datasets'', ''telemetry_derived,telemetry'' if dag_run.run_type
+    != ''manual'' else '''') }}'
 bigquery:
   time_partitioning:
     type: day

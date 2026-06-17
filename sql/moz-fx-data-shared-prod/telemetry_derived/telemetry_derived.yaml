@@ -997,8 +997,8 @@ fields:
   description: An array of key-value pairs representing all active experiment enrollments for the client at the time of the ping, where the key
     is the experiment slug and the value is the assigned branch. This captures the full set of concurrent experiment enrollments.
 - name: experiments_key
-  description: The slug or unique identifier of an experiment the client is enrolled in, used as the key in the experiments map (e.g. 'fx-accounts-ping-release-rollout-2').
-    This corresponds to the experiment's canonical name in Nimbus or Normandy.
+  description: The slug or unique identifier of an experiment the client is enrolled in, used as the key in the experiments map
+    (e.g. 'fx-accounts-ping-release-rollout-2'). This corresponds to the experiment's canonical name in Nimbus or Normandy.
 - name: experiments_key_value
   description: A nested array of key-value pairs associated with an experiment entry, capturing additional structured metadata beyond the branch
     assignment. This may be empty when no extra metadata is available.
@@ -1181,8 +1181,8 @@ fields:
   description: The most recent Firefox major version number observed among the clients contributing to a given histogram aggregate entry. This
     reflects the newest version present in the aggregated population.
 - name: histogram_aggregates_metric
-  description: The name of the histogram metric being aggregated within a histogram_aggregates entry (e.g., 'http_connection_close_reason', 'network_dns_end_to_connect_start_exp_ms').
-    This identifies which specific instrumentation probe the data originates from.
+  description: The name of the histogram metric being aggregated within a histogram_aggregates entry (e.g., 'http_connection_close_reason',
+    'network_dns_end_to_connect_start_exp_ms'). This identifies which specific instrumentation probe the data originates from.
 - name: histogram_aggregates_metric_type
   description: The type classification of the histogram metric in a histogram_aggregates entry, such as 'histogram-exponential', 'histogram-enumerated',
     'histogram-boolean', 'histogram-categorical', 'histogram-linear', or 'histogram-count'. This determines how bucket boundaries and values should

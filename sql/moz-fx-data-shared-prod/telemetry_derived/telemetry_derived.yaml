@@ -757,3 +757,191 @@ fields:
   description: The origin or provenance of the default private browsing search engine configuration. Null indicates this metadata was not recorded
     or is not applicable.
   type: STRING
+- name: default_private_search_engine_data_submission_url
+  description: The submission URL template for the user's default private browsing search engine, used to construct search queries in private
+    windows. This field is almost always null, indicating it is only populated when a distinct private search engine is explicitly configured.
+  type: STRING
+- name: default_search
+  description: The identifier of the user's default search engine, as reported by the client. Values such as 'unknown' indicate cases where the
+    engine could not be identified or mapped to a known engine.
+  type: STRING
+- name: default_search_engine
+  description: The internal identifier of the user's default search engine (e.g., 'google-b-d', 'baidu'), which encodes both the engine and any
+    partner or distribution-specific configuration. This field represents the engine key as recognized by Firefox's search service.
+  type: STRING
+- name: default_search_engine_data_load_path
+  description: The load path indicating how and from where the default search engine definition was loaded, such as from the built-in application
+    bundle ('[app]') or an add-on ('[addon]'). This field helps distinguish between pre-packaged, extension-provided, and other engine sources.
+  type: STRING
+- name: default_search_engine_data_name
+  description: The human-readable display name of the user's default search engine as reported by the browser (e.g., 'Google', 'DuckDuckGo', '百度').
+    This field reflects the localized name of the engine as configured on the client.
+  type: STRING
+- name: default_search_engine_data_origin
+  description: Indicates how the default search engine was established, with values such as 'default' (set by the application), 'verified' (confirmed
+    via policy or signature), 'unverified', or 'invalid'. This field is predominantly null when origin information is not captured or applicable.
+  type: STRING
+- name: default_search_engine_data_submission_url
+  description: The base URL template used to submit queries to the user's default search engine, including any partner or distribution-specific
+    tracking parameters (e.g., 'client=firefox-b-d'). This URL is constructed by the browser when initiating a search.
+  type: STRING
+- name: device
+  description: A string identifying the device on which the browser is running, typically in 'Manufacturer-Model' format (e.g., 'iPhone14,5',
+    'MediaTek-SMART TV'). This field is used to distinguish hardware types across the client population.
+  type: STRING
+- name: device_model
+  description: The model identifier of the device on which the browser is running (e.g., 'iPhone14,5'). This field may be null for desktop or
+    unrecognized device types where model information is unavailable.
+  type: STRING
+- name: devtools_toolbox_opened_count_sum
+  description: The total number of times the Firefox Developer Tools toolbox was opened during the reporting period. A null value indicates the
+    metric was not collected or the toolbox was never opened for that record.
+  type: INT64
+- name: dismiss_count
+  description: The number of times a user dismissed a prompt, notification, or UI element during the reporting period. A value of zero indicates
+    the element was never dismissed.
+  type: INT64
+- name: display_version
+  description: The user-facing version string of the Firefox application as displayed in the UI (e.g., '151.0.2', '115.31.0esr'). This may differ
+    from the internal build version and includes ESR and other release-track suffixes.
+  type: STRING
+- name: disqualification_count
+  description: The number of times a client or session was disqualified from a study, experiment, or targeting cohort during the reporting period.
+    A value of zero indicates no disqualifications occurred.
+  type: INT64
+- name: distribution_id
+  description: An identifier for the Firefox distribution package the client is running, such as 'default' for the standard Mozilla build or partner-specific
+    identifiers like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution identifier is available.
+  type: STRING
+- name: distribution_model
+  description: A categorical label describing the channel or method through which the Firefox distribution was delivered to the user (e.g., 'non-distribution',
+    'OS pre-installed', 'OEM pre-installed', 'secondary store'). This field classifies how the client obtained the browser.
+  type: STRING
+- name: distribution_version
+  description: The version string of the distribution package, which may differ from the Firefox application version and indicates the specific
+    release of the partner or vendor distribution. This field is frequently null when no distribution versioning is applicable.
+  type: STRING
+- name: distributor
+  description: The name of the organization or project responsible for distributing this Firefox build (e.g., 'canonical', 'mozillaonline', 'mint').
+    This field is null for standard Mozilla-distributed builds where no third-party distributor is involved.
+  type: STRING
+- name: distributor_channel
+  description: The specific channel or mechanism through which the distributor delivered Firefox to the end user (e.g., 'ubuntu', 'mainWinStub',
+    'firefox'). This field complements the distributor field and is null for non-partner distributions.
+  type: STRING
+- name: doc_type
+  description: The type of telemetry document or ping that generated the record (e.g., 'main', 'crash', 'event'). This field identifies the schema
+    and content category of the originating ping.
+  type: STRING
+- name: document_id
+  description: A unique UUID identifying an individual telemetry ping submission. This identifier is used to deduplicate records and trace a specific
+    ping through the data pipeline.
+  type: STRING
+- name: dom_parentprocess_private_window_used
+  description: Indicates whether a private browsing window was used in the parent DOM process during the session. A value of true means at least
+    one private window was opened; false means no private window activity was detected.
+  type: BOOLEAN
+- name: domains_per_user
+  description: The average number of distinct domains visited per user during the reporting period. This metric is used to characterize browsing
+    breadth across the user population.
+  type: FLOAT64
+- name: downloads
+  description: The number of file downloads initiated by the user during the reporting period. A value of zero indicates no downloads were started.
+  type: INT64
+- name: ds
+  description: The datestamp (as a UTC timestamp) representing the date partition or time dimension associated with the record. This field is
+    commonly used for time-series partitioning and filtering.
+  type: TIMESTAMP
+- name: durations
+  description: The total duration, in seconds, associated with a session, event, or activity during the reporting period. A value of zero indicates
+    no measurable duration was recorded.
+- name: e10s_cohort
+  description: The Electrolysis (e10s) multi-process experiment cohort to which the client was assigned. This field is deprecated and is null
+    in all current records, as the e10s rollout has been completed.
+  type: STRING
+- name: e10s_enabled
+  description: Indicates whether the Electrolysis (e10s) multi-process architecture was enabled for the Firefox session. A value of true means
+    the browser was running in multi-process mode; false means it was running in single-process mode.
+  type: BOOLEAN
+- name: endpoint
+  description: The telemetry or data pipeline endpoint to which the ping was submitted. This field identifies the ingestion target for the record.
+  type: STRING
+- name: engine_data_load_path
+  description: The load path describing how and from where a search engine definition was loaded, such as from the built-in application bundle
+    ('[app]'), an add-on ('[addon]'), or other sources. This field is used to identify the origin mechanism for a specific search engine configuration.
+  type: STRING
+- name: engine_data_name
+  description: The human-readable display name of a search engine as configured on the client (e.g., 'Google', 'DuckDuckGo', 'Bing'). This field
+    reflects the localized or user-visible name of the engine.
+  type: STRING
+- name: engine_data_origin
+  description: Indicates how a particular search engine configuration was established, with values such as 'default' (set by the application),
+    'verified', 'unverified', or 'invalid'. This field is null when origin information is not available for the engine.
+  type: STRING
+- name: engine_data_submission_url
+  description: The base URL template used to submit queries to a specific search engine, including any partner or distribution tracking parameters.
+    This URL is used by the browser when constructing search requests for the given engine.
+  type: STRING
+- name: enroll_count
+  description: The number of times the client was enrolled into experiments or Normandy studies during the reporting period. A value of zero indicates
+    no enrollments occurred.
+  type: INT64
+- name: enroll_failed_count
+  description: The number of times an attempt to enroll the client into an experiment or Normandy study failed during the reporting period. A
+    value of zero indicates all enrollment attempts succeeded or none were made.
+  type: INT64
+- name: env_build_arch
+  description: The CPU architecture for which the Firefox binary was compiled (e.g., 'x86-64', 'aarch64', 'x86'). This field describes the instruction
+    set architecture of the build, not necessarily the host hardware.
+  type: STRING
+- name: env_build_id
+  description: The build ID of the Firefox application, expressed as a timestamp string in the format 'YYYYMMDDHHmmSS' (e.g., '20260520211922').
+    This uniquely identifies the specific compiled build of the browser.
+  type: STRING
+- name: env_build_platform_version
+  description: The version of the underlying Gecko platform on which Firefox was built (e.g., '151.0.1', '115.36.0'). This may differ from the
+    application's user-facing version in certain release configurations such as ESR.
+  type: STRING
+- name: env_build_version
+  description: The version string of the Firefox build as reported by the environment (e.g., '151.0.1', '115.36.0'). This field represents the
+    application version associated with the compiled binary.
+  type: STRING
+- name: env_build_xpcom_abi
+  description: The XPCOM Application Binary Interface (ABI) string describing the target platform and compiler used for the Firefox build (e.g.,
+    'x86_64-msvc', 'aarch64-gcc3'). This field identifies the binary compatibility target of the build.
+  type: STRING
+- name: environment
+  description: A label or identifier representing the deployment or operational environment context associated with the record (e.g., production,
+    staging). This field provides context about the environment from which the data originated.
+- name: environment_settings_intl_accept_languages
+  description: The list of languages specified in the browser's Accept-Language header preference setting, indicating the user's preferred languages
+    for web content in order of priority.
+- name: environment_settings_intl_app_locales
+  description: The list of locale codes representing the active application locales in use by the Firefox browser (e.g., ['en-US', 'fr']). These
+    are the locales actually applied to the browser UI.
+- name: environment_settings_intl_available_locales
+  description: The list of locale codes for all languages available in the Firefox installation. This represents the full set of locales packaged
+    with the browser build.
+- name: environment_settings_intl_regional_prefs_locales
+  description: The list of locale codes representing the user's regional preferences as configured in the browser settings. These locales influence
+    formatting of dates, numbers, and other region-specific content.
+- name: environment_settings_intl_requested_locales
+  description: The list of locale codes that the user has explicitly requested for the Firefox UI. These represent the user's preferred language
+    settings before locale resolution and fallback logic is applied.
+- name: environment_settings_intl_system_locales
+  description: The list of locale codes configured at the operating system level on the user's device. These system locales may influence browser
+    behavior and default language selection.
+- name: event
+  description: A string identifying a specific telemetry event recorded during the session, typically in 'action.object' format (e.g., 'trigger.reason',
+    'saw_toggle.toggle'). This field categorizes the type of interaction or occurrence being tracked.
+  type: STRING
+- name: event_category
+  description: The category grouping for a telemetry event, used to classify events by feature area or subsystem (e.g., 'address', 'creditcard',
+    'form_autocomplete'). This field is the top-level namespace for organizing event data.
+  type: STRING
+- name: event_map_values
+  description: An array of key-value pairs providing additional metadata or attributes associated with a telemetry event. Each entry contains
+    a string key and a string value that further describes the context of the event.
+- name: event_map_values_key
+  description: The key component of a key-value pair within the event_map_values array, identifying a specific metadata attribute associated with
+    a telemetry event (e.g., 'source', 'trigger', 'networkID'). Keys are used to look up corresponding values in the event's extra metadata.

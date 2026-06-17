@@ -2,6 +2,9 @@ fields:
 - mode: NULLABLE
   name: timestamp
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: timestamp
 - mode: NULLABLE
   name: email_address
   type: STRING

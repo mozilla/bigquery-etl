@@ -369,3 +369,201 @@ fields:
   description: The unique identifier of the marketing campaign associated with a user's acquisition event, which may include platform-specific
     campaign codes (e.g., Google Ads or Facebook campaign IDs). Null when no campaign ID is available.
   type: STRING
+- name: category
+  description: A high-cardinality string label grouping the event or metric into a functional area or feature domain (e.g., 'devtools.main', 'doh',
+    'pwmgr'). May be null when no category classification applies to the record.
+  type: STRING
+- name: cdou
+  description: A numeric measure representing the client days of use, reflecting how many days a client has been active within a given period.
+    Higher values indicate more sustained engagement.
+  type: INT64
+- name: channel
+  description: The Firefox release channel through which the client received its build, such as 'release', 'beta', 'aurora', or 'esr'. Used to
+    segment data by product maturity and release train.
+- name: channel_raw
+  description: The raw marketing or traffic acquisition channel through which a user arrived (e.g., 'Organic Search', 'Referral', 'Paid Search',
+    'Direct'). May be null when the acquisition channel could not be determined.
+  type: STRING
+- name: city
+  description: The city associated with the client's IP address or profile geography at the time of the record. May be null when city-level geolocation
+    is unavailable or suppressed.
+  type: STRING
+- name: click_count
+  description: The total number of click interactions recorded for a given entity or surface within the reporting period. A value of zero indicates
+    the entity was present but received no clicks.
+  type: INT64
+- name: client_agg_type
+  description: Describes the aggregation method applied to client-level metric values, such as 'summed_histogram', 'count', 'avg', 'sum', 'min',
+    or 'max'. Determines how individual client observations were combined into the stored aggregate.
+  type: STRING
+- name: client_clock_skew_mean
+  description: The mean difference, in hours, between the client's local clock and the server-side reference time across submissions in the aggregation
+    window. Values near zero indicate accurate client clocks; positive or negative values indicate forward or backward skew, respectively.
+  type: FLOAT64
+- name: client_count
+  description: The number of distinct clients contributing to a given aggregated row or cohort. Useful for understanding the population size behind
+    any aggregated metric.
+  type: INT64
+- name: client_id
+  description: A UUID that uniquely identifies a Firefox client installation. Used to join and deduplicate records across tables at the individual
+    client level.
+  type: STRING
+- name: client_submission_latency_mean
+  description: The mean latency, in seconds, between when a ping was created on the client and when it was received by the ingestion pipeline.
+    Higher values indicate delayed or batched submissions from the client.
+  type: FLOAT64
+- name: clients
+  description: The total count of distinct clients represented in a summary or rollup row. Provides a high-level measure of the active population
+    for a given dimension combination.
+  type: INT64
+- name: cohort_date
+  description: The specific calendar date on which a client or user was first observed, defining their membership in a daily cohort. Used for
+    day-level retention and cohort analysis.
+  type: DATE
+- name: cohort_date_week
+  description: The Monday-aligned week start date of the week in which a client or user was first observed, defining their membership in a weekly
+    cohort. Used for week-level retention and longitudinal analysis.
+  type: DATE
+- name: content
+  description: A string representing the UTM content parameter or creative identifier associated with a marketing touchpoint or link. May be null
+    or URL-encoded when not explicitly set.
+  type: STRING
+- name: contextual_services_quicksuggest_block_dynamic_wikipedia_sum
+  description: An array of key-value pairs summing the number of times a dynamic Wikipedia Quick Suggest result was blocked by the user, keyed
+    by a relevant dimension such as match type or position. Each entry accumulates block counts across the aggregation window.
+  type: RECORD
+- name: contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of block events for non-sponsored best-match Quick Suggest results, keyed by a relevant
+    dimension. Reflects user opt-out signals for this suggestion type.
+  type: RECORD
+- name: contextual_services_quicksuggest_block_nonsponsored_sum
+  description: An array of key-value pairs summing the number of block events for non-sponsored Quick Suggest results, keyed by a relevant dimension.
+    Reflects how often users dismissed or blocked non-sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_block_sponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of block events for sponsored best-match Quick Suggest results, keyed by a relevant
+    dimension. Captures user opt-out interactions with high-prominence sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_block_sponsored_sum
+  description: An array of key-value pairs summing the number of block events for sponsored Quick Suggest results, keyed by a relevant dimension.
+    Reflects how often users dismissed or blocked sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_block_weather_sum
+  description: An array of key-value pairs summing the number of times a weather Quick Suggest result was blocked by the user, keyed by a relevant
+    dimension. Captures opt-out interactions with weather-type suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_dynamic_wikipedia_sum
+  description: An array of key-value pairs summing the number of click events on dynamic Wikipedia Quick Suggest results, keyed by a relevant
+    dimension. Measures user engagement with this suggestion type.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of click events on non-sponsored best-match Quick Suggest results, keyed by a relevant
+    dimension. Measures user engagement with high-prominence non-sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_nonsponsored_sum
+  description: An array of key-value pairs summing the number of click events on non-sponsored Quick Suggest results, keyed by a relevant dimension.
+    Measures overall click-through engagement with non-sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_sponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of click events on sponsored best-match Quick Suggest results, keyed by a relevant
+    dimension. Measures user engagement with high-prominence sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_sponsored_sum
+  description: An array of key-value pairs summing the number of click events on sponsored Quick Suggest results, keyed by a relevant dimension.
+    Measures overall click-through engagement with sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_sum
+  description: An array of key-value pairs summing the total number of click events across all Quick Suggest result types, keyed by a relevant
+    dimension. Provides an aggregate view of user click engagement with the Quick Suggest feature.
+  type: RECORD
+- name: contextual_services_quicksuggest_click_weather_sum
+  description: An array of key-value pairs summing the number of click events on weather Quick Suggest results, keyed by a relevant dimension.
+    Measures user engagement with weather-type suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_dynamic_wikipedia_sum
+  description: An array of key-value pairs summing the number of times users clicked the help link on dynamic Wikipedia Quick Suggest results,
+    keyed by a relevant dimension. Indicates how often users sought more information about this suggestion type.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of help-link interactions on non-sponsored best-match Quick Suggest results, keyed
+    by a relevant dimension. Reflects user curiosity or confusion about this suggestion type.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_nonsponsored_sum
+  description: An array of key-value pairs summing the number of help-link interactions on non-sponsored Quick Suggest results, keyed by a relevant
+    dimension. Tracks how often users accessed help information for non-sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_sponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of help-link interactions on sponsored best-match Quick Suggest results, keyed by
+    a relevant dimension. Captures user requests for more information about high-prominence sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_sponsored_sum
+  description: An array of key-value pairs summing the number of help-link interactions on sponsored Quick Suggest results, keyed by a relevant
+    dimension. Tracks how often users accessed help information for sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_sum
+  description: An array of key-value pairs summing the total number of help-link interactions across all Quick Suggest result types, keyed by
+    a relevant dimension. Provides an aggregate view of user help-seeking behavior within the Quick Suggest feature.
+  type: RECORD
+- name: contextual_services_quicksuggest_help_weather_sum
+  description: An array of key-value pairs summing the number of help-link interactions on weather Quick Suggest results, keyed by a relevant
+    dimension. Captures user requests for more information about weather-type suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
+  description: An array of key-value pairs summing the number of times dynamic Wikipedia Quick Suggest results were displayed to users, keyed
+    by a relevant dimension. Measures the reach and visibility of this suggestion type.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of impressions for non-sponsored best-match Quick Suggest results, keyed by a relevant
+    dimension. Measures how often this high-prominence suggestion type was shown to users.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_nonsponsored_sum
+  description: An array of key-value pairs summing the number of impressions for non-sponsored Quick Suggest results, keyed by a relevant dimension.
+    Measures the overall display frequency of non-sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_sponsored_bestmatch_sum
+  description: An array of key-value pairs summing the number of impressions for sponsored best-match Quick Suggest results, keyed by a relevant
+    dimension. Measures how often this high-prominence sponsored suggestion type was shown to users.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_sponsored_sum
+  description: An array of key-value pairs summing the number of impressions for sponsored Quick Suggest results, keyed by a relevant dimension.
+    Measures the overall display frequency of sponsored suggestions.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_sum
+  description: An array of key-value pairs summing the total number of impressions across all Quick Suggest result types, keyed by a relevant
+    dimension. Provides an aggregate view of the overall reach of the Quick Suggest feature.
+  type: RECORD
+- name: contextual_services_quicksuggest_impression_weather_sum
+  description: An array of key-value pairs summing the number of impressions for weather Quick Suggest results, keyed by a relevant dimension.
+    Measures how often weather-type suggestions were displayed to users.
+  type: RECORD
+- name: contextual_services_topsites_click_sum
+  description: An array of key-value pairs summing the number of click events on Top Sites tiles in the new tab page, keyed by a relevant dimension
+    such as position or tile type. Measures user engagement with the Top Sites feature.
+  type: RECORD
+- name: contextual_services_topsites_impression_sum
+  description: An array of key-value pairs summing the number of impressions recorded for Top Sites tiles on the new tab page, keyed by a relevant
+    dimension. Measures the display frequency and reach of the Top Sites feature.
+  type: RECORD
+- name: corpus_item_id
+  description: A UUID that uniquely identifies a content item within the Pocket or Contextual Services corpus. Used to join engagement metrics
+    back to the canonical content catalog.
+  type: STRING
+- name: count
+  description: A generic integer count representing the number of occurrences of an event, observation, or entity within the scope of the row.
+    The specific thing being counted depends on the table context.
+  type: INT64
+- name: country
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived from the client's IP address or profile geography. Used for
+    geographic segmentation of telemetry data.
+  type: STRING
+- name: country_code
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'IN', 'US', 'RU') associated with the record. Equivalent in format to the `country`
+    field and used for geographic filtering and grouping.
+  type: STRING
+- name: country_name
+  description: The full human-readable name of the country associated with the record (e.g., 'United States', 'India', 'Brazil'). Provides a display-friendly
+    alternative to ISO country code fields.
+  type: STRING
+- name: cpu_cores
+  description: The number of logical CPU cores available on the client device as reported by the Firefox telemetry environment. Used to segment
+    performance and hardware capability data.

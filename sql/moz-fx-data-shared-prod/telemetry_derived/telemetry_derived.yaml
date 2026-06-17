@@ -1527,3 +1527,171 @@ fields:
   description: The highest subsession counter value recorded for a client within a given day, indicating how many browser subsessions occurred.
     A value of 1 means only one subsession was recorded.
   type: INT64
+- name: media_play_time_ms_audio_sum
+  description: Total cumulative time in milliseconds that audio media was played during a session. This field is null when no audio playback occurred.
+  type: INT64
+- name: media_play_time_ms_video_sum
+  description: Total cumulative time in milliseconds that video media was played during a session. This field is null when no video playback occurred.
+  type: INT64
+- name: medium
+  description: The marketing or traffic medium through which a user arrived, such as 'referral', 'cpc', or 'firefox-desktop'. Used to classify
+    the acquisition channel for attribution purposes.
+  type: STRING
+- name: memory_gb
+  description: The total amount of physical memory available on the client device, expressed in gigabytes. Used to characterize device hardware
+    capability.
+- name: memory_mb
+  description: The total amount of physical memory available on the client device, expressed in megabytes. Used to characterize device hardware
+    capability at finer granularity than memory_gb.
+  type: INT64
+- name: metadata_app_version
+  description: The version string of the application that submitted the ping, as reported in the submission metadata. This may differ from the
+    user-facing display version.
+  type: STRING
+- name: metadata_first_seen_date_source_ping
+  description: The type of ping that was used to establish the first-seen date for a client profile. Possible values include 'new_profile', 'main',
+    and 'shutdown'.
+- name: metadata_geo_city
+  description: The city resolved from the client's IP address at ping ingestion time using a GeoIP database. This field is frequently null when
+    city-level resolution is unavailable.
+- name: metadata_geo_country
+  description: The two-letter ISO 3166-1 alpha-2 country code resolved from the client's IP address at ping ingestion time. Represents the geographic
+    country of origin for the submission.
+- name: metadata_geo_db_version
+  description: The version timestamp of the GeoIP database used to resolve the client's geographic location at ingestion time. Formatted as an
+    ISO 8601 timestamp string.
+- name: metadata_geo_subdivision1
+  description: The first-level geographic subdivision (e.g., state or province) resolved from the client's IP address at ping ingestion time.
+    Frequently null when subdivision-level resolution is unavailable.
+- name: metadata_geo_subdivision2
+  description: The second-level geographic subdivision resolved from the client's IP address at ping ingestion time. Frequently null when this
+    level of geographic resolution is unavailable.
+- name: metadata_header_date
+  description: The raw HTTP Date header value sent by the client at ping submission time, formatted as an RFC 7231 HTTP date string. May be null
+    if the header was not present in the request.
+- name: metadata_header_dnt
+  description: The value of the HTTP Do Not Track (DNT) header sent by the client, where '1' indicates the user has opted into DNT. Null when
+    the header was not present in the request.
+- name: metadata_header_parsed_date
+  description: The parsed and normalized timestamp derived from the HTTP Date header sent at ping submission time. Null when the Date header was
+    absent or could not be parsed.
+- name: metadata_header_parsed_x_lb_tags_tls_cipher_hex
+  description: The hexadecimal TLS cipher suite identifier extracted from the load balancer's X-LB-Tags header, indicating the cipher negotiated
+    for the client's TLS connection. Common values include '1301' for TLS_AES_128_GCM_SHA256.
+- name: metadata_header_parsed_x_lb_tags_tls_version
+  description: The TLS protocol version extracted from the load balancer's X-LB-Tags header, indicating the version negotiated for the client's
+    connection. Observed values include 'TLSv1.3' and 'TLSv1.2'.
+- name: metadata_header_parsed_x_source_tags
+  description: An array of source tag strings parsed from the X-Source-Tags HTTP header, used to annotate the origin or routing path of a ping
+    submission. May be an empty array when no tags are present.
+- name: metadata_header_x_debug_id
+  description: The value of the X-Debug-Id HTTP header sent with the ping, used to identify debug or test submissions. Typically null for production
+    pings.
+- name: metadata_header_x_foxsec_ip_reputation
+  description: The IP reputation score or classification provided by the FoxSec system, attached via the X-FoxSec-IP-Reputation HTTP header at
+    ingestion time. Typically null when no reputation data is available.
+- name: metadata_header_x_lb_tags
+  description: The raw value of the X-LB-Tags HTTP header as set by the load balancer, containing TLS version and cipher suite information for
+    the client connection (e.g., 'TLSv1.3, 1301').
+- name: metadata_header_x_pingsender_version
+  description: The version of the PingSender component that submitted the ping, as reported in the X-PingSender-Version HTTP header. Null when
+    the ping was not submitted via PingSender.
+- name: metadata_header_x_source_tags
+  description: The raw value of the X-Source-Tags HTTP header sent with the ping submission, used to label the source or routing context. Typically
+    null when the header is absent.
+- name: metadata_header_x_telemetry_agent
+  description: The User-Agent-style string identifying the telemetry SDK and runtime environment used to submit the ping (e.g., 'Glean/67.2.0
+    (Rust on Windows)'). Indicates the Glean SDK version and host platform.
+- name: metadata_isp_db_version
+  description: The version timestamp of the ISP database used to resolve the client's internet service provider information at ingestion time.
+    Formatted as an ISO 8601 timestamp string.
+- name: metadata_isp_name
+  description: The name of the internet service provider resolved from the client's IP address at ping ingestion time. Represents the commercial
+    ISP name associated with the submitting client.
+- name: metadata_isp_organization
+  description: The organization name associated with the client's IP address as resolved from the ISP database at ingestion time. May differ slightly
+    from metadata_isp_name for the same network operator.
+- name: metadata_reported_main_ping
+  description: Indicates whether a main ping was reported for this client profile record. True means a main ping was received; false means it
+    was not.
+- name: metadata_reported_new_profile_ping
+  description: Indicates whether a new_profile ping was reported for this client profile record. True means a new_profile ping was received; false
+    means it was not.
+- name: metadata_reported_shutdown_ping
+  description: Indicates whether a shutdown ping was reported for this client profile record. True means a shutdown ping was received; false means
+    it was not.
+- name: metadata_user_agent_browser
+  description: The browser name parsed from the User-Agent HTTP header of the ping submission request, such as 'Firefox' or 'Chrome'. Null when
+    the User-Agent header is absent or unrecognized.
+- name: metadata_user_agent_os
+  description: The operating system name and version parsed from the User-Agent HTTP header of the ping submission request, such as 'Windows 10'
+    or 'Android'. Null when the User-Agent header is absent or unrecognized.
+- name: metadata_user_agent_version
+  description: The browser version number parsed from the User-Agent HTTP header of the ping submission request. Null when the User-Agent header
+    is absent or cannot be parsed.
+- name: metric
+  description: The name of the telemetry metric or histogram being recorded, such as 'gc_ms' or 'thread_wakeup'. Used to identify which specific
+    measurement a row represents.
+  type: STRING
+- name: metric_date
+  description: The calendar date associated with the metric observation or aggregation window. Used to partition and filter metric data by time.
+  type: DATE
+- name: metric_name
+  description: A short, human-readable label identifying the type of metric being tracked, such as 'uri_count' or 'active_ticks'. Used to distinguish
+    among different measurement concepts within the same dataset.
+  type: STRING
+- name: metric_type
+  description: The collection methodology or storage format of the metric, such as 'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines
+    how the metric values should be interpreted and aggregated.
+  type: STRING
+- name: metrics
+  description: A nested struct containing all Glean metric values reported in a ping, organized by metric type (e.g., boolean, string, quantity,
+    timespan). Each sub-field corresponds to a specific named metric collected by the application.
+  type: RECORD
+- name: min_subsession_counter
+  description: The minimum subsession counter value observed for a client within the aggregation period, indicating the earliest subsession sequence
+    number. A value of 1 typically corresponds to the first subsession of a browser session.
+  type: INT64
+- name: monthly_users
+  description: The count of distinct active users observed within a rolling monthly window. Used to measure monthly active user (MAU) trends.
+  type: INT64
+- name: moz_crash_reason
+  description: A human-readable string describing the reason for a Mozilla crash, such as an OOM condition or a blocking shutdown step. Null when
+    no specific crash reason was recorded.
+  type: STRING
+- name: multiplicative_terms
+  description: The multiplicative component of a forecasting or modeling decomposition, representing the combined multiplicative factor applied
+    to the baseline. A value of 0.0 indicates no multiplicative adjustment.
+  type: FLOAT64
+- name: multiplicative_terms_lower
+  description: The lower bound of the confidence interval for the multiplicative terms in a forecasting or decomposition model. A value of 0.0
+    indicates no lower-bound adjustment is estimated.
+  type: FLOAT64
+- name: multiplicative_terms_upper
+  description: The upper bound of the confidence interval for the multiplicative terms in a forecasting or decomposition model. A value of 0.0
+    indicates no upper-bound adjustment is estimated.
+  type: FLOAT64
+- name: n_created_pictureinpicture
+  description: The number of times a Picture-in-Picture video window was created during the observation period. A value of 0 indicates the feature
+    was not used; null indicates the data was not collected.
+  type: INT64
+- name: n_logged_event
+  description: The total number of events logged for a client or session during the observation period. Reflects the volume of tracked user interactions
+    or system events recorded.
+  type: INT64
+- name: n_viewed_protection_report
+  description: The number of times the Firefox Privacy Protections report was viewed during the observation period. A value of 0 indicates the
+    report was not opened.
+  type: INT64
+- name: name
+  description: A human-readable name string associated with the entity being described, such as an add-on or extension name. May be null or a
+    placeholder string when the name is unavailable or not yet resolved.
+  type: STRING
+- name: nbr_clients_uninstalling
+  description: The count of distinct clients that uninstalled the application or a component during the observation period. Used to track uninstall
+    volume and churn.
+  type: INT64
+- name: nbr_cpu_cores
+  description: The number of logical CPU cores available on the client device. Used to characterize device hardware capability and segment clients
+    by compute capacity.
+  type: INT64

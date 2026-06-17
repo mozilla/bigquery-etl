@@ -4,7 +4,7 @@
   reason: Initial backfill to populate ga4_search_success_sessions_base_v1 (DENG-11222).
   watchers:
   - phlee@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true
   override_depends_on_past_end_date: false

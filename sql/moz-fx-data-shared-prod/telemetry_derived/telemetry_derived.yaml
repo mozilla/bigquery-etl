@@ -101,8 +101,7 @@ fields:
   description: The sum of active browser usage hours across all sessions or clients within the aggregation period.
   type: FLOAT64
 - name: active_metric_date
-  description: Indicates whether the record's date falls within the active metric collection window. True means the date is within the active
-    window; false means it is outside it.
+  description: Indicates whether the client was active on the metric (reference) date.
 - name: activity_date_week
   description: The Monday-aligned start date of the ISO week in which the user activity occurred, used for weekly aggregations.
   type: DATE

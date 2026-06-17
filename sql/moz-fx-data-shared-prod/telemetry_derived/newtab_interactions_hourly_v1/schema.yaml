@@ -2,29 +2,41 @@ fields:
   - name: submission_date
     type: DATE
     mode: NULLABLE
-    description: Client-side date in Firefox for when the indicated engagement happened.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: submission_date
   - name: recommendation_id
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: recommendation_id
   - name: tile_id
     type: INTEGER
     mode: NULLABLE
-    description: A content identifier specific to the Firefox Newtab. May not uniquely identify the same piece of content if it is run multiple times.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: tile_id
   - name: position
     type: INTEGER
     mode: NULLABLE
-    description: 0-indexed position of the content in the grid of content.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: position
   - name: product
     type: STRING
     mode: NULLABLE
-    description:
-      The product purchased by the ad partner for ad placement (e.g. billboard, leaderboard, rectangle, spoc, tile).
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: product
 
       This field is only populated for data coming in from the UAPI.
   - name: placement
     type: STRING
     mode: NULLABLE
-    description: The location of the ad within a product.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: placement
 
       For example, within the tile product there could be a placement of one of the following
       newtab_tile_1, newtab_tile_2, newtab_tile_3, newtab_mobile_tile_1, etc.
@@ -35,27 +47,38 @@ fields:
   - name: os
     type: STRING
     mode: NULLABLE
-    description:
-      The operating system that the ad was served on (e.g. windows, macos, linux, andriod, ios)
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: os
 
       This field is only populated for data coming in from the UAPI.
   - name: form_factor
     type: STRING
     mode: NULLABLE
-    description: The form of the ad as displayed to the user (e.g. phone, desktop, tablet, other)
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: form_factor
   - name: impression_count
     type: INTEGER
     mode: NULLABLE
-    description: The number of impressions of this piece of content on this day in this position.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: impression_count
   - name: click_count
     type: INTEGER
     mode: NULLABLE
-    description: The number of clicks on this piece of content on this day in this position.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: click_count
   - name: save_count
     type: INTEGER
     mode: NULLABLE
-    description: The number of saves of this piece of content on this day in this position via the "..." menu on the tile.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: save_count
   - name: dismiss_count
     type: INTEGER
     mode: NULLABLE
-    description: The number of dismisses of this piece of content on this day in this position via the "..." menu on the tile.
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: dismiss_count

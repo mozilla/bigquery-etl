@@ -2,15 +2,21 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: installer_type
   type: STRING
   mode: NULLABLE
-  description: Installer Type - e.g. stub or full
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installer_type
 - name: version
   type: STRING
   mode: NULLABLE
-  description: Application Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: version
 - name: funnelcake
   type: STRING
   mode: NULLABLE
@@ -18,11 +24,15 @@ fields:
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: Internet Service Provider Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp_name
 - name: isp_organization
   type: STRING
   mode: NULLABLE
-  description: Internet Service Provider Organization
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp_organization
 - name: ping_version
   type: STRING
   mode: NULLABLE
@@ -30,27 +40,39 @@ fields:
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Attribution Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_campaign
 - name: attribution_content
   type: STRING
   mode: NULLABLE
-  description: Attribution Content
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_content
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Attribution Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: Attribution Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
-  description: Attribution User Agent
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_ua
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
-  description: Attribution Download Source - e.g. mozorg, mozillaci, etc.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_dlsource
 - name: has_attribution_dltoken
   type: BOOLEAN
   mode: NULLABLE
@@ -58,59 +80,87 @@ fields:
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
-  description: Attribution Experiment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_experiment
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
-  description: Attribution Variation
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_variation
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID - Identifier for the partner distribution, defaulting to 0 for Mozilla distributions
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City - Result of a geographic lookup based on the client's IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country - Result of a geographic lookup based on the client's IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: subdivision1
   type: STRING
   mode: NULLABLE
-  description: Subdivision 1 - Result of a geographic lookup based on the client's IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subdivision1
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Normalized Country Code
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_country_code
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale - Locale of the installer and the installed product
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalizd Operating System
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - name: build_channel
   type: STRING
   mode: NULLABLE
-  description: Build Channel - Channel the installer was built with the branding for
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_channel
 - name: build_id
   type: STRING
   mode: NULLABLE
-  description: Build ID - Build ID of the installed product. Absent for a failed stub installation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
 - name: update_channel
   type: STRING
   mode: NULLABLE
-  description: Update Channel - Value of MOZ_UPDATE_CHANNEL the installer was built with. Generally the same as build_channel.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: update_channel
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: had_old_install
   type: BOOLEAN
   mode: NULLABLE
@@ -134,15 +184,21 @@ fields:
 - name: silent
   type: BOOLEAN
   mode: NULLABLE
-  description: Silent - True if the installer was run in silent mode (either from an MSI or with command-line parameters)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: silent
 - name: user_cancelled
   type: BOOLEAN
   mode: NULLABLE
-  description: User Cancelled - True if the installation failed because the user cancelled or closed the window
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_cancelled
 - name: succeeded
   type: BOOLEAN
   mode: NULLABLE
-  description: Succeeded - True if a new installation was successfully created
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: succeeded
 - name: profile_cleanup_prompt
   type: STRING
   mode: NULLABLE
@@ -162,19 +218,27 @@ fields:
 - name: funnel_derived
   type: STRING
   mode: NULLABLE
-  description: Funnel Derived
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: funnel_derived
 - name: distribution_model
   type: STRING
   mode: NULLABLE
-  description: Distribution Model
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_model
 - name: partner_org
   type: STRING
   mode: NULLABLE
-  description: Partner Org
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_org
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID - Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - name: install_attempts
   type: INTEGER
   mode: NULLABLE

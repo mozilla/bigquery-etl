@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: app_channel
   type: STRING
-  description: App Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_channel
 - mode: NULLABLE
   name: app_description
   type: STRING
@@ -14,7 +16,9 @@ fields:
 - mode: NULLABLE
   name: app_name
   type: STRING
-  description: App Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - mode: NULLABLE
   name: bq_dataset_family
   type: STRING

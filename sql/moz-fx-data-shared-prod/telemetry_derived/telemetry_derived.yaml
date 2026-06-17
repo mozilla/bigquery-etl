@@ -3236,3 +3236,192 @@ fields:
   description: The release channel from which the browser receives updates, such as 'release', 'beta', 'nightly', or 'esr'. This reflects the
     user's update track and may include custom or misconfigured values.
   type: STRING
+- name: update_count
+  description: The number of browser updates that were applied. A value of 0 indicates no updates were applied during the period.
+  type: INT64
+- name: update_enabled
+  description: Indicates whether automatic browser updates are enabled for the client. True means updates are turned on; false means they have
+    been disabled.
+  type: BOOLEAN
+- name: update_failed_count
+  description: The number of browser update attempts that failed. A value of 0 indicates all update attempts succeeded or no updates were attempted.
+  type: INT64
+- name: uri_count
+  description: The total number of URIs visited by the client during the reporting period. Null values indicate the metric was not recorded for
+    that row.
+  type: INT64
+- name: uri_method
+  description: The HTTP method used in a URI request (e.g., GET, POST). Identifies the type of action performed in the request.
+  type: STRING
+- name: uris_per_user
+  description: The average number of URIs visited per user over the reporting period. Null values indicate insufficient data to compute the average.
+  type: FLOAT64
+- name: usage
+  description: A categorical label describing the type of Firefox Desktop activity observed, such as any activity, visiting 5 or more URIs, or
+    opening Developer Tools.
+  type: STRING
+- name: user_agent
+  description: The browser or user agent type used to access a resource, with values such as firefox, chrome, edge, ie, or other. Null indicates
+    the user agent was not captured.
+  type: STRING
+- name: user_cancelled
+  description: Indicates whether a user explicitly cancelled an operation or prompt. True means the user cancelled; false means they did not.
+    Null indicates the field was not applicable or not recorded.
+- name: user_pref_app_shield_optoutstudies_enabled
+  description: The user's preference setting for opting out of Shield studies, stored as a string boolean. A value of 'true' means the user has
+    opted in to studies; 'false' means they have opted out.
+  type: STRING
+- name: user_pref_browser_newtabpage_enabled
+  description: The user's preference setting controlling whether the browser's New Tab Page is enabled, stored as a string boolean. A value of
+    'false' indicates the new tab page has been disabled by the user.
+  type: STRING
+- name: user_pref_browser_search_region
+  description: The geographic region code associated with the user's browser search preference, typically an ISO 3166-1 alpha-2 country code such
+    as 'US' or 'DE'.
+  type: STRING
+- name: user_pref_browser_search_suggest_enabled
+  description: The user's preference setting for whether search suggestions are enabled in the browser, stored as a string boolean. A value of
+    'false' means the user has disabled search suggestions.
+  type: STRING
+- name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
+  description: The user's preference controlling whether data collection for the urlbar Quick Suggest feature is enabled, stored as a string boolean.
+    A value of 'false' means the user has opted out of data collection for Quick Suggest.
+  type: STRING
+- name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
+  description: The choice the user made when presented with the Quick Suggest onboarding dialog, such as closing it or selecting 'not now' or
+    'reject'. Null indicates the dialog was not shown or no choice was recorded.
+  type: STRING
+- name: user_pref_browser_urlbar_show_search_suggestions_first
+  description: The user's preference for whether search suggestions are displayed before browsing history in the urlbar, stored as a string boolean.
+    A value of 'false' means search suggestions are not prioritized first.
+  type: STRING
+- name: user_pref_browser_urlbar_suggest_bestmatch
+  description: The user's preference controlling whether the Best Match feature is enabled in the urlbar, stored as a string boolean. A value
+    of 'true' means Best Match suggestions are shown.
+  type: STRING
+- name: user_pref_browser_urlbar_suggest_quicksuggest
+  description: The user's legacy preference setting for whether Quick Suggest results are shown in the urlbar, stored as a string boolean. Null
+    indicates the preference was not set or not applicable.
+  type: STRING
+- name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
+  description: The user's preference controlling whether non-sponsored Quick Suggest results are shown in the urlbar, stored as a string boolean.
+    A value of 'false' means non-sponsored suggestions are disabled.
+  type: STRING
+- name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
+  description: The user's preference controlling whether sponsored Quick Suggest results are shown in the urlbar, stored as a string boolean.
+    A value of 'false' means sponsored suggestions are disabled.
+  type: STRING
+- name: user_pref_browser_urlbar_suggest_searches
+  description: The user's preference for whether search suggestions are shown in the urlbar, stored as a string boolean. A value of 'false' indicates
+    the user has disabled urlbar search suggestions.
+  type: STRING
+- name: user_pref_browser_widget_in_navbar
+  description: The user's preference indicating whether a specific browser widget is displayed in the navigation bar, stored as a string boolean.
+    A value of 'true' means the widget is present in the navbar.
+  type: STRING
+- name: users
+  description: The count of distinct users associated with a given record or group. Represents the number of unique clients contributing to an
+    aggregated measurement.
+  type: INT64
+- name: validation_failed_count
+  description: The number of validation checks that failed for a given record or session. A value of 0 indicates all validation checks passed.
+  type: INT64
+- name: value
+  description: A generic integer value associated with a measurement, event, or metric. The specific meaning depends on the context of the surrounding
+    fields.
+- name: vendor
+  description: The organization that produced the browser or software being measured. In this dataset the value is consistently 'Mozilla'.
+  type: STRING
+- name: version
+  description: The version string of the software, add-on, or component being measured. Follows standard versioning conventions such as major.minor.patch.
+- name: visited_5_uri_dau
+  description: The number of distinct users who visited 5 or more URIs on a given day, used as a daily active user engagement metric. A value
+    of 0 indicates no qualifying users were observed that day.
+  type: INT64
+- name: visited_5_uri_mau
+  description: The number of distinct users who visited 5 or more URIs within the past 28 days, used as a monthly active user engagement metric.
+    A value of 0 indicates no qualifying users were observed that month.
+  type: INT64
+- name: visited_5_uri_wau
+  description: The number of distinct users who visited 5 or more URIs within a 7-day window, used as a weekly active user engagement metric.
+    A value of 0 indicates no qualifying users were observed that week.
+  type: INT64
+- name: visits
+  description: The number of visits or sessions recorded for a given record. Null values indicate the visit count was not available or applicable
+    for that row.
+  type: INT64
+- name: visits_with_default_ui
+  description: The number of urlbar or search visits in which the default UI configuration was presented to the user without any experimental
+    treatment applied.
+  type: INT64
+- name: visits_with_non_impression_engagement
+  description: The number of urlbar visits where the user engaged with a result beyond a passive impression, such as clicking or interacting with
+    a suggestion. A value of 0 indicates no such engagements occurred.
+  type: INT64
+- name: visits_with_non_search_engagement
+  description: The number of urlbar visits where the user engaged with a non-search result, such as navigating to a URL or selecting a bookmark
+    suggestion. A value of 0 indicates all engagements were search-type.
+  type: INT64
+- name: wallpaper_clicks
+  description: The number of times a user clicked on a wallpaper or background element in the browser's New Tab Page. A value of 0 indicates no
+    wallpaper clicks occurred during the period.
+  type: INT64
+- name: wau
+  description: The count of weekly active users, representing the number of distinct clients active within a 7-day rolling window. A value of
+    0 indicates no activity was recorded in that week.
+  type: INT64
+- name: weather_widget_change_display_to_detailed
+  description: The number of times a user switched the New Tab Page weather widget from the simple view to the detailed view. A value of 0 indicates
+    the display was never changed to detailed during the period.
+  type: INT64
+- name: weather_widget_change_display_to_simple
+  description: The number of times a user switched the New Tab Page weather widget from the detailed view back to the simple view. A value of
+    0 indicates the display was never changed to simple during the period.
+  type: INT64
+- name: weather_widget_clicks
+  description: The number of times a user clicked on the weather widget displayed on the New Tab Page. A value of 0 indicates no clicks on the
+    weather widget were recorded.
+  type: INT64
+- name: web_notification_shown_sum
+  description: The total number of web notifications shown to the user during the reporting period. Null values, which are nearly universal, indicate
+    the metric was not recorded or not applicable.
+  type: INT64
+- name: weekly
+  description: A floating-point metric value aggregated or forecasted on a weekly basis. Typically represents a modeled or computed estimate rather
+    than a raw event count.
+  type: FLOAT64
+- name: weekly_lower
+  description: The lower bound of a confidence or credible interval for a weekly metric estimate. Used alongside weekly and weekly_upper to express
+    uncertainty in a modeled weekly value.
+  type: FLOAT64
+- name: weekly_upper
+  description: The upper bound of a confidence or credible interval for a weekly metric estimate. Used alongside weekly and weekly_lower to express
+    uncertainty in a modeled weekly value.
+  type: FLOAT64
+- name: weekly_users
+  description: The count of distinct users active within a given 7-day window. A value of 0 indicates no users were observed as active during
+    that week.
+  type: INT64
+- name: window_end
+  description: The UTC timestamp marking the end of a time window used for aggregation or analysis. Together with window_start, it defines the
+    closed interval over which metrics are computed.
+  type: TIMESTAMP
+- name: window_start
+  description: The UTC timestamp marking the beginning of a time window used for aggregation or analysis. Together with window_end, it defines
+    the interval over which metrics are computed.
+  type: TIMESTAMP
+- name: windows_build_number
+  description: The Windows OS build number of the client's operating system, such as 19045 for a specific Windows 10 release. Null values indicate
+    the client was not running a Windows operating system.
+- name: windows_ubr
+  description: The Windows Update Build Revision (UBR) number, which identifies the specific cumulative update applied on top of the base Windows
+    build. Null values indicate the client is not on Windows or the value was not collected.
+  type: INT64
+- name: windows_version
+  description: A human-readable label for the client's Windows operating system version, such as 'Windows 10' or 'Windows 11'. Null values indicate
+    the client was not running a Windows OS.
+  type: STRING
+- name: xpcom_abi
+  description: The XPCOM Application Binary Interface identifier describing the CPU architecture and compiler ABI of the Firefox build, such as
+    'x86_64-msvc' or 'aarch64-gcc3'.
+  type: STRING

@@ -3061,3 +3061,178 @@ fields:
   description: The cumulative performance measurement (e.g., total duration in milliseconds) of text recognition API calls made during a session
     or aggregation period. Near-100% null rate reflects rare usage of the text recognition feature.
   type: INT64
+- name: text_recognition_interaction_timing_count_sum
+  description: The total count of text recognition interaction timing histogram samples recorded. This field is almost always null, indicating
+    the text recognition feature was not used.
+  type: INT64
+- name: text_recognition_interaction_timing_sum
+  description: The sum of interaction timing values (in milliseconds) recorded during text recognition events. This field is almost always null,
+    only populated when the text recognition feature is actively used.
+  type: INT64
+- name: text_recognition_text_length_count_sum
+  description: The total count of text length histogram samples recorded during text recognition interactions. This field is almost always null,
+    indicating the text recognition feature was not used.
+  type: INT64
+- name: text_recognition_text_length_sum
+  description: The sum of character lengths of text processed during text recognition events. This field is almost always null, only populated
+    when the text recognition feature is actively used.
+  type: INT64
+- name: tile_id
+  description: A numeric identifier for a sponsored or curated tile displayed on the New Tab page. A value of -1 typically indicates an unsponsored
+    or organic tile.
+  type: INT64
+- name: time
+  description: The UTC timestamp representing the time associated with the record, truncated to a granularity such as day or hour depending on
+    the table.
+  type: TIMESTAMP
+- name: timestamp
+  description: The precise UTC timestamp indicating when the event or record was ingested or generated, with microsecond-level precision.
+- name: timezone_offset
+  description: The client's local timezone offset from UTC, expressed in minutes. For example, 120 represents UTC+2 and -300 represents UTC-5.
+  type: INT64
+- name: top_addons
+  description: An array of the most prevalent add-ons observed in a population, each entry containing the add-on name and the proportion of users
+    with that add-on installed.
+  type: RECORD
+- name: top_addons_addon_name
+  description: The name of a frequently installed browser add-on, as reported within the top_addons array for a given population segment.
+- name: top_addons_ratio
+  description: The proportion of users in a population segment who have the associated add-on installed, expressed as a decimal fraction between
+    0 and 1.
+- name: top_locales
+  description: An array of the most prevalent browser locales observed in a population, each entry containing the locale string and the proportion
+    of users with that locale.
+  type: RECORD
+- name: top_locales_locale
+  description: A browser locale code (e.g., 'en-US', 'fr') representing one of the most common locales within a given population segment.
+- name: top_locales_ratio
+  description: The proportion of users in a population segment using the associated locale, expressed as a decimal fraction between 0 and 1.
+- name: topic_preferences_set
+  description: Indicates whether the user has explicitly configured topic preferences for content recommendations. True means preferences have
+    been set; false or null means they have not.
+  type: BOOLEAN
+- name: topic_selection_dismissals
+  description: The number of times the user dismissed the topic selection prompt without making a selection. A value of 0 indicates the prompt
+    was never dismissed.
+  type: INT64
+- name: topic_selection_opened
+  description: The number of times the user opened the topic selection interface. A value of 0 indicates the interface was never opened.
+  type: INT64
+- name: topic_selection_updates
+  description: The number of times the user saved or updated their topic selection preferences. A value of 0 indicates no updates were made.
+  type: INT64
+- name: topsite_clicks
+  description: The total number of times the user clicked on any top site entry on the New Tab page. A value of 0 indicates no clicks occurred.
+  type: INT64
+- name: topsite_dismissals
+  description: The total number of times the user dismissed a top site tile on the New Tab page. A value of 0 indicates no dismissals occurred.
+  type: INT64
+- name: topsite_impressions
+  description: The total number of times top site tiles were displayed to the user on the New Tab page. A value of 0 indicates no impressions
+    were recorded.
+  type: INT64
+- name: topsite_tile_clicks
+  description: The total number of clicks on sponsored top site tiles specifically. A value of 0 indicates the user did not click any sponsored
+    tiles.
+  type: INT64
+- name: topsite_tile_dismissals
+  description: The total number of times the user dismissed a sponsored top site tile. A value of 0 indicates no sponsored tile dismissals occurred.
+  type: INT64
+- name: topsite_tile_impressions
+  description: The total number of impressions for sponsored top site tiles on the New Tab page. A value of 0 indicates no sponsored tile impressions
+    were recorded.
+  type: INT64
+- name: topsites_enabled
+  description: Indicates whether the Top Sites feature is enabled on the user's New Tab page. True means the feature is active; false means the
+    user has disabled it.
+  type: BOOLEAN
+- name: topsites_rows
+  description: The number of rows of top site tiles configured to be displayed on the New Tab page. Higher values indicate more rows of tiles
+    visible to the user.
+  type: INT64
+- name: topsites_sponsored_enabled
+  description: Indicates whether sponsored tiles are enabled within the Top Sites section of the New Tab page. True means sponsored tiles are
+    shown; false means they are disabled.
+  type: BOOLEAN
+- name: topsites_sponsored_tiles_configured
+  description: The number of sponsored tile slots configured to be shown in the Top Sites section of the New Tab page. Common values are 2, 3,
+    or 4 slots.
+  type: INT64
+- name: total_hours_sum
+  description: The total number of hours aggregated across a reporting period for the relevant metric. This field is currently unpopulated and
+    always null.
+  type: NUMERIC
+- name: total_sample
+  description: The total size of the sample population considered in the computation, used as a denominator or baseline for proportional calculations.
+- name: total_users
+  description: The total count of users associated with the record or group, representing the full population for the given aggregation.
+  type: INT64
+- name: tou_daily_active_users
+  description: The number of Terms of Use (ToU) daily active users recorded for the given time period and segment. A value of 0 indicates no active
+    users that day.
+  type: INT64
+- name: tou_monthly_active_users
+  description: The number of Terms of Use (ToU) monthly active users recorded for the given time period and segment. A value of 0 indicates no
+    active users that month.
+  type: INT64
+- name: tou_weekly_active_users
+  description: The number of Terms of Use (ToU) weekly active users recorded for the given time period and segment. A value of 0 indicates no
+    active users that week.
+  type: INT64
+- name: trackers_blocked_sum
+  description: The total number of trackers blocked by Firefox's Enhanced Tracking Protection during the reporting period. Null indicates the
+    feature was not active or no data was reported.
+  type: INT64
+- name: trend
+  description: The modeled trend component of a time series metric, representing the smoothed underlying direction of the data after removing
+    seasonality and noise.
+  type: FLOAT64
+- name: trend_lower
+  description: The lower bound of the confidence interval for the modeled trend component of a time series metric.
+  type: FLOAT64
+- name: trend_upper
+  description: The upper bound of the confidence interval for the modeled trend component of a time series metric.
+  type: FLOAT64
+- name: type
+  description: The category of a browser add-on or extension, indicating its nature. Common values include 'extension', 'locale', 'dictionary',
+    and 'service'.
+  type: STRING
+- name: ua_form_factor
+  description: The form factor of the device as derived from the user agent string, such as 'desktop', 'phone', or 'tablet'.
+  type: STRING
+- name: ua_os_family
+  description: The operating system family as parsed from the user agent string, such as 'Windows', 'Mac OS X', or 'Linux'.
+  type: STRING
+- name: unenroll_count
+  description: The total number of times clients successfully unenrolled from a Nimbus experiment or feature rollout during the reporting period.
+  type: INT64
+- name: unenroll_failed_count
+  description: The total number of times an attempt to unenroll a client from a Nimbus experiment or feature rollout failed during the reporting
+    period.
+  type: INT64
+- name: uninstall_same_day_as_install
+  description: Indicates whether the browser or add-on was uninstalled on the same calendar day it was installed. True means the uninstall occurred
+    on the install day; false means it did not.
+  type: BOOLEAN
+- name: uninstall_to_install_ratio
+  description: The ratio of uninstall events to install events over a given period. A value of 1.0 means uninstalls equal installs; values below
+    1.0 indicate more installs than uninstalls.
+  type: FLOAT64
+- name: uninstalls_count
+  description: The total number of uninstall events recorded during the reporting period for the relevant software or add-on.
+  type: INT64
+- name: unit
+  description: The time unit used for the aggregation period of the record. Values are 'day' for daily aggregations and 'month' for monthly aggregations.
+  type: STRING
+- name: update_auto_download
+  description: Indicates whether automatic update downloads are enabled for the browser. True means updates are downloaded automatically; false
+    means the user has disabled automatic downloads.
+  type: BOOLEAN
+- name: update_background
+  description: Indicates whether browser updates are applied in the background without requiring user interaction. True means background updates
+    are enabled; false means they are disabled.
+  type: BOOLEAN
+- name: update_channel
+  description: The release channel from which the browser receives updates, such as 'release', 'beta', 'nightly', or 'esr'. This reflects the
+    user's update track and may include custom or misconfigured values.
+  type: STRING

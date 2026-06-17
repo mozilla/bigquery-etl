@@ -2,121 +2,156 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - name: profile_date
   type: DATE
   mode: NULLABLE
-  description: The date the Firefox profile was created on the client device, derived from the earliest observed profile creation timestamp.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_date
 - name: sessions
   type: INTEGER
   mode: NULLABLE
-  description: Total number of browser sessions recorded by the client on this submission date, summed across all core pings submitted that day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sessions
 - name: durations
   type: INTEGER
   mode: NULLABLE
-  description: Total active session duration in seconds reported by the client on this submission date, summed across all core pings submitted that day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: durations
 - name: flash_usage
   type: INTEGER
   mode: NULLABLE
-  description: Count of Flash plugin usage events reported on this submission date, summed across all core pings. This field is always 0 in practice
-    as Flash is no longer supported.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: flash_usage
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: The name of the mobile application that submitted the core ping (e.g., Fennec, Focus, Zerda, FirefoxForFireTV), representing the most
-    frequently observed value across submissions for this client and day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The operating system of the client device (e.g., Android, iOS, iPadOS), representing the most frequently observed value for this client
-    on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: country
   type: STRING
   mode: NULLABLE
-  description: ISO 3166-1 alpha-2 country code of the client, determined by IP geolocation at ingestion.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City name associated with the client's IP address, as determined by IP geolocation at ingestion. Null when geolocation cannot resolve
-    to a city.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - name: app_build_id
   type: STRING
   mode: NULLABLE
-  description: The build identifier of the application as reported in the core ping URI metadata (e.g., '33292015').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized release channel of the application (e.g., release, beta, nightly). Set to 'Other' if the channel reported by the client
-    was not recognized.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: The locale of the application during the session (e.g., en-US, fr-FR), representing the most frequently observed value for this client
-    on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: osversion
   type: STRING
   mode: NULLABLE
-  description: The raw operating system version string as reported by the client (e.g., '28', '33' for Android API level), representing the mode across
-    submissions for this client and day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: osversion
 - name: device
   type: STRING
   mode: NULLABLE
-  description: The device model identifier combining manufacturer and model (e.g., 'iPhone14,5', 'MediaTek-SMART TV'), representing the most frequently
-    observed value for this client on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: device
 - name: arch
   type: STRING
   mode: NULLABLE
-  description: The CPU architecture of the device (e.g., arm64-v8a, armeabi-v7a, arm64), representing the most frequently observed value for this client
-    on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: arch
 - name: default_search
   type: STRING
   mode: NULLABLE
-  description: The identifier of the default search engine configured on the client (e.g., 'google-b-m', 'baidu', 'unknown'), representing the most frequently
-    observed value for this client on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution identifier associated with the Firefox installation, used to attribute installs to OEM or partner distributions (e.g.,
-    'mozillaonline'). Null for standard Mozilla installs.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: The attribution campaign identifier as reported in the core ping. This field is always null in the sampled data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: campaign
 - name: campaign_id
   type: STRING
   mode: NULLABLE
-  description: The advertising campaign identifier associated with the client's install attribution, when available (e.g., an Adjust or Google Ads campaign
-    ID). Null for most clients.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: campaign_id
 - name: default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: The most frequently observed value of default_browser for this
-    client on the submission date, indicating whether Firefox is set as the
-    default browser. Ties are broken by the latest submission_timestamp.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_browser
 - name: show_tracker_stats_share
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the tracker stats share feature was enabled on the client. This field is almost always null or false in practice, indicating the
-    feature is not widely active.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: show_tracker_stats_share
 - name: metadata_app_version
   type: STRING
   mode: NULLABLE
-  description: The application version string as reported in the HTTP request URI metadata (e.g., '4.5', '4.6'), which may differ from the in-payload
-    app version.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metadata_app_version
 - name: bug_1501329_affected
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the client was affected by Bug 1501329, which caused incorrect telemetry data in certain early Firefox for Android builds. False
-    for most clients; null when not determined.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: bug_1501329_affected
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: The date on which the server first received a core ping from this client, joined from core_clients_first_seen_v1.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the client's first_seen_date equals the current submission_date, indicating this is the first day the client was observed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_new_profile

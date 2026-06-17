@@ -2672,3 +2672,197 @@ fields:
   description: Keyed scalar aggregating the total number of searches triggered via tab history navigation (e.g., back/forward to a search results
     page). Each key identifies a search engine, and the value is the summed search count.
   type: RECORD
+- name: search_content_unknown_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of searches initiated from an unknown content
+    source. Each entry represents a distinct engine and its summed search volume.
+  type: RECORD
+- name: search_content_urlbar_handoff_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of searches initiated via a URL bar handoff
+    content source. Each entry represents a distinct engine and its summed search volume.
+  type: RECORD
+- name: search_content_urlbar_persisted_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of searches initiated via a persisted URL
+    bar content source. Each entry represents a distinct engine and its summed search volume.
+  type: RECORD
+- name: search_content_urlbar_searchmode_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of searches initiated while the URL bar was
+    in search mode. Each entry represents a distinct engine and its summed search volume.
+  type: RECORD
+- name: search_content_urlbar_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of searches initiated from the URL bar content
+    source. Each entry represents a distinct engine and its summed search volume.
+  type: RECORD
+- name: search_content_webextension_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of searches initiated via a WebExtension
+    content source. Each entry represents a distinct engine and its summed search volume.
+  type: RECORD
+- name: search_count
+  description: The total number of searches performed during the period. A null value indicates that no search count data was recorded.
+  type: INT64
+- name: search_count_abouthome
+  description: The number of searches initiated from the Firefox about:home page during the period. A value of zero indicates no searches from
+    this entry point.
+  type: INT64
+- name: search_count_alias
+  description: The number of searches triggered via a search engine keyword alias (e.g., typing an engine shortcut in the URL bar) during the
+    period. A value of zero indicates no alias-based searches.
+  type: INT64
+- name: search_count_all
+  description: The total number of searches across all entry points and sources during the period. A value of zero indicates no searches were
+    recorded.
+  type: INT64
+- name: search_count_contextmenu
+  description: The number of searches initiated via the browser context menu (e.g., right-click search) during the period. A value of zero indicates
+    no context menu searches.
+  type: INT64
+- name: search_count_newtab
+  description: The number of searches initiated from the new tab page during the period. A value of zero indicates no searches from this entry
+    point.
+  type: INT64
+- name: search_count_organic
+  description: The number of organic (non-tagged, non-partner) searches performed during the period. A value of zero indicates no organic searches
+    were recorded.
+  type: INT64
+- name: search_count_searchbar
+  description: The number of searches initiated from the dedicated browser search bar during the period. A value of zero indicates no searches
+    from this entry point.
+  type: INT64
+- name: search_count_system
+  description: The number of searches initiated by system-level actions (e.g., OS-level search integration) during the period. A value of zero
+    indicates no system-triggered searches.
+  type: INT64
+- name: search_count_tagged_follow_on
+  description: The number of follow-on searches that were tagged, meaning the user continued searching after an initial tagged search access point.
+    A value of zero indicates no tagged follow-on searches.
+  type: INT64
+- name: search_count_tagged_sap
+  description: The number of searches tagged as Search Access Point (SAP) searches, indicating searches attributed to a partner-configured entry
+    point. A value of zero indicates no tagged SAP searches.
+  type: INT64
+- name: search_count_urlbar
+  description: The number of searches initiated from the URL bar (address bar) during the period. A value of zero indicates no URL bar searches
+    were recorded.
+  type: INT64
+- name: search_count_urlbar_handoff
+  description: The number of searches initiated via a URL bar handoff, where a search typed on the new tab page is handed off to the URL bar.
+    A value of zero indicates no handoff searches.
+  type: INT64
+- name: search_count_urlbar_persisted
+  description: The number of searches initiated from the URL bar while a previously selected search engine was persisted in the search mode. A
+    value of zero indicates no such searches.
+  type: INT64
+- name: search_count_urlbar_searchmode
+  description: The number of searches initiated while the URL bar was explicitly in search mode for a specific engine. A value of zero indicates
+    the search mode entry point was not used.
+  type: INT64
+- name: search_count_webextension
+  description: The number of searches initiated through a WebExtension (browser extension) entry point during the period. A value of zero indicates
+    no extension-triggered searches.
+  type: INT64
+- name: search_counts
+  description: An array of structs recording per-engine, per-source search counts, where each entry captures the search engine identifier, the
+    originating source, and the corresponding search count.
+- name: search_engine
+  description: The identifier of the default or active search engine used (e.g., 'google', 'google-b-d', 'duckduckgo'). A null value indicates
+    no search engine was recorded or applicable.
+  type: STRING
+- name: search_with_ads
+  description: The total number of search result pages that contained advertisements during the period. A null value indicates this metric was
+    not recorded; higher values indicate more ad-bearing search sessions.
+- name: search_with_ads_count_all
+  description: The total count of search result pages containing ads across all search entry points during the period. A null value indicates
+    the metric was not available for the record.
+  type: INT64
+- name: search_withads_about_home_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    from the about:home entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_about_newtab_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    from the new tab page entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_contextmenu_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    via the context menu entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_reload_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages that were
+    reloaded. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_searchbar_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    from the search bar entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_system_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    via a system-level search entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_tabhistory_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages navigated
+    to via tab history. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_unknown_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    from an unknown entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_urlbar_handoff_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    via a URL bar handoff. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_urlbar_persisted_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    via a persisted URL bar search mode. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_urlbar_searchmode_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    while the URL bar was in search mode. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_urlbar_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    from the URL bar entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: search_withads_webextension_sum
+  description: An array of key-value pairs mapping search engine identifiers to the aggregated count of ad-bearing search result pages reached
+    via a WebExtension entry point. Each entry represents a distinct engine and its summed count.
+  type: RECORD
+- name: searches
+  description: The total number of searches performed during the period. A value of zero indicates no search activity was recorded.
+- name: searches_per_user_ratio
+  description: The average number of searches per active user for a given cohort or segment during the period. A value of zero indicates no searches
+    were recorded across the user base.
+  type: FLOAT64
+- name: second_seen_date
+  description: The calendar date on which the client was observed for the second time. A null value indicates the client has not yet been seen
+    a second time within the tracked period.
+  type: DATE
+- name: segment
+  description: A categorical label classifying a user's engagement level based on usage frequency, such as 'core_user', 'regular_user', 'casual_user',
+    'infrequent_user', or 'other'. This segmentation is used to group users by activity patterns.
+  type: STRING
+- name: session_id
+  description: A unique identifier (UUID) representing a single browser session. This ID can be used to link events and activity records belonging
+    to the same session.
+  type: STRING
+- name: session_restored_mean
+  description: The average time in milliseconds for the browser session to be restored. A null value indicates that session restore timing data
+    was not available or not applicable.
+  type: FLOAT64
+- name: session_start_time
+  description: The UTC timestamp marking when a browser session began. This field can be used to understand session timing and compute session
+    duration.
+- name: sessions
+  description: The total number of browser sessions recorded for the client during the period. Higher values indicate more frequent browser restarts
+    or usage intervals.
+  type: INT64
+- name: sessions_per_user
+  description: The average number of browser sessions per active user for a given cohort or segment during the period. Higher values indicate
+    more frequent session starts among users.
+  type: FLOAT64
+- name: sessions_started_on_this_day
+  description: The number of new browser sessions that began on the specific day represented by the record. A value of zero indicates no new sessions
+    were started on that day.
+  type: INT64
+- name: show_tracker_stats_share
+  description: A boolean flag indicating whether the user has enabled the option to share tracker blocking statistics. A value of true means sharing
+    is enabled; false means it is disabled. This field is predominantly null, indicating the setting was not recorded.
+  type: BOOLEAN

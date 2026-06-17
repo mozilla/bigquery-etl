@@ -2,19 +2,27 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date the table was last updated.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: os
   type: STRING
-  description: OS of app
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: release, beta, nightly, esr.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - name: major_version
   type: INTEGER
   mode: NULLABLE
-  description: Extracted version from crash_app_display_version.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: major_version
 - name: process_types_bitset
   type: INT64
   mode: NULLABLE
@@ -28,4 +36,6 @@ fields:
 - name: crashing_users
   type: FLOAT
   mode: NULLABLE
-  description: The number of users who experienced a crash.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crashing_users

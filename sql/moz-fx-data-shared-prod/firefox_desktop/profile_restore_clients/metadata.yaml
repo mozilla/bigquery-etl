@@ -1,0 +1,7 @@
+friendly_name: Profile Restore Clients
+description: |-
+  Please provide a description for the query
+owners:
+- example@mozilla.com
+labels:
+  owner: example

@@ -2,10 +2,10 @@ friendly_name: Conversion Event Categorization
 description: |-
   Classifies conversion events
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
 scheduling:
   dag_name: bqetl_desktop_conv_evnt_categorization
   depends_on_past: false

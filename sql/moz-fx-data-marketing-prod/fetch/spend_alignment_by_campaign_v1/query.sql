@@ -5,7 +5,7 @@ WITH fetch_summary AS (
   FROM
     `moz-fx-data-marketing-prod.fetch.summary_*`
   WHERE
-    _TABLE_SUFFIX = (SELECT MAX(_table_suffix) FROM `moz-fx-data-marketing-prod.fetch.summary_*`)
+    _TABLE_SUFFIX = (SELECT MAX(_TABLE_SUFFIX) FROM `moz-fx-data-marketing-prod.fetch.summary_*`)
   GROUP BY
     campaign
 ),

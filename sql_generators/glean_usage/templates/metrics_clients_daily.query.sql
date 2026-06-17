@@ -21,6 +21,12 @@
         {{ metrics[app_name][metric].sql }} AS {{ metric }},
       {% endfor -%}
     {% endif -%}
+    {% if app_name == "fenix" -%}
+      ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)
+      ) AS isp_name,
+    {% endif -%}
     {% if app_name == "firefox_desktop" -%}
       ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
       SUM(
@@ -329,7 +335,16 @@
       ) AS browser_backup_scheduler_enabled,
       mozfun.stats.mode_last(
         ARRAY_AGG(metrics.boolean.browser_backup_archive_enabled ORDER BY submission_timestamp)
-      ) AS browser_backup_archive_enabled
+      ) AS browser_backup_archive_enabled,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp)
+      ) AS app_display_version,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(JSON_VALUE(metrics.object.addons_theme.id) ORDER BY submission_timestamp)
+      ) AS addons_theme_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metadata.geo.country ORDER BY submission_timestamp)
+      ) AS country_code
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

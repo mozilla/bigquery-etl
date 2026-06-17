@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
+  `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2`

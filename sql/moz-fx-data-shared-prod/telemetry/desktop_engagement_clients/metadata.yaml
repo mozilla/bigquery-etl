@@ -1,0 +1,5 @@
+friendly_name: Desktop Engagement - Client Level
+description: |-
+  Desktop engagement data at the client level, including attribution information
+owners:
+- kwindau@mozilla.com

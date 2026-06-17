@@ -2,10 +2,10 @@ friendly_name: Firefox Desktop Client LTV
 description: |-
   Gets 1 row for each client with the relevant info needed for calculating LTV
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_firefox_desktop_ad_click_history
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history

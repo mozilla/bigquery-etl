@@ -1,0 +1,42 @@
+fields:
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: jsonPayload
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: fields
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: rid
+      type: STRING
+      mode: NULLABLE
+    - name: query
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: region
+      type: STRING
+      mode: NULLABLE
+    - name: dma
+      type: STRING
+      mode: NULLABLE
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: form_factor
+      type: STRING
+      mode: NULLABLE
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os_family
+      type: STRING
+      mode: NULLABLE

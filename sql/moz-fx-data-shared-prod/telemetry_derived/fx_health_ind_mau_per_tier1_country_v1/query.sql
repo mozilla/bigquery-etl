@@ -5,7 +5,7 @@ WITH sample_cte AS (
     SUM(dau) AS tot_dau,
     SUM(mau) AS tot_mau,
   FROM
-    `mozdata.telemetry.active_users_aggregates`
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
   WHERE
     app_name = 'Firefox Desktop'
     AND submission_date

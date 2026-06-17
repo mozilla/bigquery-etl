@@ -1,0 +1,53 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the usage bucket
+- name: input_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of input tokens used
+- name: output_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of output tokens generated
+- name: input_cached_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of input tokens served from cache
+- name: input_audio_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of input audio tokens used
+- name: output_audio_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of output audio tokens generated
+- name: num_model_requests
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of model API requests made
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the OpenAI project. Null if not grouped by project.
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the user. Null if not grouped by user.
+- name: api_key_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the API key. Null if not grouped by API key.
+- name: model
+  type: STRING
+  mode: NULLABLE
+  description: Model name (e.g., gpt-4o, o1-preview). Null if not grouped by model.
+- name: batch
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the request was a batch job. Null if not grouped by batch.
+- name: service_tier
+  type: STRING
+  mode: NULLABLE
+  description: Service tier (e.g., default, scale). Null if not grouped by service tier.

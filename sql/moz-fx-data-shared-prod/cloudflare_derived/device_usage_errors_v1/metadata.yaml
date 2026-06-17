@@ -5,6 +5,7 @@ owners:
 labels:
   incremental: false
   owner1: kwindau@mozilla.com
+  level: bronze
 bigquery:
   time_partitioning:
     type: day

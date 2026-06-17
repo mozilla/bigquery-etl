@@ -1,0 +1,147 @@
+---
+# Test 1: TOU with surface = "bottom_sheet"
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client1-tou-bottom-sheet
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client1-tou-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {surface: "bottom_sheet", version: "1.0"}
+
+# Test 2-4: Excluded (wrong surface, no surface, null surface) - NOT IN OUTPUT
+
+# Test 5: Onboarding (no surface requirement)
+- first_submission_timestamp: 2025-10-29T11:00:00+00:00
+  client_id: client5-onboarding
+  event: "onboarding#terms_of_service_accepted"
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client5-onboarding-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T11:00:00+00:00
+  event_extra: {screen: "welcome"}
+
+# Test 6: Onboarding with surface field (surface not required for onboarding)
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client6-onboarding-surface
+  event: "onboarding#terms_of_service_accepted"
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client6-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {surface: "modal", screen: "welcome"}
+
+# Test 7: Multiple events - earliest submission (07:00)
+- first_submission_timestamp: 2025-10-29T07:00:00+00:00
+  client_id: client7-multiple
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client7-profile-2"
+  sample_id: 1
+  first_event_timestamp: 2025-10-29T09:00:00+00:00
+  event_extra: {surface: "bottom_sheet", attempt: 2}
+
+# Test 8: Both events for same client - two separate rows
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client8-both-events
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client8-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {surface: "bottom_sheet", type: "tou"}
+- first_submission_timestamp: 2025-10-29T11:00:00+00:00
+  client_id: client8-both-events
+  event: "onboarding#terms_of_service_accepted"
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client8-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T11:00:00+00:00
+  event_extra: {type: "onboarding"}
+
+# Test 9-15: various exclusions
+
+# Test 16: On cutoff date
+- first_submission_timestamp: 2023-01-01T00:00:00+00:00
+  client_id: client16-on-cutoff
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client16-profile"
+  sample_id: 0
+  first_event_timestamp: 2023-01-01T00:00:00+00:00
+  event_extra: {surface: "bottom_sheet"}
+
+# Test 17: All NULLs (but has surface = "bottom_sheet")
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client17-nulls
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client17-profile"
+  sample_id: 0
+  event_extra: {surface: "bottom_sheet"}
+
+# Test 18: Same submission, earliest event_timestamp (09:00)
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client18-same-submission
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client18-profile-1"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T09:00:00+00:00
+  event_extra: {surface: "bottom_sheet", order: 1}
+
+# Test 19: NULL event_timestamp - picks the one with timestamp
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client19-null-event-timestamp
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client19-profile-1"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T09:00:00+00:00
+  event_extra: {surface: "bottom_sheet", has_timestamp: true}
+
+# Test 20: client20-null-extra - NOT IN OUTPUT (event_extra is null, can't check surface)
+
+# Test 21-23: Sample boundaries
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client21-sample-min
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client21-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {surface: "bottom_sheet"}
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client22-sample-max
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client22-profile"
+  sample_id: 3
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {surface: "bottom_sheet"}
+
+# Test 23: client23-sample-excluded - NOT IN OUTPUT (sample_id >= 4)

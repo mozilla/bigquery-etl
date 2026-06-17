@@ -4,7 +4,7 @@ description: |-
   Key is ga_client_id.
 owners:
 - mhirose@mozilla.com
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   owner1: mhirose@mozilla.com
 scheduling:

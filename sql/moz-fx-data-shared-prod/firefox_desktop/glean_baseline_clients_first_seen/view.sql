@@ -10,6 +10,7 @@ SELECT
   bcfs.`distribution`,
   bcfs.attribution_ext,
   JSON_VALUE(bcfs.attribution_ext.dlsource) AS attribution_dlsource,
+  JSON_VALUE(bcfs.attribution_ext.msclkid) AS attribution_msclkid,
   JSON_VALUE(bcfs.attribution_ext.dltoken) AS attribution_dltoken,
   JSON_VALUE(bcfs.attribution_ext.ua) AS attribution_ua,
   JSON_VALUE(bcfs.attribution_ext.experiment) AS attribution_experiment,

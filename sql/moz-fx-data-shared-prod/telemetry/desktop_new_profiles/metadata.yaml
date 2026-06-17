@@ -1,0 +1,6 @@
+friendly_name: Desktop New Profiles Aggregates
+description: |-
+  This table aggregates the number of new profiles on a given day as well as recording if new profiles are DAU
+  for desktop client_ids.
+owners:
+- mhirose@mozilla.com

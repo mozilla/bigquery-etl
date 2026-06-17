@@ -6,11 +6,11 @@ user_facing: false
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:mozilla-test
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers

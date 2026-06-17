@@ -1,0 +1,5 @@
+friendly_name: Uninstalls Relative To Profile Creation
+description: Number of clients uninstalling each date relative to their profile creation
+  date
+owners:
+- kwindau@mozilla.com

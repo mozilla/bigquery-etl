@@ -7,7 +7,7 @@ SELECT
   selected_position,
   COUNT(DISTINCT event_id) AS num_clicks
 FROM
-  `mozdata.firefox_desktop.urlbar_events`
+  `moz-fx-data-shared-prod.firefox_desktop.urlbar_events`
 WHERE
   submission_date = @submission_date
   AND event_action = 'engaged'

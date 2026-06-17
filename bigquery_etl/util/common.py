@@ -6,11 +6,12 @@ import os
 import random
 import re
 import string
+import sys
 import tempfile
 import warnings
-from functools import cache
+from functools import cache, wraps
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import Callable, List, Optional, Set, Tuple
 from uuid import uuid4
 
 import click
@@ -81,6 +82,26 @@ def get_bqetl_project_root() -> Path | None:
         if (possible_project_root / BQETL_PROJECT_CONFIG).exists():
             return possible_project_root
     return None
+
+
+def resolve_project_file_path(project_file_path: str | Path) -> Path:
+    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+
+    bqetl_project_root = get_bqetl_project_root()
+    if bqetl_project_root:
+        absolute_project_file_path = bqetl_project_root / relative_project_file_path
+        if absolute_project_file_path.exists():
+            return absolute_project_file_path
+
+    # Fall back to checking the main `bqetl` project if necessary.
+    if (
+        bqetl_project_root != ROOT
+        and (root_project_file_path := ROOT / relative_project_file_path).exists()
+    ):
+        return root_project_file_path
+
+    raise FileNotFoundError(f"Project file not found: {project_file_path}")
 
 
 def render(
@@ -161,9 +182,9 @@ def render(
     return rendered
 
 
-def get_table_dir(output_dir, full_table_id):
+def get_table_dir(output_dir, full_table_id, parts=2):
     """Return the output directory for a given table id."""
-    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-parts:])))
 
 
 def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
@@ -185,6 +206,20 @@ def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
     with target.open("w") as f:
         f.write(sql)
         f.write("\n")
+
+
+def alter_sql_for_sqlglot(sql: str) -> str:
+    """Alter the specified SQL to avoid issues SQLGlot has with some SQL syntax."""
+    # sqlglot parses UDFs with keyword names incorrectly:
+    # https://github.com/tobymao/sqlglot/issues/3332
+    sql = re.sub(
+        r"\.(true|false|null)\(",
+        r".`\1`(",
+        sql,
+        flags=re.IGNORECASE,
+    )
+
+    return sql
 
 
 def qualify_table_references_in_file(path: Path) -> str:
@@ -242,10 +277,13 @@ def qualify_table_references_in_file(path: Path) -> str:
     )
     # use sqlglot to get the SQL AST
     init_query_statements = sqlglot.parse(
-        init_query,
+        alter_sql_for_sqlglot(init_query),
         read="bigquery",
     )
-    sql_query_statements = sqlglot.parse(sql_query, read="bigquery")
+    sql_query_statements = sqlglot.parse(
+        alter_sql_for_sqlglot(sql_query),
+        read="bigquery",
+    )
 
     # tuples of (table identifier, replacement string)
     table_replacements: Set[Tuple[str, str]] = set()
@@ -420,3 +458,33 @@ class TempDatasetReference(bigquery.DatasetReference):
         character.
         """
         return self.table(f"anon{uuid4().hex}")
+
+
+@cache
+def is_running_under_coding_agent():
+    """Check if `bqetl` is running under a coding agent."""
+    # Based on https://searchfox.org/firefox-main/rev/a771bf78b90de89e0ea9d17caaa64ffa240ecd7e/python/mozbuild/mozbuild/util.py#74-80
+    return bool(
+        os.environ.get("CLAUDECODE")
+        or os.environ.get("CODEX_SANDBOX")
+        or os.environ.get("GEMINI_CLI")
+        or os.environ.get("OPENCODE")
+    )
+
+
+def exit_if_running_under_coding_agent():
+    """Exit if `bqetl` is running under a coding agent."""
+    if is_running_under_coding_agent():
+        click.echo("Coding agents aren't allowed to run this command.", err=True)
+        sys.exit(1)
+
+
+def block_coding_agents(function: Callable) -> Callable:
+    """Wrap a function so that it exits if `bqetl` is running under a coding agent."""
+
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        exit_if_running_under_coding_agent()
+        return function(*args, **kwargs)
+
+    return wrapper

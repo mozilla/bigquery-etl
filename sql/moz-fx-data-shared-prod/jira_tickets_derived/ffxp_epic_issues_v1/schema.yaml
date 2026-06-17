@@ -1,0 +1,22 @@
+fields:
+- name: issue_key
+  type: STRING
+  mode: NULLABLE
+- name: project_key
+  type: STRING
+  mode: NULLABLE
+- name: issue_type
+  type: STRING
+  mode: NULLABLE
+- name: summary
+  type: STRING
+  mode: NULLABLE
+- name: status
+  type: STRING
+  mode: NULLABLE
+- name: created
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: resolved
+  type: TIMESTAMP
+  mode: NULLABLE

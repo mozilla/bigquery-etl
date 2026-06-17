@@ -5,7 +5,7 @@ WITH activity_stream AS (
     COUNT(*) AS as_sessions,
     COUNT(DISTINCT client_id) AS as_clients
   FROM
-    `mozdata.activity_stream.sessions`
+    `moz-fx-data-shared-prod.activity_stream.sessions`
   WHERE
     (metadata.geo.country) IN (
       'AU',
@@ -36,7 +36,7 @@ newtab_visits AS (
     COUNT(DISTINCT metrics.uuid.legacy_telemetry_client_id) AS newtab_clients,
     COUNT(DISTINCT mozfun.map.get_key(e.extra, "newtab_visit_id")) AS newtab_visits
   FROM
-    `mozdata.firefox_desktop.newtab` nt
+    `moz-fx-data-shared-prod.firefox_desktop.newtab` nt
   CROSS JOIN
     UNNEST(nt.events) e
   WHERE

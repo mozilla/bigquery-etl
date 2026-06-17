@@ -1,6 +1,6 @@
 WITH with_hits AS (
   SELECT
-    PARSE_DATE('%Y%m%d', date) AS date,
+    PARSE_DATE('%Y%m%d', `date`) AS date,
     CONCAT(CAST(fullVisitorId AS string), CAST(visitId AS string)) AS visit_identifier,
     device.deviceCategory AS device_category,
     device.operatingSystem AS operating_system,
@@ -110,7 +110,7 @@ sessions_intermediate AS (
   FROM
     with_hits
   GROUP BY
-    date,
+    `date`,
     visit_identifier,
     device_category,
     operating_system,
@@ -127,7 +127,7 @@ sessions_intermediate AS (
     entrance
 )
 SELECT
-  date,
+  `date`,
   visit_identifier,
   device_category,
   operating_system,
@@ -146,7 +146,7 @@ FROM
 WHERE
   entry_page = 1
 GROUP BY
-  date,
+  `date`,
   visit_identifier,
   device_category,
   operating_system,

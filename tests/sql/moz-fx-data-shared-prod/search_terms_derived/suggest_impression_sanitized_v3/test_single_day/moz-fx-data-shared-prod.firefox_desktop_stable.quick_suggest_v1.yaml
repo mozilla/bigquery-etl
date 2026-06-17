@@ -76,6 +76,32 @@
   normalized_os: Windows
   normalized_os_version: "11.0"
   sample_id: null
+- submission_timestamp: "2021-01-01 13:05:00"
+  client_info:
+    app_display_version: "134.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: TX
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 5
+    string:
+      quick_suggest_advertiser: glean store
+      quick_suggest_block_id: 205
+      quick_suggest_ping_type: "quicksuggest-impression"
+      quick_suggest_request_id: rid_overlap
+    url2:
+      quick_suggest_reporting_url: "url_overlap_glean"
+    uuid:
+      quick_suggest_context_id: cid_overlap_glean
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  sample_id: null
 - submission_timestamp: "2021-01-01 13:04:00"
   client_info:
     app_display_version: "134.0.1"
@@ -98,6 +124,59 @@
       quick_suggest_reporting_url: "https://example.com/umbrella-corp"
     uuid:
       quick_suggest_context_id: cid14
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  sample_id: null
+# within-Glean dedup: two pings for rid_glean_dup; earliest submission_timestamp wins
+- submission_timestamp: "2021-01-01 13:30:00"
+  client_info:
+    app_display_version: "134.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: NV
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 30
+    string:
+      quick_suggest_advertiser: widget co
+      quick_suggest_block_id: 130
+      quick_suggest_ping_type: "quicksuggest-impression"
+      quick_suggest_request_id: rid_glean_dup
+    url2:
+      quick_suggest_reporting_url: "url_glean_dup"
+    uuid:
+      quick_suggest_context_id: cid_glean_dup
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  sample_id: null
+- submission_timestamp: "2021-01-01 13:31:00"
+  client_info:
+    app_display_version: "134.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: NV
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 30
+    string:
+      quick_suggest_advertiser: widget co 2
+      quick_suggest_block_id: 131
+      quick_suggest_ping_type: "quicksuggest-impression"
+      quick_suggest_request_id: rid_glean_dup
+    url2:
+      quick_suggest_reporting_url: "url_glean_dup_2"
+    uuid:
+      quick_suggest_context_id: cid_glean_dup_2
   normalized_channel: release
   normalized_os: Windows
   normalized_os_version: "11.0"

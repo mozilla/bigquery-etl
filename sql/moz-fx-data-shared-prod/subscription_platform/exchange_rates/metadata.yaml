@@ -1,0 +1,6 @@
+friendly_name: Exchange Rates
+description: >
+  Import exchange rates from Oanda.
+owners:
+  - phlee@mozilla.com
+  - srose@mozilla.com

@@ -28,9 +28,9 @@
   scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
   scalar_parent_urlbar_searchmode_touchbar_sum: []
   scalar_parent_urlbar_searchmode_typed_sum: []
-  is_sap_monetizable: False
-  has_adblocker_addon: False
-  policies_is_enterprise: True
+  is_sap_monetizable: false
+  has_adblocker_addon: false
+  policies_is_enterprise: true
   os: 'Darwin'
   os_version: '23.4.0'
   os_version_major: '23'
@@ -41,7 +41,7 @@
   engine: engine1
   source: searchbar
   sap: 1
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -52,7 +52,7 @@
   engine: engine2
   source: 'in-content:sap:code'
   tagged_sap: 2
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -63,7 +63,7 @@
   engine: engine2
   source: 'in-content:sap-follow-on:code'
   tagged_follow_on: 3
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -74,7 +74,7 @@
   engine: engine2
   source: 'in-content:organic:none'
   organic: 4
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -85,7 +85,7 @@
   engine: engine1
   source: 'ad-click:'
   ad_click: 2
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -96,7 +96,7 @@
   engine: engine1
   source: 'ad-click:organic.none'
   ad_click_organic: 3
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -107,7 +107,7 @@
   engine: engine1
   source: 'search-with-ads:sap.code'
   search_with_ads: 3
-  policies_is_enterprise: True
+  policies_is_enterprise: true
   os: 'Windows_NT'
   os_version: '10.0'
   os_version_major: 'Windows 11'
@@ -120,4 +120,4 @@
   source: contextmenu
   sap: 2
   has_adblocker_addon: true
-  policies_is_enterprise: False
+  policies_is_enterprise: false

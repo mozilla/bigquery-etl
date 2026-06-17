@@ -6,6 +6,7 @@ description: |-
   (https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions),
   though we intentionally omit some PII and SubPlat has added some custom metadata.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true

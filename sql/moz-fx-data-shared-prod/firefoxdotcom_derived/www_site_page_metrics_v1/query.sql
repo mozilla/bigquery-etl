@@ -12,7 +12,7 @@ WITH page_view_staging AS (
   FROM
     `moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1`
   WHERE
-    date = @submission_date
+    `date` = @submission_date
     AND hit_type = 'PAGE'
 ),
 --now, subtract current page view start time from next page view start time to get time on current page
@@ -115,7 +115,7 @@ all_events_staging AS (
   FROM
     `moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1` AS site_hits
   WHERE
-    date = @submission_date
+    `date` = @submission_date
   GROUP BY
     site_hits.date,
     site_hits.page_path,

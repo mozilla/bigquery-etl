@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By Browser Aggregates
+description: Aggregate table calculating uninstalls by browser and date
+owners:
+- kwindau@mozilla.com

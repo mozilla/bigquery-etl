@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Worker Costs
+description: Derived Firefox-CI worker cost data from the GCP billing export.
+owners:
+- ahalberstadt@mozilla.com

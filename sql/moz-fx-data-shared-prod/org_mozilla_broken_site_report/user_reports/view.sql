@@ -11,7 +11,8 @@ SELECT
   client_info.app_display_version AS app_version,
   normalized_channel AS app_channel,
   normalized_os AS os,
-  metrics AS details
+  metrics AS details,
+  geo.country AS country
 FROM
   (
     SELECT
@@ -21,7 +22,8 @@ FROM
       metrics,
       normalized_channel,
       normalized_os,
-      submission_timestamp
+      submission_timestamp,
+      metadata.geo AS geo
     FROM
       `moz-fx-data-shared-prod.firefox_desktop.broken_site_report`
     WHERE
@@ -34,7 +36,8 @@ FROM
       metrics,
       normalized_channel,
       normalized_os,
-      submission_timestamp
+      submission_timestamp,
+      metadata.geo AS geo
     FROM
       `moz-fx-data-shared-prod.fenix.broken_site_report`
     WHERE

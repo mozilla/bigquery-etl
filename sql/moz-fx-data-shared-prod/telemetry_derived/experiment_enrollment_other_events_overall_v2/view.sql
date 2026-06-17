@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_other_events_overall_v2`
 AS
-WITH pivot AS (
+WITH `pivot` AS (
   SELECT
     window_start,
     experiment,
@@ -25,7 +25,7 @@ SELECT
   e.event AS event,
   SUM(e.count) AS value
 FROM
-  pivot
+  `pivot`
 CROSS JOIN
   UNNEST(events) AS e
 GROUP BY

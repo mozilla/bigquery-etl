@@ -7,7 +7,7 @@ WITH sample AS (
           category,
           extra,
           sample_id,
-          timestamp,
+          `timestamp`,
           metadata,
           normalized_channel,
           normalized_os,
@@ -85,7 +85,7 @@ SELECT
   j.submission_date,
   j.client_id,
   j.sample_id,
-  CONCAT(STRING_AGG(j.index, ',' ORDER BY timestamp ASC), ',') AS events,
+  CONCAT(STRING_AGG(j.index, ',' ORDER BY `timestamp` ASC), ',') AS events,
   -- client info
   {% for property in user_properties %}
     mozfun.stats.mode_last(ARRAY_AGG(

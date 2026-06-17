@@ -1,0 +1,7 @@
+friendly_name: Facebook Conversion Events (External)
+description: |-
+  Contains data for Conversions API export, limits what is available and transforms fields into expected format.
+
+  Expected grain: max 1 row per fbclid + conversion_name combination.
+owners:
+- kik@mozilla.com

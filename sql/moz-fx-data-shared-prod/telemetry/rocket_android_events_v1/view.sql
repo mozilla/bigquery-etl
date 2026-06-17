@@ -1144,7 +1144,7 @@ all_events_with_insert_ids AS (
       "-",
       SPLIT(event_name, " - ")[OFFSET(1)],
       "-",
-      CAST(timestamp AS STRING),
+      CAST(`timestamp` AS STRING),
       "-",
       event_category,
       "-",

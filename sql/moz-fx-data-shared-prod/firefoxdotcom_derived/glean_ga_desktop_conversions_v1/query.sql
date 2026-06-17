@@ -31,8 +31,10 @@ WITH potential_new_conversions AS (
       ELSE NULL
     END AS conversion_name,
   FROM
-    `moz-fx-data-shared-prod.firefoxdotcom_derived.glean_gclid_conversions_v1` UNPIVOT(
-      did_conversion FOR conversion_name IN (
+    `moz-fx-data-shared-prod.firefoxdotcom_derived.glean_gclid_conversions_v1`
+    UNPIVOT (
+      did_conversion
+      FOR conversion_name IN (
         did_firefox_first_run,
         did_search,
         did_click_ad,

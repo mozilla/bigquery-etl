@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   owner1: kwindau
   depends_on_past: true
   table_type: client_level

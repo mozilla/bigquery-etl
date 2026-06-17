@@ -1,0 +1,4 @@
+friendly_name: Fx Health Ind Desktop Dau By Device Type
+description: Aggregate table that calculates desktop DAU by device type
+owners:
+- kwindau@mozilla.com

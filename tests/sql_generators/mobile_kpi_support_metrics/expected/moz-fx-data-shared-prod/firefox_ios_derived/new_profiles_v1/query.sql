@@ -35,6 +35,7 @@ SELECT
   adjust_network,
   COUNT(*) AS new_profiles,
   device_type,
+  paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.new_profile_clients`
 LEFT JOIN
@@ -47,19 +48,4 @@ WHERE
     first_seen_date = @submission_date
   {% endif %}
 GROUP BY
-  first_seen_date,
-  normalized_channel,
-  app_name,
-  app_version,
-  country,
-  locale,
-  os,
-  os_version,
-  device_type,
-  device_manufacturer,
-  is_mobile,
-  is_suspicious_device_client,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network
+  ALL

@@ -1,5 +1,6 @@
 import json
 import subprocess
+import textwrap
 from datetime import datetime
 from pathlib import Path
 
@@ -190,6 +191,82 @@ class TestPublishJsonScript(object):
             assert len(content) == 3
 
         assert blob_count == 1
+
+    def test_script_non_incremental_query_ordered_by_partition_field(
+        self,
+        bigquery_client,
+        storage_client,
+        test_bucket,
+        temporary_gcs_folder,
+        project_id,
+        temporary_dataset,
+        tmp_path,
+    ):
+        """Exported JSON rows are sorted ASC by time_partitioning field."""
+        # Query produces rows with d in descending order to verify ordering is applied
+        query_sql = textwrap.dedent("""\
+            SELECT DATE '2020-03-16' AS d, "val3" AS a, 3 AS b
+            UNION ALL
+            SELECT DATE '2020-03-15' AS d, "val2" AS a, 2 AS b
+            UNION ALL
+            SELECT DATE '2020-03-14' AS d, "val1" AS a, 1 AS b
+        """)
+        metadata_yaml = textwrap.dedent("""\
+            ---
+            friendly_name: "Ordered export test"
+            description: "Test ordered non-incremental export"
+            owners:
+              - test@mozilla.com
+            labels:
+              public_json: true
+              review_bugs:
+                - 123456
+            bigquery:
+              time_partitioning:
+                type: day
+                field: d
+        """)
+
+        # Use temporary_dataset as the path component so the script resolves
+        # result_table = "{temporary_dataset}.ordered_query_v1" which matches
+        # the table created below.
+        query_dir = tmp_path / temporary_dataset / "ordered_query_v1"
+        query_dir.mkdir(parents=True)
+        query_file = query_dir / "query.sql"
+        query_file.write_text(query_sql)
+        (query_dir / "metadata.yaml").write_text(metadata_yaml)
+
+        table_ref = f"{project_id}.{temporary_dataset}.ordered_query_v1"
+        job_config = bigquery.QueryJobConfig(
+            destination=table_ref,
+            time_partitioning=bigquery.table.TimePartitioning(field="d"),
+        )
+        bigquery_client.query(query_sql, job_config=job_config).result()
+
+        res = subprocess.run(
+            (
+                "./script/publish_public_data_json",
+                "publish_json",
+                "--query_file=" + str(query_file),
+                "--target_bucket=" + test_bucket.name,
+                "--gcs_path=" + temporary_gcs_folder,
+                "--public_project_id=" + project_id,
+            )
+        )
+        assert res.returncode == 0
+
+        gcp_path = (
+            f"{temporary_gcs_folder}api/v1/tables/{temporary_dataset}/"
+            "ordered_query/v1/files/"
+        )
+        blobs = list(storage_client.list_blobs(test_bucket, prefix=gcp_path))
+        assert len(blobs) == 1
+
+        content = json.loads(blobs[0].download_as_string().decode("utf-8"))
+        assert len(content) == 3
+
+        dates = [row["d"] for row in content]
+        assert dates == sorted(dates), f"Expected dates sorted ASC, got {dates}"
 
     def test_script_non_incremental_export(
         self,

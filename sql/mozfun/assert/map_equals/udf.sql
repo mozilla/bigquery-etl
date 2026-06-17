@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION assert.map_equals(expected ANY TYPE, actual ANY TYPE)
 RETURNS BOOLEAN AS (
   IF(
-    EXISTS(
+    EXISTS (
       SELECT
         key
       FROM

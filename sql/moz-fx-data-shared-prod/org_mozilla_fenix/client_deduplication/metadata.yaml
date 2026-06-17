@@ -1,0 +1,4 @@
+friendly_name: Client Deduplication
+description: Rewrite the client deduplication ping, anonymizing the Ad ID.
+owners:
+- frank@mozilla.com

@@ -1,6 +1,6 @@
 WITH wnp_visits AS (
   SELECT
-    date,
+    `date`,
     visit_identifier,
     TRIM(page_path_level1, '/') AS locale,
     page_level_2 AS version,
@@ -10,7 +10,7 @@ WITH wnp_visits AS (
   FROM
     `moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1`
   WHERE
-    date = @submission_date
+    `date` = @submission_date
     AND hit_type = 'PAGE'
     -- Match page paths like "/{locale}/firefox/{version}/whatsnew/..."
     -- Version regular expression is adapted from https://github.com/mozilla/bedrock/blob/main/bedrock/releasenotes/__init__.py
@@ -19,7 +19,7 @@ WITH wnp_visits AS (
     AND page_level_3 = 'whatsnew'
 )
 SELECT
-  date,
+  `date`,
   country,
   locale,
   version,
@@ -32,7 +32,7 @@ SELECT
 FROM
   wnp_visits
 GROUP BY
-  date,
+  `date`,
   country,
   locale,
   version,

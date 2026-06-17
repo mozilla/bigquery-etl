@@ -1,0 +1,4 @@
+friendly_name: Firefox Accounts Linked Clients
+description: Unique combinations of client IDs linked via the same account
+owners:
+- kwindau@mozilla.com

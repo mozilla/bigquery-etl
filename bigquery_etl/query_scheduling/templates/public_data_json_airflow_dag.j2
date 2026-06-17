@@ -50,7 +50,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+    docker_image = "us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest"
 {% for task_group in task_groups | sort %}
     task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
 {% endfor %}

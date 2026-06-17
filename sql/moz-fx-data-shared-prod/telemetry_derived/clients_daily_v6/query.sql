@@ -173,7 +173,8 @@ overactive AS (
     client_id
   HAVING
     COUNT(*) > 150000
-    OR SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 3000000
+    OR SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 2000000
+    OR SUM(ARRAY_LENGTH(environment.experiments)) > 5000000
 ),
 clients_summary AS (
   SELECT

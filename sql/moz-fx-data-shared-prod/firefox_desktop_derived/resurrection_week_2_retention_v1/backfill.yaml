@@ -1,0 +1,23 @@
+2026-03-23:
+  start_date: 2025-04-01
+  end_date: 2026-03-18
+  reason: DENG-10796, backfill from 2026-03-18 back to 2025-04-01
+  watchers:
+  - mhirose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+
+2026-03-19:
+  start_date: 2025-01-01
+  end_date: 2025-03-31
+  reason: DO-2124, new table - backfill to 2025-01-01 as per rbaffourawuah request
+  watchers:
+  - mhirose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

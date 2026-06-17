@@ -1,0 +1,53 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Logical date used by the orchestrator. Also, used for partitioning.
+
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name as defined inside Google Play Store.
+
+- name: version_code
+  type: STRING
+  mode: NULLABLE
+  description: Version of the app that was running on the user's device.
+
+- name: anr_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Percentage of distinct users in the aggregation period that experienced at least one ANR.
+
+- name: anr_rate28d_user_weighted
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Rolling average value of anrRate in the last 28 days.
+    The daily values are weighted by the count of distinct users for the day.
+
+- name: user_perceived_anr_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Percentage of distinct users in the aggregation period that experienced at least one user-perceived ANR.
+    User-perceived ANRs are currently those of 'Input dispatching' type.
+
+- name: user_perceived_anr_rate28d_user_weighted
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Rolling average value of userPerceivedAnrRate in the last 28 days.
+    The daily values are weighted by the count of distinct users for the day.
+
+- name: distinct_users
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Count of distinct users in the aggregation period that were used as normalization value for the anrRate
+    and userPerceivedAnrRate metrics. A user is counted in this metric if they used
+    the app in the foreground during the aggregation period.
+    Care must be taken not to aggregate this count further, as it may result
+    in users being counted multiple times. The value is rounded to the nearest
+    multiple of 10, 100, 1,000 or 1,000,000, depending on the magnitude of the value.

@@ -2,6 +2,7 @@ friendly_name: Non-Production Google Subscriptions
 description: >
   Non-production Google subscriptions.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: daily

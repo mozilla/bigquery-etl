@@ -41,6 +41,7 @@ SELECT
   device_type,
   -- Bucket device manufacturers with low count prior to aggregation
   IF(manufacturer_rank <= 150, device_manufacturer, "other") AS device_manufacturer,
+  paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.fenix.engagement_clients`
 LEFT JOIN
@@ -53,23 +54,4 @@ WHERE
     submission_date = @submission_date
   {% endif %}
 GROUP BY
-  submission_date,
-  first_seen_date,
-  normalized_channel,
-  app_name,
-  app_version,
-  country,
-  locale,
-  device_type,
-  device_manufacturer,
-  is_mobile,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  meta_attribution_app,
-  install_source,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  distribution_id
+  ALL

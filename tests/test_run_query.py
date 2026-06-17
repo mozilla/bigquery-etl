@@ -39,6 +39,8 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=query_v1",
+                    "--replace",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )
@@ -78,6 +80,8 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=mozdata:test.query_v1",
+                    "--replace",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )
@@ -114,6 +118,7 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=mozilla-public-data:test.query_v1",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )
@@ -188,6 +193,7 @@ class TestRunQuery:
                 "bq",
                 "query",
                 "--project_id=project-2",
+                "--use_legacy_sql=False",
                 "--session_id=1234567890",
             ],
         )
@@ -242,8 +248,7 @@ class TestRunQuery:
     def test_extract_and_run_temp_udfs(self, mock_client):
         mock_client.return_value = mock_client
 
-        udf_sql = dedent(
-            """
+        udf_sql = dedent("""
             CREATE TEMP FUNCTION f1(arr ARRAY<INT64>) AS (
               (SELECT SUM(a) FROM UNNEST(arr) AS a)
             );
@@ -269,16 +274,13 @@ class TestRunQuery:
             CREATE TEMP FUNCTION f5()
             RETURNS STRING LANGUAGE js
             AS "return 'abc'";
-            """
-        )
-        query_sql = dedent(
-            """
+            """)
+        query_sql = dedent("""
             WITH abc AS (
               SELECT * FROM UNNEST([1, 2, 3]) AS n
             )
             SELECT "CREATE TEMP FUNCTION f3() AS (1);", * FROM abc
-            """
-        )
+            """)
         sql = f"{udf_sql}{query_sql}"
 
         updated_query = extract_and_run_temp_udfs(
@@ -336,6 +338,8 @@ class TestRunQuery:
                     "query",
                     "--project_id=moz-fx-data-shared-prod",
                     "--destination_table=query_v1",
+                    "--replace",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )

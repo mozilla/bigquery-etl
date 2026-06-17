@@ -3,7 +3,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     client_info,
     METADATA,
     normalized_os,

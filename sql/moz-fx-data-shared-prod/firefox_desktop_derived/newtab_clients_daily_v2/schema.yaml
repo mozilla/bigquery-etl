@@ -55,6 +55,10 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: TRUE if the user has enabled search in the browser.
+- name: newtab_content_surface_id
+  type: STRING
+  mode: NULLABLE
+  description: Scheduled surface identifier based on locale and region, with fallback to computed value from country and locale
 - name: all_visits
   type: INTEGER
   description: Count of newtab open visits

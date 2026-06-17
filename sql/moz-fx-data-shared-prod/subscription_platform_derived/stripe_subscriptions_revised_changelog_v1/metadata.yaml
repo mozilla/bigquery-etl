@@ -11,6 +11,7 @@ description: |-
   This table's schema closely mirrors Stripe's subscriptions API (https://stripe.com/docs/api/subscriptions/object).
   Fields which Fivetran doesn't sync and fields specific to Stripe Connect have been omitted.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true

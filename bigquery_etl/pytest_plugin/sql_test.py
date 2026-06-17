@@ -13,11 +13,15 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from io import BytesIO, TextIOWrapper
+from pathlib import Path
 from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
 import yaml
-from google.api_core.exceptions import BadRequest, NotFound
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
+
+from ..schema import SCHEMA_FILE, Schema
+from ..schema.stable_table_schema import get_stable_table_schemas
 
 QueryParameter = Union[
     bigquery.ArrayQueryParameter,
@@ -56,14 +60,29 @@ class Table:
                 full_name, _ = resource.rsplit(".", 1)
             else:
                 resource_dir, full_name = self.source_path
-            try:
-                table_dir, _ = os.path.split(resource_dir)
+
+            table_dir, _ = os.path.split(resource_dir)
+            if any(
+                os.path.exists(os.path.join(table_dir, f"{full_name}.schema.{ext}"))
+                for ext in ("json", "yaml")
+            ):
+                schema = load(table_dir, f"{full_name}.schema")
                 self.schema = [
                     bigquery.SchemaField.from_api_repr(field)
-                    for field in load(table_dir, f"{full_name}.schema")
+                    for field in (schema["fields"] if "fields" in schema else schema)
                 ]
-            except FileNotFoundError:
-                pass
+            else:
+                schema_file = (
+                    Path("sql") / full_name.replace(".", os.path.sep) / SCHEMA_FILE
+                )
+                if schema_file.exists():
+                    schema = Schema.from_schema_file(schema_file)
+                    self.schema = schema.to_bigquery_schema()
+                elif "_stable." in full_name:
+                    for stable_table_schema in get_stable_table_schemas():
+                        if full_name.endswith("." + stable_table_schema.stable_table):
+                            schema = Schema({"fields": stable_table_schema.schema})
+                            self.schema = schema.to_bigquery_schema()
 
 
 class NDJsonDecodeError(Exception):
@@ -81,10 +100,10 @@ class JsonDecodeError(Exception):
 @contextmanager
 def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
-    try:
-        result = bq.get_dataset(dataset_id)
-    except NotFound:
-        result = bq.create_dataset(dataset_id)
+    # The dataset shouldn't already exist, but specifying `exists_ok` is still necessary here
+    # just in case the BigQuery client times out waiting for the initial API call and retries,
+    # except the initial API call actually does create the dataset before the retry executes.
+    result = bq.create_dataset(dataset_id, exists_ok=True)
     try:
         yield result.reference
     finally:
@@ -235,7 +254,7 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
     Coerce date and datetime to string using isoformat.
     Coerce bigquery.Row to dict using comprehensions.
     Coerce bytes to base64 encoded strings.
-    Omit dict keys named "generated_time".
+    Omit dict keys named "created_at" or "generated_time".
     Omit columns with null results to simplify `expect` files.
     """
     for element in elements:
@@ -248,7 +267,7 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
                 )
                 for key, value in element.items()
                 # drop generated_time column
-                if key not in ("generated_time",) and value is not None
+                if key not in ("created_at", "generated_time") and value is not None
             }
         elif isinstance(element, (date, datetime)):
             yield element.isoformat()

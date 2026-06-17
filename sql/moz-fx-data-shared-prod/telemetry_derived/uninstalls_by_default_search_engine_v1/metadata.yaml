@@ -2,10 +2,10 @@ friendly_name: Uninstalls By Default Search Engine
 description: |-
   Uninstall trends by default search engine over time
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

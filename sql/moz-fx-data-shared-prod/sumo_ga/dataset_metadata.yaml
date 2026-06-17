@@ -7,6 +7,5 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:sumo/bq-automation
-  - workgroup:dataops-managed/external-fides

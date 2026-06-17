@@ -1,0 +1,32 @@
+# Telemetry Health Scorecard Configuration
+# These queries produce cross-app health metrics for the Glean SDK telemetry
+
+applications:
+  - firefox_desktop
+  - org_mozilla_firefox        # Fenix release
+  - org_mozilla_firefox_beta   # Fenix beta
+  - org_mozilla_fenix          # Fenix nightly
+  - org_mozilla_ios_firefox    # Firefox iOS release
+  - org_mozilla_ios_firefoxbeta # Firefox iOS beta
+  - org_mozilla_ios_fennec     # Firefox iOS dev
+
+# Map dataset names to friendly display names for dashboards
+# Names match canonical_app_name from probe-scraper API
+application_names:
+  firefox_desktop: "Firefox for Desktop"
+  org_mozilla_firefox: "Firefox for Android"
+  org_mozilla_firefox_beta: "Firefox for Android"
+  org_mozilla_fenix: "Firefox for Android"
+  org_mozilla_ios_firefox: "Firefox for iOS"
+  org_mozilla_ios_firefoxbeta: "Firefox for iOS"
+  org_mozilla_ios_fennec: "Firefox for iOS"
+
+queries:
+  telemetry_health_glean_errors_v1:
+    description: "Number of metrics (from metrics pings) with Glean errors affecting > 1% of sampled clients"
+  telemetry_health_ping_latency_v1:
+    description: "Baseline ping latency percentiles (collection to submission, submission to ingestion)"
+  telemetry_health_ping_volume_p80_v1:
+    description: "80th percentile of baseline ping count per client per day"
+  telemetry_health_sequence_holes_v1:
+    description: "Percentage of sampled clients with sequence gaps in baseline pings (within single day)"

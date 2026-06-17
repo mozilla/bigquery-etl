@@ -1,0 +1,4 @@
+friendly_name: Airflow DAG run notes
+description: List of DAG run notes
+owners:
+- kik@mozilla.com

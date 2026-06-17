@@ -11,6 +11,9 @@ import yaml
 from black import FileMode, format_file_contents
 
 from bigquery_etl.dependency import extract_table_references_without_views
+from bigquery_etl.query_scheduling.copy_deduplicate_task_markers import (
+    write_task_markers_dag,
+)
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
 from bigquery_etl.query_scheduling.utils import negate_timedelta_string
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
@@ -239,6 +242,9 @@ class DagCollection:
         for dag in self.dags:
             dag.with_upstream_dependencies(self)
             dag.with_downstream_dependencies(self)
+
+        # Create copy_deduplicate_task_markers DAG to support task state propagation
+        write_task_markers_dag(self, output_dir)
 
         # Finally, parallelize DAG-to-Airflow conversion
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)

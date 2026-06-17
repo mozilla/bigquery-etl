@@ -2,6 +2,7 @@ friendly_name: Stripe logical subscriptions attribution
 description: |-
   Attribution for Stripe logical subscriptions based on Stripe subscription metadata stored by SubPlat 3.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true

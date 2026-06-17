@@ -1,0 +1,4 @@
+friendly_name: Airflow triggers
+description: List of triggers
+owners:
+- kik@mozilla.com

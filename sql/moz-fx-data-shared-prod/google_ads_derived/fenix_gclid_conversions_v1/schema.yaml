@@ -1,0 +1,30 @@
+fields:
+
+- mode: NULLABLE
+  name: report_date
+  type: DATE
+  description: |-
+    The logical date used by the process generating the report.
+
+- mode: NULLABLE
+  name: gclid
+  type: STRING
+  description: Google click identifier.
+
+- mode: NULLABLE
+  name: activity_date
+  type: DATE
+  description: |-
+    Indicated when a conversion_event took place.
+    When conversion_event is activation_1 or activation_2
+    then use first_week_end_date. If conversion_event is
+    first_day_DAU use client's first_seen_date as the activity_date.
+
+- mode: NULLABLE
+  name: conversion_event
+  type: STRING
+  description: |-
+    Conversion event name based on activity.
+    When activation_1 value is 1 then set to activation_1,
+    when activation_2 value is 1 then set to activation_2,
+    when active_d0 value is 1 then set to first_day_DAU.

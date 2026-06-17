@@ -1,0 +1,5 @@
+friendly_name: Uninstalls By Download Source
+description: Number of unique clients uninstalling by submission date and download
+  source
+owners:
+- kwindau@mozilla.com

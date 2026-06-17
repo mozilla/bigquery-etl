@@ -251,9 +251,7 @@ def main():
 
     total_cost = query_cost + storage_cost + total_cost_growth
 
-    print(
-        dedent(
-            f"""
+    print(dedent(f"""
             Cost
             ===
 
@@ -307,9 +305,7 @@ def main():
             ¹ https://cloud.google.com/bigquery/pricing#pricing_summary (this doc
             currently uses the annual $8500 per 500 slots flat-rate query pricing
             rather than the monthly $10000 per 500 slots)
-            """
-        )
-    )
+            """))
 
 
 if __name__ == "__main__":

@@ -2,10 +2,10 @@ friendly_name: Fx Health Ind Desktop Dau By Device Type
 description: |-
   Aggregate table that calculates desktop DAU by device type
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
   dag: bqetl_fx_health_ind_dashboard

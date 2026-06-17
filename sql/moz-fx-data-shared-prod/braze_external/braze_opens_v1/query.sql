@@ -2,7 +2,7 @@ WITH mozilla_space_emails AS (
   SELECT
     open.id AS open_id,
     TIMESTAMP_SECONDS(open.time) AS open_time,
-    open.* EXCEPT (id, time),
+    open.* EXCEPT (id, `time`),
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_open_v1` AS open
   WHERE
@@ -12,7 +12,7 @@ firefox_space_emails AS (
   SELECT
     open.id AS open_id,
     TIMESTAMP_SECONDS(open.time) AS open_time,
-    open.* EXCEPT (id, time),
+    open.* EXCEPT (id, `time`),
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_firefox_open_v1` AS open
   WHERE

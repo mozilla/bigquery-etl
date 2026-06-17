@@ -47,6 +47,6 @@ join_previous_step_on = "client_info.client_id"
 [data_sources]
 
 [data_sources.events_unnested]
-from_expression = "mozdata.monitor_frontend.events_unnested"
+from_expression = "moz-fx-data-shared-prod.monitor_frontend.events_unnested"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"

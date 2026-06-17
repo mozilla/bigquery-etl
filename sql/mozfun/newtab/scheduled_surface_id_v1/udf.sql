@@ -14,26 +14,30 @@ RETURNS STRING AS (
       THEN 'NEW_TAB_FR_FR'
     WHEN LOWER(SPLIT(locale, '-')[SAFE_OFFSET(0)]) = 'it'
       THEN 'NEW_TAB_IT_IT'
-    WHEN UPPER(country) IN ('US', 'CA')
+    WHEN UPPER(country) IN ('CA')
+      THEN 'NEW_TAB_EN_CA'
+    WHEN UPPER(country) IN ('US')
       THEN 'NEW_TAB_EN_US'
-    WHEN UPPER(country) IN ('GB', 'IE')
+    WHEN UPPER(country) IN ('GB')
       THEN 'NEW_TAB_EN_GB'
+    WHEN UPPER(country) IN ('IE')
+      THEN 'NEW_TAB_EN_IE'
     WHEN UPPER(country) IN ('IN')
       THEN 'NEW_TAB_EN_INTL'
     WHEN LOWER(SPLIT(locale, '-')[SAFE_OFFSET(0)]) = 'en'
-      AND (
-        UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) IN ('GB', 'IE')
-        OR UPPER(country) IN ('GB', 'IE')
-      )
+      AND (UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) IN ('GB') OR UPPER(country) IN ('GB'))
       THEN 'NEW_TAB_EN_GB'
+    WHEN LOWER(SPLIT(locale, '-')[SAFE_OFFSET(0)]) = 'en'
+      AND (UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) IN ('IE') OR UPPER(country) IN ('IE'))
+      THEN 'NEW_TAB_EN_IE'
     WHEN LOWER(SPLIT(locale, '-')[SAFE_OFFSET(0)]) = 'en'
       AND (UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) = 'IN' OR UPPER(country) = 'IN')
       THEN 'NEW_TAB_EN_INTL'
     WHEN LOWER(SPLIT(locale, '-')[SAFE_OFFSET(0)]) = 'en'
-      AND (
-        UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) IN ('US', 'CA')
-        OR UPPER(country) IN ('US', 'CA')
-      )
+      AND (UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) IN ('CA') OR UPPER(country) IN ('CA'))
+      THEN 'NEW_TAB_EN_CA'
+    WHEN LOWER(SPLIT(locale, '-')[SAFE_OFFSET(0)]) = 'en'
+      AND (UPPER(SPLIT(locale, '-')[SAFE_OFFSET(1)]) IN ('US') OR UPPER(country) IN ('US'))
       THEN 'NEW_TAB_EN_US'
     ELSE 'NEW_TAB_EN_US'
   END
@@ -42,9 +46,9 @@ RETURNS STRING AS (
 -- Tests
 SELECT
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-US')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en-IE')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'en-IE')),
   assert.equals('NEW_TAB_EN_INTL', newtab.scheduled_surface_id_v1('IN', 'en-US')),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en-US')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1('CA', 'en-US')),
   -- Any other country - locale combination of country-locale will be classified as NEW_TAB_EN_US, including NULL values.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('DE', 'arch')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('DE', NULL)),
@@ -53,18 +57,18 @@ SELECT
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-CA')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-GB')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-US')),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en-CA')),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en-GB')),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en-US')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1('CA', 'en-CA')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1('CA', 'en-GB')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1('CA', 'en-US')),
   assert.equals('NEW_TAB_DE_DE', newtab.scheduled_surface_id_v1('DE', 'de')),
   assert.equals('NEW_TAB_DE_DE', newtab.scheduled_surface_id_v1('DE', 'de-AT')),
   assert.equals('NEW_TAB_DE_DE', newtab.scheduled_surface_id_v1('DE', 'de-CH')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('GB', 'en-CA')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('GB', 'en-GB')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('GB', 'en-US')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en-CA')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en-GB')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en-US')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'en-CA')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'en-GB')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'en-US')),
   assert.equals('NEW_TAB_FR_FR', newtab.scheduled_surface_id_v1('FR', 'fr')),
   assert.equals('NEW_TAB_IT_IT', newtab.scheduled_surface_id_v1('IT', 'it')),
   assert.equals('NEW_TAB_ES_ES', newtab.scheduled_surface_id_v1('ES', 'es')),
@@ -75,10 +79,10 @@ SELECT
   assert.equals('NEW_TAB_DE_DE', newtab.scheduled_surface_id_v1('AT', 'de')),
   assert.equals('NEW_TAB_DE_DE', newtab.scheduled_surface_id_v1('BE', 'de')),
   -- # Locale can be a main language only.
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1('CA', 'en')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('GB', 'en')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'en')),
   assert.equals('NEW_TAB_EN_INTL', newtab.scheduled_surface_id_v1('IN', 'en')),
   -- # The locale language primarily determines the market, even if it's not the most common language in the region.
   assert.equals('NEW_TAB_DE_DE', newtab.scheduled_surface_id_v1('US', 'de')),
@@ -89,21 +93,21 @@ SELECT
   -- # Extract region from locale, if it is not explicitly provided.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, 'en-US')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1(NULL, 'en-GB')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1(NULL, 'en-IE')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1(NULL, 'en-IE')),
   -- # locale can vary in case.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, 'eN-US')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1(NULL, 'En-GB')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1(NULL, 'EN-ie')),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, 'en-cA')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1(NULL, 'EN-ie')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1(NULL, 'en-cA')),
   -- # region can vary in case.
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('gB', 'en')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('Ie', 'en')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('Ie', 'en')),
   assert.equals('NEW_TAB_EN_INTL', newtab.scheduled_surface_id_v1('in', 'en')),
   -- # Default to international NewTab when region is unknown.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('XX', 'en')),
   -- # Default to English when language is unknown.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'xx')),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'xx')),
+  assert.equals('NEW_TAB_EN_CA', newtab.scheduled_surface_id_v1('CA', 'xx')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('GB', 'xx')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'xx')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'xx')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('YY', 'xx'));

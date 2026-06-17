@@ -1,0 +1,7 @@
+---
+- name: sample_id
+  type: INTEGER
+  value: 0
+- name: sampling_batch_size
+  type: INTEGER
+  value: 4

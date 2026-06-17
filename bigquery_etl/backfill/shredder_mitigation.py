@@ -15,7 +15,7 @@ import attrs
 import click
 from dateutil import parser
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound  # type: ignore
+from google.cloud.exceptions import BadRequest, NotFound  # type: ignore
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
@@ -528,11 +528,19 @@ def generate_query_with_shredder_mitigation(
         query_with_mitigation_path / dataset / destination_table / "schema.yaml"
     ).to_bigquery_schema()
 
-    sample_rows = new.get_query_path_results(
-        backfill_date=backfill_date,
-        row_limit=1,
-        having_clause=f"HAVING {' IS NOT NULL AND '.join(new_group_by)} IS NOT NULL",
-    )
+    try:
+        sample_rows = new.get_query_path_results(
+            backfill_date=backfill_date,
+            row_limit=1,
+            having_clause=f"HAVING {' IS NOT NULL AND '.join(new_group_by)} IS NOT NULL",
+        )
+    except BadRequest:
+        # For queries that don't have a GROUP BY at the end.
+        sample_rows = new.get_query_path_results(
+            backfill_date=backfill_date,
+            row_limit=1,
+            where_clause=f"WHERE {' IS NOT NULL AND '.join(new_group_by)} IS NOT NULL",
+        )
     if not sample_rows:
         sample_rows = new.get_query_path_results(
             backfill_date=backfill_date, row_limit=1

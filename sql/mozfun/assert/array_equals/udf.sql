@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION assert.array_equals(expected ANY TYPE, actual ANY TYPE) AS (
   IF(
-    EXISTS(
+    EXISTS (
       (
         SELECT
           *

@@ -1,0 +1,27 @@
+---
+- submission_date: 2020-01-04
+  attributed: False
+  app_name: {{ app_name }}
+  country: ??
+  os_version_major: 10
+  os_version_minor: 3
+  os_version: '10.3.10'
+  daily_users: 0
+  weekly_users: 1
+  monthly_users: 1
+  dau: 0
+  wau: 0
+  mau: 0
+- submission_date: 2020-01-04
+  app_name: {{ app_name }}
+  attributed: False
+  country: ??
+  os_version: '11'
+  os_version_minor: 0
+  os_version_major: 11
+  daily_users: 0
+  weekly_users: 0
+  monthly_users: 1
+  dau: 0
+  wau: 0
+  mau: 0

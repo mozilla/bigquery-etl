@@ -1,0 +1,6 @@
+friendly_name: Clients First Seen 28 Days Later v3
+description: Client cohorts 28 days after their first seen date with relevant retention
+  indicators.
+owners:
+- mhirose@mozilla.com
+- shong@mozilla.com

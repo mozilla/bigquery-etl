@@ -7,88 +7,92 @@ from typing import Iterator
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
-    # DDL
-    "ALTER TABLE IF EXISTS",
-    "ALTER TABLE",
-    "CLUSTER BY",
-    "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? TABLE(?! FUNCTION)(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)? VIEW(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)? MATERIALIZED VIEW(?: IF NOT EXISTS)?",
-    "DROP TABLE",
-    "DROP VIEW",
-    "OPTIONS",
-    # DML
-    "DELETE FROM",
-    "DELETE",
-    "INSERT INTO",
-    "INSERT",
-    "MERGE INTO",
-    "MERGE",
-    "UPDATE",
-    # scripting
-    "BEGIN TRANSACTION",
-    "BREAK",
-    "COMMIT TRANSACTION",
-    "COMMIT",
-    "CONTINUE",
-    "ITERATE",
-    "LEAVE",
-    "ROLLBACK TRANSACTION",
-    "ROLLBACK",
-    # SQL
+    # DDL: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language
+    "ALTER TABLE( IF EXISTS)?",
+    r"CREATE( OR REPLACE)?( TEMPORARY| TEMP)? TABLE(?! FUNCTION\b)( IF NOT EXISTS)?",
+    "CREATE SNAPSHOT TABLE( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)? VIEW( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)? MATERIALIZED VIEW( IF NOT EXISTS)?",
+    "DROP TABLE( IF EXISTS)?",
+    "DROP SNAPSHOT TABLE( IF EXISTS)?",
+    "DROP VIEW( IF EXISTS)?",
+    "DROP MATERIALIZED VIEW( IF EXISTS)?",
     "AS",  # only when not identified as an AliasSeparator
-    "CROSS JOIN",
-    "EXCEPT DISTINCT",
-    "INTERSECT DISTINCT",
-    "FROM",
-    "FULL JOIN",
-    "FULL OUTER JOIN",
-    "GROUP BY",
-    "HAVING",
-    "INNER JOIN",
-    "INTERSECT",
-    "JOIN",
-    "LEFT JOIN",
-    "LEFT OUTER JOIN",
-    "LIMIT",
-    "ORDER BY",
-    "OUTER JOIN",
-    "PARTITION BY",
-    "QUALIFY",
-    "RANGE BETWEEN",
-    "RANGE",
-    "RIGHT JOIN",
-    "RIGHT OUTER JOIN",
-    "ROLLUP",
-    "ROWS BETWEEN",
-    "ROWS",
-    "SELECT AS STRUCT",
-    "SELECT AS VALUE",
-    "SELECT DISTINCT AS STRUCT",
-    "SELECT DISTINCT AS VALUE",
-    "SELECT DISTINCT",
-    "SELECT",
-    "UNION ALL",
-    "UNION DISTINCT",
-    "UNION",
+    "CLONE",
+    "CLUSTER BY",
+    "OPTIONS",
+    # DML: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax
+    "DELETE( FROM)?",
+    "INSERT( INTO)?",
     "VALUES",
+    "MERGE( INTO)?",
     "WHEN MATCHED",
-    "WHEN NOT MATCHED BY SOURCE",
-    "WHEN NOT MATCHED BY TARGET",
-    "WHEN NOT MATCHED",
+    "WHEN NOT MATCHED( BY SOURCE| BY TARGET)?",
+    "UPDATE",
+    "SET",
+    # Scripting: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language
+    "BEGIN TRANSACTION",
+    "COMMIT( TRANSACTION)?",
+    "EXECUTE IMMEDIATE",
+    "ROLLBACK( TRANSACTION)?",
+    # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
+    r"WITH(?! OFFSET\b)",
+    # SELECT statement: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list
+    "SELECT( ALL| DISTINCT)?( AS STRUCT| AS VALUE)?",
+    # FROM clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause
+    "FROM",
+    # Join operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types
+    "CROSS JOIN",
+    "(INNER )?JOIN",
+    "FULL( OUTER)? JOIN",
+    "LEFT( OUTER)? JOIN",
+    "RIGHT( OUTER)? JOIN",
+    # WHERE clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause
     "WHERE",
-    "WITH(?! OFFSET)",
+    # GROUP BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause
+    "GROUP BY",
+    # HAVING clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#having_clause
+    r"HAVING(?! (MAX|MIN)\b(?!\())",
+    # QUALIFY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause
+    "QUALIFY",
+    # WINDOW clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause
     "WINDOW",
+    "PARTITION BY",
+    "RANGE(?![(<])( BETWEEN)?",
+    "ROWS( BETWEEN)?",
+    # ORDER BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause
+    "ORDER BY",
+    # LIMIT clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause
+    "LIMIT",
+    # Set operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators
+    (
+        "(INNER |OUTER |(FULL|LEFT)( OUTER)? )?"
+        "(UNION( ALL| DISTINCT)|INTERSECT DISTINCT|EXCEPT DISTINCT)"
+        "( BY NAME|( STRICT)? CORRESPONDING)?"
+    ),
+    # Pipe syntax: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax
+    "AGGREGATE",
+    "DROP",
+    "EXTEND",
+    "GROUP AND ORDER BY",
+    "RENAME",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    r"ASSERT(?!\.)",
+    "BY",
+    "FOR( SYSTEM_TIME AS OF)?",
+    "INTO",
     "ON",
+    "PIVOT",
+    "TABLESAMPLE SYSTEM",
+    "UNPIVOT( INCLUDE NULLS| EXCLUDE NULLS)?",
     "USING",
     "WITH OFFSET",
     # UDF
-    "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? FUNCTION(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? AGGREGATE FUNCTION(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)? TABLE FUNCTION(?: IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)?( TEMPORARY| TEMP)? FUNCTION( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)?( TEMPORARY| TEMP)? AGGREGATE FUNCTION( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)? TABLE FUNCTION( IF NOT EXISTS)?",
     "RETURNS",
     "LANGUAGE",
     # Conditional
@@ -99,9 +103,20 @@ NEWLINE_KEYWORDS = [
     "END",
     "OR",
     "WHEN",
-    "XOR",
+    # Scripting
+    "BREAK",
+    "CALL",
+    "CONTINUE",
+    "DECLARE",
+    "ITERATE",
+    "LEAVE",
+    "RAISE( USING MESSAGE)?",
+    "RETURN",
+    "UNTIL",
+    "WHILE",
 ]
 # These words get capitalized
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved_keywords
 RESERVED_KEYWORDS = [
     "ALL",
     "AND",
@@ -121,7 +136,6 @@ RESERVED_KEYWORDS = [
     "CROSS",
     "CUBE",
     "CURRENT",
-    "DECLARE",
     "DEFAULT",
     "DEFINE",
     "DESC",
@@ -152,8 +166,6 @@ RESERVED_KEYWORDS = [
     "INTERSECT",
     "INTERVAL",
     "INTO",
-    "IS DISTINCT FROM",
-    "IS NOT DISTINCT FROM",
     "IS",
     "JOIN",
     "LATERAL",
@@ -177,11 +189,9 @@ RESERVED_KEYWORDS = [
     "PARTITION",
     "PRECEDING",
     "PROTO",
-    "RAISE USING MESSAGE",
-    "RAISE",
+    "QUALIFY",
     "RANGE",
     "RECURSIVE",
-    "REPLACE",
     "RESPECT",
     "RIGHT",
     "ROLLUP",
@@ -205,7 +215,72 @@ RESERVED_KEYWORDS = [
     "WITH",
     "WITHIN",
 ]
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators
+OPERATOR_KEYWORDS = [
+    "AND",
+    "(NOT )?BETWEEN",
+    "EXISTS",
+    "(NOT )?IN",
+    "IS( NOT)? DISTINCT FROM",
+    "IS( NOT)? NULL",
+    "IS( NOT)? (TRUE|FALSE)",
+    "(NOT )?LIKE( ANY| SOME| ALL)?",
+    "NOT",  # NOT needs to be listed after the other operators that can start with NOT.
+    "OR",
+]
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types
+DATA_TYPE_KEYWORDS = [
+    "BIGNUMERIC|BIGDECIMAL",
+    r"BOOL(?!\()|BOOLEAN",
+    r"BYTES(?!\.)",
+    r"DATE(?!\()",
+    r"DATETIME(?!\()",
+    r"FLOAT64(?!\()",
+    "GEOGRAPHY",
+    r"INT64(?!\()|INT|SMALLINT|INTEGER|BIGINT|TINYINT|BYTEINT",
+    r"JSON(?!\.)",
+    "NUMERIC|DECIMAL",
+    r"RANGE(?!\()",
+    r"STRING(?!\()",
+    r"TIME(?!\()",
+    r"TIMESTAMP(?!\()",
+]
+OTHER_KEYWORDS = [
+    "CURRENT ROW",
+    "DAY",
+    "DAYOFWEEK",
+    "DAYOFYEAR",
+    "GROUPING SETS",
+    "HAVING MAX",
+    "HAVING MIN",
+    "HOUR",
+    "INOUT",
+    "ISOWEEK",
+    "ISOYEAR",
+    "MICROSECOND",
+    "MILLISECOND",
+    "MINUTE",
+    "MONTH",
+    "NULLS FIRST",
+    "NULLS LAST",
+    "OUT",
+    "PERCENT",
+    "QUARTER",
+    "REPLACE",
+    "SECOND",
+    "WEEK",
+    "YEAR",
+]
+PSEUDOCOLUMNS = [
+    "_CHANGE_SEQUENCE_NUMBER",
+    "_CHANGE_TYPE",
+    "_FILE_NAME",
+    "_PARTITIONDATE",
+    "_PARTITIONTIME",
+    "_TABLE_SUFFIX",
+]
 # These built-in function names get capitalized
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-all
 BUILTIN_FUNCTIONS = [
     "ABS",
     "ACOS",
@@ -214,6 +289,7 @@ BUILTIN_FUNCTIONS = [
     "AEAD.DECRYPT_STRING",
     "AEAD.ENCRYPT",
     "ANY_VALUE",
+    "APPENDS",
     "APPROX_COUNT_DISTINCT",
     "APPROX_QUANTILES",
     "APPROX_TOP_COUNT",
@@ -222,8 +298,11 @@ BUILTIN_FUNCTIONS = [
     "ARRAY_AGG",
     "ARRAY_CONCAT",
     "ARRAY_CONCAT_AGG",
+    "ARRAY_FIRST",
+    "ARRAY_LAST",
     "ARRAY_LENGTH",
     "ARRAY_REVERSE",
+    "ARRAY_SLICE",
     "ARRAY_TO_STRING",
     "ASCII",
     "ASIN",
@@ -232,6 +311,7 @@ BUILTIN_FUNCTIONS = [
     "ATAN2",
     "ATANH",
     "AVG",
+    "BAG_OF_WORDS",
     "BIT_AND",
     "BIT_COUNT",
     "BIT_OR",
@@ -242,6 +322,7 @@ BUILTIN_FUNCTIONS = [
     "CBRT",
     "CEIL",
     "CEILING",
+    "CHANGES",
     "CHAR_LENGTH",
     "CHARACTER_LENGTH",
     "CHR",
@@ -254,6 +335,7 @@ BUILTIN_FUNCTIONS = [
     "CORR",
     "COS",
     "COSH",
+    "COSINE_DISTANCE",
     "COT",
     "COTH",
     "COUNT",
@@ -269,12 +351,14 @@ BUILTIN_FUNCTIONS = [
     "CURRENT_TIMESTAMP",
     "DATE",
     "DATE_ADD",
+    "DATE_BUCKET",
     "DATE_DIFF",
     "DATE_FROM_UNIX_DATE",
     "DATE_SUB",
     "DATE_TRUNC",
     "DATETIME",
     "DATETIME_ADD",
+    "DATETIME_BUCKET",
     "DATETIME_DIFF",
     "DATETIME_SUB",
     "DATETIME_TRUNC",
@@ -283,10 +367,16 @@ BUILTIN_FUNCTIONS = [
     "DETERMINISTIC_DECRYPT_STRING",
     "DETERMINISTIC_ENCRYPT",
     "DIV",
+    "DLP_DETERMINISTIC_DECRYPT",
+    "DLP_DETERMINISTIC_ENCRYPT",
+    "DLP_KEY_CHAIN",
+    "EDIT_DISTANCE",
     "ENDS_WITH",
     "ERROR",
+    "EUCLIDEAN_DISTANCE",
     "EXP",
     "EXTERNAL_OBJECT_TRANSFORM",
+    "EXTERNAL_QUERY",
     "EXTRACT",
     "FARM_FINGERPRINT",
     "FIRST_VALUE",
@@ -300,11 +390,14 @@ BUILTIN_FUNCTIONS = [
     "FROM_BASE32",
     "FROM_BASE64",
     "FROM_HEX",
+    "GAP_FILL",
     "GENERATE_ARRAY",
     "GENERATE_DATE_ARRAY",
+    "GENERATE_RANGE_ARRAY",
     "GENERATE_TIMESTAMP_ARRAY",
     "GENERATE_UUID",
     "GREATEST",
+    "GROUPING",
     "HLL_COUNT.EXTRACT",
     "HLL_COUNT.INIT",
     "HLL_COUNT.MERGE",
@@ -317,12 +410,21 @@ BUILTIN_FUNCTIONS = [
     "INT64",
     "IS_INF",
     "IS_NAN",
+    "JSON_ARRAY",
+    "JSON_ARRAY_APPEND",
+    "JSON_ARRAY_INSERT",
     "JSON_EXTRACT",
     "JSON_EXTRACT_ARRAY",
     "JSON_EXTRACT_SCALAR",
     "JSON_EXTRACT_STRING_ARRAY",
+    "JSON_FLATTEN",
+    "JSON_KEYS",
+    "JSON_OBJECT",
     "JSON_QUERY",
     "JSON_QUERY_ARRAY",
+    "JSON_REMOVE",
+    "JSON_SET",
+    "JSON_STRIP_NULLS",
     "JSON_TYPE",
     "JSON_VALUE",
     "JSON_VALUE_ARRAY",
@@ -339,9 +441,24 @@ BUILTIN_FUNCTIONS = [
     "KEYS.REWRAP_KEYSET",
     "KEYS.ROTATE_KEYSET",
     "KEYS.ROTATE_WRAPPED_KEYSET",
+    "KLL_QUANTILES.EXTRACT_FLOAT64",
+    "KLL_QUANTILES.EXTRACT_INT64",
+    "KLL_QUANTILES.EXTRACT_POINT_FLOAT64",
+    "KLL_QUANTILES.EXTRACT_POINT_INT64",
+    "KLL_QUANTILES.INIT_FLOAT64",
+    "KLL_QUANTILES.INIT_INT64",
+    "KLL_QUANTILES.MERGE_FLOAT64",
+    "KLL_QUANTILES.MERGE_INT64",
+    "KLL_QUANTILES.MERGE_PARTIAL",
+    "KLL_QUANTILES.MERGE_POINT_FLOAT64",
+    "KLL_QUANTILES.MERGE_POINT_INT64",
     "LAG",
     "LAST_DAY",
     "LAST_VALUE",
+    "LAX_BOOL",
+    "LAX_FLOAT64",
+    "LAX_INT64",
+    "LAX_STRING",
     "LEAD",
     "LEAST",
     "LEFT",
@@ -356,8 +473,10 @@ BUILTIN_FUNCTIONS = [
     "LTRIM",
     "MAKE_INTERVAL",
     "MAX",
+    "MAX_BY",
     "MD5",
     "MIN",
+    "MIN_BY",
     "MOD",
     "NET.HOST",
     "NET.IP_FROM_STRING",
@@ -374,6 +493,9 @@ BUILTIN_FUNCTIONS = [
     "NTH_VALUE",
     "NTILE",
     "NULLIF",
+    "OBJ.FETCH_METADATA",
+    "OBJ.GET_ACCESS_URL",
+    "OBJ.MAKE_REF",
     "OCTET_LENGTH",
     "OFFSET",
     "ORDINAL",
@@ -390,7 +512,14 @@ BUILTIN_FUNCTIONS = [
     "POW",
     "POWER",
     "RAND",
+    "RANGE",
     "RANGE_BUCKET",
+    "RANGE_CONTAINS",
+    "RANGE_END",
+    "RANGE_INTERSECT",
+    "RANGE_OVERLAPS",
+    "RANGE_SESSIONIZE",
+    "RANGE_START",
     "RANK",
     "REGEXP_CONTAINS",
     "REGEXP_EXTRACT",
@@ -417,6 +546,7 @@ BUILTIN_FUNCTIONS = [
     "SAFE_OFFSET",
     "SAFE_ORDINAL",
     "SAFE_SUBTRACT",
+    "SEARCH",
     "SEC",
     "SECH",
     "SESSION_USER",
@@ -465,6 +595,8 @@ BUILTIN_FUNCTIONS = [
     "ST_GEOGPOINTFROMGEOHASH",
     "ST_GEOHASH",
     "ST_GEOMETRYTYPE",
+    "ST_HAUSDORFFDISTANCE",
+    "ST_HAUSDORFFDWITHIN",
     "ST_INTERIORRINGS",
     "ST_INTERSECTION",
     "ST_INTERSECTS",
@@ -474,6 +606,9 @@ BUILTIN_FUNCTIONS = [
     "ST_ISEMPTY",
     "ST_ISRING",
     "ST_LENGTH",
+    "ST_LINEINTERPOLATEPOINT",
+    "ST_LINELOCATEPOINT",
+    "ST_LINESUBSTRING",
     "ST_MAKELINE",
     "ST_MAKEPOLYGON",
     "ST_MAKEPOLYGONORIENTED",
@@ -483,6 +618,7 @@ BUILTIN_FUNCTIONS = [
     "ST_NUMPOINTS",
     "ST_PERIMETER",
     "ST_POINTN",
+    "ST_REGIONSTATS",
     "ST_SIMPLIFY",
     "ST_SNAPTOGRID",
     "ST_STARTPOINT",
@@ -504,6 +640,8 @@ BUILTIN_FUNCTIONS = [
     "SUM",
     "TAN",
     "TANH",
+    "TEXT_ANALYZE",
+    "TF_IDF",
     "TIME",
     "TIME_ADD",
     "TIME_DIFF",
@@ -511,6 +649,7 @@ BUILTIN_FUNCTIONS = [
     "TIME_TRUNC",
     "TIMESTAMP",
     "TIMESTAMP_ADD",
+    "TIMESTAMP_BUCKET",
     "TIMESTAMP_DIFF",
     "TIMESTAMP_MICROS",
     "TIMESTAMP_MILLIS",
@@ -526,6 +665,7 @@ BUILTIN_FUNCTIONS = [
     "TRANSLATE",
     "TRIM",
     "TRUNC",
+    "TYPEOF",
     "UNICODE",
     "UNIX_DATE",
     "UNIX_MICROS",
@@ -535,6 +675,8 @@ BUILTIN_FUNCTIONS = [
     "VAR_POP",
     "VAR_SAMP",
     "VARIANCE",
+    "VECTOR_INDEX.STATISTICS",
+    "VECTOR_SEARCH",
 ]
 QUOTE = "\"\"\"|'''|\"|'"
 # strings contain any character, with backslash always followed by one more character
@@ -549,7 +691,7 @@ def _keyword_pattern(words):
     match whole words.
     """
     return re.compile(
-        "(?:" + "|".join(pattern.replace(" ", r"\s+") for pattern in words) + r")\b",
+        "(" + "|".join(pattern.replace(" ", r"\s+") for pattern in words) + r")\b",
         re.IGNORECASE,
     )
 
@@ -564,6 +706,12 @@ class Token:
     def __post_init__(self):
         """Enable post-init for child classes."""
         pass
+
+
+class UnknownToken(Token):
+    """Unknown token."""
+
+    pattern = re.compile(r"\S+")
 
 
 class Comment(Token):
@@ -600,29 +748,39 @@ class Whitespace(Token):
     pattern = re.compile(r"\s[^\S\n]*")
 
 
-class ReservedKeyword(Token):
+class Keyword(Token):
     """Token that gets capitalized and separates words with a single space."""
+
+
+class ReservedKeyword(Keyword):
+    """Reserved keywords."""
 
     pattern = _keyword_pattern(RESERVED_KEYWORDS)
 
 
-class SpaceBeforeBracketKeyword(ReservedKeyword):
+class DataTypeKeyword(Keyword):
+    """Data type keywords."""
+
+    pattern = _keyword_pattern(DATA_TYPE_KEYWORDS)
+
+
+class SpaceBeforeBracketKeyword(Keyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
     pattern = _keyword_pattern(
         [
-            "IN",
             r"\* EXCEPT",
             r"\* REPLACE",
-            "NOT",
+            "CUBE",
+            "GROUPING SETS",
+            "INTERVAL",
             "OVER",
-            "IS DISTINCT FROM",
-            "IS NOT DISTINCT FROM",
+            "ROLLUP",
         ]
     )
 
 
-class BlockKeyword(ReservedKeyword):
+class BlockKeyword(Keyword):
     """Keyword that separates indented blocks, such as conditionals."""
 
 
@@ -636,9 +794,10 @@ class BlockStartKeyword(BlockKeyword):
             "CREATE PROCEDURE",
             # negative lookahead prevents matching IF function
             r"IF(?!(\s|\n)*[(])",
-            "WHILE",
             "LOOP",
             "CASE",
+            "DO",
+            r"REPEAT(?!\()",
         ]
     )
 
@@ -646,14 +805,14 @@ class BlockStartKeyword(BlockKeyword):
 class BlockEndKeyword(BlockKeyword):
     """Keyword that gets its own line preceded by decreased indent."""
 
-    pattern = _keyword_pattern(["END( (WHILE|LOOP|IF))?"])
+    pattern = _keyword_pattern(["END( (WHILE|LOOP|IF|FOR|REPEAT))?"])
 
 
 class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
     """Keyword that ends one indented block and starts another."""
 
     pattern = _keyword_pattern(
-        [r"BEGIN(?!\s+TRANSACTION\b)", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"]
+        ["BEGIN(?! TRANSACTION)", "EXCEPTION WHEN ERROR THEN", "ELSEIF"]
     )
 
 
@@ -688,45 +847,51 @@ class CaseSubclause(NewlineKeyword):
     pattern = _keyword_pattern(["WHEN"])
 
 
-class MaybeCaseSubclause(ReservedKeyword):
+class MaybeCaseSubclause(Keyword):
     """Keyword that needs context to determine whether it is for a CASE or an IF."""
 
     pattern = _keyword_pattern(["THEN", "ELSE"])
 
 
-class AngleBracketKeyword(ReservedKeyword):
+class AngleBracketKeyword(Keyword):
     """Keyword indicating that if the next token is '<' it is a bracket."""
 
-    pattern = _keyword_pattern(["ARRAY", "STRUCT"])
+    pattern = _keyword_pattern(["ARRAY", "RANGE", "STRUCT"])
 
 
 class Identifier(Token):
     """Identifier for a column, table, or other database object."""
 
-    pattern = re.compile(r"[A-Za-z_][A-Za-z_0-9]*|`(?:\\.|[^\\`])+`")
+    pattern = re.compile(r"[A-Za-z_][A-Za-z_0-9]*|`(\\.|[^\\`])+`")
 
 
 class ProjectIdentifier(Identifier):
     """Identifier for a GCP project, can contain hyphens unlike Identifier."""
 
-    pattern = re.compile(r"[A-Za-z](?:[A-Za-z_0-9-]*[A-Za-z_0-9])?|`(?:\\.|[^\\`])+`")
+    pattern = re.compile(r"[A-Za-z]([A-Za-z_0-9-]*[A-Za-z_0-9])?|`(\\.|[^\\`])+`")
 
 
 class QualifiedIdentifier(Identifier):
     """Fully or partially qualified identifier for a column, table, or other database object."""
 
     pattern = re.compile(
-        rf"(?:(?:{ProjectIdentifier.pattern.pattern}\.)?(?:{Identifier.pattern.pattern})\.)+(?:{Identifier.pattern.pattern})"
+        rf"(({ProjectIdentifier.pattern.pattern}\.)?({Identifier.pattern.pattern})\.)+({Identifier.pattern.pattern})"
     )
+
+
+class PseudocolumnIdentifier(Identifier):
+    """Identifier for one of BigQuery's special pseudocolumns."""
+
+    pattern = _keyword_pattern(PSEUDOCOLUMNS)
 
 
 class BuiltInFunctionIdentifier(Identifier):
     """Identifier for a built-in function."""
 
     pattern = re.compile(
-        r"(?:SAFE\.)?(?:"
-        + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS)
-        + r")(?=\()",
+        (r"(SAFE\.)?(" + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS) + r")(?=\()")
+        # Some functions like `CURRENT_DATE` can be called without trailing parentheses.
+        + r"|CURRENT_(DATE|DATETIME|TIME|TIMESTAMP)\b",
         re.IGNORECASE,
     )
 
@@ -742,11 +907,11 @@ class Literal(Token):
 
     pattern = re.compile(
         # String literal
-        rf"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
+        f"(r?b|b?r)?(?P<quote>{QUOTE})({STRING_CONTENT})*?(?P=quote)"
         # Hexadecimal integer literal
         "|0[xX][0-9a-fA-F]+"
         # Decimal integer or float literal
-        r"|\d+\.?\d*(?:[Ee][+-]?)?\d*"
+        r"|\d+\.?\d*([Ee][+-]?)?\d*"
     )
 
 
@@ -848,13 +1013,9 @@ class StatementSeparator(Token):
 class Operator(Token):
     """Operator."""
 
-    pattern = re.compile(r"<<|>>|>=|<=|=>|<>|!=|.")
-
-
-class ConcatenationOperator(Token):
-    """Concatenation operator."""
-
-    pattern = re.compile(r"\|\|")
+    # The multi-symbol operators need to be specified before the single-symbol operators
+    # because the first pattern that matches will be used.
+    pattern = re.compile(r"<<|>>|>=|<=|=>|<>|!=|\|\||[-.*/&^+<=>|~]")
 
 
 class FieldAccessOperator(Operator):
@@ -867,6 +1028,24 @@ class FieldAccessOperator(Operator):
     """
 
     pattern = re.compile(r"\.")
+
+
+class PipeOperator(Operator):
+    """Pipe operator."""
+
+    pattern = re.compile(r"\|>")
+
+
+class OperatorKeyword(SpaceBeforeBracketKeyword):
+    """Operator keyword."""
+
+    pattern = _keyword_pattern(OPERATOR_KEYWORDS)
+
+
+class OtherKeyword(Keyword):
+    """Other keywords."""
+
+    pattern = _keyword_pattern(OTHER_KEYWORDS)
 
 
 BIGQUERY_TOKEN_PRIORITY = [
@@ -889,21 +1068,26 @@ BIGQUERY_TOKEN_PRIORITY = [
     NewlineKeyword,
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
-    ReservedKeyword,
-    ConcatenationOperator,
-    Literal,
-    BuiltInFunctionIdentifier,
-    QualifiedIdentifier,
-    Identifier,
-    QueryParameter,
     OpeningBracket,
     ClosingBracket,
     MaybeOpeningAngleBracket,
     MaybeClosingAngleBracket,
-    FieldAccessOperator,
     ExpressionSeparator,
     StatementSeparator,
+    FieldAccessOperator,
+    PipeOperator,
     Operator,
+    OperatorKeyword,
+    DataTypeKeyword,
+    OtherKeyword,
+    ReservedKeyword,
+    Literal,
+    BuiltInFunctionIdentifier,
+    QualifiedIdentifier,
+    PseudocolumnIdentifier,
+    Identifier,
+    QueryParameter,
+    UnknownToken,
 ]
 
 
@@ -912,7 +1096,7 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
     open_blocks: list[BlockStartKeyword] = []
     open_angle_brackets = 0
     angle_bracket_is_operator = True
-    reserved_keyword_is_identifier = False
+    keyword_is_identifier = False
     while query:
         for token_type in token_priority:
             match = token_type.pattern.match(query)
@@ -936,8 +1120,8 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
                 token = ClosingBracket(token.value)
                 open_angle_brackets -= 1
             elif (
-                reserved_keyword_is_identifier
-                and isinstance(token, ReservedKeyword)
+                keyword_is_identifier
+                and isinstance(token, Keyword)
                 and Identifier.pattern.match(token.value) is not None
             ):
                 continue  # prevent matching identifier as keyword
@@ -956,8 +1140,8 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
                     open_angle_brackets > 0 or isinstance(token, AngleBracketKeyword)
                 )
                 # field access operator may be followed by an identifier that
-                # would otherwise be a reserved keyword.
-                reserved_keyword_is_identifier = isinstance(
+                # would otherwise be considered a keyword.
+                keyword_is_identifier = isinstance(
                     token, (FieldAccessOperator, AliasSeparator)
                 )
             break

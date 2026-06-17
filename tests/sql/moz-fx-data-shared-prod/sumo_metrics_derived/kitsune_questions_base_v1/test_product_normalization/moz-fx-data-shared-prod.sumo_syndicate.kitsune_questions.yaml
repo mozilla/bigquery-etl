@@ -1,0 +1,12 @@
+- question_id: 1
+  created_utc: "2024-01-15 12:00:00 UTC"
+  product: mobile
+- question_id: 2
+  created_utc: "2024-01-15 12:00:00 UTC"
+  product: ios
+- question_id: 3
+  created_utc: "2024-01-15 12:00:00 UTC"
+  product: firefox-enterprise
+- question_id: 4
+  created_utc: "2024-01-15 12:00:00 UTC"
+  product: firefox

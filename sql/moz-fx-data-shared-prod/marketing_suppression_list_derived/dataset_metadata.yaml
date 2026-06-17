@@ -7,7 +7,7 @@ labels: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:braze
+      - workgroup:braze/data-viewers
       - workgroup:braze/ingestion-mozilla-dev
   - role: roles/bigquery.dataEditor
     members:

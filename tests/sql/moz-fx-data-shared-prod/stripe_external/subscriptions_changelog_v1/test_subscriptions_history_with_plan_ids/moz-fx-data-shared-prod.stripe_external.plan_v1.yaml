@@ -1,0 +1,6 @@
+- id: plan_1
+  product_id: prod_1
+- id: plan_2
+  product_id: prod_2
+- id: plan_3
+  product_id: prod_3

@@ -1,0 +1,35 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.report_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.gclid
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.conversion_event
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.activity_date
+    metrics:
+    - saved_metric_id: is_not_null
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.gclid
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.conversion_event
+    metrics:
+    - saved_metric_id: composite_key_uniqueness_2_column
+      parameters:
+      - key: col_1
+        column_name: gclid
+      - key: col_1_string
+        string_value: gclid
+      - key: col_2
+        column_name: conversion_event
+      - key: col_2_string
+        string_value: conversion_event
+      - key: table
+        string_value: moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1.*
+    metrics:
+    - saved_metric_id: volume
+    - saved_metric_id: freshness

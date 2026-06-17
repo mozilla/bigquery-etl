@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Task Run Costs
+description: Derived Firefox-CI task run cost data.
+owners:
+- ahalberstadt@mozilla.com

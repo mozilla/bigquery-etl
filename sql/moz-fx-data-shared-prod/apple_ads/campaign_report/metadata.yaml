@@ -1,0 +1,5 @@
+friendly_name: Campaign Report (Apple)
+description: |-
+  Each record represents the daily ad performance of each campaign.
+owners:
+- kik@mozilla.com

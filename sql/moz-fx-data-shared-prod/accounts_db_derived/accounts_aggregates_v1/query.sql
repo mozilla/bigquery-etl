@@ -60,4 +60,4 @@ SELECT
 FROM
   new_data
 WHERE
-  NOT EXISTS(SELECT * FROM current_data WHERE submission_date = @submission_date)
+  NOT EXISTS (SELECT * FROM current_data WHERE submission_date = @submission_date)

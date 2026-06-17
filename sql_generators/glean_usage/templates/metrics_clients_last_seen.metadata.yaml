@@ -33,7 +33,7 @@ monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
 schema:
   derived_from:
-  - table: ['moz-fx-data-shared-prod', '{{ app_name }}', 'metrics_clients_daily_v1']
+  - table: ['moz-fx-data-shared-prod', '{{ app_name }}_derived', 'metrics_clients_daily_v1']
 {%- if deprecated_app %}
 deprecated: true
 {%- endif -%}

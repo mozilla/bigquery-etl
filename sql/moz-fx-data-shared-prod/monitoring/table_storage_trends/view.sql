@@ -4,9 +4,9 @@ AS
 WITH dates_table AS (
   SELECT
     submission_date,
-    DATE_SUB(submission_date, INTERVAL 3 day) AS date_3_days_ago,
-    DATE_SUB(submission_date, INTERVAL 7 day) AS date_7_days_ago,
-    DATE_SUB(submission_date, INTERVAL 14 day) AS date_14_days_ago
+    DATE_SUB(submission_date, INTERVAL 3 DAY) AS date_3_days_ago,
+    DATE_SUB(submission_date, INTERVAL 7 DAY) AS date_7_days_ago,
+    DATE_SUB(submission_date, INTERVAL 14 DAY) AS date_14_days_ago
   FROM
     (
       SELECT

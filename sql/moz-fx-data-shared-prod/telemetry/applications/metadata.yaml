@@ -1,0 +1,5 @@
+friendly_name: Applications
+description: |-
+  Information about existing applications.
+owners:
+- ascholtz@mozilla.com

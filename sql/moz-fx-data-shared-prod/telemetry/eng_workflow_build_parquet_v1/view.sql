@@ -24,7 +24,7 @@ SELECT
     CAST(system.physical_cores AS int64) AS physical_cores,
     system.virtual_machine
   ) AS system,
-  FORMAT_TIMESTAMP('%FT%X', time) AS time,
+  FORMAT_TIMESTAMP('%FT%X', `time`) AS time,
   exception,
   ARRAY(
     SELECT AS STRUCT

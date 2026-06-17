@@ -21,12 +21,14 @@ from .tokenizer import (
     JinjaComment,
     JinjaExpression,
     JinjaStatement,
+    Keyword,
     LineComment,
     Literal,
     NewlineKeyword,
     OpeningBracket,
     Operator,
-    ReservedKeyword,
+    PipeOperator,
+    PseudocolumnIdentifier,
     SpaceBeforeBracketKeyword,
     StatementSeparator,
     TopLevelKeyword,
@@ -70,6 +72,11 @@ def simple_format(tokens, indent="  "):
             # decrease indent from previous TopLevelKeyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
                 indent_types.pop()
+        elif isinstance(token, PipeOperator):
+            if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
+            if indent_types and indent_types[-1] is PipeOperator:
+                indent_types.pop()
         elif isinstance(token, BlockEndKeyword):
             # decrease indent to match last BlockKeyword
             while indent_types and indent_types.pop() is not BlockKeyword:
@@ -108,7 +115,13 @@ def simple_format(tokens, indent="  "):
             require_newline_before_next_token
             or isinstance(
                 token,
-                (NewlineKeyword, ClosingBracket, BlockKeyword, JinjaBlockStatement),
+                (
+                    NewlineKeyword,
+                    PipeOperator,
+                    ClosingBracket,
+                    BlockKeyword,
+                    JinjaBlockStatement,
+                ),
             )
             or prev_was_statement_separator
         ):
@@ -129,10 +142,10 @@ def simple_format(tokens, indent="  "):
 
         if can_format:
             # uppercase keywords and replace contained whitespace with single spaces
-            if isinstance(token, ReservedKeyword):
+            if isinstance(token, Keyword):
                 token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
-            # uppercase built-in function names
-            elif isinstance(token, BuiltInFunctionIdentifier):
+            # uppercase pseudocolumns and built-in function names
+            elif isinstance(token, (PseudocolumnIdentifier, BuiltInFunctionIdentifier)):
                 token = replace(token, value=token.value.upper())
 
         yield token
@@ -144,6 +157,7 @@ def simple_format(tokens, indent="  "):
                 Comment,
                 BlockKeyword,
                 TopLevelKeyword,
+                PipeOperator,
                 OpeningBracket,
                 ExpressionSeparator,
                 StatementSeparator,
@@ -174,12 +188,16 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, JinjaBlockStart):
             # increase indent
             indent_types.append(JinjaBlockStart)
-        elif isinstance(token, (TopLevelKeyword, OpeningBracket, CaseSubclause)):
+        elif isinstance(
+            token, (TopLevelKeyword, PipeOperator, OpeningBracket, CaseSubclause)
+        ):
             # increase indent
             indent_types.append(type(token))
         elif isinstance(token, StatementSeparator):
             # decrease for previous top level keyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
+            if indent_types and indent_types[-1] is PipeOperator:
                 indent_types.pop()
         first_token = False
 

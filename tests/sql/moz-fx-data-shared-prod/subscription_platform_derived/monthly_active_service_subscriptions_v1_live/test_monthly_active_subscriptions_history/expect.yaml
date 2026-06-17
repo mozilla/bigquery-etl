@@ -1,0 +1,130 @@
+# Subscription 1: start at midnight on 1st of month, end in middle of a later month
+- id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-01
+  month_start_date: 2020-01-01
+  month_end_date: 2020-01-31
+  service_id: svc_1
+  service_subscriptions_history_id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-01-01T00:00:00.000000
+  subscription: &sub_1-svc_1-2020-01
+    id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1
+    service:
+      id: svc_1
+    other_services: []
+    is_active: true
+    started_at: 2020-01-01 00:00:00Z
+  was_active_at_month_start: true
+  was_active_at_month_end: true
+- id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-02
+  month_start_date: 2020-02-01
+  month_end_date: 2020-02-29
+  service_id: svc_1
+  service_subscriptions_history_id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-01-01T00:00:00.000000
+  subscription: *sub_1-svc_1-2020-01
+  was_active_at_month_start: true
+  was_active_at_month_end: true
+- id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-03
+  month_start_date: 2020-03-01
+  month_end_date: 2020-03-31
+  service_id: svc_1
+  service_subscriptions_history_id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-03-15T00:00:00.000000
+  subscription:
+    id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1
+    service:
+      id: svc_1
+    other_services: []
+    is_active: false
+    started_at: 2020-01-01 00:00:00Z
+    ended_at: 2020-03-15 00:00:00Z
+  was_active_at_month_start: true
+  was_active_at_month_end: false
+
+# Subscription 2: start in middle of month, end at midnight on 1st of a later month
+- id: Apple-sub_2-svc_1-2020-02-15T00:00:00.000000-2020-02
+  month_start_date: 2020-02-01
+  month_end_date: 2020-02-29
+  service_id: svc_1
+  service_subscriptions_history_id: Apple-sub_2-svc_1-2020-02-15T00:00:00.000000-2020-02-15T00:00:00.000000
+  subscription: &sub_2-svc_1-2020-02
+    id: Apple-sub_2-svc_1-2020-02-15T00:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_2
+    service:
+      id: svc_1
+    other_services: []
+    is_active: true
+    started_at: 2020-02-15 00:00:00Z
+  was_active_at_month_start: false
+  was_active_at_month_end: true
+- id: Apple-sub_2-svc_1-2020-02-15T00:00:00.000000-2020-03
+  month_start_date: 2020-03-01
+  month_end_date: 2020-03-31
+  service_id: svc_1
+  service_subscriptions_history_id: Apple-sub_2-svc_1-2020-02-15T00:00:00.000000-2020-02-15T00:00:00.000000
+  subscription: *sub_2-svc_1-2020-02
+  was_active_at_month_start: true
+  was_active_at_month_end: true
+
+# Subscription 3: end with `ended_at` set to prior month
+- id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000-2020-03
+  month_start_date: 2020-03-01
+  month_end_date: 2020-03-31
+  service_id: svc_1
+  service_subscriptions_history_id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000-2020-03-15T00:00:00.000000
+  subscription: &sub_3-svc_1-2020-03
+    id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_3
+    service:
+      id: svc_1
+    other_services: []
+    is_active: true
+    started_at: 2020-03-15 00:00:00Z
+  was_active_at_month_start: false
+  was_active_at_month_end: true
+- id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000-2020-04
+  month_start_date: 2020-04-01
+  month_end_date: 2020-04-30
+  service_id: svc_1
+  service_subscriptions_history_id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000-2020-03-15T00:00:00.000000
+  subscription: *sub_3-svc_1-2020-03
+  was_active_at_month_start: true
+  was_active_at_month_end: true
+- id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000-2020-05
+  month_start_date: 2020-05-01
+  month_end_date: 2020-05-31
+  service_id: svc_1
+  service_subscriptions_history_id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000-2020-05-02T00:00:00.000000
+  subscription:
+    id: Google-sub_3-svc_1-2020-03-15T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_3
+    service:
+      id: svc_1
+    other_services: []
+    is_active: false
+    started_at: 2020-03-15 00:00:00Z
+    ended_at: 2020-04-29 00:00:00Z
+  was_active_at_month_start: true
+  was_active_at_month_end: false
+
+# Subscription 4: start and end in same month
+- id: Stripe-sub_4-svc_1-2020-04-12T00:00:00.000000-2020-04
+  month_start_date: 2020-04-01
+  month_end_date: 2020-04-30
+  service_id: svc_1
+  service_subscriptions_history_id: Stripe-sub_4-svc_1-2020-04-12T00:00:00.000000-2020-04-13T00:00:00.000000
+  subscription:
+    id: Stripe-sub_4-svc_1-2020-04-12T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_4
+    service:
+      id: svc_1
+    other_services: []
+    is_active: false
+    started_at: 2020-04-12 00:00:00Z
+    ended_at: 2020-04-13 00:00:00Z
+  was_active_at_month_start: false
+  was_active_at_month_end: false

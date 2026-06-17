@@ -8,7 +8,7 @@ WITH submission_date_activity AS (
     submission_date = @submission_date
     AND is_dau IS TRUE
 ),
--- Get all the cohorts that are still in range of the current day of activity (180 days)
+-- Get all the cohorts that are still in range of the current day of activity (768 days)
 cohorts_in_range AS (
   SELECT
     client_id,
@@ -49,7 +49,7 @@ cohorts_in_range AS (
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
     cohort_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 768 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),
 activity_cohort_match AS (

@@ -1,0 +1,11 @@
+friendly_name: Desktop Search Aggregates For Search Report
+description: 'This query creates a table based on search_aggregate containing
+
+  search metrics aggregated by geo, locale, os, engine, app_version,
+
+  submission_date.
+
+  Originally created for the search report dashboard.'
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com

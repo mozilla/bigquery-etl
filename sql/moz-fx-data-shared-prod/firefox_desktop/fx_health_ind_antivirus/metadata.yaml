@@ -1,7 +1,0 @@
-friendly_name: Firefox Health Indicator - Antivirus Usage Trends
-description: |-
-  Aggregate table showing antivirus software usage by OS
-owners:
-- kwindau@mozilla.com
-labels:
-  owner1: kwindau

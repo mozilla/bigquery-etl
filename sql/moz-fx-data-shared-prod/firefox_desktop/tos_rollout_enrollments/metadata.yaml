@@ -1,0 +1,5 @@
+friendly_name: Tos Rollout Enrollments
+description: |-
+  A client-level dataset from clients enrolled in the desktop ToS scaled rollout experiments.
+owners:
+- dberry@mozilla.com

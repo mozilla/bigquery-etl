@@ -1,0 +1,6 @@
+friendly_name: Structured missing columns
+description: 'Generates the list of missing columns in structured datasets.
+
+  '
+owners:
+- amiyaguchi@mozilla.com

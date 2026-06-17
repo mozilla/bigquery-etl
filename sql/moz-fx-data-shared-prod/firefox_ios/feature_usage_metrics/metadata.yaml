@@ -1,0 +1,5 @@
+friendly_name: Feature Usage Metrics (Firefox iOS)
+description: Metrics from metrics pings for mobile feature usage dashboards (iOS)
+owners:
+- rzhao@mozilla.com
+- vsabino@mozilla.com

@@ -254,7 +254,7 @@ desktop_dau_data AS (
     client_id,
     normalized_channel
   FROM
-    `mozdata.telemetry.desktop_active_users`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
     AND is_dau
@@ -269,7 +269,7 @@ mobile_dau_data AS (
     client_id,
     normalized_channel
   FROM
-    `mozdata.telemetry.mobile_active_users`
+    `moz-fx-data-shared-prod.telemetry.mobile_active_users`
   WHERE
     submission_date = @submission_date
     AND is_dau

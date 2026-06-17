@@ -1,0 +1,25 @@
+friendly_name: Translation Daily Locale Base (Daily)
+description: |
+  Daily translation/localization metrics for SUMO knowledge base articles.
+
+  Single source of truth tracking:
+  - Translations completed within 30-day SLA for 5 priority locales
+  - Translation velocity and coverage metrics
+
+  Grain: Daily x Locale (fr, es, de, it, zh-CN)
+
+  Used by:
+  - translations_weekly_v1 (weekly aggregation)
+  - translations_monthly_v1 (monthly aggregation)
+  - Translation dashboard and SLA reporting
+owners:
+  - plee@mozilla.com
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

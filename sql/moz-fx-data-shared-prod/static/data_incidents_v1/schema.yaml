@@ -1,22 +1,29 @@
 fields:
 - mode: NULLABLE
   name: start_date
+  description: Date when the data incident began
   type: DATE
 - mode: NULLABLE
+  description: Date when the data incident was resolved
   name: end_date
   type: DATE
 - mode: NULLABLE
+  description: Short name identifying the data incident
   name: incident
   type: STRING
 - mode: NULLABLE
+  description: Explanation of the data incident and its impact on the data
   name: description
   type: STRING
 - mode: NULLABLE
+  description: Link to bug/jira tracking the incident
   name: bug
   type: STRING
 - mode: NULLABLE
+  description: Product affected by the incident
   name: product
   type: STRING
 - mode: NULLABLE
+  description: Version of the product affected by the incident
   name: version
   type: STRING

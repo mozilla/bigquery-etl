@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Worker Metrics
+description: Derived Firefox-CI worker metrics exported from Google Cloud Monitoring.
+owners:
+- ahalberstadt@mozilla.com

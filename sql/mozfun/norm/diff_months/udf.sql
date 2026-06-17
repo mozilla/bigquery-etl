@@ -17,11 +17,11 @@ CREATE OR REPLACE FUNCTION norm.diff_months(
       AND IF(
         inclusive,
         -- compare in both directions to handle end of month correctly
-        start + INTERVAL months MONTH + grace_period <= `end`
-        AND start <= `end` - INTERVAL months MONTH - grace_period,
+        (start + (INTERVAL months MONTH) + grace_period) <= `end`
+        AND start <= (`end` - (INTERVAL months MONTH) - grace_period),
         -- exclusive
-        start + INTERVAL months MONTH + grace_period < `end`
-        AND start < `end` - INTERVAL months MONTH - grace_period
+        (start + (INTERVAL months MONTH) + grace_period) < `end`
+        AND start < (`end` - (INTERVAL months MONTH) - grace_period)
       )
   )
 );

@@ -1,0 +1,56 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Logical date used by the orchestrator. Also, used for partitioning.
+
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name as defined inside Google Play Store.
+
+- name: version_code
+  type: STRING
+  mode: NULLABLE
+  description: Version of the app that was running on the user's device.
+
+- name: crash_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Percentage of distinct users in the aggregation period that experienced at least one crash.
+
+- name: crash_rate28d_user_weighted
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Rolling average value of crashRate in the last 28 days.
+    The daily values are weighted by the count of distinct users for the day. Not supported in HOURLY granularity.
+
+- name: user_perceived_crash_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Percentage of distinct users in the aggregation period that experienced
+    at least one crash while they were actively using your app (a user-perceived crash).
+    An app is considered to be in active use if it is displaying any activity or executing any foreground service.
+
+- name: user_perceived_crash_rate28d_user_weighted
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Rolling average value of userPerceivedCrashRate in the last 28 days.
+    The daily values are weighted by the count of distinct users for the day.
+
+- name: distinct_users
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Count of distinct users in the aggregation period that were used as normalization value
+    for the crashRate and userPerceivedCrashRate metrics. A user is counted in this metric
+    if they used the app actively during the aggregation period.
+    An app is considered to be in active use if it is displaying any activity
+    or executing any foreground service. Care must be taken not to aggregate this count further,
+    as it may result in users being counted multiple times.
+    The value is rounded to the nearest multiple of 10, 100, 1,000 or 1,000,000,
+    depending on the magnitude of the value.

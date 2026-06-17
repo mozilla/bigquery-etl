@@ -1,7 +1,7 @@
 friendly_name: Cohort Daily Statistics V1 - Glean
 description: |-
   Cohort Daily Statistics tracks retention for a cohort with
-  the same first seen date and same set of attributes over the next 180 days
+  the same first seen date and same set of attributes over the next 768 days
 
   Note that the values for client attributes are based on the
   attributes at the time the cohort started (rather than the
@@ -10,6 +10,7 @@ description: |-
   Related Documentation:
   - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
   - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9516
+  - Jira ticket to extend time range: https://mozilla-hub.atlassian.net/browse/DENG-10515
   - Data Model README: ./README.md
 owners:
 - mhirose@mozilla.com

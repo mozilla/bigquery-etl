@@ -1,0 +1,4 @@
+friendly_name: Airflow DAG import errors
+description: List of DAG import errors
+owners:
+- kik@mozilla.com

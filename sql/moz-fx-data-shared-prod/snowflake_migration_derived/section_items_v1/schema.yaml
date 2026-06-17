@@ -1,0 +1,45 @@
+fields:
+- mode: NULLABLE
+  type: STRING
+  name: approved_corpus_item_external_id
+  description: Approved corpus item external identifier linked to the section item.
+- mode: NULLABLE
+  type: STRING
+  name: event_name
+  description: Snowplow object_update trigger for the section item event.
+- mode: NULLABLE
+  type: STRING
+  name: url
+  description: URL of the section item.
+- mode: NULLABLE
+  type: STRING
+  name: section_id
+  description: External identifier of the section containing the item.
+- mode: NULLABLE
+  type: STRING
+  name: section_item_id
+  description: Identifier of the section item.
+- mode: NULLABLE
+  type: TIMESTAMP
+  name: created_at
+  description: Timestamp when the section item was created.
+- mode: NULLABLE
+  type: STRING
+  name: source
+  description: Source associated with the section item update.
+- mode: REPEATED
+  type: STRING
+  name: reasons
+  description: List of reasons for deactivating the section item.
+- mode: NULLABLE
+  type: TIMESTAMP
+  name: happened_at
+  description: Event creation timestamp from Snowplow derived_tstamp.
+- mode: NULLABLE
+  type: STRING
+  name: schema_version
+  description: Snowplow context schema version for the section item.
+- mode: NULLABLE
+  type: STRING
+  name: section_item_id_object_update_trigger_key
+  description: Unique key combining section_item_id and event name to identify the section item event.

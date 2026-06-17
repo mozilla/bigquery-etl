@@ -25,6 +25,8 @@ WITH events_unnested AS (
     metrics.quantity.topsites_rows AS topsite_rows,
     metrics.quantity.topsites_sponsored_tiles_configured AS topsite_sponsored_tiles_configured,
     metrics.string_list.newtab_blocked_sponsors AS newtab_blocked_sponsors,
+    metrics.string.newtab_locale AS newtab_locale,
+    metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     ping_info AS ping_info,
     mozfun.newtab.is_default_ui_v1(
       category,
@@ -35,7 +37,7 @@ WITH events_unnested AS (
     ) AS is_default_ui,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     extra AS event_details,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
@@ -56,7 +58,7 @@ WITH events_unnested AS (
         AND name IN (
           'opened',
           'closed',
-          -- widgets
+          -- legacy widgets
           'weather_change_display',
           'weather_open_provider_url',
           'weather_location_selected',
@@ -69,6 +71,11 @@ WITH events_unnested AS (
           'widgets_timer_user_event',
           'widgets_lists_impression',
           'widgets_timer_impression',
+          -- scalable widgets
+          'widgets_impression',
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_action',
           -- wallpaper
           'wallpaper_click',
           'wallpaper_category_click',
@@ -263,6 +270,7 @@ core_visit_metrics AS (
     LOGICAL_OR(
       event_category = 'newtab'
       AND event_name IN (
+        -- legacy widgets
         'weather_change_display',
         'weather_open_provider_url',
         'weather_location_selected',
@@ -270,7 +278,11 @@ core_visit_metrics AS (
         'widgets_lists_change_display',
         'widgets_timer_change_display',
         'widgets_timer_toggle_notification',
-        'widgets_timer_user_event'
+        'widgets_timer_user_event',
+        -- scalable widgets
+        'widgets_enabled',
+        'widgets_user_event',
+        'widgets_container_action'
       )
     )
     AND LOGICAL_OR(is_default_ui) AS is_widget_interaction,
@@ -319,6 +331,10 @@ core_visit_metrics AS (
     ANY_VALUE(topsite_rows) AS topsite_rows,
     ANY_VALUE(topsite_sponsored_tiles_configured) AS topsite_sponsored_tiles_configured,
     ANY_VALUE(newtab_blocked_sponsors) AS newtab_blocked_sponsors,
+    IFNULL(
+      ANY_VALUE(newtab_content_surface_id),
+      mozfun.newtab.scheduled_surface_id_v1(ANY_VALUE(country), ANY_VALUE(newtab_locale))
+    ) AS newtab_content_surface_id,
     IF(
       LOGICAL_OR(is_default_ui),
       COUNTIF(
@@ -382,7 +398,11 @@ core_visit_metrics AS (
           'sections_follow_section',
           'sections_unblock_section',
           'sections_unfollow_section',
-          'inline_selection_click'
+          'inline_selection_click',
+          -- scalable widgets
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_action'
         )
       ),
       0
@@ -418,7 +438,11 @@ core_visit_metrics AS (
           'sections_follow_section',
           'sections_unblock_section',
           'sections_unfollow_section',
-          'inline_selection_click'
+          'inline_selection_click',
+          -- scalable widgets
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_action'
         )
       ),
       0
@@ -505,6 +529,7 @@ core_visit_metrics AS (
       COUNTIF(
         event_category = 'newtab'
         AND event_name IN (
+          -- legacy widgets
           'weather_change_display',
           'weather_open_provider_url',
           'weather_location_selected',
@@ -512,7 +537,11 @@ core_visit_metrics AS (
           'widgets_lists_change_display',
           'widgets_timer_change_display',
           'widgets_timer_toggle_notification',
-          'widgets_timer_user_event'
+          'widgets_timer_user_event',
+          -- scalable widgets
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_action'
         )
       ),
       0
@@ -522,9 +551,12 @@ core_visit_metrics AS (
       COUNTIF(
         event_category = 'newtab'
         AND event_name IN (
+          -- legacy widgets
           'weather_impression',
           'widgets_lists_impression',
-          'widgets_timer_impression'
+          'widgets_timer_impression',
+          --scalable widgets
+          'widgets_impression'
         )
       ),
       0
@@ -555,9 +587,41 @@ core_visit_metrics AS (
       COUNTIF(event_category = 'newtab' AND event_name IN ('sections_impression')),
       0
     ) AS other_impression_count,
-    MAX(IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)) - MIN(
-      IF(event_category = 'newtab' AND event_name = "opened", event_timestamp, NULL)
-    ) AS newtab_visit_duration,
+    CASE
+      WHEN (
+          MAX(
+            IF(
+              LOWER(event_category) = 'newtab'
+              AND LOWER(event_name) = "closed",
+              event_timestamp,
+              NULL
+            )
+          ) - MIN(
+            IF(
+              LOWER(event_category) = 'newtab'
+              AND LOWER(event_name) = "opened",
+              event_timestamp,
+              NULL
+            )
+          )
+        ) < 0
+        THEN NULL
+      ELSE MAX(
+          IF(
+            LOWER(event_category) = 'newtab'
+            AND LOWER(event_name) = "closed",
+            event_timestamp,
+            NULL
+          )
+        ) - MIN(
+          IF(
+            LOWER(event_category) = 'newtab'
+            AND LOWER(event_name) = "opened",
+            event_timestamp,
+            NULL
+          )
+        )
+    END AS newtab_visit_duration,
     MIN(
       IF(
         event_category = 'newtab'

@@ -2,7 +2,7 @@
 {{ is_unique(columns=["client_id"]) }}
 
 #fail
-ASSERT(
+ASSERT (
   SELECT
     COUNTIF(first_seen.client_id IS NULL)
   FROM
@@ -15,7 +15,7 @@ ASSERT(
 ) = 0;
 
 #fail
-ASSERT(
+ASSERT (
   SELECT
     COUNTIF(first_seen.client_id IS NULL)
   FROM

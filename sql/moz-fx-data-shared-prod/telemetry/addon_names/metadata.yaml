@@ -1,0 +1,4 @@
+friendly_name: Addon Names
+description: Addon IDs, names and number of occurences.
+owners:
+  - kik@mozilla.com

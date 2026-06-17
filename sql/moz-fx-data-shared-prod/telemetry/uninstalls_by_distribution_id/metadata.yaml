@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By Distribution Id
+description: Number of clients uninstalling by date and distribution ID
+owners:
+- kwindau@mozilla.com

@@ -7,7 +7,7 @@ description: |
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/external-census
+  - workgroup:dataplatform/external-census
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
   - workgroup:ads/external-tapclicks

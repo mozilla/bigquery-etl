@@ -2,6 +2,7 @@ friendly_name: Stripe products
 description: |-
   Stripe products.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

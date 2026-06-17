@@ -1,5 +1,5 @@
 SELECT
-  date,
+  `date`,
   event_name AS event_category,
   event_name AS event_action,
   event_name AS event_label,
@@ -25,10 +25,10 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v2`
 WHERE
-  date = @submission_date
+  `date` = @submission_date
   AND hit_type = 'EVENT'
 GROUP BY
-  date,
+  `date`,
   event_category,
   event_action,
   event_label,

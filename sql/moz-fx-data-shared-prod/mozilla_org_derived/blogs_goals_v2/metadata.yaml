@@ -2,10 +2,10 @@ friendly_name: Blogs Goals V2
 description: |-
   Intermediate table containing key metrics for blog.mozilla.org sourced from Google Analytics 4
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:

@@ -28,7 +28,7 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 5, 25, 0, 0),
     "end_date": None,
-    "email": [],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -54,7 +54,7 @@ with DAG(
         dataset_id="test",
         project_id="test-project",
         owner="test@example.org",
-        email=["test@example.org"],
+        email=["telemetry-alerts@mozilla.com", "test@example.org"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

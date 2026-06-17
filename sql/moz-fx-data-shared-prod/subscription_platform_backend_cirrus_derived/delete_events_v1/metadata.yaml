@@ -1,0 +1,17 @@
+---
+friendly_name: Subscription Platform Backend Cirrus Delete Events
+description: Deletion events for subscription platform backend cirrus, derived
+  from FxA's delete events and subplat's namespace secrets
+owners:
+  - mwilliams@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false

@@ -21,7 +21,7 @@ WITH clients_first_seen_28_days_ago AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
 clients_first_seen_28_days_ago_with_days_seen AS (
   SELECT

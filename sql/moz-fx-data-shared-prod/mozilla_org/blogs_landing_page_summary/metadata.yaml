@@ -1,0 +1,5 @@
+friendly_name: Blogs Landing Page Summary
+description: |-
+  Daily summary of Google analytics data for blog.mozilla.org landing page
+owners:
+- mhirose@mozilla.com

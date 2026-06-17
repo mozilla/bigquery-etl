@@ -26,7 +26,7 @@ RETURNS ARRAY<
 > DETERMINISTIC
 LANGUAGE js
 OPTIONS
-  (library = "gs://moz-fx-data-circleci-tests-bigquery-etl/qbinom.js")
+  (library = "gs://moz-fx-data-prod-bigquery-etl/qbinom.js")
 AS
   """
   function histogramSort(histogram) {

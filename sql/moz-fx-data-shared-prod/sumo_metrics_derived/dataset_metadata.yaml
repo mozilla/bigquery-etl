@@ -1,0 +1,12 @@
+friendly_name: SUMO Metrics Derived
+description: |-
+  Derived metrics for Mozilla Support (SUMO) covering content freshness,
+  translations, forum engagement, and support ticket volume.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation

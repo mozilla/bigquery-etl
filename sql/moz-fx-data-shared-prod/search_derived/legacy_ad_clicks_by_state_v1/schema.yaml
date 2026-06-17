@@ -1,0 +1,26 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The date when the telemetry ping is received on the server side.
+- name: month
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The submission_date's month.
+- name: normalized_engine
+  type: STRING
+  mode: NULLABLE
+  description: |
+    The normalized version of the search engine.
+- name: state
+  type: STRING
+  mode: NULLABLE
+  description: |
+    The US state
+- name: daily_ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    The sum of ad clicks by day.

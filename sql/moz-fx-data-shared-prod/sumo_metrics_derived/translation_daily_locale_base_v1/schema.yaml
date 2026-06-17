@@ -1,0 +1,19 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of English article review or translation activity
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Translation locale code. One of: fr (French), es (Spanish), de (German),
+    it (Italian), zh-CN (Chinese Simplified)
+- name: translation_doc_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique identifier of the translated wiki document (wiki_document.id)
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

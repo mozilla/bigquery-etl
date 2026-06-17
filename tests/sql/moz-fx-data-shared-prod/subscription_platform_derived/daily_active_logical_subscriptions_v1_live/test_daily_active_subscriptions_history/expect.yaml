@@ -1,0 +1,100 @@
+# Subscription 1: start at midnight, end midday on a later date
+- id: Stripe-sub_1-2020-01-01T00:00:00.000000-2020-01-01
+  date: 2020-01-01
+  logical_subscriptions_history_id: Stripe-sub_1-2020-01-01T00:00:00.000000-2020-01-01T00:00:00.000000
+  subscription: &sub_1-2020-01-01
+    id: Stripe-sub_1-2020-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1
+    services: []
+    is_active: true
+    started_at: 2020-01-01 00:00:00Z
+  was_active_at_day_start: true
+  was_active_at_day_end: true
+- id: Stripe-sub_1-2020-01-01T00:00:00.000000-2020-01-02
+  date: 2020-01-02
+  logical_subscriptions_history_id: Stripe-sub_1-2020-01-01T00:00:00.000000-2020-01-01T00:00:00.000000
+  subscription: *sub_1-2020-01-01
+  was_active_at_day_start: true
+  was_active_at_day_end: true
+- id: Stripe-sub_1-2020-01-01T00:00:00.000000-2020-01-03
+  date: 2020-01-03
+  logical_subscriptions_history_id: Stripe-sub_1-2020-01-01T00:00:00.000000-2020-01-03T12:00:00.000000
+  subscription:
+    id: Stripe-sub_1-2020-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1
+    services: []
+    is_active: false
+    started_at: 2020-01-01 00:00:00Z
+    ended_at: 2020-01-03 12:00:00Z
+  was_active_at_day_start: true
+  was_active_at_day_end: false
+
+# Subscription 2: start midday, end at midnight on a later date
+- id: Apple-sub_2-2020-02-01T12:00:00.000000-2020-02-01
+  date: 2020-02-01
+  logical_subscriptions_history_id: Apple-sub_2-2020-02-01T12:00:00.000000-2020-02-01T12:00:00.000000
+  subscription: &sub_2-2020-02-01
+    id: Apple-sub_2-2020-02-01T12:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_2
+    services: []
+    is_active: true
+    started_at: 2020-02-01 12:00:00Z
+  was_active_at_day_start: false
+  was_active_at_day_end: true
+- id: Apple-sub_2-2020-02-01T12:00:00.000000-2020-02-02
+  date: 2020-02-02
+  logical_subscriptions_history_id: Apple-sub_2-2020-02-01T12:00:00.000000-2020-02-01T12:00:00.000000
+  subscription: *sub_2-2020-02-01
+  was_active_at_day_start: true
+  was_active_at_day_end: true
+
+# Subscription 3: end with `ended_at` set to prior date
+- id: Google-sub_3-2020-03-01T12:00:00.000000-2020-03-01
+  date: 2020-03-01
+  logical_subscriptions_history_id: Google-sub_3-2020-03-01T12:00:00.000000-2020-03-01T12:00:00.000000
+  subscription: &sub_3-2020-03-01
+    id: Google-sub_3-2020-03-01T12:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_3
+    services: []
+    is_active: true
+    started_at: 2020-03-01 12:00:00Z
+  was_active_at_day_start: false
+  was_active_at_day_end: true
+- id: Google-sub_3-2020-03-01T12:00:00.000000-2020-03-02
+  date: 2020-03-02
+  logical_subscriptions_history_id: Google-sub_3-2020-03-01T12:00:00.000000-2020-03-01T12:00:00.000000
+  subscription: *sub_3-2020-03-01
+  was_active_at_day_start: true
+  was_active_at_day_end: true
+- id: Google-sub_3-2020-03-01T12:00:00.000000-2020-03-03
+  date: 2020-03-03
+  logical_subscriptions_history_id: Google-sub_3-2020-03-01T12:00:00.000000-2020-03-03T12:00:00.000000
+  subscription:
+    id: Google-sub_3-2020-03-01T12:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_3
+    services: []
+    is_active: false
+    started_at: 2020-03-01 12:00:00Z
+    ended_at: 2020-03-02 13:00:00Z
+  was_active_at_day_start: true
+  was_active_at_day_end: false
+
+# Subscription 4: start and end in same day
+- id: Stripe-sub_4-2020-04-01T12:00:00.000000-2020-04-01
+  date: 2020-04-01
+  logical_subscriptions_history_id: Stripe-sub_4-2020-04-01T12:00:00.000000-2020-04-01T12:30:00.000000
+  subscription:
+    id: Stripe-sub_4-2020-04-01T12:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_4
+    services: []
+    is_active: false
+    started_at: 2020-04-01 12:00:00Z
+    ended_at: 2020-04-01 12:30:00Z
+  was_active_at_day_start: false
+  was_active_at_day_end: false

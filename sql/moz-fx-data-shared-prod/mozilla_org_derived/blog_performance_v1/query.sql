@@ -130,7 +130,7 @@ key_events_staging AS (
         event_timestamp
       ROWS BETWEEN
         UNBOUNDED PRECEDING
-        AND CURRENT row
+        AND CURRENT ROW
     ) AS last_seen_page_title
   FROM
     all_submission_date_events

@@ -1,0 +1,5 @@
+friendly_name: Snippets
+description: |-
+  Contains Snippets specific data extracted from messaging_system_v1
+owners:
+- kwindau@mozilla.com

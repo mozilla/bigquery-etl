@@ -1,0 +1,42 @@
+fields:
+- name: metric_date
+  type: DATE
+  mode: NULLABLE
+  description: Metric Date - 13 days before the submission date.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date the query was run and the partition date for this table.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the operating system running at the client, e.g. "100.9.11".
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
+- name: num_days_since_last_seen
+  type: STRING
+  mode: NULLABLE
+  description: Bucketed label for the number of days the user had been inactive before
+    returning, grouped into ranges (29-36, 37-60, 61-120, 121-180, 181-365, 365+).
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of daily active users, corresponding to the count of clients
+    that reported at least one ping on the submission_date and qualify as active.
+- name: resurrections
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of resurrected users on the submission_date, defined as returning
+    DAU who had been inactive for 29 or more days.
+- name: resurrections_retained_wk2
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of resurrected users who remained active in week 2 (days 8-14)
+    following their return.

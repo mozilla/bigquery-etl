@@ -5,7 +5,7 @@ description: |-
   that day, meaning that the values will continue to change
   as users convert.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

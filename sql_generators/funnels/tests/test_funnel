@@ -10,7 +10,7 @@ WITH subscription_funnel_signup AS (
       SELECT
         *
       FROM
-        mozdata.mozilla_vpn.events_unnested
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
       WHERE
         client_info.app_channel = 'production'
         AND client_info.os = 'iOS'
@@ -29,7 +29,7 @@ subscription_funnel_verify AS (
       SELECT
         *
       FROM
-        mozdata.mozilla_vpn.events_unnested
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
       WHERE
         client_info.app_channel = 'production'
         AND client_info.os = 'iOS'
@@ -50,7 +50,7 @@ subscription_funnel_start_subscription AS (
       SELECT
         *
       FROM
-        mozdata.mozilla_vpn.events_unnested
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
       WHERE
         client_info.app_channel = 'production'
         AND client_info.os = 'iOS'
@@ -69,7 +69,7 @@ subscription_error_funnel_signup AS (
       SELECT
         *
       FROM
-        mozdata.mozilla_vpn.events_unnested
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
       WHERE
         client_info.app_channel = 'production'
         AND client_info.os = 'iOS'
@@ -87,7 +87,7 @@ subscription_error_funnel_verify AS (
       SELECT
         *
       FROM
-        mozdata.mozilla_vpn.events_unnested
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
       WHERE
         client_info.app_channel = 'production'
         AND client_info.os = 'iOS'
@@ -107,7 +107,7 @@ subscription_error_funnel_error_subscription AS (
       SELECT
         *
       FROM
-        mozdata.mozilla_vpn.events_unnested
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
       WHERE
         client_info.app_channel = 'production'
         AND client_info.os = 'iOS'

@@ -6,7 +6,7 @@
 WITH error_check AS (
   SELECT
     IF(
-      DATE_ADD(MAX(first_seen_date), INTERVAL 1 day) != @submission_date,
+      DATE_ADD(MAX(first_seen_date), INTERVAL 1 DAY) != @submission_date,
       ERROR("Need to run sequentially, day after max day only"),
       0
     ) AS result

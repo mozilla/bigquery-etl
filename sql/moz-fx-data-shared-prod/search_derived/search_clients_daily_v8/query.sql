@@ -281,7 +281,7 @@ counted AS (
     END AS os_version_minor,
     channel,
     is_default_browser,
-    UNIX_DATE(DATE(profile_creation_date)) AS profile_creation_date,
+    UNIX_DATE(DATE(SAFE_CAST(profile_creation_date AS DATETIME))) AS profile_creation_date,
     default_search_engine,
     default_search_engine_data_load_path,
     default_search_engine_data_submission_url,

@@ -39,4 +39,5 @@ THEN
   WHEN MATCHED
 THEN
   UPDATE
-    SET T.linkage_last_seen_date = S.linkage_last_seen_date
+  SET
+    T.linkage_last_seen_date = S.linkage_last_seen_date

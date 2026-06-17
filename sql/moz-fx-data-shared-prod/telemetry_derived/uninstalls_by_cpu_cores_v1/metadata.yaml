@@ -2,10 +2,10 @@ friendly_name: Uninstalls By Cpu Cores
 description: |-
   Records number of unique clients uninstalling by day and CPU core count
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   shedder_mitigation: true
   table_type: aggregate
 scheduling:

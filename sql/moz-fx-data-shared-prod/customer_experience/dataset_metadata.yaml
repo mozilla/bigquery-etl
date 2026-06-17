@@ -1,0 +1,14 @@
+friendly_name: Customer Experience
+description: |-
+  Dataset to store data in the customer experience workspace.
+
+  Includes source-of-truth views from sources such as:
+   - SUMO support.mozilla.com
+   - Zendesk
+   - External data
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

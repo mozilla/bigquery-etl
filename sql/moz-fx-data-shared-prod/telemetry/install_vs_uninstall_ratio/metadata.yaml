@@ -1,0 +1,4 @@
+friendly_name: Install Vs Uninstall Ratio
+description: Calculates ratio of installs v uninstalls
+owners:
+- kwindau@mozilla.com

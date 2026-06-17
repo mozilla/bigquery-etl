@@ -7,7 +7,7 @@ WITH client_id_to_account_stg AS (
   WHERE
     client_info.client_id IS NOT NULL
     AND metrics.string.client_association_uid IS NOT NULL
-    AND DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 30 day)
+    AND DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
 )
 SELECT DISTINCT
   a.client_id,

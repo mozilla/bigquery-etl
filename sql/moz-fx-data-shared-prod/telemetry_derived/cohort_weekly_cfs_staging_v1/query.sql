@@ -31,7 +31,7 @@ FROM
   `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
 WHERE
   cohort_date >= DATE_TRUNC(
-    DATE_SUB(@submission_date, INTERVAL 768 day),
+    DATE_SUB(@submission_date, INTERVAL 768 DAY),
     WEEK
   ) --start of week for date 768 days ago
   AND cohort_date <= DATE_SUB(

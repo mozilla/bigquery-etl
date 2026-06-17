@@ -79,6 +79,10 @@ class Backfill:
     override_depends_on_past_end_date: Optional[bool] = attr.ib(False)
     ignore_date_partition_offset: Optional[bool] = attr.ib(False)
     billing_project: Optional[str] = attr.ib(None)
+    query_script_entrypoint: Optional[str] = attr.ib(None)
+    query_script_date_arg: Optional[str] = attr.ib(None)
+    query_script_args: Optional[List[str]] = attr.ib(None)
+    query_script_dry_run_arg: Optional[str] = attr.ib(None)
 
     def __str__(self):
         """Return print friendly string of backfill object."""
@@ -103,6 +107,10 @@ class Backfill:
             override_depends_on_past_end_date = {self.override_depends_on_past_end_date}
             ignore_date_partition_offset = {self.ignore_date_partition_offset}
             billing_project = {self.billing_project}
+            query_script_entrypoint = {self.query_script_entrypoint}
+            query_script_date_arg = {self.query_script_date_arg}
+            query_script_arg = {self.query_script_args}
+            query_script_dry_run_arg = {self.query_script_dry_run_arg}
             """
 
         return backfill_str.replace("'", "")
@@ -221,6 +229,14 @@ class Backfill:
                             "ignore_date_partition_offset", False
                         ),
                         billing_project=entry.get("billing_project", None),
+                        query_script_entrypoint=entry.get(
+                            "query_script_entrypoint", None
+                        ),
+                        query_script_date_arg=entry.get("query_script_date_arg", None),
+                        query_script_args=entry.get("query_script_args", None),
+                        query_script_dry_run_arg=entry.get(
+                            "query_script_dry_run_arg", None
+                        ),
                     )
 
                     backfill_entries.append(backfill)

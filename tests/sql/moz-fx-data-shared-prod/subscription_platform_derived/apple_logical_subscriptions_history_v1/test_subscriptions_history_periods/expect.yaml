@@ -1,0 +1,249 @@
+# Subscription 1: active, then expired, then active
+- id: Apple-s1-2000-01-01T00:00:00.000000-2000-01-01T00:00:00.000000
+  valid_from: 2000-01-01 00:00:00Z
+  valid_to: 2000-02-01 00:00:00Z
+  provider_subscriptions_history_id: s1-2000-01-01T00:00:00.000000
+  subscription:
+    id: Apple-s1-2000-01-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s1
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: Active
+    started_at: 2000-01-01 00:00:00Z
+    current_period_started_at: 2000-01-01 00:00:00Z
+    current_period_ends_at: 2000-01-01 00:00:00Z
+    auto_renew: false
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s1-2000-01-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  provider_subscriptions_history_id: s1-2000-02-01T00:00:00.000000
+  subscription:
+    id: Apple-s1-2000-01-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s1
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: false
+    provider_status: Expired
+    started_at: 2000-01-01 00:00:00Z
+    ended_at: 2000-02-01 00:00:00Z
+    ended_reason: Other
+    auto_renew: false
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s1-2000-03-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  provider_subscriptions_history_id: s1-2000-03-01T00:00:00.000000
+  subscription:
+    id: Apple-s1-2000-03-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s1
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: Active
+    started_at: 2000-03-01 00:00:00Z
+    current_period_started_at: 2000-03-01 00:00:00Z
+    current_period_ends_at: 2000-04-01 00:00:00Z
+    auto_renew: false
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+
+# Subscription 2: active, then in billing retry period, then active
+- id: Apple-s2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  provider_subscriptions_history_id: s2-2000-02-01T00:00:00.000000
+  subscription:
+    id: Apple-s2-2000-02-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s2
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: Active
+    started_at: 2000-02-01 00:00:00Z
+    current_period_started_at: 2000-02-01 00:00:00Z
+    current_period_ends_at: 2000-03-01 00:00:00Z
+    auto_renew: true
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s2-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  provider_subscriptions_history_id: s2-2000-03-01T00:00:00.000000
+  subscription:
+    id: Apple-s2-2000-02-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s2
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: false
+    provider_status: InBillingRetry
+    started_at: 2000-02-01 00:00:00Z
+    ended_at: 2000-04-01 00:00:00Z
+    ended_reason: Payment Failure
+    auto_renew: true
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s2-2000-03-07T00:00:00.000000-2000-03-07T00:00:00.000000
+  valid_from: 2000-03-07 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  provider_subscriptions_history_id: s2-2000-03-07T00:00:00.000000
+  subscription:
+    id: Apple-s2-2000-03-07T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s2
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: Active
+    started_at: 2000-03-07 00:00:00Z
+    current_period_started_at: 2000-03-07 00:00:00Z
+    current_period_ends_at: 2000-04-07 00:00:00Z
+    auto_renew: true
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+
+# Subscription 3: active, then in billing grace period, then expired
+- id: Apple-s3-2000-03-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 2000-04-01 00:00:00Z
+  provider_subscriptions_history_id: s3-2000-03-01T00:00:00.000000
+  subscription:
+    id: Apple-s3-2000-03-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s3
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: Active
+    started_at: 2000-03-01 00:00:00Z
+    current_period_started_at: 2000-03-01 00:00:00Z
+    current_period_ends_at: 2000-04-01 00:00:00Z
+    auto_renew: true
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s3-2000-03-01T00:00:00.000000-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 2000-04-08 00:00:00Z
+  provider_subscriptions_history_id: s3-2000-04-01T00:00:00.000000
+  subscription:
+    id: Apple-s3-2000-03-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s3
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: InBillingGracePeriod
+    started_at: 2000-03-01 00:00:00Z
+    current_period_started_at: 2000-04-01 00:00:00Z
+    current_period_ends_at: 2000-05-01 00:00:00Z
+    auto_renew: true
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s3-2000-03-01T00:00:00.000000-2000-04-08T00:00:00.000000
+  valid_from: 2000-04-08 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  provider_subscriptions_history_id: s3-2000-04-08T00:00:00.000000
+  subscription:
+    id: Apple-s3-2000-03-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s3
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: false
+    provider_status: Expired
+    started_at: 2000-03-01 00:00:00Z
+    ended_at: 2000-04-08 00:00:00Z
+    ended_reason: Other
+    auto_renew: true
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+
+# Subscription 4: active, then revoked
+- id: Apple-s4-2000-04-01T00:00:00.000000-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 2000-04-15 00:00:00Z
+  provider_subscriptions_history_id: s4-2000-04-01T00:00:00.000000
+  subscription:
+    id: Apple-s4-2000-04-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s4
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: true
+    provider_status: Active
+    started_at: 2000-04-01 00:00:00Z
+    current_period_started_at: 2000-04-01 00:00:00Z
+    current_period_ends_at: 2000-05-01 00:00:00Z
+    auto_renew: false
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: false
+    payment_method: Apple App Store
+- id: Apple-s4-2000-04-01T00:00:00.000000-2000-04-15T00:00:00.000000
+  valid_from: 2000-04-15 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  provider_subscriptions_history_id: s4-2000-04-15T00:00:00.000000
+  subscription:
+    id: Apple-s4-2000-04-01T00:00:00.000000
+    provider: Apple
+    payment_provider: Apple
+    provider_subscription_id: s4
+    services: []
+    is_bundle: false
+    is_trial: false
+    is_active: false
+    provider_status: Revoked
+    started_at: 2000-04-01 00:00:00Z
+    ended_at: 2000-04-15 00:00:00Z
+    ended_reason: Customer Initiated
+    auto_renew: false
+    current_period_discount_amount: '0'
+    ongoing_discount_amount: '0'
+    has_refunds: true
+    payment_method: Apple App Store

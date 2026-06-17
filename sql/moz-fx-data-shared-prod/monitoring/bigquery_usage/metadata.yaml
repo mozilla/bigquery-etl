@@ -1,0 +1,5 @@
+friendly_name: BigQuery Query Usage
+description: BigQuery usage, partitioned by day.
+owners:
+- wichan@mozilla.com
+- mhirose@mozilla.com

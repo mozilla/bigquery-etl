@@ -1,0 +1,35 @@
+# Customer 1, subscription 2
+- id: Google-sub_1_2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  subscription:
+    id: Google-sub_1_2-2000-02-01T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_1_2
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    is_active: true
+    started_at: 2000-02-01 00:00:00Z
+- id: Google-sub_1_2-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 2000-04-01 00:00:00Z
+  subscription:
+    id: Google-sub_1_2-2000-02-01T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_1_2
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    is_active: true
+    started_at: 2000-02-01 00:00:00Z
+- id: Google-sub_1_2-2000-02-01T00:00:00.000000-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Google-sub_1_2-2000-02-01T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_1_2
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    is_active: false
+    started_at: 2000-02-01 00:00:00Z
+    ended_at: 2000-04-01 00:00:00Z

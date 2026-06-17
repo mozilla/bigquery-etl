@@ -188,7 +188,7 @@ latest_releases AS (
     build.target.channel = 'release'
     AND DATE(build.build.date) >= '2018-12-01'
   GROUP BY
-    day
+    `day`
 ),
 active_clients_with_latest_releases AS (
   SELECT

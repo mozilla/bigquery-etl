@@ -1,0 +1,94 @@
+fields:
+
+- mode: NULLABLE
+  name: report_date
+  type: DATE
+  description: The date used to report the first 7 days of activity, 9 days after
+    the client's first seen date.
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: Date the server received the first baseline ping for this client_id.
+
+- mode: NULLABLE
+  name: first_week_end_date
+  type: DATE
+  description: first_seen_date + 6 days.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: A unique identifier (UUID) for the client.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |-
+    'ISO 3166-1 alpha-2 code for the country in which the activity took
+    place, as determined by the IP geolocation.'
+
+- mode: NULLABLE
+  name: gclid
+  type: STRING
+  description: Google click identifier.
+
+- mode: NULLABLE
+  name: marketing_card_optin_first_week
+  type: INTEGER
+  description: Indicates who opt-in to the marketing card in the first week.
+
+- mode: NULLABLE
+  name: active_d0
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active on their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: active_d1
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active one day after their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: active_d2
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active two days after their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: active_d3
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active three days after their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: active_d4
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active four days after their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: active_d5
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active five days after their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: active_d6
+  type: INTEGER
+  description: |-
+    Integer indicating whether a client was active six days after their first_seen_date (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: activation_1
+  type: INTEGER
+  description: |-
+    Integer value indicating if a client was active at least once between day 4 and 6 (1 = yes | 0 = no).
+
+- mode: NULLABLE
+  name: activation_2
+  type: INTEGER
+  description: |-
+    Integer value indicating if a client was active at least twice
+    between days 0 and 3 and at least twice between days 4 and 6 (1 = yes | 0 = no).

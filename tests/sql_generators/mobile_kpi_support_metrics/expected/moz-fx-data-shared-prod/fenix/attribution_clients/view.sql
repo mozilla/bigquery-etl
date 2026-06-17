@@ -33,5 +33,8 @@ SELECT
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
     adjust_info.adjust_network
   ) AS paid_vs_organic,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile_gclid_attribution`(
+    play_store_info.play_store_attribution_install_referrer_response
+  ) AS paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.attribution_clients_v1`

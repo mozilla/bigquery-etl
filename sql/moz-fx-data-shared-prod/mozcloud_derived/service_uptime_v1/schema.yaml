@@ -1,0 +1,64 @@
+fields:
+
+- mode: NULLABLE
+  name: run_date
+  type: DATE
+  description: Date the measurement was taken, used for table partitioning.
+
+- mode: NULLABLE
+  name: measured_at
+  type: TIMESTAMP
+  description: Exact UTC timestamp when the uptime measurement was taken.
+
+- mode: NULLABLE
+  name: app_code
+  type: STRING
+  description: MozCloud service name (e.g. fxa, merino, sync).
+
+- mode: NULLABLE
+  name: component
+  type: STRING
+  description: >-
+    Individual backend component within the app (e.g. auth, content). NULL means
+    the row represents the app-level aggregate across all components.
+
+- mode: NULLABLE
+  name: lookback_days
+  type: INTEGER
+  description: Length of the lookback window in days over which uptime is calculated.
+
+- mode: NULLABLE
+  name: requests_per_sec
+  type: FLOAT
+  description: >-
+    Average requests per second over the lookback window in `lookback_days`, used to
+    determine the volume tier.
+
+- mode: NULLABLE
+  name: volume_tier
+  type: STRING
+  description: >-
+    Volume tier classification derived from the average request rate. One of:
+    10k (≥10000 rps), 1k (≥1000 rps), 100 (≥100 rps), 10 (≥10 rps),
+    1 (≥1 rps), <1 (<1 rps).
+
+- mode: NULLABLE
+  name: rate_window
+  type: STRING
+  description: >-
+    PromQL rate window used for uptime calculation (e.g. 10m, 20m, 30m),
+    determined by the volume tier.
+
+- mode: NULLABLE
+  name: error_threshold
+  type: FLOAT
+  description: >-
+    Proportion of 500 responses above which a rate-window interval is counted
+    as downtime (e.g. 0.01 = 1%).
+
+- mode: NULLABLE
+  name: uptime
+  type: FLOAT
+  description: >-
+    Proportion of rate-window intervals over the lookback window where the
+    5xx error rate was below the error threshold (e.g. 0.9971 = 99.71%).

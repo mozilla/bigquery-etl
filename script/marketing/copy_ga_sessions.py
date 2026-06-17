@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Copy a range of ga_sessions_* tables from one project to another."""
+
 import datetime
 
 import click

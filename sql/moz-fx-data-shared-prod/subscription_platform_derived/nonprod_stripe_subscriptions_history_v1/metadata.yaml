@@ -2,6 +2,7 @@ friendly_name: Non-Production Stripe Subscriptions History
 description: >
   Non-production Stripe subscriptions history.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: hourly

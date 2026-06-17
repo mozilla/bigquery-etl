@@ -145,6 +145,15 @@ CREATE OR REPLACE VIEW
         reason AS reason,
         ping_info.seq AS seq,
         ping_info.start_time AS start_time,
+        CAST(
+          NULL
+          AS
+            STRUCT<
+              event_threshold INT64,
+              metrics_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
+              pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>
+            >
+        ) AS server_knobs_config,
         ping_info.parsed_start_time AS parsed_start_time,
         ping_info.parsed_end_time AS parsed_end_time
       ) AS ping_info,

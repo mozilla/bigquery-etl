@@ -1,0 +1,7 @@
+friendly_name: Search Aggregates
+description: |-
+  Daily search clients, aggregated across unique sets of dimensions
+  and partitioned by day.
+owners:
+- akommasani@mozilla.com
+- cmorales@mozilla.com

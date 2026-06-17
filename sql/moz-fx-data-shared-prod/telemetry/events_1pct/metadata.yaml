@@ -1,0 +1,11 @@
+friendly_name: Events 1 percent
+description: 'A materialized 1 percent sample of desktop events, intended as a performance
+
+  optimization for exploratory queries. It contains only the most recent
+
+  six months of data.
+
+
+  Accessed via the `telemetry.events_1pct` view.'
+owners:
+- jklukas@mozilla.com

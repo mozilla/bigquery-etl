@@ -1,0 +1,5 @@
+friendly_name: Feature Usage Metrics (Android - Fenix)
+description: Metrics from metrics pings for mobile feature usage dashboards (Fenix)
+owners:
+- rzhao@mozilla.com
+- vsabino@mozilla.com

@@ -1,0 +1,53 @@
+fields:
+  - mode: NULLABLE
+    name: forecast_start_date
+    type: DATE
+    description: "The day a forecast model starts predicting future data. Partition column"
+  - mode: NULLABLE
+    name: forecast_run_timestamp
+    type: STRING
+    description: "The moment a forecast is run"
+  - mode: NULLABLE
+    name: mozaic_hash
+    type: STRING
+    description: "The git commit hash of the mozaic-forecasting version used to make this prediction. This is a simple way to mark the code version."
+  - mode: NULLABLE
+    name: target_date
+    type: STRING
+    description: "A generic term for the day on which data is collected (training) or predicted (forecast)."
+  - mode: NULLABLE
+    name: source
+    type: STRING
+    description: "Either training or forecast representing the type of value"
+  - mode: NULLABLE
+    name: country
+    type: STRING
+    description: "2-letter country code. ALL for aggregation"
+  - mode: NULLABLE
+    name: app_name
+    type: STRING
+    description: "One of: firefox_ios, focus_ios, fenix_android, focus_android, other_mobile, desktop, ALL MOBILE (aggregation), ALL (aggregation)."
+  - mode: NULLABLE
+    name: app_category
+    type: STRING
+    description: "Convenience category, one of Mobile, Desktop, ALL"
+  - mode: NULLABLE
+    name: segment
+    type: STRING
+    description: "Population segments. For now, it is just the OS of desktop users, with values: win10, win11, winX, other, ALL"
+  - mode: NULLABLE
+    name: dau
+    type: FLOAT
+    description: "Daily Active Users"
+  - mode: NULLABLE
+    name: new_profiles
+    type: FLOAT
+    description: "New profiles"
+  - mode: NULLABLE
+    name: existing_engagement_dau
+    type: FLOAT
+    description: "DAU from the appropriate engagement table, existing users only"
+  - mode: NULLABLE
+    name: existing_engagement_mau
+    type: FLOAT
+    description: "MAU from the appropriate engagement table, existing users only"

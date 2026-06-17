@@ -1,0 +1,13 @@
+friendly_name: Mobile Search Aggregates For Searchreport
+description: 'This query creates a table based on
+
+  mobile_search_clients_engines_sources_daily
+
+  containing search metrics aggregated by country, product,
+
+  engine, and submission_date.
+
+  Originally created for the search report dashboard.'
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com

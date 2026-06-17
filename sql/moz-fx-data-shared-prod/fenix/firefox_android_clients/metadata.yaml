@@ -1,0 +1,22 @@
+friendly_name: Firefox Android Clients
+description: |-
+  Contains a list of Firefox Android clients along with their first attributes
+  retrieved from baseline, first_session and metrics pings.
+
+  This includes information such as their initial geo, OS, ISP, and attribution info.
+
+  For analysis purposes, use first_seen_date to query clients that
+  effectively appeared on that date. The submission_date indicates
+  when the server received the data.
+
+  Note that the query for the underlying table this view references
+  overwrites the whole table instead of writing to a single partition.
+
+  Proposal:
+  https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.
+
+  For more details about attribution and campaign structure see:
+  https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
+owners:
+- lvargas@mozilla.com
+- kik@mozilla.com

@@ -10,7 +10,7 @@ WITH recent_tests AS (
   FROM
     `moz-fx-data-bq-performance.release_criteria.rc_flattened_test_data_v1`
   WHERE
-    task_group_time >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 DAY)
+    task_group_time >= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 28 DAY)
 ),
 distinct_rc AS (
   SELECT

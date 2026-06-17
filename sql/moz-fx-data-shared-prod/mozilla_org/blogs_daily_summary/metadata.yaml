@@ -1,0 +1,5 @@
+friendly_name: Blogs Daily Summary
+description: |-
+  Daily summary Google analytics data for blog.mozilla.org
+owners:
+- mhirose@mozilla.com

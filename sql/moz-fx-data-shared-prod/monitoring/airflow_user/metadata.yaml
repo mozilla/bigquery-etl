@@ -1,0 +1,4 @@
+friendly_name: Airflow Users
+description: Most recent record of Airflow users
+owners:
+- kik@mozilla.com

@@ -2,6 +2,9 @@ fields:
 - mode: NULLABLE
   name: region
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: region
 - mode: NULLABLE
   name: average_ctr_top2_items
   type: FLOAT

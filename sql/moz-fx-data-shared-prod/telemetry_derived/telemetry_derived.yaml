@@ -2081,3 +2081,194 @@ fields:
   description: The zero-based index position of a Pocket story within the New Tab page recommendation grid at the time of the event. Null when
     no specific story position is associated with the record.
   type: INT64
+- name: pocket_thumb_voting_events
+  description: The total number of Pocket thumb-voting events (thumbs up or thumbs down) recorded for a client. A value of 0 indicates no voting
+    activity occurred.
+  type: INT64
+- name: position
+  description: The zero- or one-based ordinal position of an item within a list or UI surface (e.g., a recommendation card or menu entry). Lower
+    values indicate items displayed earlier or higher in the interface.
+  type: INT64
+- name: previous_build_id
+  description: The Firefox build ID that was installed before the most recent update, formatted as a timestamp string (YYYYMMDDHHmmss). Null when
+    no prior build is known, such as on a fresh installation.
+  type: STRING
+- name: process
+  description: The Firefox process type from which a measurement or event originated, such as 'parent' (the main browser process), 'content' (a
+    content renderer process), or 'gpu' (the GPU process).
+  type: STRING
+- name: process_type
+  description: The type of Firefox process associated with a crash or event, such as 'parent', 'content', 'gpu', 'rdd', 'plugin', 'socket', or
+    'utility'. Null values indicate cases where the process type could not be determined.
+  type: STRING
+- name: product
+  description: The Mozilla product name associated with the record, such as 'Fenix', 'Firefox iOS', 'Focus Android', or 'Fennec'. Identifies the
+    application from which the data originates.
+  type: STRING
+- name: profile_age_in_days
+  description: The age of the Firefox profile in days, calculated as the difference between the current date and the profile creation date. A
+    value of 0 indicates the profile was created on the same day.
+  type: INT64
+- name: profile_created
+  description: A numeric representation of the date on which the Firefox profile was created, typically expressed as days since a reference epoch.
+    Used to track when a user first established their profile.
+  type: INT64
+- name: profile_creation_date
+  description: The date on which the Firefox profile was created, formatted as a YYYYMMDD string. Used to determine profile age and cohort membership.
+- name: profile_date
+  description: The date on which the Firefox profile was created, stored as a DATE type. Used to determine profile age and segment users into
+    cohorts by profile creation time.
+- name: profile_group_id
+  description: A UUID that identifies a group of profiles belonging to the same user or installation context. Null when profile group information
+    is unavailable.
+  type: STRING
+- name: push_api_notify_sum
+  description: The total number of Web Push API notifications delivered to a client during the reporting period. Null when no push notifications
+    were received.
+  type: INT64
+- name: qdau_desktop
+  description: The count of qualified daily active users on desktop for a given segment or dimension. A value of 0 indicates no qualifying activity
+    was observed.
+  type: INT64
+- name: qualified_second_day
+  description: A boolean flag indicating whether a new profile met the qualification criteria for second-day retention. True means the profile
+    returned and qualified on the second day after creation.
+  type: BOOLEAN
+- name: qualified_week4
+  description: A boolean flag indicating whether a new profile met the qualification criteria for week-4 retention. True means the profile had
+    sufficient qualifying activity in the fourth week after creation.
+  type: BOOLEAN
+- name: realm
+  description: The deployment realm or environment to which the client or data record belongs (e.g., a specific server region or infrastructure
+    partition). Used to segment data by operational environment.
+  type: STRING
+- name: reason
+  description: The technical reason or signal associated with an event such as a crash, describing the specific exception type or OS signal (e.g.,
+    'SIGSEGV / SEGV_MAPERR', 'EXCEPTION_BREAKPOINT'). Null when no reason was recorded.
+  type: STRING
+- name: recommendation_id
+  description: A UUID that uniquely identifies a specific content recommendation surfaced to a user. Null when no recommendation is associated
+    with the record.
+  type: STRING
+- name: record_key
+  description: The key component of a key-value pair stored within a keyed metric or map-type field. Identifies which bucket, label, or category
+    a corresponding record_value belongs to.
+- name: record_value
+  description: The numeric value component of a key-value pair stored within a keyed metric or histogram bucket. Represents the measured quantity
+    associated with the corresponding record_key.
+- name: region
+  description: The two-letter ISO 3166-1 country code representing the geographic region of the client or user. Null when the region could not
+    be determined.
+  type: STRING
+- name: regressor_00
+  description: The point estimate for the first regressor variable used in a forecasting or modeling pipeline. A value of 0.0 indicates no contribution
+    from this regressor for that record.
+  type: FLOAT64
+- name: regressor_00_lower
+  description: The lower-bound confidence interval estimate for the first regressor variable in a forecasting or modeling pipeline. A value of
+    0.0 indicates no contribution or an unbounded lower estimate.
+  type: FLOAT64
+- name: regressor_00_upper
+  description: The upper-bound confidence interval estimate for the first regressor variable in a forecasting or modeling pipeline. A value of
+    0.0 indicates no contribution or an unbounded upper estimate.
+  type: FLOAT64
+- name: repeat_profile
+  description: A boolean flag indicating whether the profile has been seen in a previous reporting period, making it a returning rather than new
+    profile. True means the profile is a repeat; false means it is newly observed.
+  type: BOOLEAN
+- name: repeat_profiles
+  description: The count of profiles that have been seen in a previous reporting period (i.e., returning profiles) for a given dimension or segment.
+    Complements new profile counts to provide a full picture of the user base.
+  type: INT64
+- name: resolution
+  description: The resolution or outcome classification associated with a record, such as a crash report or support ticket resolution state. Describes
+    how or whether the underlying issue was addressed.
+- name: retained_week4
+  description: An integer flag (0 or null) indicating whether a profile was retained through week 4 after its creation, where 0 means the profile
+    was not retained. Null indicates the retention window had not yet elapsed.
+- name: retained_week_4
+  description: A boolean flag indicating whether a profile was active during the fourth week after its creation. True means the profile was retained;
+    false means it was not; null indicates the window had not yet elapsed.
+- name: retained_week_4_new_profile
+  description: A boolean flag indicating whether a new profile was retained through the fourth week after creation. True means the new profile
+    returned during week 4; false means it did not.
+  type: BOOLEAN
+- name: retained_week_4_new_profiles
+  description: The count of new profiles that were retained through the fourth week after their creation date, for a given segment or reporting
+    dimension.
+  type: INT64
+- name: return_user
+  description: An integer flag indicating whether a user (profile) returned after their initial activity, where a value of 0 indicates no return
+    was observed. Null indicates the observation window had not yet elapsed.
+  type: INT64
+- name: returned_second_day
+  description: A boolean flag indicating whether a new profile returned and was active on the day after its creation (second-day retention). True
+    means the profile returned; false means it did not.
+  type: BOOLEAN
+- name: row_count
+  description: The number of rows associated with a record or aggregation group, often used to indicate how many raw events or pings were rolled
+    up into a single summary row.
+  type: INT64
+- name: row_source
+  description: The platform origin of a row, either 'Desktop' or 'Mobile', indicating whether the data came from a desktop or mobile Firefox client.
+  type: STRING
+- name: sample_id
+  description: A deterministic sample bucket identifier (0–99) derived from the client_id, used to create reproducible random samples of the user
+    population for analysis or experimentation.
+  type: INT64
+- name: sandbox_effective_content_process_level
+  description: The effective sandbox security level applied to Firefox content processes, represented as an integer where higher values indicate
+    stricter sandboxing. Null when the sandbox level could not be determined.
+  type: INT64
+- name: save_count
+  description: The total number of times a user saved an item (e.g., saved to Pocket or bookmarked) during the reporting period. A value of 0
+    indicates no saves occurred.
+  type: INT64
+- name: scalar_a11y_hcm_background
+  description: The RGBA color value of the background color configured in the operating system's High Contrast Mode accessibility setting, stored
+    as a packed integer. Null when High Contrast Mode is not enabled or the value was not collected.
+  type: INT64
+- name: scalar_a11y_hcm_foreground
+  description: The RGBA color value of the foreground (text) color configured in the operating system's High Contrast Mode accessibility setting,
+    stored as a packed integer. Null when High Contrast Mode is not enabled or the value was not collected.
+  type: INT64
+- name: scalar_combined_webrtc_nicer_stun_retransmits_sum
+  description: The total number of STUN packet retransmissions observed during WebRTC sessions using the NICEr library. Currently always null,
+    indicating this metric is not yet being collected.
+  type: INT64
+- name: scalar_combined_webrtc_nicer_turn_401s_sum
+  description: The total number of 401 (Unauthorized) error responses received from TURN servers during WebRTC sessions using the NICEr library.
+    Currently always null, indicating this metric is not yet being collected.
+  type: INT64
+- name: scalar_combined_webrtc_nicer_turn_403s_sum
+  description: The total number of 403 (Forbidden) error responses received from TURN servers during WebRTC sessions using the NICEr library.
+    Currently always null, indicating this metric is not yet being collected.
+  type: INT64
+- name: scalar_combined_webrtc_nicer_turn_438s_sum
+  description: The total number of 438 (Stale Nonce) error responses received from TURN servers during WebRTC sessions using the NICEr library.
+    Currently always null, indicating this metric is not yet being collected.
+  type: INT64
+- name: scalar_content_navigator_storage_estimate_count_sum
+  description: The total number of times the navigator.storage.estimate() API was called in content processes during the reporting period. Currently
+    always null, indicating this metric is not yet being collected.
+  type: INT64
+- name: scalar_content_navigator_storage_persist_count_sum
+  description: The total number of times the navigator.storage.persist() API was called in content processes during the reporting period. Currently
+    always null, indicating this metric is not yet being collected.
+  type: INT64
+- name: scalar_content_telemetry_event_counts_sum
+  description: A keyed map of telemetry event category-method-object combinations to their total occurrence counts, as recorded from content processes.
+    Each key identifies a distinct event type and the corresponding value is the sum of occurrences.
+  type: RECORD
+- name: scalar_parent_aushelper_websense_reg_version
+  description: The version string of the Websense endpoint security software detected in the Windows registry by the AUS (Application Update Service)
+    helper. Null when Websense is not installed or the version could not be read.
+  type: STRING
+- name: scalar_parent_browser_engagement_max_concurrent_tab_count_max
+  description: The maximum number of browser tabs open simultaneously in any single session during the reporting period, as recorded by the parent
+    process engagement scalar. Null when the metric was not collected.
+  type: INT64
+- name: scalar_parent_browser_engagement_max_concurrent_window_count_max
+  description: The maximum number of browser windows open simultaneously in any single session during the reporting period, as recorded by the
+    parent process engagement scalar. Null when the metric was not collected.
+  type: INT64

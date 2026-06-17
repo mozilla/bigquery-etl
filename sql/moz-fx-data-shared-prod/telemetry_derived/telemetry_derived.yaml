@@ -1329,3 +1329,201 @@ fields:
   description: The number of history entries migrated specifically from Microsoft Edge during a migration event. A value of 0 indicates an Edge
     migration was attempted but no entries were transferred; null indicates no Edge migration occurred or the metric was not recorded.
   type: INT64
+- name: history_migrations_quantity_safari
+  description: The number of history entries migrated from Safari into Firefox. A null value indicates that no Safari history migration was attempted
+    or recorded.
+  type: INT64
+- name: holidays
+  description: The estimated holiday effect component from a forecasting model, representing the additive contribution of holiday events to the
+    predicted metric. A value of 0.0 indicates no holiday effect for that period.
+  type: FLOAT64
+- name: holidays_lower
+  description: The lower bound of the confidence interval for the holiday effect component from a forecasting model. A value of 0.0 indicates
+    no holiday effect uncertainty for that period.
+  type: FLOAT64
+- name: holidays_upper
+  description: The upper bound of the confidence interval for the holiday effect component from a forecasting model. A value of 0.0 indicates
+    no holiday effect uncertainty for that period.
+  type: FLOAT64
+- name: id_bucket
+  description: A bucketing identifier (0–19) used to partition clients into evenly distributed groups, typically for sampling or incremental processing
+    purposes.
+  type: INT64
+- name: impression_count
+  description: The total number of times a UI element, recommendation, or piece of content was shown to a user. Higher values indicate repeated
+    exposures.
+  type: INT64
+- name: index
+  description: A positional or ranking identifier associated with a record, such as the position of a search result or suggestion within a list.
+  type: STRING
+- name: install_source
+  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
+    the install source could not be determined.
+  type: STRING
+- name: install_year
+  description: The calendar year in which the application was first installed on the device. A null value indicates the installation year could
+    not be determined.
+  type: INT64
+- name: installation_first_seen_admin_user
+  description: Indicates whether the user had administrator privileges at the time the installation was first observed. True means admin rights
+    were present; false means they were not.
+  type: BOOLEAN
+- name: installation_first_seen_default_path
+  description: Indicates whether the application was installed in the default installation path when first observed. True means the default path
+    was used; false means a custom path was chosen.
+  type: BOOLEAN
+- name: installation_first_seen_failure_reason
+  description: The reason the installation data could not be retrieved when first observed, such as 'NoError', 'NotFoundError', or 'SyntaxError'.
+    A null value indicates the failure reason was not recorded.
+  type: STRING
+- name: installation_first_seen_from_msi
+  description: Indicates whether the application was installed via an MSI package when first observed. True means an MSI installer was used; false
+    means it was not.
+  type: BOOLEAN
+- name: installation_first_seen_install_existed
+  description: Indicates whether a prior installation of the application already existed on the system when the installation was first observed.
+    True means a previous install was found; false means it was a fresh installation.
+  type: BOOLEAN
+- name: installation_first_seen_installer_type
+  description: The type of installer used when the installation was first observed, such as 'stub', 'full', or 'msix'. A null value indicates
+    the installer type was not available.
+  type: STRING
+- name: installation_first_seen_other_inst
+  description: Indicates whether another non-MSIX installation of the application was present on the system when the installation was first observed.
+    True means another installation was detected; false means it was not.
+  type: BOOLEAN
+- name: installation_first_seen_other_msix_inst
+  description: Indicates whether another MSIX-packaged installation of the application was present on the system when the installation was first
+    observed. True means another MSIX installation was detected; false means it was not.
+  type: BOOLEAN
+- name: installation_first_seen_profdir_existed
+  description: Indicates whether a Firefox profile directory already existed on the system when the installation was first observed. True means
+    a profile directory was found; false means it did not exist.
+  type: BOOLEAN
+- name: installation_first_seen_silent
+  description: Indicates whether the installation was performed silently (without user interaction) when first observed. True means a silent install
+    was used; false means it was an interactive install.
+  type: BOOLEAN
+- name: installation_first_seen_version
+  description: The version of the application that was recorded when the installation was first observed. A null value indicates the version could
+    not be determined at first observation.
+  type: STRING
+- name: installer_type
+  description: The type of installer package used to install the application, either 'full' for a complete installer or 'stub' for a lightweight
+    installer that downloads components during setup.
+  type: STRING
+- name: installs
+  description: The count of new application installations recorded for a given period or segment. A null value indicates the install count was
+    not available for that record.
+  type: INT64
+- name: intensity
+  description: A measure of user engagement intensity, reflecting the frequency or depth of usage within a given period. Higher values indicate
+    more active usage patterns.
+  type: FLOAT64
+- name: ipc_channel_error
+  description: The error message or reason associated with an IPC (Inter-Process Communication) channel failure, such as 'ShutDownKill' or 'GPUProcessKill'.
+    A null value indicates no IPC channel error was recorded.
+  type: STRING
+- name: is_dau
+  description: Indicates whether the client qualifies as a Daily Active User (DAU) for the given date. True means the client meets the DAU criteria;
+    false means it does not.
+  type: BOOLEAN
+- name: is_default_browser
+  description: Indicates whether Firefox is set as the default browser on the client's device. True means it is the default; false means another
+    browser is set as default.
+  type: BOOLEAN
+- name: is_desktop
+  description: Indicates whether the client is running on a desktop platform as opposed to a mobile device. True means the client is on desktop;
+    false means it is on a mobile platform.
+  type: BOOLEAN
+- name: is_new_profile
+  description: Indicates whether the Firefox profile associated with the client was newly created. True means the profile was created recently;
+    false means it is an existing profile.
+  type: BOOLEAN
+- name: is_system
+  description: Indicates whether the add-on or component is a system-level (built-in) item rather than a user-installed one. True means it is
+    a system item; false means it is user-installed.
+  type: BOOLEAN
+- name: is_wow64
+  description: Indicates whether the Firefox process is running as a 32-bit application under the 64-bit Windows-on-Windows (WoW64) compatibility
+    layer. True means WoW64 is in use; false means it is not.
+  type: BOOLEAN
+- name: isp
+  description: The name of the Internet Service Provider associated with the client's IP address. This field provides a granular ISP identification
+    and may include regional carriers.
+  type: STRING
+- name: isp_name
+  description: The canonical name of the Internet Service Provider associated with the client's network connection. This is a normalized or deduplicated
+    version of the ISP identifier.
+  type: STRING
+- name: isp_organization
+  description: The organization name associated with the client's IP address block, as registered with regional internet registries. This may
+    differ from the ISP name when the organization is a reseller or enterprise.
+  type: STRING
+- name: key
+  description: A string identifier representing the specific action, search engine, or event type associated with a record, such as a search entry
+    point or provider key. An empty string indicates no specific key was recorded.
+  type: STRING
+- name: last_bucket
+  description: The upper boundary value of the last bucket in a histogram distribution. This defines the maximum range of the histogram's final
+    bin.
+  type: INT64
+- name: latest_version
+  description: The most recent major version number of the Firefox browser available or tracked at the time of the record. Used to compare client
+    versions against the current release.
+- name: latest_version_ratio
+  description: The proportion of clients or events associated with the latest Firefox version relative to all versions in the cohort. A higher
+    value indicates greater adoption of the current release.
+  type: FLOAT64
+- name: legacy_telemetry_client_count
+  description: The number of distinct legacy telemetry client IDs associated with a given entity or record. Values greater than one may indicate
+    multiple installations or ID collisions.
+  type: INT64
+- name: legacy_telemetry_client_id
+  description: The unique client identifier used in Firefox's legacy telemetry system, formatted as a UUID. This is used to track individual browser
+    installations across telemetry pings.
+  type: STRING
+- name: linkage_first_seen_date
+  description: The earliest date on which a linkage between two identifiers (e.g., client ID and another ID) was first observed in the data. Used
+    to track when a relationship was established.
+  type: DATE
+- name: linkage_last_seen_date
+  description: The most recent date on which a linkage between two identifiers was observed in the data. Used to determine how recently a relationship
+    was active.
+  type: DATE
+- name: linked_client_id
+  description: A UUID representing a Firefox client that has been linked or associated with another identifier, such as a Glean client ID or a
+    profile ID. Used to join records across different telemetry systems.
+  type: STRING
+- name: locale
+  description: The language and region locale of the Firefox browser or application, such as 'en' for English or 'fr' for French. A null value
+    indicates the locale could not be determined.
+  type: STRING
+- name: logins_migrations_quantity_all
+  description: The total number of saved login entries migrated into Firefox from all supported browsers. A null value indicates no login migration
+    data was recorded.
+  type: INT64
+- name: logins_migrations_quantity_chrome
+  description: The number of saved login entries migrated into Firefox from Google Chrome. A null value indicates no Chrome login migration data
+    was recorded.
+  type: INT64
+- name: logins_migrations_quantity_edge
+  description: The number of saved login entries migrated into Firefox from Microsoft Edge. A null value indicates no Edge login migration data
+    was recorded.
+  type: INT64
+- name: logins_migrations_quantity_safari
+  description: The number of saved login entries migrated into Firefox from Safari. A null value indicates no Safari login migration data was
+    recorded.
+  type: INT64
+- name: major_version
+  description: The major version number of the Firefox browser (e.g., 128, 151), representing the primary release train. Used to segment clients
+    by their browser generation.
+  type: INT64
+- name: mau
+  description: The count of days within the past 28-day window that a client was active, used as a proxy for Monthly Active User (MAU) engagement.
+    Higher values indicate more frequent monthly usage.
+  type: INT64
+- name: max_subsession_counter
+  description: The highest subsession counter value recorded for a client within a given day, indicating how many browser subsessions occurred.
+    A value of 1 means only one subsession was recorded.
+  type: INT64

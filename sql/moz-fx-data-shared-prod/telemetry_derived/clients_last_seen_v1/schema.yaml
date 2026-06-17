@@ -2,106 +2,140 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: The date when the server first received any telemetry ping from this client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
-  description: The second date on which the server received a telemetry ping from this client, used to compute retention metrics. Null if the client
-    has only been seen once.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: second_seen_date
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
-  description: A 28-bit integer where each bit indicates whether the client was active on that day in the past 28 days. The rightmost bit represents
-    the most recent day (submission_date), 1 means active, 0 means not seen.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_seen_bits
 - mode: NULLABLE
   name: days_visited_1_uri_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI. The rightmost bit represents the most
-    recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_visited_1_uri_bits
 - mode: NULLABLE
   name: days_visited_5_uri_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 5 URIs. The rightmost bit represents the
-    most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_visited_5_uri_bits
 - mode: NULLABLE
   name: days_visited_10_uri_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 10 URIs. The rightmost bit represents the
-    most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_visited_10_uri_bits
 - mode: NULLABLE
   name: days_had_8_active_ticks_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client had at least 8 active ticks.
-    The rightmost bit represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_had_8_active_ticks_bits
 - mode: NULLABLE
   name: days_opened_dev_tools_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client opened the Firefox Developer Tools at least once. The rightmost
-    bit represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_opened_dev_tools_bits
 - mode: NULLABLE
   name: days_interacted_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client had any active browsing hours (active_hours_sum > 0). The
-    rightmost bit represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_interacted_bits
 - mode: NULLABLE
   name: days_visited_1_uri_normal_mode_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI in normal (non-private) browsing mode.
-    The rightmost bit represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_visited_1_uri_normal_mode_bits
 - mode: NULLABLE
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI in private browsing mode. The rightmost
-    bit represents the most recent day. Only populated for Firefox version 84 and above.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_visited_1_uri_private_mode_bits
 - mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client's profile was first created. Typically only one bit is set,
-    marking the profile creation day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_created_profile_bits
 - fields:
   - mode: NULLABLE
     name: experiment
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: experiment
   - mode: NULLABLE
     name: branch
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: branch
   - mode: NULLABLE
     name: bits
     type: INTEGER
   mode: REPEATED
   name: days_seen_in_experiment
   type: RECORD
-  description: An array of experiment participation records, one per active experiment, each containing the experiment slug, the assigned branch, and
-    a 28-bit integer encoding the days the client was seen enrolled.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_seen_in_experiment
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: aborts_content_sum
 - mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: aborts_gmplugin_sum
 - mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: aborts_plugin_sum
 - mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_count_mean
 - fields:
   - mode: NULLABLE
     name: addon_id
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: addon_id
   - mode: NULLABLE
     name: blocklisted
     type: BOOLEAN
@@ -109,7 +143,9 @@ fields:
   - mode: NULLABLE
     name: name
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: name
   - mode: NULLABLE
     name: user_disabled
     type: BOOLEAN
@@ -121,7 +157,9 @@ fields:
   - mode: NULLABLE
     name: version
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: version
   - mode: NULLABLE
     name: scope
     type: INTEGER
@@ -129,7 +167,9 @@ fields:
   - mode: NULLABLE
     name: type
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: type
   - mode: NULLABLE
     name: foreign_install
     type: BOOLEAN
@@ -153,7 +193,9 @@ fields:
   - mode: NULLABLE
     name: is_system
     type: BOOLEAN
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: is_system
   - mode: NULLABLE
     name: is_web_extension
     type: BOOLEAN
@@ -165,59 +207,88 @@ fields:
   mode: REPEATED
   name: active_addons
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons
 - mode: NULLABLE
   name: active_experiment_branch
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_experiment_branch
 - mode: NULLABLE
   name: active_experiment_id
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_experiment_id
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_hours_sum
 - mode: NULLABLE
   name: addon_compatibility_check_enabled
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: addon_compatibility_check_enabled
 - mode: NULLABLE
   name: app_build_id
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
 - mode: NULLABLE
   name: app_display_version
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_display_version
 - mode: NULLABLE
   name: app_name
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - fields:
   - mode: NULLABLE
     name: source
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: source
   - mode: NULLABLE
     name: medium
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: medium
   - mode: NULLABLE
     name: campaign
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: campaign
   - mode: NULLABLE
     name: content
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: content
   - mode: NULLABLE
     name: experiment
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: experiment
   - mode: NULLABLE
     name: variation
     type: STRING
@@ -241,164 +312,244 @@ fields:
 - mode: NULLABLE
   name: blocklist_enabled
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: blocklist_enabled
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: client_clock_skew_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_clock_skew_mean
 - mode: NULLABLE
   name: client_submission_latency_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_submission_latency_mean
 - mode: NULLABLE
   name: cpu_cores
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_cores
 - mode: NULLABLE
   name: cpu_count
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_count
 - mode: NULLABLE
   name: cpu_family
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_family
 - mode: NULLABLE
   name: cpu_l2_cache_kb
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_l2_cache_kb
 - mode: NULLABLE
   name: cpu_l3_cache_kb
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_l3_cache_kb
 - mode: NULLABLE
   name: cpu_model
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_model
 - mode: NULLABLE
   name: cpu_speed_mhz
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_speed_mhz
 - mode: NULLABLE
   name: cpu_stepping
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_stepping
 - mode: NULLABLE
   name: cpu_vendor
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_vendor
 - mode: NULLABLE
   name: crashes_detected_content_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crashes_detected_content_sum
 - mode: NULLABLE
   name: crashes_detected_gmplugin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crashes_detected_gmplugin_sum
 - mode: NULLABLE
   name: crashes_detected_plugin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crashes_detected_plugin_sum
 - mode: NULLABLE
   name: crash_submit_attempt_content_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crash_submit_attempt_content_sum
 - mode: NULLABLE
   name: crash_submit_attempt_main_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crash_submit_attempt_main_sum
 - mode: NULLABLE
   name: crash_submit_attempt_plugin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crash_submit_attempt_plugin_sum
 - mode: NULLABLE
   name: crash_submit_success_content_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crash_submit_success_content_sum
 - mode: NULLABLE
   name: crash_submit_success_main_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crash_submit_success_main_sum
 - mode: NULLABLE
   name: crash_submit_success_plugin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: crash_submit_success_plugin_sum
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: default_search_engine_data_load_path
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine_data_load_path
 - mode: NULLABLE
   name: default_search_engine_data_name
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine_data_name
 - mode: NULLABLE
   name: default_search_engine_data_origin
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine_data_origin
 - mode: NULLABLE
   name: default_search_engine_data_submission_url
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine_data_submission_url
 - mode: NULLABLE
   name: devtools_toolbox_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: devtools_toolbox_opened_count_sum
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: e10s_enabled
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: e10s_enabled
 - mode: NULLABLE
   name: env_build_arch
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: env_build_arch
 - mode: NULLABLE
   name: env_build_id
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: env_build_id
 - mode: NULLABLE
   name: env_build_version
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: env_build_version
 - mode: REPEATED
   name: environment_settings_intl_accept_languages
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment_settings_intl_accept_languages
 - mode: REPEATED
   name: environment_settings_intl_app_locales
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment_settings_intl_app_locales
 - mode: REPEATED
   name: environment_settings_intl_available_locales
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment_settings_intl_available_locales
 - mode: REPEATED
   name: environment_settings_intl_requested_locales
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment_settings_intl_requested_locales
 - mode: REPEATED
   name: environment_settings_intl_system_locales
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment_settings_intl_system_locales
 - mode: REPEATED
   name: environment_settings_intl_regional_prefs_locales
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment_settings_intl_regional_prefs_locales
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: STRING
@@ -406,357 +557,532 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
 - mode: NULLABLE
   name: first_paint_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_paint_mean
 - mode: NULLABLE
   name: flash_version
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: flash_version
 - mode: NULLABLE
   name: country
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: city
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - mode: NULLABLE
   name: geo_subdivision1
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: geo_subdivision1
 - mode: NULLABLE
   name: geo_subdivision2
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: geo_subdivision2
 - mode: NULLABLE
   name: isp_name
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp_name
 - mode: NULLABLE
   name: isp_organization
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp_organization
 - mode: NULLABLE
   name: gfx_features_advanced_layers_status
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: gfx_features_advanced_layers_status
 - mode: NULLABLE
   name: gfx_features_d2d_status
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: gfx_features_d2d_status
 - mode: NULLABLE
   name: gfx_features_d3d11_status
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: gfx_features_d3d11_status
 - mode: NULLABLE
   name: gfx_features_gpu_process_status
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: gfx_features_gpu_process_status
 - mode: NULLABLE
   name: histogram_parent_devtools_aboutdebugging_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_aboutdebugging_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_animationinspector_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_animationinspector_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_browserconsole_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_browserconsole_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_canvasdebugger_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_canvasdebugger_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_computedview_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_computedview_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_custom_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_custom_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_developertoolbar_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_developertoolbar_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_dom_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_dom_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_eyedropper_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_eyedropper_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_fontinspector_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_fontinspector_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_inspector_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_inspector_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_jsbrowserdebugger_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_jsbrowserdebugger_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_jsdebugger_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_jsdebugger_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_jsprofiler_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_jsprofiler_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_layoutview_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_layoutview_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_memory_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_memory_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_menu_eyedropper_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_menu_eyedropper_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_netmonitor_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_netmonitor_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_options_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_options_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_paintflashing_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_paintflashing_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_picker_eyedropper_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_picker_eyedropper_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_responsive_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_responsive_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_ruleview_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_ruleview_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_scratchpad_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_window_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_scratchpad_window_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_shadereditor_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_shadereditor_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_storage_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_storage_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_styleeditor_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_styleeditor_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_webaudioeditor_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_webaudioeditor_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_webconsole_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_webconsole_opened_count_sum
 - mode: NULLABLE
   name: histogram_parent_devtools_webide_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_parent_devtools_webide_opened_count_sum
 - mode: NULLABLE
   name: install_year
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: install_year
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: is_wow64
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_wow64
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: memory_mb
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: memory_mb
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - mode: NULLABLE
   name: os
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: os_service_pack_major
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_service_pack_major
 - mode: NULLABLE
   name: os_service_pack_minor
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_service_pack_minor
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: pings_aggregated_by_this_row
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pings_aggregated_by_this_row
 - mode: NULLABLE
   name: places_bookmarks_count_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_bookmarks_count_mean
 - mode: NULLABLE
   name: places_pages_count_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_pages_count_mean
 - mode: NULLABLE
   name: plugin_hangs_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: plugin_hangs_sum
 - mode: NULLABLE
   name: plugins_infobar_allow_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: plugins_infobar_allow_sum
 - mode: NULLABLE
   name: plugins_infobar_block_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: plugins_infobar_block_sum
 - mode: NULLABLE
   name: plugins_infobar_shown_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: plugins_infobar_shown_sum
 - mode: NULLABLE
   name: plugins_notification_shown_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: plugins_notification_shown_sum
 - mode: NULLABLE
   name: previous_build_id
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: previous_build_id
 - mode: NULLABLE
   name: profile_age_in_days
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_age_in_days
 - mode: NULLABLE
   name: profile_creation_date
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_creation_date
 - mode: NULLABLE
   name: push_api_notify_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: push_api_notify_sum
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
-    It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - mode: NULLABLE
   name: sandbox_effective_content_process_level
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sandbox_effective_content_process_level
 - mode: NULLABLE
   name: scalar_combined_webrtc_nicer_stun_retransmits_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_combined_webrtc_nicer_stun_retransmits_sum
 - mode: NULLABLE
   name: scalar_combined_webrtc_nicer_turn_401s_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_combined_webrtc_nicer_turn_401s_sum
 - mode: NULLABLE
   name: scalar_combined_webrtc_nicer_turn_403s_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_combined_webrtc_nicer_turn_403s_sum
 - mode: NULLABLE
   name: scalar_combined_webrtc_nicer_turn_438s_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_combined_webrtc_nicer_turn_438s_sum
 - mode: NULLABLE
   name: scalar_content_navigator_storage_estimate_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_content_navigator_storage_estimate_count_sum
 - mode: NULLABLE
   name: scalar_content_navigator_storage_persist_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_content_navigator_storage_persist_count_sum
 - mode: NULLABLE
   name: scalar_parent_aushelper_websense_reg_version
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_aushelper_websense_reg_version
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_max_concurrent_tab_count_max
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_max_concurrent_tab_count_max
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_max_concurrent_window_count_max
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_max_concurrent_window_count_max
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_tab_open_event_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_tab_open_event_count_sum
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_total_uri_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_total_uri_count_sum
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_unfiltered_uri_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_unfiltered_uri_count_sum
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_unique_domains_count_max
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_unique_domains_count_max
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_unique_domains_count_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_unique_domains_count_mean
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_window_open_event_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_window_open_event_count_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_accessibility_node_inspected_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_accessibility_node_inspected_count_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_accessibility_opened_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_accessibility_opened_count_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_accessibility_picker_used_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_accessibility_picker_used_count_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -764,224 +1090,334 @@ fields:
   mode: REPEATED
   name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_accessibility_service_enabled_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_accessibility_service_enabled_count_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_copy_full_css_selector_opened_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_copy_full_css_selector_opened_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_copy_unique_css_selector_opened_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_copy_unique_css_selector_opened_sum
 - mode: NULLABLE
   name: scalar_parent_devtools_toolbar_eyedropper_opened_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_devtools_toolbar_eyedropper_opened_sum
 - mode: NULLABLE
   name: scalar_parent_dom_contentprocess_troubled_due_to_memory_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_dom_contentprocess_troubled_due_to_memory_sum
 - mode: NULLABLE
   name: scalar_parent_navigator_storage_estimate_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_navigator_storage_estimate_count_sum
 - mode: NULLABLE
   name: scalar_parent_navigator_storage_persist_count_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_navigator_storage_persist_count_sum
 - mode: NULLABLE
   name: scalar_parent_storage_sync_api_usage_extensions_using_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_storage_sync_api_usage_extensions_using_sum
 - mode: NULLABLE
   name: search_cohort
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_cohort
 - mode: NULLABLE
   name: search_count_abouthome
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_abouthome
 - mode: NULLABLE
   name: search_count_contextmenu
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_contextmenu
 - mode: NULLABLE
   name: search_count_newtab
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_newtab
 - mode: NULLABLE
   name: search_count_searchbar
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_searchbar
 - mode: NULLABLE
   name: search_count_system
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_system
 - mode: NULLABLE
   name: search_count_urlbar
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_urlbar
 - mode: NULLABLE
   name: search_count_all
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_all
 - mode: NULLABLE
   name: search_count_tagged_sap
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_tagged_sap
 - mode: NULLABLE
   name: search_count_tagged_follow_on
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_tagged_follow_on
 - mode: NULLABLE
   name: search_count_organic
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_organic
 - mode: NULLABLE
   name: search_count_urlbar_handoff
   type: INTEGER
-  description: Total number of searches initiated via URL bar handoff (from the new tab page search to the URL bar) on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_urlbar_handoff
 - mode: NULLABLE
   name: search_count_urlbar_persisted
   type: INTEGER
-  description: Total number of searches from a URL bar query that persisted from the previous page load on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_urlbar_persisted
 - mode: NULLABLE
   name: session_restored_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: session_restored_mean
 - mode: NULLABLE
   name: sessions_started_on_this_day
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sessions_started_on_this_day
 - mode: NULLABLE
   name: shutdown_kill_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: shutdown_kill_sum
 - mode: NULLABLE
   name: subsession_hours_sum
   type: NUMERIC
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_hours_sum
 - mode: NULLABLE
   name: ssl_handshake_result_failure_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ssl_handshake_result_failure_sum
 - mode: NULLABLE
   name: ssl_handshake_result_success_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ssl_handshake_result_success_sum
 - mode: NULLABLE
   name: sync_configured
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_configured
 - mode: NULLABLE
   name: sync_count_desktop_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_count_desktop_mean
 - mode: NULLABLE
   name: sync_count_mobile_mean
   type: FLOAT
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_count_mobile_mean
 - mode: NULLABLE
   name: sync_count_desktop_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_count_desktop_sum
 - mode: NULLABLE
   name: sync_count_mobile_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_count_mobile_sum
 - mode: NULLABLE
   name: telemetry_enabled
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: telemetry_enabled
 - mode: NULLABLE
   name: timezone_offset
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: timezone_offset
 - mode: NULLABLE
   name: total_hours_sum
   type: NUMERIC
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: total_hours_sum
 - mode: NULLABLE
   name: update_auto_download
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: update_auto_download
 - mode: NULLABLE
   name: update_channel
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: update_channel
 - mode: NULLABLE
   name: update_enabled
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: update_enabled
 - mode: NULLABLE
   name: vendor
   type: STRING
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: vendor
 - mode: NULLABLE
   name: web_notification_shown_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: web_notification_shown_sum
 - mode: NULLABLE
   name: windows_build_number
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_build_number
 - mode: NULLABLE
   name: windows_ubr
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_ubr
 - mode: NULLABLE
   name: fxa_configured
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: fxa_configured
 - mode: NULLABLE
   name: trackers_blocked_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: trackers_blocked_sum
 - mode: NULLABLE
   name: submission_timestamp_min
   type: TIMESTAMP
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_timestamp_min
 - mode: NULLABLE
   name: ad_clicks_count_all
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ad_clicks_count_all
 - mode: NULLABLE
   name: search_with_ads_count_all
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_with_ads_count_all
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_about_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_impression_autofill_about_sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_adaptive_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_impression_autofill_adaptive_sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_origin_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_impression_autofill_origin_sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_other_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_impression_autofill_other_sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_preloaded_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_impression_autofill_preloaded_sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_url_sum
   type: INTEGER
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_impression_autofill_url_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -989,12 +1425,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_telemetry_event_counts_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_telemetry_event_counts_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1002,12 +1442,16 @@ fields:
   mode: REPEATED
   name: scalar_content_telemetry_event_counts_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_content_telemetry_event_counts_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1015,12 +1459,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1028,12 +1476,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_handoff_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_handoff_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1041,12 +1493,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_keywordoffer_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_keywordoffer_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1054,12 +1510,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_oneoff_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_oneoff_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1067,12 +1527,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_other_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_other_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1080,12 +1544,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_shortcut_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_shortcut_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1093,12 +1561,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabmenu_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_tabmenu_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1106,12 +1578,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabtosearch_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_tabtosearch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1119,12 +1595,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1132,12 +1612,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_newtab_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_topsites_newtab_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1145,12 +1629,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1158,12 +1646,16 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_touchbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: null
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -1171,297 +1663,461 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD
-  description: null
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_searchmode_typed_sum
 - mode: NULLABLE
   name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
-  description: Whether Firefox is pinned to the Windows taskbar on the client. True if pinned, False if not, Null if unavailable (non-Windows or older
-    builds).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_is_taskbar_pinned
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
-  description: Whether Firefox was most recently launched from a desktop shortcut. True if launched via desktop icon.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_launched_via_desktop
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_start_menu
   type: BOOLEAN
-  description: Whether Firefox was most recently launched from the Windows Start Menu. True if launched via Start Menu.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_launched_via_start_menu
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar
   type: BOOLEAN
-  description: Whether Firefox was most recently launched from the Windows taskbar pin. True if launched via taskbar.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_launched_via_taskbar
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
-  description: Whether Firefox was most recently launched from another type of shortcut (not desktop, taskbar, or Start Menu). True if launched via other
-    shortcut.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_launched_via_other_shortcut
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
-  description: Whether Firefox was most recently launched via an unclassified launch method. True if launched via another method.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_launched_via_other
 - mode: NULLABLE
   name: search_count_webextension
   type: INTEGER
-  description: Total number of searches initiated from a WebExtension (browser extension) on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_webextension
 - mode: NULLABLE
   name: search_count_alias
   type: INTEGER
-  description: Total number of searches using a keyword/alias shortcut in the URL bar on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_alias
 - mode: NULLABLE
   name: search_count_urlbar_searchmode
   type: INTEGER
-  description: Total number of searches initiated from the URL bar while in search mode (restricted to a specific search engine) on the most recent active
-    day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count_urlbar_searchmode
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_about_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_about_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_adaptive_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_adaptive_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_origin_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_origin_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_other_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_other_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_preloaded_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_preloaded_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_url_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_autofill_url_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_bookmark_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_bookmark_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_dynamic_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_dynamic_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_extension_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_extension_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_formhistory_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_formhistory_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_history_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_history_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_keyword_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_keyword_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_remotetab_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_remotetab_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchengine_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_searchengine_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchsuggestion_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_searchsuggestion_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_switchtab_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_switchtab_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_tabtosearch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_tabtosearch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_tip_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_tip_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_topsite_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_topsite_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_unknown_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_unknown_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_visiturl_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_urlbar_picked_visiturl_sum
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
-  description: The identifier of the default search engine used in Firefox private browsing windows (e.g., 'ddg' for DuckDuckGo). Null if the same as
-    the normal default.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine
 - mode: NULLABLE
   name: default_private_search_engine_data_load_path
   type: STRING
-  description: The anonymized file path of the default private browsing search engine. Null if not configured separately from the normal default.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_load_path
 - mode: NULLABLE
   name: default_private_search_engine_data_name
   type: STRING
-  description: The display name of the default private browsing search engine. Null if not configured separately.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_name
 - mode: NULLABLE
   name: default_private_search_engine_data_origin
   type: STRING
-  description: The origin classification of the default private browsing search engine. Null if not configured separately.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_origin
 - mode: NULLABLE
   name: default_private_search_engine_data_submission_url
   type: STRING
-  description: The search submission URL for the default private browsing search engine. Null if not configured separately.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_submission_url
 - fields:
   - mode: NULLABLE
     name: engine
@@ -1469,1069 +2125,1662 @@ fields:
   - mode: NULLABLE
     name: source
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: source
   - mode: NULLABLE
     name: count
     type: INTEGER
   mode: REPEATED
   name: search_counts
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_counts
 - mode: NULLABLE
   name: user_pref_browser_search_region
   type: STRING
-  description: The ISO country code used by Firefox to determine region-specific search defaults (set based on the client's locale and IP geolocation).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_search_region
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_with_ads
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_with_ads
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: ad_clicks
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ad_clicks
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_urlbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_handoff_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_urlbar_handoff_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_persisted_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_urlbar_persisted_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_urlbar_searchmode_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_contextmenu_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_contextmenu_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_about_home_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_about_home_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_about_newtab_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_about_newtab_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_searchbar_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_searchbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_system_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_system_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_webextension_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_webextension_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_tabhistory_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_tabhistory_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_reload_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_reload_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_content_unknown_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_content_unknown_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_urlbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_handoff_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_urlbar_handoff_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_persisted_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_urlbar_persisted_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_urlbar_searchmode_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_contextmenu_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_contextmenu_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_about_home_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_about_home_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_about_newtab_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_about_newtab_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_searchbar_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_searchbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_system_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_system_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_webextension_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_webextension_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_tabhistory_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_tabhistory_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_reload_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_reload_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_withads_unknown_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_withads_unknown_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_urlbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_handoff_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_urlbar_handoff_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_persisted_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_urlbar_persisted_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_searchmode_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_urlbar_searchmode_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_contextmenu_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_contextmenu_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_about_home_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_about_home_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_about_newtab_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_about_newtab_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_searchbar_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_searchbar_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_system_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_system_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_webextension_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_webextension_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_tabhistory_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_tabhistory_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_reload_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_reload_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_unknown_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_adclicks_unknown_sum
 - mode: NULLABLE
   name: update_background
   type: BOOLEAN
-  description: Whether Firefox can install updates while not running (background updates enabled). True means Firefox may update itself even when the
-    browser is closed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: update_background
 - mode: NULLABLE
   name: user_pref_browser_search_suggest_enabled
   type: STRING
-  description: The value of the browser.search.suggest.enabled preference controlling search suggestions in the URL bar. 'false' if the user has disabled
-    suggestions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_search_suggest_enabled
 - mode: NULLABLE
   name: user_pref_browser_widget_in_navbar
   type: STRING
-  description: The value of the preference controlling whether the search widget appears in the navigation bar. 'false' means the search widget is not
-    pinned to the navbar.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_widget_in_navbar
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_searches
   type: STRING
-  description: The value of the browser.urlbar.suggest.searches preference controlling search engine suggestions in the URL bar. 'false' if disabled
-    by the user.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_suggest_searches
 - mode: NULLABLE
   name: user_pref_browser_urlbar_show_search_suggestions_first
   type: STRING
-  description: The value of the preference controlling whether search suggestions appear before browsing history in URL bar results. 'false' if the user
-    has disabled this.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_show_search_suggestions_first
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest
   type: STRING
-  description: The value of the preference controlling Firefox Suggest (QuickSuggest) in the URL bar. 'false' if the user has opted out.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_suggest_quicksuggest
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
-  description: The value of the preference controlling sponsored Firefox Suggest results in the URL bar. 'false' if the user has opted out of sponsored
-    suggestions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
   type: STRING
-  description: The choice the user made when presented with the Firefox Suggest onboarding dialog (e.g., 'accept_2', 'reject_2', 'not_now_2', 'close_1').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
-  description: Total number of URIs visited across both normal and private browsing modes on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING
-  description: The value of the browser.newtabpage.enabled preference. 'false' means the user has replaced the default Firefox new tab page.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_newtabpage_enabled
 - mode: NULLABLE
   name: user_pref_app_shield_optoutstudies_enabled
   type: STRING
-  description: The value of the app.shield.optoutstudies.enabled preference. 'false' means the user has opted out of Shield studies.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_app_shield_optoutstudies_enabled
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_topsites_click_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_topsites_click_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_topsites_impression_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_topsites_impression_sum
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
   type: STRING
-  description: The value of the preference controlling non-sponsored Firefox Suggest results. 'false' if the user has opted out of non-sponsored suggestions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
   type: STRING
-  description: The value of the preference controlling data collection for Firefox Suggest improvements. 'false' if the user has opted out of telemetry
-    for Suggest.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
 - mode: NULLABLE
   name: scalar_a11y_hcm_foreground
   type: INTEGER
-  description: The foreground color used in high-contrast mode on the client, encoded as a 32-bit ARGB integer. Only populated when high-contrast mode
-    is active.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_a11y_hcm_foreground
 - mode: NULLABLE
   name: scalar_a11y_hcm_background
   type: INTEGER
-  description: The background color used in high-contrast mode on the client, encoded as a 32-bit ARGB integer. Only populated when high-contrast mode
-    is active.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_a11y_hcm_background
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: BOOLEAN
   mode: REPEATED
   name: a11y_theme
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: a11y_theme
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_sponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_block_nonsponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_block_nonsponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_block_sponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_block_sponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_sponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_sponsored_bestmatch_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_bestmatch
   type: STRING
-  description: The value of the preference controlling Best Match (high-confidence sponsored Suggest results) in the URL bar. 'true' means Best Match
-    is enabled.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_pref_browser_urlbar_suggest_bestmatch
 - mode: NULLABLE
   name: scalar_parent_browser_ui_interaction_textrecognition_error_sum
   type: INTEGER
-  description: Total number of errors encountered during the text recognition feature on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_ui_interaction_textrecognition_error_sum
 - mode: NULLABLE
   name: text_recognition_interaction_timing_sum
   type: INTEGER
-  description: Total time in milliseconds spent in text recognition UI interactions on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: text_recognition_interaction_timing_sum
 - mode: NULLABLE
   name: text_recognition_interaction_timing_count_sum
   type: INTEGER
-  description: Total number of text recognition interaction timing measurements on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: text_recognition_interaction_timing_count_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_browser_ui_interaction_content_context_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_browser_ui_interaction_content_context_sum
 - mode: NULLABLE
   name: text_recognition_api_performance_sum
   type: INTEGER
-  description: Total performance timing in milliseconds for text recognition API calls on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: text_recognition_api_performance_sum
 - mode: NULLABLE
   name: text_recognition_api_performance_count_sum
   type: INTEGER
-  description: Total number of text recognition API performance measurements on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: text_recognition_api_performance_count_sum
 - mode: NULLABLE
   name: text_recognition_text_length_sum
   type: INTEGER
-  description: Total length in characters of text recognized by the text recognition feature on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: text_recognition_text_length_sum
 - mode: NULLABLE
   name: text_recognition_text_length_count_sum
   type: INTEGER
-  description: Total number of text recognition text length measurements on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: text_recognition_text_length_count_sum
 - mode: NULLABLE
   name: places_searchbar_cumulative_searches_sum
   type: INTEGER
-  description: Cumulative total number of searches performed in the Firefox Places (bookmarks/history) searchbar on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_searchbar_cumulative_searches_sum
 - mode: NULLABLE
   name: places_searchbar_cumulative_filter_count_sum
   type: INTEGER
-  description: Cumulative total number of filter operations applied in the Firefox Places searchbar on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_searchbar_cumulative_filter_count_sum
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar_private
   type: BOOLEAN
-  description: Whether Firefox was most recently launched from the Windows taskbar private browsing pin. True if launched via the private taskbar pin.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_os_environment_launched_via_taskbar_private
 - mode: NULLABLE
   name: dom_parentprocess_private_window_used
   type: BOOLEAN
-  description: Whether the user opened a private browsing window during the most recent active day. True means a private window was used.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dom_parentprocess_private_window_used
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_any
   type: BOOLEAN
-  description: Whether Firefox is pinned to the Windows taskbar in any configuration (normal or private browsing). True if pinned in either mode.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_environment_is_taskbar_pinned_any
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private_any
   type: BOOLEAN
-  description: Whether Firefox's private browsing mode icon is pinned to the Windows taskbar in any configuration. True if the private pin exists.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_environment_is_taskbar_pinned_private_any
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private
   type: BOOLEAN
-  description: Whether Firefox's private browsing icon is pinned to the Windows taskbar. True if the private browsing shortcut is pinned.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_environment_is_taskbar_pinned_private
 - mode: NULLABLE
   name: bookmark_migrations_quantity_chrome
   type: INTEGER
-  description: Number of bookmarks migrated from Google Chrome during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: bookmark_migrations_quantity_chrome
 - mode: NULLABLE
   name: bookmark_migrations_quantity_edge
   type: INTEGER
-  description: Number of bookmarks migrated from Microsoft Edge during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: bookmark_migrations_quantity_edge
 - mode: NULLABLE
   name: bookmark_migrations_quantity_safari
   type: INTEGER
-  description: Number of bookmarks migrated from Apple Safari during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: bookmark_migrations_quantity_safari
 - mode: NULLABLE
   name: bookmark_migrations_quantity_all
   type: INTEGER
-  description: Total number of bookmarks migrated from all other browsers during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: bookmark_migrations_quantity_all
 - mode: NULLABLE
   name: history_migrations_quantity_chrome
   type: INTEGER
-  description: Number of browsing history entries migrated from Google Chrome during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: history_migrations_quantity_chrome
 - mode: NULLABLE
   name: history_migrations_quantity_edge
   type: INTEGER
-  description: Number of browsing history entries migrated from Microsoft Edge during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: history_migrations_quantity_edge
 - mode: NULLABLE
   name: history_migrations_quantity_safari
   type: INTEGER
-  description: Number of browsing history entries migrated from Apple Safari during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: history_migrations_quantity_safari
 - mode: NULLABLE
   name: history_migrations_quantity_all
   type: INTEGER
-  description: Total number of browsing history entries migrated from all other browsers during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: history_migrations_quantity_all
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome
   type: INTEGER
-  description: Number of saved login/password entries migrated from Google Chrome during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: logins_migrations_quantity_chrome
 - mode: NULLABLE
   name: logins_migrations_quantity_edge
   type: INTEGER
-  description: Number of saved login/password entries migrated from Microsoft Edge during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: logins_migrations_quantity_edge
 - mode: NULLABLE
   name: logins_migrations_quantity_safari
   type: INTEGER
-  description: Number of saved login/password entries migrated from Apple Safari during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: logins_migrations_quantity_safari
 - mode: NULLABLE
   name: logins_migrations_quantity_all
   type: INTEGER
-  description: Total number of saved login/password entries migrated from all other browsers during the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: logins_migrations_quantity_all
 - mode: NULLABLE
   name: media_play_time_ms_audio_sum
   type: INTEGER
-  description: Total milliseconds of audio media playback on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: media_play_time_ms_audio_sum
 - mode: NULLABLE
   name: media_play_time_ms_video_sum
   type: INTEGER
-  description: Total milliseconds of video media playback on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: media_play_time_ms_video_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_block_dynamic_wikipedia_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_block_dynamic_wikipedia_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_block_weather_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_block_weather_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_dynamic_wikipedia_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_dynamic_wikipedia_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_nonsponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_nonsponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_sponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_weather_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_click_weather_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_dynamic_wikipedia_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_dynamic_wikipedia_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_nonsponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_sponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_weather_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_help_weather_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_nonsponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sponsored_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_sponsored_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_weather_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: contextual_services_quicksuggest_impression_weather_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_sidebar_opened_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_sidebar_opened_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_sidebar_search_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_sidebar_search_sum
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_sidebar_link_sum
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_sidebar_link_sum
 - name: places_previousday_visits_mean
   type: FLOAT
   mode: NULLABLE
-  description: Mean number of page visits recorded in the Firefox Places database on the day prior to the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_previousday_visits_mean
 - name: places_library_cumulative_bookmark_searches_sum
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative total number of bookmark searches performed in the Firefox Library dialog on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_library_cumulative_bookmark_searches_sum
 - name: places_library_cumulative_history_searches_sum
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative total number of history searches performed in the Firefox Library dialog on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_library_cumulative_history_searches_sum
 - name: places_bookmarks_searchbar_cumulative_searches_sum
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative total number of bookmark searches performed via the bookmarks searchbar on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: places_bookmarks_searchbar_cumulative_searches_sum
 - name: scalar_parent_library_link_sum
   type: RECORD
   mode: REPEATED
   fields:
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_library_link_sum
   - name: key
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
 - name: scalar_parent_library_opened_sum
   type: RECORD
   mode: REPEATED
   fields:
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_library_opened_sum
   - name: key
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
 - name: scalar_parent_library_search_sum
   type: RECORD
   mode: REPEATED
   fields:
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: scalar_parent_library_search_sum
   - name: key
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
 - name: startup_profile_selection_reason_first
   type: STRING
   mode: NULLABLE
-  description: The reason the Firefox profile was selected on the very first run of the installation. Values indicate automated default selection, profile
-    manager, restart, etc.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: startup_profile_selection_reason_first
 - name: first_document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID of the very first telemetry ping received from this client, useful for tracing the original ping that established the
-    client record.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_document_id
 - name: partner_id
   type: STRING
   mode: NULLABLE
-  description: The partner identifier associated with this Firefox installation,
-    identifying preinstalled or co-distributed builds (e.g., 'ubuntu',
-    'mozillaonline').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_id
 - name: distribution_version
   type: STRING
   mode: NULLABLE
-  description: The version string of the distribution configuration associated with this Firefox installation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_version
 - name: distributor
   type: STRING
   mode: NULLABLE
-  description: The name of the organization or project that distributed this Firefox installation (e.g., 'canonical', 'mozillaonline', 'archlinux').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distributor
 - name: distributor_channel
   type: STRING
   mode: NULLABLE
-  description: The distribution channel identifier for this Firefox installation, used to differentiate sub-variants within a distributor (e.g., 'ubuntu',
-    'mainWinStub', 'zena').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distributor_channel
 - name: env_build_platform_version
   type: STRING
   mode: NULLABLE
-  description: The version of the XULRunner platform on which this Firefox binary is built (typically matches the app version).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: env_build_platform_version
 - name: env_build_xpcom_abi
   type: STRING
   mode: NULLABLE
-  description: The XPCOM ABI string identifying the processor and compiler combination of this Firefox binary (e.g., 'x86_64-msvc', 'aarch64-gcc3').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: env_build_xpcom_abi
 - name: geo_db_version
   type: STRING
   mode: NULLABLE
-  description: The version string of the MaxMind GeoIP database used to geolocate the client on the most recent active day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: geo_db_version
 - name: apple_model_id
   type: STRING
   mode: NULLABLE
-  description: The hardware model identifier for Apple Mac devices (e.g., 'MacBookAir10,1'). Null for non-Mac clients.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: apple_model_id
 - name: max_subsession_counter
   type: INTEGER
   mode: NULLABLE
-  description: The maximum subsession counter value seen for this client on the most recent active day, indicating how many subsessions have occurred
-    in the session.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: max_subsession_counter
 - name: min_subsession_counter
   type: INTEGER
   mode: NULLABLE
-  description: The minimum subsession counter value seen for this client on the most recent active day, typically 1 for the first subsession of a new
-    session.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: min_subsession_counter
 - name: startup_profile_selection_first_ping_only
   type: STRING
   mode: NULLABLE
-  description: The profile selection reason recorded in the first telemetry ping of the most recent active day, reflecting how the profile was chosen
-    at startup.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: startup_profile_selection_first_ping_only
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id
 - name: browser_backup_scheduler_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the Firefox BackupService is configured to automatically create profile backups in the background. True if background backup scheduling
-    is active.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: browser_backup_scheduler_enabled
 - name: browser_backup_archive_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the user can create profile backups (i.e., the feature has not been disabled by a preference or compatibility issue). True if
-    backup creation is allowed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: browser_backup_archive_enabled

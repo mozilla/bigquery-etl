@@ -12,18 +12,11 @@ owners:
 - gkatre@mozilla.com
 scheduling:
   dag_name: bqetl_data_governance_metadata
-  # --date and --source-datasets are overridable per-run via the Airflow trigger
-  # "Configuration JSON" (dag_run.conf); source_datasets is comma-separated.
-  # Example: {"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}
-  #
-  # Scheduled/backfill runs omit both: --date defaults to the data interval END
-  # date (data_interval_end) — so a Monday run is tagged with that Monday, not the
-  # prior week's interval start — and the job then scans (interval_end - 7 days);
-  # --source-datasets defaults to the standard set below. Manual ("Trigger DAG w/
-  # config") runs must pass BOTH "date" and "source_datasets" explicitly: the
-  # defaults render empty for them, so query.py rejects either if omitted (avoids
-  # the surprising future partition Airflow would infer from a manual trigger's
-  # interval, and forces deliberate scoping of ad-hoc runs).
+  # Per-run overrides via the Airflow trigger config (dag_run.conf). Scheduled/
+  # backfill runs default --date to the interval-END date (data_interval_end, the
+  # run's Monday; scans interval_end - 7 days) and --source-datasets to the set
+  # below. Manual runs must pass both — the defaults render empty so query.py
+  # rejects them. See README.md for details.
   arguments: [
     "--date", "{{ dag_run.conf.get('date', (data_interval_end | ds) if dag_run.run_type != 'manual' else '') }}",
     "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry' if dag_run.run_type != 'manual' else '') }}"

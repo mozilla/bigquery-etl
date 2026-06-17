@@ -2,60 +2,90 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: mau
   type: INTEGER
-  description: Monthly Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
 - mode: NULLABLE
   name: wau
   type: INTEGER
-  description: Weekly Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: wau
 - mode: NULLABLE
   name: dau
   type: INTEGER
-  description: Daily Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
-  description: New Profiles
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profiles
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
-  description: ID Bucket
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: id_bucket
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Activity Segment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: activity_segment
 - mode: NULLABLE
   name: os
   type: STRING
-  description: Operating System
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: source
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: medium
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: campaign
 - mode: NULLABLE
   name: content
   type: STRING
-  description: Content
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: content
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id

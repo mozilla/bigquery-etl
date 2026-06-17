@@ -138,7 +138,7 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
                 default=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
             )
         elif result.get("custom_query_path"):
-            result["override_depends_on_past"] = click.confirm(
+            result["override_depends_on_past_null_partition"] = click.confirm(
                 "Override the depends-on-past guard and backfill this custom query "
                 "per-partition (the custom query must not depend on prior partitions)?",
                 default=False,
@@ -152,7 +152,7 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
         "query_script_arg",
         "query_script_dry_run_arg",
         "override_depends_on_past_end_date",
-        "override_depends_on_past",
+        "override_depends_on_past_null_partition",
         "reinitialize_table",
         "reinitialize_sampling_batch_size",
     ]

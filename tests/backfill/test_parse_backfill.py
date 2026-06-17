@@ -454,7 +454,7 @@ class TestParseBackfill(object):
             "  shredder_mitigation: false\n"
             "  override_retention_limit: false\n"
             "  override_depends_on_past_end_date: false\n"
-            "  override_depends_on_past: false\n"
+            "  override_depends_on_past_null_partition: false\n"
             "  ignore_date_partition_offset: false\n"
         )
 
@@ -478,7 +478,7 @@ class TestParseBackfill(object):
             reinitialize_sampling_batch_size = None
             override_retention_limit = False
             override_depends_on_past_end_date = False
-            override_depends_on_past = False
+            override_depends_on_past_null_partition = False
             ignore_date_partition_offset = False
             billing_project = None
             query_script_entrypoint = None
@@ -503,7 +503,7 @@ class TestParseBackfill(object):
             "  shredder_mitigation: false\n"
             "  override_retention_limit: false\n"
             "  override_depends_on_past_end_date: false\n"
-            "  override_depends_on_past: false\n"
+            "  override_depends_on_past_null_partition: false\n"
             "  ignore_date_partition_offset: false\n"
         )
 

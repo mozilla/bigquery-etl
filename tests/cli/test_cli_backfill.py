@@ -397,8 +397,8 @@ class TestBackfill:
         backfill = Backfill.entries_from_file(backfill_file)[0]
         assert backfill.reinitialize_sampling_batch_size == 25
 
-    def test_create_backfill_override_depends_on_past(self, runner):
-        """--override-depends-on-past is persisted and allows a custom_query_path backfill
+    def test_create_backfill_override_depends_on_past_null_partition(self, runner):
+        """--override-depends-on-past-null-partition is persisted and allows a custom_query_path backfill
         on the depends_on_past null-partition combo without reinitializing."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
@@ -417,21 +417,24 @@ class TestBackfill:
                 "moz-fx-data-shared-prod.test.test_query_v1",
                 "--start_date=2021-03-01",
                 f"--custom-query-path={custom_query_path}",
-                "--override-depends-on-past",
+                "--override-depends-on-past-null-partition",
             ],
         )
 
         assert result.exit_code == 0
         backfill_file = QUERY_DIR + "/" + BACKFILL_FILE
         backfill = Backfill.entries_from_file(backfill_file)[0]
-        assert backfill.override_depends_on_past is True
+        assert backfill.override_depends_on_past_null_partition is True
         assert backfill.custom_query_path == custom_query_path
-        assert "override_depends_on_past: true" in Path(backfill_file).read_text()
+        assert (
+            "override_depends_on_past_null_partition: true"
+            in Path(backfill_file).read_text()
+        )
 
     def test_create_backfill_depends_on_past_null_partition_without_override_fails(
         self, runner
     ):
-        """Without --override-depends-on-past (or --reinitialize-table), create still
+        """Without --override-depends-on-past-null-partition (or --reinitialize-table), create still
         rejects the depends_on_past null-partition combo."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
@@ -914,9 +917,12 @@ class TestBackfill:
             in result.output
         )
 
-    def test_validate_backfill_override_depends_on_past_passes(self, runner, mock_date):
+    def test_validate_backfill_override_depends_on_past_null_partition_passes(
+        self, runner, mock_date
+    ):
         """Validation passes for the depends_on_past null-partition combo when the entry
-        sets override_depends_on_past and points at a custom_query_path."""
+        sets override_depends_on_past_null_partition and points at a custom_query_path.
+        """
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
             "date_partition_parameter": None,
@@ -933,10 +939,10 @@ class TestBackfill:
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         # depends_on_past tables also require the end date to be on or after the entry
-        # date (or an override), which is unrelated to the override_depends_on_past bypass.
+        # date (or an override), which is unrelated to the override_depends_on_past_null_partition bypass.
         backfill_file.write_text(
             BACKFILL_YAML_TEMPLATE
-            + "  override_depends_on_past: true\n"
+            + "  override_depends_on_past_null_partition: true\n"
             + "  override_depends_on_past_end_date: true\n"
             + f"  custom_query_path: {custom_query_path}\n"
         )
@@ -949,10 +955,10 @@ class TestBackfill:
         )
         assert result.exit_code == 0
 
-    def test_validate_backfill_override_depends_on_past_without_custom_query_fails(
+    def test_validate_backfill_override_depends_on_past_null_partition_without_custom_query_fails(
         self, runner, mock_date
     ):
-        """override_depends_on_past is only allowed alongside a custom_query_path; without
+        """override_depends_on_past_null_partition is only allowed alongside a custom_query_path; without
         one, validation fails even though the metadata guard itself is bypassed."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
@@ -968,7 +974,7 @@ class TestBackfill:
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_file.write_text(
             BACKFILL_YAML_TEMPLATE
-            + "  override_depends_on_past: true\n"
+            + "  override_depends_on_past_null_partition: true\n"
             + "  override_depends_on_past_end_date: true\n"
         )
 
@@ -981,10 +987,10 @@ class TestBackfill:
         assert result.exit_code == 1
         assert "custom_query_path" in result.output
 
-    def test_validate_backfill_override_depends_on_past_with_reinitialize_fails(
+    def test_validate_backfill_override_depends_on_past_null_partition_with_reinitialize_fails(
         self, runner, mock_date
     ):
-        """override_depends_on_past and reinitialize_table are mutually exclusive: setting
+        """override_depends_on_past_null_partition and reinitialize_table are mutually exclusive: setting
         both must fail rather than silently letting the override win."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
@@ -1003,7 +1009,7 @@ class TestBackfill:
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_file.write_text(
             BACKFILL_YAML_TEMPLATE
-            + "  override_depends_on_past: true\n"
+            + "  override_depends_on_past_null_partition: true\n"
             + "  override_depends_on_past_end_date: true\n"
             + "  reinitialize_table: true\n"
             + f"  custom_query_path: {custom_query_path}\n"
@@ -2673,7 +2679,7 @@ class TestBackfill:
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
     @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
-    def test_initiate_backfill_override_depends_on_past_runs_per_partition(
+    def test_initiate_backfill_override_depends_on_past_null_partition_runs_per_partition(
         self,
         mock_reinitialize,
         mock_initialize_partition,
@@ -2681,19 +2687,35 @@ class TestBackfill:
         mock_auth,
         runner,
     ):
-        """An override_depends_on_past entry (custom_query_path, no reinitialize) runs the
-        day-by-day per-partition path and does NOT rebuild via is_init() -- the inverse of
-        the reinitialize path. The custom query is the one handed to query_backfill."""
+        """An override_depends_on_past_null_partition entry (custom_query_path, no reinitialize)
+        runs the day-by-day per-partition path and does NOT rebuild via is_init().
+
+        Unlike a normal depends_on_past backfill, it must SKIP the staging ref-rewrite and the
+        previous-partition seed: the custom query reads its own prod partition (`* REPLACE`), so
+        repointing that read at the empty staging table would copy empty partitions over prod,
+        and _initialize_previous_partition would raise on the null date_partition_parameter.
+        Uses real time_partitioning metadata and does not mock _initialize_previous_partition,
+        so a regression that re-enables the block surfaces here instead of being hidden.
+        """
         prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
             "date_partition_parameter": None,
             "depends_on_past": True,
         }
+        # Real partitioning config matching a first_seen-style table; with a null
+        # date_partition_parameter the previous-partition seed cannot resolve a partition id.
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "first_seen_date"}
+        }
         (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
         custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        # Reads its own prod partition to carry columns forward -- must stay pointed at prod.
         with open(custom_query_path, "w") as f:
-            f.write("SELECT 1 WHERE submission_date = @submission_date")
+            f.write(
+                "SELECT * FROM `moz-fx-data-shared-prod.test.test_query_v1` "
+                "WHERE first_seen_date = @submission_date"
+            )
 
         entry = Backfill(
             entry_date=date(2026, 1, 1),
@@ -2704,7 +2726,7 @@ class TestBackfill:
             watchers=[VALID_WATCHER],
             status=DEFAULT_STATUS,
             custom_query_path=custom_query_path,
-            override_depends_on_past=True,
+            override_depends_on_past_null_partition=True,
         )
         mock_context = MagicMock()
 
@@ -2715,15 +2737,92 @@ class TestBackfill:
             entry=entry,
         )
 
-        # Not reinitialized; runs per-partition and seeds the previous partition.
+        # Not reinitialized; runs the per-partition query backfill once.
         assert mock_reinitialize.call_count == 0
-        assert mock_initialize_partition.call_count == 1
         assert mock_context.invoke.call_count == 1
-        # The depends_on_past ref-rewrite produced replaced_ref.sql from the custom query,
-        # and that rewritten query (not query.sql) is what query_backfill is invoked with.
-        replaced_ref = Path(QUERY_DIR) / "replaced_ref.sql"
-        assert replaced_ref.exists()
-        assert mock_context.invoke.call_args.kwargs["custom_query_path"] == replaced_ref
+        # The depends_on_past block is skipped entirely: no previous-partition seed and no
+        # staging ref-rewrite, so the original prod-reading custom query is handed through.
+        assert mock_initialize_partition.call_count == 0
+        assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
+        assert mock_context.invoke.call_args.kwargs["custom_query_path"] == Path(
+            custom_query_path
+        )
+
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill.query_supports_reinitialize")
+    @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_override_depends_on_past_null_partition_keeps_prod_reference(
+        self,
+        mock_reinitialize,
+        mock_initialize_partition,
+        mock_supports_reinitialize,
+        mock_client,
+        mock_auth,
+        runner,
+    ):
+        """The override path must hand query_backfill a custom query that still reads PROD.
+
+        The data-loss bug being guarded against: the depends_on_past ref-rewrite repoints the
+        table's self-reference at the empty staging table, so `WHERE <field> = @submission_date`
+        returns no rows and complete copies empty partitions over prod. This asserts the custom
+        query handed downstream still references prod (not staging). It also proves the override
+        is independent of init logic: the table has no init files (query.sql has no is_init()),
+        and query_supports_reinitialize is never consulted because reinitialize is bypassed.
+        """
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "first_seen_date"}
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        # query.sql deliberately has no is_init() branch -- the table has no init files, and
+        # the override must not depend on one.
+        (Path(QUERY_DIR) / "query.sql").write_text("SELECT 1")
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        prod_reading_query = (
+            f"SELECT * FROM `{prod_table_name}` "
+            "WHERE first_seen_date = @submission_date"
+        )
+        with open(custom_query_path, "w") as f:
+            f.write(prod_reading_query)
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            custom_query_path=custom_query_path,
+            override_depends_on_past_null_partition=True,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name=staging_table_name,
+            entry=entry,
+        )
+
+        # The override never probes is_init() support: reinitialize is bypassed entirely.
+        assert mock_supports_reinitialize.call_count == 0
+        assert mock_reinitialize.call_count == 0
+        # The query handed to query_backfill still reads prod, not the empty staging table.
+        passed_query_path = mock_context.invoke.call_args.kwargs["custom_query_path"]
+        passed_query_text = Path(passed_query_path).read_text()
+        assert f"`{prod_table_name}`" in passed_query_text
+        assert staging_table_name not in passed_query_text
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
@@ -3348,7 +3447,7 @@ class TestBackfill:
     def test_copy_backfill_staging_to_prod_override_depends_on_past_null_partition_param(
         self, mock_copy_table
     ):
-        """An override_depends_on_past backfill ran per-partition against a table whose
+        """An override_depends_on_past_null_partition backfill ran per-partition against a table whose
         date_partition_parameter is null. The partition must be resolved from the
         partitioning field so each partition copies individually, rather than returning a
         null partition (which raises) or copying the whole table."""
@@ -3382,7 +3481,7 @@ class TestBackfill:
             reason=VALID_REASON,
             watchers=[VALID_WATCHER],
             status=BackfillStatus.COMPLETE,
-            override_depends_on_past=True,
+            override_depends_on_past_null_partition=True,
             custom_query_path="sql/moz-fx-data-shared-prod/dataset/table/backfill_custom.sql",
         )
 
@@ -3405,12 +3504,119 @@ class TestBackfill:
             )
 
     @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_override_depends_on_past_null_partition_excludes(
+        self, mock_copy_table
+    ):
+        """Excluded dates are skipped under the override: a 3-day range with the middle day
+        excluded copies only the two remaining partitions (the override only changes how the
+        partition id is resolved, not the date-range iteration)."""
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "depends_on_past": True,
+                "date_partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "first_seen_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days
+            excluded_dates=[date(2021, 1, 4)],  # middle day excluded
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            override_depends_on_past_null_partition=True,
+            custom_query_path="sql/moz-fx-data-shared-prod/dataset/table/backfill_custom.sql",
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # Only the 2 non-excluded days are copied.
+        assert mock_copy_table.call_count == 2
+        copied_partitions = [
+            call.args[0].split("$")[1] for call in mock_copy_table.call_args_list
+        ]
+        assert copied_partitions == ["20210103", "20210105"]
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_override_depends_on_past_null_partition_month(
+        self, mock_copy_table
+    ):
+        """The override resolves the partition from the partitioning field for MONTH-partitioned
+        tables too, copying one partition per month in the range."""
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "depends_on_past": True,
+                "date_partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "month",
+                    "field": "first_seen_month",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 1),
+            end_date=date(2021, 3, 1),  # 3 months
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            override_depends_on_past_null_partition=True,
+            custom_query_path="sql/moz-fx-data-shared-prod/dataset/table/backfill_custom.sql",
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # One partition per month (month partitions use the YYYYMM prefix).
+        assert mock_copy_table.call_count == 3
+        copied_partitions = [
+            call.args[0].split("$")[1] for call in mock_copy_table.call_args_list
+        ]
+        assert copied_partitions == ["202101", "202102", "202103"]
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
     def test_copy_backfill_staging_to_prod_null_partition_param_without_override_raises(
         self, mock_copy_table
     ):
         """Without the override, a partitioned table with a null date_partition_parameter
         cannot resolve a per-partition target: get_backfill_partition returns None and
-        complete raises. This is the pre-existing gap that override_depends_on_past closes.
+        complete raises. This is the pre-existing gap that override_depends_on_past_null_partition closes.
         """
         metadata_conf = {
             "friendly_name": "test",

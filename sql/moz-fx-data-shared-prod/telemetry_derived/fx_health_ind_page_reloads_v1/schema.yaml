@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: normalized_country_code
   type: STRING
-  description: Normalized Country Code
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_country_code
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: nbr_distinct_clients
   type: INTEGER

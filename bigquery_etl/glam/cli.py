@@ -86,7 +86,7 @@ def list_daily(project, dataset):
 def backfill_daily(app_id, start_date, end_date, dataset):
     """Backfill the daily tables.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """
     _check_root()
     run(
@@ -123,7 +123,7 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
     To rebuild the table from scratch, drop the clients_scalar_aggregates and
     clients_histogram_aggregates tables.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """
     _check_root()
     run(
@@ -157,7 +157,7 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 def export(app_id, project, dataset, bucket):
     """Run the export ETL and write the final csv to a gcs bucket.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """
     _check_root()
     run(

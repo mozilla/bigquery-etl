@@ -34,7 +34,11 @@ from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
 from ..util.common import enable_impersonation, set_resolved_target_project
-from ..util.target import get_default_target_name, get_target
+from ..util.target import (
+    get_default_target_name,
+    get_target,
+    set_grant_impersonation_access,
+)
 
 
 def cli(prog_name=None):
@@ -137,6 +141,8 @@ def cli(prog_name=None):
                 ctx.obj["target"] = parsed_target
                 # Expose the target project to the coding-agent gate.
                 set_resolved_target_project(parsed_target.project_id)
+                # And the target's dataset-access preference for impersonation.
+                set_grant_impersonation_access(parsed_target.grant_impersonation_access)
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )

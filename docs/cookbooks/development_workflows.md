@@ -68,6 +68,33 @@ sandbox project** you own, you can skip impersonation and instead grant the need
 service account in that project — as needed. Run without `impersonate_service_account` set (or
 with `--no-impersonate`) to use your own credentials.
 
+### Writing datasets while impersonating
+
+Datasets `bqetl` creates are owned by you, not the service account — so when impersonating, the SA
+can't write results into a new dataset unless it's also granted access. When this happens `bqetl`
+asks whether to grant the SA write access, with one caveat: **granting makes the dataset readable
+by everyone who can impersonate the SA**. Answer `no` (the default) for anything sensitive and use a
+personal sandbox instead; answer `yes` only for non-sensitive shared dev work.
+
+To decide without a prompt — e.g. in CI or for a human running non-interactively — set it on the
+target (or override per-run with `BQETL_GRANT_IMPERSONATION_DATASET_ACCESS=1`):
+
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+  grant_impersonation_access: true   # SA gets WRITER on datasets it creates
+```
+
+Non-interactive runs default to **not** granting.
+
+**Coding agents** can't give meaningful consent (they can't be prompted and can set env vars
+themselves), so they may widen access **only** via an explicit `grant_impersonation_access: true`
+on the target — the env var and prompt are ignored for them. Without it, an agent creates datasets
+the SA can't write to (writes fail). Note this is a cooperative guardrail, not a security boundary:
+`bqetl_targets.yaml` is local and agent-editable. The hard boundary is the service account's IAM —
+it should not be able to grant itself dataset access.
+
 ## Target-Based Development
 
 Configure a target in `./bqetl_targets.yaml`. When running commands from `private-bigquery-etl`, targets are still read from `bigquery-etl/bqetl_targets.yaml`.

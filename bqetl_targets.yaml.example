@@ -2,6 +2,7 @@
 #   project_id: moz-fx-data-proto # or personal sandbox
 #   dataset_prefix: 'dev_{{ account.username }}_{{ git.branch }}_{{ git.commit }}_'  # optional prefix
 #   impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com  # optional
+#   grant_impersonation_access: true  # optional; SA gets WRITER on datasets it creates (shared-readable)
 # Supported variables:  account.username, artifact.project_id, artifact.dataset_id, git.branch, git.commit
 
 shared_dev:
@@ -10,6 +11,10 @@ shared_dev:
   artifact_prefix: '{{ artifact.project_id }}__{{ artifact.dataset_id }}__'
   # Auto-impersonate the sandbox SA (no manual export); ADC needs tokenCreator on it.
   impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+  # Let the SA write into datasets it creates. Caveat: makes them readable by
+  # everyone who can impersonate the SA — omit for restricted data. Without it,
+  # bqetl prompts interactively (and denies non-interactively).
+  grant_impersonation_access: true
 
 dev:
   project_id: your-sandbox-project  # TODO: specify your personal sandbox project

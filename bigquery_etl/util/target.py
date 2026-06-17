@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 from functools import cache
 from pathlib import Path
@@ -37,7 +38,11 @@ from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..schema import SCHEMA_FILE, Schema
 from ..view import View
 from . import extract_from_query_path
-from .common import get_bqetl_project_root, get_unimpersonated_credentials
+from .common import (
+    get_bqetl_project_root,
+    get_unimpersonated_credentials,
+    is_running_under_coding_agent,
+)
 from .common import render as render_template
 
 VIEW_FILE = "view.sql"
@@ -112,6 +117,11 @@ class Target:
     # CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT automatically. ADC must hold
     # roles/iam.serviceAccountTokenCreator on it.
     impersonate_service_account: Optional[str] = attr.ib(default=None)
+    # Whether datasets this target creates while impersonating grant the SA write
+    # access (so it can write results). Makes those datasets readable by everyone
+    # who can impersonate the SA — leave off (None) for restricted data. None ->
+    # prompt interactively / deny non-interactively (see ensure_dataset_exists).
+    grant_impersonation_access: Optional[bool] = attr.ib(default=None)
 
     # raw (unrendered) templates — preserved so that pattern-matching code
     # (e.g. target clean) can parameterize git.branch / git.commit independently.
@@ -1220,6 +1230,67 @@ def prepare_target_directory(
     return target_query_file
 
 
+# Set from the CLI group callback to the active target's
+# `grant_impersonation_access`, so `ensure_dataset_exists` can honor it without
+# threading it through every caller.
+_grant_impersonation_access: Optional[bool] = None
+
+
+def set_grant_impersonation_access(value: Optional[bool]) -> None:
+    """Record the target's `grant_impersonation_access` preference."""
+    global _grant_impersonation_access
+    _grant_impersonation_access = value
+
+
+def _should_grant_impersonation_access(service_account: str) -> bool:
+    """Whether to grant the impersonated SA write access to a new dataset.
+
+    Granting lets the SA write results here, but makes the dataset readable by
+    everyone who can impersonate it.
+
+    Coding agents can't be prompted and can trivially set env vars, so they may
+    only widen access via an explicit `grant_impersonation_access: true` on the
+    target — a human's standing config. (NOTE: `bqetl_targets.yaml` is
+    agent-editable, so this is a cooperative guardrail; IAM is the hard boundary
+    — the SA should not be able to grant itself dataset access.)
+
+    For humans, resolved in order: `BQETL_GRANT_IMPERSONATION_DATASET_ACCESS`
+    env var, the target's `grant_impersonation_access`, an interactive prompt,
+    else no.
+    """
+    if is_running_under_coding_agent():
+        if _grant_impersonation_access is True:
+            return True
+        click.echo(
+            f"⚠️  Not granting {service_account} dataset access: coding agents may "
+            "only widen access when the target sets `grant_impersonation_access: "
+            "true`. Datasets will be created without SA write access.",
+            err=True,
+        )
+        return False
+
+    override = os.environ.get("BQETL_GRANT_IMPERSONATION_DATASET_ACCESS")
+    if override is not None:
+        return override.strip().lower() in ("1", "true", "yes")
+    if _grant_impersonation_access is not None:
+        return _grant_impersonation_access
+    if not sys.stdin.isatty():
+        click.echo(
+            f"⚠️  Not granting {service_account} access to the new dataset "
+            "(non-interactive). Set BQETL_GRANT_IMPERSONATION_DATASET_ACCESS=1 (or "
+            "grant_impersonation_access on the target) to grant it — note this "
+            "makes the dataset readable by everyone who can impersonate the SA.",
+            err=True,
+        )
+        return False
+    return click.confirm(
+        f"⚠️  Grant impersonated service account {service_account} write access to "
+        "this dataset? Required for it to write results here, but it makes the "
+        "dataset readable by everyone who can impersonate the service account",
+        default=False,
+    )
+
+
 def ensure_dataset_exists(
     client: bigquery.Client,
     dataset_ref: str,
@@ -1279,6 +1350,19 @@ def ensure_dataset_exists(
                     entity_id=dry_run_account,
                 )
             )
+
+    # When impersonating, the SA is the writer but isn't an owner, so it can't
+    # write into this human-owned dataset. Ask whether to grant it access —
+    # granting makes the dataset readable by everyone who can impersonate the SA.
+    impersonated_sa = os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT")
+    if impersonated_sa and _should_grant_impersonation_access(impersonated_sa):
+        access_entries.append(
+            bigquery.AccessEntry(
+                role="WRITER",
+                entity_type="userByEmail",
+                entity_id=impersonated_sa,
+            )
+        )
 
     if access_entries:
         dataset.access_entries = access_entries

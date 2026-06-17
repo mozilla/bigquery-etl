@@ -3425,3 +3425,71 @@ fields:
   description: The XPCOM Application Binary Interface identifier describing the CPU architecture and compiler ABI of the Firefox build, such as
     'x86_64-msvc' or 'aarch64-gcc3'.
   type: STRING
+- name: yearly
+  description: The estimated yearly component of a time-series forecast, representing the annualized trend or aggregated value projected over
+    a full year. This floating-point value can be positive or negative depending on the direction of the trend.
+  type: FLOAT64
+- name: yearly_lower
+  description: The lower bound of the confidence interval for the yearly forecast component, representing the most conservative end of the annual
+    estimate. Values can be negative, indicating a downward projected trend.
+  type: FLOAT64
+- name: yearly_upper
+  description: The upper bound of the confidence interval for the yearly forecast component, representing the most optimistic end of the annual
+    estimate. Values can be negative, indicating the upper bound of a downward projected trend.
+  type: FLOAT64
+- name: yhat
+  description: The point estimate (predicted value) produced by a forecasting model for a given time period. This is the central forecast value
+    before any uncertainty bounds are applied.
+  type: FLOAT64
+- name: yhat_lower
+  description: The lower bound of the forecast prediction interval for the predicted value (yhat), representing the minimum plausible outcome
+    at the model's configured confidence level. Values are always present (non-null) for rows that include a forecast.
+  type: FLOAT64
+- name: yhat_upper
+  description: The upper bound of the forecast prediction interval for the predicted value (yhat), representing the maximum plausible outcome
+    at the model's configured confidence level. Values are always present (non-null) for rows that include a forecast.
+  type: FLOAT64
+- name: yhat_p5
+  description: The 5th percentile of the forecasted value distribution, representing the lower tail of the predicted outcome where 5% of simulated
+    values fall below this threshold. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p10
+  description: The 10th percentile of the forecasted value distribution, indicating that 10% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p20
+  description: The 20th percentile of the forecasted value distribution, indicating that 20% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p30
+  description: The 30th percentile of the forecasted value distribution, indicating that 30% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p40
+  description: The 40th percentile of the forecasted value distribution, indicating that 40% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p50
+  description: The 50th percentile (median) of the forecasted value distribution, representing the midpoint of simulated forecast outcomes. This
+    field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p60
+  description: The 60th percentile of the forecasted value distribution, indicating that 60% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p70
+  description: The 70th percentile of the forecasted value distribution, indicating that 70% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p80
+  description: The 80th percentile of the forecasted value distribution, indicating that 80% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p90
+  description: The 90th percentile of the forecasted value distribution, indicating that 90% of simulated forecast outcomes are expected to fall
+    below this value. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64
+- name: yhat_p95
+  description: The 95th percentile of the forecasted value distribution, representing the upper tail of the predicted outcome where 95% of simulated
+    values fall below this threshold. This field may be null when percentile-level forecast outputs are not computed for a given row.
+  type: FLOAT64

@@ -2272,3 +2272,202 @@ fields:
   description: The maximum number of browser windows open simultaneously in any single session during the reporting period, as recorded by the
     parent process engagement scalar. Null when the metric was not collected.
   type: INT64
+- name: scalar_parent_browser_engagement_tab_open_event_count_sum
+  description: The total number of new tab open events recorded in the browser during the reporting period. A higher value indicates more frequent
+    tab-opening activity by the user.
+  type: INT64
+- name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
+  description: The total number of URIs visited across both normal and private browsing modes during the reporting period. This provides a combined
+    measure of overall browsing activity regardless of window type.
+  type: INT64
+- name: scalar_parent_browser_engagement_total_uri_count_sum
+  description: The total number of URIs visited in normal (non-private) browsing mode during the reporting period. This is a key measure of user
+    browsing engagement.
+- name: scalar_parent_browser_engagement_unfiltered_uri_count_sum
+  description: The total count of URIs visited without applying engagement filters (e.g., excluding chrome or about pages) during the reporting
+    period. This unfiltered count includes all navigations, including internal browser pages.
+  type: INT64
+- name: scalar_parent_browser_engagement_unique_domains_count_max
+  description: The maximum number of unique domains visited in any single browsing session during the reporting period. This reflects the breadth
+    of a user's browsing activity at its peak.
+  type: INT64
+- name: scalar_parent_browser_engagement_unique_domains_count_mean
+  description: The average number of unique domains visited per browsing session during the reporting period. This provides a normalized measure
+    of how broadly users browse across different sites.
+  type: FLOAT64
+- name: scalar_parent_browser_engagement_window_open_event_count_sum
+  description: The total number of new browser window open events recorded during the reporting period. A higher value indicates more frequent
+    use of multiple windows.
+  type: INT64
+- name: scalar_parent_browser_ui_interaction_content_context_sum
+  description: A keyed map of interaction counts for content context menu actions in the browser UI, where each key identifies a specific menu
+    item or action and the value is the cumulative count of interactions.
+  type: RECORD
+- name: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
+  description: A keyed map of interaction counts for elements within the Home preferences pane in the browser UI, where each key identifies a
+    specific UI element and the value is the cumulative count of interactions.
+  type: RECORD
+- name: scalar_parent_browser_ui_interaction_textrecognition_error_sum
+  description: The total number of errors encountered during text recognition interactions in the browser UI during the reporting period. A null
+    or zero value indicates no errors were recorded.
+  type: INT64
+- name: scalar_parent_devtools_accessibility_node_inspected_count_sum
+  description: The total number of times an accessibility node was inspected using the DevTools Accessibility panel during the reporting period.
+    A null value indicates the feature was not used.
+  type: INT64
+- name: scalar_parent_devtools_accessibility_opened_count_sum
+  description: The total number of times the DevTools Accessibility panel was opened during the reporting period. A null value indicates the panel
+    was not opened.
+  type: INT64
+- name: scalar_parent_devtools_accessibility_picker_used_count_sum
+  description: The total number of times the accessibility picker tool within DevTools was activated during the reporting period. A null value
+    indicates the picker was not used.
+  type: INT64
+- name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
+  description: A keyed map of counts representing how many times the 'select accessible object for node' action was triggered in the DevTools
+    Accessibility panel, broken down by node type or context.
+  type: RECORD
+- name: scalar_parent_devtools_accessibility_service_enabled_count_sum
+  description: The total number of times the accessibility service was enabled via DevTools during the reporting period. A null value indicates
+    the service was not enabled through this path.
+  type: INT64
+- name: scalar_parent_devtools_copy_full_css_selector_opened_sum
+  description: The total number of times the 'Copy Full CSS Selector' action was triggered in DevTools during the reporting period. A null value
+    indicates this action was not used.
+  type: INT64
+- name: scalar_parent_devtools_copy_unique_css_selector_opened_sum
+  description: The total number of times the 'Copy Unique CSS Selector' action was triggered in DevTools during the reporting period. A null value
+    indicates this action was not used.
+  type: INT64
+- name: scalar_parent_devtools_toolbar_eyedropper_opened_sum
+  description: The total number of times the eyedropper color picker tool was opened from the DevTools toolbar during the reporting period. A
+    null value indicates the tool was not used.
+  type: INT64
+- name: scalar_parent_dom_contentprocess_troubled_due_to_memory_sum
+  description: The total number of times a DOM content process was flagged as troubled due to low memory conditions during the reporting period.
+    A null value indicates no such events occurred.
+  type: INT64
+- name: scalar_parent_library_link_sum
+  description: A keyed map of counts for link-related actions taken within the browser Library panel, where each key identifies a specific link
+    type or destination and the value is the cumulative count of interactions.
+  type: RECORD
+- name: scalar_parent_library_opened_sum
+  description: A keyed map of counts for the number of times each section of the browser Library panel was opened, where each key identifies a
+    specific library section (e.g., history, bookmarks) and the value is the open count.
+  type: RECORD
+- name: scalar_parent_library_search_sum
+  description: A keyed map of counts for search interactions within the browser Library panel, where each key identifies a specific search context
+    or section and the value is the cumulative number of searches performed.
+  type: RECORD
+- name: scalar_parent_navigator_storage_estimate_count_sum
+  description: The total number of times the Navigator Storage Estimate API was called during the reporting period. A null value indicates the
+    API was not invoked.
+  type: INT64
+- name: scalar_parent_navigator_storage_persist_count_sum
+  description: The total number of times the Navigator Storage Persist API was called during the reporting period. A null value indicates the
+    API was not invoked.
+  type: INT64
+- name: scalar_parent_os_environment_is_taskbar_pinned
+  description: Indicates whether the Firefox application is pinned to the operating system taskbar. True means Firefox is pinned to the taskbar;
+    false means it is not.
+  type: BOOLEAN
+- name: scalar_parent_os_environment_launched_via_desktop
+  description: Indicates whether the browser was launched via a desktop shortcut. True means the session was initiated from a desktop icon; false
+    means another launch method was used.
+  type: BOOLEAN
+- name: scalar_parent_os_environment_launched_via_other
+  description: Indicates whether the browser was launched via a method not covered by the other specific launch-method scalars. True means an
+    unclassified launch mechanism was used; false means it was not.
+  type: BOOLEAN
+- name: scalar_parent_os_environment_launched_via_other_shortcut
+  description: Indicates whether the browser was launched via a shortcut other than the desktop, taskbar, or Start Menu shortcuts. True means
+    such an alternative shortcut was used; false means it was not.
+  type: BOOLEAN
+- name: scalar_parent_os_environment_launched_via_start_menu
+  description: Indicates whether the browser was launched from the operating system Start Menu. True means the session was initiated via the Start
+    Menu; false means another launch method was used.
+  type: BOOLEAN
+- name: scalar_parent_os_environment_launched_via_taskbar
+  description: Indicates whether the browser was launched by clicking its icon on the operating system taskbar. True means the session originated
+    from the taskbar; false means another launch method was used.
+  type: BOOLEAN
+- name: scalar_parent_os_environment_launched_via_taskbar_private
+  description: Indicates whether a Private Browsing window was launched directly from a taskbar shortcut or jump list entry. True means the private
+    window was opened via the taskbar; false means it was not.
+  type: BOOLEAN
+- name: scalar_parent_sidebar_link_sum
+  description: A keyed map of counts for link-related actions taken within the browser sidebar, where each key identifies a specific link type
+    or panel and the value is the cumulative count of interactions.
+  type: RECORD
+- name: scalar_parent_sidebar_opened_sum
+  description: A keyed map of counts for how many times each sidebar panel was opened, where each key identifies a specific sidebar panel (e.g.,
+    bookmarks, history, synced tabs) and the value is the open count.
+  type: RECORD
+- name: scalar_parent_sidebar_search_sum
+  description: A keyed map of counts for search interactions performed within the browser sidebar, where each key identifies a specific sidebar
+    search context and the value is the cumulative number of searches.
+  type: RECORD
+- name: scalar_parent_storage_sync_api_usage_extensions_using_sum
+  description: The total number of extensions that used the Storage Sync API during the reporting period. A null value indicates no extensions
+    invoked this API.
+  type: INT64
+- name: scalar_parent_telemetry_event_counts_sum
+  description: A keyed map of aggregated telemetry event counts, where each key identifies a specific event category and method combination and
+    the value is the cumulative number of times that event was recorded.
+  type: RECORD
+- name: scalar_parent_urlbar_impression_autofill_about_sum
+  description: The total number of times an autofill suggestion for an 'about:' page URL was shown in the address bar during the reporting period.
+    A null value indicates no such impressions occurred.
+  type: INT64
+- name: scalar_parent_urlbar_impression_autofill_adaptive_sum
+  description: The total number of times an adaptive history autofill suggestion was shown in the address bar during the reporting period. Adaptive
+    autofill learns from the user's past selections to prioritize results.
+  type: INT64
+- name: scalar_parent_urlbar_impression_autofill_origin_sum
+  description: The total number of times an origin-based autofill suggestion (completing the domain or host portion of a URL) was shown in the
+    address bar during the reporting period.
+  type: INT64
+- name: scalar_parent_urlbar_impression_autofill_other_sum
+  description: The total number of times an autofill suggestion of an unclassified or miscellaneous type was shown in the address bar during the
+    reporting period. A null value indicates no such impressions occurred.
+  type: INT64
+- name: scalar_parent_urlbar_impression_autofill_preloaded_sum
+  description: The total number of times a preloaded site autofill suggestion was shown in the address bar during the reporting period. Preloaded
+    suggestions come from a curated list of popular sites bundled with the browser.
+  type: INT64
+- name: scalar_parent_urlbar_impression_autofill_url_sum
+  description: The total number of times a full URL autofill suggestion (completing beyond just the origin to include path or query components)
+    was shown in the address bar during the reporting period.
+  type: INT64
+- name: scalar_parent_urlbar_picked_autofill_about_sum
+  description: A keyed map of counts for how many times a user selected an autofill suggestion for an 'about:' page URL from the address bar,
+    broken down by the specific about page or input length key.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_autofill_adaptive_sum
+  description: A keyed map of counts for how many times a user selected an adaptive history autofill suggestion from the address bar, where keys
+    typically represent the character length at which the suggestion was accepted.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_autofill_origin_sum
+  description: A keyed map of counts for how many times a user accepted an origin-based autofill suggestion from the address bar, broken down
+    by the character length at which the suggestion was selected.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_autofill_other_sum
+  description: A keyed map of counts for how many times a user selected an unclassified autofill suggestion from the address bar, broken down
+    by a context or input-length key.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_autofill_preloaded_sum
+  description: A keyed map of counts for how many times a user selected a preloaded site autofill suggestion from the address bar, broken down
+    by the site or input-length key.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_autofill_sum
+  description: A keyed map of aggregate counts for all autofill suggestion types selected by users in the address bar, where each key identifies
+    an autofill category or input-length context and the value is the total selection count.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_autofill_url_sum
+  description: A keyed map of counts for how many times a user accepted a full URL autofill suggestion from the address bar, broken down by the
+    character length or context at which the suggestion was confirmed.
+  type: RECORD
+- name: scalar_parent_urlbar_picked_bookmark_sum
+  description: A keyed map of counts for how many times a user selected a bookmark suggestion from the address bar dropdown, where each key identifies
+    a result position or context and the value is the selection count.
+  type: RECORD

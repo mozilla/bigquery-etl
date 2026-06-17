@@ -567,3 +567,193 @@ fields:
 - name: cpu_cores
   description: The number of logical CPU cores available on the client device as reported by the Firefox telemetry environment. Used to segment
     performance and hardware capability data.
+- name: cpu_count
+  description: The total number of logical CPU cores available on the client device. Higher values indicate multi-core or hyperthreaded processors.
+  type: INT64
+- name: cpu_family
+  description: The processor family identifier as reported by the CPU's CPUID instruction. This numeric code corresponds to a specific generation
+    or architectural family of the processor.
+  type: INT64
+- name: cpu_l2_cache_kb
+  description: The size of the CPU's L2 cache in kilobytes. A value of 0 may indicate the cache size could not be determined.
+  type: INT64
+- name: cpu_l3_cache_kb
+  description: The size of the CPU's L3 cache in kilobytes. A value of 0 may indicate no L3 cache is present or the size could not be determined;
+    null indicates the value was not reported.
+  type: INT64
+- name: cpu_model
+  description: The processor model number as reported by the CPU's CPUID instruction. This numeric identifier distinguishes specific processor
+    models within a family.
+  type: INT64
+- name: cpu_speed
+  description: The reported speed of the CPU as a string value. This may represent a nominal or base clock speed identifier for the processor.
+- name: cpu_speed_mhz
+  description: The clock speed of the CPU in megahertz (MHz). A value of 0 indicates the speed could not be determined or was not reported.
+  type: INT64
+- name: cpu_stepping
+  description: The stepping (revision) number of the processor as reported by CPUID. This identifies a specific hardware revision within a CPU
+    model; null indicates the value was not available.
+  type: INT64
+- name: cpu_vendor
+  description: The CPU vendor string as reported by the CPUID instruction (e.g., 'GenuineIntel', 'AuthenticAMD'). An empty string or null indicates
+    the vendor could not be identified.
+- name: crash_submit_attempt_content_sum
+  description: The total number of crash report submission attempts for content process crashes during the reporting period. Null indicates no
+    content process crash submissions were attempted.
+  type: INT64
+- name: crash_submit_attempt_main_sum
+  description: The total number of crash report submission attempts for main process crashes during the reporting period. Null indicates no main
+    process crash submissions were attempted.
+  type: INT64
+- name: crash_submit_attempt_plugin_sum
+  description: The total number of crash report submission attempts for plugin process crashes during the reporting period. Null indicates no
+    plugin process crash submissions were attempted.
+  type: INT64
+- name: crash_submit_success_content_sum
+  description: The total number of successfully submitted crash reports for content process crashes during the reporting period. A value of 0
+    means submissions were attempted but none succeeded; null indicates no attempts were made.
+  type: INT64
+- name: crash_submit_success_main_sum
+  description: The total number of successfully submitted crash reports for main process crashes during the reporting period. A value of 0 means
+    submissions were attempted but none succeeded; null indicates no attempts were made.
+  type: INT64
+- name: crash_submit_success_plugin_sum
+  description: The total number of successfully submitted crash reports for plugin process crashes during the reporting period. Null indicates
+    no plugin crash submission successes were recorded.
+  type: INT64
+- name: crash_time
+  description: The timestamp at which a crash occurred, represented as a string. This records the wall-clock time of the crash event.
+  type: STRING
+- name: crashes_detected_content_sum
+  description: The total number of detected content process crashes during the reporting period. Null indicates no content process crashes were
+    detected.
+  type: INT64
+- name: crashes_detected_gmplugin_sum
+  description: The total number of detected Gecko Media Plugin (GMP) process crashes during the reporting period. Null indicates no GMP process
+    crashes were detected.
+  type: INT64
+- name: crashes_detected_plugin_sum
+  description: The total number of detected plugin process crashes during the reporting period. Null indicates no plugin process crashes were
+    detected.
+  type: INT64
+- name: crashing_users
+  description: The number or rate of users who experienced a crash within a given reporting dimension. Non-integer values may represent fractional
+    user counts in aggregated or sampled data.
+  type: FLOAT64
+- name: cumulative_new_profiles
+  description: The running total of new browser profiles created up to and including the current reporting period. A value of 0 indicates no new
+    profiles have been created for that segment.
+  type: INT64
+- name: daily_users
+  description: The count of unique users active on a given day within the reporting segment. A value of 0 indicates no active users were recorded
+    for that segment on that day.
+  type: INT64
+- name: date
+  description: The calendar date associated with the record, formatted as a YYYY-MM-DD string. This typically represents the day on which the
+    activity or metric was measured.
+- name: date_from
+  description: The inclusive start date of the reporting or aggregation window. Records in the row apply to activity on or after this date.
+  type: DATE
+- name: date_to
+  description: The inclusive end date of the reporting or aggregation window. Records in the row apply to activity on or before this date.
+  type: DATE
+- name: dau
+  description: Daily Active Users; the count of unique users who were active on a given day. A value of 0 indicates no active users were counted
+    for that dimension on that day.
+  type: INT64
+- name: days_active_bits
+  description: A 28-bit integer bitmask representing the days within a rolling 28-day window on which the user was active. Each bit corresponds
+    to one day, with the most significant bit representing the most recent day.
+  type: INT64
+- name: days_created_profile_bits
+  description: A bitmask representing the days within a rolling window on which a new browser profile was created. Each bit corresponds to one
+    day in the window.
+  type: INT64
+- name: days_had_8_active_ticks_bits
+  description: A bitmask representing the days within a rolling window on which the user had at least 8 active ticks, used as a proxy for meaningful
+    engagement. Each bit corresponds to one day in the window.
+  type: INT64
+- name: days_interacted_bits
+  description: A bitmask representing the days within a rolling window on which the user had at least one interaction with the browser UI. Each
+    bit corresponds to one day in the window.
+  type: INT64
+- name: days_logged_event_bits
+  description: A bitmask representing the days within a rolling window on which at least one telemetry event was logged by the client. Each bit
+    corresponds to one day in the window.
+  type: INT64
+- name: days_opened_dev_tools_bits
+  description: A bitmask representing the days within a rolling window on which the user opened browser developer tools. Each bit corresponds
+    to one day in the window; a value of 0 indicates developer tools were never opened.
+  type: INT64
+- name: days_seen_bits
+  description: A bitmask representing the days within a rolling window on which the client submitted a telemetry ping and was therefore 'seen'.
+    Each bit corresponds to one day in the window.
+  type: INT64
+- name: days_seen_in_experiment
+  description: An array of structs recording, for each experiment and branch the user was enrolled in, a bitmask of the days within the rolling
+    window on which the user was seen. Each struct contains the experiment ID, branch name, and a bits integer.
+  type: RECORD
+- name: days_since_first_seen
+  description: The number of days elapsed since the client was first observed submitting telemetry. A value of 0 indicates the client was first
+    seen on the current reporting day.
+  type: INT64
+- name: days_since_seen
+  description: The number of days elapsed since the client was last observed submitting telemetry. A value of 0 indicates the client was seen
+    on the current reporting day.
+  type: INT64
+- name: days_used_pictureinpicture_bits
+  description: A bitmask representing the days within a rolling window on which the user used the Picture-in-Picture video feature. Each bit corresponds
+    to one day; a value of 0 indicates the feature was not used.
+  type: INT64
+- name: days_viewed_protection_report_bits
+  description: A bitmask representing the days within a rolling window on which the user viewed the Privacy Protections report. Each bit corresponds
+    to one day; a value of 0 indicates the report was never viewed.
+  type: INT64
+- name: days_visited_10_uri_bits
+  description: A bitmask representing the days within a rolling window on which the user visited 10 or more distinct URIs. Each bit corresponds
+    to one day; a value of 0 indicates the threshold was never reached.
+  type: INT64
+- name: days_visited_1_uri_bits
+  description: A bitmask representing the days within a rolling window on which the user visited at least 1 URI. Each bit corresponds to one day;
+    a value of 0 indicates no URI visits were recorded.
+  type: INT64
+- name: days_visited_1_uri_normal_mode_bits
+  description: A bitmask representing the days within a rolling window on which the user visited at least 1 URI in a normal (non-private) browsing
+    window. Each bit corresponds to one day.
+  type: INT64
+- name: days_visited_1_uri_private_mode_bits
+  description: A bitmask representing the days within a rolling window on which the user visited at least 1 URI in a private browsing window.
+    Each bit corresponds to one day; a value of 0 indicates private browsing was not used.
+  type: INT64
+- name: days_visited_5_uri_bits
+  description: A bitmask representing the days within a rolling window on which the user visited 5 or more distinct URIs. Each bit corresponds
+    to one day; a value of 0 indicates the threshold was never reached.
+  type: INT64
+- name: db_version
+  description: The version identifier of the database or data snapshot used to produce the record, expressed as an ISO 8601 UTC timestamp string.
+    This indicates when the underlying reference data was last updated.
+  type: STRING
+- name: default_browser
+  description: Indicates whether Firefox is set as the user's default browser. True means Firefox is the default browser; false means it is not;
+    null indicates the status could not be determined.
+  type: BOOLEAN
+- name: default_percent
+  description: The percentage of users or pings within a reporting segment for which Firefox is set as the default browser. Values range from
+    0.0 to 100.0.
+  type: FLOAT64
+- name: default_private_search_engine
+  description: The identifier of the search engine configured as the default for private browsing windows (e.g., 'google-b-d', 'ddg'). This corresponds
+    to the engine's internal slug as defined in the search configuration.
+  type: STRING
+- name: default_private_search_engine_data_load_path
+  description: The load path indicating how the default private browsing search engine was installed or sourced (e.g., '[app]ddg' for a built-in
+    engine). Null indicates this metadata was not recorded.
+  type: STRING
+- name: default_private_search_engine_data_name
+  description: The human-readable display name of the default private browsing search engine (e.g., 'DuckDuckGo', 'Google'). Null indicates the
+    name was not recorded.
+  type: STRING
+- name: default_private_search_engine_data_origin
+  description: The origin or provenance of the default private browsing search engine configuration. Null indicates this metadata was not recorded
+    or is not applicable.
+  type: STRING

@@ -1891,3 +1891,193 @@ fields:
   description: The minor version number of the Windows Service Pack installed on the client. This is almost always 0, with null indicating the
     value was unavailable, typically for non-Windows platforms.
   type: INT64
+- name: os_version
+  description: The full version string of the operating system on which the browser is running (e.g., '10.0', '13.5.1'). Combines major, minor,
+    and patch components into a single human-readable string.
+- name: os_version_major
+  description: The major version number component of the operating system. For example, a value of 10 corresponds to Windows 10 or macOS 10.x,
+    while values like 13–16 correspond to major iOS/macOS releases.
+  type: INT64
+- name: os_version_minor
+  description: The minor version number component of the operating system, representing the second numeric segment of the full OS version string.
+    A value of 0 is by far the most common, indicating that most clients are on a base major release with no minor increment.
+  type: INT64
+- name: osversion
+  description: The operating system version as reported in an alternate or legacy telemetry field, typically expressed as a short version string
+    (e.g., '28', '26.5'). May differ in format from os_version depending on the ping source or platform.
+  type: STRING
+- name: partner_distribution_version
+  description: The version of the partner distribution package used to install or configure the browser. Null when the client is not associated
+    with a partner distribution.
+  type: STRING
+- name: partner_distributor
+  description: The name of the organization or Linux distribution that packaged and distributed the browser (e.g., 'canonical', 'mint', 'fedora').
+    Null for clients that installed Firefox through standard Mozilla channels.
+  type: STRING
+- name: partner_distributor_channel
+  description: The specific distribution channel or sub-product variant used by the partner distributor (e.g., 'ubuntu', 'esrWinFull'). Null or
+    empty when the client did not arrive through a named partner channel.
+  type: STRING
+- name: partner_id
+  description: A short identifier for the top-level partner organization associated with the browser installation (e.g., 'ubuntu', 'mozillaonline',
+    'yandex'). Null when the client has no partner affiliation.
+  type: STRING
+- name: partner_org
+  description: A human-readable label categorizing the browser's distribution partner into a broader organizational group (e.g., 'Linux - Canonical',
+    'Mozilla - China', 'non-distribution'). Used to segment clients by distribution partnership type.
+  type: STRING
+- name: payload_crashDate
+  description: The calendar date on which the crash occurred, as reported in the crash ping payload. Formatted as a date string (e.g., 'YYYY-MM-DD').
+- name: payload_crashTime
+  description: The timestamp at which the crash occurred, as reported in the crash ping payload. Typically expressed as a Unix epoch time string
+    or formatted time value.
+- name: payload_hasCrashEnvironment
+  description: Indicates whether the crash ping payload includes a populated environment block. True means environment metadata (e.g., build,
+    system info) was captured alongside the crash report; false means it was absent.
+- name: payload_metadata_key_value
+  description: A repeated array of key-value struct pairs containing arbitrary metadata fields from the crash ping payload. Each entry represents
+    one metadata annotation submitted with the crash report.
+- name: payload_processType
+  description: The type of browser process that experienced the crash, as reported in the crash ping payload (e.g., 'main', 'content', 'gpu').
+    Used to distinguish crashes across different Firefox process architectures.
+- name: payload_version
+  description: The schema version number of the crash ping payload. Used to identify which version of the payload format was used when the ping
+    was submitted.
+- name: pct_users_profile_age_8_to_365_days
+  description: The proportion of users in the cohort whose Firefox profile age falls between 8 and 365 days at the time of measurement. Expressed
+    as a decimal fraction between 0 and 1.
+  type: FLOAT64
+- name: pct_users_profile_age_less_than_7_days
+  description: The proportion of users in the cohort whose Firefox profile age is fewer than 7 days at the time of measurement, representing relatively
+    new profiles. Expressed as a decimal fraction between 0 and 1.
+  type: FLOAT64
+- name: pct_users_profile_age_over_365_days
+  description: The proportion of users in the cohort whose Firefox profile age exceeds 365 days at the time of measurement, representing long-tenured
+    profiles. Expressed as a decimal fraction between 0 and 1.
+  type: FLOAT64
+- name: ping_sent_metric_date
+  description: Indicates whether a telemetry ping was sent on the metric reference date. True means a ping was successfully submitted for that
+    date; null indicates the data is unavailable or the client was inactive.
+- name: ping_sent_week_4
+  description: Indicates whether a telemetry ping was sent during week 4 of the measurement window. True means the client was active and submitted
+    a ping in that week; false means no ping was received.
+- name: pings_aggregated_by_this_row
+  description: The number of individual telemetry pings that were collapsed into this single aggregated row. Higher values indicate that multiple
+    pings from the same client were merged during aggregation.
+  type: INT64
+- name: placement
+  description: The named slot or location within the Firefox New Tab page where a sponsored or editorial content item was displayed (e.g., 'newtab_spocs',
+    'newtab_stories_1'). Null when no placement is associated with the event.
+  type: STRING
+- name: places_bookmarks_count_mean
+  description: The mean number of bookmarks stored in the user's Places database, averaged over the reporting period. Null when bookmark count
+    data was not available for the client.
+  type: FLOAT64
+- name: places_bookmarks_searchbar_cumulative_searches_sum
+  description: The cumulative total number of searches performed via the bookmarks search bar within the Places library, summed over the reporting
+    period. Null when this interaction was not recorded for the client.
+  type: INT64
+- name: places_library_cumulative_bookmark_searches_sum
+  description: The cumulative total number of bookmark searches performed within the Places library panel, summed over the reporting period. Null
+    when this activity was not recorded for the client.
+  type: INT64
+- name: places_library_cumulative_history_searches_sum
+  description: The cumulative total number of history searches performed within the Places library panel, summed over the reporting period. Null
+    when this activity was not recorded for the client.
+  type: INT64
+- name: places_pages_count_mean
+  description: The mean number of pages stored in the user's browsing history (Places database), averaged over the reporting period. Null when
+    page count data was not available for the client.
+  type: FLOAT64
+- name: places_previousday_visits_mean
+  description: The mean number of page visits recorded in the Places database on the previous day, averaged across days in the reporting period.
+    A value of 0 indicates the user had no recorded visits on the prior day.
+  type: FLOAT64
+- name: places_searchbar_cumulative_filter_count_sum
+  description: The cumulative total number of filter operations applied via the Places search bar, summed over the reporting period. Null when
+    this interaction was not recorded for the client.
+  type: INT64
+- name: places_searchbar_cumulative_searches_sum
+  description: The cumulative total number of searches performed via the Places search bar, summed over the reporting period. Null when this interaction
+    was not recorded for the client.
+  type: INT64
+- name: platform_version
+  description: The version of the browser platform or Gecko engine as reported in telemetry (e.g., '151.0.3'). May differ from the user-facing
+    product version and is used to identify the underlying platform build.
+  type: STRING
+- name: play_store_attribution_campaign
+  description: The UTM campaign name associated with the Google Play Store install referral, identifying the marketing campaign that drove the
+    app installation (e.g., 'firefox-desktop', 'mozilla-org'). Null when no campaign attribution is available.
+  type: STRING
+- name: play_store_attribution_content
+  description: The UTM content parameter from the Google Play Store install referral, used to identify the specific creative or UI element that
+    drove the installation (e.g., 'onboarding-modal', 'firefoxview'). Null when content attribution is unavailable.
+  type: STRING
+- name: play_store_attribution_install_referrer_response
+  description: The raw install referrer string returned by the Google Play Store at the time of installation, containing UTM and other attribution
+    parameters as a URL-encoded query string. Null when no referrer response was captured.
+  type: STRING
+- name: play_store_attribution_medium
+  description: The UTM medium parameter from the Google Play Store install referral, identifying the marketing channel (e.g., 'organic', 'paid').
+    Currently null across all records, indicating this attribution dimension is not yet populated.
+  type: STRING
+- name: play_store_attribution_source
+  description: The UTM source parameter from the Google Play Store install referral, identifying the traffic origin that led to the app installation
+    (e.g., 'google-play', 'google', 'eea-browser-choice'). Null when source attribution is unavailable.
+  type: STRING
+- name: play_store_attribution_term
+  description: The UTM term parameter from the Google Play Store install referral, typically capturing the search keyword that led to the app
+    installation (e.g., 'firefox', 'mozilla firefox'). Null when keyword attribution is unavailable.
+  type: STRING
+- name: play_time_ratio
+  description: The ratio of active play or media engagement time relative to total session time, expressed as a decimal. Values greater than 1
+    are possible and may indicate measurement anomalies or extended background playback.
+  type: FLOAT64
+- name: plugin_hangs_sum
+  description: The total number of plugin hang events recorded during the reporting period. Null when no plugin hang data was reported, which
+    is common as plugin usage has become rare in modern Firefox.
+  type: INT64
+- name: plugins_infobar_allow_sum
+  description: The total number of times the user clicked 'Allow' on a plugin activation infobar during the reporting period. Null across all
+    records, reflecting the deprecation of NPAPI plugin support in Firefox.
+  type: INT64
+- name: plugins_infobar_block_sum
+  description: The total number of times the user clicked 'Block' on a plugin activation infobar during the reporting period. Null across all
+    records, reflecting the deprecation of NPAPI plugin support in Firefox.
+  type: INT64
+- name: plugins_infobar_shown_sum
+  description: The total number of times a plugin activation infobar was displayed to the user during the reporting period. Null when no infobar
+    events were recorded, consistent with the deprecation of legacy plugin support.
+  type: INT64
+- name: plugins_notification_shown_sum
+  description: The total number of times a plugin-related notification was shown to the user during the reporting period. Null when no such notifications
+    were recorded, consistent with the near-complete removal of plugin support.
+  type: INT64
+- name: pocket_clicks
+  description: The total number of times the user clicked on a Pocket recommendation on the New Tab page during the reporting period. A value
+    of 0 indicates the feature was visible but no clicks occurred.
+  type: INT64
+- name: pocket_enabled
+  description: Indicates whether the Pocket integration is enabled in the user's Firefox New Tab page settings. True means Pocket content is turned
+    on; false means it has been disabled by the user.
+  type: BOOLEAN
+- name: pocket_impressions
+  description: The total number of Pocket story impressions recorded on the New Tab page during the reporting period. An impression is counted
+    each time a Pocket recommendation is rendered and visible to the user.
+  type: INT64
+- name: pocket_is_signed_in
+  description: Indicates whether the user is signed in to their Pocket account within Firefox. True means the user is authenticated; false means
+    Pocket is present but the user is not signed in. Null when sign-in state could not be determined.
+  type: BOOLEAN
+- name: pocket_saves
+  description: The total number of items the user saved to Pocket from the New Tab page during the reporting period. A value of 0 indicates no
+    saves occurred.
+  type: INT64
+- name: pocket_sponsored_stories_enabled
+  description: Indicates whether sponsored story recommendations from Pocket are enabled on the user's New Tab page. True means sponsored stories
+    are turned on; false means they have been disabled.
+  type: BOOLEAN
+- name: pocket_story_position
+  description: The zero-based index position of a Pocket story within the New Tab page recommendation grid at the time of the event. Null when
+    no specific story position is associated with the record.
+  type: INT64

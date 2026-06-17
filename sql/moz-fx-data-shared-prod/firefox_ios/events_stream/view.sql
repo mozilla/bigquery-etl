@@ -35,6 +35,7 @@ SELECT
       LAX_BOOL(event_extra.etp_enabled) AS `etp_enabled`,
       LAX_BOOL(event_extra.granted) AS `granted`,
       LAX_BOOL(event_extra.has_share_message) AS `has_share_message`,
+      LAX_BOOL(event_extra.is_at_bottom) AS `is_at_bottom`,
       LAX_BOOL(event_extra.is_enabled) AS `is_enabled`,
       LAX_BOOL(event_extra.is_enrolled_in_sent_from_firefox) AS `is_enrolled_in_sent_from_firefox`,
       LAX_BOOL(event_extra.is_homepage) AS `is_homepage`,

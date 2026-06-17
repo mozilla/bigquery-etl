@@ -1695,3 +1695,199 @@ fields:
   description: The number of logical CPU cores available on the client device. Used to characterize device hardware capability and segment clients
     by compute capacity.
   type: INT64
+- name: nbr_events
+  description: The total number of events recorded in a given context. A value of 1 indicates a single event occurred, with higher values representing
+    multiple events aggregated together.
+  type: INT64
+- name: nbr_unique_clients_uninstalling
+  description: The count of distinct clients that uninstalled Firefox during the relevant period. Each client is counted only once regardless
+    of how many uninstall signals were received.
+  type: INT64
+- name: nbr_unique_users
+  description: The count of distinct users observed within the relevant aggregation period or segment. Each user is counted only once.
+  type: INT64
+- name: new_profile_metric_date
+  description: A boolean flag indicating whether the record corresponds to the date on which a new profile was created. True means the metric
+    date coincides with a new profile creation event; False means it does not.
+  type: BOOLEAN
+- name: new_profile_rate
+  description: The rate at which new profiles are being created, expressed as a floating-point value. This is typically computed as a ratio or
+    proportion relative to a baseline population or time window.
+  type: FLOAT64
+- name: new_profile_ratio
+  description: The proportion of profiles that are new relative to the total profile count in the aggregation window. A value of 0.0 indicates
+    no new profiles in the cohort.
+  type: FLOAT64
+- name: new_profiles
+  description: The number of newly created Firefox profiles observed within the aggregation period. A value of 0 indicates no new profiles were
+    created for that record's segment.
+  type: INT64
+- name: new_profiles_metric_date
+  description: The count of new profiles attributed to the specific metric date for the record. Used to track profile creation volume on a given
+    date within an aggregated dataset.
+  type: INT64
+- name: newtab_homepage_category
+  description: A categorical classification of the page configured as the browser homepage, such as 'enabled' (the default new tab), 'search-engine',
+    'disabled', 'social-media', 'extension', or 'known-hijacker-v3'. Null indicates the value was not available or not applicable.
+  type: STRING
+- name: newtab_newtab_category
+  description: A categorical classification of the page configured as the new tab page, such as 'enabled' (the default Firefox new tab), 'extension',
+    'disabled', or 'other'. Null indicates the value was unavailable.
+  type: STRING
+- name: newtab_open_source
+  description: The URL source from which a new tab was opened, such as 'about:newtab', 'about:home', or 'about:welcome'. A value of 'other' covers
+    unrecognized sources, and null indicates the source was not captured.
+  type: STRING
+- name: newtab_search_enabled
+  description: A boolean flag indicating whether the search bar is enabled on the new tab page. True means search is enabled; False means it is
+    disabled. Null indicates the setting was not available.
+  type: BOOLEAN
+- name: newtab_visit_count
+  description: The total number of new tab page visits recorded for the client within the aggregation period. Higher values indicate more frequent
+    new tab usage.
+  type: INT64
+- name: newtab_visit_ended_at
+  description: A timestamp (in milliseconds or seconds relative to session start) indicating when a new tab page visit ended. A value of 0 typically
+    represents visits with no recorded end time, and null indicates the end time was not captured.
+  type: INT64
+- name: newtab_visit_id
+  description: A unique identifier for a single new tab page visit, formatted as a UUID. This ID can be used to join or deduplicate events associated
+    with the same visit session.
+  type: STRING
+- name: newtab_visit_started_at
+  description: A timestamp indicating when a new tab page visit began, in milliseconds or seconds relative to a reference point. A value of 0
+    commonly represents visits where the start time was not meaningfully recorded, and null indicates the start time was unavailable.
+  type: INT64
+- name: newtab_weather_widget_enabled
+  description: A boolean flag indicating whether the weather widget on the new tab page is enabled for the client. True means the widget is enabled;
+    False means it is disabled. Null indicates the setting was not recorded.
+  type: BOOLEAN
+- name: non_norm_aggregates
+  description: An array of key-value pairs representing non-normalized aggregate metric values. Each entry contains a string key identifying the
+    bucket or dimension and a float value representing the aggregate count or measurement.
+  type: RECORD
+- name: non_norm_aggregates_key
+  description: The key component of a non-normalized aggregate entry, typically representing a histogram bucket index or named dimension. Used
+    to identify which specific bucket or segment the associated value belongs to.
+- name: non_norm_aggregates_value
+  description: The numeric value component of a non-normalized aggregate entry, representing the raw aggregated measurement (e.g., count or sum)
+    for the corresponding key. A value of 0.0 indicates no activity was recorded for that bucket.
+- name: non_norm_histogram
+  description: A JSON-encoded string representing a non-normalized histogram for a telemetry metric, where keys are bucket labels or indices and
+    values are counts. This preserves the raw histogram structure before any normalization is applied.
+  type: STRING
+- name: normalized_app_name
+  description: A human-readable, standardized name for the Firefox application that submitted the telemetry, such as 'Firefox Desktop', 'Fenix',
+    'Firefox iOS', or 'Focus Android'. This normalizes across different app identifiers.
+  type: STRING
+- name: normalized_channel
+  description: The standardized release channel of the Firefox application, such as 'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other'
+    is used when the channel does not match a known value.
+  type: STRING
+- name: normalized_country_code
+  description: The ISO 3166-1 alpha-2 country code representing the country associated with the client's IP address at the time of submission,
+    such as 'US', 'DE', or 'BR'.
+  type: STRING
+- name: normalized_os
+  description: The standardized operating system name for the client device, such as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings
+    into a consistent set of values.
+  type: STRING
+- name: normalized_os_version
+  description: The standardized version string of the client's operating system, such as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version.
+    Provides a normalized representation across different OS reporting formats.
+  type: STRING
+- name: num_buckets
+  description: The number of buckets in a histogram metric definition. This determines the granularity of the histogram and is part of the histogram's
+    structural metadata.
+  type: INT64
+- name: num_clients_active_on_day
+  description: The number of distinct clients that were active on a given day within the cohort or segment. A value of 0 indicates no clients
+    were active on that day.
+  type: INT64
+- name: num_clients_in_cohort
+  description: The total number of distinct clients belonging to the defined cohort at the time of aggregation. Used as a denominator in retention
+    and engagement calculations.
+  type: INT64
+- name: numeric_index
+  description: A sequential integer index used to order or identify records within an aggregated or ranked dataset. Values are unique and typically
+    assigned in ascending order.
+  type: INT64
+- name: oom_allocation_size
+  description: The size (in bytes) of the memory allocation that triggered an out-of-memory (OOM) condition, represented as a string. Null indicates
+    the allocation size was not available, which is the common case as OOM events are relatively rare.
+  type: STRING
+- name: organic_pocket_clicks
+  description: The number of times a user clicked on an organic (non-sponsored) Pocket recommendation on the new tab page within the aggregation
+    period. A value of 0 indicates no clicks occurred.
+  type: INT64
+- name: organic_pocket_dismissals
+  description: The number of times a user dismissed an organic (non-sponsored) Pocket recommendation on the new tab page within the aggregation
+    period. A value of 0 indicates no dismissals occurred.
+  type: INT64
+- name: organic_pocket_impressions
+  description: The number of times organic (non-sponsored) Pocket recommendations were displayed to the user on the new tab page within the aggregation
+    period. A value of 0 indicates no impressions were recorded.
+  type: INT64
+- name: organic_pocket_saves
+  description: The number of times a user saved an organic (non-sponsored) Pocket recommendation from the new tab page within the aggregation
+    period. A value of 0 indicates no saves occurred.
+  type: INT64
+- name: organic_search_count
+  description: The number of organic (non-paid) searches performed by the client within the aggregation period. Null indicates the value was not
+    available for the record, while 0 indicates the client performed no organic searches.
+  type: INT64
+- name: organic_topsite_clicks
+  description: The number of times a user clicked on an organic (non-sponsored) top site tile on the new tab page within the aggregation period.
+    A value of 0 indicates no clicks occurred.
+  type: INT64
+- name: organic_topsite_dismissals
+  description: The number of times a user dismissed an organic (non-sponsored) top site tile on the new tab page within the aggregation period.
+    A value of 0 indicates no dismissals occurred.
+  type: INT64
+- name: organic_topsite_impressions
+  description: The number of times organic (non-sponsored) top site tiles were displayed to the user on the new tab page within the aggregation
+    period. A value of 0 indicates no impressions were recorded.
+  type: INT64
+- name: organic_topsite_tile_clicks
+  description: The number of times a user clicked on a specific organic (non-sponsored) top site tile on the new tab page. This is a more granular
+    click metric compared to the broader organic_topsite_clicks field.
+  type: INT64
+- name: organic_topsite_tile_dismissals
+  description: The number of times a user dismissed a specific organic (non-sponsored) top site tile on the new tab page. A value of 0 indicates
+    no tile-level dismissals occurred.
+  type: INT64
+- name: organic_topsite_tile_impressions
+  description: The number of times a specific organic (non-sponsored) top site tile was displayed to the user on the new tab page. A value of
+    0 indicates the tile was not shown during the aggregation period.
+  type: INT64
+- name: os
+  description: The raw operating system name as reported by the client, such as 'Windows_NT', 'Darwin', 'Linux', 'Android', or 'iOS'. This is
+    the unprocessed OS string before normalization.
+- name: os_environment_is_taskbar_pinned_any
+  description: A boolean flag indicating whether Firefox is pinned to the Windows taskbar in any configuration (regular or private browsing).
+    True means Firefox is pinned to the taskbar; False means it is not.
+  type: BOOLEAN
+- name: os_environment_is_taskbar_pinned_private
+  description: A boolean flag indicating whether the Firefox Private Browsing shortcut is specifically pinned to the Windows taskbar. True means
+    it is pinned; False means it is not.
+  type: BOOLEAN
+- name: os_environment_is_taskbar_pinned_private_any
+  description: A boolean flag indicating whether a Firefox Private Browsing shortcut is pinned to the Windows taskbar in any taskbar configuration.
+    True means at least one such pin exists; False means none exist.
+  type: BOOLEAN
+- name: os_grouped
+  description: A coarsely grouped operating system label that categorizes clients into broad OS families; 'Windows', 'Mac', 'Linux', or 'Other'.
+    This provides a simplified OS dimension for high-level segmentation.
+  type: STRING
+- name: os_name
+  description: The standardized name of the operating system on the client device, such as 'Windows', 'Mac', 'Linux', or 'Android'. Similar to
+    normalized_os but may reflect a slightly different normalization source.
+  type: STRING
+- name: os_service_pack_major
+  description: The major version number of the Windows Service Pack installed on the client, such as 0 (no service pack), 1, or 2. Null indicates
+    the value was not available, typically for non-Windows platforms.
+  type: INT64
+- name: os_service_pack_minor
+  description: The minor version number of the Windows Service Pack installed on the client. This is almost always 0, with null indicating the
+    value was unavailable, typically for non-Windows platforms.
+  type: INT64

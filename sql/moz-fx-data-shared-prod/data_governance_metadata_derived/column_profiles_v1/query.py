@@ -718,6 +718,13 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     args = parser.parse_args()
+    if not args.date:
+        parser.error(
+            "--date is required. Scheduled/backfill runs derive it from the run's "
+            "interval-end date automatically; manual ('Trigger DAG w/ config') "
+            'runs must pass an explicit {"date": "YYYY-MM-DD"} in the trigger '
+            "config."
+        )
     try:
         datetime.date.fromisoformat(args.date)
     except ValueError:
@@ -729,7 +736,12 @@ def parse_args() -> argparse.Namespace:
         d.strip() for d in args.source_datasets.split(",") if d.strip()
     ]
     if not args.source_datasets:
-        parser.error("--source-datasets must list at least one dataset.")
+        parser.error(
+            "--source-datasets must list at least one dataset. Scheduled/backfill "
+            "runs default it automatically; manual ('Trigger DAG w/ config') runs "
+            'must pass an explicit "source_datasets" (comma-separated) in the '
+            "trigger config."
+        )
     invalid = [d for d in args.source_datasets if not _BQ_IDENTIFIER_RE.match(d)]
     if invalid:
         parser.error(

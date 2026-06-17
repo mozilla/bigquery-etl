@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: The smaller client ID string
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: linked_client_id
   type: STRING
-  description: The larger client ID string
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: linked_client_id
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date

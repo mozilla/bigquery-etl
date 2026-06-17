@@ -2866,3 +2866,198 @@ fields:
   description: A boolean flag indicating whether the user has enabled the option to share tracker blocking statistics. A value of true means sharing
     is enabled; false means it is disabled. This field is predominantly null, indicating the setting was not recorded.
   type: BOOLEAN
+- name: shutdown_kill_sum
+  description: The total number of times the browser process was forcibly killed during shutdown rather than exiting cleanly. Higher values indicate
+    repeated unclean shutdowns for a client.
+  type: INT64
+- name: signature
+  description: A symbolic crash or error signature identifying the code location responsible for a crash or error event. Used to group similar
+    crashes together for triage and analysis.
+  type: STRING
+- name: silent
+  description: Indicates whether an update or notification was delivered silently without user-visible prompting. True means the action was silent;
+    false means the user was notified.
+  type: BOOLEAN
+- name: smoothed_dau
+  description: A 7-day trailing average of Daily Active Users (DAU), used to smooth out day-to-day fluctuations in usage counts. Expressed as
+    a floating-point value representing the average number of active users per day.
+  type: FLOAT64
+- name: source
+  description: The referring domain or source URL from which a user navigated to a Mozilla property. Null indicates the source was not captured
+    or not applicable.
+  type: STRING
+- name: sponsored_pocket_clicks
+  description: The total number of clicks on sponsored Pocket content tiles within the New Tab page for a given client or period. A value of zero
+    indicates no sponsored Pocket tiles were clicked.
+  type: INT64
+- name: sponsored_pocket_dismissals
+  description: The total number of times a user dismissed a sponsored Pocket content tile on the New Tab page. A value of zero indicates no dismissals
+    occurred.
+  type: INT64
+- name: sponsored_pocket_impressions
+  description: The total number of times sponsored Pocket content tiles were displayed to the user on the New Tab page. A value of zero indicates
+    the tiles were never shown.
+  type: INT64
+- name: sponsored_pocket_saves
+  description: The total number of times a user saved a sponsored Pocket content tile. A value of zero indicates no sponsored Pocket items were
+    saved.
+  type: INT64
+- name: sponsored_topsite_clicks
+  description: The total number of clicks on sponsored top site tiles on the New Tab page for a given client or period. A value of zero indicates
+    no sponsored top site tiles were clicked.
+  type: INT64
+- name: sponsored_topsite_dismissals
+  description: The total number of times a user dismissed a sponsored top site tile on the New Tab page. A value of zero indicates no dismissals
+    occurred.
+  type: INT64
+- name: sponsored_topsite_impressions
+  description: The total number of times sponsored top site tiles were displayed to the user on the New Tab page. A value of zero indicates the
+    tiles were never shown.
+  type: INT64
+- name: sponsored_topsite_tile_clicks
+  description: The total number of clicks specifically on sponsored top site tiles (as distinct from other top site interactions) on the New Tab
+    page. A value of zero indicates no such tile clicks occurred.
+  type: INT64
+- name: sponsored_topsite_tile_dismissals
+  description: The total number of times a user dismissed a sponsored top site tile (tile-level dismissal) on the New Tab page. A value of zero
+    indicates no tile-level dismissals occurred.
+  type: INT64
+- name: sponsored_topsite_tile_impressions
+  description: The total number of times individual sponsored top site tiles were rendered and displayed to the user on the New Tab page. A value
+    of zero indicates no tile-level impressions were recorded.
+  type: INT64
+- name: ssl_handshake_result_failure_sum
+  description: The total number of failed SSL/TLS handshake attempts recorded for a client over a period. A value of zero indicates all handshakes
+    completed successfully with no failures.
+  type: INT64
+- name: ssl_handshake_result_success_sum
+  description: The total number of successful SSL/TLS handshake completions recorded for a client over a period. Null values indicate the metric
+    was not collected or not applicable.
+  type: INT64
+- name: startup_profile_selection_first_ping_only
+  description: The method by which a Firefox profile was selected at startup, recorded only for the first ping of a session. Common values include
+    'default' (the default profile was used) and 'restart' (Firefox restarted with the same profile).
+  type: STRING
+- name: startup_profile_selection_reason
+  description: The reason or method by which a Firefox profile was selected at the start of a session. Common values include 'firstrun-created-default'
+    (a new default profile was created on first run) and 'default' (the existing default profile was selected).
+  type: STRING
+- name: startup_profile_selection_reason_first
+  description: The profile selection reason recorded for the first subsession or ping of a client's activity period. Common values include 'default'
+    and 'profile-selector', indicating how Firefox chose which profile to load.
+  type: STRING
+- name: subchannel
+  description: The advertising subchannel classification for a marketing campaign or traffic source. Values include 'Brand', 'Non-Brand', 'Competitor',
+    'PMax', 'Other', and 'All' (an aggregate across all subchannels).
+  type: STRING
+- name: subdivision1
+  description: The first-level administrative subdivision (e.g., state, province, or region) derived from the client's geographic location, represented
+    as a code. Null indicates the subdivision could not be determined.
+  type: STRING
+- name: submission_date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's ingestion pipeline. Used as the primary partitioning
+    and filtering dimension for date-based analysis.
+- name: submission_timestamp
+  description: The precise UTC timestamp at which a ping or record was received by Mozilla's ingestion pipeline, including microsecond precision.
+    Used for fine-grained temporal analysis within a submission date.
+  type: TIMESTAMP
+- name: submission_timestamp_min
+  description: The earliest submission timestamp observed for a group of pings or records, typically within an aggregation window. Useful for
+    identifying when the first event in a batch was received.
+  type: TIMESTAMP
+- name: submission_year
+  description: The calendar year in which a ping or record was submitted to Mozilla's ingestion pipeline, derived from the submission timestamp.
+    Used for partitioning and year-level aggregations.
+  type: INT64
+- name: subsession_hours_per_user_ratio
+  description: The average number of active browser hours per user within a given aggregation period, calculated as total subsession hours divided
+    by the number of users. Used to measure per-user engagement intensity.
+  type: NUMERIC
+- name: subsession_hours_sum
+  description: The total number of hours spent in active Firefox subsessions for a client or cohort over the aggregation period. Values near 24
+    indicate nearly continuous daily usage.
+  type: NUMERIC
+- name: subsession_id
+  description: A UUID uniquely identifying a single Firefox subsession, which begins at browser start or after a previous subsession ends. Used
+    to join or deduplicate subsession-level telemetry records.
+  type: STRING
+- name: subsession_length
+  description: The duration of a Firefox subsession in seconds, representing the amount of time the browser was active during that subsession.
+  type: INT64
+- name: subsession_start_date
+  description: The local date and time at which a Firefox subsession began, formatted as an ISO 8601 string including timezone offset. Reflects
+    the client's local time rather than UTC.
+  type: STRING
+- name: succeeded
+  description: Indicates whether an operation or process completed successfully. True means the operation succeeded; false means it failed.
+  type: BOOLEAN
+- name: success
+  description: A count or flag indicating successful outcomes for an operation or metric within a given period. Null values indicate the metric
+    was not applicable or not recorded.
+  type: INT64
+- name: sync_configured
+  description: Indicates whether Firefox Sync was enabled and configured on the client's browser. True means Sync was active; false means it was
+    explicitly disabled; null indicates the state was not reported.
+  type: BOOLEAN
+- name: sync_count_desktop
+  description: The number of desktop devices connected to a user's Firefox Sync account. Used to understand multi-device desktop usage patterns.
+  type: INT64
+- name: sync_count_desktop_mean
+  description: The average number of desktop devices connected to Firefox Sync accounts, computed across users in an aggregation group. Null indicates
+    no Sync data was available for the group.
+  type: FLOAT64
+- name: sync_count_desktop_sum
+  description: The total number of desktop devices connected to Firefox Sync accounts, summed across users in an aggregation group. Null indicates
+    no Sync data was available for the group.
+  type: INT64
+- name: sync_count_mobile
+  description: The number of mobile devices connected to a user's Firefox Sync account. Used to understand multi-device mobile usage patterns.
+  type: INT64
+- name: sync_count_mobile_mean
+  description: The average number of mobile devices connected to Firefox Sync accounts, computed across users in an aggregation group. A value
+    of zero indicates users had Sync configured but no mobile devices linked.
+  type: FLOAT64
+- name: sync_count_mobile_sum
+  description: The total number of mobile devices connected to Firefox Sync accounts, summed across users in an aggregation group. A value of
+    zero indicates no mobile devices were linked to Sync accounts in the group.
+  type: INT64
+- name: system_is_wow64
+  description: Indicates whether the Firefox process is running as a 32-bit application under the WOW64 compatibility layer on a 64-bit Windows
+    system. True means WOW64 is active; false means the process is running natively.
+  type: BOOLEAN
+- name: system_memory_mb
+  description: The total amount of physical RAM installed on the client's system, measured in megabytes. Common values correspond to standard
+    memory configurations such as 8 GB, 16 GB, and 32 GB.
+  type: FLOAT64
+- name: tagged_follow_on_search_ad_clicks
+  description: The total number of ad clicks on follow-on searches that were tagged with a Mozilla partner attribution code. Follow-on searches
+    originate from a search results page rather than directly from the browser's search bar.
+  type: INT64
+- name: tagged_follow_on_search_ad_impressions
+  description: The total number of ad impressions on follow-on searches that were tagged with a Mozilla partner attribution code. A value of zero
+    indicates no tagged follow-on search ads were shown.
+  type: INT64
+- name: tagged_search_ad_clicks
+  description: The total number of ad clicks on searches that were tagged with a Mozilla partner attribution code, originating directly from the
+    browser's search entry points. A value of zero indicates no tagged search ads were clicked.
+  type: INT64
+- name: tagged_search_ad_impressions
+  description: The total number of ad impressions on searches that were tagged with a Mozilla partner attribution code, originating directly from
+    the browser's search entry points. A value of zero indicates no tagged search ads were shown.
+  type: INT64
+- name: target
+  description: The product or audience target associated with a metric or forecast, such as 'desktop' or 'mobile'. May also include suffixes indicating
+    the specific metric goal (e.g., 'desktop_DAU', 'mobile_CDOU').
+  type: STRING
+- name: telemetry_enabled
+  description: Indicates whether the user has opted into Firefox telemetry data collection. False means the user has explicitly disabled telemetry;
+    true means it is enabled; null indicates the value was not reported.
+  type: BOOLEAN
+- name: text_recognition_api_performance_count_sum
+  description: The total count of text recognition API calls made during a session or aggregation period. Near-100% null rate indicates this feature
+    is used by a very small fraction of clients.
+  type: INT64
+- name: text_recognition_api_performance_sum
+  description: The cumulative performance measurement (e.g., total duration in milliseconds) of text recognition API calls made during a session
+    or aggregation period. Near-100% null rate reflects rare usage of the text recognition feature.
+  type: INT64

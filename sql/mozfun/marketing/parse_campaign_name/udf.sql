@@ -222,17 +222,9 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
                     'optimization_goal'
                   ]
                 ),
-                ARRAY(
-                  SELECT
-                    seg
-                  FROM
-                    UNNEST(t) AS seg
-                    WITH OFFSET o
-                  WHERE
-                    o < IF(has_audience, 16, 15)
-                  ORDER BY
-                    o
-                )
+                -- from_lists stops at the shorter list, and keys is exactly 15 or
+                -- 16 here, so it takes the first 15/16 segments. Surplus is dropped.
+                t
               ),
               NULL
             )
@@ -309,30 +301,9 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
                     ),
                     t
                   )
-              ELSE mozfun.map.from_lists(
-                  ARRAY(
-                    SELECT
-                      k
-                    FROM
-                      UNNEST(k17) AS k
-                      WITH OFFSET o
-                    WHERE
-                      o < LEAST(ARRAY_LENGTH(t), 17)
-                    ORDER BY
-                      o
-                  ),
-                  ARRAY(
-                    SELECT
-                      v
-                    FROM
-                      UNNEST(t) AS v
-                      WITH OFFSET o
-                    WHERE
-                      o < LEAST(ARRAY_LENGTH(t), 17)
-                    ORDER BY
-                      o
-                  )
-                )
+              -- from_lists pairs k17[o] with t[o] and stops at the shorter list,
+              -- so this maps the first min(len(t), 17) segments positionally.
+              ELSE mozfun.map.from_lists(k17, t)
             END
           FROM
             (

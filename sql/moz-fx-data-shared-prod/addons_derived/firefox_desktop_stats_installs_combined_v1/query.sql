@@ -5,10 +5,10 @@ WITH unioned_install_stats AS (
     DATE(submission_timestamp) AS submission_date,
     client_id,
     extras.string.hashed_addon_id,
-    extras.string.utm_content,
-    extras.string.utm_campaign,
-    extras.string.utm_source,
-    extras.string.utm_medium,
+    NULLIF(extras.string.utm_content, "") AS utm_content,
+    NULLIF(extras.string.utm_campaign, "") AS utm_campaign,
+    NULLIF(extras.string.utm_source, "") AS utm_source,
+    NULLIF(extras.string.utm_medium, "") AS utm_medium,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
@@ -22,10 +22,10 @@ WITH unioned_install_stats AS (
     submission_date,
     client_id,
     event_string_value AS hashed_addon_id,
-    mozfun.map.get_key(event_map_values, 'utm_content') AS utm_content,
-    mozfun.map.get_key(event_map_values, 'utm_campaign') AS utm_campaign,
-    mozfun.map.get_key(event_map_values, 'utm_source') AS utm_source,
-    mozfun.map.get_key(event_map_values, 'utm_medium') AS utm_medium,
+    NULLIF(mozfun.map.get_key(event_map_values, 'utm_content'), "") AS utm_content,
+    NULLIF(mozfun.map.get_key(event_map_values, 'utm_campaign'), "") AS utm_campaign,
+    NULLIF(mozfun.map.get_key(event_map_values, 'utm_source'), "") AS utm_source,
+    NULLIF(mozfun.map.get_key(event_map_values, 'utm_medium'), "") AS utm_medium,
   FROM
     `moz-fx-data-shared-prod.telemetry.events`
   WHERE

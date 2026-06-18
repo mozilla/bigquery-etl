@@ -657,8 +657,8 @@ fields:
   description: The inclusive end date of the reporting or aggregation window. Records in the row apply to activity on or before this date.
   type: DATE
 - name: dau
-  description: Daily Active Users (DAU). In aggregate tables this is the count of distinct clients active on a given day; in per-client tables
-    it indicates whether the individual client was active on that day.
+  description: Daily Active Users (DAU). In aggregate tables this is the count of distinct clients active on a given day; in per-client tables it indicates whether the individual client was active on that day.
+  DAU definitions for Desktop and Mobile: https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
   type: INT64
 - name: days_active_bits
   description: A 28-bit integer bitmask representing the days within a rolling 28-day window on which the user was active. Each bit corresponds

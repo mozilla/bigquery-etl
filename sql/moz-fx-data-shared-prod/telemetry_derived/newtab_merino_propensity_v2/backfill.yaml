@@ -1,6 +1,6 @@
 2026-06-18:
   start_date: 2026-06-01
-  end_date: 2026-06-17
+  end_date: 2026-06-16
   reason: Backfill newtab_merino_propensity_v2 from 2026-06-01 to establish history.
   watchers:
   - rrando@mozilla.com

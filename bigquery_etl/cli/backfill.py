@@ -213,7 +213,8 @@ def backfill(ctx):
     help="If set, allow a custom_query_path backfill on a depends_on_past table with a "
     "null date_partition_parameter to run per-partition instead of requiring "
     "--reinitialize-table. Only valid with --custom-query-path, since the custom query "
-    "must process each partition independently of prior partitions.",
+    "must process each partition independently of prior partitions. The custom query "
+    "must bind @submission_date (it is the partition parameter for the backfill).",
 )
 @click.option(
     "--reinitialize-table",
@@ -991,14 +992,9 @@ def _initiate_backfill(
     if entry.ignore_date_partition_offset:
         scheduling_overrides_dict["date_partition_offset"] = 0
     if entry.override_depends_on_past_null_partition:
-        # This table leaves date_partition_parameter null (its scheduled query rewrites the
-        # whole table), so query backfill would treat each per-partition run as a whole-table
-        # write: the destination is never decorated as staging$YYYYMMDD and each day's
-        # --replace truncates the entire staging table, leaving only the last date. The custom
-        # query is per-partition and reads @submission_date, so bind submission_date as the
-        # partition parameter for this backfill only. That both decorates the destination
-        # (one staging partition written per run) and binds @submission_date to each date,
-        # without touching the table's real (null) metadata.
+        # date_partition_parameter is null here, so backfill would write the whole
+        # staging table each run and only the last date would survive. Bind
+        # submission_date so each run decorates its own staging$YYYYMMDD partition.
         scheduling_overrides_dict["date_partition_parameter"] = "submission_date"
     scheduling_overrides = json.dumps(scheduling_overrides_dict)
 
@@ -1030,16 +1026,12 @@ def _initiate_backfill(
         )
         return
 
-    # rewrite query to query the staging table instead of the prod table
-    # and copy previous partition if table depends on past.
+    # Rewrite the query to read staging instead of prod, and seed the previous
+    # partition for depends_on_past tables.
     #
-    # The override_depends_on_past_null_partition path is the exception: its custom query
-    # reads its own prod partition (via `* REPLACE`) for the partition being backfilled, so
-    # it must keep reading prod -- the staging ref-rewrite would repoint that read at the
-    # empty staging table and `WHERE <partition_field> = @submission_date` would return zero
-    # rows, copying an empty partition over live prod. It is also partition-independent, so
-    # it needs no previous-partition seed (which would raise on a null date_partition_parameter
-    # anyway, since get_backfill_partition returns None). Skip the whole block for it.
+    # The override is the exception: its custom query reads its own prod partition
+    # via `* REPLACE`, so it must keep reading prod. Rewriting to staging would copy
+    # an empty partition over prod. It is partition-independent, so skip the block.
     if (
         metadata.scheduling.get("depends_on_past")
         and not is_python_script
@@ -1383,11 +1375,9 @@ def _copy_backfill_staging_to_prod(
             if not entry.ignore_date_partition_offset:
                 offset = table_metadata.scheduling.get("date_partition_offset", offset)
 
-        # An override_depends_on_past_null_partition backfill ran per-partition against a table whose
-        # date_partition_parameter is null. With a null partition param, get_backfill_partition
-        # would treat the target as the whole table and return None (raising below). The data
-        # was written one partition at a time, so resolve the partition from the partitioning
-        # field instead and copy each backfilled partition individually.
+        # The override ran per-partition, but date_partition_parameter is null,
+        # so get_backfill_partition returns None (treating it as the whole table).
+        # Resolve the partition from the partitioning field and copy each individually.
         if (
             entry.override_depends_on_past_null_partition
             and partition_param is None

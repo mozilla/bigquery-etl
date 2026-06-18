@@ -1,18 +1,8 @@
--- populate the newly added top-level column `attribution_msstoresignedin` for historical first-seen rows.
---
--- Only `attribution_msstoresignedin` is written; every other column is carried through
--- from the current production partition via `* REPLACE`. Run per first_seen_date
--- partition, with @submission_date bound to that partition's date.
---
--- Approach: join each first-seen row to the ping that contributed it. The contributing
--- ping type is stored on the row as metadata.first_seen_date_source_ping, and its date
--- is the row's first_seen_date (= @submission_date). Production builds every attribution_*
--- field (including msstoresignedin) from the SAME earliest ping per source
--- (ARRAY_AGG ... RESPECT NULLS ORDER BY <ts> [SAFE_OFFSET(0)]), so we replicate that exact
--- earliest-ping selection here rather than ANY_VALUE. We graft msstoresignedin only when
--- the other 9 attribution fields recomputed from that ping still match what is stored on
--- the row -- guarding against raw-ping drift (shredder deletions / late data) since the
--- row was originally computed.
+-- Fill attribution_msstoresignedin for historical first-seen rows. Run per
+-- first_seen_date partition (@submission_date); other columns carried via `* REPLACE`.
+-- Join each row to its contributing ping (metadata.first_seen_date_source_ping),
+-- picking the earliest ping per source to match prod (not ANY_VALUE). Graft only when
+-- NULL and the other 9 attribution fields still match the row (drift guard).
 WITH source_msstore AS (
   SELECT
     client_id,
@@ -69,8 +59,8 @@ WITH source_msstore AS (
   SELECT
     client_id,
     'main' AS source_ping,
-    -- clients_daily_v6 is unique per (client_id, submission_date); the partition filter
-    -- leaves one row per client, mirroring main_ping_agg's earliest-date offset(0).
+    -- clients_daily_v6 is unique per (client_id, submission_date); the filter
+    -- leaves one row per client (earliest-date offset(0)).
     ARRAY_AGG(
       STRUCT(
         attribution.campaign,
@@ -96,10 +86,9 @@ WITH source_msstore AS (
 )
 SELECT
   cfs.* REPLACE (
-    -- Only fill when the existing value is NULL; never overwrite an existing value.
-    -- Also require the contributing ping to exist on this date AND its other 9
-    -- attribution fields to still match what is stored on the row (NULL-safe), so the
-    -- grafted msstoresignedin belongs to the same attribution prod actually stored.
+    -- Fill only when NULL; never overwrite. Require the ping to exist and its
+    -- other 9 attribution fields to match the row (NULL-safe), so the grafted
+    -- value belongs to the attribution prod stored.
     IF(
       cfs.attribution_msstoresignedin IS NULL
       AND s.client_id IS NOT NULL

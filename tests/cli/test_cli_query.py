@@ -800,8 +800,7 @@ class TestQuery:
             _backfill_query(
                 query_file_path=query_path,
                 project_id="moz-fx-data-shared-prod",
-                # overridden to submission_date so the destination gets decorated,
-                # even though the metadata leaves date_partition_parameter null
+                # overridden to submission_date so the destination gets decorated
                 date_partition_parameter="submission_date",
                 date_partition_offset=0,
                 max_rows=100,

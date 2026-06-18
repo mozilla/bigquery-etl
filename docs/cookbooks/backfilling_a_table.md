@@ -16,7 +16,7 @@ The managed backfill workflow (`bqetl backfill create` / `initiate`) validates a
 | `query.py` (Python script) table                                                                   | ✅ Yes (with extra config)           | [`monitoring_derived.stable_and_derived_table_sizes_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1)                                   | Requires `query_script_entrypoint` and `query_script_date_arg` on the entry. The staging table and dry run are not auto-configured; see [Backfilling with a Python script](#backfilling-with-a-python-script).                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `shredder_mitigation: true` label on the table                                                     | ✅ Yes (field required)              | [`telemetry_derived.desktop_retention_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/desktop_retention_v1)                                                               | The entry must have `shredder_mitigation: true`; otherwise `initiate` stops. The metadata label and the entry's `shredder_mitigation` value must match.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Workgroup-restricted (access-controlled) dataset                                                   | ✅ Yes                               |                                                                                                                                                                                                                                | The staging and backup tables will mirror the prod table's IAM policy and its dataset access.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **`depends_on_past: true` with a null `date_partition_parameter`**                                 | ✅ Yes (with `--reinitialize-table`) | [`telemetry_derived.clients_first_seen_v3`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3)                                                             | A whole-table refresh that depends on its own prior state can't be backfilled one partition at a time, so the normal day-by-day path is rejected by `validate_depends_on_past`. Instead, pass `--reinitialize-table` to rebuild the whole table from its `is_init()` query (the same logic `bqetl query initialize` uses), run in parallel per `sample_id` into staging and swapped in as a full-table replace on complete. Requires the table's `query.sql` to use the `is_init()` pattern. See [Reinitializing a whole table](#reinitializing-a-whole-table).                                                                                     |
+| **`depends_on_past: true` with a null `date_partition_parameter`**                                 | ✅ Yes (special handling) | [`telemetry_derived.clients_first_seen_v3`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3)                                                             | A whole-table refresh that depends on its own prior state can't be backfilled one partition at a time, so the normal day-by-day path is rejected by `validate_depends_on_past`. Instead, pass `--reinitialize-table` to rebuild the whole table from its `is_init()` query (the same logic `bqetl query initialize` uses), run in parallel per `sample_id` into staging and swapped in as a full-table replace on complete. Requires the table's `query.sql` to use the `is_init()` pattern. For a targeted single-column fill, an alternative is a per-partition `custom_query_path` backfill with `override_depends_on_past_null_partition: true`. See [Reinitializing a whole table](#reinitializing-a-whole-table) and [Per-partition custom-query backfill](#per-partition-custom-query-backfill-null-date_partition_parameter).                                                                                     |
 | Start date older than the retention limit (smaller of 775 days or the partition `expiration_days`) | ⚠️ Override required                |                                                                                                                                                                                                                                | Rejected unless `override_retention_limit: true` is set on the entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `depends_on_past: true` with `end_date` before the `entry_date`                                    | ⚠️ Override required                |                                                                                                                                                                                                                                | Rejected unless `override_depends_on_past_end_date: true` is set on the entry; a past end date can cause data inconsistencies.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Entry date older than 28 days (`MAX_BACKFILL_ENTRY_AGE_DAYS`)                                      | ❌ No                                |                                                                                                                                                                                                                                | An `Initiate`-status entry this old will not run (staging tables expire). Create a fresh entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -189,6 +189,40 @@ Requirements and notes:
   AND sample_id >= @sample_id
   AND sample_id < @sample_id + @sampling_batch_size
   ```
+
+## Per-partition custom-query backfill (null `date_partition_parameter`):
+
+`--reinitialize-table` rebuilds every partition, which is expensive when you only need
+to fill or fix a single column. For a `depends_on_past: true` table with a null
+`date_partition_parameter`, you can instead run a targeted per-partition backfill by
+setting `override_depends_on_past_null_partition: true` on the entry, together with a
+`custom_query_path`.
+
+The custom query reads each partition's own production data (e.g. via
+`SELECT * REPLACE (<new value> AS <column>)`) so no prior partition is needed, and it
+must bind `@submission_date` as the partition being backfilled:
+
+```sql
+SELECT * REPLACE (<recomputed value> AS <column>)
+FROM `moz-fx-data-shared-prod.<dataset>.<table>`
+WHERE <partition_field> = @submission_date
+```
+
+```yaml
+2026-06-11:
+  start_date: 2026-06-07
+  end_date: 2026-06-09
+  ...
+  override_depends_on_past_null_partition: true
+  custom_query_path: sql/.../<table>/backfill_<ticket>.sql
+```
+
+On `initiate`, each date in the range writes one decorated `staging$YYYYMMDD` partition;
+on `complete`, those partitions are copied into production individually. Requirements:
+
+- `custom_query_path` is required (validation rejects the override without it).
+- Mutually exclusive with `--reinitialize-table`.
+- The custom query must be partition-independent and bind `@submission_date`.
 
 ## Completing the backfill:
 

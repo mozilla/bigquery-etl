@@ -938,8 +938,8 @@ class TestBackfill:
             f.write("SELECT 1 WHERE submission_date = @submission_date")
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        # depends_on_past tables also require the end date to be on or after the entry
-        # date (or an override), which is unrelated to the override_depends_on_past_null_partition bypass.
+        # depends_on_past also requires end_date >= entry_date (or override).
+        # Unrelated to the override_depends_on_past_null_partition bypass.
         backfill_file.write_text(
             BACKFILL_YAML_TEMPLATE
             + "  override_depends_on_past_null_partition: true\n"
@@ -2703,8 +2703,8 @@ class TestBackfill:
             "date_partition_parameter": None,
             "depends_on_past": True,
         }
-        # Real partitioning config matching a first_seen-style table; with a null
-        # date_partition_parameter the previous-partition seed cannot resolve a partition id.
+        # Real first_seen-style partitioning; a null date_partition_parameter
+        # means the previous-partition seed cannot resolve a partition id.
         metadata["bigquery"] = {
             "time_partitioning": {"type": "day", "field": "first_seen_date"}
         }
@@ -2740,17 +2740,16 @@ class TestBackfill:
         # Not reinitialized; runs the per-partition query backfill once.
         assert mock_reinitialize.call_count == 0
         assert mock_context.invoke.call_count == 1
-        # The depends_on_past block is skipped entirely: no previous-partition seed and no
-        # staging ref-rewrite, so the original prod-reading custom query is handed through.
+        # The depends_on_past block is skipped: no seed, no ref-rewrite.
+        # The original prod-reading custom query is handed through.
         assert mock_initialize_partition.call_count == 0
         assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
         assert mock_context.invoke.call_args.kwargs["custom_query_path"] == Path(
             custom_query_path
         )
-        # The table's date_partition_parameter is null, which would make query backfill write
-        # each per-partition run to the whole (undecorated) staging table and truncate it every
-        # day, leaving only the last date. The override binds submission_date as the partition
-        # parameter so each run writes its own staging$YYYYMMDD partition.
+        # date_partition_parameter is null, so backfill would truncate the whole
+        # staging table each run, leaving only the last date. The override binds
+        # submission_date so each run writes its own staging$YYYYMMDD partition.
         scheduling_overrides = json.loads(
             mock_context.invoke.call_args.kwargs["scheduling_overrides"]
         )
@@ -2792,8 +2791,7 @@ class TestBackfill:
             "time_partitioning": {"type": "day", "field": "first_seen_date"}
         }
         (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
-        # query.sql deliberately has no is_init() branch -- the table has no init files, and
-        # the override must not depend on one.
+        # query.sql has no is_init() branch; the override must not depend on one.
         (Path(QUERY_DIR) / "query.sql").write_text("SELECT 1")
         custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
         prod_reading_query = (
@@ -3459,8 +3457,8 @@ class TestBackfill:
         date_partition_parameter is null. The partition must be resolved from the
         partitioning field so each partition copies individually, rather than returning a
         null partition (which raises) or copying the whole table."""
-        # depends_on_past + null date_partition_parameter, day-partitioned on first_seen_date
-        # -- matches telemetry_derived.clients_first_seen_v3.
+        # Like clients_first_seen_v3: depends_on_past, null date_partition_parameter,
+        # day-partitioned on first_seen_date.
         metadata_conf = {
             "friendly_name": "test",
             "description": "test",

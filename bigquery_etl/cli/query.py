@@ -532,10 +532,9 @@ def _backfill_query(
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
     ]
 
-    # Bind the date partition parameter, unless scheduling_parameters already supplies a
-    # parameter with the same name (e.g. a null-date_partition_parameter table that lists
-    # `submission_date` in `parameters`). bq rejects a parameter bound twice, so skip the
-    # append rather than emitting a duplicate.
+    # Bind the date partition parameter, unless scheduling_parameters already
+    # supplies it (e.g. a table listing submission_date in `parameters`). bq
+    # rejects a parameter bound twice, so skip rather than duplicate.
     scheduling_parameter_names = {
         param.split(":", 1)[0] for param in scheduling_parameters
     }

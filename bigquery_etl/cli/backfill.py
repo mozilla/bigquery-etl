@@ -987,9 +987,20 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
-    scheduling_overrides = "{}"
+    scheduling_overrides_dict: dict[str, object] = {}
     if entry.ignore_date_partition_offset:
-        scheduling_overrides = '{"date_partition_offset": 0}'
+        scheduling_overrides_dict["date_partition_offset"] = 0
+    if entry.override_depends_on_past_null_partition:
+        # This table leaves date_partition_parameter null (its scheduled query rewrites the
+        # whole table), so query backfill would treat each per-partition run as a whole-table
+        # write: the destination is never decorated as staging$YYYYMMDD and each day's
+        # --replace truncates the entire staging table, leaving only the last date. The custom
+        # query is per-partition and reads @submission_date, so bind submission_date as the
+        # partition parameter for this backfill only. That both decorates the destination
+        # (one staging partition written per run) and binds @submission_date to each date,
+        # without touching the table's real (null) metadata.
+        scheduling_overrides_dict["date_partition_parameter"] = "submission_date"
+    scheduling_overrides = json.dumps(scheduling_overrides_dict)
 
     override_retention_limit = entry.override_retention_limit
 

@@ -2747,6 +2747,14 @@ class TestBackfill:
         assert mock_context.invoke.call_args.kwargs["custom_query_path"] == Path(
             custom_query_path
         )
+        # The table's date_partition_parameter is null, which would make query backfill write
+        # each per-partition run to the whole (undecorated) staging table and truncate it every
+        # day, leaving only the last date. The override binds submission_date as the partition
+        # parameter so each run writes its own staging$YYYYMMDD partition.
+        scheduling_overrides = json.loads(
+            mock_context.invoke.call_args.kwargs["scheduling_overrides"]
+        )
+        assert scheduling_overrides["date_partition_parameter"] == "submission_date"
 
     @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
     @patch("google.cloud.bigquery.Client")

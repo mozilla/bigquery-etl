@@ -7,11 +7,13 @@ import pytest
 import yaml
 
 from bigquery_etl.cli.deploy import _collect_isolated_dependencies
+from bigquery_etl.util import target as target_module
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
     SCHEMA_FILE,
     Target,
     _normalize_table_ref,
+    _should_grant_impersonation_access,
     _substitute_3part_ref,
     collect_target_dependencies,
     extract_commit_from_dataset_name,
@@ -1111,3 +1113,70 @@ class TestCollectTargetDependenciesStubDedup:
         ]
         assert len(stub_paths) == 1, "Stub should be created exactly once"
         assert mock_fetch_schema.call_count == 1
+
+
+ENV = "BQETL_GRANT_IMPERSONATION_DATASET_ACCESS"
+
+
+class TestShouldGrantImpersonationAccess:
+    """Humans: env var > target preference > prompt > deny.
+
+    Coding agents: only an explicit target `grant_impersonation_access: true`.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _clean(self, monkeypatch):
+        monkeypatch.delenv(ENV, raising=False)
+        target_module.set_grant_impersonation_access(None)
+        # Default to the human path; agent tests override this.
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: False
+        )
+
+    # --- human path ---
+    @pytest.mark.parametrize(
+        "value,expected",
+        [("1", True), ("true", True), ("yes", True), ("0", False), ("no", False)],
+    )
+    def test_env_var_wins(self, monkeypatch, value, expected):
+        monkeypatch.setenv(ENV, value)
+        target_module.set_grant_impersonation_access(not expected)  # overridden
+        assert _should_grant_impersonation_access("sa@p.iam") is expected
+
+    def test_target_preference_when_no_env(self):
+        target_module.set_grant_impersonation_access(True)
+        assert _should_grant_impersonation_access("sa@p.iam") is True
+        target_module.set_grant_impersonation_access(False)
+        assert _should_grant_impersonation_access("sa@p.iam") is False
+
+    def test_non_interactive_defaults_to_deny(self, monkeypatch):
+        monkeypatch.setattr(target_module.sys.stdin, "isatty", lambda: False)
+        assert _should_grant_impersonation_access("sa@p.iam") is False
+
+    def test_interactive_prompts(self, monkeypatch):
+        monkeypatch.setattr(target_module.sys.stdin, "isatty", lambda: True)
+        monkeypatch.setattr(target_module.click, "confirm", lambda *a, **k: True)
+        assert _should_grant_impersonation_access("sa@p.iam") is True
+
+    # --- coding-agent path: only explicit config true permits ---
+    def test_agent_allowed_only_with_explicit_config(self, monkeypatch):
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: True
+        )
+        target_module.set_grant_impersonation_access(True)
+        assert _should_grant_impersonation_access("sa@p.iam") is True
+
+    def test_agent_denied_without_config(self, monkeypatch):
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: True
+        )
+        target_module.set_grant_impersonation_access(None)
+        assert _should_grant_impersonation_access("sa@p.iam") is False
+
+    def test_agent_ignores_env_var(self, monkeypatch):
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: True
+        )
+        monkeypatch.setenv(ENV, "1")  # would grant for a human; ignored for agents
+        target_module.set_grant_impersonation_access(None)
+        assert _should_grant_impersonation_access("sa@p.iam") is False

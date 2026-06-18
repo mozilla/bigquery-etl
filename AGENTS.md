@@ -43,4 +43,15 @@ Never run, deploy, or backfill against production.
 - Common workflows: `docs/cookbooks/common_workflows.md`
 - Development workflows (target-based dev environment): `docs/cookbooks/development_workflows.md`
 - Testing guide: `docs/cookbooks/testing.md`
-- Reference docs: `docs/reference/`
+
+Reference docs (`docs/reference/`) - read the relevant one when a change touches its area:
+- `schema_includes.md` - reusing field types/descriptions across tables: pulling them from other tables, views, stable tables, or shared YAML files into a `schema.yaml` via `!include` / `!include-field` / `!include-fields` / `!include-field-description` tags (`file:` paths are repo-root-relative).
+- `recommended_practices.md` - SQL conventions, query/file layout, and general authoring best practices.
+- `configuration.md` - what `bqetl_project.yaml` controls (dryrun skips, unpublished views, and other project-wide settings).
+- `data_checks.md` - adding data quality checks (`checks.sql`): null/range/duplicate/grain assertions run as part of the ETL.
+- `incremental.md` - requirements and recommendations for repeatable `@submission_date`-driven queries, atomic partition replacement, and chunked backfills.
+- `scheduling.md` - assigning queries to Airflow DAGs via `dags.yaml` and the DAG generation tooling.
+- `airflow_tags.md` - Airflow tags for filtering DAGs in the UI and conveying failure impact during triage.
+- `bigconfig.md` - Bigeye `bigConfig` for declaring which tables to monitor and what data-quality monitors/alerts apply.
+- `public_data.md` - marking datasets as public and how public data is exposed.
+- `stage-deploys-continuous-integration.md` - how CI deploys schema/view/UDF changes to the stage environment for validation.

@@ -5,3 +5,6 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_clients_v1`
+WHERE
+  -- Excluding events from the testing phase.
+  first_seen_date >= "2025-07-16"

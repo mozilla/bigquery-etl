@@ -1,12 +1,13 @@
 CREATE OR REPLACE FUNCTION marketing.parse_campaign_name(campaign_name STRING)
 RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
   CASE
-    -- Campaign Artifact Schema - Google Ads - version 2 or 3
+    -- Campaign Artifact Schema - Google Ads - version 2 or 3 (and Reddit Ads v2,
+    -- which shares the identical layout).
     -- Supports two formats:
     --   (a) Legacy 18-segment: ad_gap_id and po are single tokens at positions 17-18.
     --   (b) New variable-length: literal `_adgapid_` separator with compound
     --       ad_gap_id (may contain underscores); po is the final segment.
-    WHEN REGEXP_CONTAINS(campaign_name, r"^(gads_v[2-3])")
+    WHEN REGEXP_CONTAINS(campaign_name, r"^(gads_v[2-3]|reddit_v2)")
       THEN
         CASE
           -- New format: literal `_adgapid` separator, compound ad_gap_id. The value
@@ -112,35 +113,65 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
               )
           ELSE NULL
         END
-    -- Campaign Artifact Schema - Facebook Ads - version 1 or 2 (same 17-field layout)
-    WHEN REGEXP_CONTAINS(campaign_name, r"^(meta_v[12])")
-      THEN
-        CASE
-          WHEN ARRAY_LENGTH(SPLIT(campaign_name, "_")) = 17
-            THEN mozfun.map.from_lists(
-                [
-                  'ad_network',
-                  'version',
-                  'product',
-                  'initiative',
-                  'region',
-                  'country_code',
-                  'city',
-                  'language',
-                  'device',
-                  'operating_system',
-                  'campaign_type',
-                  'campaign_goal',
-                  'campaign_group',
-                  'bidding_type',
-                  'optimization_goal',
-                  'ad_gap_id',
-                  'po'
-                ],
-                SPLIT(campaign_name, "_")
-              )
-          ELSE NULL
-        END
+    -- Campaign Artifact Schema - Facebook Ads - version 1 or 2.
+    -- Conformed names use a lowercase `meta_v[12]` prefix with 17 positional
+    -- fields. This branch also accepts an older 15-field variant (no
+    -- `optimization_goal` / `ad_gap_id`; `po` is the final segment), all observed on
+    -- legacy Meta conversion-test campaigns. Any other segment count is NULL.
+    WHEN REGEXP_CONTAINS(campaign_name, r"(?i)^(new)?meta_v[12]")
+      THEN (
+          SELECT
+            CASE
+              ARRAY_LENGTH(t)
+              WHEN 17
+                THEN mozfun.map.from_lists(
+                    [
+                      'ad_network',
+                      'version',
+                      'product',
+                      'initiative',
+                      'region',
+                      'country_code',
+                      'city',
+                      'language',
+                      'device',
+                      'operating_system',
+                      'campaign_type',
+                      'campaign_goal',
+                      'campaign_group',
+                      'bidding_type',
+                      'optimization_goal',
+                      'ad_gap_id',
+                      'po'
+                    ],
+                    t
+                  )
+              WHEN 15
+                THEN mozfun.map.from_lists(
+                    [
+                      'ad_network',
+                      'version',
+                      'product',
+                      'initiative',
+                      'region',
+                      'country_code',
+                      'city',
+                      'language',
+                      'device',
+                      'operating_system',
+                      'campaign_type',
+                      'campaign_goal',
+                      'campaign_group',
+                      'bidding_type',
+                      'po'
+                    ],
+                    t
+                  )
+              ELSE NULL
+            END
+          FROM
+            (SELECT SPLIT(REGEXP_REPLACE(campaign_name, r"(?i)^new", ""), "_") AS t)
+        )
     -- Campaign Artifact Schema - Microsoft Ads v1 / Google Ads v1
     -- (`ms_v1` and `gads_v1` share the same paid-search taxonomy.)
     -- Take the first 15 underscore-separated segments, or 16 when `audience` is
@@ -246,6 +277,88 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
               )
           ELSE NULL
         END
+    -- Campaign Artifact Schema - Reddit Ads - version 1
+    -- Names are inconsistent (13-18 segments observed)
+    -- The leading segments map to the canonical order; when the final
+    -- segment is a `PO...` order code it is pulled into `po` (so 16-segment names
+    -- map cleanly to ad_network .. optimization_goal + po); otherwise the first 17
+    -- segments map positionally and any trailing tag is dropped.
+    -- (Reddit v2 is handled by the Google Ads v2/3 branch above.)
+    WHEN REGEXP_CONTAINS(campaign_name, r"^reddit_v1")
+      THEN (
+          SELECT
+            CASE
+              WHEN ARRAY_LENGTH(t) < 13
+                THEN NULL
+              WHEN REGEXP_CONTAINS(t[SAFE_OFFSET(ARRAY_LENGTH(t) - 1)], r"(?i)^po")
+                AND ARRAY_LENGTH(t) <= 17
+                THEN mozfun.map.from_lists(
+                    ARRAY_CONCAT(
+                      ARRAY(
+                        SELECT
+                          k
+                        FROM
+                          UNNEST(k17) AS k
+                          WITH OFFSET o
+                        WHERE
+                          o < ARRAY_LENGTH(t) - 1
+                        ORDER BY
+                          o
+                      ),
+                      ['po']
+                    ),
+                    t
+                  )
+              ELSE mozfun.map.from_lists(
+                  ARRAY(
+                    SELECT
+                      k
+                    FROM
+                      UNNEST(k17) AS k
+                      WITH OFFSET o
+                    WHERE
+                      o < LEAST(ARRAY_LENGTH(t), 17)
+                    ORDER BY
+                      o
+                  ),
+                  ARRAY(
+                    SELECT
+                      v
+                    FROM
+                      UNNEST(t) AS v
+                      WITH OFFSET o
+                    WHERE
+                      o < LEAST(ARRAY_LENGTH(t), 17)
+                    ORDER BY
+                      o
+                  )
+                )
+            END
+          FROM
+            (
+              SELECT
+                SPLIT(campaign_name, "_") AS t,
+                [
+                  'ad_network',
+                  'version',
+                  'product',
+                  'initiative',
+                  'region',
+                  'country_code',
+                  'city',
+                  'language',
+                  'device',
+                  'operating_system',
+                  'campaign_type',
+                  'campaign_goal',
+                  'campaign_group',
+                  'bidding_type',
+                  'optimization_goal',
+                  'ad_gap_id',
+                  'po'
+                ] AS k17
+            )
+        )
     -- pre Campaign Artifact Schema - Apple Search Ads
     WHEN REGEXP_CONTAINS(campaign_name, r"^Mozilla_Firefox_ASA_")
       THEN [
@@ -408,6 +521,41 @@ SELECT
     ),
     17
   ),
+  -- Test - Facebook Ads - older 15-field CamelCase variant (no optimization_goal /
+  -- ad_gap_id; `po` last). Case-insensitive prefix; `po` recovered at position 15.
+  mozfun.assert.map_equals(
+    marketing.parse_campaign_name(
+      'Meta_V1_Firefox_Meta-Conversion-Test_NA_US_National_English_All_All_PaidSocial_Sales_Conversions_Conversions_POUS2003921'
+    ),
+    [
+      STRUCT('ad_network' AS key, 'Meta' AS value),
+      STRUCT('version' AS key, 'V1' AS value),
+      STRUCT('product' AS key, 'Firefox' AS value),
+      STRUCT('initiative' AS key, 'Meta-Conversion-Test' AS value),
+      STRUCT('region' AS key, 'NA' AS value),
+      STRUCT('country_code' AS key, 'US' AS value),
+      STRUCT('city' AS key, 'National' AS value),
+      STRUCT('language' AS key, 'English' AS value),
+      STRUCT('device' AS key, 'All' AS value),
+      STRUCT('operating_system' AS key, 'All' AS value),
+      STRUCT('campaign_type' AS key, 'PaidSocial' AS value),
+      STRUCT('campaign_goal' AS key, 'Sales' AS value),
+      STRUCT('campaign_group' AS key, 'Conversions' AS value),
+      STRUCT('bidding_type' AS key, 'Conversions' AS value),
+      STRUCT('po' AS key, 'POUS2003921' AS value)
+    ]
+  ),
+  -- Stray leading `NEW` QA prefix is stripped and parses identically.
+  mozfun.assert.map_equals(
+    marketing.parse_campaign_name(
+      'NEWMeta_V1_Firefox_Meta-Conversion-Test_NA_US_National_English_All_All_PaidSocial_Sales_Conversions_Conversions_POUS2003921'
+    ),
+    marketing.parse_campaign_name(
+      'Meta_V1_Firefox_Meta-Conversion-Test_NA_US_National_English_All_All_PaidSocial_Sales_Conversions_Conversions_POUS2003921'
+    )
+  ),
+  -- A meta name with an unsupported segment count still returns NULL.
+  mozfun.assert.null(marketing.parse_campaign_name('meta_v1_123')),
   -- Test - Campaign Artifact Schema - Google Ads - version 2 or 3 (new variable-length format)
   -- Audience present (24-seg total): 16 positional + ad_gap_id + po
   mozfun.assert.equals(
@@ -648,4 +796,54 @@ SELECT
       STRUCT("language" AS key, "ende" AS value),
       STRUCT("device" AS key, "desktop" AS value)
     ]
+  ),
+  -- Test - Reddit Ads - version 1. 17 segments: full layout, po last.
+  mozfun.assert.map_equals(
+    [
+      marketing.parse_campaign_name(
+        'reddit_v1_firefox_challengeTheDefault_na_us_all_en_desktop_all_search_conversion_brand_cpc_install_id123_po#123456789'
+      )[0],
+      marketing.parse_campaign_name(
+        'reddit_v1_firefox_challengeTheDefault_na_us_all_en_desktop_all_search_conversion_brand_cpc_install_id123_po#123456789'
+      )[16]
+    ],
+    [STRUCT('ad_network' AS key, 'reddit' AS value), STRUCT('po' AS key, 'po#123456789' AS value)]
+  ),
+  -- 16 segments ending in a po code: po recovered, not labeled ad_gap_id.
+  mozfun.assert.map_equals(
+    [
+      marketing.parse_campaign_name(
+        'reddit_v1_firefox_challengeTheDefault_na_us_all_en_desktop_all_search_conversion_brand_cpc_install_po#123456789'
+      )[14],
+      marketing.parse_campaign_name(
+        'reddit_v1_firefox_challengeTheDefault_na_us_all_en_desktop_all_search_conversion_brand_cpc_install_po#123456789'
+      )[15]
+    ],
+    [
+      STRUCT('optimization_goal' AS key, 'install' AS value),
+      STRUCT('po' AS key, 'po#123456789' AS value)
+    ]
+  ),
+  -- 13 segments: leading fields map, no po.
+  mozfun.assert.equals(
+    ARRAY_LENGTH(
+      marketing.parse_campaign_name(
+        'reddit_v1_firefox_challengeTheDefault_na_us_all_en_desktop_all_search_conversion_brand'
+      )
+    ),
+    13
+  ),
+  -- Fewer than 13 segments -> NULL.
+  mozfun.assert.null(marketing.parse_campaign_name('reddit_v1_123')),
+  -- Test - Reddit Ads - version 2 (shares the Google Ads v2/3 format).
+  mozfun.assert.map_equals(
+    [
+      marketing.parse_campaign_name(
+        'reddit_v2_firefox_challengeTheDefault_eu_de_all_ypt_de_desktop_all_social_traffic_brand_cpc_ctr_adgapid_id1_id2_po#123456789'
+      )[0],
+      marketing.parse_campaign_name(
+        'reddit_v2_firefox_challengeTheDefault_eu_de_all_ypt_de_desktop_all_social_traffic_brand_cpc_ctr_adgapid_id1_id2_po#123456789'
+      )[17]
+    ],
+    [STRUCT('ad_network' AS key, 'reddit' AS value), STRUCT('po' AS key, 'po#123456789' AS value)]
   )

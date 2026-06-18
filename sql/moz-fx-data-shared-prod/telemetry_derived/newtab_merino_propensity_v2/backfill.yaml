@@ -1,0 +1,17 @@
+2026-06-18:
+  start_date: 2026-06-01
+  end_date: 2026-06-17
+  reason: Backfill newtab_merino_propensity_v2 from 2026-06-01 to establish history.
+  watchers:
+  - rrando@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: main
+  query_script_date_arg: date
+  query_script_args:
+  - --project=moz-fx-data-shared-prod
+  - --destination_dataset=backfills_staging_derived
+  - --destination_table=telemetry_derived__newtab_merino_propensity_v2_2026_06_18

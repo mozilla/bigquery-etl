@@ -11916,6 +11916,59 @@ fields:
         would trigger a reset.
 
         '
+    - name: netwerk_happy_eyeballs_end_to_end_time_failed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: end-to-end time in milliseconds for the whole
+        algorithm run, from algorithm start to final failure (all connection attempts
+        failed).
+
+        '
+    - name: netwerk_happy_eyeballs_end_to_end_time_succeeded
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: end-to-end time in milliseconds for the whole
+        algorithm run, from algorithm start to a successful connection.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

@@ -1221,7 +1221,9 @@ SELECT
       metrics.custom_distribution.networking_http_3_search_first_rtt_vs_min_rtt,
       metrics.custom_distribution.networking_http_3_search_first_rtt_vs_second_rtt,
       metrics.custom_distribution.networking_http_3_search_lookback_bins,
-      metrics.custom_distribution.networking_http_3_search_max_passed_bins
+      metrics.custom_distribution.networking_http_3_search_max_passed_bins,
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_failed,
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_succeeded
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -3164,7 +3166,9 @@ SELECT
       metrics.custom_distribution.networking_http_3_search_first_rtt_vs_min_rtt,
       metrics.custom_distribution.networking_http_3_search_first_rtt_vs_second_rtt,
       metrics.custom_distribution.networking_http_3_search_lookback_bins,
-      metrics.custom_distribution.networking_http_3_search_max_passed_bins
+      metrics.custom_distribution.networking_http_3_search_max_passed_bins,
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_failed,
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_succeeded
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -5107,7 +5111,9 @@ SELECT
       metrics.custom_distribution.networking_http_3_search_first_rtt_vs_min_rtt,
       metrics.custom_distribution.networking_http_3_search_first_rtt_vs_second_rtt,
       metrics.custom_distribution.networking_http_3_search_lookback_bins,
-      metrics.custom_distribution.networking_http_3_search_max_passed_bins
+      metrics.custom_distribution.networking_http_3_search_max_passed_bins,
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_failed,
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_succeeded
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

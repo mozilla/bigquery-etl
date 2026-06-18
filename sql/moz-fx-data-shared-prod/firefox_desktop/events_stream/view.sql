@@ -279,6 +279,7 @@ SELECT
       LAX_INT64(event_extra.selection) AS `selection`,
       LAX_INT64(event_extra.sentences) AS `sentences`,
       LAX_INT64(event_extra.seq) AS `seq`,
+      LAX_INT64(event_extra.session_duration) AS `session_duration`,
       LAX_INT64(event_extra.session_seq) AS `session_seq`,
       LAX_INT64(event_extra.size) AS `size`,
       LAX_INT64(event_extra.source_line) AS `source_line`,

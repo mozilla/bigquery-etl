@@ -143,6 +143,7 @@ SELECT
       LAX_INT64(event_extra.played_time) AS `played_time`,
       LAX_INT64(event_extra.saved_count) AS `saved_count`,
       LAX_INT64(event_extra.seq) AS `seq`,
+      LAX_INT64(event_extra.session_duration) AS `session_duration`,
       LAX_INT64(event_extra.session_seq) AS `session_seq`,
       LAX_INT64(event_extra.size) AS `size`,
       LAX_INT64(event_extra.source_line) AS `source_line`,

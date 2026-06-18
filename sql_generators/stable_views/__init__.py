@@ -78,9 +78,14 @@ FROM
   `{target}`
 """
 
-VIEW_METADATA_TEMPLATE = """\
+VIEW_METADATA_HEADER = """\
 # Generated via ./bqetl generate stable_views
 ---
+"""
+
+VIEW_METADATA_TEMPLATE = (
+    VIEW_METADATA_HEADER
+    + """\
 friendly_name: Historical Pings for `{document_namespace}/{document_type}`
 description: |-
   A historical view of pings sent for the
@@ -93,6 +98,7 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 """
+)
 
 
 def write_dataset_metadata_if_not_exists(
@@ -378,7 +384,7 @@ def write_view_if_not_exists(
     if metadata_file.exists():
         # Combine the generated and checked-in metadata, preferring the checked-in fields
         with metadata_file.open() as f:
-            existing_metadata = yaml.load(f, Loader=yaml.FullLoader) or {}
+            existing_metadata = yaml.safe_load(f) or {}
         template_metadata = yaml.safe_load(metadata_content) or {}
         merged = {**template_metadata, **existing_metadata}
         if labels:
@@ -388,7 +394,9 @@ def write_view_if_not_exists(
             }
         if merged != existing_metadata:
             should_write_metadata = True
-            metadata_content = yaml.dump(merged)
+            metadata_content = VIEW_METADATA_HEADER + yaml.dump(
+                merged, sort_keys=False
+            )
     elif labels:
         metadata_content += yaml.dump({"labels": labels})
 

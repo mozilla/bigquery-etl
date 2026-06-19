@@ -5,9 +5,9 @@ Accounts data as a test, once the productionized profiler is integrated (see
 [`profiler_productionization_plan.md`](profiler_productionization_plan.md)).
 
 **Prerequisite.** This depends on the profiler-integration work being done first
-(vendored profiler -> `akomar_column_profiles_v1`, classifier reading raw stats
-with optional descriptions). Do that first; this doc is the FxA-specific layer on
-top.
+(in-tree production profiler -> `akomar_column_profiles_v1`, classifier reading
+raw stats with optional descriptions). Do that first; this doc is the
+FxA-specific layer on top.
 
 ## Why FxA is a different (and harder) test than the ads tables
 
@@ -18,22 +18,22 @@ classifier that the Glean path papers over.
 ## Scope: what "all FxA data" actually is
 
 Discovered from `sql/moz-fx-data-shared-prod/` (verify table lists at runtime via
-`INFORMATION_SCHEMA` — counts below are repo dir entries, approximate):
+`INFORMATION_SCHEMA` - counts below are repo dir entries, approximate):
 
 | Dataset | ~Tables | Provenance | Phase-2 probes? | Notes |
 |---|---|---|---|---|
 | `accounts_db_external` | ~42 | **Fivetran MySQL mirror** of the FxA backend DB | **No** (not telemetry) | **ACL-restricted** to `accounts-confidential`. The PII core: accounts, emails, tokens, devices, oauth, carts. |
-| `accounts_db_nonprod_external` | ~42 | nonprod mirror | No | Likely synthetic/test data — probably **exclude** (confirm it isn't real). |
+| `accounts_db_nonprod_external` | ~42 | nonprod mirror | No | Likely synthetic/test data - probably **exclude** (confirm it isn't real). |
 | `firefox_accounts_derived` | ~51 | Legacy server-side FxA events (auth/content/delete events, amplitude exports, sanitized docker logs) | **Sparse/none** (legacy, not Glean pings) | The legacy events core. |
-| `firefox_accounts` | ~24 | Views over `firefox_accounts_derived` | n/a | Views — the profiler skips VIEW/MATERIALIZED VIEW, so these are auto-excluded. |
+| `firefox_accounts` | ~24 | Views over `firefox_accounts_derived` | n/a | Views - the profiler skips VIEW/MATERIALIZED VIEW, so these are auto-excluded. |
 | `accounts_backend` + `_derived` + `_external` | ~15 | **Glean** (server-side Glean app) | **Yes** | Probe matching + `data_sensitivity` available here. |
 | `accounts_frontend` + `_derived` | ~6 | **Glean** (JS Glean on accounts.firefox.com) | **Yes** | Probe matching available. |
 
-There are also `accounts_db`, `accounts_db_derived` (small) — include if they hold
+There are also `accounts_db`, `accounts_db_derived` (small) - include if they hold
 real data.
 
 **Action:** before running, enumerate the live datasets/tables with
-`INFORMATION_SCHEMA.SCHEMATA` / `.TABLES` rather than trusting this list — dataset
+`INFORMATION_SCHEMA.SCHEMATA` / `.TABLES` rather than trusting this list - dataset
 membership drifts. Decide explicitly whether to include the `*_nonprod_*` mirrors.
 
 ## The central challenge: partial probe coverage
@@ -46,13 +46,13 @@ Phase 2 will resolve **no source ping**, so there are **no probes and no
 + data type + profiled stats + the `pii_suppressed` tier** alone.
 
 Implications:
-- This is actually the most valuable signal-quality test we can run — it shows how
+- This is actually the most valuable signal-quality test we can run - it shows how
   the classifier does when the Glean crutch is gone.
 - The raw-stats-into-prompt change from the profiler-integration plan is **load
   bearing** here, not optional. Without it, non-Glean FxA columns would reach the
   model as name + type only.
 - Expect more `needs_review=true` / `low` confidence on the DB-mirror tables. That
-  is correct behavior, not a bug — track the rate as a result.
+  is correct behavior, not a bug - track the rate as a result.
 
 ## The governance blocker: restricted PII must not leak
 
@@ -67,7 +67,7 @@ workgroup) because it contains raw PII. Two concrete risks:
    (`_PII_LEAF_NAMES`: account, email, fxa, ip, password, dob, ... + `_email`
    suffix) is **narrow** and misses many FxA-sensitive columns (`uid`,
    `auth_salt`, `verify_hash`, `kA`/`wrap_wrap_kb`, `recovery_data`, `flow_id`,
-   session tokens, etc.). So raw PII would land in the profiling table — and if
+   session tokens, etc.). So raw PII would land in the profiling table - and if
    that table lives in `mozdata-nonprod.analysis`, **restricted PII has leaked
    into a less-restricted dataset.**
 
@@ -79,7 +79,7 @@ Mitigations (pick before running, do not skip):
 - **And/or suppress values for the DB mirror.** Run the profiler with
   value/example capture disabled for `accounts_db_external`, or extend
   `_PII_LEAF_NAMES` with the FxA column vocabulary. Classification mostly needs
-  names + null_rate + cardinality, not literal example values — dropping example
+  names + null_rate + cardinality, not literal example values - dropping example
   values costs little classification signal and removes the leak.
 - Confirm with data stewards (FxA / data-review) that classifying these tables
   into the chosen destination is acceptable.
@@ -106,7 +106,7 @@ PII. Cheap, high-value validation:
 - Report precision on the `pii_suppressed` columns (these *should* all come out
   highly_sensitive) and the `needs_review` rate on the DB-mirror tables.
 
-This would be the first real accuracy signal for the classifier — the PoC's
+This would be the first real accuracy signal for the classifier - the PoC's
 explicit non-goal was "no ground-truth eval," and FxA is the natural place to
 start one.
 

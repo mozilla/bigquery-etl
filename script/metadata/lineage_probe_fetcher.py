@@ -1,8 +1,8 @@
 """Resolve upstream lineage for profiled tables and fetch probe definitions from source pings.
 
 Two output tables:
-  akomar_metadata_phase2_table_pings_v1  — lineage mapping: one row per derived table
-  akomar_metadata_phase2_ping_probes_v1  — probe definitions: one row per probe in a ping (fetched once per ping)
+  akomar_metadata_phase2_table_pings_v1  - lineage mapping: one row per derived table
+  akomar_metadata_phase2_ping_probes_v1  - probe definitions: one row per probe in a ping (fetched once per ping)
 """
 
 import json
@@ -21,7 +21,7 @@ logging.basicConfig(
 
 DATAHUB_URL = "https://mozilla.acryl.io/api/graphql"
 GLEAN_DICT_URL = "https://dictionary.telemetry.mozilla.org/data/{app}/pings/{ping}.json"
-PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_data_profiling_v1"
+PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_column_profiles_v1"
 MAPPING_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_table_pings_v1"
 PROBE_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_ping_probes_v1"
 DEST_PROJECT = "mozdata-nonprod"
@@ -121,7 +121,7 @@ PROBE_SCHEMA = [
         "send_in_pings",
         "STRING",
         mode="REPEATED",
-        description="Glean send_in_pings list — which pings the metric is sent in. Empty for legacy telemetry.",
+        description="Glean send_in_pings list - which pings the metric is sent in. Empty for legacy telemetry.",
     ),
     bigquery.SchemaField(
         "tags",

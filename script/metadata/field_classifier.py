@@ -7,7 +7,7 @@ Reads:
   - classification/taxonomy.json          (preprocessed taxonomy)
 
 Writes:
-  - akomar_field_classifications_v1 — one row per column per table
+  - akomar_field_classifications_v1 - one row per column per table
 """
 
 import json
@@ -15,6 +15,7 @@ import logging
 import re
 from argparse import ArgumentParser
 from datetime import datetime, timezone
+from functools import partial
 from pathlib import Path
 
 import anthropic
@@ -27,7 +28,7 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s: %(levelname)s: %(message)s"
 )
 
-PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_data_profiling_v1"
+PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_column_profiles_v1"
 MAPPING_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_table_pings_v1"
 PROBE_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_ping_probes_v1"
 DEST_TABLE = "mozdata-nonprod.analysis.akomar_field_classifications_v1"
@@ -71,7 +72,7 @@ DEST_SCHEMA = [
         "confidence",
         "STRING",
         mode="NULLABLE",
-        description="high | medium | low — the model's self-reported confidence.",
+        description="high | medium | low - the model's self-reported confidence.",
     ),
     bigquery.SchemaField(
         "reasoning",
@@ -97,7 +98,7 @@ DEST_SCHEMA = [
         "STRING",
         mode="NULLABLE",
         description=(
-            "LLM-inferred Mozilla data collection category — one of "
+            "LLM-inferred Mozilla data collection category - one of "
             "'technical', 'interaction', 'web_activity', 'highly_sensitive' "
             "(see https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories). "
             "Same scale as Glean's data_sensitivity but emitted for every row, "
@@ -136,7 +137,7 @@ def taxonomy_prompt_block(taxonomy):
     return json.dumps(compact, separators=(",", ":"))
 
 
-# --- Probe matching (lifted from description_reconciler.py, top-3 only) ---
+# --- Probe matching (fuzzy column-to-probe name match, top-3 only) ---
 
 
 def normalize_name(name):
@@ -169,8 +170,35 @@ def find_matching_probes(column_name, probes):
 # --- Prompt ---
 
 
+def _profile_block(profile):
+    """Render the observed profiling signals for one column as prompt text."""
+    lines = []
+    if profile.get("column_tier") == "pii_suppressed":
+        lines.append(
+            "PII-suppressed: column name matched a known PII pattern, so it was"
+            " not scanned. Treat as personal data."
+        )
+    null_rate = profile.get("null_rate")
+    if null_rate is not None:
+        lines.append(f"Null rate: {null_rate}%")
+    distinct_count = profile.get("distinct_count")
+    if distinct_count is not None:
+        hc = " (high cardinality)" if profile.get("is_high_cardinality") else ""
+        lines.append(f"Distinct values: {distinct_count}{hc}")
+    values = profile.get("values") or []
+    if values:
+        shown = ", ".join(f"{str(v)!r} ({f:,})" for v, f in values[:10])
+        lines.append(f"Top values (value: frequency): {shown}")
+    elif profile.get("example_value") is not None:
+        lines.append(f"Example value: {profile['example_value']}")
+    description = profile.get("pass1_description")
+    if description:
+        lines.append(f"Description (from profiling): {description}")
+    return "\n".join(lines) if lines else "No profiling stats available."
+
+
 def build_classification_prompt(
-    column_name, data_type, table, pass1_description, matching_probes, taxonomy_json
+    column_name, data_type, table, profile, matching_probes, taxonomy_json
 ):
     """Build a prompt asking the LLM to assign a taxonomy label."""
     if matching_probes:
@@ -195,7 +223,7 @@ def build_classification_prompt(
         f"Table: {table}\n"
         f"Column: {column_name}\n"
         f"Data type: {data_type}\n"
-        f"Observed-data description (from profiling): {pass1_description}\n\n"
+        f"Profiled data:\n{_profile_block(profile)}\n\n"
         f"{probes_section}\n\n"
         "Taxonomy (JSON list of {label, name, desc, examples}):\n"
         f"{taxonomy_json}\n\n"
@@ -203,14 +231,14 @@ def build_classification_prompt(
         " list the extras in secondary_labels. Use the Glean data_sensitivity signal"
         " to disambiguate when present (e.g. highly_sensitive strongly implies"
         " user.behavior, user.content, user.location.precise, etc.).\n\n"
-        "Also assign a Mozilla data collection category — exactly one of"
+        "Also assign a Mozilla data collection category - exactly one of"
         " 'technical', 'interaction', 'web_activity', 'highly_sensitive' (per"
         " https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories,"
         " same scale as Glean's data_sensitivity). Definitions:\n"
         "  - technical: build, environment, version, performance counters; no user content.\n"
         "  - interaction: how users interact with the product (clicks, sessions, feature usage).\n"
-        "  - web_activity: web/search activity — URLs, search terms, visited domains.\n"
-        "  - highly_sensitive: anything else of high sensitivity — precise location, free-form\n"
+        "  - web_activity: web/search activity - URLs, search terms, visited domains.\n"
+        "  - highly_sensitive: anything else of high sensitivity - precise location, free-form\n"
         "    user content, communications, demographic data, identifiers tied to a person.\n"
         "If a Glean data_sensitivity is declared on the matched probe, you should usually agree,"
         " but the column's observed content takes precedence when they conflict (e.g. a"
@@ -253,9 +281,35 @@ def call_gemini(gemini_client, model, prompt):
 # --- BQ loaders ---
 
 
+def _profiling_columns(bq_client):
+    """Return the set of column names present in the profiling table."""
+    proj, ds, tbl = PHASE1_TABLE.split(".")
+    query = f"""
+        SELECT column_name
+        FROM `{proj}.{ds}`.INFORMATION_SCHEMA.COLUMNS
+        WHERE table_name = '{tbl}'
+    """
+    return {r.column_name for r in bq_client.query(query).result()}
+
+
 def load_phase1(bq_client, project=None, dataset=None, table=None):
-    """Load Phase 1 columns grouped by (project, dataset, table)."""
-    where = "WHERE column_tier != 'undocumented' AND pass1_description IS NOT NULL"
+    """Load profiled columns grouped by (project, dataset, table).
+
+    Reads the productionized column-profiles schema. Excludes only
+    'undocumented' columns (no profiling signal); keeps pii_suppressed,
+    scalar_array, and nested_leaf. Picks the latest profiled_at snapshot per
+    column (the table accumulates weekly snapshots). pass1_description is
+    optional - selected only when the profiling table has that column,
+    otherwise NULL.
+    """
+    has_description = "pass1_description" in _profiling_columns(bq_client)
+    desc_select = (
+        "pass1_description"
+        if has_description
+        else "CAST(NULL AS STRING) AS pass1_description"
+    )
+
+    where = "WHERE column_tier != 'undocumented'"
     if project and dataset and table:
         where += (
             f" AND source_project = '{project}'"
@@ -264,18 +318,34 @@ def load_phase1(bq_client, project=None, dataset=None, table=None):
         )
     query = f"""
         SELECT source_project, source_dataset, source_table,
-               column_name, data_type, pass1_description
+               column_name, data_type, column_tier,
+               null_rate, distinct_count, is_high_cardinality,
+               example_value, `values`,
+               {desc_select}
         FROM `{PHASE1_TABLE}`
         {where}
+        QUALIFY ROW_NUMBER() OVER (
+            PARTITION BY source_project, source_dataset, source_table, column_name
+            ORDER BY profiled_at DESC
+        ) = 1
         ORDER BY source_dataset, source_table, column_name
     """
     rows_by_table = {}
     for row in bq_client.query(query).result():
         key = (row.source_project, row.source_dataset, row.source_table)
+        # row["values"] (not row.values - Row.values is a method) is a repeated
+        # RECORD of {value, frequency}; flatten to (value, frequency) tuples.
+        values = [(v["value"], v["frequency"]) for v in (row["values"] or [])]
         rows_by_table.setdefault(key, []).append(
             {
                 "column_name": row.column_name,
                 "data_type": row.data_type,
+                "column_tier": row.column_tier,
+                "null_rate": row.null_rate,
+                "distinct_count": row.distinct_count,
+                "is_high_cardinality": row.is_high_cardinality,
+                "example_value": row.example_value,
+                "values": values,
                 "pass1_description": row.pass1_description,
             }
         )
@@ -389,7 +459,7 @@ def main():
 
     if is_claude_model(args.model):
         claude_client = anthropic.Anthropic()
-        invoke_llm = lambda prompt: call_claude(claude_client, args.model, prompt)
+        invoke_llm = partial(call_claude, claude_client, args.model)
         logging.info(f"Using Claude model: {args.model}")
     else:
         gemini_client = genai.Client(
@@ -398,7 +468,7 @@ def main():
             location=GEMINI_VERTEX_LOCATION,
             http_options=HttpOptions(api_version="v1"),
         )
-        invoke_llm = lambda prompt: call_gemini(gemini_client, args.model, prompt)
+        invoke_llm = partial(call_gemini, gemini_client, args.model)
         logging.info(f"Using Gemini model: {args.model}")
 
     project, dataset, table = (None, None, None)
@@ -435,7 +505,7 @@ def main():
         ]
         if not pending:
             logging.info(
-                f"Skipping {ds}.{tbl} — all {len(columns)} columns already classified"
+                f"Skipping {ds}.{tbl} - all {len(columns)} columns already classified"
             )
             continue
 
@@ -454,7 +524,7 @@ def main():
                 column_name=col_name,
                 data_type=col["data_type"],
                 table=f"{ds}.{tbl}",
-                pass1_description=col["pass1_description"],
+                profile=col,
                 matching_probes=matching_probes,
                 taxonomy_json=taxonomy_json,
             )

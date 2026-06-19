@@ -1,0 +1,17 @@
+[
+  {"name": "source_project", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "source_dataset", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "source_table", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "column_name", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "data_type", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "null_rate", "type": "FLOAT", "mode": "NULLABLE"},
+  {"name": "distinct_count", "type": "INTEGER", "mode": "NULLABLE"},
+  {"name": "is_high_cardinality", "type": "BOOLEAN", "mode": "NULLABLE"},
+  {"name": "example_value", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "values", "type": "RECORD", "mode": "REPEATED", "fields": [
+    {"name": "value", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "frequency", "type": "INTEGER", "mode": "NULLABLE"}
+  ]},
+  {"name": "column_tier", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "profiled_at", "type": "DATE", "mode": "REQUIRED"}
+]

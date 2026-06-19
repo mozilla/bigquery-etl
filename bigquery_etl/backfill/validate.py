@@ -169,6 +169,37 @@ def validate_reinitialize_sampling_batch_size(backfill_entry: Backfill) -> None:
     )
 
 
+def validate_override_depends_on_past_null_partition(backfill_entry: Backfill) -> None:
+    """Check that override_depends_on_past_null_partition is used correctly.
+
+    The override bypasses the depends_on_past + null date_partition_parameter guard. That
+    is only safe for a custom query that processes each partition independently; the
+    table's own scheduled query relies on the depends-on-past replay and must not be run
+    per-partition.
+
+    It is also mutually exclusive with reinitialize_table: reinitialize rebuilds the whole
+    table via its is_init() query, which is the heavy path the override exists to avoid.
+    Setting both is contradictory and, because override is checked first in
+    validate_depends_on_past, reinitialize_table would be silently ignored.
+    """
+    if (
+        backfill_entry.override_depends_on_past_null_partition
+        and not backfill_entry.custom_query_path
+    ):
+        raise ValueError(
+            "override_depends_on_past_null_partition is only allowed on entries with a custom_query_path."
+        )
+
+    if (
+        backfill_entry.override_depends_on_past_null_partition
+        and backfill_entry.reinitialize_table
+    ):
+        raise ValueError(
+            "override_depends_on_past_null_partition and reinitialize_table are mutually exclusive; "
+            "set only one."
+        )
+
+
 def validate_query_script_options(
     backfill_entry: Backfill, backfill_file: Path
 ) -> None:
@@ -209,6 +240,7 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
         validate_retention_range(backfill_entry, backfill_file)
         validate_query_script_options(backfill_entry, backfill_file)
         validate_reinitialize_sampling_batch_size(backfill_entry)
+        validate_override_depends_on_past_null_partition(backfill_entry)
     validate_entries_are_sorted(backfills)
 
 

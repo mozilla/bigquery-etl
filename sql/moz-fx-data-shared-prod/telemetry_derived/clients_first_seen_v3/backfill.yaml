@@ -1,0 +1,17 @@
+2026-06-11:
+  start_date: 2026-06-07
+  end_date: 2026-06-09
+  reason: |-
+    https://mozilla-hub.atlassian.net/browse/DENG-10914
+    Populate the newly added attribution_msstoresignedin column (added in #9485) from the
+    ping that contributed each first-seen record. Custom per-partition query;
+    Doing a small backfill to confirm the new managed backfill logic.
+  watchers:
+  - wichan@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: true
+  override_depends_on_past_null_partition: true
+  ignore_date_partition_offset: false
+  custom_query_path: sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3/backfill_deng10914.sql

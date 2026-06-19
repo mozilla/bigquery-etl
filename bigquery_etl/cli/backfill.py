@@ -428,6 +428,8 @@ def validate(
     errors = defaultdict(list)
 
     for table_name, table_entries in backfills_dict.items():
+        # initiate acts on the (single) Initiate-status entry, not necessarily the
+        # newest by entry date, so derive the reinitialize flag from that same entry.
         # Prefer the Initiate entry's flags; fall back to Complete only when none is active.
         flag_entries = [
             entry for entry in table_entries if entry.status == BackfillStatus.INITIATE

@@ -389,7 +389,7 @@ def write_view_if_not_exists(
         merged = {**template_metadata, **existing_metadata}
         if labels:
             merged["labels"] = {
-                **merged.get("labels", {}),
+                **(merged.get("labels") or {}),
                 **labels,
             }
         if merged != existing_metadata:

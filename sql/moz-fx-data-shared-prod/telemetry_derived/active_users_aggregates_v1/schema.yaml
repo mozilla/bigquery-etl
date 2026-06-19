@@ -108,6 +108,7 @@ fields:
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
+  description: The calendar year in which the client's profile was first seen by Mozilla's telemetry pipeline.
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN

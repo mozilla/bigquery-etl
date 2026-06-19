@@ -8,7 +8,7 @@
     Doing a small backfill to confirm the new managed backfill logic.
   watchers:
   - wichan@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: true

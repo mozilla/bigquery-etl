@@ -430,15 +430,15 @@ def validate(
     for table_name, table_entries in backfills_dict.items():
         # initiate acts on the (single) Initiate-status entry, not necessarily the
         # newest by entry date, so derive the reinitialize flag from that same entry.
-        reinitialize_table = any(
-            entry.reinitialize_table
-            for entry in table_entries
-            if entry.status == BackfillStatus.INITIATE
-        )
+        # Prefer the Initiate entry's flags; fall back to Complete only when none is active.
+        flag_entries = [
+            entry for entry in table_entries if entry.status == BackfillStatus.INITIATE
+        ] or [
+            entry for entry in table_entries if entry.status == BackfillStatus.COMPLETE
+        ]
+        reinitialize_table = any(entry.reinitialize_table for entry in flag_entries)
         override_depends_on_past_null_partition = any(
-            entry.override_depends_on_past_null_partition
-            for entry in table_entries
-            if entry.status == BackfillStatus.INITIATE
+            entry.override_depends_on_past_null_partition for entry in flag_entries
         )
         if metadata_errors := validate_table_metadata(
             sql_dir,

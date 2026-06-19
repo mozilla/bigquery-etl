@@ -573,6 +573,7 @@ SELECT
       JSON_VALUE(event_extra.loginsFooter) AS `loginsFooter`,
       JSON_VALUE(event_extra.made_changes) AS `made_changes`,
       JSON_VALUE(event_extra.main_frame) AS `main_frame`,
+      JSON_VALUE(event_extra.media_content_type) AS `media_content_type`,
       JSON_VALUE(event_extra.media_extension) AS `media_extension`,
       JSON_VALUE(event_extra.memory_source) AS `memory_source`,
       JSON_VALUE(event_extra.menu_action) AS `menu_action`,

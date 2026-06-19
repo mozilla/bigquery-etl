@@ -1160,6 +1160,17 @@ fields:
       description: 'Available top property
 
         '
+    - name: characteristics_font_smoothing_type
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The system font-smoothing type, normalized across platforms: 0
+        = disabled, 1 = grayscale (standard), 2 = subpixel. On Windows this is the
+        subpixel-vs-grayscale type (SPI_GETFONTSMOOTHINGTYPE), distinct from text_anti_aliasing
+        (which records the ClearType contrast level). On Linux it is the GNOME org.gnome.desktop.interface
+        font-antialiasing setting (rgba/grayscale/none). Not set on macOS (grayscale-only,
+        no subpixel type) or where the value cannot be determined.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -2634,6 +2645,28 @@ fields:
       mode: NULLABLE
       description: 'Whether antialias was granted for the default WebGL context (software
         rendering).
+
+        '
+    - name: characteristics_font_hinting
+      type: STRING
+      mode: NULLABLE
+      description: 'The font hinting style. On Linux this is the GNOME org.gnome.desktop.interface
+        font-hinting setting, one of "none", "slight", "medium", or "full". Hinting
+        reshapes glyph outlines, so it affects rasterized output including canvas
+        text readback. Not set on other platforms, which expose no comparable per-user
+        setting.
+
+        '
+    - name: characteristics_font_rgba_order
+      type: STRING
+      mode: NULLABLE
+      description: 'The subpixel (LCD) element order. On Linux this is the GNOME org.gnome.desktop.interface
+        font-rgba-order setting, one of "rgba", "rgb", "bgr", "vrgb", or "vbgr". On
+        Windows it is the ClearType orientation (SPI_GETFONTSMOOTHINGORIENTATION),
+        normalized to "rgb" or "bgr" (Windows exposes no vertical variants). Only
+        affects rendering when subpixel antialiasing is active (see font_smoothing_type);
+        it does not affect canvas readback, which is grayscale. Not set on macOS or
+        Android.
 
         '
   - name: string_list

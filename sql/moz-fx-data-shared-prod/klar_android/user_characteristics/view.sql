@@ -157,7 +157,8 @@ SELECT
       metrics.quantity.characteristics_audio_unique_samples,
       metrics.quantity.characteristics_storage_quota,
       metrics.quantity.characteristics_avail_left,
-      metrics.quantity.characteristics_avail_top
+      metrics.quantity.characteristics_avail_top,
+      metrics.quantity.characteristics_font_smoothing_type
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -396,7 +397,9 @@ SELECT
       metrics.string.characteristics_gl_alpha,
       metrics.string.characteristics_gl_alpha_software,
       metrics.string.characteristics_gl_antialias,
-      metrics.string.characteristics_gl_antialias_software
+      metrics.string.characteristics_gl_antialias_software,
+      metrics.string.characteristics_font_hinting,
+      metrics.string.characteristics_font_rgba_order
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,

@@ -955,6 +955,86 @@ class TestBackfill:
         )
         assert result.exit_code == 0
 
+    def test_validate_backfill_override_depends_on_past_null_partition_complete_passes(
+        self, runner, mock_date
+    ):
+        """A completed override entry must still pass re-validation, not just Initiate ones."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE.replace("status: Initiate", "status: Complete")
+            + "  override_depends_on_past_null_partition: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+            + f"  custom_query_path: {custom_query_path}\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_backfill_override_depends_on_past_null_partition_complete_does_not_mask_initiate(
+        self, runner, mock_date
+    ):
+        """A stale Complete override must not let a new override-less Initiate entry pass."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        # Complete entry has the override; the Initiate entry initiate acts on does not.
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-03:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-05-02\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Complete\n"
+            "  override_depends_on_past_null_partition: true\n"
+            "  override_depends_on_past_end_date: true\n"
+            f"  custom_query_path: {custom_query_path}\n"
+            + BACKFILL_YAML_TEMPLATE
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code != 0
+        assert "depends on past and null partition" in str(result.output) + str(
+            result.exception
+        )
+
     def test_validate_backfill_override_depends_on_past_null_partition_without_custom_query_fails(
         self, runner, mock_date
     ):

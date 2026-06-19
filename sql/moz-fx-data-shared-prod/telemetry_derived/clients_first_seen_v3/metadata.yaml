@@ -58,6 +58,11 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
+  backfill_deng10914.sql:
+  - moz-fx-data-shared-prod.telemetry.first_shutdown
+  - moz-fx-data-shared-prod.telemetry.new_profile
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
   query.sql:
   - moz-fx-data-shared-prod.telemetry.first_shutdown
   - moz-fx-data-shared-prod.telemetry.new_profile

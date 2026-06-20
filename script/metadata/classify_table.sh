@@ -7,7 +7,8 @@
 # table (mozdata-nonprod.analysis.akomar_column_profiles_v1). Profiling is a
 # separate, dataset-scoped step. Use script/metadata/classify_dataset.sh to
 # profile a dataset and classify its tables in one go, or run the profiler
-# (column_profiles_v1/query.py) directly first.
+# (column_profiles_v1/query.py) directly first. Tables with no profiling rows are
+# warned about and skipped (when the bq CLI is available to check).
 #
 # Run `script/metadata/classification/compare_models.py --table <table>`
 # separately to diff two model runs.
@@ -47,6 +48,24 @@ if [[ -z "$PYTHON" ]]; then
     [[ -x venv/bin/python ]] && PYTHON=venv/bin/python
 fi
 
+# Profiling table the classifier reads from (project/dataset configurable, table
+# name fixed). Used to guard against classifying tables that were never profiled.
+CLASSIFICATION_PROJECT="${CLASSIFICATION_PROJECT:-mozdata-nonprod}"
+CLASSIFICATION_DATASET="${CLASSIFICATION_DATASET:-analysis}"
+PROFILES_TABLE="${CLASSIFICATION_PROJECT}.${CLASSIFICATION_DATASET}.akomar_column_profiles_v1"
+
+is_profiled() {  # $1 = project.dataset.table; true if it has profiling rows
+    command -v bq >/dev/null 2>&1 || return 0  # can't check without bq; don't block
+    local proj ds tbl n
+    IFS='.' read -r proj ds tbl <<< "$1"
+    n="$(bq --project_id="$CLASSIFICATION_PROJECT" --format=csv query --use_legacy_sql=false \
+        "SELECT COUNT(*) FROM \`${PROFILES_TABLE}\`
+         WHERE source_project = '${proj}'
+           AND source_dataset = '${ds}'
+           AND source_table = '${tbl}'" 2>/dev/null | tail -n1)" || n=""
+    [[ "$n" =~ ^[0-9]+$ && "$n" -gt 0 ]]
+}
+
 banner() {
     printf '\n========================================================================\n'
     printf '== %s\n' "$1"
@@ -55,6 +74,12 @@ banner() {
 
 for TABLE in "$@"; do
     banner "TABLE: $TABLE"
+
+    if ! is_profiled "$TABLE"; then
+        echo "WARNING: $TABLE has no rows in ${PROFILES_TABLE}; profile it first" \
+             "(e.g. classify_dataset.sh). Skipping." >&2
+        continue
+    fi
 
     banner "[1/2] lineage_probe_fetcher.py"
     "$PYTHON" script/metadata/lineage_probe_fetcher.py --table "$TABLE"

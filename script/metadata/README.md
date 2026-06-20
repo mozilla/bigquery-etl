@@ -76,8 +76,10 @@ for the partition/clobber details.
 ## Run over a single (already-profiled) table
 
 `classify_table.sh` runs only lineage + classify, so the table must already be
-profiled (present in `akomar_column_profiles_v1` in the configured dataset). Set
-the same `CLASSIFICATION_*` vars here as you used for profiling:
+profiled (present in `akomar_column_profiles_v1` in the configured dataset); it
+warns and skips any table that isn't. Useful for re-classifying without
+re-profiling (a new model, or after a taxonomy tweak). Set the same
+`CLASSIFICATION_*` vars here as you used for profiling:
 
 ```bash
 script/metadata/classify_table.sh moz-fx-data-shared-prod.ads_derived.ad_metrics_v1

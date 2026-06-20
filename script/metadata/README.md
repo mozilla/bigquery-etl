@@ -115,15 +115,17 @@ edit for scope). `--stdout | pbcopy` to skip the file.
 
 For each profiled column (latest snapshot, excluding `undocumented`): fuzzy-match
 the column name to source-ping probes (top 3), then prompt the LLM with the
-column name, data type, profiling stats (null rate, distinct count, top/example
-values, plus a PII-suppressed flag when the profiler set one), the matched probe
+column name, data type, the column's existing BigQuery description (read live
+from the source table's `COLUMN_FIELD_PATHS`, if it has one), profiling stats
+(null rate, distinct count, top/example values, plus a PII-suppressed flag when
+the profiler set one), the matched probe
 (name/description/`data_sensitivity`/`tags`), and the compacted taxonomy. The
 model returns the labels above and a `data_collection_category` (technical /
 interaction / web_activity / highly_sensitive, per Mozilla's [data collection
 categories](https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories)),
-deferring to a Glean `data_sensitivity` unless observed content overrides it. A
-profiling description is used only if the table has one (the production profiler
-emits none).
+deferring to a Glean `data_sensitivity` unless observed content overrides it. The
+existing description is often the strongest signal for non-Glean tables that have
+no probe.
 
 ## Non-goals (PoC)
 

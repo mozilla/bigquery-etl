@@ -1,13 +1,17 @@
 """Classify each profiled column against the Mozilla data taxonomy.
 
 Reads:
-  - akomar_data_profiling_v1              (Phase 1: profile + pass1 description)
+  - akomar_column_profiles_v1             (Phase 1: per-column profiling stats)
   - akomar_metadata_phase2_table_pings_v1 (Phase 2: source ping per table)
   - akomar_metadata_phase2_ping_probes_v1 (Phase 2: probes w/ data_sensitivity, tags)
+  - source table COLUMN_FIELD_PATHS       (existing BigQuery column descriptions)
   - classification/taxonomy.json          (preprocessed taxonomy)
 
 Writes:
   - akomar_field_classifications_v1 - one row per column per table
+
+Working-table project/dataset are configurable via CLASSIFICATION_PROJECT /
+CLASSIFICATION_DATASET (default mozdata-nonprod.analysis).
 """
 
 import json
@@ -225,11 +229,19 @@ def build_classification_prompt(
     else:
         probes_section = "Candidate probes: none matched."
 
+    existing_desc = profile.get("bq_description")
+    desc_line = (
+        f"Existing column description (from BigQuery schema): {existing_desc}\n"
+        if existing_desc
+        else ""
+    )
+
     return (
         "You are classifying a BigQuery column against Mozilla's data taxonomy.\n\n"
         f"Table: {table}\n"
         f"Column: {column_name}\n"
         f"Data type: {data_type}\n"
+        f"{desc_line}"
         f"Profiled data:\n{_profile_block(profile)}\n\n"
         f"{probes_section}\n\n"
         "Taxonomy (JSON list of {label, name, desc, examples}):\n"
@@ -357,6 +369,29 @@ def load_phase1(bq_client, project=None, dataset=None, table=None):
             }
         )
     return rows_by_table
+
+
+def load_descriptions(bq_client, project, dataset, table):
+    """Return {field_path: description} for columns with a non-empty BQ description.
+
+    Read straight from the source table's COLUMN_FIELD_PATHS (the profiler does
+    not capture descriptions), so existing curated descriptions can inform
+    classification. field_path uses dot notation, matching column_name in the
+    profiling rows.
+    """
+    query = f"""
+        SELECT field_path, description
+        FROM `{project}.{dataset}`.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+        WHERE table_name = @table_name
+          AND description IS NOT NULL AND description != ''
+    """
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[bigquery.ScalarQueryParameter("table_name", "STRING", table)]
+    )
+    return {
+        row.field_path: row.description
+        for row in bq_client.query(query, job_config=job_config).result()
+    }
 
 
 def load_ping_mapping(bq_client):
@@ -521,9 +556,16 @@ def main():
             f"| {len(ping_probes)} probes | {len(pending)} columns ---"
         )
 
+        try:
+            descriptions = load_descriptions(bq_client, proj, ds, tbl)
+        except Exception as e:
+            logging.warning(f"Could not load descriptions for {ds}.{tbl}: {e}")
+            descriptions = {}
+
         records = []
         for col in pending:
             col_name = col["column_name"]
+            col["bq_description"] = descriptions.get(col_name)
             matching_probes = find_matching_probes(col_name, ping_probes)
             logging.info(f"  {col_name} → {len(matching_probes)} probe candidates")
 

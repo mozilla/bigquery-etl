@@ -395,14 +395,23 @@ def load_descriptions(bq_client, project, dataset, table):
 
 
 def load_ping_mapping(bq_client):
-    """Load table → ping mapping."""
+    """Load table → ping mapping.
+
+    The phase-2 mapping table only exists once a Glean-sourced table has been
+    run through lineage resolution; for non-Glean datasets it is absent, so a
+    missing table degrades to "no mapping" rather than failing.
+    """
     query = f"""
         SELECT source_project, source_dataset, source_table,
                source_ping, ping_platform
         FROM `{MAPPING_TABLE}`
     """
     mapping = {}
-    for row in bq_client.query(query).result():
+    try:
+        rows = bq_client.query(query).result()
+    except NotFound:
+        return mapping
+    for row in rows:
         mapping[(row.source_project, row.source_dataset, row.source_table)] = {
             "source_ping": row.source_ping,
             "ping_platform": row.ping_platform,
@@ -411,14 +420,22 @@ def load_ping_mapping(bq_client):
 
 
 def load_probes_by_ping(bq_client):
-    """Load probe definitions grouped by (ping_platform, source_ping)."""
+    """Load probe definitions grouped by (ping_platform, source_ping).
+
+    Like the ping mapping, the probe table only exists once a Glean ping has
+    been resolved; a missing table degrades to "no probes".
+    """
     query = f"""
         SELECT ping_platform, source_ping, probe_name, probe_description,
                probe_type, data_sensitivity, tags
         FROM `{PROBE_TABLE}`
     """
     probes_by_ping = {}
-    for row in bq_client.query(query).result():
+    try:
+        rows = bq_client.query(query).result()
+    except NotFound:
+        return probes_by_ping
+    for row in rows:
         key = (row.ping_platform, row.source_ping)
         probes_by_ping.setdefault(key, []).append(
             {

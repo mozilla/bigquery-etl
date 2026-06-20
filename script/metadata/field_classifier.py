@@ -12,6 +12,7 @@ Writes:
 
 import json
 import logging
+import os
 import re
 from argparse import ArgumentParser
 from datetime import datetime, timezone
@@ -28,11 +29,17 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s: %(levelname)s: %(message)s"
 )
 
-PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_column_profiles_v1"
-MAPPING_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_table_pings_v1"
-PROBE_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_ping_probes_v1"
-DEST_TABLE = "mozdata-nonprod.analysis.akomar_field_classifications_v1"
-DEST_PROJECT = "mozdata-nonprod"
+# All working tables live in one (project, dataset). Override via env to target a
+# dev sandbox, e.g. CLASSIFICATION_PROJECT=moz-fx-data-proto
+# CLASSIFICATION_DATASET=<your-dataset>. Defaults to mozdata-nonprod.analysis.
+ANALYSIS_PROJECT = os.environ.get("CLASSIFICATION_PROJECT", "mozdata-nonprod")
+ANALYSIS_DATASET = os.environ.get("CLASSIFICATION_DATASET", "analysis")
+_ANALYSIS = f"{ANALYSIS_PROJECT}.{ANALYSIS_DATASET}"
+PHASE1_TABLE = f"{_ANALYSIS}.akomar_column_profiles_v1"
+MAPPING_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_table_pings_v1"
+PROBE_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_ping_probes_v1"
+DEST_TABLE = f"{_ANALYSIS}.akomar_field_classifications_v1"
+DEST_PROJECT = ANALYSIS_PROJECT
 DEFAULT_MODEL = "claude-sonnet-4-6"
 GEMINI_VERTEX_PROJECT = "mozdata"
 GEMINI_VERTEX_LOCATION = "global"

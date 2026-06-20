@@ -20,10 +20,11 @@
 #
 # Optional env vars (defaults shown):
 #   MODELS=gemini-3.1-flash-lite-preview     space-separated model list
-#   SOURCE_PROJECT=moz-fx-data-shared-prod
-#   DEST_PROJECT=mozdata-nonprod
-#   DEST_DATASET=analysis
-#   DEST_TABLE=akomar_column_profiles_v1
+#   SOURCE_PROJECT=moz-fx-data-shared-prod   source data (read); stays prod
+#   CLASSIFICATION_PROJECT=mozdata-nonprod   output project (e.g. akomar-sandbox-438914)
+#   CLASSIFICATION_DATASET=analysis          output dataset (created if missing)
+#   LOCATION=US                              BQ location for a newly created dataset
+#   DEST_TABLE=akomar_column_profiles_v1     profiling table name within that dataset
 #   DATE=<today, UTC>                        the profiled_at partition
 
 set -euo pipefail
@@ -37,9 +38,15 @@ DATASET="$1"; shift
 TABLES=("$@")
 
 SOURCE_PROJECT="${SOURCE_PROJECT:-moz-fx-data-shared-prod}"
-DEST_PROJECT="${DEST_PROJECT:-mozdata-nonprod}"
-DEST_DATASET="${DEST_DATASET:-analysis}"
+CLASSIFICATION_PROJECT="${CLASSIFICATION_PROJECT:-mozdata-nonprod}"
+CLASSIFICATION_DATASET="${CLASSIFICATION_DATASET:-analysis}"
+# Export so the python phases (field_classifier, lineage_probe_fetcher) read the
+# same destination from their environment.
+export CLASSIFICATION_PROJECT CLASSIFICATION_DATASET
+DEST_PROJECT="$CLASSIFICATION_PROJECT"
+DEST_DATASET="$CLASSIFICATION_DATASET"
 DEST_TABLE="${DEST_TABLE:-akomar_column_profiles_v1}"
+LOCATION="${LOCATION:-US}"
 DATE="${DATE:-$(date -u +%F)}"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -63,6 +70,13 @@ banner() {
     printf '== %s\n' "$1"
     printf '========================================================================\n'
 }
+
+# 0. Pre-create the output dataset if missing (bq mk --table and the python loads
+#    both require the dataset to already exist).
+if ! bq show "${DEST_PROJECT}:${DEST_DATASET}" >/dev/null 2>&1; then
+    banner "creating dataset ${DEST_PROJECT}:${DEST_DATASET} (${LOCATION})"
+    bq mk --dataset --location="$LOCATION" "${DEST_PROJECT}:${DEST_DATASET}"
+fi
 
 # 1. Pre-create the profiling table if missing. The profiler loads into a
 #    table$YYYYMMDD partition decorator, which does NOT auto-create the table;

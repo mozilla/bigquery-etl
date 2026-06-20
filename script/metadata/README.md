@@ -6,7 +6,9 @@ classifier. PoC: run by dataset, eyeball the output, iterate.
 
 ## Pipeline
 
-All outputs land in `mozdata-nonprod.analysis`:
+All outputs go to one configurable destination, `mozdata-nonprod.analysis` by
+default (override with `CLASSIFICATION_PROJECT` / `CLASSIFICATION_DATASET`, see
+[Run over a dataset](#run-over-a-dataset)). The tables:
 
 1. **Profile** - the productionized column profiler
    (`sql/moz-fx-data-shared-prod/data_governance_metadata_derived/column_profiles_v1/query.py`,
@@ -22,7 +24,7 @@ All outputs land in `mozdata-nonprod.analysis`:
 ## Setup
 
 ```bash
-uv venv --python 3.11 venv                                   # requirements is compiled for 3.11
+uv venv --python 3.11 venv                                   # requirements.txt is compiled for 3.11
 uv pip install --python venv/bin/python -r requirements.txt
 gcloud auth application-default login                        # Gemini (Vertex) + bq CLI
 export DATAHUB_GMS_TOKEN=...                                 # lineage
@@ -32,9 +34,9 @@ python script/metadata/classification/build_taxonomy.py      # regenerate taxono
 
 ## Run over a dataset
 
-`classify_dataset.sh` is the main entry point. It creates the profiling table if
-missing, profiles the dataset, then runs lineage + classify for each profiled
-table.
+`classify_dataset.sh` is the main entry point. It creates the output dataset and
+profiling table if missing, profiles the dataset, then runs lineage + classify
+for each profiled table.
 
 ```bash
 # every base table in the dataset
@@ -48,9 +50,22 @@ MODELS="claude-sonnet-4-6 gemini-3.1-flash-lite-preview" \
     script/metadata/classify_dataset.sh ads_derived
 ```
 
-Overridable via env (defaults shown): `SOURCE_PROJECT=moz-fx-data-shared-prod`,
-`DEST_PROJECT=mozdata-nonprod`, `DEST_DATASET=analysis`,
-`DEST_TABLE=akomar_column_profiles_v1`, `DATE=<today UTC>`.
+Overridable via env (defaults shown): `SOURCE_PROJECT=moz-fx-data-shared-prod`
+(source data, read), `CLASSIFICATION_PROJECT=mozdata-nonprod` and
+`CLASSIFICATION_DATASET=analysis` (where all outputs are written and read back;
+the dataset is created if missing, in `LOCATION=US`), `DEST_TABLE=akomar_column_profiles_v1`,
+`DATE=<today UTC>`.
+
+To write into a dev sandbox instead, point those two at it (all phases follow):
+
+```bash
+CLASSIFICATION_PROJECT=moz-fx-data-proto CLASSIFICATION_DATASET=data_classification \
+    script/metadata/classify_dataset.sh ads_derived
+```
+
+Your credentials must be able to write there (direct BQ access, or impersonate
+the sandbox service account). Note: the shared sandbox makes datasets
+broadly readable, so do not use it for restricted-PII outputs.
 
 Run datasets one at a time: each profiling run truncates its `profiled_at`
 partition, so the by-dataset flow (profile then classify, then next) avoids
@@ -61,7 +76,8 @@ for the partition/clobber details.
 ## Run over a single (already-profiled) table
 
 `classify_table.sh` runs only lineage + classify, so the table must already be
-in `akomar_column_profiles_v1`:
+profiled (present in `akomar_column_profiles_v1` in the configured dataset). Set
+the same `CLASSIFICATION_*` vars here as you used for profiling:
 
 ```bash
 script/metadata/classify_table.sh moz-fx-data-shared-prod.ads_derived.ad_metrics_v1
@@ -70,6 +86,7 @@ script/metadata/classify_table.sh moz-fx-data-shared-prod.ads_derived.ad_metrics
 ## Inspect
 
 ```sql
+-- adjust the project.dataset if you retargeted via CLASSIFICATION_*
 SELECT column_name, model, primary_label, confidence, needs_review, reasoning
 FROM `mozdata-nonprod.analysis.akomar_field_classifications_v1`
 WHERE source_table = 'ad_metrics_v1'
@@ -123,4 +140,3 @@ emits none).
 - [`classification/fxa_classification_plan.md`](classification/fxa_classification_plan.md)
   - classifying all FxA data: mixed Glean / non-Glean provenance, restricted-PII
   handling, first ground-truth eval.
-```

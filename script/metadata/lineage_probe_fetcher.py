@@ -21,10 +21,16 @@ logging.basicConfig(
 
 DATAHUB_URL = "https://mozilla.acryl.io/api/graphql"
 GLEAN_DICT_URL = "https://dictionary.telemetry.mozilla.org/data/{app}/pings/{ping}.json"
-PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_column_profiles_v1"
-MAPPING_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_table_pings_v1"
-PROBE_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_ping_probes_v1"
-DEST_PROJECT = "mozdata-nonprod"
+# Working tables live in one (project, dataset). Override via env to target a dev
+# sandbox: CLASSIFICATION_PROJECT / CLASSIFICATION_DATASET. Defaults to
+# mozdata-nonprod.analysis. Must match field_classifier.py's destination.
+ANALYSIS_PROJECT = os.environ.get("CLASSIFICATION_PROJECT", "mozdata-nonprod")
+ANALYSIS_DATASET = os.environ.get("CLASSIFICATION_DATASET", "analysis")
+_ANALYSIS = f"{ANALYSIS_PROJECT}.{ANALYSIS_DATASET}"
+PHASE1_TABLE = f"{_ANALYSIS}.akomar_column_profiles_v1"
+MAPPING_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_table_pings_v1"
+PROBE_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_ping_probes_v1"
+DEST_PROJECT = ANALYSIS_PROJECT
 
 MAPPING_SCHEMA = [
     bigquery.SchemaField(

@@ -25,7 +25,6 @@ SELECT
       LAX_BOOL(event_extra.did_select_pw) AS `did_select_pw`,
       LAX_BOOL(event_extra.did_select_un) AS `did_select_un`,
       LAX_BOOL(event_extra.filled) AS `filled`,
-      LAX_BOOL(event_extra.first_interaction) AS `first_interaction`,
       LAX_BOOL(event_extra.form_action_origin_fixable) AS `form_action_origin_fixable`,
       LAX_BOOL(event_extra.form_data) AS `form_data`,
       LAX_BOOL(event_extra.had_errors) AS `had_errors`,

@@ -19300,6 +19300,22 @@ fields:
         counts.  Not all failures can be known.
 
         '
+    - name: networking_http_3_quic_version
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The QUIC version negotiated for an HTTP/3 connection, recorded
+        once per connection that completes its handshake. Used to track the effect
+        of enabling compatible version negotiation (RFC 9368/9369), i.e. how often
+        connections end up on QUIC v2 versus v1.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

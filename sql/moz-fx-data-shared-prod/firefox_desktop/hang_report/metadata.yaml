@@ -10,9 +10,12 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 owners: []
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataplatform/hang-report-collection
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

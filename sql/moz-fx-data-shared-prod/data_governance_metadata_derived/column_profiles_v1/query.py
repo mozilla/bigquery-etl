@@ -236,7 +236,7 @@ def _sample_bucket(run_date: str, table: str) -> int:
     Seeding by run_date makes a given --date reproducible; including the table
     name spreads buckets across tables instead of always sampling the same one.
     """
-    return random.Random(f"{run_date}:{table}").randint(1, 99)
+    return random.Random(f"{run_date}:{table}").randint(0, 99)
 
 
 def build_profile_query(

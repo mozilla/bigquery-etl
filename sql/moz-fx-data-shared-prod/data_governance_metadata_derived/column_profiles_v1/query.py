@@ -509,9 +509,25 @@ def _run_profile_query(
     job = client.query(query)
     rows = list(job.result())
     gb_scanned = job.total_bytes_processed / 1e9
+    total_rows = rows[0].total_rows
+
+    # TABLESAMPLE SYSTEM samples whole storage blocks, so on a small table a 1%
+    # sample can resolve to zero rows even when the partition has data. Retry once
+    # with a full (unsampled) partition scan: a small partition is cheap to scan
+    # in full and yields exact stats, while a genuinely empty partition still
+    # returns zero. Clearing tablesample also drops sampling from the nested
+    # queries built below.
+    if total_rows == 0 and tablesample:
+        tablesample = False
+        query = build_profile_query(
+            table, columns, partition_filter, sample_id, tablesample
+        )
+        job = client.query(query)
+        rows = list(job.result())
+        gb_scanned += job.total_bytes_processed / 1e9
+        total_rows = rows[0].total_rows
 
     row = rows[0]
-    total_rows = row.total_rows
     results: dict[str, Any] = {}
 
     # The scanned slice (recent partition + 1% sample) can be empty even when the
@@ -611,11 +627,12 @@ def profile_bq_table(
     """Profile every column in a single BigQuery table; return stats as JSON.
 
     Samples 1% via the sample_id bucket when that column is present and
-    populated, falling back to TABLESAMPLE when sample_id is all-NULL. Applies a partition filter
-    scoped to 7 days before run_date when a date partition column is detected,
-    so the scanned data matches the profiled_at partition. Fields inside REPEATED
-    structs are profiled via UNNEST with the same sampling. Simple
-    ARRAY<scalar> columns are listed as tier "scalar_array" with no stats.
+    populated, falling back to TABLESAMPLE when sample_id is all-NULL.
+    Applies a partition filter scoped to 7 days before run_date when a date
+    partition column is detected, so the scanned data matches the profiled_at
+    partition. Fields inside REPEATED structs are profiled via UNNEST with the
+    same sampling. Simple ARRAY<scalar> columns are listed as tier
+    "scalar_array" with no stats.
     Fields under _TIER3_COLUMNS (e.g. metrics) remain tier "undocumented".
 
     Returns a JSON object with column stats, or {"error": "..."} if the table

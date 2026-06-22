@@ -8,9 +8,11 @@ be upstreamed to main as its own PR, decoupled from the classification PoC.
 ## The bug
 
 The profiler samples 1% via `WHERE sample_id = <bucket>` whenever the table
-merely *has* a `sample_id` column. Glean `events_stream` derivatives (and likely
-other tables) carry the column but leave it **entirely NULL**, so `sample_id =
-<bucket>` matches no rows. The scan returns 0 rows, the existing empty-slice
+merely *has* a `sample_id` column. Tables sourced from **server-side Glean
+pings** carry the column but never populate it (these pings carry no client_id,
+which sample_id is derived from), so it is **entirely NULL** and
+`sample_id = <bucket>` matches no rows. The scan
+returns 0 rows, the existing empty-slice
 guard fires, and the table profiles to zero columns with only an info log
 (`Scanned slice empty for <table>; no column stats emitted.`). No error, no
 output - easy to miss in a batch run.

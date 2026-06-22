@@ -532,7 +532,16 @@ def _backfill_query(
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
     ]
 
-    if date_partition_parameter is not None:
+    # Bind the date partition parameter, unless scheduling_parameters already
+    # supplies it (e.g. a table listing submission_date in `parameters`). bq
+    # rejects a parameter bound twice, so skip rather than duplicate.
+    scheduling_parameter_names = {
+        param.split(":", 1)[0] for param in scheduling_parameters
+    }
+    if (
+        date_partition_parameter is not None
+        and date_partition_parameter not in scheduling_parameter_names
+    ):
         offset_param = backfill_date + timedelta(days=date_partition_offset)
         query_parameters.append(
             f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"

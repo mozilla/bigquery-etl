@@ -53,7 +53,6 @@ HEADER_ROW = [
     "column_name",
     "category",
     "category_simple",
-    "data_collection_category",
     "confidence",
     "reasoning",
     "needs_review",
@@ -83,7 +82,7 @@ def fetch_rows(bq_client):
     query = f"""
         SELECT
           source_dataset, source_table, column_name,
-          primary_label, data_collection_category,
+          primary_label,
           confidence, reasoning, needs_review
         FROM `{DEST_TABLE}`
         WHERE model = @model
@@ -103,17 +102,22 @@ def build_rows(bq_rows, data_types):
     """Map BQ rows into the output CSV layout."""
     out = []
     for r in bq_rows:
-        out.append([
-            r.source_dataset or "",
-            r.source_table or "",
-            r.column_name or "",
-            r.primary_label or "",
-            category_simple(r.primary_label, data_types),
-            r.data_collection_category or "",
-            r.confidence or "",
-            r.reasoning or "",
-            "TRUE" if r.needs_review else "FALSE" if r.needs_review is False else "",
-        ])
+        out.append(
+            [
+                r.source_dataset or "",
+                r.source_table or "",
+                r.column_name or "",
+                r.primary_label or "",
+                category_simple(r.primary_label, data_types),
+                r.confidence or "",
+                r.reasoning or "",
+                (
+                    "TRUE"
+                    if r.needs_review
+                    else "FALSE" if r.needs_review is False else ""
+                ),
+            ]
+        )
     return out
 
 

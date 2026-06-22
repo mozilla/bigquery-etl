@@ -19,7 +19,8 @@ default (override with `CLASSIFICATION_PROJECT` / `CLASSIFICATION_DATASET`, see
    -> `akomar_metadata_phase2_table_pings_v1`, `akomar_metadata_phase2_ping_probes_v1`
 3. **Classify** - `field_classifier.py` labels each column against the taxonomy.
    -> `akomar_field_classifications_v1` (`primary_label`, `secondary_labels`,
-   `confidence`, `reasoning`, `needs_review`, `data_collection_category`, `model`)
+   `confidence`, `reasoning`, `needs_review`, `matched_probe`, `data_sensitivity`,
+   `model`)
 
 ## Setup
 
@@ -85,6 +86,26 @@ re-profiling (a new model, or after a taxonomy tweak). Set the same
 script/metadata/classify_table.sh moz-fx-data-shared-prod.ads_derived.ad_metrics_v1
 ```
 
+## Re-running: refreshing cached results
+
+Lineage mappings, fetched probes, and classifications are cached and reused, so a
+normal re-run skips work already done (resolved tables, fetched pings, classified
+columns). That makes incremental runs cheap but means a **change to fetch or
+classification logic is not picked up** until the cached rows are replaced - the
+stale rows are silently reused. Set `REFRESH=1` to force a refresh:
+
+```bash
+REFRESH=1 CLASSIFICATION_PROJECT=... CLASSIFICATION_DATASET=... \
+    script/metadata/classify_table.sh moz-fx-data-shared-prod.<dataset>.<table>
+```
+
+`REFRESH=1` re-fetches probes and re-classifies, deleting and recomputing the
+in-scope rows. Classification deletion is scoped to the chosen `--model`, so a
+multi-model run does not wipe a sibling model's rows. Profiling always overwrites
+its own partition, so it needs no refresh. Works with `classify_dataset.sh` too.
+The underlying `--refresh` flag is also on `lineage_probe_fetcher.py` and
+`field_classifier.py` for running them directly.
+
 ## Inspect
 
 ```sql
@@ -122,17 +143,26 @@ from the source table's `COLUMN_FIELD_PATHS`, if it has one), profiling stats
 (null rate, distinct count, top/example values, plus a PII-suppressed flag when
 the profiler set one), the matched probe
 (name/description/`data_sensitivity`/`tags`), and the compacted taxonomy. The
-model returns the labels above and a `data_collection_category` (technical /
-interaction / web_activity / highly_sensitive, per Mozilla's [data collection
-categories](https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories)),
-deferring to a Glean `data_sensitivity` unless observed content overrides it. The
+model returns the taxonomy labels above, deferring to a declared Glean
+`data_sensitivity` to disambiguate unless observed content overrides it. The
 existing description is often the strongest signal for non-Glean tables that have
 no probe.
+
+Glean **metric** columns (under the `metrics` STRUCT) are never profiled - the
+profiler tiers the whole wide, dynamically-grown `metrics` STRUCT as
+`undocumented` and never samples it. Sampling them isn't needed anyway: Glean
+already documents every metric (description + `data_sensitivity`), a better basis
+than sampled values. So for Glean-resolved tables the classifier enumerates the
+scalar metric leaves (`metrics.<type>.<name>`), pairs each to its probe by exact
+name, and classifies it from the probe's description + `data_sensitivity` (no
+sampled stats). Those sensitivity labels come from probe-info, which the per-ping
+Glean Dictionary endpoint omits, so the lineage step merges them in.
 
 ## Non-goals (PoC)
 
 - No ground-truth eval (the FxA plan is where one would start).
-- `metrics STRUCT` columns stay `undocumented` and are not classified.
+- `metrics STRUCT` map sub-leaves (labeled-metric `.key`/`.value`) and any
+  metric whose BQ name has no matching probe stay unclassified.
 - No writeback to `schema.yaml` / `global.yaml` / DataHub tags.
 - No retries on LLM JSON parse failures (log and skip).
 

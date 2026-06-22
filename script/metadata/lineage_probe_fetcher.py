@@ -21,6 +21,9 @@ logging.basicConfig(
 
 DATAHUB_URL = "https://mozilla.acryl.io/api/graphql"
 GLEAN_DICT_URL = "https://dictionary.telemetry.mozilla.org/data/{app}/pings/{ping}.json"
+# probe-info carries data_sensitivity / send_in_pings, which the Glean Dictionary
+# per-ping endpoint omits. App slug uses dashes (e.g. accounts-backend).
+PROBE_INFO_URL = "https://probeinfo.telemetry.mozilla.org/glean/{app}/metrics"
 # Working tables live in one (project, dataset). Override via env to target a dev
 # sandbox: CLASSIFICATION_PROJECT / CLASSIFICATION_DATASET. Defaults to
 # mozdata-nonprod.analysis. Must match field_classifier.py's destination.
@@ -315,10 +318,52 @@ def infer_glean_app(dataset):
     return dataset
 
 
+# Cache of probe-info metrics maps keyed by app slug (dashes), so multiple pings
+# of the same app reuse a single HTTP request.
+_PROBE_INFO_CACHE: dict[str, dict[str, dict]] = {}
+
+
+def fetch_probe_info_map(app):
+    """Fetch and cache the probe-info metrics map for a Glean app.
+
+    The app slug uses dashes (e.g. accounts-backend). Returns a dict mapping the
+    dotted metric name to its latest history entry. Falls back to an empty map on
+    404, network error, or parse error so callers can still proceed.
+    """
+    if app in _PROBE_INFO_CACHE:
+        return _PROBE_INFO_CACHE[app]
+
+    url = PROBE_INFO_URL.format(app=app)
+    logging.info(f"Fetching probe-info metrics from {url}")
+    result: dict[str, dict] = {}
+    try:
+        response = requests.get(url, timeout=30)
+        if response.status_code == 404:
+            logging.warning(f"probe-info entry not found: {url}")
+            _PROBE_INFO_CACHE[app] = result
+            return result
+        response.raise_for_status()
+        metrics = response.json()
+        for name, definition in metrics.items():
+            history = (definition or {}).get("history") or []
+            if history:
+                result[name] = history[-1]
+    except (requests.RequestException, ValueError) as e:
+        logging.warning(f"Failed to fetch probe-info for {app}: {e}")
+
+    _PROBE_INFO_CACHE[app] = result
+    return result
+
+
 def fetch_glean_probes(
     _ping_platform, source_ping, stable_urn=None, dataset=None
 ):  # noqa: stable_urn unused (shared signature)
-    """Fetch probe definitions for a Glean ping from the Glean Dictionary JSON API."""
+    """Fetch probe definitions for a Glean ping from the Glean Dictionary JSON API.
+
+    Name, description, type, and tags come from the per-ping Glean Dictionary
+    endpoint. data_sensitivity and send_in_pings are merged in from probe-info,
+    which the dictionary endpoint omits, matching on the dotted metric name.
+    """
     app = infer_glean_app(dataset or "")
     url = GLEAN_DICT_URL.format(app=app, ping=source_ping)
     logging.info(f"Fetching Glean probes from {url}")
@@ -328,16 +373,18 @@ def fetch_glean_probes(
         return []
     response.raise_for_status()
     data = response.json()
+    probe_info = fetch_probe_info_map(app.replace("_", "-"))
     probes = []
     for metric in data.get("metrics", []):
+        info = probe_info.get(metric.get("name"), {})
         probes.append(
             {
                 "probe_name": metric.get("name"),
                 "probe_description": metric.get("description"),
                 "probe_type": metric.get("type"),
                 "probe_raw": json.dumps(metric),
-                "data_sensitivity": metric.get("data_sensitivity") or [],
-                "send_in_pings": metric.get("send_in_pings") or [],
+                "data_sensitivity": info.get("data_sensitivity") or [],
+                "send_in_pings": info.get("send_in_pings") or [],
                 "tags": (metric.get("metadata") or {}).get("tags") or [],
             }
         )
@@ -394,6 +441,55 @@ def bq_insert(bq_client, records, dest_table, schema):
     )
     job = bq_client.load_table_from_json(records, dest_table, job_config=job_config)
     job.result()
+
+
+def pings_for_tables(bq_client, tables):
+    """Return the distinct (ping_platform, source_ping) the given tables map to."""
+    if not tables:
+        return set()
+    preds = " OR ".join(
+        f"(source_project = '{p}' AND source_dataset = '{d}' "
+        f"AND source_table = '{t}')"
+        for p, d, t in tables
+    )
+    query = (
+        f"SELECT DISTINCT ping_platform, source_ping FROM `{MAPPING_TABLE}` "
+        f"WHERE source_ping IS NOT NULL AND ({preds})"
+    )
+    try:
+        return {
+            (r.ping_platform, r.source_ping) for r in bq_client.query(query).result()
+        }
+    except NotFound:
+        return set()
+
+
+def refresh_scope(bq_client, tables):
+    """Drop cached mapping + probe rows for the given tables so they are redone.
+
+    Probe rows are keyed by ping, so deleting them for a ping shared with
+    out-of-scope tables is safe: fetch_probes_for_pings re-fetches any ping still
+    present in the mapping table. Used by --refresh to pick up changed fetch
+    logic; without it, already-mapped/already-fetched rows are reused as-is.
+    """
+    pings = pings_for_tables(bq_client, tables)
+    for platform, ping in pings:
+        bq_delete(
+            bq_client,
+            PROBE_TABLE,
+            f"ping_platform = '{platform}' AND source_ping = '{ping}'",
+        )
+    for project, dataset, table in tables:
+        bq_delete(
+            bq_client,
+            MAPPING_TABLE,
+            f"source_project = '{project}' AND source_dataset = '{dataset}' "
+            f"AND source_table = '{table}'",
+        )
+    logging.info(
+        f"Refresh: cleared probes for {len(pings)} ping(s) and "
+        f"{len(tables)} mapping row(s) for re-resolution."
+    )
 
 
 # --- Step 1: Lineage resolution → MAPPING_TABLE ---
@@ -542,6 +638,15 @@ def parse_args():
         "--table",
         help="Fully qualified BQ table (project.dataset.table). If omitted, processes all Phase 1 tables.",
     )
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help=(
+            "Re-resolve lineage and re-fetch probes for the in-scope tables, "
+            "replacing cached rows. Use after changing fetch logic; otherwise "
+            "already-mapped tables and already-fetched pings are reused as-is."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -569,6 +674,15 @@ def main():
     else:
         tables = get_phase1_tables(bq_client)
         logging.info(f"Found {len(tables)} Phase 1 tables")
+
+    if args.refresh:
+        logging.info("=== Refresh: clearing cached lineage + probes in scope ===")
+        if args.table:
+            refresh_scope(bq_client, tables)
+        else:
+            bq_delete(bq_client, PROBE_TABLE, "TRUE")
+            bq_delete(bq_client, MAPPING_TABLE, "TRUE")
+            logging.info("Refresh: cleared all mapping + probe rows.")
 
     logging.info("=== Step 1: Lineage resolution ===")
     resolve_lineage_for_tables(bq_client, tables)

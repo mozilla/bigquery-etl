@@ -95,8 +95,7 @@ def fetch_pairs(bq_client, table, left_model, right_model):
             source_project, source_dataset, source_table, column_name,
             model,
             primary_label, secondary_labels, confidence, reasoning,
-            needs_review, matched_probe, data_sensitivity,
-            data_collection_category
+            needs_review, matched_probe, data_sensitivity
           FROM `{DEST_TABLE}`
           {where}
         ),
@@ -112,13 +111,11 @@ def fetch_pairs(bq_client, table, left_model, right_model):
           l.reasoning                 AS left_reasoning,
           l.needs_review              AS left_needs_review,
           l.matched_probe             AS left_matched_probe,
-          l.data_collection_category  AS left_category,
           r.primary_label             AS right_label,
           r.confidence                AS right_confidence,
           r.reasoning                 AS right_reasoning,
           r.needs_review              AS right_needs_review,
-          r.matched_probe             AS right_matched_probe,
-          r.data_collection_category  AS right_category
+          r.matched_probe             AS right_matched_probe
         FROM l
         FULL OUTER JOIN r USING (source_project, source_dataset, source_table, column_name)
         ORDER BY source_dataset, source_table, column_name
@@ -140,9 +137,6 @@ def summarize(pairs):
     agree = [p for p in both if p.left_label == p.right_label]
     disagree = [p for p in both if p.left_label != p.right_label]
 
-    both_cat = [p for p in pairs if p.left_category and p.right_category]
-    cat_agree = [p for p in both_cat if p.left_category == p.right_category]
-
     return {
         "total_rows": len(pairs),
         "both": len(both),
@@ -152,10 +146,6 @@ def summarize(pairs):
         "disagree": len(disagree),
         "left_confidence": Counter(p.left_confidence for p in pairs if p.left_label),
         "right_confidence": Counter(p.right_confidence for p in pairs if p.right_label),
-        "left_category": Counter(p.left_category for p in pairs if p.left_category),
-        "right_category": Counter(p.right_category for p in pairs if p.right_category),
-        "category_both": len(both_cat),
-        "category_agree": len(cat_agree),
         "agree_rows": agree,
         "disagree_rows": disagree,
     }
@@ -181,18 +171,9 @@ def print_summary(s, left_model, right_model):
     if s["both"]:
         rate = 100.0 * s["agree"] / s["both"]
         print(f"Agreement on primary_label: {s['agree']}/{s['both']} ({rate:.1f}%)")
-    if s["category_both"]:
-        cat_rate = 100.0 * s["category_agree"] / s["category_both"]
-        print(
-            f"Agreement on data_collection_category: "
-            f"{s['category_agree']}/{s['category_both']} ({cat_rate:.1f}%)"
-        )
     print()
     print(f"{left_model} confidence:  {fmt_conf(s['left_confidence'])}")
     print(f"{right_model} confidence: {fmt_conf(s['right_confidence'])}")
-    print()
-    print(f"{left_model} data_collection_category:  {fmt_conf(s['left_category'])}")
-    print(f"{right_model} data_collection_category: {fmt_conf(s['right_category'])}")
     print()
 
 
@@ -204,7 +185,6 @@ def print_row(p, header, left_model, right_model):
     print(
         f"  {left_model}: {p.left_label or '<none>'} "
         f"({p.left_confidence or '?'}, "
-        f"category={p.left_category or '?'}, "
         f"needs_review={p.left_needs_review}, "
         f"probe={p.left_matched_probe or 'none'})"
     )
@@ -213,7 +193,6 @@ def print_row(p, header, left_model, right_model):
     print(
         f"  {right_model}: {p.right_label or '<none>'} "
         f"({p.right_confidence or '?'}, "
-        f"category={p.right_category or '?'}, "
         f"needs_review={p.right_needs_review}, "
         f"probe={p.right_matched_probe or 'none'})"
     )

@@ -31,6 +31,12 @@ set -euo pipefail
 
 MODELS="${MODELS:-gemini-3.1-flash-lite-preview}"
 
+# Set REFRESH=1 to re-fetch probes and re-classify, replacing cached rows (use
+# after changing fetch/classify logic; otherwise cached rows are reused). Passed
+# through to both python steps as --refresh; left empty it expands to nothing.
+REFRESH_ARG=""
+[[ -n "${REFRESH:-}" ]] && REFRESH_ARG="--refresh"
+
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 <project.dataset.table> [<project.dataset.table> ...]" >&2
     echo "Set \$MODELS to override the model list (default: $MODELS)." >&2
@@ -82,11 +88,11 @@ for TABLE in "$@"; do
     fi
 
     banner "[1/2] lineage_probe_fetcher.py"
-    "$PYTHON" script/metadata/lineage_probe_fetcher.py --table "$TABLE"
+    "$PYTHON" script/metadata/lineage_probe_fetcher.py --table "$TABLE" $REFRESH_ARG
 
     for MODEL in $MODELS; do
         banner "[2/2] field_classifier.py --model $MODEL"
-        "$PYTHON" script/metadata/field_classifier.py --table "$TABLE" --model "$MODEL"
+        "$PYTHON" script/metadata/field_classifier.py --table "$TABLE" --model "$MODEL" $REFRESH_ARG
     done
 
     banner "DONE: $TABLE"

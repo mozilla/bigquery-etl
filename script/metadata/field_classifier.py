@@ -105,18 +105,6 @@ DEST_SCHEMA = [
         description="Glean data_sensitivity labels from the matched probe, if any.",
     ),
     bigquery.SchemaField(
-        "data_collection_category",
-        "STRING",
-        mode="NULLABLE",
-        description=(
-            "LLM-inferred Mozilla data collection category - one of "
-            "'technical', 'interaction', 'web_activity', 'highly_sensitive' "
-            "(see https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories). "
-            "Same scale as Glean's data_sensitivity but emitted for every row, "
-            "including columns with no probe match or legacy telemetry."
-        ),
-    ),
-    bigquery.SchemaField(
         "model",
         "STRING",
         mode="NULLABLE",
@@ -184,6 +172,11 @@ def find_matching_probes(column_name, probes):
 def _profile_block(profile):
     """Render the observed profiling signals for one column as prompt text."""
     lines = []
+    if profile.get("is_glean_metric"):
+        return (
+            "Glean metric column - not data-profiled; classify from the metric"
+            " definition and its data_sensitivity."
+        )
     if profile.get("column_tier") == "pii_suppressed":
         lines.append(
             "PII-suppressed: column name matched a known PII pattern, so it was"
@@ -250,23 +243,10 @@ def build_classification_prompt(
         " list the extras in secondary_labels. Use the Glean data_sensitivity signal"
         " to disambiguate when present (e.g. highly_sensitive strongly implies"
         " user.behavior, user.content, user.location.precise, etc.).\n\n"
-        "Also assign a Mozilla data collection category - exactly one of"
-        " 'technical', 'interaction', 'web_activity', 'highly_sensitive' (per"
-        " https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories,"
-        " same scale as Glean's data_sensitivity). Definitions:\n"
-        "  - technical: build, environment, version, performance counters; no user content.\n"
-        "  - interaction: how users interact with the product (clicks, sessions, feature usage).\n"
-        "  - web_activity: web/search activity - URLs, search terms, visited domains.\n"
-        "  - highly_sensitive: anything else of high sensitivity - precise location, free-form\n"
-        "    user content, communications, demographic data, identifiers tied to a person.\n"
-        "If a Glean data_sensitivity is declared on the matched probe, you should usually agree,"
-        " but the column's observed content takes precedence when they conflict (e.g. a"
-        " 'technical' probe carrying user content). Pick the single highest applicable category.\n\n"
         "Respond with a JSON object only (no markdown fences):\n"
         '{"primary_label": "<label>", "secondary_labels": [], '
         '"confidence": "high|medium|low", "reasoning": "<1-2 sentences>", '
-        '"needs_review": true|false, '
-        '"data_collection_category": "technical|interaction|web_activity|highly_sensitive"}'
+        '"needs_review": true|false}'
     )
 
 
@@ -394,6 +374,72 @@ def load_descriptions(bq_client, project, dataset, table):
     }
 
 
+def load_metric_leaf_columns(bq_client, project, dataset, table):
+    """Return scalar leaf columns under the Glean ``metrics`` STRUCT.
+
+    Glean metric values are sensitive, so the profiler never samples them and
+    marks the whole ``metrics`` STRUCT as undocumented. To classify them we read
+    the source table's COLUMN_FIELD_PATHS directly and keep only scalar leaves
+    (data_type not a RECORD/STRUCT/ARRAY parent) at exactly
+    ``metrics.<type>.<name>`` (3 path segments). The depth filter excludes the
+    ``.key``/``.value`` sub-leaves of labeled-metric maps (e.g.
+    metrics.labeled_counter.glean_error_*), which are Glean-internal structural
+    fields, not product metrics. Parameterized on table name, mirroring
+    load_descriptions.
+    """
+    query = f"""
+        SELECT field_path, data_type
+        FROM `{project}.{dataset}`.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+        WHERE table_name = @table_name
+          AND STARTS_WITH(field_path, 'metrics.')
+          AND ARRAY_LENGTH(SPLIT(field_path, '.')) = 3
+          AND data_type NOT LIKE 'STRUCT%'
+          AND data_type NOT LIKE 'ARRAY%'
+    """
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[bigquery.ScalarQueryParameter("table_name", "STRING", table)]
+    )
+    return [
+        {"column_name": row.field_path, "data_type": row.data_type}
+        for row in bq_client.query(query, job_config=job_config).result()
+    ]
+
+
+def match_metric_columns(metric_columns, ping_probes, skip_columns=None):
+    """Pair metric leaf columns with their product probe by exact name.
+
+    A Glean scalar metric ``category.name`` materializes in BigQuery as
+    ``metrics.<type>.<category>_<name>``, whose leaf segment normalizes to
+    exactly the dotted probe name (normalize('account_user_id') ==
+    normalize('account.user_id')). Matching on that exact normalized name -
+    rather than the fuzzy substring match used for arbitrary profiled columns -
+    maps each metric to its own probe (so account_user_id_sha256 pairs with
+    account.user_id_sha256, not account.user_id) and prevents short generic
+    leaves from matching unrelated probes. Columns in skip_columns (e.g. ones
+    already profiled in phase 1) are dropped.
+
+    Returns a list of (column dict, matching probes) tuples; only leaves with an
+    exact probe match are kept.
+    """
+    skip = skip_columns or set()
+    probes_by_norm = {}
+    for probe in ping_probes:
+        pname = probe.get("probe_name") or ""
+        if pname:
+            probes_by_norm.setdefault(normalize_name(pname), []).append(probe)
+    matched = []
+    for col in metric_columns:
+        col_name = col["column_name"]
+        if col_name in skip:
+            continue
+        leaf = col_name.rsplit(".", 1)[-1]
+        probes = probes_by_norm.get(normalize_name(leaf))
+        if not probes:
+            continue
+        matched.append((col, probes[:TOP_N_PROBES]))
+    return matched
+
+
 def load_ping_mapping(bq_client):
     """Load table → ping mapping.
 
@@ -502,6 +548,16 @@ def parse_args():
             f"credentials). Default: {DEFAULT_MODEL}."
         ),
     )
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help=(
+            "Delete existing classifications for the in-scope table(s) and this "
+            "--model before classifying, so rows are recomputed. Without it, "
+            "already-classified columns are skipped. Scoped to --model, so a "
+            "multi-model run does not wipe a sibling model's rows."
+        ),
+    )
     args = parser.parse_args()
     if not (is_claude_model(args.model) or is_gemini_model(args.model)):
         parser.error(
@@ -509,6 +565,26 @@ def parse_args():
             "Expected a name starting with 'claude-' or 'gemini-'."
         )
     return args
+
+
+def refresh_classifications(bq_client, project, dataset, table, model):
+    """Delete existing classification rows for the scope + model so they redo.
+
+    Scoped to the current model so a multi-model run does not wipe a sibling
+    model's rows. With no table (whole-run scope), clears every row for the
+    model. Ignores a missing destination table (nothing to clear yet).
+    """
+    where = [f"model = '{model}'"]
+    if table:
+        where.append(f"source_project = '{project}'")
+        where.append(f"source_dataset = '{dataset}'")
+        where.append(f"source_table = '{table}'")
+    clause = " AND ".join(where)
+    try:
+        bq_client.query(f"DELETE FROM `{DEST_TABLE}` WHERE {clause}").result()
+        logging.info(f"Refresh: cleared classifications WHERE {clause}")
+    except NotFound:
+        pass
 
 
 def main():
@@ -534,6 +610,9 @@ def main():
     if args.table:
         project, dataset, table = args.table.split(".")
 
+    if args.refresh:
+        refresh_classifications(bq_client, project, dataset, table, args.model)
+
     taxonomy = load_taxonomy()
     taxonomy_json = taxonomy_prompt_block(taxonomy)
     logging.info(f"Loaded {len(taxonomy)} taxonomy entries")
@@ -557,12 +636,40 @@ def main():
             probes_by_ping.get((ping_platform, source_ping), []) if source_ping else []
         )
 
+        try:
+            descriptions = load_descriptions(bq_client, proj, ds, tbl)
+        except Exception as e:
+            logging.warning(f"Could not load descriptions for {ds}.{tbl}: {e}")
+            descriptions = {}
+
+        # Glean metric leaves (under the undocumented `metrics` STRUCT) are never
+        # profiled, so enumerate and match them here for Glean-resolved tables.
+        # Each becomes a work item whose matching probes are pre-resolved.
+        metric_work = []
+        if ping_probes:
+            profiled_names = {c["column_name"] for c in columns}
+            try:
+                metric_columns = load_metric_leaf_columns(bq_client, proj, ds, tbl)
+            except Exception as e:
+                logging.warning(f"Could not load metric columns for {ds}.{tbl}: {e}")
+                metric_columns = []
+            for col, matching_probes in match_metric_columns(
+                metric_columns, ping_probes, skip_columns=profiled_names
+            ):
+                col["is_glean_metric"] = True
+                metric_work.append((col, matching_probes))
+
         pending = [
             c
             for c in columns
             if (proj, ds, tbl, c["column_name"], args.model) not in already_done
         ]
-        if not pending:
+        pending_metrics = [
+            (col, mp)
+            for col, mp in metric_work
+            if (proj, ds, tbl, col["column_name"], args.model) not in already_done
+        ]
+        if not pending and not pending_metrics:
             logging.info(
                 f"Skipping {ds}.{tbl} - all {len(columns)} columns already classified"
             )
@@ -570,20 +677,22 @@ def main():
 
         logging.info(
             f"--- {ds}.{tbl} | ping: {source_ping or 'none'} "
-            f"| {len(ping_probes)} probes | {len(pending)} columns ---"
+            f"| {len(ping_probes)} probes | {len(pending)} columns "
+            f"| {len(pending_metrics)} metric columns ---"
         )
 
-        try:
-            descriptions = load_descriptions(bq_client, proj, ds, tbl)
-        except Exception as e:
-            logging.warning(f"Could not load descriptions for {ds}.{tbl}: {e}")
-            descriptions = {}
+        # Each work item is (column dict, pre-resolved matching probes). Profiled
+        # columns match probes by their own name; metric columns were matched on
+        # their leaf segment above.
+        work_items = [
+            (col, find_matching_probes(col["column_name"], ping_probes))
+            for col in pending
+        ] + pending_metrics
 
         records = []
-        for col in pending:
+        for col, matching_probes in work_items:
             col_name = col["column_name"]
             col["bq_description"] = descriptions.get(col_name)
-            matching_probes = find_matching_probes(col_name, ping_probes)
             logging.info(f"  {col_name} → {len(matching_probes)} probe candidates")
 
             prompt = build_classification_prompt(
@@ -622,7 +731,6 @@ def main():
                     "needs_review": result.get("needs_review"),
                     "matched_probe": matched_probe,
                     "data_sensitivity": probe_sensitivity or [],
-                    "data_collection_category": result.get("data_collection_category"),
                     "model": args.model,
                     "classified_at": now,
                 }

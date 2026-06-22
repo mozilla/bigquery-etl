@@ -54,6 +54,51 @@ Implications:
 - Expect more `needs_review=true` / `low` confidence on the DB-mirror tables. That
   is correct behavior, not a bug - track the rate as a result.
 
+## Glean metric columns and data_sensitivity (implemented 2026-06-20)
+
+Test-driving `accounts_backend_derived` surfaced two gaps on the *Glean* side
+(the side the central challenge assumed was the easy path). Both are now fixed in
+the PoC; neither touches the production profiler.
+
+**Gap A - the classifier never reached Glean metric columns.** The profiler tiers
+the whole wide `metrics` STRUCT `undocumented` and never samples it (and sampling
+isn't needed - Glean already documents every metric), and the classifier only
+iterated *profiled* columns.
+So for `accounts_backend.events_stream_v1` the most sensitive FxA fields -
+`metrics.string.account_user_id`, `account_user_id_sha256`,
+`relying_party_oauth_client_id`, `relying_party_service`, `session_*`, `utm_*` -
+were never classified at all, even though their probe metadata was already
+fetched. Metric columns do **not** need data sampling: their authoritative
+metadata (description + `data_sensitivity`) is the right basis.
+Fix (`field_classifier.py`): for Glean-resolved tables, enumerate scalar metric
+leaves at exactly `metrics.<type>.<name>` (`load_metric_leaf_columns`) and pair
+each to its probe by **exact** normalized name (`match_metric_columns`) - a
+BQ-flattened leaf normalizes to exactly the dotted probe name, so this maps each
+metric to its own probe (incl. `account_user_id_sha256` -> `account.user_id_sha256`)
+and avoids the `.key`/`.value` map sub-leaves matching unrelated probes. Matched
+metric columns join the same prompt/LLM/record path as profiled columns, with no
+profiling block. Verified: 14 metric columns matched for `events_stream_v1`.
+
+**Gap B - `data_sensitivity` was being silently dropped (affects ALL Glean tables).**
+`lineage_probe_fetcher.fetch_glean_probes` read `data_sensitivity` / `send_in_pings`
+off the Glean Dictionary **per-ping** endpoint, which is a slimmed index that omits
+both - so every probe carried `data_sensitivity=[]`. The classifier is documented
+to defer to Glean `data_sensitivity`, but in practice it never saw any: every Glean
+column was being classified from description + values alone. This likely explains
+the uniform `needs_review=0` / all-`high`-confidence pattern in the first run.
+Fix: merge `data_sensitivity` + `send_in_pings` from probe-info
+(`probeinfo.telemetry.mozilla.org/glean/{app}/metrics`, `history[-1]`, app slug
+dashed), cached per app, graceful fallback on error. Verified: `account.user_id`
+-> `['interaction']`, with all 14 `events_stream_v1` metric columns now carrying
+real sensitivity labels.
+
+**FxA relevance.** Gap B is the higher-priority of the two: it restores the
+strongest signal for *every* Glean FxA table (`accounts_backend*`,
+`accounts_frontend*`), not just metrics. Gap A is what makes the FxA Glean
+identifiers classifiable at all. Both are validated against `accounts_backend`;
+re-run that dataset end-to-end (profile -> classify) to confirm before scaling to
+the full FxA scope.
+
 ## The governance blocker: restricted PII must not leak
 
 `accounts_db_external` is `dataset_base_acl: restricted` (accounts-confidential

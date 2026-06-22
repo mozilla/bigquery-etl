@@ -43,6 +43,10 @@ CLASSIFICATION_DATASET="${CLASSIFICATION_DATASET:-analysis}"
 # Export so the python phases (field_classifier, lineage_probe_fetcher) read the
 # same destination from their environment.
 export CLASSIFICATION_PROJECT CLASSIFICATION_DATASET
+# Set REFRESH=1 to re-fetch probes and re-classify (replacing cached rows);
+# exported so the classify_table.sh children forward it to the python steps.
+# Profiling always WRITE_TRUNCATEs its partition, so it needs no refresh.
+[[ -n "${REFRESH:-}" ]] && export REFRESH
 DEST_PROJECT="$CLASSIFICATION_PROJECT"
 DEST_DATASET="$CLASSIFICATION_DATASET"
 DEST_TABLE="${DEST_TABLE:-akomar_column_profiles_v1}"

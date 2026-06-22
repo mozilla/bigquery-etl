@@ -664,7 +664,7 @@ SELECT
     ],
     [STRUCT('audience' AS key, 'all' AS value)]
   ),
-  -- Test msads_` prefix
+  -- Test `msads_` prefix
   mozfun.assert.map_equals(
     marketing.parse_campaign_name(
       'msads_v1_firefox_app_latam_sv_all_all_es_desktop_all_app_conversion_app-download_mcpi_install_adgap'

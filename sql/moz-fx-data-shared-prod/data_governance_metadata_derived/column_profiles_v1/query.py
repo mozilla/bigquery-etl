@@ -14,6 +14,7 @@ The profiling logic is vendored verbatim from
 ``google.cloud.bigquery`` plus the Python standard library — the bigquery-etl
 runner image installs dependencies with ``--no-deps``.
 """
+
 import argparse
 import datetime
 import json
@@ -243,19 +244,20 @@ def build_profile_query(
     columns: list[tuple[str, str, str]],
     partition_filter: str | None = None,
     sample_id: int | None = None,
+    tablesample: bool = False,
 ) -> str:
     """Build a single query that profiles every profilable column in one pass.
 
     Profiles scalar and leaf tiers only. nested_leaf fields are profiled
     separately via build_nested_profile_queries (UNNEST-based).
 
-    sample_id selects the 1% bucket for tables with a sample_id column; the
-    caller passes a value derived deterministically from the run date so a
-    given --date always samples the same bucket.
+    Sampling is decided by the caller: a non-None sample_id adds a
+    ``sample_id = <bucket>`` filter (deterministic per run date), while
+    tablesample adds TABLESAMPLE SYSTEM (1 PERCENT) for tables whose sample_id
+    column is unpopulated. The two are mutually exclusive.
     """
     excluded_tiers = {"undocumented", "pii_suppressed", "nested_leaf", "scalar_array"}
     profilable = [(fp, dt) for fp, dt, tier in columns if tier not in excluded_tiers]
-    has_sample_id = any(fp == "sample_id" for fp, _ in profilable)
 
     col_stats = []
     for field_path, data_type in profilable:
@@ -273,15 +275,18 @@ def build_profile_query(
 
     select = ",\n        ".join(["COUNT(*) AS total_rows"] + col_stats)
 
+    from_clause = f"`{table}`"
+    if tablesample:
+        from_clause += " TABLESAMPLE SYSTEM (1 PERCENT)"
+
     where_clauses = []
     if partition_filter:
         where_clauses.append(partition_filter)
-    if has_sample_id:
-        bucket = sample_id if sample_id is not None else random.randint(1, 99)
-        where_clauses.append(f"`sample_id` = {bucket}")
+    if sample_id is not None:
+        where_clauses.append(f"`sample_id` = {sample_id}")
 
     where = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
-    return f"SELECT {select} FROM `{table}` {where}"
+    return f"SELECT {select} FROM {from_clause} {where}"
 
 
 def build_nested_profile_queries(
@@ -289,12 +294,16 @@ def build_nested_profile_queries(
     columns: list[tuple[str, str, str]],
     partition_filter: str | None = None,
     sample_id: int | None = None,
+    tablesample: bool = False,
 ) -> list[tuple[str, str, list[tuple[str, str]]]]:
     """Build one UNNEST-based profiling query per REPEATED parent column.
 
     Each query profiles all nested_leaf fields under a single REPEATED parent.
     Returns a list of (parent_column, query_sql, nested_fields) tuples.
     nested_fields is [(field_path, data_type), ...] for result parsing.
+
+    Sampling mirrors build_profile_query: caller-supplied sample_id bucket, or
+    TABLESAMPLE when the table's sample_id column is unpopulated.
     """
     nested_leaves = [(fp, dt) for fp, dt, tier in columns if tier == "nested_leaf"]
     if not nested_leaves:
@@ -304,10 +313,6 @@ def build_nested_profile_queries(
     for field_path, data_type in nested_leaves:
         parent = field_path.split(".")[0]
         by_parent.setdefault(parent, []).append((field_path, data_type))
-
-    has_sample_id = any(
-        fp == "sample_id" for fp, _, tier in columns if tier == "scalar"
-    )
 
     results = []
     for parent, fields in by_parent.items():
@@ -333,17 +338,20 @@ def build_nested_profile_queries(
 
         select = ",\n        ".join(["COUNT(*) AS total_rows"] + col_stats)
 
+        from_clause = f"`{table}`"
+        if tablesample:
+            from_clause += " TABLESAMPLE SYSTEM (1 PERCENT)"
+
         where_clauses = []
         if partition_filter:
             where_clauses.append(partition_filter)
-        if has_sample_id:
-            bucket = sample_id if sample_id is not None else random.randint(1, 99)
-            where_clauses.append(f"`sample_id` = {bucket}")
+        if sample_id is not None:
+            where_clauses.append(f"`sample_id` = {sample_id}")
 
         where = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
         query = (
             f"SELECT {select} "
-            f"FROM `{table}`, UNNEST(`{parent}`) AS `{unnest_alias}` "
+            f"FROM {from_clause}, UNNEST(`{parent}`) AS `{unnest_alias}` "
             f"{where}"
         )
         results.append((parent, query, fields))
@@ -370,6 +378,29 @@ def get_partition_filter(
     if field:
         return f"DATE(`{field}`) = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
     return f"_PARTITIONDATE = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
+
+
+def sample_id_is_populated(
+    client: bigquery.Client, table: str, partition_filter: str | None
+) -> bool:
+    """Return True if the table's sample_id column holds any non-NULL value.
+
+    Tables sourced from server-side Glean pings carry a sample_id column that is
+    never populated (these pings carry no client_id, which sample_id is derived
+    from), so it is entirely NULL. A ``sample_id = bucket`` sample would then
+    match no rows and the table would profile to zero columns, so the caller
+    uses this to decide whether to fall back to TABLESAMPLE. Checks the same
+    slice the profiler scans (the partition_filter), short-circuiting via
+    LIMIT 1 so the common populated case stays cheap.
+    """
+    where_clauses = ["`sample_id` IS NOT NULL"]
+    if partition_filter:
+        where_clauses.append(partition_filter)
+    query = (
+        f"SELECT EXISTS(SELECT 1 FROM `{table}` "
+        f"WHERE {' AND '.join(where_clauses)} LIMIT 1) AS populated"
+    )
+    return bool(list(client.query(query).result())[0].populated)
 
 
 def _dataset_region(client: bigquery.Client, project: str, dataset: str) -> str:
@@ -454,8 +485,26 @@ def _run_profile_query(
 ) -> tuple[dict[str, Any], float]:
     """Execute the profiling query and return (column_stats_dict, gb_scanned)."""
     partition_filter = get_partition_filter(client, table, run_date)
-    sample_id = _sample_bucket(run_date, table)
-    query = build_profile_query(table, columns, partition_filter, sample_id)
+
+    # Decide how to sample. Prefer the deterministic sample_id bucket, but only
+    # when that column is actually populated; tables sourced from server-side
+    # Glean pings carry an all-NULL sample_id, where `sample_id = bucket` would
+    # scan zero rows. Fall back to TABLESAMPLE in that case.
+    sample_id: int | None = None
+    tablesample = False
+    if any(fp == "sample_id" for fp, _, _ in columns):
+        if sample_id_is_populated(client, table, partition_filter):
+            sample_id = _sample_bucket(run_date, table)
+        else:
+            tablesample = True
+            logger.info(
+                "sample_id present but unpopulated for %s; "
+                "falling back to TABLESAMPLE SYSTEM (1 PERCENT).",
+                table,
+            )
+    query = build_profile_query(
+        table, columns, partition_filter, sample_id, tablesample
+    )
 
     job = client.query(query)
     rows = list(job.result())
@@ -489,7 +538,7 @@ def _run_profile_query(
         )
 
     nested_queries = build_nested_profile_queries(
-        table, columns, partition_filter, sample_id
+        table, columns, partition_filter, sample_id, tablesample
     )
     for _parent, nested_sql, nested_fields in nested_queries:
         try:
@@ -561,7 +610,8 @@ def profile_bq_table(
 ) -> str:
     """Profile every column in a single BigQuery table; return stats as JSON.
 
-    Samples 1% when a sample_id column is present. Applies a partition filter
+    Samples 1% via the sample_id bucket when that column is present and
+    populated, falling back to TABLESAMPLE when sample_id is all-NULL. Applies a partition filter
     scoped to 7 days before run_date when a date partition column is detected,
     so the scanned data matches the profiled_at partition. Fields inside REPEATED
     structs are profiled via UNNEST with the same sampling. Simple

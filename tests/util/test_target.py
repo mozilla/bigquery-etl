@@ -638,6 +638,18 @@ class TestSubstitute3PartRef:
         )
         assert "`ascholtz-dev`.`test_ds`.`test_tbl`" in out
 
+    def test_wildcard_ref_is_rewritten(self):
+        """Wildcard refs (ending in `*`) must be rewritten, not skipped — a
+        trailing `\\b` never matches after `*`, leaving the ref pointed at prod."""
+        sql = "SELECT * FROM `moz-fx-data-marketing-prod.analytics_1.events_*`"
+        out = _substitute_3part_ref(
+            sql,
+            ("moz-fx-data-marketing-prod", "analytics_1", "events_*"),
+            ("stage-proj", "analytics_1_stage", "events_*"),
+        )
+        assert "moz-fx-data-marketing-prod" not in out
+        assert "`stage-proj`.`analytics_1_stage`.`events_*`" in out
+
 
 class TestNormalizeTableRef:
     def test_information_schema_dataset_prepends_project(self):

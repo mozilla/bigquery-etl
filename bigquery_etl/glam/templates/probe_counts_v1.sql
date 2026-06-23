@@ -47,7 +47,8 @@ WITH
 categorical_buckets AS (
   SELECT
     metric,
-    ARRAY_AGG(DISTINCT record.key) AS buckets
+    -- ORDER BY for a stable label order (matches the ordered udf_get_buckets path).
+    ARRAY_AGG(DISTINCT record.key ORDER BY record.key) AS buckets
   FROM
     {{ source_table }}
   WHERE

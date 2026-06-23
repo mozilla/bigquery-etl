@@ -2,51 +2,68 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: addon_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: addon_id
 - name: name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: name
 - name: most_common_default_search_engine
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The default search engine identifier most commonly reported by clients with this add-on active
+    on the given submission date.
 - name: dau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - name: wau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: wau
 - name: mau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_system
 - name: active_hours_sum
   type: FLOAT64
   mode: NULLABLE
-  description: ''
+  description: Total hours Firefox was actively used (keyboard/mouse interaction in five-second ticks) summed
+    across all clients with this add-on.
 - name: total_uri_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Total number of URIs visited across all clients with this add-on on the submission date.
 - name: tab_open_event_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Total number of tab-open events across all clients with this add-on on the submission date.
 - name: devtools_toolbox_opened_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Total number of times the DevTools toolbox was opened across all clients with this add-on
+    on the submission date.
 - name: sap_searches
   type: RECORD
   mode: NULLABLE
@@ -55,31 +72,35 @@ fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP searches on Amazon performed by clients with this add-on on the submission date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP searches on Bing performed by clients with this add-on on the submission date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP searches on DuckDuckGo performed by clients with this add-on on the submission
+      date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total search access point (SAP) searches on Google performed by clients with this add-on
+      on the submission date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP searches on search engines other than the named ones performed by clients with
+      this add-on on the submission date.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP searches across all search engines performed by clients with this add-on on the
+      submission date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP searches on Yandex performed by clients with this add-on on the submission date.
 - name: tagged_sap_searches
   type: RECORD
   mode: NULLABLE
@@ -88,31 +109,34 @@ fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches on Amazon by clients with this add-on on the submission date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches on Bing by clients with this add-on on the submission date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches on DuckDuckGo by clients with this add-on on the submission date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches (partner-attributed) on Google by clients with this add-on on the
+      submission date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches on other engines by clients with this add-on on the submission
+      date.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches across all search engines by clients with this add-on on the submission
+      date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches on Yandex by clients with this add-on on the submission date.
 - name: tagged_follow_on_searches
   type: RECORD
   mode: NULLABLE
@@ -121,31 +145,35 @@ fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches on Amazon by clients with this add-on on the submission date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches on Bing by clients with this add-on on the submission date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches on DuckDuckGo by clients with this add-on on the submission
+      date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches on Google (searches following a prior SAP search) by clients
+      with this add-on on the submission date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches on other engines by clients with this add-on on the submission
+      date.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches across all search engines by clients with this add-on on
+      the submission date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches on Yandex by clients with this add-on on the submission date.
 - name: organic_searches
   type: RECORD
   mode: NULLABLE
@@ -154,31 +182,33 @@ fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches on Amazon by clients with this add-on on the submission date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches on Bing by clients with this add-on on the submission date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches on DuckDuckGo by clients with this add-on on the submission date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic (non-SAP) searches on Google by clients with this add-on on the submission
+      date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches on other engines by clients with this add-on on the submission date.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches across all search engines by clients with this add-on on the submission
+      date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches on Yandex by clients with this add-on on the submission date.
 - name: searches_with_ads
   type: RECORD
   mode: NULLABLE
@@ -187,31 +217,38 @@ fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches on Amazon that returned at least one ad impression, by clients with this add-on
+      on the submission date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches on Bing that returned at least one ad impression, by clients with this add-on
+      on the submission date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches on DuckDuckGo that returned at least one ad impression, by clients with this
+      add-on on the submission date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches on Google that returned at least one ad impression, by clients with this add-on
+      on the submission date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches on other engines that returned at least one ad impression, by clients with
+      this add-on on the submission date.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches across all engines that returned at least one ad impression, by clients with
+      this add-on on the submission date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches on Yandex that returned at least one ad impression, by clients with this add-on
+      on the submission date.
 - name: ad_clicks
   type: RECORD
   mode: NULLABLE
@@ -220,28 +257,33 @@ fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks on Amazon search results pages by clients with this add-on on the submission
+      date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks on Bing search results pages by clients with this add-on on the submission
+      date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks on DuckDuckGo search results pages by clients with this add-on on the submission
+      date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks on Google search results pages by clients with this add-on on the submission
+      date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks on other search engines by clients with this add-on on the submission date.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks across all search engines by clients with this add-on on the submission date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks on Yandex search results pages by clients with this add-on on the submission
+      date.

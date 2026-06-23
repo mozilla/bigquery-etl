@@ -12,3 +12,14 @@ owners:
 - cbeck@mozilla.com
 - gkatre@mozilla.com
 - phlee@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: processed_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - source_dataset
+    - source_table
+    - column_name

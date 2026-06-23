@@ -51,8 +51,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Target base schema file for promotion (e.g. app_fenix.yaml, telemetry_derived.yaml). Null when routing_hint is 'global' or 'unknown'.
-- name: sampled_at
-  type: STRING
+- name: sampled_date
+  type: DATE
   mode: NULLABLE
   description: Date (YYYY-MM-DD) when the profiling statistics referenced in this description were collected. Null for fields described without profiling data.
 - name: processed_at

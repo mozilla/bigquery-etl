@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefoxdotcom.desktop_conversion_events`
 AS
--- Get all clicks from specific countries (US, Canada, Mexico, Australia, Japan) and the first session associated with that click
+-- Get all clicks from specific countries and the first session associated with that click
 WITH firefoxdotcom_first_sessions AS (
   SELECT
     gclid,
@@ -11,17 +11,56 @@ WITH firefoxdotcom_first_sessions AS (
     UNNEST(gclid_array) AS gclid
   WHERE
     country IN (
-      "Australia",
+      "Albania",
       "Argentina",
+      "Australia",
       "Bangladesh",
+      "Brazil",
+      "Bulgaria",
       "Canada",
-      "Japan",
+      "Chile",
+      "China",
+      "Colombia",
+      "Croatia",
+      "Cyprus",
+      "Czechia",
+      "Ecuador",
+      "El Salvador",
+      "Estonia",
+      "Finland",
+      "Greece",
+      "Guatemala",
+      "Hong Kong",
+      "Hungary",
       "India",
       "Indonesia",
+      "Japan",
+      "Kosovo",
+      "Latvia",
+      "Lithuania",
+      "Luxembourg",
+      "Malaysia",
+      "Malta",
       "Mexico",
+      "New Zealand",
+      "Nigeria",
+      "North Macedonia",
+      "Panama",
+      "Philippines",
+      "Poland",
+      "Portugal",
+      "Romania",
+      "Singapore",
+      "Slovakia",
+      "Slovenia",
+      "South Africa",
+      "South Korea",
+      "Sweden",
+      "Taiwan",
+      "Thailand",
+      "Türkiye",
       "United States",
-      "Vietnam",
-      "Thailand"
+      "Vietnam"
     )
   GROUP BY
     gclid

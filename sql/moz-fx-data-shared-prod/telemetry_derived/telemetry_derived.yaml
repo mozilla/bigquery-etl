@@ -657,7 +657,8 @@ fields:
   description: The inclusive end date of the reporting or aggregation window. Records in the row apply to activity on or before this date.
   type: DATE
 - name: dau
-  description: Daily Active Users (DAU). The count of distinct clients active on a given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
+  description: Daily Active Users (DAU). The count of distinct clients active on a given day. See detailed DAU definitions for Desktop and Mobile in
+    https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
   type: INT64
 - name: days_active_bits
   description: A 28-bit integer bitmask representing the days within a rolling 28-day window on which the user was active. Each bit corresponds
@@ -1518,7 +1519,8 @@ fields:
     by their browser generation.
   type: INT64
 - name: mau
-  description: Monthly Active Users (MAU). The count of distinct clients that were active at least one day within the previous 28 days. See detailed MAU definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
+  description: Monthly Active Users (MAU). The count of distinct clients that were active at least one day within the previous 28 days. See detailed
+    MAU definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
   type: INT64
 - name: max_subsession_counter
   description: The highest subsession counter value recorded for a client within a given day, indicating how many browser subsessions occurred.
@@ -3364,7 +3366,8 @@ fields:
     wallpaper clicks occurred during the period.
   type: INT64
 - name: wau
-  description: Weekly Active Users (WAU). In aggregate tables this is the count of distinct clients active at least one day in the previous 7 days. See detailed definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
+  description: Weekly Active Users (WAU). In aggregate tables this is the count of distinct clients active at least one day in the previous 7 days.
+    See detailed definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
   type: INT64
 - name: weather_widget_change_display_to_detailed
   description: The number of times a user switched the New Tab Page weather widget from the simple view to the detailed view. A value of 0 indicates

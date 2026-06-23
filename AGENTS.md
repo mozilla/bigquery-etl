@@ -26,8 +26,34 @@ dags.yaml                              # Airflow DAG definitions
 ### SQL Generation
 Generate SQL files with `./bqetl generate`. When running locally, add `--output_dir=/tmp/sql_test_{suffix}` flag to avoid writing to `sql` directory directly. Omit or specify `{suffix}` as needed, for example if comparing different runs.
 
+### Development Environment (Targets)
+A target-based dev environment lets queries run against real data in a non-production project before a PR is opened. It is configured in `bqetl_targets.yaml` (see `bqetl_targets.yaml.example`), where a `default_target` avoids passing `--target` on every command. See `docs/cookbooks/development_workflows.md` for the full workflow.
+
+**For coding agents:** running, deploying, and backfilling (`query run`, `deploy`, `query backfill`, etc.) are allowed **only** when both: (1) scoped to a non-prod `--target` whose project is allow-listed (`coding_agents.dev_project_allowlist` in `bqetl_project.yaml`, e.g. `moz-fx-data-proto`), and (2) impersonating the target's sandbox service account. Without a target, against a production target, or with `--no-impersonate`, these commands are refused. The `--target` check is an advisory guardrail (it doesn't inspect `--project-id`); the real boundary is the impersonated service account's IAM, which has no production write access — so agent runs cannot modify prod.
+
+Set a `default_target` in `bqetl_targets.yaml` (or pass `--target dev`) so these commands run against the dev environment, e.g.:
+
+```
+./bqetl --target dev query run <dataset>.<table> --parameter=submission_date:DATE:<date> --write
+```
+
+To only check a query without writing, use `./bqetl query validate <dataset>.<table>` (dry run; works without a target). Never run, deploy, or backfill against production.
+
 ## Documentation
+- Backfilling a table: `docs/cookbooks/backfilling_a_table.md`
 - Creating queries: `docs/cookbooks/creating_a_derived_dataset.md`
 - Common workflows: `docs/cookbooks/common_workflows.md`
+- Development workflows (target-based dev environment): `docs/cookbooks/development_workflows.md`
 - Testing guide: `docs/cookbooks/testing.md`
-- Reference docs: `docs/reference/`
+
+Reference docs (`docs/reference/`) - read the relevant one when a change touches its area:
+- `schema_includes.md` - reusing field types/descriptions across tables: pulling them from other tables, views, stable tables, or shared YAML files into a `schema.yaml` via `!include` / `!include-field` / `!include-fields` / `!include-field-description` tags (`file:` paths are repo-root-relative).
+- `recommended_practices.md` - SQL conventions, query/file layout, and general authoring best practices.
+- `configuration.md` - what `bqetl_project.yaml` controls (dryrun skips, unpublished views, and other project-wide settings).
+- `data_checks.md` - adding data quality checks (`checks.sql`): null/range/duplicate/grain assertions run as part of the ETL.
+- `incremental.md` - requirements and recommendations for repeatable `@submission_date`-driven queries, atomic partition replacement, and chunked backfills.
+- `scheduling.md` - assigning queries to Airflow DAGs via `dags.yaml` and the DAG generation tooling.
+- `airflow_tags.md` - Airflow tags for filtering DAGs in the UI and conveying failure impact during triage.
+- `bigconfig.md` - Bigeye `bigConfig` for declaring which tables to monitor and what data-quality monitors/alerts apply.
+- `public_data.md` - marking datasets as public and how public data is exposed.
+- `stage-deploys-continuous-integration.md` - how CI deploys schema/view/UDF changes to the stage environment for validation.

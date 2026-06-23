@@ -18,6 +18,10 @@
   reporting_url: "url1"
   scenario: "online"
   version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
 - submission_timestamp: "2021-01-01 12:03:00"
   request_id: null
   search_query: null
@@ -38,6 +42,10 @@
   reporting_url: "url2"
   scenario: "online"
   version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
 - submission_timestamp: "2021-01-01 13:06:00"
   request_id: rid_overlap
   search_query: null
@@ -58,6 +66,11 @@
   reporting_url: "url_overlap"
   scenario: "online"
   version: "94.0.2"
+  # Different slug/branch from glean rid_overlap fixture to confirm legacy source wins dedup
+  experiments:
+    - key: overlap-exp
+      value:
+        branch: legacy-wins
 - submission_timestamp: "2021-01-01 12:07:00"
   request_id: rid7
   search_query: null
@@ -78,6 +91,10 @@
   reporting_url: "url7"
   scenario: "online"
   version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
 # merino session dedup: rid_multi_high wins because it has a higher sequence_no
 - submission_timestamp: "2021-01-01 13:20:30"
   request_id: rid_multi_high
@@ -99,6 +116,10 @@
   reporting_url: "url_multi_high"
   scenario: "online"
   version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
 # query normalization: LTRIM(LOWER(search_query)) produces telemetry_query "best shoes"
 - submission_timestamp: "2021-01-01 13:40:00"
   request_id: rid_norm
@@ -120,3 +141,7 @@
   reporting_url: "url_norm"
   scenario: "online"
   version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control

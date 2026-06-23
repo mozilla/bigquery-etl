@@ -13,6 +13,7 @@ labels:
   schedule: daily
   dag: bqetl_main_summary
   owner1: jklukas
+  legacy: true
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2020-05-05'
@@ -43,3 +44,4 @@ schema:
     - clients_daily_v6
     exclude:
     - submission_date
+  allow_field_addition: true

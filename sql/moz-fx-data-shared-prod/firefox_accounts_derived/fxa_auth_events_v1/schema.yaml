@@ -2,13 +2,22 @@ fields:
 - name: logName
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: logName
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: resource
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: resource
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: type
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: resource.type
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: labels
     type: RECORD
     mode: NULLABLE
@@ -25,9 +34,15 @@ fields:
 - name: textPayload
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: textPayload
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: jsonPayload
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: jsonPayload
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: timestamp
     type: FLOAT
@@ -699,61 +714,118 @@ fields:
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    field: receiveTimestamp
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: severity
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: severity
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: insertId
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: insertId
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: httpRequest
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: httpRequest
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: requestMethod
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.requestMethod
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: requestUrl
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.requestUrl
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: requestSize
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.requestSize
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: status
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.status
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: responseSize
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.responseSize
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: userAgent
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.userAgent
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: remoteIp
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.remoteIp
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: serverIp
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.serverIp
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: referer
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.referer
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: cacheLookup
     type: BOOLEAN
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.cacheLookup
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: cacheHit
     type: BOOLEAN
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.cacheHit
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: cacheValidatedWithOriginServer
     type: BOOLEAN
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.cacheValidatedWithOriginServer
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: cacheFillBytes
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.cacheFillBytes
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: protocol
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: httpRequest.protocol
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: labels
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: labels
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: compute_googleapis_com_resource_name
     type: STRING
@@ -1397,54 +1469,102 @@ fields:
 - name: operation
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: operation
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: id
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: operation.id
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: producer
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: operation.producer
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: first
     type: BOOLEAN
     mode: NULLABLE
+    description: !include-field-description
+      field: operation.first
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: last
     type: BOOLEAN
     mode: NULLABLE
+    description: !include-field-description
+      field: operation.last
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: trace
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: trace
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: spanId
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: spanId
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: traceSampled
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    field: traceSampled
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: sourceLocation
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: sourceLocation
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: file
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: sourceLocation.file
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: line
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: sourceLocation.line
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: function
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: sourceLocation.function
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: split
   type: RECORD
   mode: NULLABLE
+  description: !include-field-description
+    field: split
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
   fields:
   - name: uid
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: split.uid
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: index
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: split.index
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: totalSplits
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      field: split.totalSplits
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: submission_date
   type: DATE
   mode: NULLABLE

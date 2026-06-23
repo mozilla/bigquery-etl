@@ -11,24 +11,20 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill, BackfillStatus
-from bigquery_etl.metadata.parse_metadata import (
-    DATASET_METADATA_FILE,
-    METADATA_FILE,
-    DatasetMetadata,
-    Metadata,
-    PartitionType,
-)
+from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
 from bigquery_etl.util import extract_from_query_path
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
     r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-Z0-9-_$]+)"
 )
 
+# Match an `{% if ... is_init() ... %}` block (including the `{%-` whitespace-trim form
+# and compound conditions like `{% if is_init() and foo %}`) instead of a bare
+# `is_init()`, which can appear in a comment.
+IS_INIT_BLOCK_RE = re.compile(r"{%-?\s*if\s+[^%]*\bis_init\(\)")
+
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
-
-# currently only supporting backfilling tables with workgroup access: mozilla-confidential.
-VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential/data-viewers"
 
 # Backfills older than this will not run due to staging table expiration
 MAX_BACKFILL_ENTRY_AGE_DAYS = 28
@@ -113,25 +109,44 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
     return backfill_file
 
 
-# TODO: It would be better to take in a backfill object.
-def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) -> str:
-    """Return full table name where processed backfills are stored."""
+def get_backfill_staging_qualified_table_name(
+    qualified_table_name, entry_date, destination_project: Optional[str] = None
+) -> str:
+    """Return full table name where processed backfills are stored.
+
+    When a target environment is active, destination_project points the staging
+    table at the target project (e.g. a dev sandbox) instead of production.
+    """
     _, dataset, table = qualified_table_name_matching(qualified_table_name)
     backfill_table_id = f"{dataset}__{table}_{entry_date}".replace("-", "_")
+    project = destination_project or BACKFILL_DESTINATION_PROJECT
 
-    return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
+    return f"{project}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
 
-def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) -> str:
-    """Return full table name where backup of production table is stored."""
+def get_backfill_backup_table_name(
+    qualified_table_name: str,
+    entry_date: date,
+    destination_project: Optional[str] = None,
+) -> str:
+    """Return full table name where backup of production table is stored.
+
+    When a target environment is active, destination_project points the backup
+    table at the target project (e.g. a dev sandbox) instead of production.
+    """
     _, dataset, table = qualified_table_name_matching(qualified_table_name)
     cloned_table_id = f"{dataset}__{table}_backup_{entry_date}".replace("-", "_")
+    project = destination_project or BACKFILL_DESTINATION_PROJECT
 
-    return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+    return f"{project}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
 def validate_table_metadata(
-    sql_dir: str, qualified_table_name: str, ignore_missing_metadata: bool
+    sql_dir: str,
+    qualified_table_name: str,
+    ignore_missing_metadata: bool,
+    reinitialize_table: bool = False,
+    override_depends_on_past_null_partition: bool = False,
 ) -> List[str]:
     """Run all metadata.yaml validation checks and return list of error strings."""
     if ignore_missing_metadata:
@@ -146,9 +161,16 @@ def validate_table_metadata(
             return []
 
     errors = []
-    if not validate_depends_on_past(sql_dir, qualified_table_name):
+    if not validate_depends_on_past(
+        sql_dir,
+        qualified_table_name,
+        reinitialize_table=reinitialize_table,
+        override_depends_on_past_null_partition=override_depends_on_past_null_partition,
+    ):
         errors.append(
-            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}"
+            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}. "
+            "Use --reinitialize-table with `bqetl backfill create` to rebuild via the table's is_init() query, "
+            "or set override_depends_on_past_null_partition on a custom_query_path entry to backfill it per-partition."
         )
 
     if not validate_partitioning_type(sql_dir, qualified_table_name):
@@ -157,19 +179,24 @@ def validate_table_metadata(
             "only day and month partitioning are supported."
         )
 
-    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-        errors.append(
-            "Only mozilla-confidential workgroups are supported. "
-            f"{qualified_table_name} contains workgroup access that is not supported"
-        )
-
     return errors
 
 
-def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
+def validate_depends_on_past(
+    sql_dir: str,
+    qualified_table_name: str,
+    reinitialize_table: bool = False,
+    override_depends_on_past_null_partition: bool = False,
+) -> bool:
     """Check if the table depends on past and has null date_partition_parameter.
 
-    Fail if depends_on_past=true and date_partition_parameter=null
+    Fail if depends_on_past=true and date_partition_parameter=null, unless either:
+    - the backfill reinitializes the table via its is_init() query
+      (reinitialize_table=true), which rebuilds the whole table without depending on
+      prior partitions, or
+    - override_depends_on_past_null_partition=true, used with a custom_query_path that processes each
+      partition independently (so the depends-on-past replay assumption does not apply).
+      The custom_query_path requirement is enforced in validate.py.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
@@ -180,12 +207,30 @@ def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
         "depends_on_past" in table_metadata.scheduling
         and "date_partition_parameter" in table_metadata.scheduling
     ):
-        return not (
+        depends_on_past_null_partition = (
             table_metadata.scheduling["depends_on_past"]
             and table_metadata.scheduling["date_partition_parameter"] is None
         )
+        if not depends_on_past_null_partition:
+            return True
+        if override_depends_on_past_null_partition:
+            return True
+        if reinitialize_table:
+            # The reinitialize path rebuilds the whole table from its is_init() query;
+            # require that the query actually supports it.
+            return query_supports_reinitialize(sql_dir, qualified_table_name)
+        return False
 
     return True
+
+
+def query_supports_reinitialize(sql_dir: str, qualified_table_name: str) -> bool:
+    """Return True if the table's query.sql can be reinitialized via is_init()."""
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
+    if not query_path.exists():
+        return False
+    return IS_INIT_BLOCK_RE.search(query_path.read_text()) is not None
 
 
 def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
@@ -202,71 +247,6 @@ def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
         ]
 
     return True
-
-
-def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
-    """
-    Check if either table or dataset metadata workgroup is valid.
-
-    The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential/data-viewers.
-    """
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    query_file = Path(sql_dir) / project / dataset / table / "query.sql"
-    dataset_path = Path(sql_dir) / project / dataset
-    dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
-    table_metadata_path = dataset_path / table / METADATA_FILE
-
-    if not query_file.exists() and not (query_file.parent / "query.py").exists():
-        click.echo(f"No query.sql or query.py file found: {qualified_table_name}")
-        sys.exit(1)
-
-    # check dataset level metadata
-    try:
-        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
-        dataset_workgroup_access = dataset_metadata.workgroup_access
-        dataset_default_table_workgroup_access = (
-            dataset_metadata.default_table_workgroup_access
-        )
-
-    except FileNotFoundError as e:
-        raise ValueError(
-            f"Unable to validate workgroups for {qualified_table_name} in dataset metadata file."
-        ) from e
-
-    if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):
-        return True
-
-    # check table level metadata
-    try:
-        table_metadata = Metadata.from_file(table_metadata_path)
-        table_workgroup_access = table_metadata.workgroup_access
-
-        if _validate_workgroup_members(table_workgroup_access, METADATA_FILE):
-            return True
-
-    except FileNotFoundError:
-        # default table workgroup access is applied to table if metadata.yaml file is missing
-        if _validate_workgroup_members(
-            dataset_default_table_workgroup_access, DATASET_METADATA_FILE
-        ):
-            return True
-
-    return False
-
-
-def _validate_workgroup_members(workgroup_access, metadata_filename):
-    """Return True if workgroup members is valid (workgroup:mozilla-confidential/data-viewers)."""
-    if workgroup_access:
-        for workgroup in workgroup_access:
-            if metadata_filename == METADATA_FILE:
-                members = workgroup.members
-            elif metadata_filename == DATASET_METADATA_FILE:
-                members = workgroup["members"]
-
-            if VALID_WORKGROUP_MEMBER in members:
-                return True
-
-    return False
 
 
 def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
@@ -290,9 +270,15 @@ def get_scheduled_backfills(
     status: Optional[str] = None,
     ignore_old_entries: bool = False,
     ignore_missing_metadata: bool = False,
+    destination_project: Optional[str] = None,
 ) -> Dict[str, Backfill]:
-    """Return backfill entries to initiate or complete."""
-    client = bigquery.Client(project=project)
+    """Return backfill entries to initiate or complete.
+
+    When a target environment is active, destination_project is where the staging
+    and backup tables live (the target project), which is checked for existence
+    instead of the production backfill project.
+    """
+    client = bigquery.Client(project=destination_project or project)
 
     if qualified_table_name:
         backfills_dict = {
@@ -313,20 +299,17 @@ def get_scheduled_backfills(
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
-        # do not return backfill if not mozilla-confidential
-        try:
-            if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-                print(
-                    f"Skipping backfill for {qualified_table_name} because of unsupported metadata workgroups."
-                )
-                continue
-        except FileNotFoundError:
-            if ignore_missing_metadata:
+        if ignore_missing_metadata:
+            project_id, dataset_id, table_id = qualified_table_name_matching(
+                qualified_table_name
+            )
+            if not (
+                Path(sql_dir) / project_id / dataset_id / table_id / METADATA_FILE
+            ).exists():
                 print(
                     f"Skipping backfill for {qualified_table_name} because table metadata is missing."
                 )
-            else:
-                raise
+                continue
 
         if not entries:
             continue
@@ -348,10 +331,14 @@ def get_scheduled_backfills(
 
         if (
             BackfillStatus.INITIATE.value == status
-            and _should_initiate(client, entry_to_process, qualified_table_name)
+            and _should_initiate(
+                client, entry_to_process, qualified_table_name, destination_project
+            )
         ) or (
             BackfillStatus.COMPLETE.value == status
-            and _should_complete(client, entry_to_process, qualified_table_name)
+            and _should_complete(
+                client, entry_to_process, qualified_table_name, destination_project
+            )
         ):
             backfills_to_process_dict[qualified_table_name] = entry_to_process
 
@@ -359,7 +346,10 @@ def get_scheduled_backfills(
 
 
 def _should_initiate(
-    client: bigquery.Client, backfill: Backfill, qualified_table_name: str
+    client: bigquery.Client,
+    backfill: Backfill,
+    qualified_table_name: str,
+    destination_project: Optional[str] = None,
 ) -> bool:
     """Determine whether a backfill should be initiated.
 
@@ -369,7 +359,7 @@ def _should_initiate(
         return False
 
     staging_table = get_backfill_staging_qualified_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
 
     if _table_exists(client, staging_table):
@@ -379,7 +369,10 @@ def _should_initiate(
 
 
 def _should_complete(
-    client: bigquery.Client, backfill: Backfill, qualified_table_name: str
+    client: bigquery.Client,
+    backfill: Backfill,
+    qualified_table_name: str,
+    destination_project: Optional[str] = None,
 ) -> bool:
     """Determine whether a backfill should be completed.
 
@@ -389,14 +382,14 @@ def _should_complete(
         return False
 
     staging_table = get_backfill_staging_qualified_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
     if not _table_exists(client, staging_table):
         click.echo(f"Backfill staging table does not exist: {staging_table}")
         return False
 
     backup_table_name = get_backfill_backup_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
     if _table_exists(client, backup_table_name):
         click.echo(f"Backfill backup table already exists: {backup_table_name}")
@@ -411,3 +404,86 @@ def _table_exists(client: bigquery.Client, qualified_table_name: str) -> bool:
         return True
     except NotFound:
         return False
+
+
+def _access_entries_to_bindings(access_entries) -> List[dict]:
+    """Convert dataset AccessEntry list to IAM policy bindings.
+
+    Skips entries that don't represent principals (authorized views, routines,
+    datasets) or that are project-scoped (specialGroup) and so are already
+    granted via project-level IAM.
+    """
+    # dataset access_entries use legacy names
+    legacy_role_to_iam = {
+        "READER": "roles/bigquery.dataViewer",
+        "WRITER": "roles/bigquery.dataEditor",
+        "OWNER": "roles/bigquery.dataOwner",
+    }
+
+    entity_type_to_member_prefix = {
+        "userByEmail": "user:",
+        "groupByEmail": "group:",
+        "domain": "domain:",
+        "iamMember": "",
+    }
+
+    role_to_members: Dict[str, set] = {}
+    for entry in access_entries:
+        prefix = entity_type_to_member_prefix.get(entry.entity_type)
+        if prefix is None:
+            continue
+        if entry.entity_type == "userByEmail" and entry.entity_id.endswith(
+            "gserviceaccount.com"
+        ):
+            prefix = "serviceAccount:"
+        member = f"{prefix}{entry.entity_id}" if prefix else entry.entity_id
+        iam_role = legacy_role_to_iam.get(entry.role, entry.role)
+        role_to_members.setdefault(iam_role, set()).add(member)
+    return [{"role": r, "members": m} for r, m in role_to_members.items()]
+
+
+def _merge_bindings(*binding_lists) -> List[dict]:
+    """Union IAM policies for a bigquery table."""
+    merged: Dict[str, set] = {}
+    for bindings in binding_lists:
+        for b in bindings:
+            members = b["members"]
+            if not isinstance(members, set):
+                members = set(members)
+            merged.setdefault(b["role"], set()).update(members)
+    return [{"role": r, "members": m} for r, m in merged.items()]
+
+
+def copy_permissions_to_staging_table(
+    client: bigquery.Client,
+    prod_qualified_table_name: str,
+    staging_qualified_table_name: str,
+):
+    """Mirror the prod table's IAM and prod dataset's access onto the staging table.
+
+    Reads the prod table's access and access inherited from its dataset and applies
+    the union to the staging table (or the backup table).
+    """
+    prod_project, prod_dataset, _ = qualified_table_name_matching(
+        prod_qualified_table_name
+    )
+
+    prod_table_policy = client.get_iam_policy(prod_qualified_table_name)
+    prod_dataset_obj = client.get_dataset(f"{prod_project}.{prod_dataset}")
+    dataset_bindings = _access_entries_to_bindings(prod_dataset_obj.access_entries)
+
+    staging_policy = client.get_iam_policy(staging_qualified_table_name)
+    merged_bindings = _merge_bindings(prod_table_policy.bindings, dataset_bindings)
+
+    # print newly added permissions
+    click.echo(f"Adding IAM bindings to {staging_qualified_table_name}:")
+    existing_by_role = {b["role"]: set(b["members"]) for b in staging_policy.bindings}
+    for binding in merged_bindings:
+        new_members = set(binding["members"]) - existing_by_role.get(
+            binding["role"], set()
+        )
+        for member in sorted(new_members):
+            click.echo(f"+ {binding['role']}: {member}")
+
+    staging_policy.bindings = merged_bindings
+    client.set_iam_policy(staging_qualified_table_name, staging_policy)

@@ -11,6 +11,7 @@ accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
 
+import fnmatch
 import glob
 import hashlib
 import json
@@ -30,6 +31,8 @@ from urllib.request import Request, urlopen
 
 import click
 import google.auth
+import yaml
+from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
 from google.oauth2.id_token import fetch_id_token
@@ -77,7 +80,16 @@ def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credential
     if not id_token:
         auth_req = GoogleAuthRequest()
         credentials = credentials or get_credentials(auth_req)
-        if hasattr(credentials, "id_token"):
+        if isinstance(credentials, impersonated_credentials.Credentials):
+            # Impersonated credentials (e.g. a target's impersonate_service_account)
+            # don't expose an OIDC id_token, and fetch_id_token() can't use them;
+            # mint one for the impersonated SA via the IAM API.
+            id_token_credentials = impersonated_credentials.IDTokenCredentials(
+                credentials, target_audience=dry_run_url, include_email=True
+            )
+            id_token_credentials.refresh(auth_req)
+            id_token = id_token_credentials.token
+        elif hasattr(credentials, "id_token"):
             # Get token from default credentials for the current environment created via Cloud SDK run
             id_token = credentials.id_token
         else:
@@ -182,23 +194,55 @@ class DryRun:
             )
         }
 
-        # update skip list to include renamed queries in stage.
+        # Stage deploys rewrite every artifact's path, so a prod-side skip
+        # entry no longer matches the file's stage path. Reverse the mapping
+        # via each stage dir's bqetl_target_info.yaml manifest (written by
+        # prepare_target_directory) — layout-independent, so any future
+        # bqetl_targets.yaml rename scheme still works.
+        #
+        # Match with fnmatchcase (case-sensitive on all platforms, unlike
+        # fnmatch which is case-insensitive on Windows/macOS) for
+        # deterministic dev-vs-CI behavior. Note: fnmatch's `*` matches `/`
+        # — fine here because source_equivalent always has the fixed
+        # `sql/<proj>/<ds>/<table>/<file>` shape, but it's a semantic
+        # difference from glob.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
-        file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+        skip_patterns = ConfigLoader.get("dry_run", "skip", fallback=[])
+        stage_root = sql_dir / test_project if test_project else None
+        if stage_root and stage_root.is_dir() and skip_patterns:
+            # Local import: util.target imports from this module.
+            from .util.target import MANIFEST_FILENAME
 
-        skip_files.update(
-            [
-                file
-                for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
-                for file in glob.glob(
-                    file_pattern_re.sub(
-                        lambda x: f"sql/{test_project}/{x.group(2)}_{x.group(1).replace('-', '_')}*{x.group(3)}",
-                        skip,
-                    ),
-                    recursive=True,
-                )
-            ]
-        )
+            artifact_suffixes = (".sql", ".py")
+            for manifest_path in stage_root.rglob(MANIFEST_FILENAME):
+                try:
+                    manifest = yaml.safe_load(manifest_path.read_text()) or {}
+                except (yaml.YAMLError, OSError) as e:
+                    # Surface so a corrupt manifest doesn't silently drop
+                    # its artifact off the skip list — the resulting dryrun
+                    # failure would otherwise mask the real cause.
+                    click.echo(
+                        f"Warning: could not read manifest {manifest_path}: {e}",
+                        err=True,
+                    )
+                    continue
+                src_project = manifest.get("source_project")
+                src_dataset = manifest.get("source_dataset")
+                src_table = manifest.get("source_table")
+                if not (src_project and src_dataset and src_table):
+                    continue
+                for stage_file in manifest_path.parent.iterdir():
+                    if stage_file.suffix not in artifact_suffixes:
+                        continue
+                    source_equivalent = (
+                        f"sql/{src_project}/{src_dataset}/"
+                        f"{src_table}/{stage_file.name}"
+                    )
+                    if any(
+                        fnmatch.fnmatchcase(source_equivalent, pat)
+                        for pat in skip_patterns
+                    ):
+                        skip_files.add(str(stage_file))
 
         return skip_files
 
@@ -232,13 +276,13 @@ class DryRun:
             raise ValueError(f"Invalid file path: {self.sqlfile}")
         if self.strip_dml:
             sql = re.sub(
-                "CREATE OR REPLACE VIEW.*?AS",
+                r"CREATE OR REPLACE VIEW.*?\bAS\b",
                 "",
                 sql,
                 flags=re.DOTALL,
             )
             sql = re.sub(
-                "CREATE MATERIALIZED VIEW.*?AS",
+                r"CREATE MATERIALIZED VIEW.*?\bAS\b",
                 "",
                 sql,
                 flags=re.DOTALL,

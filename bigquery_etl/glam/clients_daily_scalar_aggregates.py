@@ -4,7 +4,7 @@
 import argparse
 import sys
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader
 
@@ -25,6 +25,11 @@ ATTRIBUTES = ",".join(
         "channel",
     ]
 )
+
+# Population the sampling rollout targets; drives the lookup and query routing.
+CLIENT_SAMPLED_CHANNEL = "release"
+CLIENT_SAMPLED_OS = "Windows"
+CLIENT_SAMPLED_MAX_SAMPLE_ID = 99  # sample_id buckets are 0-99
 
 
 def render_main(**kwargs):
@@ -96,7 +101,7 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
 
 
 def get_scalar_metrics(
-    schema: Dict, scalar_type: str
+    schema: Dict, scalar_type: str, product: Optional[str] = None
 ) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all scalar probes in a Glean table.
 
@@ -114,8 +119,13 @@ def get_scalar_metrics(
     }
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
-    # Metrics that are already sampled
-    sampled_metrics = get_sampled_metrics(metric_type_set[scalar_type])
+    # Metrics sampled on the rollout's target population.
+    sampled_metrics = get_sampled_metrics(
+        metric_type_set[scalar_type],
+        product=product,
+        channel=CLIENT_SAMPLED_CHANNEL,
+        os=CLIENT_SAMPLED_OS,
+    )
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
@@ -167,10 +177,14 @@ def main():
 
     schema = get_schema(args.source_table)
     unlabeled_metric_names, unlabeled_sampled_metric_names = get_scalar_metrics(
-        schema, "unlabeled"
+        schema, "unlabeled", product=args.product
     )
-    labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
-    dual_labeled_metric_names, _ = get_scalar_metrics(schema, "dual_labeled")
+    labeled_metric_names, _ = get_scalar_metrics(
+        schema, "labeled", product=args.product
+    )
+    dual_labeled_metric_names, _ = get_scalar_metrics(
+        schema, "dual_labeled", product=args.product
+    )
     metrics_with_too_many_labels = get_etl_excluded_probes_quickfix("desktop")
     dual_labeled_metric_names["dual_labeled_counter"] = [
         name
@@ -201,9 +215,9 @@ def main():
             ping_type=ping_type_from_table(args.source_table),
             client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
             client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],
-            client_sampled_channel="release",
-            client_sampled_os="Windows",
-            client_sampled_max_sample_id=100,
+            client_sampled_channel=CLIENT_SAMPLED_CHANNEL,
+            client_sampled_os=CLIENT_SAMPLED_OS,
+            client_sampled_max_sample_id=CLIENT_SAMPLED_MAX_SAMPLE_ID,
         )
     )
 

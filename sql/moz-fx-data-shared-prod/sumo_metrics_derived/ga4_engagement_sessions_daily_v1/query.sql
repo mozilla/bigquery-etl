@@ -46,10 +46,10 @@ events_with_sessions AS (
   WHERE
     ep.key = 'ga_session_id'
 ),
-  -- Map products using UDF
+  -- Map products using the canonical normalize_product UDF
 events_with_product AS (
   SELECT
-    mozfun.sumo.map_product_slug(ep.value.string_value) AS product,
+    mozfun.customer_experience.normalize_product(ep.value.string_value, 'GA4') AS product,
     ews.*
   FROM
     events_with_sessions ews,

@@ -1,0 +1,29 @@
+fields:
+- name: session_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission date of the GA4 events that make up the search session
+- name: search_locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale of the session's first search event (GA4 `locale` event param)
+- name: user_pseudo_id
+  type: STRING
+  mode: NULLABLE
+  description: GA4 pseudonymous user identifier
+- name: ga_session_id
+  type: INTEGER
+  mode: NULLABLE
+  description: GA4 session identifier (unique per user_pseudo_id)
+- name: is_successful_search
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if the session viewed a KB article after a search event, else 0
+- name: is_successful_search_1min
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if a KB view landed within 60 seconds of the closest preceding search, else 0
+- name: is_successful_search_2min
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if a KB view landed within 120 seconds of the closest preceding search, else 0

@@ -69,7 +69,7 @@ with DAG(
             "sql/moz-fx-data-test-project/test/python_script_query_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest",
         owner="test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
         task_group=task_group_test_group,

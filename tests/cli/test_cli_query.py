@@ -11,6 +11,8 @@ from click.testing import CliRunner
 
 from bigquery_etl.backfill.utils import NBR_DAYS_RETAINED
 from bigquery_etl.cli.query import (
+    DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
+    _backfill_query,
     _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,
@@ -23,10 +25,12 @@ from bigquery_etl.cli.query import (
     schedule,
     update,
 )
+from bigquery_etl.metadata.parse_metadata import PartitionType
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
+from bigquery_etl.util.target import Target
 
-DEFAULT_SAMPLING_BATCH_SIZE = 4
+DEFAULT_SAMPLING_BATCH_SIZE = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
 TOTAL_SAMPLE_ID_COUNT = 100
 
 
@@ -386,6 +390,11 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT 1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write("fields: []")
 
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v2")
             with open(
@@ -476,6 +485,15 @@ class TestQuery:
                 )
                 == 1
             )
+
+            schema_matches = paths_matching_name_pattern(
+                "telemetry_derived.query_v1",
+                "sql/",
+                "moz-fx-data-shared-prod",
+                files=["schema.yaml"],
+            )
+            assert len(schema_matches) == 1
+            assert schema_matches[0].name == "schema.yaml"
 
     def test_attach_metadata_labels(self, runner):
         with runner.isolated_filesystem():
@@ -572,6 +590,129 @@ class TestQuery:
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
 
+    def test_query_backfill_with_target(self, runner):
+        """Backfill with --target should prepare target files and run in the target project."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query.prepare_target_files", autospec=True
+            ) as prepare_target_files,
+        ):
+            src_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(src_dir)
+            with open(f"{src_dir}/query.sql", "w") as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date "
+                    "WHERE submission_date = @submission_date"
+                )
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "bigquery": {"time_partitioning": {"type": "day"}},
+            }
+            with open(f"{src_dir}/metadata.yaml", "w") as f:
+                f.write(yaml.dump(metadata_conf))
+
+            # the target-prepared query lives under the target project tree
+            target_dir = "sql/sandbox/dev_telemetry_derived/query_v1"
+            os.makedirs(target_dir)
+            with open(f"{target_dir}/query.sql", "w") as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date "
+                    "WHERE submission_date = @submission_date"
+                )
+            with open(f"{target_dir}/metadata.yaml", "w") as f:
+                f.write(yaml.dump(metadata_conf))
+            prepare_target_files.return_value = [Path(f"{target_dir}/query.sql")]
+
+            target = Target(name="dev", project_id="sandbox")
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--start_date=2021-01-05",
+                    "--end_date=2021-01-05",
+                    "--parallelism=0",
+                    "--override-retention-range-limit",
+                ],
+                obj={"target": target},
+            )
+
+            assert result.exit_code == 0
+            # target files were prepared and the query ran in the target project
+            assert prepare_target_files.call_count == 1
+            assert check_call.call_count == 1
+            args = check_call.call_args.args[0]
+            assert "--project_id=sandbox" in args
+            destination = [a for a in args if a.startswith("--destination_table=")]
+            assert destination and "sandbox" in destination[0]
+
+    def test_query_backfill_skip_target_resolution_allows_destination(self, runner):
+        """--skip-target-resolution (used by managed backfill) should let a target coexist with
+        an explicit --destination-table and run in the given project."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query.prepare_target_files", autospec=True
+            ) as prepare_target_files,
+        ):
+            src_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(src_dir)
+            with open(f"{src_dir}/query.sql", "w") as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date "
+                    "WHERE submission_date = @submission_date"
+                )
+            with open(f"{src_dir}/metadata.yaml", "w") as f:
+                f.write(
+                    yaml.dump(
+                        {
+                            "friendly_name": "t",
+                            "description": "t",
+                            "owners": ["t@example.org"],
+                            "scheduling": {"dag_name": "bqetl_test"},
+                            "bigquery": {"time_partitioning": {"type": "day"}},
+                        }
+                    )
+                )
+
+            staging = "sandbox.backfills_staging_derived.t_2021_01_05"
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--start_date=2021-01-05",
+                    "--end_date=2021-01-05",
+                    f"--destination_table={staging}",
+                    "--parallelism=0",
+                    "--override-retention-range-limit",
+                    "--skip-target-resolution",
+                ],
+                obj={"target": Target(name="dev", project_id="sandbox")},
+            )
+
+            # no mutual-exclusivity error, no target file prep, writes to the given staging table
+            assert result.exit_code == 0, result.output
+            assert prepare_target_files.call_count == 0
+            assert check_call.call_count == 1
+            args = check_call.call_args.args[0]
+            # project is not redirected to the target; destination is the given staging
+            # table (bq uses the project:dataset.table form, with a partition suffix)
+            assert "--project_id=moz-fx-data-shared-prod" in args
+            destination = [a for a in args if a.startswith("--destination_table=")]
+            assert destination and (
+                "sandbox:backfills_staging_derived.t_2021_01_05" in destination[0]
+            )
+
     def test_query_backfill_with_scheduling_overrides(self, runner):
         with (
             runner.isolated_filesystem(),
@@ -636,6 +777,58 @@ class TestQuery:
                 test_params = [arg for arg in call.args[0] if "--parameter=test" in arg]
                 assert len(test_params) == 1
                 assert test_params[0] == "--parameter=test:INT64:30"
+
+    @patch("bigquery_etl.cli.query._run_query")
+    def test_backfill_query_dedupes_date_partition_parameter(
+        self, mock_run_query, runner
+    ):
+        """A null-date_partition_parameter table that lists submission_date in `parameters`
+        (e.g. clients_first_seen_v3) is backfilled per-partition by overriding
+        date_partition_parameter to submission_date. That override decorates the destination
+        with the partition, but submission_date is already bound via `parameters`. bq rejects a
+        parameter bound twice, so _backfill_query must emit submission_date exactly once while
+        still decorating the destination."""
+        with runner.isolated_filesystem():
+            query_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(query_dir)
+            query_path = Path(query_dir) / "query.sql"
+            query_path.write_text(
+                "SELECT @submission_date AS submission_date "
+                "FROM t WHERE first_seen_date = @submission_date"
+            )
+
+            _backfill_query(
+                query_file_path=query_path,
+                project_id="moz-fx-data-shared-prod",
+                # overridden to submission_date so the destination gets decorated
+                date_partition_parameter="submission_date",
+                date_partition_offset=0,
+                max_rows=100,
+                dry_run=True,
+                # `parameters` already binds submission_date
+                scheduling_parameters=["submission_date:DATE:{{ds}}"],
+                args=[],
+                partitioning_type=PartitionType.DAY,
+                backfill_date=date(2026, 6, 7),
+                destination_table="moz-fx-data-shared-prod.telemetry_derived.query_v1",
+                run_checks=False,
+                checks_file_name="checks.sql",
+                billing_project="moz-fx-data-shared-prod",
+            )
+
+        assert mock_run_query.call_count == 1
+        query_arguments = mock_run_query.call_args.kwargs["query_arguments"]
+        submission_date_params = [
+            arg
+            for arg in query_arguments
+            if arg.startswith("--parameter=submission_date")
+        ]
+        # Bound exactly once (from `parameters`), not duplicated by the date-param append.
+        assert submission_date_params == ["--parameter=submission_date:DATE:2026-06-07"]
+        # The destination is still decorated with the per-partition suffix.
+        assert mock_run_query.call_args.kwargs["destination_table"].endswith(
+            "$20260607"
+        )
 
     def test_query_backfill_unpartitioned_with_parameters(self, runner):
         with (

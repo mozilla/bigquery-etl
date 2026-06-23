@@ -75,8 +75,11 @@ class Backfill:
     status: BackfillStatus = attr.ib()
     custom_query_path: Optional[str] = attr.ib(None)
     shredder_mitigation: Optional[bool] = attr.ib(False)
+    reinitialize_table: Optional[bool] = attr.ib(None)
+    reinitialize_sampling_batch_size: Optional[int] = attr.ib(None)
     override_retention_limit: Optional[bool] = attr.ib(False)
     override_depends_on_past_end_date: Optional[bool] = attr.ib(False)
+    override_depends_on_past_null_partition: Optional[bool] = attr.ib(False)
     ignore_date_partition_offset: Optional[bool] = attr.ib(False)
     billing_project: Optional[str] = attr.ib(None)
     query_script_entrypoint: Optional[str] = attr.ib(None)
@@ -103,8 +106,11 @@ class Backfill:
             status = {self.status.value}
             custom_query_path = {self.custom_query_path}
             shredder_mitigation = {self.shredder_mitigation}
+            reinitialize_table = {self.reinitialize_table}
+            reinitialize_sampling_batch_size = {self.reinitialize_sampling_batch_size}
             override_retention_limit = {self.override_retention_limit}
             override_depends_on_past_end_date = {self.override_depends_on_past_end_date}
+            override_depends_on_past_null_partition = {self.override_depends_on_past_null_partition}
             ignore_date_partition_offset = {self.ignore_date_partition_offset}
             billing_project = {self.billing_project}
             query_script_entrypoint = {self.query_script_entrypoint}
@@ -219,11 +225,18 @@ class Backfill:
                         status=BackfillStatus[entry["status"].upper()],
                         custom_query_path=entry.get("custom_query_path", None),
                         shredder_mitigation=entry.get("shredder_mitigation", False),
+                        reinitialize_table=entry.get("reinitialize_table", None),
+                        reinitialize_sampling_batch_size=entry.get(
+                            "reinitialize_sampling_batch_size", None
+                        ),
                         override_retention_limit=entry.get(
                             "override_retention_limit", False
                         ),
                         override_depends_on_past_end_date=entry.get(
                             "override_depends_on_past_end_date", False
+                        ),
+                        override_depends_on_past_null_partition=entry.get(
+                            "override_depends_on_past_null_partition", False
                         ),
                         ignore_date_partition_offset=entry.get(
                             "ignore_date_partition_offset", False

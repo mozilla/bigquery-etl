@@ -2,185 +2,339 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - name: second_seen_date
   type: DATE
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: second_seen_date
 - name: architecture
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: architecture
 - name: app_build_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: platform_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: platform_version
 - name: vendor
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: vendor
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - name: xpcom_abi
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: xpcom_abi
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: document_id
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - name: partner_distribution_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_distribution_version
 - name: partner_distributor
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_distributor
 - name: partner_distributor_channel
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_distributor_channel
 - name: partner_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_id
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_campaign
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_content
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_dltoken
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_dlsource
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_experiment
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_ua
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_variation
 - name: engine_data_load_path
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: engine_data_load_path
 - name: engine_data_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: engine_data_name
 - name: engine_data_origin
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: engine_data_origin
 - name: engine_data_submission_url
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: engine_data_submission_url
 - name: apple_model_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: apple_model_id
 - name: city
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - name: db_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: db_version
 - name: subdivision1
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subdivision1
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's
-    IP address.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp_name
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: startup_profile_selection_reason
 - name: installation_first_seen_admin_user
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_admin_user
 - name: installation_first_seen_default_path
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_default_path
 - name: installation_first_seen_failure_reason
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_failure_reason
 - name: installation_first_seen_from_msi
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_from_msi
 - name: installation_first_seen_install_existed
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_install_existed
 - name: installation_first_seen_installer_type
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_installer_type
 - name: installation_first_seen_other_inst
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_other_inst
 - name: installation_first_seen_other_msix_inst
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_other_msix_inst
 - name: installation_first_seen_profdir_existed
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_profdir_existed
 - name: installation_first_seen_silent
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_silent
 - name: installation_first_seen_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installation_first_seen_version
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - name: windows_build_number
   type: FLOAT
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_build_number
 - name: windows_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_version
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -188,131 +342,175 @@ fields:
   - name: first_seen_date_source_ping
     type: STRING
     mode: NULLABLE
+    description: The ping type that provided the client's first-seen date 'new_profile', 'main', or 'shutdown'.
   - name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the client sent at least one main ping on the first-seen date. True if a main ping was received.
   - name: reported_new_profile_ping
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the client sent a new-profile ping on the first-seen date. True if a new_profile ping was received.
   - name: reported_shutdown_ping
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the client sent a shutdown ping on the first-seen date. True if a shutdown ping was received.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id
 - name: funnel_derived
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: funnel_derived
 - name: distribution_model
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_model
 - name: partner_org
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: partner_org
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_desktop
 - name: stub_attr_logs_first_seen_date
   type: DATE
   mode: NULLABLE
+  description: The date the stub installer attribution log was first observed for this client. Null if no stub attribution log is available.
 - name: stub_attr_logs_ga_client_id
   type: STRING
   mode: NULLABLE
+  description: The Google Analytics client ID recorded in the stub installer attribution log for this client. Null if unavailable.
 - name: stub_attr_logs_stub_session_id
   type: STRING
   mode: NULLABLE
+  description: The session ID recorded by the stub installer for this client, used to correlate stub attribution logs.
 - name: stub_attr_logs_dl_token
   type: STRING
   mode: NULLABLE
+  description: The download token recorded in the stub installer attribution log, correlating the download with the install.
 - name: stub_attr_logs_download_source
   type: STRING
   mode: NULLABLE
+  description: The download source identifier recorded in the stub installer attribution log (e.g., 'fxdotcom', 'mozorg').
 - name: ga4_website
   type: STRING
   mode: NULLABLE
+  description: The Mozilla website from which the GA4 session originated (e.g., 'FIREFOX.COM', 'MOZILLA.ORG'). Null if no GA4 session is linked.
 - name: ga4_ga_client_id
   type: STRING
   mode: NULLABLE
+  description: The Google Analytics 4 client ID associated with the web session linked to this Firefox install.
 - name: ga4_session_date
   type: DATE
   mode: NULLABLE
+  description: The date of the GA4 web session linked to this Firefox install.
 - name: ga4_session_start_timestamp
   type: DATETIME
   mode: NULLABLE
+  description: The datetime when the linked GA4 web session started.
 - name: ga4_country
   type: STRING
   mode: NULLABLE
+  description: The country reported by GA4 for the web session linked to this install (country name, not code).
 - name: ga4_region
   type: STRING
   mode: NULLABLE
+  description: The geographic region (e.g., state or province) reported by GA4 for the linked web session.
 - name: ga4_city
   type: STRING
   mode: NULLABLE
+  description: The city reported by GA4 for the web session linked to this install.
 - name: ga4_device_category
   type: STRING
   mode: NULLABLE
+  description: The device category reported by GA4 for the linked session (always 'desktop' in this table).
 - name: ga4_mobile_device_model
   type: STRING
   mode: NULLABLE
+  description: The mobile device model reported by GA4 for the linked session. Always null for desktop sessions.
 - name: ga4_mobile_device_string
   type: STRING
   mode: NULLABLE
+  description: The mobile device string reported by GA4 for the linked session. Always null for desktop sessions.
 - name: ga4_operating_system
   type: STRING
   mode: NULLABLE
+  description: The operating system reported by GA4 for the linked session (e.g., 'Windows', 'Macintosh').
 - name: ga4_operating_system_version
   type: STRING
   mode: NULLABLE
+  description: The OS version string reported by GA4 for the linked session (e.g., 'Windows 10', 'Windows 11').
 - name: ga4_language
   type: STRING
   mode: NULLABLE
+  description: The browser language reported by GA4 for the linked session (e.g., 'en-us', 'pt-br').
 - name: ga4_browser
   type: STRING
   mode: NULLABLE
+  description: The browser type reported by GA4 for the linked web session (e.g., 'Chrome', 'Edge', 'Firefox').
 - name: ga4_browser_version
   type: STRING
   mode: NULLABLE
+  description: The browser version string reported by GA4 for the linked web session.
 - name: ga4_first_campaign_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null campaign name extracted from GA4 event parameters for the linked session (e.g., '(organic)', 'SET_DEFAULT_BROWSER').
 - name: ga4_distinct_campaigns_from_event_params
   type: STRING
   mode: REPEATED
 - name: ga4_first_source_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null traffic source extracted from GA4 event parameters for the linked session (e.g., 'google', 'bing').
 - name: ga4_distinct_sources_from_event_params
   type: STRING
   mode: REPEATED
 - name: ga4_first_medium_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null traffic medium extracted from GA4 event parameters for the linked session (e.g., 'organic', 'referral').
 - name: ga4_distinct_mediums_from_event_params
   type: STRING
   mode: REPEATED
 - name: ga4_first_content_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null UTM content value extracted from GA4 event parameters for the linked session.
 - name: ga4_distinct_contents_from_event_params
   type: STRING
   mode: REPEATED
 - name: ga4_first_term_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null search term extracted from GA4 event parameters for the linked session.
 - name: ga4_distinct_terms_from_event_params
   type: STRING
   mode: REPEATED
 - name: ga4_first_experiment_id_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null experiment ID extracted from GA4 event parameters for the linked session.
 - name: ga4_distinct_experiment_ids_from_event_params
   type: STRING
   mode: REPEATED
 - name: ga4_first_experiment_branch_from_event_params
   type: STRING
   mode: NULLABLE
+  description: The first non-null experiment branch name extracted from GA4 event parameters for the linked session.
 - name: ga4_distinct_experiment_branches_from_event_params
   type: STRING
   mode: REPEATED
@@ -327,78 +525,108 @@ fields:
 - name: ga4_manual_campaign_id
   type: STRING
   mode: NULLABLE
+  description: The manually tagged campaign ID (utm_id) from the GA4 session linked to this install.
 - name: ga4_manual_campaign_name
   type: STRING
   mode: NULLABLE
+  description: The manually tagged campaign name (utm_campaign) from the GA4 session linked to this install.
 - name: ga4_manual_source
   type: STRING
   mode: NULLABLE
+  description: The manually tagged UTM source from the GA4 session linked to this install.
 - name: ga4_manual_medium
   type: STRING
   mode: NULLABLE
+  description: The manually tagged UTM medium from the GA4 session linked to this install.
 - name: ga4_manual_term
   type: STRING
   mode: NULLABLE
+  description: The manually tagged UTM term (search keyword) from the GA4 session linked to this install.
 - name: ga4_manual_content
   type: STRING
   mode: NULLABLE
+  description: The manually tagged UTM content from the GA4 session linked to this install.
 - name: ga4_gclid
   type: STRING
   mode: NULLABLE
+  description: The Google Click ID (gclid) from the GA4 session linked to this install, used to attribute Google Ads clicks.
 - name: ga4_gclid_array
   type: STRING
   mode: REPEATED
 - name: ga4_had_download_event
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the GA4 session linked to this install included a download event for Firefox. True if a download event was recorded.
 - name: ga4_firefox_desktop_downloads
   type: INTEGER
   mode: NULLABLE
+  description: The count of Firefox Desktop download events recorded in the GA4 session linked to this install.
 - name: ga4_last_reported_install_target
   type: STRING
   mode: NULLABLE
+  description: The last reported install target from GA4 events (e.g., 'product_download', 'firefox_download').
 - name: ga4_all_reported_install_targets
   type: STRING
   mode: REPEATED
 - name: ga4_stub_session_id
   type: STRING
   mode: NULLABLE
+  description: The session ID from GA4 that corresponds to the stub installer download session for this client.
 - name: ga4_landing_screen
   type: STRING
   mode: NULLABLE
+  description: The URL of the landing page in the GA4 session that led to the Firefox download (e.g., 'https://www.firefox.com/en-US/').
 - name: ga4_ad_google_campaign
   type: STRING
   mode: NULLABLE
+  description: The Google Ads campaign name reported by GA4 for the linked session.
 - name: ga4_ad_google_campaign_id
   type: STRING
   mode: NULLABLE
+  description: The Google Ads campaign ID reported by GA4 for the linked session.
 - name: ga4_ad_google_group
   type: STRING
   mode: NULLABLE
+  description: The Google Ads ad group name reported by GA4 for the linked session.
 - name: ga4_ad_google_group_id
   type: STRING
   mode: NULLABLE
+  description: The Google Ads ad group ID reported by GA4 for the linked session.
 - name: ga4_ad_google_account
   type: STRING
   mode: NULLABLE
+  description: The Google Ads account name reported by GA4 for the linked session.
 - name: ga4_ad_crosschannel_source
   type: STRING
   mode: NULLABLE
+  description: The traffic source as attributed by GA4 cross-channel last-touch attribution for the linked session.
 - name: ga4_ad_crosschannel_medium
   type: STRING
   mode: NULLABLE
+  description: The traffic medium as attributed by GA4 cross-channel last-touch attribution (e.g., 'organic', 'cpc', 'referral').
 - name: ga4_ad_crosschannel_campaign
   type: STRING
   mode: NULLABLE
+  description: The campaign name as attributed by GA4 cross-channel last-touch attribution for the linked session.
 - name: ga4_ad_crosschannel_campaign_id
   type: STRING
   mode: NULLABLE
+  description: The campaign ID as attributed by GA4 cross-channel last-touch attribution for the linked session.
 - name: ga4_ad_crosschannel_source_platform
   type: STRING
   mode: NULLABLE
+  description: The advertising platform attributed by GA4 cross-channel attribution (e.g., 'Google Ads', 'Manual').
 - name: ga4_ad_crosschannel_primary_channel_group
   type: STRING
   mode: NULLABLE
+  description: The primary channel group classification by GA4 cross-channel attribution (e.g., 'Organic Search', 'Paid Search', 'Direct').
 - name: ga4_ad_crosschannel_default_channel_group
   type: STRING
   mode: NULLABLE
+  description: The default channel group classification by GA4 cross-channel attribution (e.g., 'Organic Search', 'Paid Search', 'Referral').
+- name: attribution_msstoresignedin
+  type: BOOLEAN
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_msstoresignedin

@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: update_channel
   type: STRING
-  description: Update Channel
+  description: The release channel from which the browser receives updates, such as
+    'release', 'beta', 'nightly', or 'esr'. This reflects the user's update track
+    and may include custom or misconfigured values.
 - mode: NULLABLE
   name: installer_type
   type: STRING
-  description: Installer Type
+  description: The type of installer package used to install the application, either
+    'full' for a complete installer or 'stub' for a lightweight installer that downloads
+    components during setup.
 - mode: NULLABLE
   name: install_count
   type: INTEGER

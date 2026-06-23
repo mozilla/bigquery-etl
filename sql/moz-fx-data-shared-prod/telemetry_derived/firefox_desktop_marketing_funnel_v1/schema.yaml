@@ -1,126 +1,120 @@
 fields:
-
 - mode: NULLABLE
   name: funnel_date
   type: DATE
-  description: Date of the funnel activity (submission_date for TOF/installs, first_seen_date for profiles)
-
+  description: The date associated with a funnel analysis snapshot, representing the
+    point in time at which funnel stage counts were computed. Stored as a DATE type.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: >
-    Country with tier label, e.g. "US (Core)", "DE (Growth)", or "Emerging" for Rest of World (Tier 3).
-    EU countries are excluded from core funnels due to cookie banner impact on tracking.
-
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: funnel_derived
   type: STRING
-  description: >
-    Funnel type based on OS and acquisition source. Values: "mozorg windows funnel" (full funnel with installs),
-    "mozorg mac funnel" (no install data), "mozorg other" (non-Windows/Mac OS),
-    "partner" (partner distribution, starts at profiles), "Unknown" (EU countries and unattributed traffic).
-
+  description: A categorical label describing the acquisition channel or funnel through
+    which a user was obtained (e.g. 'mozorg windows funnel', 'mozorg mac funnel',
+    'partner', 'other'). This is used to segment users by how they came to install
+    Firefox.
 - mode: NULLABLE
   name: channel_raw
   type: STRING
-  description: GA4 cross-channel primary channel group from web session attribution (e.g. "Organic Search", "Paid Search", "Direct")
-
+  description: The raw marketing or traffic acquisition channel through which a user
+    arrived (e.g., 'Organic Search', 'Referral', 'Paid Search', 'Direct'). May be
+    null when the acquisition channel could not be determined.
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Google Ads campaign name, with fallback to campaigns_v2 lookup by campaign ID. NULL for non-paid traffic.
-
+  description: The marketing campaign name associated with a user's acquisition or
+    install event (e.g., 'SET_DEFAULT_BROWSER', 'non-fx-button'). Null when no campaign
+    attribution is available.
 - mode: NULLABLE
   name: campaign_id
   type: STRING
-  description: Google Ads campaign ID from GA4 attribution
-
+  description: The unique identifier of the marketing campaign associated with a user's
+    acquisition event, which may include platform-specific campaign codes (e.g., Google
+    Ads or Facebook campaign IDs). Null when no campaign ID is available.
 - mode: NULLABLE
   name: source
   type: STRING
-  description: GA4 cross-channel traffic source (e.g. "google", "bing", "mozilla.org")
-
+  description: The referring domain or source URL from which a user navigated to a
+    Mozilla property. Null indicates the source was not captured or not applicable.
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: GA4 cross-channel traffic medium (e.g. "organic", "cpc", "referral")
-
+  description: The marketing or traffic medium through which a user arrived, such
+    as 'referral', 'cpc', or 'firefox-desktop'. Used to classify the acquisition channel
+    for attribution purposes.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized operating system of the Firefox profile (e.g. "Windows", "Mac", "Linux"). Only populated from telemetry (profiles CTE).
-
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - mode: NULLABLE
   name: partner_org
   type: STRING
-  description: Partner organization name. Only populated when funnel_derived = "partner", NULL otherwise.
-
+  description: A human-readable label categorizing the browser's distribution partner
+    into a broader organizational group (e.g., 'Linux - Canonical', 'Mozilla - China',
+    'non-distribution'). Used to segment clients by distribution partnership type.
 - mode: NULLABLE
   name: distribution_model
   type: STRING
-  description: Partner distribution model. Only populated when funnel_derived = "partner", NULL otherwise.
-
+  description: A categorical label describing the channel or method through which
+    the Firefox distribution was delivered to the user (e.g., 'non-distribution',
+    'OS pre-installed', 'OEM pre-installed', 'secondary store'). This field classifies
+    how the client obtained the browser.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Partner distribution ID. Only populated when funnel_derived = "partner", NULL otherwise.
-
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - mode: NULLABLE
   name: visits
   type: INTEGER
-  description: >
-    Count of GA4 desktop sessions on mozilla.org and firefox.com.
-    Excludes existing Firefox users, internal cross-site referrals (mozilla.org <-> firefox.com),
-    and EU countries. NULL for partner funnel.
-
+  description: The number of visits or sessions recorded for a given record. Null
+    values indicate the visit count was not available or applicable for that row.
 - mode: NULLABLE
   name: downloads
   type: INTEGER
-  description: >
-    Count of GA4 sessions with at least one Firefox desktop download event.
-    NULL for partner funnel.
-
+  description: The number of file downloads initiated by the user during the reporting
+    period. A value of zero indicates no downloads were started.
 - mode: NULLABLE
   name: installs
   type: INTEGER
-  description: >
-    Count of successful new Firefox installations from Windows installer telemetry.
-    Excludes silent installs, upgrades/reinstalls, non-release channels, and partner distributions.
-    Only available for "mozorg windows funnel" (NULL for Mac and other funnels).
-
+  description: The count of new application installations recorded for a given period
+    or segment. A null value indicates the install count was not available for that
+    record.
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
-  description: >
-    Count of new Firefox profiles created, from clients_first_seen_28_days_later telemetry.
-    Filtered to release channel only.
-
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.
 - mode: NULLABLE
   name: return_user
   type: INTEGER
-  description: >
-    Count of new profiles that were active on any day after their first day (qualified_second_day).
-    Requires both a URI visit and browser interaction on the same day within days 2-28.
-
+  description: An integer flag indicating whether a user (profile) returned after
+    their initial activity, where a value of 0 indicates no return was observed. Null
+    indicates the observation window had not yet elapsed.
 - mode: NULLABLE
   name: retained_week4
   type: INTEGER
-  description: >
-    Count of new profiles still active in week 4 of the 28-day observation window (qualified_week4).
-    Requires both a URI visit and browser interaction on the same day within days 22-28.
-
+  description: An integer flag (0 or null) indicating whether a profile was retained
+    through week 4 after its creation, where 0 means the profile was not retained.
+    Null indicates the retention window had not yet elapsed.
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: >
-    Derived channel bucket. Values: "Paid Search" (has a Google Ads campaign),
-    "Organic Search" (GA4 classified as Organic Search),
-    "Web - Organic/Other" (everything else including direct, referral, social).
-
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: subchannel
   type: STRING
-  description: >
-    Campaign type classification for Paid Search, based on campaign naming conventions.
-    Values: "Brand" (_brand_), "Non-Brand" (_nonbrand_), "Competitor" (_comp_),
-    "PMax" (pmax), "Other" (paid but unclassified), "All" (non-Paid Search).
+  description: The advertising subchannel classification for a marketing campaign
+    or traffic source. Values include 'Brand', 'Non-Brand', 'Competitor', 'PMax',
+    'Other', and 'All' (an aggregate across all subchannels).

@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: OS
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: failures
   type: INTEGER
   mode: NULLABLE
@@ -18,4 +24,6 @@ fields:
 - name: success
   type: INTEGER
   mode: NULLABLE
-  description: SSL handshake result success sum
+  description: A count or flag indicating successful outcomes for an operation or
+    metric within a given period. Null values indicate the metric was not applicable
+    or not recorded.

@@ -2,21 +2,34 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: usage
   type: STRING
+  description: A categorical label describing the type of Firefox Desktop activity
+    observed, such as any activity, visiting 5 or more URIs, or opening Developer
+    Tools.
 - fields:
   - fields:
     - mode: NULLABLE
       name: dau
       type: INTEGER
+      description: Daily Active Users (DAU). The count of distinct clients active
+        on a given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
     - mode: NULLABLE
       name: wau
       type: INTEGER
+      description: Weekly Active Users (WAU). In aggregate tables this is the count
+        of distinct clients active at least one day in the previous 7 days. See detailed
+        definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
     - mode: NULLABLE
       name: mau
       type: INTEGER
+      description: Monthly Active Users (MAU). The count of distinct clients that
+        were active at least one day within the previous 28 days. See detailed MAU
+        definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
     - mode: NULLABLE
       name: active_days_in_week
       type: INTEGER
@@ -34,6 +47,9 @@ fields:
     - mode: NULLABLE
       name: new_profiles
       type: INTEGER
+      description: The number of newly created Firefox profiles observed within the
+        aggregation period. A value of 0 indicates no new profiles were created for
+        that record's segment.
     - mode: NULLABLE
       name: active_in_week_0
       type: INTEGER
@@ -58,36 +74,59 @@ fields:
   mode: NULLABLE
   name: metrics
   type: RECORD
+  description: A nested struct containing all Glean metric values reported in a ping,
+    organized by metric type (e.g., boolean, string, quantity, timespan). Each sub-field
+    corresponds to a specific named metric collected by the application.
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
+  description: "A bucketing identifier (0\u201319) used to partition clients into\
+    \ evenly distributed groups, typically for sampling or incremental processing\
+    \ purposes."
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+  description: Indicates whether the client or install event has a known marketing
+    attribution source (true) or was not attributed to any campaign or referral (false).

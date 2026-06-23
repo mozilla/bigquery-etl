@@ -2,12 +2,16 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: account_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the user's logged in to an FxA account.
+  description: Indicates whether the associated user account is active and enabled.
+    True means the account is enabled; false means it has been disabled.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.

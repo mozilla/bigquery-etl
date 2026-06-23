@@ -2,13 +2,17 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's
-    IP address.
+  description: The canonical name of the Internet Service Provider associated with
+    the client's network connection. This is a normalized or deduplicated version
+    of the ISP identifier.
 - name: nbr_clients_uninstalling
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: The count of distinct clients that uninstalled the application or a
+    component during the observation period. Used to track uninstall volume and churn.

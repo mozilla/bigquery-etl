@@ -2,15 +2,25 @@ fields:
 - mode: NULLABLE
   name: corpus_item_id
   type: STRING
+  description: A UUID that uniquely identifies a content item within the Pocket or
+    Contextual Services corpus. Used to join engagement metrics back to the canonical
+    content catalog.
 - mode: NULLABLE
   name: impression_count
   type: INTEGER
+  description: The total number of times a UI element, recommendation, or piece of
+    content was shown to a user. Higher values indicate repeated exposures.
 - mode: NULLABLE
   name: click_count
   type: INTEGER
+  description: The total number of click interactions recorded for a given entity
+    or surface within the reporting period. A value of zero indicates the entity was
+    present but received no clicks.
 - mode: NULLABLE
   name: report_count
   type: INTEGER
 - mode: NULLABLE
   name: region
   type: STRING
+  description: The two-letter ISO 3166-1 country code representing the geographic
+    region of the client or user. Null when the region could not be determined.

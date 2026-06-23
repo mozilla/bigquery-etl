@@ -2,6 +2,8 @@ fields:
 - mode: NULLABLE
   name: region
   type: STRING
+  description: The two-letter ISO 3166-1 country code representing the geographic
+    region of the client or user. Null when the region could not be determined.
 - mode: NULLABLE
   name: average_ctr_top2_items
   type: FLOAT

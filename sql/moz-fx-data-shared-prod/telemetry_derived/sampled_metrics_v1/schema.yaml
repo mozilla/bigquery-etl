@@ -14,11 +14,15 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: Application name (e.g., firefox_desktop)
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: Release channel (e.g., release, beta, nightly)
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - name: min_version
   type: STRING
   mode: NULLABLE
@@ -34,11 +38,15 @@ fields:
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: Glean metric type prefix (e.g., memory_distribution, timing_distribution)
+  description: The collection methodology or storage format of the metric, such as
+    'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the metric
+    values should be interpreted and aggregated.
 - name: metric_name
   type: STRING
   mode: NULLABLE
-  description: Metric name after the type prefix
+  description: A short, human-readable label identifying the type of metric being
+    tracked, such as 'uri_count' or 'active_ticks'. Used to distinguish among different
+    measurement concepts within the same dataset.
 - name: sample_rate
   type: FLOAT64
   mode: NULLABLE
@@ -46,4 +54,6 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating system the rollout targets (e.g., Windows, Mac, Linux), parsed from the experiment targeting expression.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.

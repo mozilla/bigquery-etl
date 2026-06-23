@@ -2,6 +2,8 @@ fields:
 - mode: NULLABLE
   name: timestamp
   type: TIMESTAMP
+  description: The precise UTC timestamp indicating when the event or record was ingested
+    or generated, with microsecond-level precision.
 - mode: NULLABLE
   name: email_address
   type: STRING

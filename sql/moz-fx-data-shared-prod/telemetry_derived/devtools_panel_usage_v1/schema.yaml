@@ -2,14 +2,17 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: tool
   type: STRING
-  description: The identifier of the DevTools panel or tool (e.g., 'inspector', 'webconsole', 'jsdebugger', 'accessibility'), representing the specific
-    panel whose daily active user count is reported in this row.
+  description: The identifier of the DevTools panel or tool (e.g., 'inspector', 'webconsole',
+    'jsdebugger', 'accessibility'), representing the specific panel whose daily active
+    user count is reported in this row.
 - mode: NULLABLE
   name: dau
   type: INTEGER
-  description: The number of daily active users who opened this DevTools tool at least once on the submission_date, sampled from sample_id = 42 (approximately
-    1% of clients using the DevTools toolbox).
+  description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.

@@ -2,11 +2,15 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Normalized OS Version
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - name: ratio_uninstalls_to_installs
   type: FLOAT
   mode: NULLABLE

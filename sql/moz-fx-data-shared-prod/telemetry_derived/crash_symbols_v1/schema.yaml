@@ -1,9 +1,10 @@
----
 fields:
 - name: submission_date
   type: DATE
   mode: REQUIRED
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: request_timestamp
   type: TIMESTAMP
   mode: REQUIRED

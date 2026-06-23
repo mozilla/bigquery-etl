@@ -2,37 +2,53 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: usage
   type: STRING
-  description: Usage
+  description: A categorical label describing the type of Firefox Desktop activity
+    observed, such as any activity, visiting 5 or more URIs, or opening Developer
+    Tools.
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
-  description: ID Bucket
+  description: "A bucketing identifier (0\u201319) used to partition clients into\
+    \ evenly distributed groups, typically for sampling or incremental processing\
+    \ purposes."
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
-  description: Attributed
+  description: Indicates whether the client or install event has a known marketing
+    attribution source (true) or was not attributed to any campaign or referral (false).
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
-  description: New Profiles
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.

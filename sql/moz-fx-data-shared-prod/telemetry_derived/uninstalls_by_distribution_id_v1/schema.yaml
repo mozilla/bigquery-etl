@@ -2,12 +2,19 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution id associated with the install of Firefox.
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - name: nbr_unique_clients_uninstalling
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: The count of distinct clients that uninstalled Firefox during the relevant
+    period. Each client is counted only once regardless of how many uninstall signals
+    were received.

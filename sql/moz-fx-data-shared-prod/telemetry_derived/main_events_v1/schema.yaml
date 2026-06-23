@@ -2,160 +2,231 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message.
+  description: A unique UUID identifying an individual telemetry ping submission.
+    This identifier is used to deduplicate records and trace a specific ping through
+    the data pipeline.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: The name of the browser application (e.g., 'Firefox').
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: The operating system version string reported by the client (e.g., '10.0' for Windows, '5.1' for Windows XP).
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
 - name: experiments
   type: RECORD
   mode: REPEATED
-  description: Array of active experiments (Normandy and Nimbus) the client was
-    enrolled in at event time, with branch and enrollment metadata for each.
+  description: An array of key-value pairs representing all active experiment enrollments
+    for the client at the time of the ping, where the key is the experiment slug and
+    the value is the assigned branch. This captures the full set of concurrent experiment
+    enrollments.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: value
     type: RECORD
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
     fields:
     - name: branch
       type: STRING
       mode: NULLABLE
+      description: The experiment branch to which a client was assigned (e.g., 'control',
+        'treatment-a', 'rollout'). Used to segment clients for A/B test and rollout
+        analyses.
     - name: enrollment_id
       type: STRING
       mode: NULLABLE
     - name: type
       type: STRING
       mode: NULLABLE
+      description: The category of a browser add-on or extension, indicating its nature.
+        Common values include 'extension', 'locale', 'dictionary', and 'service'.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: "A deterministic sample bucket identifier (0\u201399) derived from\
+    \ the client_id, used to create reproducible random samples of the user population\
+    \ for analysis or experimentation."
 - name: session_id
   type: STRING
   mode: NULLABLE
-  description: UUID identifying the browser session from which this event was recorded.
+  description: A unique identifier (UUID) representing a single browser session. This
+    ID can be used to link events and activity records belonging to the same session.
 - name: session_start_time
   type: TIMESTAMP
   mode: NULLABLE
-  description: Parsed timestamp indicating when the browser session that produced this event started.
+  description: The UTC timestamp marking when a browser session began. This field
+    can be used to understand session timing and compute session duration.
 - name: subsession_id
   type: STRING
   mode: NULLABLE
-  description: UUID identifying the subsession within the browser session from which this event was recorded.
+  description: A UUID uniquely identifying a single Firefox subsession, which begins
+    at browser start or after a previous subsession ends. Used to join or deduplicate
+    subsession-level telemetry records.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: Timestamp when the telemetry ping containing this event was received by the ingestion server.
+  description: The precise UTC timestamp indicating when the event or record was ingested
+    or generated, with microsecond-level precision.
 - name: event_timestamp
   type: INTEGER
   mode: NULLABLE
-  description: Milliseconds elapsed since the start of the session when this event occurred.
+  description: The time offset in milliseconds from the start of the browser session
+    at which the event occurred. This is a relative timestamp, not an absolute wall-clock
+    time.
 - name: event_category
   type: STRING
   mode: NULLABLE
-  description: The category portion of the telemetry event identifier (e.g., 'normandy', 'navigation').
+  description: The category grouping for a telemetry event, used to classify events
+    by feature area or subsystem (e.g., 'address', 'creditcard', 'form_autocomplete').
+    This field is the top-level namespace for organizing event data.
 - name: event_method
   type: STRING
   mode: NULLABLE
-  description: The method portion of the telemetry event identifier describing the action taken (e.g., 'enroll', 'unenroll', 'search').
+  description: The method or action that triggered the event, describing what occurred
+    (e.g. 'detected', 'submitted', 'show'). This categorizes the type of interaction
+    or lifecycle step associated with the event.
 - name: event_object
   type: STRING
   mode: NULLABLE
-  description: The object portion of the telemetry event identifier describing what was acted upon (e.g., 'preference_study', 'about_newtab').
+  description: The UI element or component that was the target of the event (e.g.
+    'address_form', 'cc_form_v2', 'capture_doorhanger'). This identifies which part
+    of the product the event is associated with.
 - name: event_string_value
   type: STRING
   mode: NULLABLE
-  description: An optional string value providing additional context for the event, such as an experiment or preference name.
+  description: An optional free-text string value associated with an event, providing
+    additional context such as an error code or identifier (e.g. 'SSL_ERROR_BAD_CERT_DOMAIN').
+    This field may be null or contain the literal string 'null' when no value is applicable.
 - name: event_map_values
   type: RECORD
   mode: REPEATED
-  description: Array of key-value string pairs providing additional event-specific
-    metadata (e.g., page URL, addon version, engine name).
+  description: An array of key-value pairs providing additional metadata or attributes
+    associated with a telemetry event. Each entry contains a string key and a string
+    value that further describes the context of the event.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: value
     type: STRING
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
 - name: event_process
   type: STRING
   mode: NULLABLE
-  description: The Firefox browser process in which the event occurred (e.g., 'parent', 'content', 'dynamic', 'gpu').
+  description: The Firefox process type in which the event was recorded (e.g. 'parent',
+    'content', 'extension', 'dynamic'). This indicates the browser process context
+    from which the event originated.
 - name: build_id
   type: STRING
   mode: NULLABLE
-  description: The build identifier of the Firefox application that generated this event (e.g., '20180704003137').
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
 - name: build_architecture
   type: STRING
   mode: NULLABLE
-  description: The CPU architecture for which the Firefox build was compiled (e.g., 'x86-64', 'x86').
+  description: The CPU architecture for which the Firefox build was compiled (e.g.,
+    'x86-64', 'aarch64', 'x86'). May differ from the system architecture when running
+    a 32-bit build on a 64-bit OS.
 - name: profile_creation_date
   type: FLOAT
   mode: NULLABLE
-  description: The creation date of the client's Firefox profile expressed as the number of days since the Unix epoch.
+  description: The date on which the Firefox profile was created, formatted as a YYYYMMDD
+    string. Used to determine profile age and cohort membership.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: True if Firefox is set as the operating system's default browser; false otherwise.
+  description: Indicates whether Firefox is set as the default browser on the client's
+    device. True means it is the default; false means another browser is set as default.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: The referring domain or partner source from which the Firefox installation was attributed.
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
-  description: A unique token created at Firefox download time used to track the specific download event.
+  description: A unique token assigned at download time to link an installation to
+    a specific download event for attribution tracking. Null when no download token
+    was recorded.
 - name: system_is_wow64
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether we're in Windows32-on-Windows64 mode. Windows only.
+  description: Indicates whether the Firefox process is running as a 32-bit application
+    under the WOW64 compatibility layer on a 64-bit Windows system. True means WOW64
+    is active; false means the process is running natively.
 - name: system_memory_mb
   type: FLOAT
   mode: NULLABLE
-  description: The physical memory size in MB (2^20 bytes). e.g. 32211
+  description: The total amount of physical RAM installed on the client's system,
+    measured in megabytes. Common values correspond to standard memory configurations
+    such as 8 GB, 16 GB, and 32 GB.
 - name: city
   type: STRING
   mode: NULLABLE
-  description: The city derived from the client's IP address via geolocation at ingestion time.
+  description: The city associated with the client's IP address or profile geography
+    at the time of the record. May be null when city-level geolocation is unavailable
+    or suppressed.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID that identifies a group of profiles belonging to the same user
+    or installation context. Null when profile group information is unavailable.

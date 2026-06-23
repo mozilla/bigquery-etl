@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - name: nbr_unique_clients_uninstalling
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling Firefox
+  description: The count of distinct clients that uninstalled Firefox during the relevant
+    period. Each client is counted only once regardless of how many uninstall signals
+    were received.

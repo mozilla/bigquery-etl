@@ -2,15 +2,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission date recorded from telemetry.active_users
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: App name recorded from telemetry.active_users
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - name: logical_dag_date
   type: DATE
   mode: NULLABLE
-  description: Logical DAG Run Date; does not indicate the actual execution date of the DAG
+  description: Logical DAG Run Date; does not indicate the actual execution date of
+    the DAG
 - name: dag_run_date
   type: DATE
   mode: NULLABLE
@@ -18,40 +23,54 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: DAU (daily active users) recorded from telemetry.active_users for this app name & submission date as of run date
+  description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: WAU (weekly active users) recorded from telemetry.active_users for this app name & submission date as of run date
+  description: Weekly Active Users (WAU). In aggregate tables this is the count of
+    distinct clients active at least one day in the previous 7 days. See detailed
+    definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: MAU (monthly active users) recorded from telemetry.active_users for this app name & submission date as of run date
+  description: Monthly Active Users (MAU). The count of distinct clients that were
+    active at least one day within the previous 28 days. See detailed MAU definition
+    in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Daily Users recorded from telemetry.active_users for this app name & submission date as of run date
+  description: The count of unique users active on a given day within the reporting
+    segment. A value of 0 indicates no active users were recorded for that segment
+    on that day.
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
-  description: Weekly Users recorded from telemetry.active_users for this app name & submission date as of run date
+  description: The count of distinct users active within a given 7-day window. A value
+    of 0 indicates no users were observed as active during that week.
 - name: monthly_users
   type: INTEGER
   mode: NULLABLE
-  description: Monthly users recorded from telemetry.active_users for this app name & submission date as of run date
+  description: The count of distinct active users observed within a rolling monthly
+    window. Used to measure monthly active user (MAU) trends.
 - name: desktop
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients qualifying towards the desktop KPI as is_desktop from telemetry.active_users for this app name & submission date as of run date
+  description: Number of clients qualifying towards the desktop KPI as is_desktop
+    from telemetry.active_users for this app name & submission date as of run date
 - name: mobile
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients qualifying towards the mobile KPI as is_mobile from telemetry.active_users for this app name & submission date as of run date
+  description: Number of clients qualifying towards the mobile KPI as is_mobile from
+    telemetry.active_users for this app name & submission date as of run date
 - name: unique_client_ids
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique client IDs from telemetry.active_users for this app name and submission date as of run date
+  description: Count of unique client IDs from telemetry.active_users for this app
+    name and submission date as of run date
 - name: row_count
   type: INTEGER
   mode: NULLABLE
-  description: Row count from telemetry.active_users for this app name & submission date as of run date
+  description: The number of rows associated with a record or aggregation group, often
+    used to indicate how many raw events or pings were rolled up into a single summary
+    row.

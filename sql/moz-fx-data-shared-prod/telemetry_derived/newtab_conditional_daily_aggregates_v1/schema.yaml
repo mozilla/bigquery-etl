@@ -2,21 +2,33 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'IN', 'US', 'RU') associated
+    with the record. Equivalent in format to the `country` field and used for geographic
+    filtering and grouping.
 - name: pocket_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether the Pocket integration is enabled in the user's Firefox
+    New Tab page settings. True means Pocket content is turned on; false means it
+    has been disabled by the user.
 - name: pocket_sponsored_stories_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether sponsored story recommendations from Pocket are enabled
+    on the user's New Tab page. True means sponsored stories are turned on; false
+    means they have been disabled.
 - name: topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether the Top Sites feature is enabled on the user's New
+    Tab page. True means the feature is active; false means the user has disabled
+    it.
 - name: total_client_count
   type: INTEGER
   mode: NULLABLE
@@ -26,6 +38,9 @@ fields:
 - name: client_count
   type: INTEGER
   mode: NULLABLE
+  description: The number of distinct clients contributing to a given aggregated row
+    or cohort. Useful for understanding the population size behind any aggregated
+    metric.
 - name: visit_count
   type: INTEGER
   mode: NULLABLE

@@ -2,35 +2,51 @@ fields:
 - mode: NULLABLE
   name: os
   type: STRING
-
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: app_version
   type: INTEGER
-
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - mode: NULLABLE
   name: app_build_id
   type: STRING
-
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - mode: NULLABLE
   name: channel
   type: STRING
-
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: metric
   type: STRING
-
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
 - mode: NULLABLE
   name: process
   type: STRING
-
+  description: The Firefox process type from which a measurement or event originated,
+    such as 'parent' (the main browser process), 'content' (a content renderer process),
+    or 'gpu' (the GPU process).
 - mode: NULLABLE
   name: key
   type: STRING
-
+  description: A string identifier representing the specific action, search engine,
+    or event type associated with a record, such as a search entry point or provider
+    key. An empty string indicates no specific key was recorded.
 - mode: NULLABLE
   name: agg_type
   type: STRING
-
+  description: The aggregation type used for the metric data, indicating how the underlying
+    values were combined. The only observed value is 'histogram'.
 - mode: NULLABLE
   name: total_sample
   type: FLOAT
+  description: The total size of the sample population considered in the computation,
+    used as a denominator or baseline for proportional calculations.

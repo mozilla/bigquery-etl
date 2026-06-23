@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: os_version_bucket
   type: STRING
   mode: NULLABLE
@@ -10,4 +12,6 @@ fields:
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of new profiles
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.

@@ -2,16 +2,24 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date of Airflow job
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country code of the clients.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - name: clients
   type: INTEGER
   mode: NULLABLE
-  description: The number of clients that have autofilled their credit card information.
+  description: The total count of distinct clients represented in a summary or rollup
+    row. Provides a high-level measure of the active population for a given dimension
+    combination.
 - name: fill_counts
   type: INTEGER
   mode: NULLABLE
-  description: The fill count of clients that have autofilled their credit card information.
+  description: The total number of form field fill events recorded in the aggregation
+    period. This represents the volume of autofill or user-fill interactions captured
+    across the dataset.

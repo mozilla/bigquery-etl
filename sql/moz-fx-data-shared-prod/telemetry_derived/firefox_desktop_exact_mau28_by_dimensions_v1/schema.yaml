@@ -2,45 +2,89 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: mau
   type: INTEGER
+  description: Monthly Active Users (MAU). The count of distinct clients that were
+    active at least one day within the previous 28 days. See detailed MAU definition
+    in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
 - mode: NULLABLE
   name: wau
   type: INTEGER
+  description: Weekly Active Users (WAU). In aggregate tables this is the count of
+    distinct clients active at least one day in the previous 7 days. See detailed
+    definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
 - mode: NULLABLE
   name: dau
   type: INTEGER
+  description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
 - mode: NULLABLE
   name: visited_5_uri_mau
   type: INTEGER
+  description: The number of distinct users who visited 5 or more URIs within the
+    past 28 days, used as a monthly active user engagement metric. A value of 0 indicates
+    no qualifying users were observed that month.
 - mode: NULLABLE
   name: visited_5_uri_wau
   type: INTEGER
+  description: The number of distinct users who visited 5 or more URIs within a 7-day
+    window, used as a weekly active user engagement metric. A value of 0 indicates
+    no qualifying users were observed that week.
 - mode: NULLABLE
   name: visited_5_uri_dau
   type: INTEGER
+  description: The number of distinct users who visited 5 or more URIs on a given
+    day, used as a daily active user engagement metric. A value of 0 indicates no
+    qualifying users were observed that day.
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
+  description: "A bucketing identifier (0\u201319) used to partition clients into\
+    \ evenly distributed groups, typically for sampling or incremental processing\
+    \ purposes."
 - mode: NULLABLE
   name: source
   type: STRING
+  description: The referring domain or source URL from which a user navigated to a
+    Mozilla property. Null indicates the source was not captured or not applicable.
 - mode: NULLABLE
   name: medium
   type: STRING
+  description: The marketing or traffic medium through which a user arrived, such
+    as 'referral', 'cpc', or 'firefox-desktop'. Used to classify the acquisition channel
+    for attribution purposes.
 - mode: NULLABLE
   name: campaign
   type: STRING
+  description: The marketing campaign name associated with a user's acquisition or
+    install event (e.g., 'SET_DEFAULT_BROWSER', 'non-fx-button'). Null when no campaign
+    attribution is available.
 - mode: NULLABLE
   name: content
   type: STRING
+  description: A string representing the UTM content parameter or creative identifier
+    associated with a marketing touchpoint or link. May be null or URL-encoded when
+    not explicitly set.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: country_name
   type: STRING
+  description: The full human-readable name of the country associated with the record
+    (e.g., 'United States', 'India', 'Brazil'). Provides a display-friendly alternative
+    to ISO country code fields.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.

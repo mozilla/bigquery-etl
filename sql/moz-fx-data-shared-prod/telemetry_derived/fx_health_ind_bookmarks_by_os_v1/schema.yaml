@@ -2,16 +2,24 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized Operating System
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - name: bookmarks_added_per_dau
   type: FLOAT
   mode: NULLABLE
-  description: Bookmarks Added per Daily Active User
+  description: The ratio of bookmark additions to daily active users (DAU) for a given
+    cohort or time window. Null when there are no active users or the metric cannot
+    be computed.
 - name: bookmarks_opened_per_dau
   type: FLOAT
   mode: NULLABLE
-  description: Bookmarks Opened per DAU
+  description: The ratio of bookmark open events to daily active users (DAU) for a
+    given cohort or time window. Null when there are no active users or the metric
+    cannot be computed.

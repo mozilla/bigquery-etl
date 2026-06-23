@@ -2,36 +2,32 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry data was submitted to the server.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: metric
   type: STRING
-  description: The specific DOH (DNS-over-HTTPS) metric being measured. Can be one
-    of doh.evaluate_v2_heuristics (DOH heuristics evaluation), doh.state_disabled
-    (DOH disabled state), doh.state_enabled (DOH enabled state), doh.state_manually_disabled
-    (DOH manually disabled by user), doh.state_policy_disabled (DOH disabled by policy),
-    networking.doh_heuristics_attempts (count of heuristics attempts), networking.doh_heuristics_pass_count
-    (count of heuristics that passed), networking.doh_heuristics_result (result code
-    of heuristics evaluation), or security.doh.settings.provider_choice_value (selected
-    DOH provider).
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
 - mode: NULLABLE
   name: key
   type: STRING
-  description: The key or dimension associated with the metric value. For event-based
-    metrics with extra fields, this represents the field name (e.g., 'value'). For
-    counter/quantity metrics, this is typically the metric name itself.
+  description: A string identifier representing the specific action, search engine,
+    or event type associated with a record, such as a search entry point or provider
+    key. An empty string indicates no specific key was recorded.
 - mode: NULLABLE
   name: value
   type: STRING
-  description: The value associated with the metric. For event extra fields, this
-    contains the extra field value. For counters and quantities, this contains the
-    stringified numeric value. May be empty for events without extra fields.
+  description: A generic integer value associated with a measurement, event, or metric.
+    The specific meaning depends on the context of the surrounding fields.
 - mode: NULLABLE
   name: country_code
   type: STRING
-  description: The ISO country code where the client is located, normalized by geolocation.
-    Countries with fewer than 5000 distinct clients are aggregated into 'OTHER' for
-    privacy reasons.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'IN', 'US', 'RU') associated
+    with the record. Equivalent in format to the `country` field and used for geographic
+    filtering and grouping.
 - mode: NULLABLE
   name: total_client_count
   type: INTEGER

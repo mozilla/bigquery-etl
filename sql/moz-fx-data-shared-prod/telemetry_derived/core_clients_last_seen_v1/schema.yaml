@@ -2,121 +2,158 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 64-bit integer encoding the last 28 days of activity, where
-    each of the low 28 bits represents whether the client was active on that
-    day relative to submission_date. The rightmost bit represents the current
-    day.
+  description: A bitmask representing the days within a rolling window on which the
+    client submitted a telemetry ping and was therefore 'seen'. Each bit corresponds
+    to one day in the window.
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 64-bit integer encoding profile creation within the last 28
-    days, with a single bit set at the offset equal to days-since-creation.
-    Only set when the profile was created within the last 7 days (0-6 days);
-    0 otherwise.
+  description: A bitmask representing the days within a rolling window on which a
+    new browser profile was created. Each bit corresponds to one day in the window.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: profile_date
   type: DATE
   mode: NULLABLE
-  description: The date the Firefox profile was created on the client device, derived from the earliest observed profile creation timestamp.
+  description: The date on which the Firefox profile was created, stored as a DATE
+    type. Used to determine profile age and segment users into cohorts by profile
+    creation time.
 - name: sessions
   type: INTEGER
   mode: NULLABLE
-  description: Number of browser sessions recorded by the client on its most recently seen active day.
+  description: The total number of browser sessions recorded for the client during
+    the period. Higher values indicate more frequent browser restarts or usage intervals.
 - name: durations
   type: INTEGER
   mode: NULLABLE
-  description: Total active session duration in seconds reported by the client on its most recently seen active day.
+  description: The total duration, in seconds, associated with a session, event, or
+    activity during the reporting period. A value of zero indicates no measurable
+    duration was recorded.
 - name: flash_usage
   type: INTEGER
   mode: NULLABLE
-  description: Count of Flash plugin usage events on the client's most recently active day. This field is always 0 in practice as Flash is no longer
-    supported.
+  description: The count of Flash plugin usage events recorded for the client. A value
+    of 0 indicates Flash was present or configured but not actively used during the
+    session.
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: The name of the mobile application that submitted the core ping on the client's most recently active day (e.g., Fennec, Focus, FirefoxForFireTV).
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City name associated with the client's IP address at most recent submission, as determined by IP geolocation. Null when geolocation cannot
-    resolve to a city.
+  description: The city associated with the client's IP address or profile geography
+    at the time of the record. May be null when city-level geolocation is unavailable
+    or suppressed.
 - name: app_build_id
   type: STRING
   mode: NULLABLE
-  description: The build identifier of the application as reported in the core ping URI metadata on the client's most recently active day.
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - name: osversion
   type: STRING
   mode: NULLABLE
-  description: The raw operating system version string as reported by the client at most recent observation (e.g., '28', '33' for Android API level).
+  description: The operating system version as reported in an alternate or legacy
+    telemetry field, typically expressed as a short version string (e.g., '28', '26.5').
+    May differ in format from os_version depending on the ping source or platform.
 - name: device
   type: STRING
   mode: NULLABLE
-  description: The device model identifier combining manufacturer and model (e.g., 'samsung-SM-N960F', 'MediaTek-SMART TV') as last observed for this
-    client.
+  description: A string identifying the device on which the browser is running, typically
+    in 'Manufacturer-Model' format (e.g., 'iPhone14,5', 'MediaTek-SMART TV'). This
+    field is used to distinguish hardware types across the client population.
 - name: arch
   type: STRING
   mode: NULLABLE
-  description: The CPU architecture of the device (e.g., arm64-v8a, armeabi-v7a) as last observed for this client.
+  description: The CPU architecture of the device running the application (e.g., 'arm64-v8a',
+    'armeabi-v7a', 'x86_64'). Commonly used for mobile platform analysis to distinguish
+    ARM and x86 device types.
 - name: default_search
   type: STRING
   mode: NULLABLE
-  description: The identifier of the default search engine configured on the client (e.g., 'google-b-m', 'baidu') as last observed.
+  description: The identifier of the user's default search engine, as reported by
+    the client. Values such as 'unknown' indicate cases where the engine could not
+    be identified or mapped to a known engine.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution id associated with the install of Firefox.
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: The attribution campaign identifier as reported in the core ping. This field is always null in the current data.
+  description: The marketing campaign name associated with a user's acquisition or
+    install event (e.g., 'SET_DEFAULT_BROWSER', 'non-fx-button'). Null when no campaign
+    attribution is available.
 - name: campaign_id
   type: STRING
   mode: NULLABLE
-  description: The advertising campaign identifier associated with the client's install attribution, when available. Null for most clients.
+  description: The unique identifier of the marketing campaign associated with a user's
+    acquisition event, which may include platform-specific campaign codes (e.g., Google
+    Ads or Facebook campaign IDs). Null when no campaign ID is available.
 - name: default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: The most frequently observed value of default_browser for this
-    client on the submission date, indicating whether the browser is set as the
-    default. Ties are broken by the latest submission_timestamp.
+  description: Indicates whether Firefox is set as the user's default browser. True
+    means Firefox is the default browser; false means it is not; null indicates the
+    status could not be determined.
 - name: show_tracker_stats_share
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the tracker stats share feature was enabled on the client at last observation. Almost always null in practice.
+  description: A boolean flag indicating whether the user has enabled the option to
+    share tracker blocking statistics. A value of true means sharing is enabled; false
+    means it is disabled. This field is predominantly null, indicating the setting
+    was not recorded.
 - name: metadata_app_version
   type: STRING
   mode: NULLABLE
-  description: The application version string as reported in the HTTP request URI metadata (e.g., '4.6') at most recent observation.
+  description: The version string of the application that submitted the ping, as reported
+    in the submission metadata. This may differ from the user-facing display version.
 - name: bug_1501329_affected
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the client was affected by Bug 1501329, which caused incorrect telemetry in certain early Firefox for Android builds. False for
-    most clients.
+  description: Indicates whether the client was affected by the Firefox bug tracked
+    as bug 1501329 (true) or confirmed unaffected (false). Null when the affected
+    status could not be determined.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: The date on which the server first received a core ping from this client.
+  description: The calendar date on which the client profile was first observed in
+    telemetry data. This is used to determine client tenure and cohort assignment.

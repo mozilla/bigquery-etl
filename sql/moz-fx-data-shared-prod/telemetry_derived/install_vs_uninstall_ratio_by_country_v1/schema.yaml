@@ -2,16 +2,20 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: The ISO 3166-1 alpha-2 country code representing the country associated
+    with the client's IP address at the time of submission, such as 'US', 'DE', or
+    'BR'.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling on Firefox release channel
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.
 - name: installs_count
   type: INTEGER
   mode: NULLABLE
@@ -19,4 +23,6 @@ fields:
 - name: uninstall_to_install_ratio
   type: FLOAT
   mode: NULLABLE
-  description: Result of dividing uninstalls by installs
+  description: The ratio of uninstall events to install events over a given period.
+    A value of 1.0 means uninstalls equal installs; values below 1.0 indicate more
+    installs than uninstalls.

@@ -2,29 +2,37 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The operating system on which the client is running (e.g., 'Windows_NT', 'Darwin', 'Linux'). An asterisk ('*') indicates the value has
-    been aggregated across all operating systems.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - name: app_build_id
   type: STRING
   mode: NULLABLE
-  description: The build ID of the Firefox application (e.g., '20240509170740'). An asterisk ('*') indicates the value has been aggregated across all
-    build IDs.
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The Firefox release channel from which the client is reporting (e.g., 'release', 'beta', 'nightly').
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - name: scalar_aggregates
   type: RECORD
   mode: REPEATED
@@ -32,18 +40,34 @@ fields:
   - name: metric
     type: STRING
     mode: NULLABLE
+    description: The name of the telemetry metric or histogram being recorded, such
+      as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a
+      row represents.
   - name: metric_type
     type: STRING
     mode: NULLABLE
+    description: The collection methodology or storage format of the metric, such
+      as 'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the
+      metric values should be interpreted and aggregated.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: process
     type: STRING
     mode: NULLABLE
+    description: The Firefox process type from which a measurement or event originated,
+      such as 'parent' (the main browser process), 'content' (a content renderer process),
+      or 'gpu' (the GPU process).
   - name: agg_type
     type: STRING
     mode: NULLABLE
+    description: The aggregation type used for the metric data, indicating how the
+      underlying values were combined. The only observed value is 'histogram'.
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.

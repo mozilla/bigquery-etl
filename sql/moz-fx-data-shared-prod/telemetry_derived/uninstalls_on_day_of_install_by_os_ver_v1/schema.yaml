@@ -2,16 +2,23 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: uninstall_same_day_as_install
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if the uninstall was on the same date as the install
+  description: Indicates whether the browser or add-on was uninstalled on the same
+    calendar day it was installed. True means the uninstall occurred on the install
+    day; false means it did not.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System Version
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique client IDs uninstalling
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.

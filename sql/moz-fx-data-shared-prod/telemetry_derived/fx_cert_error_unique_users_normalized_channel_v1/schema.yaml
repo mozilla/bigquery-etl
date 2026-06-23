@@ -2,12 +2,17 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - name: nbr_unique_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique users (distinct client ids)
+  description: The count of distinct users observed within the relevant aggregation
+    period or segment. Each user is counted only once.

@@ -2,12 +2,16 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: active_addon_name
   type: STRING
   mode: NULLABLE
-  description: Active Addon Name
+  description: The human-readable display name of an active browser extension or add-on
+    installed by the user.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.

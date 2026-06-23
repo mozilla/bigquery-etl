@@ -2,45 +2,57 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: days_logged_event_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the days in the past 28 days on which this client logged at least one Telemetry event ping. The rightmost bit
-    represents the most recent day.
+  description: A bitmask representing the days within a rolling window on which at
+    least one telemetry event was logged by the client. Each bit corresponds to one
+    day in the window.
 - name: days_used_pictureinpicture_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the days in the past 28 days on which this client used the Picture-in-Picture feature at least once. The rightmost
-    bit represents the most recent day.
+  description: A bitmask representing the days within a rolling window on which the
+    user used the Picture-in-Picture video feature. Each bit corresponds to one day;
+    a value of 0 indicates the feature was not used.
 - name: days_viewed_protection_report_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the days in the past 28 days on which this client viewed the Privacy Protections report at least once. The rightmost
-    bit represents the most recent day.
+  description: A bitmask representing the days within a rolling window on which the
+    user viewed the Privacy Protections report. Each bit corresponds to one day; a
+    value of 0 indicates the report was never viewed.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: "A deterministic sample bucket identifier (0\u201399) derived from\
+    \ the client_id, used to create reproducible random samples of the user population\
+    \ for analysis or experimentation."
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: n_logged_event
   type: INTEGER
   mode: NULLABLE
-  description: The total number of Telemetry event pings logged by this client on the most recent active day within the 28-day window.
+  description: The total number of events logged for a client or session during the
+    observation period. Reflects the volume of tracked user interactions or system
+    events recorded.
 - name: n_created_pictureinpicture
   type: INTEGER
   mode: NULLABLE
-  description: The total number of Picture-in-Picture windows created by this client on the most recent active day within the 28-day window.
+  description: The number of times a Picture-in-Picture video window was created during
+    the observation period. A value of 0 indicates the feature was not used; null
+    indicates the data was not collected.
 - name: n_viewed_protection_report
   type: INTEGER
   mode: NULLABLE
-  description: The total number of times this client viewed the Privacy Protections report on the most recent active day within the 28-day window.
+  description: The number of times the Firefox Privacy Protections report was viewed
+    during the observation period. A value of 0 indicates the report was not opened.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID that identifies a group of profiles belonging to the same user
+    or installation context. Null when profile group information is unavailable.

@@ -2,41 +2,71 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: category
   type: STRING
+  description: A high-cardinality string label grouping the event or metric into a
+    functional area or feature domain (e.g., 'devtools.main', 'doh', 'pwmgr'). May
+    be null when no category classification applies to the record.
 - mode: NULLABLE
   name: event
   type: STRING
+  description: A string identifying a specific telemetry event recorded during the
+    session, typically in 'action.object' format (e.g., 'trigger.reason', 'saw_toggle.toggle').
+    This field categorizes the type of interaction or occurrence being tracked.
 - mode: NULLABLE
   name: first_timestamp
   type: TIMESTAMP
+  description: The timestamp of the earliest event or ping recorded for the client
+    within the relevant period. This field may be null when no qualifying events were
+    observed.
 - mode: NULLABLE
   name: numeric_index
   type: INTEGER
+  description: A sequential integer index used to order or identify records within
+    an aggregated or ranked dataset. Values are unique and typically assigned in ascending
+    order.
 - mode: NULLABLE
   name: index
   type: STRING
+  description: A positional or ranking identifier associated with a record, such as
+    the position of a search result or suggestion within a list.
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - fields:
     - mode: NULLABLE
       name: key
       type: STRING
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - mode: NULLABLE
       name: value
       type: STRING
+      description: A generic integer value associated with a measurement, event, or
+        metric. The specific meaning depends on the context of the surrounding fields.
     - mode: NULLABLE
       name: index
       type: INTEGER
     mode: REPEATED
     name: value
     type: RECORD
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - mode: NULLABLE
     name: index
     type: INTEGER
   mode: REPEATED
   name: event_properties
   type: RECORD
+  description: An array of structured key-value properties associated with an event,
+    where each value may itself be an array of sub-properties with an ordering index.
+    This captures additional metadata dimensions attached to a single event record.

@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: normalized_country_code
   type: STRING
-  description: Normalized Country Code
+  description: The ISO 3166-1 alpha-2 country code representing the country associated
+    with the client's IP address at the time of submission, such as 'US', 'DE', or
+    'BR'.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - mode: NULLABLE
   name: nbr_distinct_clients
   type: INTEGER

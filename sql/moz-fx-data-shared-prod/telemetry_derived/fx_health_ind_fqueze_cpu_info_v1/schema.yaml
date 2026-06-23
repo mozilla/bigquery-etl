@@ -10,7 +10,9 @@ fields:
 - mode: REQUIRED
   name: cpu_cores
   type: INTEGER
-  description: CPU Cores
+  description: The number of logical CPU cores available on the client device as reported
+    by the Firefox telemetry environment. Used to segment performance and hardware
+    capability data.
 - mode: NULLABLE
   name: cpu_type
   type: STRING

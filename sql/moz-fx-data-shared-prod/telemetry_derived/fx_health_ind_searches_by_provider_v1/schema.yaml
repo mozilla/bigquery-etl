@@ -2,16 +2,23 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
-  description: Default Search Engine
+  description: The internal identifier of the user's default search engine (e.g.,
+    'google-b-d', 'baidu'), which encodes both the engine and any partner or distribution-specific
+    configuration. This field represents the engine key as recognized by Firefox's
+    search service.
 - mode: NULLABLE
   name: searches
   type: INTEGER
-  description: Number of Searches
+  description: The total number of searches performed during the period. A value of
+    zero indicates no search activity was recorded.
 - mode: NULLABLE
   name: users
   type: INTEGER
-  description: Number of Users
+  description: The count of distinct users associated with a given record or group.
+    Represents the number of unique clients contributing to an aggregated measurement.

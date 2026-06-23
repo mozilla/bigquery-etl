@@ -2,36 +2,69 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: app_build_id
   type: STRING
   mode: NULLABLE
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - name: process
   type: STRING
   mode: NULLABLE
+  description: The Firefox process type from which a measurement or event originated,
+    such as 'parent' (the main browser process), 'content' (a content renderer process),
+    or 'gpu' (the GPU process).
 - name: metric
   type: STRING
   mode: NULLABLE
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
 - name: key
   type: STRING
   mode: NULLABLE
+  description: A string identifier representing the specific action, search engine,
+    or event type associated with a record, such as a search entry point or provider
+    key. An empty string indicates no specific key was recorded.
 - name: client_agg_type
   type: STRING
   mode: NULLABLE
+  description: Describes the aggregation method applied to client-level metric values,
+    such as 'summed_histogram', 'count', 'avg', 'sum', 'min', or 'max'. Determines
+    how individual client observations were combined into the stored aggregate.
 - name: metric_type
   type: STRING
   mode: NULLABLE
+  description: The collection methodology or storage format of the metric, such as
+    'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the metric
+    values should be interpreted and aggregated.
 - name: total_users
   type: INTEGER
   mode: NULLABLE
+  description: The total count of users associated with the record or group, representing
+    the full population for the given aggregation.
 - name: histogram
   type: STRING
   mode: NULLABLE
+  description: A JSON-encoded histogram representing the normalized distribution of
+    values across buckets for a given metric. Keys correspond to bucket indices and
+    values represent the proportion of observations in each bucket.
 - name: total_sample
   type: BIGNUMERIC
   mode: NULLABLE
+  description: The total size of the sample population considered in the computation,
+    used as a denominator or baseline for proportional calculations.
 - name: non_norm_histogram
   type: STRING
   mode: NULLABLE
+  description: A JSON-encoded string representing a non-normalized histogram for a
+    telemetry metric, where keys are bucket labels or indices and values are counts.
+    This preserves the raw histogram structure before any normalization is applied.

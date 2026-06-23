@@ -5,6 +5,9 @@ fields:
 - mode: NULLABLE
   name: position
   type: INTEGER
+  description: The zero- or one-based ordinal position of an item within a list or
+    UI surface (e.g., a recommendation card or menu entry). Lower values indicate
+    items displayed earlier or higher in the interface.
 - mode: NULLABLE
   name: tile_format
   type: STRING

@@ -2,12 +2,16 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: nbr_cpu_cores
   type: INTEGER
   mode: NULLABLE
-  description: Count of CPU cores on device
+  description: The number of logical CPU cores available on the client device. Used
+    to characterize device hardware capability and segment clients by compute capacity.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling Firefox
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.

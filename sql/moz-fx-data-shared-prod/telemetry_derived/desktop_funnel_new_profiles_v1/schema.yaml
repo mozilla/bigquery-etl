@@ -2,27 +2,55 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
+  description: The calendar date associated with the record, formatted as a YYYY-MM-DD
+    string. This typically represents the day on which the activity or metric was
+    measured.
 - mode: NULLABLE
   name: country_name
   type: STRING
+  description: The full human-readable name of the country associated with the record
+    (e.g., 'United States', 'India', 'Brazil'). Provides a display-friendly alternative
+    to ISO country code fields.
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: build_id
   type: STRING
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
 - mode: NULLABLE
   name: os
   type: STRING
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: attribution_source
   type: STRING
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
+  description: The user agent type of the browser the user was using when they downloaded
+    Firefox, as captured in attribution parameters (e.g., 'chrome', 'edge', 'firefox').
+    Null when attribution data is unavailable.
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.

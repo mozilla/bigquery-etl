@@ -2,28 +2,36 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: total_default
   type: INTEGER
   mode: NULLABLE
-  description: Number of Windows 10 clients with Firefox as default browser with days since seen = 0
+  description: Number of Windows 10 clients with Firefox as default browser with days
+    since seen = 0
 - name: default_new
   type: INTEGER
   mode: NULLABLE
-  description: Number of Windows 10 clients with Firefox as default browswer with days since seen = 0 and first seen < 28 days ago
+  description: Number of Windows 10 clients with Firefox as default browswer with
+    days since seen = 0 and first seen < 28 days ago
 - name: default_old
   type: INTEGER
   mode: NULLABLE
-  description: Number of Windows 10 clients with Firefox as default browser with days since seen = 0 and first seen >= 28 days ago
+  description: Number of Windows 10 clients with Firefox as default browser with days
+    since seen = 0 and first seen >= 28 days ago
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: Number of Windows 10 clients with days since seen = 0
+  description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
 - name: share_new_default
   type: FLOAT
   mode: NULLABLE
-  description: Percent of Windows 10 clients with a first seen date < 28 days ago with Firefox as default
+  description: Percent of Windows 10 clients with a first seen date < 28 days ago
+    with Firefox as default
 - name: share_old_default
   type: FLOAT
   mode: NULLABLE
-  description: Percent of Windows 10 clients with a first seen date >= 28 days ago with Firefox as default browser
+  description: Percent of Windows 10 clients with a first seen date >= 28 days ago
+    with Firefox as default browser

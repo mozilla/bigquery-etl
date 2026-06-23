@@ -2,16 +2,22 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: The smaller client ID string
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - mode: NULLABLE
   name: linked_client_id
   type: STRING
-  description: The larger client ID string
+  description: A UUID representing a Firefox client that has been linked or associated
+    with another identifier, such as a Glean client ID or a profile ID. Used to join
+    records across different telemetry systems.
 - mode: NULLABLE
   name: linkage_first_seen_date
   type: DATE
-  description: Date of when a client ID and linked client ID are first detected to be using the same account ID
+  description: The earliest date on which a linkage between two identifiers (e.g.,
+    client ID and another ID) was first observed in the data. Used to track when a
+    relationship was established.
 - mode: NULLABLE
   name: linkage_last_seen_date
   type: DATE
-  description: Date of when a client ID and linked client ID are last detected to be using the same account ID
+  description: The most recent date on which a linkage between two identifiers was
+    observed in the data. Used to determine how recently a relationship was active.

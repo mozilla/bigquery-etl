@@ -2,54 +2,71 @@ fields:
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: app_version
   type: INTEGER
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - mode: NULLABLE
   name: app_build_id
   type: STRING
-  description: The build ID of the Firefox application used to compute these per-bucket counts. May be '*' when the row aggregates across all build IDs
-    for a given channel and OS combination.
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: first_bucket
   type: INTEGER
-  description: The lower bound value of the first bucket in this histogram's bucket range definition.
+  description: The lower bound of the first bucket in a histogram, defining the minimum
+    value range captured by the histogram's first bin. Different histograms use different
+    starting bucket sizes (e.g. 1, 50, 1024).
 - mode: NULLABLE
   name: last_bucket
   type: INTEGER
-  description: The upper bound value of the last bucket in this histogram's bucket range definition.
+  description: The upper boundary value of the last bucket in a histogram distribution.
+    This defines the maximum range of the histogram's final bin.
 - mode: NULLABLE
   name: num_buckets
   type: INTEGER
-  description: The total number of buckets defined for this histogram metric.
+  description: The number of buckets in a histogram metric definition. This determines
+    the granularity of the histogram and is part of the histogram's structural metadata.
 - mode: NULLABLE
   name: metric
   type: STRING
-  description: The name of the telemetry histogram metric for this row (e.g., 'event_longtask', 'webext_extension_startup_ms_by_addonid').
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
 - mode: NULLABLE
   name: metric_type
   type: STRING
-  description: The histogram type for this metric, such as 'histogram-exponential', 'histogram-linear', 'histogram-enumerated', 'histogram-categorical',
-    'histogram-count', or 'histogram-boolean'.
+  description: The collection methodology or storage format of the metric, such as
+    'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the metric
+    values should be interpreted and aggregated.
 - mode: NULLABLE
   name: key
   type: STRING
-  description: For keyed histograms, the specific key string (e.g., an addon ID, domain, or feature flag) that scopes this row's counts. Empty string
-    for non-keyed histograms.
+  description: A string identifier representing the specific action, search engine,
+    or event type associated with a record, such as a search entry point or provider
+    key. An empty string indicates no specific key was recorded.
 - mode: NULLABLE
   name: process
   type: STRING
-  description: The Firefox process type from which this histogram was recorded (e.g., 'parent', 'content', 'gpu').
+  description: The Firefox process type from which a measurement or event originated,
+    such as 'parent' (the main browser process), 'content' (a content renderer process),
+    or 'gpu' (the GPU process).
 - mode: NULLABLE
   name: agg_type
   type: STRING
-  description: The aggregation type applied to this histogram. Currently always 'summed_histogram', indicating bucket counts are summed across clients.
+  description: The aggregation type used for the metric data, indicating how the underlying
+    values were combined. The only observed value is 'histogram'.
 - description: A struct holding the normalized (weighted) histogram bucket counts
     after GLAM normalization. The key is the bucket boundary and the value is the
     normalized count as a float.
@@ -57,19 +74,25 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: record
   type: RECORD
-- description: A struct holding the non-normalized (raw summed) histogram bucket
-    counts prior to GLAM normalization. The key is the bucket boundary and the
-    value is the raw aggregated count.
+- description: A struct holding the non-normalized (raw summed) histogram bucket counts
+    prior to GLAM normalization. The key is the bucket boundary and the value is the
+    raw aggregated count.
   fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: FLOAT

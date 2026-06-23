@@ -3,11 +3,15 @@ fields:
   mode: NULLABLE
   name: build_number
   type: INTEGER
-- description: null
+- description: A high-cardinality string label grouping the event or metric into a
+    functional area or feature domain (e.g., 'devtools.main', 'doh', 'pwmgr'). May
+    be null when no category classification applies to the record.
   mode: NULLABLE
   name: category
   type: STRING
-- description: null
+- description: The calendar date associated with the record, formatted as a YYYY-MM-DD
+    string. This typically represents the day on which the activity or metric was
+    measured.
   mode: NULLABLE
   name: date
   type: DATE
@@ -19,11 +23,14 @@ fields:
   mode: NULLABLE
   name: is_security_driven
   type: BOOLEAN
-- description: null
+- description: The Mozilla product name associated with the record, such as 'Fenix',
+    'Firefox iOS', 'Focus Android', or 'Fennec'. Identifies the application from which
+    the data originates.
   mode: NULLABLE
   name: product
   type: STRING
-- description: null
+- description: The version string of the software, add-on, or component being measured.
+    Follows standard versioning conventions such as major.minor.patch.
   mode: NULLABLE
   name: version
   type: STRING

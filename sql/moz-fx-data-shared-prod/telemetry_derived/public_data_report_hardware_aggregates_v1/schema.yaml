@@ -2,21 +2,36 @@ fields:
 - name: date_from
   type: DATE
   mode: NULLABLE
+  description: The inclusive start date of the reporting or aggregation window. Records
+    in the row apply to activity on or after this date.
 - name: date_to
   type: DATE
   mode: NULLABLE
+  description: The inclusive end date of the reporting or aggregation window. Records
+    in the row apply to activity on or before this date.
 - name: browser_arch
   type: STRING
   mode: NULLABLE
+  description: The CPU architecture of the browser process. Complements the system
+    architecture field to account for cases where the browser runs under emulation
+    or a different bitness than the OS.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: memory_gb
   type: INTEGER
   mode: NULLABLE
+  description: The total amount of physical memory available on the client device,
+    expressed in gigabytes. Used to characterize device hardware capability.
 - name: is_wow64
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether the Firefox process is running as a 32-bit application
+    under the 64-bit Windows-on-Windows (WoW64) compatibility layer. True means WoW64
+    is in use; false means it is not.
 - name: gfx0_vendor_id
   type: STRING
   mode: NULLABLE
@@ -26,18 +41,33 @@ fields:
 - name: resolution
   type: STRING
   mode: NULLABLE
+  description: The resolution or outcome classification associated with a record,
+    such as a crash report or support ticket resolution state. Describes how or whether
+    the underlying issue was addressed.
 - name: cpu_cores
   type: INTEGER
   mode: NULLABLE
+  description: The number of logical CPU cores available on the client device as reported
+    by the Firefox telemetry environment. Used to segment performance and hardware
+    capability data.
 - name: cpu_vendor
   type: STRING
   mode: NULLABLE
+  description: The CPU vendor string as reported by the CPUID instruction (e.g., 'GenuineIntel',
+    'AuthenticAMD'). An empty string or null indicates the vendor could not be identified.
 - name: cpu_speed
   type: STRING
   mode: NULLABLE
+  description: The reported speed of the CPU as a string value. This may represent
+    a nominal or base clock speed identifier for the processor.
 - name: has_flash
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether the Adobe Flash plugin is installed and available
+    on the client. True means Flash is present; false means it is not.
 - name: client_count
   type: INTEGER
   mode: NULLABLE
+  description: The number of distinct clients contributing to a given aggregated row
+    or cohort. Useful for understanding the population size behind any aggregated
+    metric.

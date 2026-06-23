@@ -2,96 +2,140 @@ fields:
 - mode: NULLABLE
   name: metric_date
   type: DATE
-  description: Metric Date
+  description: The calendar date associated with the metric observation or aggregation
+    window. Used to partition and filter metric data by time.
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: The calendar date on which the client profile was first observed in
+    telemetry data. This is used to determine client tenure and cohort assignment.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: An ISO 3166-1 alpha-2 country code
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
-  description: Attribution Campaign
+  description: The marketing campaign name associated with the Firefox installation,
+    sourced from attribution parameters (e.g., 'SET_DEFAULT_BROWSER'). Null when attribution
+    data is unavailable.
 - mode: NULLABLE
   name: attribution_content
   type: STRING
-  description: Attribution Content
+  description: The content variant or creative identifier from the marketing attribution
+    parameters, used to distinguish specific ad placements or page elements (e.g.,
+    'body-download-button'). Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING
-  description: Attribution DL Source
+  description: The download source identifier from attribution parameters, indicating
+    the platform or property from which Firefox was downloaded (e.g., 'mozorg', 'fxdotcom',
+    'mozillaci'). Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: Attribution Medium
+  description: The marketing medium from attribution parameters describing how the
+    user arrived at the download (e.g., 'referral', 'firefox-desktop'). Null when
+    attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: Attribution UA
+  description: The user agent type of the browser the user was using when they downloaded
+    Firefox, as captured in attribution parameters (e.g., 'chrome', 'edge', 'firefox').
+    Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description: Attribution Experiment
+  description: The experiment identifier from attribution parameters, indicating whether
+    the install was part of a specific marketing experiment (e.g., 'download-privacy').
+    Null when no experiment was associated with the attribution.
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation
+  description: The A/B test variation from attribution parameters that the user was
+    assigned to during the download funnel (e.g., 'treatment', 'control'). Null when
+    no variation was recorded.
 - mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING
-  description: Startup Profile Selection Reason
+  description: The reason or method by which a Firefox profile was selected at the
+    start of a session. Common values include 'firstrun-created-default' (a new default
+    profile was created on first run) and 'default' (the existing default profile
+    was selected).
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: Normalized OS Version
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - mode: NULLABLE
   name: is_desktop
   type: BOOLEAN
-  description: Indicates if the client is included in the desktop KPI
+  description: Indicates whether the client is running on a desktop platform as opposed
+    to a mobile device. True means the client is on desktop; false means it is on
+    a mobile platform.
 - mode: NULLABLE
   name: ping_sent_metric_date
   type: INTEGER
-  description: Count of Pings Sent on Metric Date
+  description: Indicates whether a telemetry ping was sent on the metric reference
+    date. True means a ping was successfully submitted for that date; null indicates
+    the data is unavailable or the client was inactive.
 - mode: NULLABLE
   name: ping_sent_week_4
   type: INTEGER
-  description: Count of Pings Sent on Week 4
+  description: Indicates whether a telemetry ping was sent during week 4 of the measurement
+    window. True means the client was active and submitted a ping in that week; false
+    means no ping was received.
 - mode: NULLABLE
   name: active_metric_date
   type: INTEGER
-  description: Count of Clients Active on Metric Date
+  description: Indicates whether the client was active on the metric (reference) date.
 - mode: NULLABLE
   name: retained_week_4
   type: INTEGER
-  description: Count of Clients Retained on Week 4
+  description: A boolean flag indicating whether a profile was active during the fourth
+    week after its creation. True means the profile was retained; false means it was
+    not; null indicates the window had not yet elapsed.
 - mode: NULLABLE
   name: retained_week_4_new_profiles
   type: INTEGER
-  description: Count of New Profiles Retained on Week 4
+  description: The count of new profiles that were retained through the fourth week
+    after their creation date, for a given segment or reporting dimension.
 - mode: NULLABLE
   name: new_profiles_metric_date
   type: INTEGER
-  description: Count of New Profiles on Metric Date
+  description: The count of new profiles attributed to the specific metric date for
+    the record. Used to track profile creation volume on a given date within an aggregated
+    dataset.
 - mode: NULLABLE
   name: repeat_profiles
   type: INTEGER
-  description: Count of Repeat Profiles
+  description: The count of profiles that have been seen in a previous reporting period
+    (i.e., returning profiles) for a given dimension or segment. Complements new profile
+    counts to provide a full picture of the user base.

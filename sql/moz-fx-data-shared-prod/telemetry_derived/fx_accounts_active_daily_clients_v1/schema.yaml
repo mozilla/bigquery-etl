@@ -2,11 +2,15 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the client, from the Firefox Account ping
+  description: The unique client identifier used in Firefox's legacy telemetry system,
+    formatted as a UUID. This is used to track individual browser installations across
+    telemetry pings.
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
@@ -19,15 +23,19 @@ fields:
 - name: app_channel
   type: STRING
   mode: NULLABLE
-  description: The channel the application is being distributed on.
+  description: The release channel of the application build, indicating the target
+    audience and stability level. Possible values include 'release', 'beta', and 'nightly'.
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The human-readable version string of the application as displayed to
+    users, including major, minor, and patch components (e.g., '151.0.1' or '115.36.0esr').
 - name: architecture
   type: STRING
   mode: NULLABLE
-  description: The architecture of the device, (e.g. "arm", "x86").
+  description: The CPU architecture of the system on which the application is running
+    (e.g., 'x86-64', 'aarch64', 'arm'). Identifies the instruction set architecture
+    of the client device.
 - name: build_date
   type: STRING
   mode: NULLABLE
@@ -35,7 +43,8 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
@@ -43,7 +52,9 @@ fields:
 - name: device_model
   type: STRING
   mode: NULLABLE
-  description: The model of the device the application is running on.
+  description: The model identifier of the device on which the browser is running
+    (e.g., 'iPhone14,5'). This field may be null for desktop or unrecognized device
+    types where model information is unavailable.
 - name: first_run_date
   type: STRING
   mode: NULLABLE
@@ -51,15 +62,21 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: Operating System Version
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
 - name: session_count
   type: INTEGER
   mode: NULLABLE
@@ -67,16 +84,19 @@ fields:
 - name: session_id
   type: STRING
   mode: NULLABLE
-  description: An optional UUID uniquely identifying the client's current session.
+  description: A unique identifier (UUID) representing a single browser session. This
+    ID can be used to link events and activity records belonging to the same session.
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
-  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
+  description: The version of the Glean SDK at the time the ping was collected (e.g.
+    25.0.0).
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: The optional Windows build number, reported by Windows (e.g. 22000)
-    and not set for other platforms
+  description: The Windows OS build number of the client's operating system, such
+    as 19045 for a specific Windows 10 release. Null values indicate the client was
+    not running a Windows operating system.
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -90,20 +110,27 @@ fields:
     - name: city
       type: STRING
       mode: NULLABLE
-      description: City
+      description: The city associated with the client's IP address or profile geography
+        at the time of the record. May be null when city-level geolocation is unavailable
+        or suppressed.
     - name: country
       type: STRING
       mode: NULLABLE
-      description: An ISO 3166-1 alpha-2 country code
+      description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+        from the client's IP address or profile geography. Used for geographic segmentation
+        of telemetry data.
     - name: db_version
       type: STRING
       mode: NULLABLE
-      description: The specific geo database version used for this lookup
+      description: The version identifier of the database or data snapshot used to
+        produce the record, expressed as an ISO 8601 UTC timestamp string. This indicates
+        when the underlying reference data was last updated.
     - name: subdivision1
       type: STRING
       mode: NULLABLE
-      description: First major country subdivision, typically a state, province, or
-        county
+      description: The first-level administrative subdivision (e.g., state, province,
+        or region) derived from the client's geographic location, represented as a
+        code. Null indicates the subdivision could not be determined.
     - name: subdivision2
       type: STRING
       mode: NULLABLE
@@ -116,7 +143,9 @@ fields:
     - name: date
       type: STRING
       mode: NULLABLE
-      description: Date HTTP header
+      description: The calendar date associated with the record, formatted as a YYYY-MM-DD
+        string. This typically represents the day on which the activity or metric
+        was measured.
     - name: dnt
       type: STRING
       mode: NULLABLE
@@ -169,16 +198,22 @@ fields:
   - name: isp
     type: RECORD
     mode: NULLABLE
-    description: Results of ISP lookup based on the client's IP address
+    description: The name of the Internet Service Provider associated with the client's
+      IP address. This field provides a granular ISP identification and may include
+      regional carriers.
     fields:
     - name: db_version
       type: STRING
       mode: NULLABLE
-      description: The specific geo ISP database version used for this lookup
+      description: The version identifier of the database or data snapshot used to
+        produce the record, expressed as an ISO 8601 UTC timestamp string. This indicates
+        when the underlying reference data was last updated.
     - name: name
       type: STRING
       mode: NULLABLE
-      description: The name of the ISP associated with the client's IP address
+      description: A human-readable name string associated with the entity being described,
+        such as an add-on or extension name. May be null or a placeholder string when
+        the name is unavailable or not yet resolved.
     - name: organization
       type: STRING
       mode: NULLABLE
@@ -189,7 +224,9 @@ fields:
   - name: user_agent
     type: RECORD
     mode: NULLABLE
-    description: User Agent
+    description: The browser or user agent type used to access a resource, with values
+      such as firefox, chrome, edge, ie, or other. Null indicates the user agent was
+      not captured.
     fields:
     - name: browser
       type: STRING
@@ -198,11 +235,14 @@ fields:
     - name: os
       type: STRING
       mode: NULLABLE
-      description: Operating System
+      description: The raw operating system name as reported by the client, such as
+        'Windows_NT', 'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed
+        OS string before normalization.
     - name: version
       type: STRING
       mode: NULLABLE
-      description: Version
+      description: The version string of the software, add-on, or component being
+        measured. Follows standard versioning conventions such as major.minor.patch.
 - name: labeled_counter
   type: RECORD
   mode: NULLABLE
@@ -218,11 +258,14 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: A generic integer value associated with a measurement, event, or
+        metric. The specific meaning depends on the context of the surrounding fields.
   - name: glean_error_invalid_overflow
     type: RECORD
     mode: REPEATED
@@ -233,11 +276,14 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: A generic integer value associated with a measurement, event, or
+        metric. The specific meaning depends on the context of the surrounding fields.
   - name: glean_error_invalid_state
     type: RECORD
     mode: REPEATED
@@ -248,11 +294,14 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: A generic integer value associated with a measurement, event, or
+        metric. The specific meaning depends on the context of the surrounding fields.
   - name: glean_error_invalid_value
     type: RECORD
     mode: REPEATED
@@ -263,11 +312,14 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: A generic integer value associated with a measurement, event, or
+        metric. The specific meaning depends on the context of the surrounding fields.
 - name: glean_client_annotation_experimentation_id
   type: STRING
   mode: NULLABLE
@@ -278,21 +330,29 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
-  description: Experiments
+  description: An array of key-value pairs representing all active experiment enrollments
+    for the client at the time of the ping, where the key is the experiment slug and
+    the value is the assigned branch. This captures the full set of concurrent experiment
+    enrollments.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: Key
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: value
     type: RECORD
     mode: NULLABLE
-    description: Value
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
     fields:
     - name: branch
       type: STRING
       mode: NULLABLE
-      description: Branch
+      description: The experiment branch to which a client was assigned (e.g., 'control',
+        'treatment-a', 'rollout'). Used to segment clients for A/B test and rollout
+        analyses.
     - name: extra
       type: RECORD
       mode: NULLABLE
@@ -305,47 +365,61 @@ fields:
       - name: type
         type: STRING
         mode: NULLABLE
-        description: Type
+        description: The category of a browser add-on or extension, indicating its
+          nature. Common values include 'extension', 'locale', 'dictionary', and 'service'.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: Normalized App Name
+  description: A human-readable, standardized name for the Firefox application that
+    submitted the telemetry, such as 'Firefox Desktop', 'Fenix', 'Firefox iOS', or
+    'Focus Android'. This normalizes across different app identifiers.
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
-  description: The major version of the user visible app version string for the browser,
-    e.g. "142.1.3", has major version 142
+  description: The major version number component of the application version (e.g.,
+    151 for version '151.0.2'). Increments with each major Firefox release cycle.
 - name: app_version_minor
   type: NUMERIC
   mode: NULLABLE
-  description: The minor version of the user visible app version string for the browser,
-    e.g. "142.1.3" has minor version 1
+  description: The minor version number component of the application version (e.g.,
+    0 for version '151.0'). Typically 0 for major releases and non-zero for extended
+    support or point releases.
 - name: app_version_patch
   type: NUMERIC
   mode: NULLABLE
-  description: App Version - Patch Version Number
+  description: The patch-level version number component of the application version
+    (e.g., 2 for version '151.0.2'). Null when the release does not include a patch
+    component.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System Version
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: The ISO 3166-1 alpha-2 country code representing the country associated
+    with the client's IP address at the time of submission, such as 'US', 'DE', or
+    'BR'.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: "A deterministic sample bucket identifier (0\u201399) derived from\
+    \ the client_id, used to create reproducible random samples of the user population\
+    \ for analysis or experimentation."
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -354,19 +428,26 @@ fields:
   - name: campaign
     type: STRING
     mode: NULLABLE
-    description: The attribution campaign (e.g. 'mozilla-org').
+    description: The marketing campaign name associated with a user's acquisition
+      or install event (e.g., 'SET_DEFAULT_BROWSER', 'non-fx-button'). Null when no
+      campaign attribution is available.
   - name: content
     type: STRING
     mode: NULLABLE
-    description: The attribution content (e.g. 'firefoxview').
+    description: A string representing the UTM content parameter or creative identifier
+      associated with a marketing touchpoint or link. May be null or URL-encoded when
+      not explicitly set.
   - name: medium
     type: STRING
     mode: NULLABLE
-    description: The atttribution medium (e.g. 'organic' for a search engine).
+    description: The marketing or traffic medium through which a user arrived, such
+      as 'referral', 'cpc', or 'firefox-desktop'. Used to classify the acquisition
+      channel for attribution purposes.
   - name: source
     type: STRING
     mode: NULLABLE
-    description: The attribution source (e.g. 'google-play').
+    description: The referring domain or source URL from which a user navigated to
+      a Mozilla property. Null indicates the source was not captured or not applicable.
   - name: term
     type: STRING
     mode: NULLABLE
@@ -383,7 +464,9 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
-    description: The distribution name (e.g. 'MozillaOnline')
+    description: A human-readable name string associated with the entity being described,
+      such as an add-on or extension name. May be null or a placeholder string when
+      the name is unavailable or not yet resolved.
   - name: ext
     type: JSON
     mode: NULLABLE

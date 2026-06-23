@@ -2,31 +2,44 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date
+  description: The calendar date associated with the record, formatted as a YYYY-MM-DD
+    string. This typically represents the day on which the activity or metric was
+    measured.
 - mode: NULLABLE
   name: country_name
   type: STRING
-  description: Country Name
+  description: The full human-readable name of the country associated with the record
+    (e.g., 'United States', 'India', 'Brazil'). Provides a display-friendly alternative
+    to ISO country code fields.
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: Operating System Version
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
 - mode: NULLABLE
   name: build_channel
   type: STRING
-  description: Build Channel
+  description: The release channel of the Firefox build (e.g., 'release', 'beta',
+    'nightly', 'aurora'). Indicates the stage in the Firefox release pipeline from
+    which the build originated.
 - mode: NULLABLE
   name: build_id
   type: STRING
-  description: Build ID
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
 - mode: NULLABLE
   name: silent
   type: BOOLEAN
-  description: Silent
+  description: Indicates whether an update or notification was delivered silently
+    without user-visible prompting. True means the action was silent; false means
+    the user was notified.
 - mode: NULLABLE
   name: succeeded
   type: BOOLEAN
-  description: Succeeded
+  description: Indicates whether an operation or process completed successfully. True
+    means the operation succeeded; false means it failed.
 - mode: NULLABLE
   name: ua_attribution
   type: STRING

@@ -2,25 +2,45 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: The internal identifier of the user's default search engine (e.g.,
+    'google-b-d', 'baidu'), which encodes both the engine and any partner or distribution-specific
+    configuration. This field represents the engine key as recognized by Firefox's
+    search service.
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - mode: NULLABLE
   name: search_region
   type: STRING
@@ -52,6 +72,9 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -62,6 +85,9 @@ fields:
   - mode: NULLABLE
     name: key
     type: INTEGER
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -72,10 +98,15 @@ fields:
   - mode: NULLABLE
     name: type
     type: STRING
+    description: The category of a browser add-on or extension, indicating its nature.
+      Common values include 'extension', 'locale', 'dictionary', and 'service'.
   - fields:
     - mode: NULLABLE
       name: key
       type: INTEGER
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - mode: NULLABLE
       name: value
       type: INTEGER
@@ -95,14 +126,21 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: STRING
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: An array of key-value pairs representing all active experiment enrollments
+    for the client at the time of the ping, where the key is the experiment slug and
+    the value is the assigned branch. This captures the full set of concurrent experiment
+    enrollments.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID that identifies a group of profiles belonging to the same user
+    or installation context. Null when profile group information is unavailable.

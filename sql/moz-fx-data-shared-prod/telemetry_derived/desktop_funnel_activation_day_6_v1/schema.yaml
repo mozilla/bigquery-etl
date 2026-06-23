@@ -2,44 +2,58 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: country_name
   type: STRING
-  description: Name of the country in which the activity took place, as determined by
-    the IP geolocation.
+  description: The full human-readable name of the country associated with the record
+    (e.g., 'United States', 'India', 'Brazil'). Provides a display-friendly alternative
+    to ISO country code fields.
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: build_id
   type: STRING
-  description: The Firefox build identifier string (e.g., '20260516144017'), encoding the date and time the build was compiled.
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: The major.minor version of the operating system on the client at
-    the time of first launch, truncated to the minor component (e.g., '10',
-    '6.1').
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
 - mode: NULLABLE
   name: attribution_source
   type: STRING
-  description: The attribution source; the referring domain or partner from which the client installed Firefox (e.g., 'www.google.com', 'www.bing.com').
-    Null when no attribution source is recorded.
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: The browser user-agent used to download Firefox, indicating the browser the client was using prior to installation (e.g., 'chrome', 'edge',
-    'firefox'). Empty string when no attribution UA was recorded.
+  description: The user agent type of the browser the user was using when they downloaded
+    Firefox, as captured in attribution parameters (e.g., 'chrome', 'edge', 'firefox').
+    Null when attribution data is unavailable.
 - mode: NULLABLE
   name: num_activated
   type: INTEGER

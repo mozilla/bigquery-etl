@@ -2,32 +2,40 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: metric
   type: STRING
-  description: The name of the Encrypted Client Hello (ECH) telemetry metric being measured, identifying the specific networking or security scalar or
-    labeled counter associated with ECH handshake outcomes.
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
 - mode: NULLABLE
   name: label
   type: STRING
-  description: The label or subkey of the ECH metric (e.g., outcome category such as 'success', 'grease', or 'retry'), grouping results within a given
-    metric for analysis.
+  description: The label or subkey of the ECH metric (e.g., outcome category such
+    as 'success', 'grease', or 'retry'), grouping results within a given metric for
+    analysis.
 - mode: NULLABLE
   name: key
   type: STRING
-  description: An additional dimension or key within the ECH metric used to further segment data, such as a specific TLS parameter or provider name.
-    May be null when not applicable.
+  description: A string identifier representing the specific action, search engine,
+    or event type associated with a record, such as a search entry point or provider
+    key. An empty string indicates no specific key was recorded.
 - mode: NULLABLE
   name: handshakes
   type: INTEGER
-  description: The total count of ECH handshake attempts or completions recorded for the given metric, label, key, and country on the submission date.
+  description: The total count of ECH handshake attempts or completions recorded for
+    the given metric, label, key, and country on the submission date.
 - mode: NULLABLE
   name: country_code
   type: STRING
-  description: The ISO 3166-1 alpha-2 country code where the client is located, as determined by IP geolocation. Countries where both the handshake count
-    and distinct client count are below 5000 are aggregated into 'OTHER' for privacy.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'IN', 'US', 'RU') associated
+    with the record. Equivalent in format to the `country` field and used for geographic
+    filtering and grouping.
 - mode: NULLABLE
   name: total_client_count
   type: INTEGER
-  description: The total count of distinct clients (by client_id) that reported this metric, label, key, and country combination on the submission date.
+  description: The total count of distinct clients (by client_id) that reported this
+    metric, label, key, and country combination on the submission date.

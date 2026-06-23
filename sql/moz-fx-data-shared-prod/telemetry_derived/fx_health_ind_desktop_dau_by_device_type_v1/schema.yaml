@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: TDP
   type: STRING
@@ -10,4 +12,5 @@ fields:
 - mode: NULLABLE
   name: users
   type: INTEGER
-  description: Number of Users
+  description: The count of distinct users associated with a given record or group.
+    Represents the number of unique clients contributing to an aggregated measurement.

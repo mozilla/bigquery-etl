@@ -1,13 +1,18 @@
 fields:
-- description: null
+- description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: null
+- description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: null
+- description: "A deterministic sample bucket identifier (0\u201399) derived from\
+    \ the client_id, used to create reproducible random samples of the user population\
+    \ for analysis or experimentation."
   mode: NULLABLE
   name: sample_id
   type: INTEGER
@@ -15,27 +20,37 @@ fields:
   mode: NULLABLE
   name: application_name
   type: STRING
-- description: null
+- description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
   mode: NULLABLE
   name: build_id
   type: STRING
-- description: null
+- description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
   mode: NULLABLE
   name: channel
   type: STRING
-- description: null
+- description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
   mode: NULLABLE
   name: os
   type: STRING
-- description: null
+- description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
   mode: NULLABLE
   name: os_version
   type: STRING
-- description: null
+- description: The ISO 3166-1 alpha-2 country code (e.g., 'IN', 'US', 'RU') associated
+    with the record. Equivalent in format to the `country` field and used for geographic
+    filtering and grouping.
   mode: NULLABLE
   name: country_code
   type: STRING
-- description: NULL
+- description: null
   mode: REPEATED
   type: RECORD
   name: process_crash_counts
@@ -43,10 +58,15 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: INTEGER
-- description: NULL
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
+- description: null
   mode: REPEATED
   type: RECORD
   name: process_shutdown_kill_crash_counts
@@ -54,10 +74,16 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - mode: NULLABLE
     name: value
     type: INTEGER
-- description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
+- description: A UUID that identifies a group of profiles belonging to the same user
+    or installation context. Null when profile group information is unavailable.
   mode: NULLABLE
   name: profile_group_id
   type: STRING

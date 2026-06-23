@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: installer_type
   type: STRING
   mode: NULLABLE
-  description: Installer Type - Stub or Full
+  description: The type of installer package used to install the application, either
+    'full' for a complete installer or 'stub' for a lightweight installer that downloads
+    components during setup.
 - name: update_channel
   type: STRING
   mode: NULLABLE
-  description: The channel - for example, release, esr, beta, nightly, etc
+  description: The release channel from which the browser receives updates, such as
+    'release', 'beta', 'nightly', or 'esr'. This reflects the user's update track
+    and may include custom or misconfigured values.
 - name: nbr_install_attempts
   type: INTEGER
   mode: NULLABLE
@@ -18,7 +24,9 @@ fields:
 - name: user_cancelled
   type: FLOAT
   mode: NULLABLE
-  description: Number of install attempts cancelled by the user
+  description: Indicates whether a user explicitly cancelled an operation or prompt.
+    True means the user cancelled; false means they did not. Null indicates the field
+    was not applicable or not recorded.
 - name: timeout
   type: FLOAT
   mode: NULLABLE

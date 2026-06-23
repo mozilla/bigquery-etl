@@ -2,7 +2,8 @@ fields:
 - mode: NULLABLE
   name: app_channel
   type: STRING
-  description: App Channel
+  description: The release channel of the application build, indicating the target
+    audience and stability level. Possible values include 'release', 'beta', and 'nightly'.
 - mode: NULLABLE
   name: app_description
   type: STRING
@@ -14,7 +15,9 @@ fields:
 - mode: NULLABLE
   name: app_name
   type: STRING
-  description: App Name
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - mode: NULLABLE
   name: bq_dataset_family
   type: STRING

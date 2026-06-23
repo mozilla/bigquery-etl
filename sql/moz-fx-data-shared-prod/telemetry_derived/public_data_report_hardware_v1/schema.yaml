@@ -2,49 +2,83 @@ fields:
 - name: date_from
   type: DATE
   mode: NULLABLE
+  description: The inclusive start date of the reporting or aggregation window. Records
+    in the row apply to activity on or after this date.
 - name: date_to
   type: DATE
   mode: NULLABLE
+  description: The inclusive end date of the reporting or aggregation window. Records
+    in the row apply to activity on or before this date.
 - name: browser_arch
   type: RECORD
   mode: REPEATED
+  description: The CPU architecture of the browser process. Complements the system
+    architecture field to account for cases where the browser runs under emulation
+    or a different bitness than the OS.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: cpu_cores
   type: RECORD
   mode: REPEATED
+  description: The number of logical CPU cores available on the client device as reported
+    by the Firefox telemetry environment. Used to segment performance and hardware
+    capability data.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: cpu_speed
   type: RECORD
   mode: REPEATED
+  description: The reported speed of the CPU as a string value. This may represent
+    a nominal or base clock speed identifier for the processor.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: cpu_vendor
   type: RECORD
   mode: REPEATED
+  description: The CPU vendor string as reported by the CPUID instruction (e.g., 'GenuineIntel',
+    'AuthenticAMD'). An empty string or null indicates the vendor could not be identified.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: gfx0_model
   type: RECORD
   mode: REPEATED
@@ -52,9 +86,14 @@ fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: gfx0_vendor_name
   type: RECORD
   mode: REPEATED
@@ -62,39 +101,66 @@ fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: has_flash
   type: RECORD
   mode: REPEATED
+  description: Indicates whether the Adobe Flash plugin is installed and available
+    on the client. True means Flash is present; false means it is not.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: BOOLEAN
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: memory_gb
   type: RECORD
   mode: REPEATED
+  description: The total amount of physical memory available on the client device,
+    expressed in gigabytes. Used to characterize device hardware capability.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: os
   type: RECORD
   mode: REPEATED
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: os_arch
   type: RECORD
   mode: REPEATED
@@ -102,16 +168,29 @@ fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
 - name: resolution
   type: RECORD
   mode: REPEATED
+  description: The resolution or outcome classification associated with a record,
+    such as a crash report or support ticket resolution state. Describes how or whether
+    the underlying issue was addressed.
   fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.

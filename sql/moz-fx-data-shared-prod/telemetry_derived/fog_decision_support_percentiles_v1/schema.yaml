@@ -2,15 +2,24 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: ping
   type: STRING
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: metric_name
   type: STRING
+  description: A short, human-readable label identifying the type of metric being
+    tracked, such as 'uri_count' or 'active_ticks'. Used to distinguish among different
+    measurement concepts within the same dataset.
 - mode: REPEATED
   name: percentiles
   type: INTEGER

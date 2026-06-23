@@ -2,19 +2,26 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date the table was last updated.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: OS of app
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: release, beta, nightly, esr.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - name: major_version
   type: INTEGER
   mode: NULLABLE
-  description: Extracted version from crash_app_display_version.
+  description: The major version number of the Firefox browser (e.g., 128, 151), representing
+    the primary release train. Used to segment clients by their browser generation.
 - name: process_type_bit
   type: INT64
   mode: NULLABLE

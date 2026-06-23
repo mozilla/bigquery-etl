@@ -2,12 +2,17 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: user_agent
   type: STRING
   mode: NULLABLE
-  description: User Agent - i.e. the browser name
+  description: The browser or user agent type used to access a resource, with values
+    such as firefox, chrome, edge, ie, or other. Null indicates the user agent was
+    not captured.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.

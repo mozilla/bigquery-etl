@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: release_channel_stub_installs_count
   type: INTEGER
   mode: NULLABLE
@@ -10,8 +12,11 @@ fields:
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of release channel uninstalls for a specific set of countries
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.
 - name: uninstall_to_install_ratio
   type: FLOAT
   mode: NULLABLE
-  description: Ratio resulting from dividing uninstalls_count by release_channel_stub_installs_count
+  description: The ratio of uninstall events to install events over a given period.
+    A value of 1.0 means uninstalls equal installs; values below 1.0 indicate more
+    installs than uninstalls.

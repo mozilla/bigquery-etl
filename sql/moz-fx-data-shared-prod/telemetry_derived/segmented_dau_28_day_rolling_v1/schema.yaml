@@ -2,49 +2,79 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: The name of the Mozilla application that generated the telemetry event
+    (e.g., 'firefox_desktop', 'fenix', 'firefox_ios', 'mozilla_vpn'). Used to distinguish
+    telemetry across Mozilla's suite of products.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: The advertising network or acquisition channel attributed to the client's
+    install via Adjust, such as 'Organic', 'Google Ads ACI', or 'Untrusted Devices'.
+    Null when no network attribution is available.
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The marketing medium from attribution parameters describing how the
+    user arrived at the download (e.g., 'referral', 'firefox-desktop'). Null when
+    attribution data is unavailable.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
+  description: The calendar year in which the client profile was first observed in
+    telemetry data, derived from the first_seen_date. This is used for coarser cohort
+    analyses and long-term retention reporting.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - name: install_source
   type: STRING
   mode: NULLABLE
+  description: The source through which the application was installed, such as 'com.android.vending'
+    for the Google Play Store. A null value indicates the install source could not
+    be determined.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: Indicates whether Firefox is set as the default browser on the client's
+    device. True means it is the default; false means another browser is set as default.
 - name: os_grouped
   type: STRING
   mode: NULLABLE
+  description: A coarsely grouped operating system label that categorizes clients
+    into broad OS families; 'Windows', 'Mac', 'Linux', or 'Other'. This provides a
+    simplified OS dimension for high-level segmentation.
 - name: segment
   type: STRING
   mode: NULLABLE
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: A categorical label classifying a user's engagement level based on
+    usage frequency, such as 'core_user', 'regular_user', 'casual_user', 'infrequent_user',
+    or 'other'. This segmentation is used to group users by activity patterns.
 - name: dau
   type: INTEGER
   mode: NULLABLE
+  description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
 - name: ma_28_dau
   type: FLOAT
   mode: NULLABLE

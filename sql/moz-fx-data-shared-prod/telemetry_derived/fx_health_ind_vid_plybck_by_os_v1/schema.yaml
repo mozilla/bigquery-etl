@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - mode: NULLABLE
   name: play_time_ratio
   type: FLOAT
-  description: Play Time Ratio
+  description: The ratio of active play or media engagement time relative to total
+    session time, expressed as a decimal. Values greater than 1 are possible and may
+    indicate measurement anomalies or extended background playback.

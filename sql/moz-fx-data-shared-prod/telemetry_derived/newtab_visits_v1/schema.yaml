@@ -2,76 +2,133 @@ fields:
 - mode: NULLABLE
   name: legacy_telemetry_client_id
   type: STRING
+  description: The unique client identifier used in Firefox's legacy telemetry system,
+    formatted as a UUID. This is used to track individual browser installations across
+    telemetry pings.
 - mode: NULLABLE
   name: newtab_visit_id
   type: STRING
+  description: A unique identifier for a single new tab page visit, formatted as a
+    UUID. This ID can be used to join or deduplicate events associated with the same
+    visit session.
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - mode: NULLABLE
   name: country_code
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'IN', 'US', 'RU') associated
+    with the record. Equivalent in format to the `country` field and used for geographic
+    filtering and grouping.
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - mode: NULLABLE
   name: browser_version
   type: STRING
+  description: The full version string of the browser (e.g., '151.0.2'). Represents
+    the complete, human-readable version of the Firefox browser build.
 - mode: NULLABLE
   name: browser_name
   type: STRING
+  description: The display name of the browser product (e.g., 'Firefox Desktop').
+    Identifies the browser brand and surface as reported by the client.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: The internal identifier of the user's default search engine (e.g.,
+    'google-b-d', 'baidu'), which encodes both the engine and any partner or distribution-specific
+    configuration. This field represents the engine key as recognized by Firefox's
+    search service.
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
+  description: The identifier of the search engine configured as the default for private
+    browsing windows (e.g., 'google-b-d', 'ddg'). This corresponds to the engine's
+    internal slug as defined in the search configuration.
 - mode: NULLABLE
   name: pocket_is_signed_in
   type: BOOLEAN
+  description: Indicates whether the user is signed in to their Pocket account within
+    Firefox. True means the user is authenticated; false means Pocket is present but
+    the user is not signed in. Null when sign-in state could not be determined.
 - mode: NULLABLE
   name: pocket_enabled
   type: BOOLEAN
+  description: Indicates whether the Pocket integration is enabled in the user's Firefox
+    New Tab page settings. True means Pocket content is turned on; false means it
+    has been disabled by the user.
 - mode: NULLABLE
   name: pocket_sponsored_stories_enabled
   type: BOOLEAN
+  description: Indicates whether sponsored story recommendations from Pocket are enabled
+    on the user's New Tab page. True means sponsored stories are turned on; false
+    means they have been disabled.
 - mode: NULLABLE
   name: topsites_enabled
   type: BOOLEAN
+  description: Indicates whether the Top Sites feature is enabled on the user's New
+    Tab page. True means the feature is active; false means the user has disabled
+    it.
 - mode: NULLABLE
   name: topsites_sponsored_enabled
   type: BOOLEAN
+  description: Indicates whether sponsored tiles are enabled within the Top Sites
+    section of the New Tab page. True means sponsored tiles are shown; false means
+    they are disabled.
 - mode: NULLABLE
   name: newtab_homepage_category
   type: STRING
+  description: A categorical classification of the page configured as the browser
+    homepage, such as 'enabled' (the default new tab), 'search-engine', 'disabled',
+    'social-media', 'extension', or 'known-hijacker-v3'. Null indicates the value
+    was not available or not applicable.
 - mode: NULLABLE
   name: newtab_newtab_category
   type: STRING
+  description: A categorical classification of the page configured as the new tab
+    page, such as 'enabled' (the default Firefox new tab), 'extension', 'disabled',
+    or 'other'. Null indicates the value was unavailable.
 - mode: NULLABLE
   name: newtab_search_enabled
   type: BOOLEAN
+  description: A boolean flag indicating whether the search bar is enabled on the
+    new tab page. True means search is enabled; False means it is disabled. Null indicates
+    the setting was not available.
 - mode: NULLABLE
   name: topsites_rows
   type: INTEGER
+  description: The number of rows of top site tiles configured to be displayed on
+    the New Tab page. Higher values indicate more rows of tiles visible to the user.
 - mode: REPEATED
   name: newtab_blocked_sponsors
   type: STRING
@@ -79,14 +136,22 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - fields:
     - mode: NULLABLE
       name: branch
       type: STRING
+      description: The experiment branch to which a client was assigned (e.g., 'control',
+        'treatment-a', 'rollout'). Used to segment clients for A/B test and rollout
+        analyses.
     - fields:
       - mode: NULLABLE
         name: type
         type: STRING
+        description: The category of a browser add-on or extension, indicating its
+          nature. Common values include 'extension', 'locale', 'dictionary', and 'service'.
       - mode: NULLABLE
         name: enrollment_id
         type: STRING
@@ -99,15 +164,29 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: An array of key-value pairs representing all active experiment enrollments
+    for the client at the time of the ping, where the key is the experiment slug and
+    the value is the assigned branch. This captures the full set of concurrent experiment
+    enrollments.
 - mode: NULLABLE
   name: newtab_visit_started_at
   type: INTEGER
+  description: A timestamp indicating when a new tab page visit began, in milliseconds
+    or seconds relative to a reference point. A value of 0 commonly represents visits
+    where the start time was not meaningfully recorded, and null indicates the start
+    time was unavailable.
 - mode: NULLABLE
   name: newtab_visit_ended_at
   type: INTEGER
+  description: A timestamp (in milliseconds or seconds relative to session start)
+    indicating when a new tab page visit ended. A value of 0 typically represents
+    visits with no recorded end time, and null indicates the end time was not captured.
 - mode: NULLABLE
   name: newtab_open_source
   type: STRING
+  description: The URL source from which a new tab was opened, such as 'about:newtab',
+    'about:home', or 'about:welcome'. A value of 'other' covers unrecognized sources,
+    and null indicates the source was not captured.
 - mode: NULLABLE
   name: had_non_impression_engagement
   type: BOOLEAN
@@ -118,27 +197,50 @@ fields:
   - mode: NULLABLE
     name: search_engine
     type: STRING
+    description: The identifier of the default or active search engine used (e.g.,
+      'google', 'google-b-d', 'duckduckgo'). A null value indicates no search engine
+      was recorded or applicable.
   - mode: NULLABLE
     name: search_access_point
     type: STRING
+    description: The location or UI surface from which a search was initiated, such
+      as 'urlbar', 'searchbar', 'contextmenu', or 'urlbar_handoff'. A null value indicates
+      no search access point was recorded for the event.
   - mode: NULLABLE
     name: searches
     type: INTEGER
+    description: The total number of searches performed during the period. A value
+      of zero indicates no search activity was recorded.
   - mode: NULLABLE
     name: tagged_search_ad_clicks
     type: INTEGER
+    description: The total number of ad clicks on searches that were tagged with a
+      Mozilla partner attribution code, originating directly from the browser's search
+      entry points. A value of zero indicates no tagged search ads were clicked.
   - mode: NULLABLE
     name: tagged_search_ad_impressions
     type: INTEGER
+    description: The total number of ad impressions on searches that were tagged with
+      a Mozilla partner attribution code, originating directly from the browser's
+      search entry points. A value of zero indicates no tagged search ads were shown.
   - mode: NULLABLE
     name: follow_on_search_ad_clicks
     type: INTEGER
+    description: The number of times a user clicked on a search advertisement following
+      an initial search query originating from the browser's search features. A value
+      of 0 indicates the user performed searches but did not click any follow-on ads.
   - mode: NULLABLE
     name: follow_on_search_ad_impressions
     type: INTEGER
+    description: The number of search advertisement impressions shown to the user
+      as a result of follow-on searches initiated from the browser's search features.
+      A value of 0 indicates no ad impressions were recorded for the period.
   - mode: NULLABLE
     name: tagged_follow_on_search_ad_clicks
     type: INTEGER
+    description: The total number of ad clicks on follow-on searches that were tagged
+      with a Mozilla partner attribution code. Follow-on searches originate from a
+      search results page rather than directly from the browser's search bar.
   - mode: NULLABLE
     name: tagged_follow_on_search_ad_impressions
     type: INTEGER
@@ -164,27 +266,48 @@ fields:
   - mode: NULLABLE
     name: topsite_tile_clicks
     type: INTEGER
+    description: The total number of clicks on sponsored top site tiles specifically.
+      A value of 0 indicates the user did not click any sponsored tiles.
   - mode: NULLABLE
     name: sponsored_topsite_tile_clicks
     type: INTEGER
+    description: The total number of clicks specifically on sponsored top site tiles
+      (as distinct from other top site interactions) on the New Tab page. A value
+      of zero indicates no such tile clicks occurred.
   - mode: NULLABLE
     name: organic_topsite_tile_clicks
     type: INTEGER
+    description: The number of times a user clicked on a specific organic (non-sponsored)
+      top site tile on the new tab page. This is a more granular click metric compared
+      to the broader organic_topsite_clicks field.
   - mode: NULLABLE
     name: topsite_tile_impressions
     type: INTEGER
+    description: The total number of impressions for sponsored top site tiles on the
+      New Tab page. A value of 0 indicates no sponsored tile impressions were recorded.
   - mode: NULLABLE
     name: sponsored_topsite_tile_impressions
     type: INTEGER
+    description: The total number of times individual sponsored top site tiles were
+      rendered and displayed to the user on the New Tab page. A value of zero indicates
+      no tile-level impressions were recorded.
   - mode: NULLABLE
     name: organic_topsite_tile_impressions
     type: INTEGER
+    description: The number of times a specific organic (non-sponsored) top site tile
+      was displayed to the user on the new tab page. A value of 0 indicates the tile
+      was not shown during the aggregation period.
   - mode: NULLABLE
     name: topsite_tile_dismissals
     type: INTEGER
+    description: The total number of times the user dismissed a sponsored top site
+      tile. A value of 0 indicates no sponsored tile dismissals occurred.
   - mode: NULLABLE
     name: sponsored_topsite_tile_dismissals
     type: INTEGER
+    description: The total number of times a user dismissed a sponsored top site tile
+      (tile-level dismissal) on the New Tab page. A value of zero indicates no tile-level
+      dismissals occurred.
   - mode: NULLABLE
     name: organic_topsite_tile_dismissals
     type: INTEGER
@@ -195,33 +318,61 @@ fields:
   - mode: NULLABLE
     name: pocket_story_position
     type: INTEGER
+    description: The zero-based index position of a Pocket story within the New Tab
+      page recommendation grid at the time of the event. Null when no specific story
+      position is associated with the record.
   - mode: NULLABLE
     name: pocket_impressions
     type: INTEGER
+    description: The total number of Pocket story impressions recorded on the New
+      Tab page during the reporting period. An impression is counted each time a Pocket
+      recommendation is rendered and visible to the user.
   - mode: NULLABLE
     name: sponsored_pocket_impressions
     type: INTEGER
+    description: The total number of times sponsored Pocket content tiles were displayed
+      to the user on the New Tab page. A value of zero indicates the tiles were never
+      shown.
   - mode: NULLABLE
     name: organic_pocket_impressions
     type: INTEGER
+    description: The number of times organic (non-sponsored) Pocket recommendations
+      were displayed to the user on the new tab page within the aggregation period.
+      A value of 0 indicates no impressions were recorded.
   - mode: NULLABLE
     name: pocket_clicks
     type: INTEGER
+    description: The total number of times the user clicked on a Pocket recommendation
+      on the New Tab page during the reporting period. A value of 0 indicates the
+      feature was visible but no clicks occurred.
   - mode: NULLABLE
     name: sponsored_pocket_clicks
     type: INTEGER
+    description: The total number of clicks on sponsored Pocket content tiles within
+      the New Tab page for a given client or period. A value of zero indicates no
+      sponsored Pocket tiles were clicked.
   - mode: NULLABLE
     name: organic_pocket_clicks
     type: INTEGER
+    description: The number of times a user clicked on an organic (non-sponsored)
+      Pocket recommendation on the new tab page within the aggregation period. A value
+      of 0 indicates no clicks occurred.
   - mode: NULLABLE
     name: pocket_saves
     type: INTEGER
+    description: The total number of items the user saved to Pocket from the New Tab
+      page during the reporting period. A value of 0 indicates no saves occurred.
   - mode: NULLABLE
     name: sponsored_pocket_saves
     type: INTEGER
+    description: The total number of times a user saved a sponsored Pocket content
+      tile. A value of zero indicates no sponsored Pocket items were saved.
   - mode: NULLABLE
     name: organic_pocket_saves
     type: INTEGER
+    description: The number of times a user saved an organic (non-sponsored) Pocket
+      recommendation from the new tab page within the aggregation period. A value
+      of 0 indicates no saves occurred.
   - name: pocket_tile_id
     type: STRING
     mode: NULLABLE
@@ -231,9 +382,14 @@ fields:
   - mode: NULLABLE
     name: sponsored_pocket_dismissals
     type: INTEGER
+    description: The total number of times a user dismissed a sponsored Pocket content
+      tile on the New Tab page. A value of zero indicates no dismissals occurred.
   - mode: NULLABLE
     name: organic_pocket_dismissals
     type: INTEGER
+    description: The number of times a user dismissed an organic (non-sponsored) Pocket
+      recommendation on the new tab page within the aggregation period. A value of
+      0 indicates no dismissals occurred.
   - mode: NULLABLE
     name: pocket_thumbs_up
     type: INTEGER
@@ -294,17 +450,24 @@ fields:
 - mode: NULLABLE
   name: is_new_profile
   type: BOOLEAN
+  description: Indicates whether the Firefox profile associated with the client was
+    newly created. True means the profile was created recently; false means it is
+    an existing profile.
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: A categorical label describing the user's activity level, such as 'core_user',
+    'regular_user', 'casual_user', 'infrequent_user', or 'other', based on their engagement
+    frequency.
 - mode: NULLABLE
   name: newtab_default_ui
   type: STRING
 - name: newtab_weather_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: A boolean flag indicating whether the weather widget on the new tab
+    page is enabled for the client. True means the widget is enabled; False means
+    it is disabled. Null indicates the setting was not recorded.
 - name: wallpaper_interactions
   type: RECORD
   mode: REPEATED
@@ -315,6 +478,9 @@ fields:
   - name: wallpaper_clicks
     type: INTEGER
     mode: NULLABLE
+    description: The number of times a user clicked on a wallpaper or background element
+      in the browser's New Tab Page. A value of 0 indicates no wallpaper clicks occurred
+      during the period.
   - name: wallpaper_clicks_had_previous_wallpaper
     type: INTEGER
     mode: NULLABLE
@@ -343,15 +509,24 @@ fields:
   - name: weather_widget_clicks
     type: INTEGER
     mode: NULLABLE
+    description: The number of times a user clicked on the weather widget displayed
+      on the New Tab Page. A value of 0 indicates no clicks on the weather widget
+      were recorded.
   - name: weather_widget_load_errors
     type: INTEGER
     mode: NULLABLE
   - name: weather_widget_change_display_to_detailed
     type: INTEGER
     mode: NULLABLE
+    description: The number of times a user switched the New Tab Page weather widget
+      from the simple view to the detailed view. A value of 0 indicates the display
+      was never changed to detailed during the period.
   - name: weather_widget_change_display_to_simple
     type: INTEGER
     mode: NULLABLE
+    description: The number of times a user switched the New Tab Page weather widget
+      from the detailed view back to the simple view. A value of 0 indicates the display
+      was never changed to simple during the period.
 - name: newtab_selected_topics
   type: STRING
   mode: REPEATED
@@ -380,8 +555,8 @@ fields:
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID that identifies a group of profiles belonging to the same user
+    or installation context. Null when profile group information is unavailable.
 - name: newtab_window_inner_height
   type: INTEGER
   mode: NULLABLE
@@ -391,6 +566,5 @@ fields:
 - mode: NULLABLE
   name: topsites_sponsored_tiles_configured
   type: INTEGER
-  description: An integer from client configuration that determines how many tiles
-    the client can see. This telemetry released in Fx123 (2024/02/20), so it should
-    only be considered for clients with Fx123+.
+  description: The number of sponsored tile slots configured to be shown in the Top
+    Sites section of the New Tab page. Common values are 2, 3, or 4 slots.

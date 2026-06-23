@@ -2,24 +2,32 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: The calendar date on which the client profile was first observed in
+    telemetry data. This is used to determine client tenure and cohort assignment.
 - mode: NULLABLE
   name: installer_type
   type: STRING
-  description: Installer Type - The first install type associated with the client ID; for example, msix, full, or stub
+  description: The type of installer package used to install the application, either
+    'full' for a complete installer or 'stub' for a lightweight installer that downloads
+    components during setup.
 - mode: NULLABLE
   name: nbr_rows
   type: INTEGER
-  description: Count of Rows in Clients Last Seen for These New Profiles for First 7 Days
+  description: Count of Rows in Clients Last Seen for These New Profiles for First
+    7 Days
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
-  description: Number of new profiles first seen on this date with this installer type
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.
 - mode: NULLABLE
   name: sum_active_days_bit_count_for_new_profiles
   type: INTEGER
-  description: The sum of the "days active bits" in the next 7 days for these new profiles
+  description: The sum of the "days active bits" in the next 7 days for these new
+    profiles
 - mode: NULLABLE
   name: ratio_of_np_days_active_bits_vs_np_first_7_days
   type: FLOAT
-  description: Calculated as sum_active_days_bit_count_for_new_profiles divided by new_profiles
+  description: Calculated as sum_active_days_bit_count_for_new_profiles divided by
+    new_profiles

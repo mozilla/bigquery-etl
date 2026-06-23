@@ -2,12 +2,17 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: The smaller client ID string
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - mode: NULLABLE
   name: linked_client_id
   type: STRING
-  description: The larger client ID string
+  description: A UUID representing a Firefox client that has been linked or associated
+    with another identifier, such as a Glean client ID or a profile ID. Used to join
+    records across different telemetry systems.
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.

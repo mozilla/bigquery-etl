@@ -2,65 +2,115 @@ fields:
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - name: app_build_id
   type: STRING
   mode: NULLABLE
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - name: metric
   type: STRING
   mode: NULLABLE
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
 - name: metric_type
   type: STRING
   mode: NULLABLE
+  description: The collection methodology or storage format of the metric, such as
+    'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the metric
+    values should be interpreted and aggregated.
 - name: key
   type: STRING
   mode: NULLABLE
+  description: A string identifier representing the specific action, search engine,
+    or event type associated with a record, such as a search entry point or provider
+    key. An empty string indicates no specific key was recorded.
 - name: process
   type: STRING
   mode: NULLABLE
+  description: The Firefox process type from which a measurement or event originated,
+    such as 'parent' (the main browser process), 'content' (a content renderer process),
+    or 'gpu' (the GPU process).
 - name: first_bucket
   type: INTEGER
   mode: NULLABLE
+  description: The lower bound of the first bucket in a histogram, defining the minimum
+    value range captured by the histogram's first bin. Different histograms use different
+    starting bucket sizes (e.g. 1, 50, 1024).
 - name: last_bucket
   type: INTEGER
   mode: NULLABLE
+  description: The upper boundary value of the last bucket in a histogram distribution.
+    This defines the maximum range of the histogram's final bin.
 - name: num_buckets
   type: INTEGER
   mode: NULLABLE
+  description: The number of buckets in a histogram metric definition. This determines
+    the granularity of the histogram and is part of the histogram's structural metadata.
 - name: client_agg_type
   type: STRING
   mode: NULLABLE
+  description: Describes the aggregation method applied to client-level metric values,
+    such as 'summed_histogram', 'count', 'avg', 'sum', 'min', or 'max'. Determines
+    how individual client observations were combined into the stored aggregate.
 - name: agg_type
   type: STRING
   mode: NULLABLE
+  description: The aggregation type used for the metric data, indicating how the underlying
+    values were combined. The only observed value is 'histogram'.
 - name: total_users
   type: INTEGER
   mode: NULLABLE
+  description: The total count of users associated with the record or group, representing
+    the full population for the given aggregation.
 - name: aggregates
   type: RECORD
   mode: REPEATED
+  description: A key-value map representing aggregated metric values, where each key
+    identifies a histogram bucket or metric dimension and the value holds the corresponding
+    aggregated numeric result.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.
 - name: non_norm_aggregates
   type: RECORD
   mode: REPEATED
+  description: An array of key-value pairs representing non-normalized aggregate metric
+    values. Each entry contains a string key identifying the bucket or dimension and
+    a float value representing the aggregate count or measurement.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: value
     type: FLOAT
     mode: NULLABLE
+    description: A generic integer value associated with a measurement, event, or
+      metric. The specific meaning depends on the context of the surrounding fields.

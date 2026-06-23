@@ -2,164 +2,222 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: Date when the server first received a ping from this client; used as the cohort assignment date.
+  description: The calendar date on which the client profile was first observed in
+    telemetry data. This is used to determine client tenure and cohort assignment.
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - mode: NULLABLE
   name: architecture
   type: STRING
-  description: The CPU architecture of the client device (e.g., 'x86-64', 'aarch64', 'x86').
+  description: The CPU architecture of the system on which the application is running
+    (e.g., 'x86-64', 'aarch64', 'arm'). Identifies the instruction set architecture
+    of the client device.
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
-  description: The campaign this client's install was attributed to, identifying a specific marketing campaign or promotion.
+  description: The marketing campaign name associated with the Firefox installation,
+    sourced from attribution parameters (e.g., 'SET_DEFAULT_BROWSER'). Null when attribution
+    data is unavailable.
 - mode: NULLABLE
   name: attribution_content
   type: STRING
-  description: The attribution content identifier; similar to UTM content, indicating the particular link or creative within a campaign.
+  description: The content variant or creative identifier from the marketing attribution
+    parameters, used to distinguish specific ad placements or page elements (e.g.,
+    'body-download-button'). Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description: The attribution experiment key associated with the client's install, identifying a download-funnel experiment.
+  description: The experiment identifier from attribution parameters, indicating whether
+    the install was part of a specific marketing experiment (e.g., 'download-privacy').
+    Null when no experiment was associated with the attribution.
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: The attribution medium; similar to UTM medium, indicating the category of traffic source (e.g., 'referral', 'paidsearch').
+  description: The marketing medium from attribution parameters describing how the
+    user arrived at the download (e.g., 'referral', 'firefox-desktop'). Null when
+    attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_source
   type: STRING
-  description: The attribution source; the referring domain or partner from which the client installed Firefox (e.g., 'www.google.com').
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: The browser user-agent used to download Firefox, indicating the browser the client was using prior to installation (e.g., 'chrome', 'edge',
-    'firefox').
+  description: The user agent type of the browser the user was using when they downloaded
+    Firefox, as captured in attribution parameters (e.g., 'chrome', 'edge', 'firefox').
+    Null when attribution data is unavailable.
 - mode: NULLABLE
   name: partner_distribution_version
   type: STRING
-  description: The version string of the partner distribution package used to install Firefox, such as '1.0' or '2023.6'. Null when no partner distribution
-    is associated.
+  description: The version of the partner distribution package used to install or
+    configure the browser. Null when the client is not associated with a partner distribution.
 - mode: NULLABLE
   name: partner_distributor
   type: STRING
-  description: The name of the partner organization that distributed this Firefox install (e.g., 'canonical', 'mint', 'archlinux'). Null when no partner
-    distributor is associated.
+  description: The name of the organization or Linux distribution that packaged and
+    distributed the browser (e.g., 'canonical', 'mint', 'fedora'). Null for clients
+    that installed Firefox through standard Mozilla channels.
 - mode: NULLABLE
   name: partner_distributor_channel
   type: STRING
-  description: The distribution channel used by the partner distributor (e.g., 'firefox', 'zena'). Null when no partner channel is associated.
+  description: The specific distribution channel or sub-product variant used by the
+    partner distributor (e.g., 'ubuntu', 'esrWinFull'). Null or empty when the client
+    did not arrive through a named partner channel.
 - mode: NULLABLE
   name: partner_id
   type: STRING
-  description: Identifier for the specific partner associated with this Firefox install (e.g., 'ubuntu', 'mint', 'mozillaonline'). Null when no partner
-    ID is present.
+  description: A short identifier for the top-level partner organization associated
+    with the browser installation (e.g., 'ubuntu', 'mozillaonline', 'yandex'). Null
+    when the client has no partner affiliation.
 - mode: NULLABLE
   name: platform_version
   type: STRING
-  description: The Firefox application version string as reported by the platform layer, typically matching app_version.
+  description: The version of the browser platform or Gecko engine as reported in
+    telemetry (e.g., '151.0.3'). May differ from the user-facing product version and
+    is used to identify the underlying platform build.
 - mode: NULLABLE
   name: city
   type: STRING
-  description: City retrieved as a result of a geographic lookup based on the client's IP address. Null when the city cannot be determined.
+  description: The city associated with the client's IP address or profile geography
+    at the time of the record. May be null when city-level geolocation is unavailable
+    or suppressed.
 - mode: NULLABLE
   name: subdivision1
   type: STRING
-  description: The first-level country subdivision (e.g., state, province) determined by IP geolocation, using standard subdivision codes. Null when
-    the subdivision cannot be determined.
+  description: The first-level administrative subdivision (e.g., state, province,
+    or region) derived from the client's geographic location, represented as a code.
+    Null indicates the subdivision could not be determined.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - mode: NULLABLE
   name: db_version
   type: STRING
-  description: The version of the geolocation database used to resolve the client's IP address to a country, city, and subdivision.
+  description: The version identifier of the database or data snapshot used to produce
+    the record, expressed as an ISO 8601 UTC timestamp string. This indicates when
+    the underlying reference data was last updated.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING
-  description: The normalized application name (e.g., 'Firefox'). Set to 'Other' if the application name was not recognized.
+  description: A human-readable, standardized name for the Firefox application that
+    submitted the telemetry, such as 'Firefox Desktop', 'Fenix', 'Firefox iOS', or
+    'Focus Android'. This normalizes across different app identifiers.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: The operating system version normalized to a consistent format at ingestion (e.g., '10.0' for Windows, '6.17.0' for Linux, '25.3.0' for
-    macOS).
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING
-  description: The reason the Firefox profile was selected at startup (e.g., 'firstrun-created-default', 'default', 'argument-profile', 'profile-selector').
-    Null when the selection reason is not available.
+  description: The reason or method by which a Firefox profile was selected at the
+    start of a session. Common values include 'firstrun-created-default' (a new default
+    profile was created on first run) and 'default' (the existing default profile
+    was selected).
 - mode: NULLABLE
   name: vendor
   type: STRING
-  description: The vendor name embedded in the Firefox build, typically 'Mozilla' for official builds.
+  description: The organization that produced the browser or software being measured.
+    In this dataset the value is consistently 'Mozilla'.
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Major or first part of the operating system version running at the
-    client. E.g. for version "100.9.11", the major is 100.
+  description: "The major version number component of the operating system. For example,\
+    \ a value of 10 corresponds to Windows 10 or macOS 10.x, while values like 13\u2013\
+    16 correspond to major iOS/macOS releases."
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Minor part of the operating system version running at the client. E.g.
-    for version "100.9.11", the minor is 9.
+  description: The minor version number component of the operating system, representing
+    the second numeric segment of the full OS version string. A value of 0 is by far
+    the most common, indicating that most clients are on a base major release with
+    no minor increment.
 - mode: NULLABLE
   name: num_clients_in_cohort
   type: INTEGER
-  description: The total count of clients in this cohort group, i.e., those who were first seen on first_seen_date with the given dimension combination.
+  description: The total number of distinct clients belonging to the defined cohort
+    at the time of aggregation. Used as a denominator in retention and engagement
+    calculations.
 - mode: NULLABLE
   name: num_clients_active_on_day
   type: INTEGER
-  description: Count of cohort clients who were active (appeared in the seen bit pattern) on the submission_date.
+  description: The number of distinct clients that were active on a given day within
+    the cohort or segment. A value of 0 indicates no clients were active on that day.
 - mode: NULLABLE
   name: num_clients_dau_on_day
   type: INTEGER
-  description: Count of cohort clients who qualified as DAU (visited at least 1 URI and had an interaction) on the submission_date.
+  description: Count of cohort clients who qualified as DAU (visited at least 1 URI
+    and had an interaction) on the submission_date.
 - mode: NULLABLE
   name: num_clients_active_atleastonce_in_last_7_days
   type: INTEGER
-  description: Count of cohort clients who were active at least once during the 7 days ending on submission_date.
+  description: Count of cohort clients who were active at least once during the 7
+    days ending on submission_date.
 - mode: NULLABLE
   name: num_clients_active_atleastonce_in_last_28_days
   type: INTEGER
-  description: Count of cohort clients who were active at least once during the 28 days ending on submission_date.
+  description: Count of cohort clients who were active at least once during the 28
+    days ending on submission_date.
 - mode: NULLABLE
   name: num_clients_repeat_first_month_users
   type: INTEGER
-  description: Count of cohort clients who were active at least once during the 27-day window after first_seen_date and are measured on day 27 of their
-    cohort, qualifying as repeat first-month users.
+  description: Count of cohort clients who were active at least once during the 27-day
+    window after first_seen_date and are measured on day 27 of their cohort, qualifying
+    as repeat first-month users.
 - mode: NULLABLE
   name: num_clients_dau_active_atleastonce_in_last_7_days
   type: INTEGER
-  description: Count of cohort clients who qualified as DAU (URI visit + interaction) at least once in the 7 days ending on submission_date.
+  description: Count of cohort clients who qualified as DAU (URI visit + interaction)
+    at least once in the 7 days ending on submission_date.
 - mode: NULLABLE
   name: num_clients_dau_active_atleastonce_in_last_28_days
   type: INTEGER
-  description: Count of cohort clients who qualified as DAU (URI visit + interaction) at least once in the 28 days ending on submission_date.
+  description: Count of cohort clients who qualified as DAU (URI visit + interaction)
+    at least once in the 28 days ending on submission_date.
 - mode: NULLABLE
   name: num_clients_dau_repeat_first_month_users
   type: INTEGER
-  description: Count of cohort clients who qualified as DAU at least once during the 27-day window after first_seen_date and are measured on day 27,
-    qualifying as DAU-based repeat first-month users.
+  description: Count of cohort clients who qualified as DAU at least once during the
+    27-day window after first_seen_date and are measured on day 27, qualifying as
+    DAU-based repeat first-month users.

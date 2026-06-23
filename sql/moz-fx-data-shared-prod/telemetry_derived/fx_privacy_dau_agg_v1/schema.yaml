@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: event_object
   type: STRING
-  description: Submission Date
+  description: The UI element or component that was the target of the event (e.g.
+    'address_form', 'cc_form_v2', 'capture_doorhanger'). This identifies which part
+    of the product the event is associated with.
 - mode: NULLABLE
   name: nbr_events
   type: INTEGER
-  description: Number of events
+  description: The total number of events recorded in a given context. A value of
+    1 indicates a single event occurred, with higher values representing multiple
+    events aggregated together.
 - name: nbr_distinct_users
   type: INTEGER
   mode: NULLABLE

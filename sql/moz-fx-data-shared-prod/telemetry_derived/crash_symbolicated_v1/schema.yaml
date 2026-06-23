@@ -2,30 +2,48 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: Timestamp when the ping is received on the server side.
+  description: The precise UTC timestamp at which a ping or record was received by
+    Mozilla's ingestion pipeline, including microsecond precision. Used for fine-grained
+    temporal analysis within a submission date.
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message.
+  description: A unique UUID identifying an individual telemetry ping submission.
+    This identifier is used to deduplicate records and trace a specific ping through
+    the data pipeline.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: async_shutdown_timeout
   type: STRING
   mode: NULLABLE
 - name: ipc_channel_error
   type: STRING
   mode: NULLABLE
+  description: The error message or reason associated with an IPC (Inter-Process Communication)
+    channel failure, such as 'ShutDownKill' or 'GPUProcessKill'. A null value indicates
+    no IPC channel error was recorded.
 - name: oom_allocation_size
   type: STRING
   mode: NULLABLE
+  description: The size (in bytes) of the memory allocation that triggered an out-of-memory
+    (OOM) condition, represented as a string. Null indicates the allocation size was
+    not available, which is the common case as OOM events are relatively rare.
 - name: moz_crash_reason
   type: STRING
   mode: NULLABLE
+  description: A human-readable string describing the reason for a Mozilla crash,
+    such as an OOM condition or a blocking shutdown step. Null when no specific crash
+    reason was recorded.
 - name: reason
   type: STRING
   mode: NULLABLE
+  description: The technical reason or signal associated with an event such as a crash,
+    describing the specific exception type or OS signal (e.g., 'SIGSEGV / SEGV_MAPERR',
+    'EXCEPTION_BREAKPOINT'). Null when no reason was recorded.
 - name: crashing_thread
   type: INTEGER
   mode: NULLABLE

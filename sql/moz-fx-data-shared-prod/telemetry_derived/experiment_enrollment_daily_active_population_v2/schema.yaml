@@ -2,15 +2,27 @@ fields:
 - name: time
   type: TIMESTAMP
   mode: NULLABLE
+  description: The UTC timestamp representing the time associated with the record,
+    truncated to a granularity such as day or hour depending on the table.
 - name: experiment
   type: STRING
   mode: NULLABLE
+  description: The slug or identifier of a Nimbus or Normandy experiment the client
+    was enrolled in at the time of the ping. This field is null when the client was
+    not enrolled in any experiment.
 - name: branch
   type: STRING
   mode: NULLABLE
+  description: The experiment branch to which a client was assigned (e.g., 'control',
+    'treatment-a', 'rollout'). Used to segment clients for A/B test and rollout analyses.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - name: value
   type: INTEGER
   mode: NULLABLE
+  description: A generic integer value associated with a measurement, event, or metric.
+    The specific meaning depends on the context of the surrounding fields.

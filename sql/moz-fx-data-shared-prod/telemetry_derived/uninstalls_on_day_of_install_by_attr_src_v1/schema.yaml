@@ -2,16 +2,23 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: uninstall_same_day_as_install
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if the uninstall was on the same date as the install
+  description: Indicates whether the browser or add-on was uninstalled on the same
+    calendar day it was installed. True means the uninstall occurred on the install
+    day; false means it did not.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: Attribution Source
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling
+  description: The total number of uninstall events recorded during the reporting
+    period for the relevant software or add-on.

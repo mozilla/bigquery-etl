@@ -1,45 +1,81 @@
 fields:
 - name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: "A deterministic sample bucket identifier (0\u201399) derived from\
+    \ the client_id, used to create reproducible random samples of the user population\
+    \ for analysis or experimentation."
 - name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - name: app_version
   type: INTEGER
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - name: app_build_id
   type: STRING
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
 - name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
 - fields:
   - name: first_bucket
     type: INTEGER
+    description: The lower bound of the first bucket in a histogram, defining the
+      minimum value range captured by the histogram's first bin. Different histograms
+      use different starting bucket sizes (e.g. 1, 50, 1024).
   - name: last_bucket
     type: INTEGER
+    description: The upper boundary value of the last bucket in a histogram distribution.
+      This defines the maximum range of the histogram's final bin.
   - name: num_buckets
     type: INTEGER
+    description: The number of buckets in a histogram metric definition. This determines
+      the granularity of the histogram and is part of the histogram's structural metadata.
   - name: metric
     type: STRING
+    description: The name of the telemetry metric or histogram being recorded, such
+      as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a
+      row represents.
   - name: metric_type
     type: STRING
+    description: The collection methodology or storage format of the metric, such
+      as 'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the
+      metric values should be interpreted and aggregated.
   - name: key
     type: STRING
+    description: A string identifier representing the specific action, search engine,
+      or event type associated with a record, such as a search entry point or provider
+      key. An empty string indicates no specific key was recorded.
   - name: process
     type: STRING
+    description: The Firefox process type from which a measurement or event originated,
+      such as 'parent' (the main browser process), 'content' (a content renderer process),
+      or 'gpu' (the GPU process).
   - name: agg_type
     type: STRING
+    description: The aggregation type used for the metric data, indicating how the
+      underlying values were combined. The only observed value is 'histogram'.
   - fields:
     - name: key
       type: STRING
+      description: A string identifier representing the specific action, search engine,
+        or event type associated with a record, such as a search entry point or provider
+        key. An empty string indicates no specific key was recorded.
     - name: value
       type: INTEGER
     mode: REPEATED
@@ -48,3 +84,6 @@ fields:
   mode: REPEATED
   name: histogram_aggregates
   type: RECORD
+  description: An array of aggregated histogram records for one or more metrics, each
+    containing bucket configuration, metric metadata, process context, and the aggregated
+    bucket counts. Used for rollup-level histogram analysis across clients and versions.

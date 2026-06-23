@@ -1,5 +1,7 @@
 fields:
-- description: Submission Date
+- description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
   mode: NULLABLE
   name: submission_date
   type: DATE
@@ -7,7 +9,8 @@ fields:
   mode: NULLABLE
   name: product_category
   type: STRING
-- description: Daily active users for the product category
+- description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
   mode: NULLABLE
   name: dau
   type: INTEGER

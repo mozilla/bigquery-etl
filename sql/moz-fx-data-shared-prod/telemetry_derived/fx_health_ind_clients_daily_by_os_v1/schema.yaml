@@ -2,56 +2,80 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
 - mode: NULLABLE
   name: searches_per_user_ratio
   type: FLOAT
-  description: Ratio of Searches per User
+  description: The average number of searches per active user for a given cohort or
+    segment during the period. A value of zero indicates no searches were recorded
+    across the user base.
 - mode: NULLABLE
   name: subsession_hours_per_user_ratio
   type: NUMERIC
-  description: Ratio of Subsession Hours per User
+  description: The average number of active browser hours per user within a given
+    aggregation period, calculated as total subsession hours divided by the number
+    of users. Used to measure per-user engagement intensity.
 - mode: NULLABLE
   name: active_hours_per_user_ratio
   type: FLOAT
-  description: Ratio of Active Hours per User
+  description: The ratio of total active hours to the number of users within an aggregation
+    group, representing the average active hours per user.
 - mode: NULLABLE
   name: default_percent
   type: FLOAT
-  description: Percent of Users with Firefox as Default Browser
+  description: The percentage of users or pings within a reporting segment for which
+    Firefox is set as the default browser. Values range from 0.0 to 100.0.
 - mode: NULLABLE
   name: average_profile_age
   type: FLOAT
-  description: Average Profile Age
+  description: The average age of Firefox profiles in days across a cohort or aggregation
+    group. Higher values indicate longer-tenured user populations.
 - mode: NULLABLE
   name: pct_users_profile_age_less_than_7_days
   type: FLOAT
-  description: Percent of Users with Profile Age Less than 7 Days
+  description: The proportion of users in the cohort whose Firefox profile age is
+    fewer than 7 days at the time of measurement, representing relatively new profiles.
+    Expressed as a decimal fraction between 0 and 1.
 - mode: NULLABLE
   name: pct_users_profile_age_8_to_365_days
   type: FLOAT
-  description: Percent of Users with Profile Age Between 8 and 365 Days
+  description: The proportion of users in the cohort whose Firefox profile age falls
+    between 8 and 365 days at the time of measurement. Expressed as a decimal fraction
+    between 0 and 1.
 - mode: NULLABLE
   name: pct_users_profile_age_over_365_days
   type: FLOAT
-  description: Percent of Users with Profile Age Over 365 Days
+  description: The proportion of users in the cohort whose Firefox profile age exceeds
+    365 days at the time of measurement, representing long-tenured profiles. Expressed
+    as a decimal fraction between 0 and 1.
 - mode: NULLABLE
   name: sessions_per_user
   type: FLOAT
-  description: Ratio of Sessions per User
+  description: The average number of browser sessions per active user for a given
+    cohort or segment during the period. Higher values indicate more frequent session
+    starts among users.
 - mode: NULLABLE
   name: uris_per_user
   type: FLOAT
-  description: Ratio of URIs per User
+  description: The average number of URIs visited per user over the reporting period.
+    Null values indicate insufficient data to compute the average.
 - mode: NULLABLE
   name: new_profile_ratio
   type: FLOAT
-  description: Ratio of New Profiles vs All Profiles
+  description: The proportion of profiles that are new relative to the total profile
+    count in the aggregation window. A value of 0.0 indicates no new profiles in the
+    cohort.
 - mode: NULLABLE
   name: domains_per_user
   type: FLOAT
-  description: Domains per User
+  description: The average number of distinct domains visited per user during the
+    reporting period. This metric is used to characterize browsing breadth across
+    the user population.

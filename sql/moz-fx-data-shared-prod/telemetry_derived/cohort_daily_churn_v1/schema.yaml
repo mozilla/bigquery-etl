@@ -6,135 +6,201 @@ fields:
 - mode: NULLABLE
   name: cohort_date
   type: DATE
-  description: Cohort Date
+  description: The specific calendar date on which a client or user was first observed,
+    defining their membership in a daily cohort. Used for day-level retention and
+    cohort analysis.
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-  description: Activity Segment
+  description: A categorical label describing the user's activity level, such as 'core_user',
+    'regular_user', 'casual_user', 'infrequent_user', or 'other', based on their engagement
+    frequency.
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: App Version
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Attribution Campaign
+  description: The marketing campaign name associated with the Firefox installation,
+    sourced from attribution parameters (e.g., 'SET_DEFAULT_BROWSER'). Null when attribution
+    data is unavailable.
 - name: attribution_content
   type: STRING
   mode: NULLABLE
-  description: Attribution Content
+  description: The content variant or creative identifier from the marketing attribution
+    parameters, used to distinguish specific ad placements or page elements (e.g.,
+    'body-download-button'). Null when attribution data is unavailable.
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
-  description: Attribution Experiment
+  description: The experiment identifier from attribution parameters, indicating whether
+    the install was part of a specific marketing experiment (e.g., 'download-privacy').
+    Null when no experiment was associated with the attribution.
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Attribution Medium
+  description: The marketing medium from attribution parameters describing how the
+    user arrived at the download (e.g., 'referral', 'firefox-desktop'). Null when
+    attribution data is unavailable.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: Attribution Source
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
-  description: Attribution Variation
+  description: The A/B test variation from attribution parameters that the user was
+    assigned to during the download funnel (e.g., 'treatment', 'control'). Null when
+    no variation was recorded.
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City
+  description: The city associated with the client's IP address or profile geography
+    at the time of the record. May be null when city-level geolocation is unavailable
+    or suppressed.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
 - name: device_model
   type: STRING
   mode: NULLABLE
-  description: Device Model
+  description: The model identifier of the device on which the browser is running
+    (e.g., 'iPhone14,5'). This field may be null for desktop or unrecognized device
+    types where model information is unavailable.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Default Browser
+  description: Indicates whether Firefox is set as the default browser on the client's
+    device. True means it is the default; false means another browser is set as default.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: Normalized App Name
+  description: A human-readable, standardized name for the Firefox application that
+    submitted the telemetry, such as 'Firefox Desktop', 'Fenix', 'Firefox iOS', or
+    'Focus Android'. This normalizes across different app identifiers.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System
+  description: The standardized operating system name for the client device, such
+    as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
+    set of values.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System Version
+  description: The standardized version string of the client's operating system, such
+    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
+    representation across different OS reporting formats.
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
-  description: Operating System Version - Major
+  description: "The major version number component of the operating system. For example,\
+    \ a value of 10 corresponds to Windows 10 or macOS 10.x, while values like 13\u2013\
+    16 correspond to major iOS/macOS releases."
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
-  description: Operating System Version - Minor
+  description: The minor version number component of the operating system, representing
+    the second numeric segment of the full OS version string. A value of 0 is by far
+    the most common, indicating that most clients are on a base major release with
+    no minor increment.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: Adjust Ad Group
+  description: The name of the Adjust ad group attribution associated with the client's
+    install or event, used for mobile marketing attribution. Null when no paid ad
+    group attribution is available.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: Adjust Campaign
+  description: The name of the Adjust marketing campaign attributed to the client's
+    install or event. Common values include 'Organic' for non-paid installs and specific
+    campaign names for paid channels.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: Adjust Creative
+  description: The name of the specific creative (ad unit) within an Adjust campaign
+    attributed to the client's install or event. Null when no creative-level attribution
+    is available.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: Adjust Network
+  description: The advertising network or acquisition channel attributed to the client's
+    install via Adjust, such as 'Organic', 'Google Ads ACI', or 'Untrusted Devices'.
+    Null when no network attribution is available.
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Campaign
+  description: The UTM campaign name associated with the Google Play Store install
+    referral, identifying the marketing campaign that drove the app installation (e.g.,
+    'firefox-desktop', 'mozilla-org'). Null when no campaign attribution is available.
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Medium
+  description: The UTM medium parameter from the Google Play Store install referral,
+    identifying the marketing channel (e.g., 'organic', 'paid'). Currently null across
+    all records, indicating this attribution dimension is not yet populated.
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Source
+  description: The UTM source parameter from the Google Play Store install referral,
+    identifying the traffic origin that led to the app installation (e.g., 'google-play',
+    'google', 'eea-browser-choice'). Null when source attribution is unavailable.
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Content
+  description: The UTM content parameter from the Google Play Store install referral,
+    used to identify the specific creative or UI element that drove the installation
+    (e.g., 'onboarding-modal', 'firefoxview'). Null when content attribution is unavailable.
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Term
+  description: The UTM term parameter from the Google Play Store install referral,
+    typically capturing the search keyword that led to the app installation (e.g.,
+    'firefox', 'mozilla firefox'). Null when keyword attribution is unavailable.
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Install Referrer Response
+  description: The raw install referrer string returned by the Google Play Store at
+    the time of installation, containing UTM and other attribution parameters as a
+    URL-encoded query string. Null when no referrer response was captured.
 - name: row_source
   type: STRING
   mode: NULLABLE
-  description: Row Source
+  description: The platform origin of a row, either 'Desktop' or 'Mobile', indicating
+    whether the data came from a desktop or mobile Firefox client.
 - name: num_clients_in_cohort
   type: INTEGER
   mode: NULLABLE
-  description: Number of Clients in Cohort
+  description: The total number of distinct clients belonging to the defined cohort
+    at the time of aggregation. Used as a denominator in retention and engagement
+    calculations.
 - name: num_clients_returned_on_day_1
   type: INTEGER
   mode: NULLABLE

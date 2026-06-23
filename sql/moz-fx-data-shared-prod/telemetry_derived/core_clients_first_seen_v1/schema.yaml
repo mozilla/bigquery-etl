@@ -2,8 +2,10 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: The client's first seen date.
+  description: The calendar date on which the client profile was first observed in
+    telemetry data. This is used to determine client tenure and cohort assignment.

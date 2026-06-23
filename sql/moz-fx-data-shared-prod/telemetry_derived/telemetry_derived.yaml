@@ -3364,8 +3364,7 @@ fields:
     wallpaper clicks occurred during the period.
   type: INT64
 - name: wau
-  description: Weekly Active Users (WAU). In aggregate tables this is the count of distinct clients active within a 7-day window; in per-client
-    tables it indicates whether the individual client was active in that window.
+  description: Weekly Active Users (WAU). In aggregate tables this is the count of distinct clients active at least one day in the previous 7 days. See detailed definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
   type: INT64
 - name: weather_widget_change_display_to_detailed
   description: The number of times a user switched the New Tab Page weather widget from the simple view to the detailed view. A value of 0 indicates

@@ -2,36 +2,46 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: country
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: placement
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The location within Firefox where the partner engagement occurred, such as a top-site tile
+    source or search bar context.
 - name: partner
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The name of the ADM partner whose sponsored content was engaged with, such as 'amazon'.
 - name: version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The major version number of Firefox from which the engagement was reported.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: n_engagements
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The total count of user engagement events (clicks or search redirects) with the partner's
+    content for this combination of dimensions.
 - name: interaction
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The type of user interaction recorded, either 'topsite' for top-site tile clicks or 'redirect'
+    for search engine redirect engagements.
 - name: phase
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The experiment phase under which the engagement was recorded (e.g., 'phase2', 'phase3', 'rollout').
+    Null for engagements outside a known experiment phase.

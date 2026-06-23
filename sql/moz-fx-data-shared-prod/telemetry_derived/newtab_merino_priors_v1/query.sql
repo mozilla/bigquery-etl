@@ -231,7 +231,7 @@ SELECT
 FROM
   per_region_final
 WHERE
-  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE')
+  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES')
 UNION ALL
 SELECT
   region,

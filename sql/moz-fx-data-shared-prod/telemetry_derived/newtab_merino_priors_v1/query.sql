@@ -15,7 +15,7 @@ target_regions AS (
   SELECT
     region
   FROM
-    UNNEST(['US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE']) AS region
+    UNNEST(['US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES']) AS region
 ),
 corpus_items AS (
   SELECT DISTINCT

@@ -2,47 +2,67 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: app_version
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - name: app_build_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - name: metric
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_type
 - name: key
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: key
 - name: process
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: process
 - name: client_agg_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The per-client aggregation method used before rolling up to the population level, such as
+    'summed_histogram', 'count', 'avg', 'sum', 'min', or 'max'.
 - name: agg_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: agg_type
 - name: total_users
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The total number of distinct clients that reported this probe for the given combination of
+    dimensions.
 - name: aggregates
   type: RECORD
   mode: REPEATED
@@ -51,8 +71,10 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: ''
+    description: Within the aggregates repeated struct, the histogram bucket label or scalar key identifying
+      a specific data point in the probe's distribution.
   - name: value
     type: FLOAT64
     mode: NULLABLE
-    description: ''
+    description: Within the aggregates repeated struct, the aggregated numeric value (e.g. proportion of clients
+      or count) for the corresponding bucket key.

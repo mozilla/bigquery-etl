@@ -1,0 +1,37 @@
+friendly_name: Content Quality Metrics — Article (Monthly)
+description: |
+  Monthly article-level content quality metrics for the SUMO knowledge base,
+  combining GA4 engagement signals with content freshness and helpfulness votes.
+
+  Grain: Month x Locale x Article (slug)
+
+  For each KB-article slug, page locale, and month:
+  - freshness_months: months since the en-US source article's last approved
+    revision (measured from the en-US article, applied to all page locales)
+  - helpfulness: cumulative helpful-vote share through the end of the month
+  - avg_engagement_time: mean user_engagement time per session (msec)
+  - landing_rate / exit_rate: share of KB-article page views that were the
+    session's first / last page
+  - bounce_pageview_share: share of KB-article page views in bounced sessions
+  - page_views: KB-article page views in the month
+
+  Self-contained: article identity, product mapping, and freshness are derived
+  directly from GA4 (sumo_ga.ga4_events) and the kitsune wiki / vote tables in
+  sumo_syndicate. Recomputed in full each run (GA4 history from 2024-07-01, no
+  date partition).
+
+  Used by:
+  - content_quality_scores_monthly_v1 (percentile scoring vs. a fixed baseline)
+
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

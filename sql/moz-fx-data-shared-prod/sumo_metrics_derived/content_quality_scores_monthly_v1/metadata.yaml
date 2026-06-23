@@ -1,0 +1,35 @@
+friendly_name: Content Quality Scores — Article (Monthly)
+description: |
+  Monthly article-level content quality SCORES for the SUMO knowledge base,
+  aggregated from content_quality_metrics_article_monthly_v1.
+
+  Grain: Month x Locale x Article (slug)
+
+  Each article-month (with >= 100 page views) is scored against a fixed 2024-H2
+  baseline population:
+  - freshness_percentile / helpfulness_percentile / engagement_percentile /
+    bounce_percentile / exit_percentile: 0-1 position vs. the baseline
+    distribution (helpfulness defaults to 0.5 when an article has no votes)
+  - quality_score: weighted 0-100 composite
+    (freshness 25%, helpfulness 35%, engagement 20%, bounce 10%, exit 10%)
+
+  The metric definitions and article population are defined upstream in
+  content_quality_metrics_article_monthly_v1.
+
+  Recomputed in full each run (no date partition).
+
+  Used by:
+  - sumo_content_quality_kpis (monthly product-level rollup view)
+
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  type: aggregate
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

@@ -1,0 +1,12 @@
+friendly_name: SUMO KB Content Quality KPIs
+description: >
+  Monthly knowledge base content quality KPIs for SUMO, by product and overall
+  ('ALL'). Each article-month is scored against a fixed 2024-H2 baseline on
+  freshness, helpfulness, engagement, bounce, and exit, then combined into a
+  weighted 0-100 quality_score (freshness 25%, helpfulness 35%, engagement 20%,
+  bounce 10%, exit 10%). This view rolls those article-level scores up to the
+  product x month grain, exposing page-view-weighted and simple averages plus a
+  median composite. Built on content_quality_scores_monthly_v1.
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience

@@ -393,7 +393,11 @@ SELECT
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
       metrics.counter.places_manager_connection_initialized,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1315,7 +1319,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_default_value,
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
-      metrics.string.startup_profiles_ini_status
+      metrics.string.startup_profiles_ini_status,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1796,7 +1801,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
-      metrics.timing_distribution.longfox_game_played_length
+      metrics.timing_distribution.longfox_game_played_length,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2610,7 +2616,11 @@ SELECT
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
       metrics.counter.places_manager_connection_initialized,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3532,7 +3542,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_default_value,
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
-      metrics.string.startup_profiles_ini_status
+      metrics.string.startup_profiles_ini_status,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4013,7 +4024,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
-      metrics.timing_distribution.longfox_game_played_length
+      metrics.timing_distribution.longfox_game_played_length,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4847,7 +4859,11 @@ SELECT
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
       metrics.counter.places_manager_connection_initialized,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5769,7 +5785,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_default_value,
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
-      metrics.string.startup_profiles_ini_status
+      metrics.string.startup_profiles_ini_status,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6250,7 +6267,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
-      metrics.timing_distribution.longfox_game_played_length
+      metrics.timing_distribution.longfox_game_played_length,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

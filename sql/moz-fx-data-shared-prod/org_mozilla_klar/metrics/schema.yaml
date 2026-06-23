@@ -2570,6 +2570,32 @@ fields:
         count.
 
         '
+    - name: glean_migration_error
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times a migration was attempted and failed.
+
+        '
+    - name: glean_migration_failed_metrics
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of metrics that failed to deserialize from storage
+
+        while iterating the Rkv database for migration.
+
+        '
+    - name: glean_migration_metrics_in_sqlite
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of metrics stored in SQLite after a migration run.
+
+        '
+    - name: glean_migration_migrated_metrics
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of metrics migrated from Rkv storage to SQLite storage.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -10552,6 +10578,12 @@ fields:
         \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
         \    A profile section's path was invalid\nNote that if multiple profile sections\
         \ contain errors then only the last will be reported.\n"
+    - name: glean_database_load_error
+      type: STRING
+      mode: NULLABLE
+      description: 'If there was an error loading the sqlite database, record it.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -38346,6 +38378,49 @@ fields:
           mode: NULLABLE
       description: 'Time spent on the URL-classifier worker thread inside AntiTrackingChannelClassifierUtils::CheckChannelHelper
         (ms), covering content-classifier and URL-classifier feature lookups.
+
+        '
+    - name: glean_migration_migration_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration for one full migration run at startup.
 
         '
   - name: labeled_boolean

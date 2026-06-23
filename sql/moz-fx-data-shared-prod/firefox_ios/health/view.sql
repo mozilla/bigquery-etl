@@ -19,7 +19,11 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.glean_error_event_timestamp_clamped
+      metrics.counter.glean_error_event_timestamp_clamped,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -44,7 +48,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.glean_health_exception_state
+      metrics.string.glean_health_exception_state,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
@@ -52,7 +57,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
-      metrics.timing_distribution.glean_validation_shutdown_wait
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(metrics.uuid.glean_health_recovered_client_id) AS `uuid`
   ) AS `metrics`,
@@ -87,7 +93,11 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.glean_error_event_timestamp_clamped
+      metrics.counter.glean_error_event_timestamp_clamped,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -112,7 +122,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.glean_health_exception_state
+      metrics.string.glean_health_exception_state,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
@@ -120,7 +131,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
-      metrics.timing_distribution.glean_validation_shutdown_wait
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(metrics.uuid.glean_health_recovered_client_id) AS `uuid`
   ) AS `metrics`,
@@ -155,7 +167,11 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.glean_error_event_timestamp_clamped
+      metrics.counter.glean_error_event_timestamp_clamped,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -180,7 +196,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.glean_health_exception_state
+      metrics.string.glean_health_exception_state,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
@@ -188,7 +205,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
-      metrics.timing_distribution.glean_validation_shutdown_wait
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(metrics.uuid.glean_health_recovered_client_id) AS `uuid`
   ) AS `metrics`,

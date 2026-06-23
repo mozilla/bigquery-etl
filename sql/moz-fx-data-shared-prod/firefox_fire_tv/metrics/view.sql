@@ -41,12 +41,17 @@ SELECT
       metrics.counter.glean_time_invalid_timezone_offset,
       metrics.counter.glean_upload_in_flight_pings_dropped,
       metrics.counter.glean_upload_missing_send_ids,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.string.ping_reason,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.glean_database_rkv_load_error
+      metrics.string.glean_database_rkv_load_error,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -62,7 +67,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_wait,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(

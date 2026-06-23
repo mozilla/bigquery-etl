@@ -295,7 +295,11 @@ SELECT
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -813,7 +817,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_default_value,
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
-      metrics.string.startup_profiles_ini_status
+      metrics.string.startup_profiles_ini_status,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -1620,7 +1625,8 @@ SELECT
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
       metrics.timing_distribution.network_ssl_token_cache_load_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_time,
-      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time,
+      metrics.timing_distribution.glean_migration_migration_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

@@ -182,7 +182,12 @@ SELECT
       metrics.counter.user_terms_of_use_remind_me_later_count,
       metrics.counter.user_terms_of_use_shown_count,
       metrics.counter.user_credit_cards_undecryptable_count,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics,
+      metrics.counter.places_manager_connection_initialized
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -246,7 +251,8 @@ SELECT
       metrics.string.preferences_opening_screen,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.user_toolbar_middle_button_type
+      metrics.string.user_toolbar_middle_button_type,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -285,7 +291,12 @@ SELECT
       metrics.timing_distribution.webview_page_load,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.share_deeplink_open_url_startup_time,
-      metrics.timing_distribution.ai_summarize_summarization_time
+      metrics.timing_distribution.ai_summarize_summarization_time,
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -512,7 +523,12 @@ SELECT
       metrics.counter.user_terms_of_use_remind_me_later_count,
       metrics.counter.user_terms_of_use_shown_count,
       metrics.counter.user_credit_cards_undecryptable_count,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics,
+      metrics.counter.places_manager_connection_initialized
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -576,7 +592,8 @@ SELECT
       metrics.string.preferences_opening_screen,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.user_toolbar_middle_button_type
+      metrics.string.user_toolbar_middle_button_type,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -615,7 +632,12 @@ SELECT
       metrics.timing_distribution.webview_page_load,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.share_deeplink_open_url_startup_time,
-      metrics.timing_distribution.ai_summarize_summarization_time
+      metrics.timing_distribution.ai_summarize_summarization_time,
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -842,7 +864,12 @@ SELECT
       metrics.counter.user_terms_of_use_remind_me_later_count,
       metrics.counter.user_terms_of_use_shown_count,
       metrics.counter.user_credit_cards_undecryptable_count,
-      metrics.counter.glean_sessions_seen
+      metrics.counter.glean_sessions_seen,
+      metrics.counter.glean_migration_error,
+      metrics.counter.glean_migration_failed_metrics,
+      metrics.counter.glean_migration_metrics_in_sqlite,
+      metrics.counter.glean_migration_migrated_metrics,
+      metrics.counter.places_manager_connection_initialized
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -906,7 +933,8 @@ SELECT
       metrics.string.preferences_opening_screen,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.user_toolbar_middle_button_type
+      metrics.string.user_toolbar_middle_button_type,
+      metrics.string.glean_database_load_error
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -945,7 +973,12 @@ SELECT
       metrics.timing_distribution.webview_page_load,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.share_deeplink_open_url_startup_time,
-      metrics.timing_distribution.ai_summarize_summarization_time
+      metrics.timing_distribution.ai_summarize_summarization_time,
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,

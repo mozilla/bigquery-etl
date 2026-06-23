@@ -894,11 +894,19 @@ def target_ref_for_source(
         target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
     else:
         target_ds = src_dataset
-    target_table = (
-        sanitize_bq_id(f"{rendered_artifact_prefix}{src_table}")
-        if rendered_artifact_prefix
-        else src_table
-    )
+    if rendered_artifact_prefix:
+        if src_table.endswith("*"):
+            # Preserve the trailing wildcard: sanitizing it to `_` would turn the
+            # ref into a non-existent literal table (and break `_TABLE_SUFFIX`).
+            # Keeping `*` lets the rewritten ref match the stub table
+            # (`…events_wildcard`) as a wildcard.
+            target_table = (
+                sanitize_bq_id(f"{rendered_artifact_prefix}{src_table[:-1]}") + "*"
+            )
+        else:
+            target_table = sanitize_bq_id(f"{rendered_artifact_prefix}{src_table}")
+    else:
+        target_table = src_table
     return target_project, target_ds, target_table
 
 
@@ -933,10 +941,14 @@ def _substitute_3part_ref(
 ) -> str:
     """Replace every occurrence of source 3-part ref with target 3-part ref."""
     src_project, src_dataset, src_table = src
+    # Negative lookahead instead of `\b`: a `\b` after a table name ending in `*`
+    # (a wildcard, e.g. `events_*`) never matches before a backtick, so wildcard
+    # refs would be left un-rewritten. `(?![A-Za-z0-9_])` ends the name correctly
+    # for both normal and `*`-terminated tables.
     pattern = re.compile(
         rf"`?{re.escape(src_project)}`?"
         rf"\.`?{re.escape(src_dataset)}`?"
-        rf"\.`?{re.escape(src_table)}\b`?"
+        rf"\.`?{re.escape(src_table)}(?![A-Za-z0-9_])`?"
     )
     return pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
 

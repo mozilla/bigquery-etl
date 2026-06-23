@@ -2,44 +2,57 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: country_name
   type: STRING
-  description: Name of the country in which the activity took place, as determined by
-    the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_name
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: build_id
   type: STRING
-  description: The Firefox build identifier string (e.g., '20260516144017'), encoding the date and time the build was compiled.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: The major.minor version of the operating system on the client at
-    the time of first launch, truncated to the minor component (e.g., '10',
-    '6.1').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: attribution_source
   type: STRING
-  description: The attribution source; the referring domain or partner from which the client installed Firefox (e.g., 'www.google.com', 'www.bing.com').
-    Null when no attribution source is recorded.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: The browser user-agent used to download Firefox, indicating the browser the client was using prior to installation (e.g., 'chrome', 'edge',
-    'firefox'). Empty string when no attribution UA was recorded.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_ua
 - mode: NULLABLE
   name: num_activated
   type: INTEGER

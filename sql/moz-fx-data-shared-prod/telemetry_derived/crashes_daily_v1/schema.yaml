@@ -1,13 +1,19 @@
 fields:
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
   mode: NULLABLE
   name: sample_id
   type: INTEGER
@@ -15,23 +21,33 @@ fields:
   mode: NULLABLE
   name: application_name
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
   mode: NULLABLE
   name: build_id
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
   mode: NULLABLE
   name: channel
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
   mode: NULLABLE
   name: os
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
   mode: NULLABLE
   name: os_version
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_code
   mode: NULLABLE
   name: country_code
   type: STRING
@@ -43,9 +59,15 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
 - description: NULL
   mode: REPEATED
   type: RECORD
@@ -54,10 +76,18 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
-- description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id
   mode: NULLABLE
   name: profile_group_id
   type: STRING

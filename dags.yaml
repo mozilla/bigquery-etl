@@ -2759,20 +2759,23 @@ bqetl_data_governance_metadata:
     data_governance_metadata_derived for schema enrichment tooling. Runs weekly;
     by default profiles telemetry_derived and telemetry.
 
-    **Manual run — "Trigger DAG w/ config":** both parameters are optional. Paste
-    a JSON object into the Airflow trigger "Configuration JSON" box:
+    **Manual run — "Trigger DAG w/ config":** paste a JSON object into the Airflow
+    trigger "Configuration JSON" box:
 
     - `date` — profiling date as `YYYY-MM-DD`. This is the `profiled_at` partition
-      written; the source data scanned is `date` minus 7 days. Omit to use the
-      run's logical date.
+      written; the source data scanned is `date` minus 7 days. **Required for manual
+      runs** — the task fails fast if omitted (this avoids the surprising partition
+      date Airflow would infer from a manual trigger's interval). Scheduled runs
+      omit it and use the run's interval-end date (the scheduled Monday) automatically.
     - `source_datasets` — datasets to profile, as a single comma-separated
-      string, e.g. `"fenix,firefox_desktop"`. Omit to use the job's scheduled
-      default (set in metadata.yaml).
+      string, e.g. `"fenix,firefox_desktop"`. **Required for manual runs** — the
+      task fails fast if omitted. Scheduled runs omit it and use the job's default
+      set (set in metadata.yaml).
 
     Example config: `{"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}`
 
     A run overwrites only the `profiled_at` partition for the chosen date
-    (idempotent). Leaving both unset reproduces the scheduled behaviour.
+    (idempotent).
   default_args:
     owner: gkatre@mozilla.com
     start_date: "2026-06-08"

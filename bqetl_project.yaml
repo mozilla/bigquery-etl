@@ -20,6 +20,13 @@ default:
   - moz-fx-glam-prod
   public_project: mozilla-public-data
 
+coding_agents:
+  # Non-prod projects coding agents may set as --target. Advisory guardrail only
+  # (not checked against --project-id); the impersonated SA's IAM is the real
+  # write boundary. See exit_if_running_under_coding_agent in util/common.py.
+  dev_project_allowlist:
+  - moz-fx-data-proto
+
 monitoring:
   bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection

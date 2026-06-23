@@ -1,0 +1,7 @@
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  # https://mozilla-hub.atlassian.net/browse/DENG-11252
+  - workgroup:dataplatform/hang-report-collection

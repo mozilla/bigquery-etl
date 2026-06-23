@@ -12,6 +12,9 @@ description: |-
   https://searchfox.org/firefox-main/rev/ba7a7a320649794a9948b32156f5b438fef5ce7a/toolkit/mozapps/extensions/metrics.yaml#347-349
 
   This table is built using Legacy (app version up to major version 147) and Glean data (major app version 148 and above).
+
+  Note: prior to 2026-06-18 we could have a very small number of utm fields with empty string value,
+        moving forward those will be set to null prior to aggregations.
 owners:
   - kik@mozilla.com
   - lgreco@mozilla.com

@@ -381,7 +381,7 @@ Examples:
 @routine.command(
     help="""Publish routines to BigQuery. Requires service account access.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 
@@ -601,7 +601,7 @@ mozfun.add_command(copy.copy(publish))
 mozfun.commands["publish"].help = """Publish mozfun routines. This command is used
 by Airflow only.
 
-Coding agents aren't allowed to run this command.
+Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 """
 
 

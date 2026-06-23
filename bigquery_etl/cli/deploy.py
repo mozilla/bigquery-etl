@@ -71,7 +71,7 @@ log = logging.getLogger(__name__)
     Table-specific options use --table-* prefix, view-specific options use
     --view-* prefix, routine-specific options use --routine-* prefix.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 

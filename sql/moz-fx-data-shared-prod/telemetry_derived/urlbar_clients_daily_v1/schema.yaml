@@ -2,25 +2,45 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: search_region
   type: STRING
@@ -52,6 +72,9 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -62,6 +85,9 @@ fields:
   - mode: NULLABLE
     name: key
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: INTEGER
@@ -72,10 +98,16 @@ fields:
   - mode: NULLABLE
     name: type
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: type
   - fields:
     - mode: NULLABLE
       name: key
       type: INTEGER
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - mode: NULLABLE
       name: value
       type: INTEGER
@@ -95,14 +127,21 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - mode: NULLABLE
     name: value
     type: STRING
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id

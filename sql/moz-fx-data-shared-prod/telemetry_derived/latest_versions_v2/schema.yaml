@@ -2,6 +2,12 @@ fields:
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: latest_version
   type: NUMERIC
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: latest_version

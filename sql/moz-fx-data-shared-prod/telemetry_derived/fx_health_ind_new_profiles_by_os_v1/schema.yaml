@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: os_version_bucket
   type: STRING
   mode: NULLABLE
@@ -10,4 +12,6 @@ fields:
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of new profiles
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profiles

@@ -14,11 +14,15 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: Application name (e.g., firefox_desktop)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: Release channel (e.g., release, beta, nightly)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - name: min_version
   type: STRING
   mode: NULLABLE
@@ -34,11 +38,15 @@ fields:
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: Glean metric type prefix (e.g., memory_distribution, timing_distribution)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_type
 - name: metric_name
   type: STRING
   mode: NULLABLE
-  description: Metric name after the type prefix
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_name
 - name: sample_rate
   type: FLOAT64
   mode: NULLABLE
@@ -46,4 +54,6 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating system the rollout targets (e.g., Windows, Mac, Linux), parsed from the experiment targeting expression.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os

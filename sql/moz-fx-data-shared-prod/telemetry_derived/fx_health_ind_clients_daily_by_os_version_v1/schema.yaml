@@ -2,56 +2,84 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: searches_per_user_ratio
   type: FLOAT
-  description: Ratio of Searches per User
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: searches_per_user_ratio
 - mode: NULLABLE
   name: subsession_hours_per_user_ratio
   type: NUMERIC
-  description: Ratio of Subsession Hours per User
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_hours_per_user_ratio
 - mode: NULLABLE
   name: active_hours_per_user_ratio
   type: FLOAT
-  description: Ratio of Active Hours per User
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_hours_per_user_ratio
 - mode: NULLABLE
   name: default_percent
   type: FLOAT
-  description: Percent of Users with Firefox as Default Browser
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_percent
 - mode: NULLABLE
   name: average_profile_age
   type: FLOAT
-  description: Average Profile Age
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: average_profile_age
 - mode: NULLABLE
   name: pct_users_profile_age_less_than_7_days
   type: FLOAT
-  description: Percent of Users with Profile Age Less than 7 Days
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pct_users_profile_age_less_than_7_days
 - mode: NULLABLE
   name: pct_users_profile_age_8_to_365_days
   type: FLOAT
-  description: Percent of Users with Profile Age Between 8 and 365 Days
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pct_users_profile_age_8_to_365_days
 - mode: NULLABLE
   name: pct_users_profile_age_over_365_days
   type: FLOAT
-  description: Percent of Users with Profile Age Over 365 Days
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pct_users_profile_age_over_365_days
 - mode: NULLABLE
   name: sessions_per_user
   type: FLOAT
-  description: Ratio of Sessions per User
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sessions_per_user
 - mode: NULLABLE
   name: uris_per_user
   type: FLOAT
-  description: Ratio of URIs per User
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uris_per_user
 - mode: NULLABLE
   name: new_profile_ratio
   type: FLOAT
-  description: Ratio of New Profiles vs All Profiles
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profile_ratio
 - mode: NULLABLE
   name: domains_per_user
   type: FLOAT
-  description: Domains per User
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: domains_per_user

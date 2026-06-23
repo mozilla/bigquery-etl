@@ -10,7 +10,9 @@ fields:
 - mode: REQUIRED
   name: cpu_cores
   type: INTEGER
-  description: CPU Cores
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cpu_cores
 - mode: NULLABLE
   name: cpu_type
   type: STRING

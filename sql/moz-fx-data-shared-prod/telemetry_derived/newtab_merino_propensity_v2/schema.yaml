@@ -11,12 +11,18 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: section_position
   type: INTEGER
 - mode: NULLABLE
   name: position
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: position
 - mode: NULLABLE
   name: tile_format
   type: STRING

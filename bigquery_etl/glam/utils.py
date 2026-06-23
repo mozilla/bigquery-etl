@@ -4,14 +4,33 @@ import json
 import subprocess
 from collections import namedtuple
 from itertools import combinations
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
+import requests
 from mozilla_schema_generator.glean_ping import GleanPing
 
 CustomDistributionMeta = namedtuple(
     "CustomDistributionMeta",
     ["name", "type", "range_min", "range_max", "bucket_count", "histogram_type"],
 )
+
+# Glean Dictionary is the source of truth for metric metadata (incl. the static
+# `labels` list). The per-metric file name matches the BigQuery column form, so
+# stable-table schema field names can be looked up directly.
+GLEAN_DICTIONARY_DATA_URL = "https://dictionary.telemetry.mozilla.org/data"
+# ETL product (stable-table dataset prefix) -> Glean Dictionary app name. Fenix
+# variants share the "fenix" app; mirrors _PRODUCT_TO_APP_NAME in
+# client_side_sampled_metrics.
+_GLEAN_DICTIONARY_PRODUCT_MAP = {
+    "firefox_desktop": "firefox_desktop",
+    "org_mozilla_fenix": "fenix",
+    "org_mozilla_fenix_nightly": "fenix",
+    "org_mozilla_firefox": "fenix",
+    "org_mozilla_firefox_beta": "fenix",
+    "org_mozilla_fennec_aurora": "fenix",
+}
+
+_glean_metric_metadata_cache: dict = {}
 
 
 def run(command, **kwargs) -> str:
@@ -86,6 +105,43 @@ def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMet
         custom.append(meta)
 
     return custom
+
+
+def get_glean_metric_metadata(
+    product: Optional[str], probe_name: str
+) -> Optional[dict]:
+    """Return Glean Dictionary metadata for a metric, or None if unavailable."""
+    cache_key = (product, probe_name)
+    if cache_key in _glean_metric_metadata_cache:
+        return _glean_metric_metadata_cache[cache_key]
+
+    app = _GLEAN_DICTIONARY_PRODUCT_MAP.get(product) if product is not None else None
+    meta = None
+    if app is not None:
+        try:
+            url = f"{GLEAN_DICTIONARY_DATA_URL}/{app}/metrics/data_{probe_name}.json"
+            resp = requests.get(url, timeout=10)
+            resp.raise_for_status()
+            info = resp.json()
+            meta = {"type": info.get("type"), "labels": info.get("labels") or []}
+        except Exception:
+            meta = None
+
+    _glean_metric_metadata_cache[cache_key] = meta
+    return meta
+
+
+def is_static_labeled_counter(product: Optional[str], probe_name: str) -> bool:
+    """Return whether a metric is a labeled_counter with predefined (static) `labels`.
+
+    These are Glean's replacement for Legacy Telemetry categorical histograms and
+    are processed in the histogram pipeline; dynamic (open-ended) labeled_counters
+    have no static `labels` and stay in the scalar pipeline.
+    """
+    meta = get_glean_metric_metadata(product, probe_name)
+    if not meta:
+        return False
+    return meta.get("type") == "labeled_counter" and bool(meta.get("labels"))
 
 
 def compute_datacube_groupings(

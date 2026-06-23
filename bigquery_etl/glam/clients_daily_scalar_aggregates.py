@@ -12,7 +12,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .client_side_sampled_metrics import get as get_sampled_metrics
-from .utils import get_schema, ping_type_from_table
+from .utils import get_schema, is_static_labeled_counter, ping_type_from_table
 
 ATTRIBUTES = ",".join(
     [
@@ -138,6 +138,12 @@ def get_scalar_metrics(
             if metric_type not in metric_type_set[scalar_type]:
                 continue
             for field in metric_field["fields"]:
+                # Static labeled_counters are categorical histograms; they move to
+                # the histogram pipeline. Dynamic (open-ended) ones stay scalar.
+                if metric_type == "labeled_counter" and is_static_labeled_counter(
+                    product, field["name"]
+                ):
+                    continue
                 if field["name"] in sampled_metrics.get(metric_type, []):
                     found_sampled_metrics[metric_type].append(field["name"])
                 elif field["name"] not in excluded_metrics:

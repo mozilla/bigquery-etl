@@ -39,7 +39,24 @@
   );
 
 {% endif %}
-WITH probe_counts AS (
+WITH
+{% if not is_scalar %}
+-- Static labeled_counters are processed as categorical histograms: their label
+-- set is the bucket set. Collect it per metric from the data so that labels
+-- absent from a given combo are still zero-filled below.
+categorical_buckets AS (
+  SELECT
+    metric,
+    ARRAY_AGG(DISTINCT record.key) AS buckets
+  FROM
+    {{ source_table }}
+  WHERE
+    metric_type = 'labeled_counter'
+  GROUP BY
+    metric
+),
+{% endif %}
+probe_counts AS (
   SELECT
     {{ attributes }},
     {{ aggregate_attributes }},
@@ -83,20 +100,33 @@ WITH probe_counts AS (
       CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
       mozfun.glam.histogram_fill_buckets_dirichlet(
         mozfun.map.sum(ARRAY_AGG(record)),
-        mozfun.glam.histogram_buckets_cast_string_array(
-          udf_get_buckets(metric_type, MIN(range_min), MAX(range_max), bucket_count)
-        ),
+        CASE
+          -- Categorical labeled_counter: use the label set as buckets directly.
+          WHEN metric_type = 'labeled_counter'
+            THEN ANY_VALUE(categorical_buckets.buckets)
+          ELSE mozfun.glam.histogram_buckets_cast_string_array(
+              udf_get_buckets(metric_type, MIN(range_min), MAX(range_max), bucket_count)
+            )
+        END,
         CAST(ROUND(SUM(record.value)) AS INT64)
       ) AS aggregates,
       mozfun.glam.histogram_fill_buckets(
         mozfun.map.sum(ARRAY_AGG(non_norm_record)),
-        mozfun.glam.histogram_buckets_cast_string_array(
-          udf_get_buckets(metric_type, MIN(range_min), MAX(range_max), bucket_count)
-        )
+        CASE
+          WHEN metric_type = 'labeled_counter'
+            THEN ANY_VALUE(categorical_buckets.buckets)
+          ELSE mozfun.glam.histogram_buckets_cast_string_array(
+              udf_get_buckets(metric_type, MIN(range_min), MAX(range_max), bucket_count)
+            )
+        END
       ) AS non_norm_aggregates
     {% endif %}
   FROM
     {{ source_table }}
+    {% if not is_scalar %}
+    LEFT JOIN categorical_buckets
+      USING (metric)
+    {% endif %}
   GROUP BY
     {{ attributes }},
     {% if is_scalar %}

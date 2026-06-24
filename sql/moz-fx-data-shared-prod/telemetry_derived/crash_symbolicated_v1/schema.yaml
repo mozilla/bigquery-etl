@@ -20,6 +20,9 @@ fields:
 - name: async_shutdown_timeout
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: async_shutdown_timeout
 - name: ipc_channel_error
   type: STRING
   mode: NULLABLE
@@ -47,6 +50,8 @@ fields:
 - name: crashing_thread
   type: INTEGER
   mode: NULLABLE
+  description: The zero-based index into the threads array pointing to the thread that caused the crash;
+    computed as the last thread index since only thread 0 and the crashing thread are retained after symbolication.
 - name: threads
   type: RECORD
   mode: REPEATED

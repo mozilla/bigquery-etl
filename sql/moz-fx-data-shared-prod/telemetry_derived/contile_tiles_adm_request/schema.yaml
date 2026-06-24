@@ -2,52 +2,62 @@ fields:
 - name: time
   type: TIMESTAMP
   mode: NULLABLE
-  description: ''
+  description: The timestamp at which this metric observation was recorded by the Contile server.
 - name: app
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The application or service name that produced this metric, identifying the Contile component.
 - name: endpoint
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The API endpoint path that was called on the Contile server for this tile request.
 - name: environment
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: environment
 - name: geo_country_code
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The ISO 3166-1 alpha-2 country code of the client request used to segment tile-serving metrics
+    by geography.
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The type of metric being recorded (e.g., counter, gauge), describing how the value was accumulated.
 - name: realm
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The authentication realm or service partition associated with this metric event, used to
+    separate different deployment contexts.
 - name: ua_form_factor
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The form factor of the user agent making the request, such as 'desktop' or 'phone', derived
+    from the User-Agent header.
 - name: ua_os_family
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The operating system family of the requesting client derived from the User-Agent header,
+    such as 'Windows' or 'Mac OS X'.
 - name: uri_method
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The HTTP method used for the request to the Contile ADM endpoint, such as 'GET' or 'POST'.
 - name: value
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The numeric count of tile requests sent to the ADM (Ad Decision Manager) backend, aggregated
+    over the measurement window.
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: endpoint_v2
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: A flag or version indicator for v2 of the Contile tiles endpoint; non-zero when the request
+    was handled by the v2 API path.

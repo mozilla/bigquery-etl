@@ -26,13 +26,15 @@ fields:
 - name: metric
   type: STRING
   mode: NULLABLE
-  description: The name of the scalar or keyed-scalar probe being aggregated, such as 'networking_data_transferred_v3_kb'
-    or 'telemetry_event_counts'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: The telemetry probe type for this metric, such as 'scalar', 'keyed-scalar', 'boolean', or
-    'keyed-scalar-boolean', describing how values are structured at collection time.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_type
 - name: key
   type: STRING
   mode: NULLABLE
@@ -48,13 +50,15 @@ fields:
 - name: client_agg_type
   type: STRING
   mode: NULLABLE
-  description: The per-client aggregation function used to reduce multiple observations of a scalar into
-    a single value, such as 'sum', 'max', 'min', 'avg', or 'count'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_agg_type
 - name: agg_type
   type: STRING
   mode: NULLABLE
-  description: The type of aggregation applied to client-level values when rolling up to this bucket-count
-    record; currently always 'histogram'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: agg_type
 - name: bucket
   type: STRING
   mode: NULLABLE

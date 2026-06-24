@@ -2,36 +2,49 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: country
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: placement
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The UI placement where the partner interaction occurred, such as a top-site tile location
+    or search access point.
 - name: partner
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The name of the advertising or search partner whose content was engaged with (e.g., 'amazon',
+    'google').
 - name: version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: version
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: n_engagements
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The total number of user engagements (clicks or search access point events) with the partner
+    placement on this date.
 - name: interaction
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The type of user interaction recorded, either 'topsite' for top-site tile clicks or 'redirect'
+    for search engine redirect engagements.
 - name: phase
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The experiment or rollout phase associated with this engagement, such as 'phase2', 'phase3',
+    or 'rollout'. Null if no sponsored top-sites experiment was active.

@@ -8,13 +8,15 @@ fields:
 - name: addon_id
   type: STRING
   mode: NULLABLE
-  description: The unique identifier for the Firefox add-on (extension or theme), typically in UUID or reverse-domain
-    format.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: addon_id
 - name: name
   type: STRING
   mode: NULLABLE
-  description: The display name of the add-on, limited to 100 characters. Null if the add-on name was not
-    available.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: name
 - name: most_common_default_search_engine
   type: STRING
   mode: NULLABLE
@@ -41,8 +43,9 @@ fields:
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the add-on is a Firefox system add-on. True for built-in system extensions, false
-    for user-installed add-ons.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_system
 - name: active_hours_sum
   type: FLOAT64
   mode: NULLABLE
@@ -271,8 +274,9 @@ fields:
 - name: ad_clicks
   type: RECORD
   mode: NULLABLE
-  description: Counts of ad clicks on search result pages, broken down by engine for clients with this add-on
-    installed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ad_clicks
   fields:
   - name: amazon
     type: INT64

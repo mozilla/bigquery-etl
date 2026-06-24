@@ -44,7 +44,9 @@ fields:
 - name: blocklisted
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the add-on appears in the Firefox blocklist. True if blocked, false otherwise.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_blocklisted
 - name: name
   type: STRING
   mode: NULLABLE
@@ -54,11 +56,15 @@ fields:
 - name: user_disabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the user has explicitly disabled this add-on. True if disabled by the user.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_user_disabled
 - name: app_disabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the application has disabled this add-on due to version incompatibility, dependency issues, or blocklisting. True if app-disabled.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_app_disabled
 - name: version
   type: STRING
   mode: NULLABLE
@@ -68,7 +74,9 @@ fields:
 - name: scope
   type: INTEGER
   mode: NULLABLE
-  description: 'Numeric code indicating the installation scope of the add-on: 1=profile, 2=user, 4=application, 8=system, 16=built-in.'
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_scope
 - name: type
   type: STRING
   mode: NULLABLE
@@ -78,23 +86,33 @@ fields:
 - name: foreign_install
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether this add-on was installed by an external application rather than directly by the user. True if foreign-installed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_foreign_install
 - name: has_binary_components
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the add-on includes binary (native code) components. Always false since Firefox 60.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_has_binary_components
 - name: install_day
   type: INTEGER
   mode: NULLABLE
-  description: The number of days since the Unix epoch (1970-01-01) on which this add-on was first installed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_install_day
 - name: update_day
   type: INTEGER
   mode: NULLABLE
-  description: The number of days since the Unix epoch (1970-01-01) on which this add-on was last updated.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_update_day
 - name: signed_state
   type: INTEGER
   mode: NULLABLE
-  description: 'The AMO signature state of the add-on: 2=signed, 3=system add-on, 4=preliminary signed; negative values indicate invalid or unsigned states.'
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_signed_state
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
@@ -104,11 +122,15 @@ fields:
 - name: is_web_extension
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the add-on uses the WebExtension API. True for modern WebExtensions, false for legacy XUL-based add-ons.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_is_web_extension
 - name: multiprocess_compatible
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the add-on is compatible with multi-process Firefox (e10s). Always true since Firefox 61.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addons_multiprocess_compatible
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

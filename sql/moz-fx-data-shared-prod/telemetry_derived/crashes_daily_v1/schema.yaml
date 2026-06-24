@@ -17,7 +17,9 @@ fields:
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: application_name
   mode: NULLABLE
   name: application_name
   type: STRING

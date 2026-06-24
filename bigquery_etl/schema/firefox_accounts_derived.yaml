@@ -68,28 +68,27 @@ fields:
     type: FLOAT
     description: Application-level numeric log severity from the FxA service payload,
       using syslog-style levels (6=informational, 2=critical). Distinct from the
-      top-level Cloud Logging `severity` STRING field. Null in some tables.
+      top-level Cloud Logging `severity` STRING field.
   - name: type
     type: STRING
-    description: Log entry type classifier (e.g., 'amplitudeEvent'). Up to 15 distinct
-      values observed across tables.
+    description: Log entry type classifier (e.g., 'amplitudeEvent').
   - name: msg
     type: STRING
     description: Log message string from the FxA service payload.
   - name: message
     type: STRING
-    description: Structured log message from the FxA service payload. Null in most tables.
+    description: Structured log message from the FxA service payload.
   - name: name
     type: STRING
     description: Name field from the log payload, identifying the process or subsystem
-      (e.g., 'customs-server', 'configure-sentry'). Null in many tables.
+      (e.g., 'customs-server', 'configure-sentry').
   - name: statuscode
     type: STRING
-    description: HTTP or application status code from the log payload. Null in most tables.
+    description: HTTP or application status code from the log payload.
   - name: level
     type: STRING
     description: Log severity level. Numeric Bunyan-style in some tables (30=info,
-      50=error); string level name in others. Null in most tables.
+      50=error); string level name in others.
   - name: useragent
     type: STRING
     description: User agent string from the log payload.
@@ -110,7 +109,7 @@ fields:
     description: Log type classification for the FxA service event.
   - name: op
     type: STRING
-    description: Operation type from the log payload. Null in most tables.
+    description: Operation type from the log payload.
   - name: referrer
     type: STRING
     description: HTTP referrer URL from the log payload.
@@ -119,8 +118,7 @@ fields:
     description: Remote IP address of the client making the request.
   - name: remote_user
     type: STRING
-    description: Authenticated remote user identifier from the log payload. Null in most
-      tables.
+    description: Authenticated remote user identifier from the log payload.
   - name: request
     type: STRING
     description: Full HTTP request line (method, path, protocol) from the log payload.
@@ -182,7 +180,7 @@ fields:
       description: Stack trace string. Populated on error events.
     - name: time
       type: FLOAT
-      description: Event time as a Unix epoch milliseconds float. Null in some tables.
+      description: Event time as a Unix epoch milliseconds float.
     - name: user_properties
       type: STRING
       description: Structured user properties for the amplitude event, as a JSON string.
@@ -208,10 +206,10 @@ fields:
         millisecond timestamp.
     - name: status
       type: FLOAT
-      description: HTTP or application status code for the event. Null in some tables.
+      description: HTTP or application status code for the event.
     - name: t
       type: FLOAT
-      description: Elapsed time in milliseconds for the operation. Null in some tables.
+      description: Elapsed time in milliseconds for the operation.
     - name: device_model
       type: STRING
       description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel 6').
@@ -239,14 +237,13 @@ fields:
         tables. Not a raw email address.
     - name: uid
       type: STRING
-      description: Raw FxA user identifier. Null in most tables; use `user_id` for the
-        hashed version.
+      description: Raw FxA user identifier. Use `user_id` for the hashed version.
     - name: clientid
       type: STRING
       description: Client identifier associated with the event.
     - name: config
       type: STRING
-      description: Configuration metadata associated with the event. Null in most tables.
+      description: Configuration metadata associated with the event.
     - name: country
       type: STRING
       description: Country associated with the event, as a full country name
@@ -270,11 +267,10 @@ fields:
       description: Original transaction identifier for subscription or payment events.
     - name: originaltransactionids
       type: STRING
-      description: Stringified list of original transaction identifiers. Null in most
-        records.
+      description: Stringified list of original transaction identifiers.
     - name: payload
       type: STRING
-      description: Raw payload string from the event. Null in most tables.
+      description: Raw payload string from the event.
     - name: poolstats
       type: STRING
       description: Database connection pool statistics as a JSON string, including pool
@@ -291,7 +287,7 @@ fields:
         (e.g., 'verifyEmail', 'newDeviceLogin').
     - name: id
       type: STRING
-      description: Unique identifier for the event record. Null in some tables.
+      description: Unique identifier for the event record.
     - name: locale
       type: STRING
       description: BCP 47 locale string (e.g., 'en-US', 'fr-FR').
@@ -300,7 +296,7 @@ fields:
       description: Reason associated with the event (e.g., 'disconnect', 'unverified').
     - name: request
       type: STRING
-      description: Request metadata associated with the event. Null in most tables.
+      description: Request metadata associated with the event.
     - name: service
       type: STRING
       description: Service or relying party identifier associated with the event.
@@ -309,34 +305,34 @@ fields:
       description: Subscription identifier for subscription-related events.
     - name: to
       type: STRING
-      description: Destination or recipient field. Null in most tables.
+      description: Destination or recipient field.
     - name: action
       type: STRING
-      description: Action type associated with the event. Null in most tables.
+      description: Action type associated with the event.
     - name: body
       type: STRING
-      description: Request or response body. Null in most tables.
+      description: Request or response body.
     - name: name
       type: STRING
-      description: Name field from the event payload. Null in most tables.
+      description: Name field from the event payload.
     - name: profilechangedat
       type: FLOAT
       description: Unix epoch timestamp of the last profile change for the user.
     - name: response
       type: STRING
-      description: Response data associated with the event. Null in most tables.
+      description: Response data associated with the event.
     - name: result
       type: STRING
-      description: Result or outcome of the operation. Null in most tables.
+      description: Result or outcome of the operation.
     - name: statuscode
       type: FLOAT
       description: HTTP or application status code from the event payload.
     - name: url
       type: STRING
-      description: URL associated with the event. Null in most tables.
+      description: URL associated with the event.
     - name: bundle
       type: STRING
-      description: Bundle identifier. Reserved field; null in most observed records.
+      description: Bundle identifier. Reserved field.
     - name: client_id
       type: STRING
       description: Client identifier for the relying party application that initiated
@@ -347,8 +343,7 @@ fields:
       description: Client IP address as logged by the FxA service.
     - name: closed
       type: BOOLEAN
-      description: Boolean flag indicating a closed connection or session. Null in most
-        tables.
+      description: Boolean flag indicating a closed connection or session.
     - name: contentlength
       type: FLOAT
       description: HTTP Content-Length header value in bytes.
@@ -362,7 +357,7 @@ fields:
         (e.g., 'US', 'DE').
     - name: errorcode
       type: STRING
-      description: Application-level error code. Null in most tables.
+      description: Application-level error code.
     - name: joierrors
       type: STRING
       description: Joi schema validation error messages, populated when request
@@ -372,17 +367,17 @@ fields:
       description: HTTP referer URL from the event payload.
     - name: userid
       type: STRING
-      description: User identifier from the event payload. Null in most tables; use
-        top-level `user_id` for the hashed identifier.
+      description: User identifier from the event payload. Use top-level `user_id`
+        for the hashed identifier.
     - name: cause
       type: STRING
-      description: Cause or underlying reason for an error event. Null in most tables.
+      description: Cause or underlying reason for an error event.
     - name: data
       type: STRING
-      description: Generic data field from the event payload. Null in most tables.
+      description: Generic data field from the event payload.
     - name: directory
       type: STRING
-      description: Directory path from the event payload. Null in most tables.
+      description: Directory path from the event payload.
     - name: domain
       type: STRING
       description: Domain string associated with the event (e.g., an email domain).
@@ -393,14 +388,13 @@ fields:
     - name: flow_time
       type: FLOAT
       description: Elapsed time in milliseconds within the current authentication flow.
-        Null in most tables.
+
     - name: flowbegintime
       type: FLOAT
-      description: Unix epoch timestamp of when the authentication flow began. Null in
-        most tables.
+      description: Unix epoch timestamp of when the authentication flow began.
     - name: flowid
       type: STRING
-      description: Flow identifier. Null in most tables; see top-level `flow_id`.
+      description: Flow identifier. See top-level `flow_id`.
     - name: invoiceid
       type: STRING
       description: Invoice identifier for subscription billing events.
@@ -410,16 +404,16 @@ fields:
         for the primary language field.
     - name: param
       type: STRING
-      description: Parameter field from the event payload. Null in most tables.
+      description: Parameter field from the event payload.
     - name: params
       type: STRING
-      description: Request parameters from the event. Null in most tables.
+      description: Request parameters from the event.
     - name: success
       type: BOOLEAN
       description: Boolean indicating whether the operation succeeded.
     - name: templateversion
       type: FLOAT
-      description: Email template version number. Null in most tables.
+      description: Email template version number.
     - name: type
       type: STRING
       description: Event type classifier within the fields payload.
@@ -429,7 +423,7 @@ fields:
         server logs.
     - name: version
       type: STRING
-      description: Version string from the event payload. Null in most tables.
+      description: Version string from the event payload.
 
 - name: labels
   type: RECORD
@@ -476,7 +470,7 @@ fields:
       non-batch workloads.
   - name: k8s_pod_controller_uid
     type: STRING
-    description: Kubernetes pod controller UID. Null in most records.
+    description: Kubernetes pod controller UID.
   - name: k8s_pod_env_code
     type: STRING
     description: Kubernetes pod environment code label (e.g., 'prod').
@@ -485,7 +479,7 @@ fields:
     description: Kubernetes pod job name. Populated only for scheduled job pods.
   - name: k8s_pod_redis
     type: STRING
-    description: Kubernetes pod label for Redis workloads. Null in most records.
+    description: Kubernetes pod label for Redis workloads.
   - name: logging_gke_io_top_level_controller_name
     type: STRING
     description: GKE top-level controller name (e.g., the Deployment name) managing
@@ -496,12 +490,11 @@ fields:
       'CronJob').
   - name: stack
     type: STRING
-    description: Stack label from the log metadata (e.g., 'default'). Present in some
-      tables; null in others.
+    description: Stack label from the log metadata (e.g., 'default').
   - name: type
     type: STRING
     description: Type label from the log metadata indicating the log source category
-      (e.g., 'admin_panel'). Present in some tables; null in others.
+      (e.g., 'admin_panel').
 
 - name: httpRequest
   type: RECORD
@@ -672,42 +665,39 @@ fields:
     fields:
     - name: container
       type: STRING
-      description: App Hub application container. Null in most observed FxA records.
+      description: App Hub application container.
     - name: id
       type: STRING
-      description: App Hub application identifier. Null in most observed FxA records.
+      description: App Hub application identifier.
     - name: location
       type: STRING
-      description: App Hub application location. Null in most observed FxA records.
+      description: App Hub application location.
   - name: service
     type: RECORD
     description: App Hub service context.
     fields:
     - name: criticalityType
       type: STRING
-      description: App Hub service criticality classification. Null in all observed FxA
-        records.
+      description: App Hub service criticality classification.
     - name: environmentType
       type: STRING
-      description: App Hub service environment type (e.g., 'PRODUCTION'). Null in all
-        observed FxA records.
+      description: App Hub service environment type (e.g., 'PRODUCTION').
     - name: id
       type: STRING
-      description: App Hub service identifier. Null in most observed FxA records.
+      description: App Hub service identifier.
   - name: workload
     type: RECORD
     description: App Hub workload context.
     fields:
     - name: criticalityType
       type: STRING
-      description: App Hub workload criticality classification. Null in all observed FxA
-        records.
+      description: App Hub workload criticality classification.
     - name: environmentType
       type: STRING
-      description: App Hub workload environment type. Null in most observed FxA records.
+      description: App Hub workload environment type.
     - name: id
       type: STRING
-      description: App Hub workload identifier. Null in most observed FxA records.
+      description: App Hub workload identifier.
 
 - name: apphubDestination
   type: RECORD
@@ -719,48 +709,39 @@ fields:
     fields:
     - name: container
       type: STRING
-      description: App Hub destination application container. Null in all observed FxA
-        records.
+      description: App Hub destination application container.
     - name: id
       type: STRING
-      description: App Hub destination application identifier. Null in all observed FxA
-        records.
+      description: App Hub destination application identifier.
     - name: location
       type: STRING
-      description: App Hub destination application location. Null in all observed FxA
-        records.
+      description: App Hub destination application location.
   - name: service
     type: RECORD
     description: App Hub destination service context.
     fields:
     - name: criticalityType
       type: STRING
-      description: App Hub destination service criticality classification. Null in all
-        observed FxA records.
+      description: App Hub destination service criticality classification.
     - name: environmentType
       type: STRING
-      description: App Hub destination service environment type. Null in all observed FxA
-        records.
+      description: App Hub destination service environment type.
     - name: id
       type: STRING
-      description: App Hub destination service identifier. Null in all observed FxA
-        records.
+      description: App Hub destination service identifier.
   - name: workload
     type: RECORD
     description: App Hub destination workload context.
     fields:
     - name: criticalityType
       type: STRING
-      description: App Hub destination workload criticality classification. Null in all
-        observed FxA records.
+      description: App Hub destination workload criticality classification.
     - name: environmentType
       type: STRING
-      description: App Hub destination workload environment type. Null in all observed FxA
-        records.
+      description: App Hub destination workload environment type.
     - name: id
       type: STRING
-      description: App Hub destination workload identifier. Null in all observed FxA
-        records.
+      description: App Hub destination workload identifier.
 
 - name: apphubSource
   type: RECORD
@@ -772,44 +753,41 @@ fields:
     fields:
     - name: container
       type: STRING
-      description: App Hub source application container. Null in most observed FxA records.
+      description: App Hub source application container.
     - name: id
       type: STRING
-      description: App Hub source application identifier. Null in most observed FxA records.
+      description: App Hub source application identifier.
     - name: location
       type: STRING
-      description: App Hub source application location. Null in most observed FxA records.
+      description: App Hub source application location.
   - name: service
     type: RECORD
     description: App Hub source service context.
     fields:
     - name: criticalityType
       type: STRING
-      description: App Hub source service criticality classification. Null in all observed
-        FxA records.
+      description: App Hub source service criticality classification.
     - name: environmentType
       type: STRING
-      description: App Hub source service environment type. Null in all observed FxA
-        records.
+      description: App Hub source service environment type.
     - name: id
       type: STRING
-      description: App Hub source service identifier. Null in most observed FxA records.
+      description: App Hub source service identifier.
   - name: workload
     type: RECORD
     description: App Hub source workload context.
     fields:
     - name: criticalityType
       type: STRING
-      description: App Hub source workload criticality classification. Null in all observed
-        FxA records.
+      description: App Hub source workload criticality classification.
     - name: environmentType
       type: STRING
-      description: App Hub source workload environment type. Null in all observed FxA
-        records.
+      description: App Hub source workload environment type.
     - name: id
       type: STRING
-      description: App Hub source workload identifier. Null in most observed FxA records.
+      description: App Hub source workload identifier.
 
+# FxA-derived fields shared across firefox_accounts_derived tables
 
 - name: user_id
   type: STRING
@@ -819,7 +797,6 @@ fields:
 - name: submission_date
   type: DATE
   description: Date the record was ingested into the pipeline, used as the partition key.
-    Derived from the event timestamp.
 
 - name: flow_id
   type: STRING

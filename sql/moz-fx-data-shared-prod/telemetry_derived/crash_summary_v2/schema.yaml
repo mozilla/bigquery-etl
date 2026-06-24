@@ -80,7 +80,9 @@ fields:
 - name: experiments
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
   fields:
   - name: key_value
     type: RECORD

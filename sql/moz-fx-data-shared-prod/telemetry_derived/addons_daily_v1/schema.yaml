@@ -2,246 +2,273 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: addon_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The unique identifier of the Firefox add-on (extension or theme), as reported by the telemetry
+    environment.
 - name: name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The display name of the add-on, limited to 100 characters, as reported by the telemetry environment.
+    Null when unavailable.
 - name: most_common_default_search_engine
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The most frequently reported default search engine identifier among clients with this add-on
+    installed on the submission date.
 - name: dau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The number of distinct clients with this add-on active that were seen on the submission date
+    (daily active users).
 - name: wau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The number of distinct clients with this add-on active that were seen within the 7 days ending
+    on the submission date (weekly active users).
 - name: mau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The number of distinct clients with this add-on active that were seen within the 28 days
+    ending on the submission date (monthly active users).
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
-  description: ''
+  description: Whether the add-on is a Mozilla system add-on (true) or a user-installed add-on (false).
 - name: active_hours_sum
   type: FLOAT64
   mode: NULLABLE
-  description: ''
+  description: The total number of hours Firefox was actively used by clients with this add-on installed,
+    summed across all clients.
 - name: total_uri_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The total number of URI page loads recorded by clients with this add-on installed, summed
+    across all clients.
 - name: tab_open_event_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The total number of new-tab open events recorded by clients with this add-on installed, summed
+    across all clients.
 - name: devtools_toolbox_opened_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The total number of times the DevTools toolbox was opened by clients with this add-on installed,
+    summed across all clients.
 - name: sap_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Search access point (SAP) search counts broken down by search engine (google, bing, ddg,
+    yandex, amazon, other, total), summed across all clients with this add-on.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: SAP search count attributed to Amazon, summed across all clients with this add-on on the
+      submission date.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: SAP search count attributed to Bing, summed across all clients with this add-on on the submission
+      date.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: SAP search count attributed to DuckDuckGo, summed across all clients with this add-on on
+      the submission date.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: SAP search count attributed to Google, summed across all clients with this add-on on the
+      submission date.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: SAP search count attributed to search engines not individually tracked (google, bing, ddg,
+      amazon, yandex), summed across clients.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total SAP search count across all search engines, summed across all clients with this add-on
+      on the submission date.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: SAP search count attributed to Yandex, summed across all clients with this add-on on the
+      submission date.
 - name: tagged_sap_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Tagged search access point (SAP) search counts — searches that carry Mozilla's partner attribution
+    tag — broken down by engine.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged SAP search count attributed to Amazon, summed across all clients with this add-on.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged SAP search count attributed to Bing, summed across all clients with this add-on.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged SAP search count attributed to DuckDuckGo, summed across all clients with this add-on.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged SAP search count attributed to Google, summed across all clients with this add-on.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged SAP search count attributed to other engines not individually tracked, summed across
+      clients.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP search count across all engines, summed across all clients with this add-on.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged SAP search count attributed to Yandex, summed across all clients with this add-on.
 - name: tagged_follow_on_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Follow-on search counts — searches made after a tagged SAP search that carry the original
+    partner tag — broken down by engine.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged follow-on search count attributed to Amazon, summed across all clients with this add-on.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged follow-on search count attributed to Bing, summed across all clients with this add-on.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged follow-on search count attributed to DuckDuckGo, summed across all clients with this
+      add-on.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged follow-on search count attributed to Google, summed across all clients with this add-on.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged follow-on search count attributed to other engines not individually tracked.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on search count across all engines, summed across all clients with this
+      add-on.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Tagged follow-on search count attributed to Yandex, summed across all clients with this add-on.
 - name: organic_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Organic search counts — searches initiated outside of a Mozilla partner SAP — broken down
+    by engine.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Organic search count attributed to Amazon, summed across all clients with this add-on.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Organic search count attributed to Bing, summed across all clients with this add-on.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Organic search count attributed to DuckDuckGo, summed across all clients with this add-on.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Organic search count attributed to Google, summed across all clients with this add-on.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Organic search count attributed to other engines not individually tracked.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic search count across all engines, summed across all clients with this add-on.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Organic search count attributed to Yandex, summed across all clients with this add-on.
 - name: searches_with_ads
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Search result pages that contained advertisements, broken down by engine, summed across clients
+    with this add-on.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Searches with ads attributed to Amazon, summed across all clients with this add-on.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Searches with ads attributed to Bing, summed across all clients with this add-on.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Searches with ads attributed to DuckDuckGo, summed across all clients with this add-on.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Searches with ads attributed to Google, summed across all clients with this add-on.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Searches with ads attributed to other engines not individually tracked.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total searches with ads across all engines, summed across all clients with this add-on.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Searches with ads attributed to Yandex, summed across all clients with this add-on.
 - name: ad_clicks
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Ad click counts — user clicks on search result advertisements — broken down by engine.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Ad click count attributed to Amazon, summed across all clients with this add-on.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Ad click count attributed to Bing, summed across all clients with this add-on.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Ad click count attributed to DuckDuckGo, summed across all clients with this add-on.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Ad click count attributed to Google, summed across all clients with this add-on.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Ad click count attributed to other engines not individually tracked.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad click count across all engines, summed across all clients with this add-on.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Ad click count attributed to Yandex, summed across all clients with this add-on.

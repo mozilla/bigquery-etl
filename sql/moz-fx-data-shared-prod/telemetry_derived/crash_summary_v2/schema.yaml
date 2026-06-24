@@ -1,0 +1,130 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: build_version
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: crash_time
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: application
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: os_name
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: experiment_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: experiment_branch
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: experiments
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: key_value
+    type: RECORD
+    mode: REPEATED
+    description: ''
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: ''
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: ''
+- name: e10s_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: ''
+- name: gfx_compositor
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: profile_created
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: payload
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: crashDate
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: crashTime
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: hasCrashEnvironment
+    type: BOOLEAN
+    mode: NULLABLE
+    description: ''
+  - name: metadata
+    type: RECORD
+    mode: NULLABLE
+    description: ''
+    fields:
+    - name: key_value
+      type: RECORD
+      mode: REPEATED
+      description: ''
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: ''
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: ''
+  - name: processType
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: version
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: ''

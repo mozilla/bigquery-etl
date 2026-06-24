@@ -2,246 +2,310 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: addon_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The unique identifier for the Firefox add-on (extension or theme), typically in UUID or reverse-domain
+    format.
 - name: name
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The display name of the add-on, limited to 100 characters. Null if the add-on name was not
+    available.
 - name: most_common_default_search_engine
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The most frequently observed default search engine string among clients with this add-on
+    installed on the submission date (e.g., 'google-b-d', 'ddg').
 - name: dau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - name: wau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: wau
 - name: mau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
-  description: ''
+  description: Whether the add-on is a Firefox system add-on. True for built-in system extensions, false
+    for user-installed add-ons.
 - name: active_hours_sum
   type: FLOAT64
   mode: NULLABLE
-  description: ''
+  description: Total active browsing hours summed across all clients that have this add-on installed, for
+    the submission date.
 - name: total_uri_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Total number of URIs loaded across all clients with this add-on installed on the submission
+    date, reflecting overall browsing volume.
 - name: tab_open_event_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Total number of tab-open events recorded across clients with this add-on installed on the
+    submission date. Null when the scalar was not recorded.
 - name: devtools_toolbox_opened_count_sum
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Total number of times the DevTools toolbox was opened across clients with this add-on installed
+    on the submission date. Null when not recorded.
 - name: sap_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Search access point (SAP) search counts broken down by engine (google, bing, ddg, yandex,
+    amazon, other, total) for clients with this add-on installed.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of SAP searches performed on Amazon by clients with this add-on installed, within
+      the sap_searches struct.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of SAP searches performed on Bing by clients with this add-on installed, within the
+      sap_searches struct.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of SAP searches performed on DuckDuckGo by clients with this add-on installed, within
+      the sap_searches struct.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of search access point (SAP) searches performed on Google by clients with this add-on
+      installed, within the sap_searches struct.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of SAP searches performed on engines other than google/bing/ddg/yandex/amazon by clients
+      with this add-on installed.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total number of SAP searches across all engines by clients with this add-on installed, within
+      the sap_searches struct.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of SAP searches performed on Yandex by clients with this add-on installed, within
+      the sap_searches struct.
 - name: tagged_sap_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Tagged search access point (SAP) search counts — searches that carry a partner attribution
+    tag — broken down by engine for clients with this add-on installed.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged SAP searches on Amazon by clients with this add-on installed, within the
+      tagged_sap_searches struct.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged SAP searches on Bing by clients with this add-on installed, within the tagged_sap_searches
+      struct.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged SAP searches on DuckDuckGo by clients with this add-on installed, within
+      the tagged_sap_searches struct.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged SAP searches on Google by clients with this add-on installed, within the
+      tagged_sap_searches struct.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged SAP searches on other engines by clients with this add-on installed, within
+      the tagged_sap_searches struct.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged SAP searches across all engines by clients with this add-on installed, within
+      the tagged_sap_searches struct.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged SAP searches on Yandex by clients with this add-on installed, within the
+      tagged_sap_searches struct.
 - name: tagged_follow_on_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Tagged follow-on search counts — searches that result from a prior tagged SAP search — broken
+    down by engine for clients with this add-on installed.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged follow-on searches on Amazon by clients with this add-on installed, within
+      the tagged_follow_on_searches struct.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged follow-on searches on Bing by clients with this add-on installed, within
+      the tagged_follow_on_searches struct.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged follow-on searches on DuckDuckGo by clients with this add-on installed,
+      within the tagged_follow_on_searches struct.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged follow-on searches on Google by clients with this add-on installed, within
+      the tagged_follow_on_searches struct.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged follow-on searches on other engines by clients with this add-on installed,
+      within the tagged_follow_on_searches struct.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total tagged follow-on searches across all engines by clients with this add-on installed,
+      within the tagged_follow_on_searches struct.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of tagged follow-on searches on Yandex by clients with this add-on installed, within
+      the tagged_follow_on_searches struct.
 - name: organic_searches
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Organic search counts — searches not attributed to any SAP partner — broken down by engine
+    for clients with this add-on installed.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of organic searches on Amazon by clients with this add-on installed, within the organic_searches
+      struct.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of organic searches on Bing by clients with this add-on installed, within the organic_searches
+      struct.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of organic searches on DuckDuckGo by clients with this add-on installed, within the
+      organic_searches struct.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of organic searches on Google by clients with this add-on installed, within the organic_searches
+      struct.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of organic searches on other engines by clients with this add-on installed, within
+      the organic_searches struct.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total organic searches across all engines by clients with this add-on installed, within the
+      organic_searches struct.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of organic searches on Yandex by clients with this add-on installed, within the organic_searches
+      struct.
 - name: searches_with_ads
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Search result pages that contained ads, broken down by engine for clients with this add-on
+    installed.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of Amazon search result pages that contained ads, for clients with this add-on installed,
+      within the searches_with_ads struct.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of Bing search result pages that contained ads, for clients with this add-on installed,
+      within the searches_with_ads struct.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of DuckDuckGo search result pages that contained ads, for clients with this add-on
+      installed, within the searches_with_ads struct.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of Google search result pages that contained ads, for clients with this add-on installed,
+      within the searches_with_ads struct.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of other-engine search result pages that contained ads, for clients with this add-on
+      installed, within the searches_with_ads struct.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total search result pages across all engines that contained ads, for clients with this add-on
+      installed, within the searches_with_ads struct.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of Yandex search result pages that contained ads, for clients with this add-on installed,
+      within the searches_with_ads struct.
 - name: ad_clicks
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Counts of ad clicks on search result pages, broken down by engine for clients with this add-on
+    installed.
   fields:
   - name: amazon
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of ad clicks on Amazon search result pages by clients with this add-on installed,
+      within the ad_clicks struct.
   - name: bing
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of ad clicks on Bing search result pages by clients with this add-on installed, within
+      the ad_clicks struct.
   - name: ddg
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of ad clicks on DuckDuckGo search result pages by clients with this add-on installed,
+      within the ad_clicks struct.
   - name: google
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of ad clicks on Google search result pages by clients with this add-on installed,
+      within the ad_clicks struct.
   - name: other
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of ad clicks on other-engine search result pages by clients with this add-on installed,
+      within the ad_clicks struct.
   - name: total
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Total ad clicks across all engines by clients with this add-on installed, within the ad_clicks
+      struct.
   - name: yandex
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Number of ad clicks on Yandex search result pages by clients with this add-on installed,
+      within the ad_clicks struct.

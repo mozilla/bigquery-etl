@@ -25,13 +25,13 @@ description: |-
   This version of clients_first_seen (v3) has more columns than clients_first_seen_v2. Some were forgotten
   in v2, some are recorded only in the new_profiles_ping.
 owners:
-- mhirose@mozilla.com
+- phlee@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
   depends_on_past: true
-  owner1: mhirose
+  owner1: phlee
   dag: bqetl_analytics_tables
   legacy: true
 scheduling:

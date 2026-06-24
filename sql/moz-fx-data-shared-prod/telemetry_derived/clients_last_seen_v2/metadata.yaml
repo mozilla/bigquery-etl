@@ -14,13 +14,13 @@ description: |-
   which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
-- kwindau@mozilla.com
+- phlee@mozilla.com
 labels:
   level: bronze
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
-  owner1: kwindau
+  owner1: phlee
   table_type: client_level
   legacy: true
 scheduling:

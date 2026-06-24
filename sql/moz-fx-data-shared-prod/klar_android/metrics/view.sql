@@ -1229,7 +1229,12 @@ SELECT
       metrics.custom_distribution.networking_http_3_search_lookback_bins,
       metrics.custom_distribution.networking_http_3_search_max_passed_bins,
       metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_failed,
-      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_succeeded
+      metrics.custom_distribution.netwerk_happy_eyeballs_end_to_end_time_succeeded,
+      metrics.custom_distribution.networking_http_3_pmtud_iface_mtu,
+      metrics.custom_distribution.networking_http_3_pmtud_pmtu,
+      metrics.custom_distribution.networking_http_3_pmtud_probes_acked,
+      metrics.custom_distribution.networking_http_3_pmtud_probes_lost,
+      metrics.custom_distribution.networking_http_3_pmtud_probes_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

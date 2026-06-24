@@ -8,6 +8,7 @@ SELECT
     (
       SELECT AS STRUCT
         metrics.* REPLACE (
+          (SELECT AS STRUCT metrics.object.* EXCEPT (microsurvey_smart_window_chat)) AS object,
           (SELECT AS STRUCT metrics.text2.* EXCEPT (microsurvey_event_input_value)) AS text2
         )
     ) AS metrics

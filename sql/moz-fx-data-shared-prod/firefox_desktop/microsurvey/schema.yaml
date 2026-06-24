@@ -563,6 +563,15 @@ fields:
         e.g. "frecent_links", "newtab", "CFR"
 
         '
+    - name: microsurvey_app_build_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The build ID of the application. Included because the microsurvey
+        ping
+
+        uses OHTTP and excludes standard client_info metadata.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -648,10 +657,13 @@ fields:
     - name: microsurvey_smart_window_user_feedback_data
       type: JSON
       mode: NULLABLE
-      description: 'Structured feedback and session metadata submitted via the Smart
-        Window
+      description: 'Session metadata submitted via the Smart Window feedback modal.
 
-        feedback modal.
+        '
+    - name: microsurvey_smart_window_chat
+      type: JSON
+      mode: NULLABLE
+      description: 'The conversation log at the time of feedback submission.
 
         '
 - name: normalized_app_name

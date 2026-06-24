@@ -3,9 +3,11 @@ description: |-
   Data used for reporting DAU, WAU, and MAU KPIs.
   Based on legacy telemetry data.
   Rows are at a client ID, submission date grain.
-owners: []
+owners:
+- phlee@mozilla.com
 labels:
   legacy: true
+  owner1: phlee
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

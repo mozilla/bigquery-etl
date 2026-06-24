@@ -320,6 +320,9 @@ fields:
     - name: microsurvey_source
       type: STRING
       mode: NULLABLE
+    - name: microsurvey_app_build_id
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -12,7 +12,9 @@ fields:
 - mode: NULLABLE
   name: app_id
   type: STRING
-  description: App ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_id
 - mode: NULLABLE
   name: app_name
   type: STRING

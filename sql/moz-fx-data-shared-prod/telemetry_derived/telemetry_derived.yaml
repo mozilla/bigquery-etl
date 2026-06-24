@@ -3492,3 +3492,61 @@ fields:
   description: The 95th percentile of the forecasted value distribution, representing the upper tail of the predicted outcome where 95% of simulated
     values fall below this threshold. This field may be null when percentile-level forecast outputs are not computed for a given row.
   type: FLOAT64
+- name: app_id
+  description: The Glean application ID (e.g., 'firefox.desktop', 'org.mozilla.fenix'). Null for legacy
+    telemetry applications.
+- name: histogram_aggregates_bucket_range_first_bucket
+  description: The lower bound of the first bucket in the histogram's bucket range.
+- name: histogram_aggregates_bucket_range_last_bucket
+  description: The upper bound of the last bucket in the histogram's bucket range.
+- name: active_addons_app_disabled
+  description: Whether the add-on is disabled by the application due to version incompatibility, unresolved
+    dependencies, or blocklisting; true means Firefox prevented it from running.
+- name: active_addons_blocklisted
+  description: Whether the add-on appears in the Firefox blocklist; blocklisted add-ons may be disabled
+    for security or stability reasons.
+- name: active_addons_foreign_install
+  description: Whether the add-on was installed by an external application rather than directly by the
+    user through Firefox.
+- name: active_addons_has_binary_components
+  description: Whether the add-on contains native binary components; this is always false since Firefox
+    60.
+- name: active_addons_install_day
+  description: The number of days since the Unix epoch on which the add-on was first installed.
+- name: active_addons_is_web_extension
+  description: Whether the add-on is implemented as a WebExtension, the modern cross-browser extension
+    API standard.
+- name: active_addons_multiprocess_compatible
+  description: Whether the add-on is compatible with Firefox's multi-process (e10s) architecture; since
+    Firefox 61, this is always true.
+- name: active_addons_scope
+  description: Installation scope of the add-on, indicating whether it was installed per-profile, per-user,
+    system-wide, or bundled with the application.
+- name: active_addons_signed_state
+  description: The AMO signing state of the add-on, represented as an integer; unsigned or improperly
+    signed add-ons may be restricted in Firefox.
+- name: active_addons_update_day
+  description: The number of days since the Unix epoch on which the add-on was last updated.
+- name: active_addons_user_disabled
+  description: Whether the user explicitly disabled the add-on; true means the user turned it off intentionally.
+- name: scalar_aggregates
+  description: Repeated record containing one row per scalar metric aggregated for the client on the submission
+    date, capturing the metric name, type, process, key, aggregation function, and resulting value.
+- name: histogram_aggregates_aggregates_value
+  description: The raw summed histogram bucket count for the corresponding bucket key within the aggregates
+    array, as an integer.
+- name: non_norm_record_key
+  description: The histogram bucket boundary identifier within the non_norm_record struct, as a string
+    representation of the bucket value.
+- name: non_norm_record_value
+  description: The raw aggregated count for the corresponding bucket in the non_norm_record struct, representing
+    the unweighted sum of client contributions before GLAM normalization.
+- name: record
+  description: A struct containing the normalized (GLAM-weighted) histogram bucket counts after normalization.
+    The key is the bucket boundary string and the value is the normalized float count.
+- name: async_shutdown_timeout
+  description: A JSON string present when a shutdown blocker failed to respond within a reasonable amount
+    of time, describing the blocker that prevented clean shutdown.
+- name: application_name
+  description: The name of the Mozilla application that crashed (e.g., 'Firefox', 'Fennec'), derived from
+    the normalized app name in the source crash ping.

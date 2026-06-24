@@ -2,48 +2,65 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: app_version
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - name: app_build_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - name: metric
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The name of the scalar or keyed-scalar probe being aggregated, such as 'networking_data_transferred_v3_kb'
+    or 'telemetry_event_counts'.
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The telemetry probe type for this metric, such as 'scalar', 'keyed-scalar', 'boolean', or
+    'keyed-scalar-boolean', describing how values are structured at collection time.
 - name: key
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: key
 - name: process
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: process
 - name: client_agg_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The per-client aggregation function used to reduce multiple observations of a scalar into
+    a single value, such as 'sum', 'max', 'min', 'avg', or 'count'.
 - name: agg_type
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The type of aggregation applied to client-level values when rolling up to this bucket-count
+    record; currently always 'histogram'.
 - name: bucket
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The histogram bucket boundary into which this scalar value was classified for counting purposes.
 - name: count
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The number of client-submission records that fall into this metric/bucket combination for
+    the given aggregation dimensions.

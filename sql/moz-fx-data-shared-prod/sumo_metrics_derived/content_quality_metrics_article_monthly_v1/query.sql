@@ -37,7 +37,7 @@ session_flags AS (
   GROUP BY
     user_pseudo_id,
     session_id,
-    MONTH
+    `month`
 ),
 -- page_view and user_engagement events with the params we need flattened out.
 base_events AS (
@@ -84,7 +84,7 @@ page_views AS (
   SELECT
     user_pseudo_id,
     session_id,
-    MONTH,
+    `month`,
     event_timestamp,
     content_group,
     default_slug,
@@ -99,7 +99,7 @@ page_views AS (
 -- so a KB article only counts as a landing if it is the session's first page.
 landing_and_exit AS (
   SELECT
-    MONTH,
+    `month`,
     locale,
     default_slug,
     is_bounce,
@@ -139,7 +139,7 @@ landing_and_exit AS (
         page_views p
       JOIN
         session_flags sf
-        USING (user_pseudo_id, session_id, MONTH)
+        USING (user_pseudo_id, session_id, `month`)
     )
   WHERE
     content_group = 'kb-article'
@@ -147,7 +147,7 @@ landing_and_exit AS (
 -- Total engagement time and session count per (month, locale, slug).
 engagement_by_article AS (
   SELECT
-    MONTH,
+    `month`,
     locale,
     default_slug,
     SUM(engagement_time_msec) AS total_engagement_time_msec,
@@ -158,21 +158,21 @@ engagement_by_article AS (
     event_name = 'user_engagement'
     AND content_group = 'kb-article'
   GROUP BY
-    MONTH,
+    `month`,
     locale,
     default_slug
 ),
 -- Distinct (month, locale, slug) combinations observed in GA4 page views.
 article_month_combinations AS (
   SELECT
-    MONTH,
+    `month`,
     locale,
     default_slug AS slug,
     COUNT(*) AS page_views
   FROM
     page_views
   GROUP BY
-    MONTH,
+    `month`,
     locale,
     default_slug
 ),

@@ -7,7 +7,7 @@ AS
 -- a median composite. Per-product and all-product rows are produced together via
 -- GROUPING SETS; the all-product row has a NULL product, surfaced as 'ALL'.
 SELECT
-  MONTH,
+  `month`,
   IFNULL(product, 'ALL') AS product,
   COUNT(*) AS article_count,
   SUM(page_views) AS total_page_views,
@@ -45,4 +45,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.sumo_metrics_derived.content_quality_scores_monthly_v1`
 GROUP BY
-  GROUPING SETS ((MONTH, product), (MONTH))
+  GROUPING SETS ((`month`, product), (`month`))

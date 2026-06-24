@@ -6,9 +6,9 @@
 --
 -- Percentiles are computed once over the baseline (one row per article), and
 -- each article-month is positioned relative to that baseline distribution:
---   freshness / engagement -> higher is better
---   helpfulness            -> higher is better (NULL = neutral 0.5)
---   bounce / exit          -> lower is better
+--   freshness                -> higher is better
+--   helpfulness / engagement -> higher is better (NULL = neutral 0.5)
+--   bounce / exit            -> lower is better
 --
 -- Only article-months with >= 100 page views are scored. Full recompute each
 -- run (no date partition).
@@ -33,7 +33,7 @@ baseline AS (
   FROM
     article_monthly
   WHERE
-    MONTH
+    `month`
     BETWEEN '2024-07-01'
     AND '2024-12-01'
     AND page_views >= 100
@@ -99,17 +99,21 @@ scored AS (
           0.0
         )
     END AS helpfulness_percentile,
-    COALESCE(
-      (
-        SELECT
-          MAX(engagement_percentile_in_baseline)
-        FROM
-          baseline_percentiles b
-        WHERE
-          b.avg_engagement_time <= ams.avg_engagement_time
-      ),
-      0.0
-    ) AS engagement_percentile,
+    CASE
+      WHEN ams.avg_engagement_time IS NULL
+        THEN 0.5 -- no engagement data = neutral
+      ELSE COALESCE(
+          (
+            SELECT
+              MAX(engagement_percentile_in_baseline)
+            FROM
+              baseline_percentiles b
+            WHERE
+              b.avg_engagement_time <= ams.avg_engagement_time
+          ),
+          0.0
+        )
+    END AS engagement_percentile,
     COALESCE(
       (
         SELECT

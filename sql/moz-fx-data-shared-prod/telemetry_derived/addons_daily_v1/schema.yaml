@@ -1,0 +1,247 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: ''
+- name: addon_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: most_common_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: dau
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: wau
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: is_system
+  type: BOOLEAN
+  mode: NULLABLE
+  description: ''
+- name: active_hours_sum
+  type: FLOAT64
+  mode: NULLABLE
+  description: ''
+- name: total_uri_count_sum
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: tab_open_event_count_sum
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: devtools_toolbox_opened_count_sum
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: sap_searches
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: amazon
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: bing
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: ddg
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: google
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: other
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: total
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: yandex
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: tagged_sap_searches
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: amazon
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: bing
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: ddg
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: google
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: other
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: total
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: yandex
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: tagged_follow_on_searches
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: amazon
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: bing
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: ddg
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: google
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: other
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: total
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: yandex
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: organic_searches
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: amazon
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: bing
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: ddg
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: google
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: other
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: total
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: yandex
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: searches_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: amazon
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: bing
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: ddg
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: google
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: other
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: total
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: yandex
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: ad_clicks
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: amazon
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: bing
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: ddg
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: google
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: other
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: total
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: yandex
+    type: INT64
+    mode: NULLABLE
+    description: ''

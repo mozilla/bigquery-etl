@@ -3492,3 +3492,10 @@ fields:
   description: The 95th percentile of the forecasted value distribution, representing the upper tail of the predicted outcome where 95% of simulated
     values fall below this threshold. This field may be null when percentile-level forecast outputs are not computed for a given row.
   type: FLOAT64
+- name: app_id
+  description: The Glean application ID (e.g., 'firefox.desktop', 'org.mozilla.fenix'). Null for legacy
+    telemetry applications.
+- name: histogram_aggregates_bucket_range_first_bucket
+  description: The lower bound of the first bucket in the histogram's bucket range.
+- name: histogram_aggregates_bucket_range_last_bucket
+  description: The upper bound of the last bucket in the histogram's bucket range.

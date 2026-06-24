@@ -2,15 +2,21 @@ fields:
 - name: time
   type: TIMESTAMP
   mode: NULLABLE
-  description: The timestamp at which this metric observation was recorded by the Contile server.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: time
 - name: app
   type: STRING
   mode: NULLABLE
-  description: The application or service name that produced this metric, identifying the Contile component.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app
 - name: endpoint
   type: STRING
   mode: NULLABLE
-  description: The API endpoint path that was called on the Contile server for this tile request.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: endpoint
 - name: environment
   type: STRING
   mode: NULLABLE
@@ -20,36 +26,45 @@ fields:
 - name: geo_country_code
   type: STRING
   mode: NULLABLE
-  description: The ISO 3166-1 alpha-2 country code of the client request used to segment tile-serving metrics
-    by geography.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: geo_country_code
 - name: metric_type
   type: STRING
   mode: NULLABLE
-  description: The type of metric being recorded (e.g., counter, gauge), describing how the value was accumulated.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_type
 - name: realm
   type: STRING
   mode: NULLABLE
-  description: The authentication realm or service partition associated with this metric event, used to
-    separate different deployment contexts.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: realm
 - name: ua_form_factor
   type: STRING
   mode: NULLABLE
-  description: The form factor of the user agent making the request, such as 'desktop' or 'phone', derived
-    from the User-Agent header.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ua_form_factor
 - name: ua_os_family
   type: STRING
   mode: NULLABLE
-  description: The operating system family of the requesting client derived from the User-Agent header,
-    such as 'Windows' or 'Mac OS X'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ua_os_family
 - name: uri_method
   type: STRING
   mode: NULLABLE
-  description: The HTTP method used for the request to the Contile ADM endpoint, such as 'GET' or 'POST'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uri_method
 - name: value
   type: INT64
   mode: NULLABLE
-  description: The numeric count of tile requests sent to the ADM (Ad Decision Manager) backend, aggregated
-    over the measurement window.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: value
 - name: submission_date
   type: DATE
   mode: NULLABLE

@@ -2,36 +2,49 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: country
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: placement
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The UI placement or surface where the partner engagement occurred (e.g., a top-site tile
+    position or search mode source), identifying where the user interacted.
 - name: partner
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The name of the advertising or sponsored content partner involved in the engagement (e.g.,
+    'amazon').
 - name: version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: version
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: n_engagements
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: The count of partner engagement events (clicks on top-site tiles or search access point redirects)
+    recorded for this combination of dimensions on the submission date.
 - name: interaction
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The type of partner interaction recorded — either 'topsite' for clicks on sponsored top-site
+    tiles or 'redirect' for search engine redirect engagements.
 - name: phase
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The experiment or rollout phase associated with the engagement (e.g., 'phase2', 'phase3',
+    'rollout'). Null if no matching experiment was active.

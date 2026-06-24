@@ -75,6 +75,10 @@ jobs:
           filter: blob:none
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          # Fork code only runs here via workflow_run, after the per-SHA
+          # external-fork approval in fork-gate.yml — that gate is the control,
+          # so opt past checkout v7's pull_request_target protection.
+          allow-unsafe-pr-checkout: true
       # For workflow_run (fork PRs post-gate), the PR event payload isn't
       # available. Resolve the PR's base SHA via the API so changed-files can
       # still compute a real diff instead of conservatively running everything.
@@ -190,6 +194,8 @@ jobs:
           persist-credentials: false
           filter: blob:none
           ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          # Fork ref gated by the external-fork approval (see checkout-with-history).
+          allow-unsafe-pr-checkout: true
       - &setup-python
         name: Set up Python
         id: setup_python
@@ -365,6 +371,8 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          # Fork ref gated by the external-fork approval (see checkout-with-history).
+          allow-unsafe-pr-checkout: true
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun

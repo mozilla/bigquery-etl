@@ -38,6 +38,8 @@ fields:
 - name: join_key
   type: STRING
   mode: NULLABLE
+  description: A composite string key used to join and deduplicate histogram aggregates across different
+    data sources, formed by concatenating client_id, os, app_build_id, app_version, and channel.
 - name: histogram_aggregates
   type: RECORD
   mode: REPEATED

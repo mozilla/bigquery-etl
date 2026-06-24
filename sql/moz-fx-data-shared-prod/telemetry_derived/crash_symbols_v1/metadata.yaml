@@ -6,7 +6,7 @@ owners:
 labels:
   application: firefox
   schedule: daily
-#scheduling:
+# scheduling:
 #  dag_name: bqetl_crash
 #  start_date: '2023-12-10'
 #  retry_delay: 5m

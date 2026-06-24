@@ -32,6 +32,7 @@ from urllib.request import Request, urlopen
 import click
 import google.auth
 import yaml
+from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
 from google.oauth2.id_token import fetch_id_token
@@ -79,7 +80,16 @@ def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credential
     if not id_token:
         auth_req = GoogleAuthRequest()
         credentials = credentials or get_credentials(auth_req)
-        if hasattr(credentials, "id_token"):
+        if isinstance(credentials, impersonated_credentials.Credentials):
+            # Impersonated credentials (e.g. a target's impersonate_service_account)
+            # don't expose an OIDC id_token, and fetch_id_token() can't use them;
+            # mint one for the impersonated SA via the IAM API.
+            id_token_credentials = impersonated_credentials.IDTokenCredentials(
+                credentials, target_audience=dry_run_url, include_email=True
+            )
+            id_token_credentials.refresh(auth_req)
+            id_token = id_token_credentials.token
+        elif hasattr(credentials, "id_token"):
             # Get token from default credentials for the current environment created via Cloud SDK run
             id_token = credentials.id_token
         else:

@@ -949,6 +949,12 @@ def _build_dependency_graph(
             for ref in references:
                 if ref in artifacts:
                     dependencies.add(ref)
+                elif "*" in ref and ref.replace("*", "wildcard") in artifacts:
+                    # A wildcard ref (e.g. `…events_*`) depends on its stub, which
+                    # is keyed with `*` replaced by `wildcard` (see
+                    # _create_target_stub). Add that edge so the stub table
+                    # deploys before the view that selects from it.
+                    dependencies.add(ref.replace("*", "wildcard"))
 
             try:
                 metadata = Metadata.of_query_file(file_path)

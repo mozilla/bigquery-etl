@@ -613,6 +613,34 @@ class TestTargetRefForSource:
         )
         assert (proj, ds, tbl) == ("dev-proj", "telemetry_derived", "tbl_v1")
 
+    def test_wildcard_preserves_star_and_matches_stub(self):
+        """A wildcard ref must keep its trailing `*` (not get sanitized to `_`)
+        so the rewritten ref resolves to the stub table, which `_create_target_stub`
+        names with `*` -> `wildcard`. This locks both sides of that invariant."""
+        target = Target(
+            name="stage",
+            project_id="stage-proj",
+            dataset="stage_ds",
+            artifact_prefix="{{ artifact.project_id }}__{{ artifact.dataset_id }}__",
+        )
+        common_args = (
+            target,
+            "stage-proj",
+            "moz-fx-data-marketing-prod",
+            "analytics_1",
+        )
+
+        # rewrite target for the wildcard ref: prefix applied, trailing * kept
+        _, _, ref_tbl = target_ref_for_source(*common_args, "events_*")
+        assert ref_tbl == "moz_fx_data_marketing_prod__analytics_1__events_*"
+
+        # stub is created from name.replace("*", "wildcard")
+        _, _, stub_tbl = target_ref_for_source(*common_args, "events_wildcard")
+        assert stub_tbl == "moz_fx_data_marketing_prod__analytics_1__events_wildcard"
+
+        # invariant: the rewritten `…events_*` wildcard must match the stub table
+        assert ref_tbl.endswith("*") and stub_tbl.startswith(ref_tbl[:-1])
+
 
 class TestSubstitute3PartRef:
     """Test _substitute_3part_ref handles common ref forms."""
@@ -637,6 +665,18 @@ class TestSubstitute3PartRef:
             ("ascholtz-dev", "test_ds", "test_tbl"),
         )
         assert "`ascholtz-dev`.`test_ds`.`test_tbl`" in out
+
+    def test_wildcard_ref_is_rewritten(self):
+        """Wildcard refs (ending in `*`) must be rewritten, not skipped — a
+        trailing `\\b` never matches after `*`, leaving the ref pointed at prod."""
+        sql = "SELECT * FROM `moz-fx-data-marketing-prod.analytics_1.events_*`"
+        out = _substitute_3part_ref(
+            sql,
+            ("moz-fx-data-marketing-prod", "analytics_1", "events_*"),
+            ("stage-proj", "analytics_1_stage", "events_*"),
+        )
+        assert "moz-fx-data-marketing-prod" not in out
+        assert "`stage-proj`.`analytics_1_stage`.`events_*`" in out
 
 
 class TestNormalizeTableRef:

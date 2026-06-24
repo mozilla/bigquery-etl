@@ -2,160 +2,240 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: document_id
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: country
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: The name of the browser application (e.g., 'Firefox').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: The operating system version string reported by the client (e.g., '10.0' for Windows, '5.1' for Windows XP).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - name: experiments
   type: RECORD
   mode: REPEATED
-  description: Array of active experiments (Normandy and Nimbus) the client was
-    enrolled in at event time, with branch and enrollment metadata for each.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - name: value
     type: RECORD
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
     fields:
     - name: branch
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: branch
     - name: enrollment_id
       type: STRING
       mode: NULLABLE
     - name: type
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: type
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - name: session_id
   type: STRING
   mode: NULLABLE
-  description: UUID identifying the browser session from which this event was recorded.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: session_id
 - name: session_start_time
   type: TIMESTAMP
   mode: NULLABLE
-  description: Parsed timestamp indicating when the browser session that produced this event started.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: session_start_time
 - name: subsession_id
   type: STRING
   mode: NULLABLE
-  description: UUID identifying the subsession within the browser session from which this event was recorded.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_id
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: Timestamp when the telemetry ping containing this event was received by the ingestion server.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: timestamp
 - name: event_timestamp
   type: INTEGER
   mode: NULLABLE
-  description: Milliseconds elapsed since the start of the session when this event occurred.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_timestamp
 - name: event_category
   type: STRING
   mode: NULLABLE
-  description: The category portion of the telemetry event identifier (e.g., 'normandy', 'navigation').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_category
 - name: event_method
   type: STRING
   mode: NULLABLE
-  description: The method portion of the telemetry event identifier describing the action taken (e.g., 'enroll', 'unenroll', 'search').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_method
 - name: event_object
   type: STRING
   mode: NULLABLE
-  description: The object portion of the telemetry event identifier describing what was acted upon (e.g., 'preference_study', 'about_newtab').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_object
 - name: event_string_value
   type: STRING
   mode: NULLABLE
-  description: An optional string value providing additional context for the event, such as an experiment or preference name.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_string_value
 - name: event_map_values
   type: RECORD
   mode: REPEATED
-  description: Array of key-value string pairs providing additional event-specific
-    metadata (e.g., page URL, addon version, engine name).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_map_values
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - name: value
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
 - name: event_process
   type: STRING
   mode: NULLABLE
-  description: The Firefox browser process in which the event occurred (e.g., 'parent', 'content', 'dynamic', 'gpu').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_process
 - name: build_id
   type: STRING
   mode: NULLABLE
-  description: The build identifier of the Firefox application that generated this event (e.g., '20180704003137').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
 - name: build_architecture
   type: STRING
   mode: NULLABLE
-  description: The CPU architecture for which the Firefox build was compiled (e.g., 'x86-64', 'x86').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_architecture
 - name: profile_creation_date
   type: FLOAT
   mode: NULLABLE
-  description: The creation date of the client's Firefox profile expressed as the number of days since the Unix epoch.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_creation_date
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: True if Firefox is set as the operating system's default browser; false otherwise.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: The referring domain or partner source from which the Firefox installation was attributed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
-  description: A unique token created at Firefox download time used to track the specific download event.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_dltoken
 - name: system_is_wow64
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether we're in Windows32-on-Windows64 mode. Windows only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: system_is_wow64
 - name: system_memory_mb
   type: FLOAT
   mode: NULLABLE
-  description: The physical memory size in MB (2^20 bytes). e.g. 32211
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: system_memory_mb
 - name: city
   type: STRING
   mode: NULLABLE
-  description: The city derived from the client's IP address via geolocation at ingestion time.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id

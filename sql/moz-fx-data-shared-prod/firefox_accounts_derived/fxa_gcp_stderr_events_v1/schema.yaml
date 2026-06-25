@@ -2,6 +2,8 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: Identifier for the FxA server that produced this log entry, derived from the logger name
+    (e.g., 'auth' for fxa-auth-server, 'content' for fxa-content-server).
 - name: logName
   type: STRING
   mode: NULLABLE

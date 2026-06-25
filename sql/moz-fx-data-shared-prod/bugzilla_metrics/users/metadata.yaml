@@ -2,4 +2,6 @@
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
+      - workgroup:finops/billingetl-bq-scheduled
       - workgroup:platform/access-events
+      - workgroup:platform/platform-tf

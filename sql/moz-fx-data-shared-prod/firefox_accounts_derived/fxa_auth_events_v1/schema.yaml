@@ -771,9 +771,11 @@ fields:
     - name: emailsender
       type: STRING
       mode: NULLABLE
+  description: Email sender service identifier (e.g., 'ses').
     - name: emailservice
       type: STRING
       mode: NULLABLE
+  description: Email service name used to deliver the message (e.g., 'fxa-email-service').
     - name: phonenumber
       type: STRING
       mode: NULLABLE
@@ -786,21 +788,27 @@ fields:
     - name: messageid
       type: STRING
       mode: NULLABLE
+  description: Message identifier from the email delivery system.
     - name: current
       type: FLOAT
       mode: NULLABLE
+  description: Current metric or count value at the time of the event.
     - name: threshold
       type: FLOAT
       mode: NULLABLE
+  description: Threshold value for the metric being monitored.
     - name: isbudgetok
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the request is within the service's rate limit budget.
     - name: limit
       type: FLOAT
       mode: NULLABLE
+  description: Rate limit value applied to this request or action.
     - name: caller
       type: STRING
       mode: NULLABLE
+  description: Caller identifier for internal service-to-service calls.
     - name: key
       type: STRING
       mode: NULLABLE
@@ -819,45 +827,59 @@ fields:
     - name: accuracy_confidence
       type: STRING
       mode: NULLABLE
+  description: Confidence category for geolocation accuracy (e.g., 'low', 'high').
     - name: accuracy
       type: FLOAT
       mode: NULLABLE
+  description: Confidence score for geolocation accuracy.
     - name: resp
       type: STRING
       mode: NULLABLE
+  description: Response data from an external service call.
     - name: languages
       type: STRING
       mode: NULLABLE
+  description: Accepted languages from the request header.
     - name: stat
       type: STRING
       mode: NULLABLE
+  description: Statistic name for metric-reporting events.
     - name: heapused
       type: FLOAT
       mode: NULLABLE
+  description: Heap memory currently in use by the FxA process in bytes.
     - name: rss
       type: FLOAT
       mode: NULLABLE
+  description: Resident set size (memory usage) in bytes for the FxA process at the time of the event.
     - name: numpendinghwm
       type: FLOAT
       mode: NULLABLE
+  description: High-water mark for the number of pending database connections.
     - name: maxpending
       type: FLOAT
       mode: NULLABLE
+  description: Maximum number of pending database connections observed.
     - name: numpending
       type: FLOAT
       mode: NULLABLE
+  description: Current number of pending database connections.
     - name: marketingoptin
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the user opted in to marketing communications.
     - name: valid
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the token or assertion passed validation.
     - name: mysql
       type: FLOAT
       mode: NULLABLE
+  description: MySQL query time in milliseconds for database operations associated with the event.
     - name: bouncedat
       type: FLOAT
       mode: NULLABLE
+  description: Unix epoch timestamp when the email bounce was recorded.
     - name: config
       type: STRING
       mode: NULLABLE
@@ -867,15 +889,19 @@ fields:
     - name: hasid
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the event includes an identifier field.
     - name: hastoken
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the event includes a token field.
     - name: hasuid
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the event includes a UID field.
     - name: warning
       type: STRING
       mode: NULLABLE
+  description: Warning message associated with the event.
     - name: response
       type: STRING
       mode: NULLABLE
@@ -894,18 +920,23 @@ fields:
     - name: scope
       type: STRING
       mode: NULLABLE
+  description: OAuth scope string for the token or authorization request.
     - name: pmt_token
       type: STRING
       mode: NULLABLE
+  description: Payment method token associated with the subscription event.
     - name: display_name
       type: STRING
       mode: NULLABLE
+  description: Display name associated with the user or OAuth client.
     - name: created_at
       type: STRING
       mode: NULLABLE
+  description: Timestamp string when the token or resource was created.
     - name: expires_at
       type: STRING
       mode: NULLABLE
+  description: Timestamp string when the token or resource expires.
     - name: user
       type: STRING
       mode: NULLABLE
@@ -915,12 +946,14 @@ fields:
     - name: val
       type: STRING
       mode: NULLABLE
+  description: Generic value field from the event payload.
     - name: assertion
       type: STRING
       mode: NULLABLE
     - name: queuelength
       type: FLOAT
       mode: NULLABLE
+  description: Number of requests in the connection queue.
     - name: profile_changed_at
       type: FLOAT
       mode: NULLABLE
@@ -930,18 +963,22 @@ fields:
     - name: sub_id
       type: STRING
       mode: NULLABLE
+  description: Subscription identifier from the event payload.
     - name: resource
       type: STRING
       mode: NULLABLE
+  description: OAuth resource identifier associated with the request.
     - name: amplitudeevent
       type: STRING
       mode: NULLABLE
+  description: Amplitude event type string when the log entry represents an Amplitude event.
     - name: errcode
       type: STRING
       mode: NULLABLE
     - name: doc_url
       type: STRING
       mode: NULLABLE
+  description: URL to the FxA error documentation page for this error.
   - name: logger
     type: STRING
     mode: NULLABLE

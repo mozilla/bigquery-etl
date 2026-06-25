@@ -8,6 +8,8 @@ fields:
 - name: type
   type: STRING
   mode: NULLABLE
+  description: Device command event type (e.g., 'device.command.invoked', 'device.command.retrieved'). Indicates
+    the lifecycle stage of the command.
 - name: user_id
   type: STRING
   mode: NULLABLE
@@ -17,24 +19,33 @@ fields:
 - name: index
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed index value, hex-encoded, identifying the position of the command in
+    the device's command queue.
 - name: command
   type: STRING
   mode: NULLABLE
+  description: URI identifying the command type sent to the target device (e.g., 'https://identity.mozilla.com/cmd/open-uri').
 - name: target
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed FxA device identifier of the command recipient, hex-encoded.
 - name: target_os
   type: STRING
   mode: NULLABLE
+  description: Operating system of the target device that received the command (e.g., 'Windows', 'Android').
 - name: target_type
   type: STRING
   mode: NULLABLE
+  description: Form factor of the target device (e.g., 'desktop', 'mobile', 'tablet').
 - name: sender
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed FxA device identifier of the command sender, hex-encoded.
 - name: sender_os
   type: STRING
   mode: NULLABLE
+  description: Operating system of the device that sent the command (e.g., 'Android', 'Windows').
 - name: sender_type
   type: STRING
   mode: NULLABLE
+  description: Form factor of the device that sent the command (e.g., 'mobile', 'desktop', 'tablet').

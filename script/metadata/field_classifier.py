@@ -39,7 +39,11 @@ logging.basicConfig(
 ANALYSIS_PROJECT = os.environ.get("CLASSIFICATION_PROJECT", "mozdata-nonprod")
 ANALYSIS_DATASET = os.environ.get("CLASSIFICATION_DATASET", "analysis")
 _ANALYSIS = f"{ANALYSIS_PROJECT}.{ANALYSIS_DATASET}"
-PHASE1_TABLE = f"{_ANALYSIS}.akomar_column_profiles_v1"
+# Profiling table name is configurable so it matches classify_dataset.sh's
+# PROFILES_TABLE override (otherwise the writer and the classifier disagree).
+PHASE1_TABLE = (
+    f"{_ANALYSIS}.{os.environ.get('PROFILES_TABLE', 'akomar_column_profiles_v1')}"
+)
 MAPPING_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_table_pings_v1"
 PROBE_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_ping_probes_v1"
 DEST_TABLE = f"{_ANALYSIS}.akomar_field_classifications_v1"
@@ -449,7 +453,7 @@ def load_ping_mapping(bq_client):
     """
     query = f"""
         SELECT source_project, source_dataset, source_table,
-               source_ping, ping_platform
+               source_ping, ping_platform, glean_app
         FROM `{MAPPING_TABLE}`
     """
     mapping = {}
@@ -461,18 +465,21 @@ def load_ping_mapping(bq_client):
         mapping[(row.source_project, row.source_dataset, row.source_table)] = {
             "source_ping": row.source_ping,
             "ping_platform": row.ping_platform,
+            "glean_app": row.glean_app,
         }
     return mapping
 
 
 def load_probes_by_ping(bq_client):
-    """Load probe definitions grouped by (ping_platform, source_ping).
+    """Load probe definitions grouped by (ping_platform, source_ping, glean_app).
 
-    Like the ping mapping, the probe table only exists once a Glean ping has
-    been resolved; a missing table degrades to "no probes".
+    glean_app is part of the key so apps sharing a ping name (metrics, events,
+    ...) do not collapse onto one app's probes. Like the ping mapping, the probe
+    table only exists once a Glean ping has been resolved; a missing table
+    degrades to "no probes".
     """
     query = f"""
-        SELECT ping_platform, source_ping, probe_name, probe_description,
+        SELECT ping_platform, source_ping, glean_app, probe_name, probe_description,
                probe_type, data_sensitivity, tags
         FROM `{PROBE_TABLE}`
     """
@@ -482,7 +489,7 @@ def load_probes_by_ping(bq_client):
     except NotFound:
         return probes_by_ping
     for row in rows:
-        key = (row.ping_platform, row.source_ping)
+        key = (row.ping_platform, row.source_ping, row.glean_app)
         probes_by_ping.setdefault(key, []).append(
             {
                 "probe_name": row.probe_name,
@@ -759,8 +766,11 @@ def main():
         ping_info = ping_mapping.get((proj, ds, tbl), {})
         source_ping = ping_info.get("source_ping")
         ping_platform = ping_info.get("ping_platform")
+        glean_app = ping_info.get("glean_app")
         ping_probes = (
-            probes_by_ping.get((ping_platform, source_ping), []) if source_ping else []
+            probes_by_ping.get((ping_platform, source_ping, glean_app), [])
+            if source_ping
+            else []
         )
 
         try:

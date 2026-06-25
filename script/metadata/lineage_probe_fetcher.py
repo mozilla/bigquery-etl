@@ -73,6 +73,17 @@ MAPPING_SCHEMA = [
         description="DataHub URN of the closest _stable.* BQ table in the lineage chain. Legacy telemetry only; used to fetch probe schema fields.",
     ),
     bigquery.SchemaField(
+        "glean_app",
+        "STRING",
+        mode="NULLABLE",
+        description=(
+            "Glean app slug inferred from source_dataset (e.g. accounts_backend)."
+            " Null for legacy telemetry or no-ping tables. Part of the probe key so"
+            " apps sharing a ping name (metrics, events) do not collapse onto one"
+            " app's probes."
+        ),
+    ),
+    bigquery.SchemaField(
         "processed_at",
         "TIMESTAMP",
         mode="REQUIRED",
@@ -92,6 +103,16 @@ PROBE_SCHEMA = [
         "STRING",
         mode="REQUIRED",
         description="Name of the telemetry ping (e.g. first-shutdown, baseline).",
+    ),
+    bigquery.SchemaField(
+        "glean_app",
+        "STRING",
+        mode="NULLABLE",
+        description=(
+            "Glean app slug these probes were fetched for (e.g. accounts_backend)."
+            " Null for legacy telemetry. Part of the key so apps sharing a ping name"
+            " do not collapse."
+        ),
     ),
     bigquery.SchemaField(
         "probe_name",
@@ -524,13 +545,17 @@ def resolve_lineage_for_tables(bq_client, tables):
             logging.error(f"  Lineage failed for {dataset}.{table}: {e}")
             ping_info = None
 
+        platform = ping_info["ping_platform"] if ping_info else None
         record = {
             "source_project": project,
             "source_dataset": dataset,
             "source_table": table,
             "source_ping": ping_info["source_ping"] if ping_info else None,
-            "ping_platform": ping_info["ping_platform"] if ping_info else None,
+            "ping_platform": platform,
             "stable_urn": ping_info["stable_urn"] if ping_info else None,
+            # The app keys probes alongside the ping, so apps sharing a ping name
+            # (metrics, events, ...) do not collapse. Only meaningful for Glean.
+            "glean_app": infer_glean_app(dataset) if platform == "glean" else None,
             "processed_at": now,
         }
         bq_insert(bq_client, [record], MAPPING_TABLE, MAPPING_SCHEMA)
@@ -540,21 +565,28 @@ def resolve_lineage_for_tables(bq_client, tables):
 
 
 def get_unique_pings(bq_client):
-    """Return unique (ping_platform, source_ping, stable_urn, sample_dataset) from mapping table."""
+    """Return unique (ping_platform, source_ping, glean_app, ...) from mapping table.
+
+    Grouped by glean_app as well as the ping, so probes are fetched per app:
+    ANY_VALUE(source_dataset) is then app-consistent within each group, and apps
+    sharing a ping name do not collapse onto one app's probes.
+    """
     query = f"""
         SELECT
             ping_platform,
             source_ping,
+            glean_app,
             ANY_VALUE(stable_urn) AS stable_urn,
             ANY_VALUE(source_dataset) AS sample_dataset
         FROM `{MAPPING_TABLE}`
         WHERE source_ping IS NOT NULL
-        GROUP BY ping_platform, source_ping
+        GROUP BY ping_platform, source_ping, glean_app
     """
     return [
         {
             "ping_platform": r.ping_platform,
             "source_ping": r.source_ping,
+            "glean_app": r.glean_app,
             "stable_urn": r.stable_urn,
             "sample_dataset": r.sample_dataset,
         }
@@ -563,11 +595,12 @@ def get_unique_pings(bq_client):
 
 
 def get_already_fetched_pings(bq_client):
-    """Return set of (ping_platform, source_ping) already in the probe table."""
+    """Return set of (ping_platform, source_ping, glean_app) already in the probe table."""
     try:
-        query = f"SELECT DISTINCT ping_platform, source_ping FROM `{PROBE_TABLE}`"
+        query = f"SELECT DISTINCT ping_platform, source_ping, glean_app FROM `{PROBE_TABLE}`"
         return {
-            (r.ping_platform, r.source_ping) for r in bq_client.query(query).result()
+            (r.ping_platform, r.source_ping, r.glean_app)
+            for r in bq_client.query(query).result()
         }
     except NotFound:
         return set()
@@ -580,7 +613,7 @@ def fetch_probes_for_pings(bq_client):
     pending = [
         p
         for p in unique_pings
-        if (p["ping_platform"], p["source_ping"]) not in already_fetched
+        if (p["ping_platform"], p["source_ping"], p["glean_app"]) not in already_fetched
     ]
     logging.info(
         f"{len(pending)} pings need probe fetch (skipping {len(unique_pings) - len(pending)} already fetched)"
@@ -590,6 +623,7 @@ def fetch_probes_for_pings(bq_client):
     for ping in pending:
         platform = ping["ping_platform"]
         source_ping = ping["source_ping"]
+        glean_app = ping["glean_app"]
         stable_urn = ping["stable_urn"]
         dataset = ping["sample_dataset"]
 
@@ -611,6 +645,7 @@ def fetch_probes_for_pings(bq_client):
             {
                 "ping_platform": platform,
                 "source_ping": source_ping,
+                "glean_app": glean_app,
                 "probe_name": probe["probe_name"],
                 "probe_description": probe["probe_description"],
                 "probe_type": probe["probe_type"],

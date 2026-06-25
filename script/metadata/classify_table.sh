@@ -37,6 +37,12 @@ MODELS="${MODELS:-gemini-3.1-flash-lite-preview}"
 REFRESH_ARG=""
 [[ -n "${REFRESH:-}" ]] && REFRESH_ARG="--refresh"
 
+# Set SANITIZE_REPORT=<path> to append a JSONL record per masked/dropped sample
+# value (raw, clean, infoTypes) for inspection. Passed through to the classifier;
+# left empty it expands to nothing. The path must not contain spaces.
+SANITIZE_ARG=""
+[[ -n "${SANITIZE_REPORT:-}" ]] && SANITIZE_ARG="--sanitize-report ${SANITIZE_REPORT}"
+
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 <project.dataset.table> [<project.dataset.table> ...]" >&2
     echo "Set \$MODELS to override the model list (default: $MODELS)." >&2
@@ -54,18 +60,21 @@ if [[ -z "$PYTHON" ]]; then
     [[ -x venv/bin/python ]] && PYTHON=venv/bin/python
 fi
 
-# Profiling table the classifier reads from (project/dataset configurable, table
-# name fixed). Used to guard against classifying tables that were never profiled.
+# Profiling table the classifier reads from (project/dataset/table all
+# configurable). PROFILES_TABLE must match what classify_dataset.sh profiled into
+# and what field_classifier.py reads. Used to guard against classifying tables
+# that were never profiled.
 CLASSIFICATION_PROJECT="${CLASSIFICATION_PROJECT:-mozdata-nonprod}"
 CLASSIFICATION_DATASET="${CLASSIFICATION_DATASET:-analysis}"
-PROFILES_TABLE="${CLASSIFICATION_PROJECT}.${CLASSIFICATION_DATASET}.akomar_column_profiles_v1"
+PROFILES_TABLE_NAME="${PROFILES_TABLE:-akomar_column_profiles_v1}"
+PROFILES_FQN="${CLASSIFICATION_PROJECT}.${CLASSIFICATION_DATASET}.${PROFILES_TABLE_NAME}"
 
 is_profiled() {  # $1 = project.dataset.table; true if it has profiling rows
     command -v bq >/dev/null 2>&1 || return 0  # can't check without bq; don't block
     local proj ds tbl n
     IFS='.' read -r proj ds tbl <<< "$1"
     n="$(bq --project_id="$CLASSIFICATION_PROJECT" --format=csv query --use_legacy_sql=false \
-        "SELECT COUNT(*) FROM \`${PROFILES_TABLE}\`
+        "SELECT COUNT(*) FROM \`${PROFILES_FQN}\`
          WHERE source_project = '${proj}'
            AND source_dataset = '${ds}'
            AND source_table = '${tbl}'" 2>/dev/null | tail -n1)" || n=""
@@ -82,7 +91,7 @@ for TABLE in "$@"; do
     banner "TABLE: $TABLE"
 
     if ! is_profiled "$TABLE"; then
-        echo "WARNING: $TABLE has no rows in ${PROFILES_TABLE}; profile it first" \
+        echo "WARNING: $TABLE has no rows in ${PROFILES_FQN}; profile it first" \
              "(e.g. classify_dataset.sh). Skipping." >&2
         continue
     fi
@@ -92,7 +101,7 @@ for TABLE in "$@"; do
 
     for MODEL in $MODELS; do
         banner "[2/2] field_classifier.py --model $MODEL"
-        "$PYTHON" script/metadata/field_classifier.py --table "$TABLE" --model "$MODEL" $REFRESH_ARG
+        "$PYTHON" script/metadata/field_classifier.py --table "$TABLE" --model "$MODEL" $REFRESH_ARG $SANITIZE_ARG
     done
 
     banner "DONE: $TABLE"

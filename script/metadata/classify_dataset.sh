@@ -24,7 +24,7 @@
 #   CLASSIFICATION_PROJECT=mozdata-nonprod   output project (e.g. akomar-sandbox-438914)
 #   CLASSIFICATION_DATASET=analysis          output dataset (created if missing)
 #   LOCATION=US                              BQ location for a newly created dataset
-#   DEST_TABLE=akomar_column_profiles_v1     profiling table name within that dataset
+#   PROFILES_TABLE=akomar_column_profiles_v1     profiling table name within that dataset
 #   DATE=<today, UTC>                        the profiled_at partition
 
 set -euo pipefail
@@ -47,9 +47,15 @@ export CLASSIFICATION_PROJECT CLASSIFICATION_DATASET
 # exported so the classify_table.sh children forward it to the python steps.
 # Profiling always WRITE_TRUNCATEs its partition, so it needs no refresh.
 [[ -n "${REFRESH:-}" ]] && export REFRESH
+# Forward the sanitize-report path to the classify_table.sh children, which pass
+# it to the classifier as --sanitize-report.
+[[ -n "${SANITIZE_REPORT:-}" ]] && export SANITIZE_REPORT
 DEST_PROJECT="$CLASSIFICATION_PROJECT"
 DEST_DATASET="$CLASSIFICATION_DATASET"
-DEST_TABLE="${DEST_TABLE:-akomar_column_profiles_v1}"
+PROFILES_TABLE="${PROFILES_TABLE:-akomar_column_profiles_v1}"
+# Export so the classify_table.sh children and field_classifier.py read the same
+# profiling-table name (otherwise an override here would not reach them).
+export PROFILES_TABLE
 LOCATION="${LOCATION:-US}"
 DATE="${DATE:-$(date -u +%F)}"
 
@@ -67,7 +73,7 @@ export PYTHON
 
 PROFILER="sql/moz-fx-data-shared-prod/data_governance_metadata_derived/column_profiles_v1/query.py"
 SCHEMA_JSON="$REPO_ROOT/script/metadata/classification/column_profiles_schema.json"
-DEST_FQN="${DEST_PROJECT}.${DEST_DATASET}.${DEST_TABLE}"
+DEST_FQN="${DEST_PROJECT}.${DEST_DATASET}.${PROFILES_TABLE}"
 
 banner() {
     printf '\n========================================================================\n'
@@ -85,14 +91,14 @@ fi
 # 1. Pre-create the profiling table if missing. The profiler loads into a
 #    table$YYYYMMDD partition decorator, which does NOT auto-create the table;
 #    it must already exist with matching partitioning + clustering.
-if ! bq show "${DEST_PROJECT}:${DEST_DATASET}.${DEST_TABLE}" >/dev/null 2>&1; then
+if ! bq show "${DEST_PROJECT}:${DEST_DATASET}.${PROFILES_TABLE}" >/dev/null 2>&1; then
     banner "creating ${DEST_FQN}"
     bq mk --table \
         --time_partitioning_field=profiled_at \
         --time_partitioning_type=DAY \
         --clustering_fields=source_dataset,source_table,column_name \
         --schema="$SCHEMA_JSON" \
-        "${DEST_PROJECT}:${DEST_DATASET}.${DEST_TABLE}"
+        "${DEST_PROJECT}:${DEST_DATASET}.${PROFILES_TABLE}"
 fi
 
 # 2. Profile the dataset (or the named table subset) into the $DATE partition.
@@ -103,7 +109,7 @@ PROFILE_ARGS=(
     --source-datasets "$DATASET"
     --destination-project "$DEST_PROJECT"
     --destination-dataset "$DEST_DATASET"
-    --destination-table "$DEST_TABLE"
+    --destination-table "$PROFILES_TABLE"
 )
 if [[ ${#TABLES[@]} -gt 0 ]]; then
     PROFILE_ARGS+=(--tables "${TABLES[@]}")

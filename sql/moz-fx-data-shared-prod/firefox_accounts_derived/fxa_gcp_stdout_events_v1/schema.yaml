@@ -404,9 +404,11 @@ fields:
     - name: source
       type: STRING
       mode: NULLABLE
+  description: Source identifier associated with the request.
     - name: blocked
       type: STRING
       mode: NULLABLE
+  description: String flag indicating whether the request or action was blocked.
     - name: column
       type: FLOAT
       mode: NULLABLE
@@ -452,21 +454,27 @@ fields:
     - name: signal
       type: STRING
       mode: NULLABLE
+  description: WAF signal identifier associated with the request.
     - name: reqtime
       type: FLOAT
       mode: NULLABLE
+  description: Request processing time in milliseconds.
     - name: rp
       type: STRING
       mode: NULLABLE
+  description: Relying party identifier associated with the request.
     - name: assertion_verification_time
       type: FLOAT
       mode: NULLABLE
+  description: Time taken to verify the BrowserID assertion in milliseconds.
     - name: trustedissuers
       type: STRING
       mode: NULLABLE
+  description: Trusted issuers list for BrowserID assertion verification.
     - name: assertion
       type: STRING
       mode: NULLABLE
+  description: BrowserID assertion string.
     - name: host
       type: STRING
       mode: NULLABLE
@@ -476,12 +484,16 @@ fields:
     - name: header
       type: STRING
       mode: NULLABLE
+  description: HTTP header value logged by the server.
     - name: usergroupheader
       type: STRING
       mode: NULLABLE
+  description: Comma-separated list of LDAP/Mozillians group memberships for the operator, present in admin
+    server events.
     - name: usergroupheader_notnull
       type: STRING
       mode: NULLABLE
+  description: Non-null version of the LDAP group header field.
     - name: user
       type: STRING
       mode: NULLABLE
@@ -497,9 +509,11 @@ fields:
     - name: search_type
       type: STRING
       mode: NULLABLE
+  description: Type of account search performed (e.g., 'email', 'uid').
     - name: auto_completed
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the admin panel search was auto-completed.
     - name: payload
       type: STRING
       mode: NULLABLE
@@ -512,6 +526,7 @@ fields:
     - name: ip_address
       type: STRING
       mode: NULLABLE
+  description: Client IP address as logged by the FxA service.
     - name: document_version
       type: STRING
       mode: NULLABLE
@@ -587,9 +602,11 @@ fields:
     - name: _res
       type: STRING
       mode: NULLABLE
+  description: Internal response field from the FxA log payload.
     - name: operation
       type: STRING
       mode: NULLABLE
+  description: Admin operation name associated with the event.
     - name: service
       type: STRING
       mode: NULLABLE
@@ -599,6 +616,7 @@ fields:
     - name: locator
       type: STRING
       mode: NULLABLE
+  description: Locator string from the admin server event.
     - name: locale
       type: STRING
       mode: NULLABLE
@@ -608,6 +626,7 @@ fields:
     - name: twofactorauthentication
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the user has two-factor authentication enabled.
     - name: profilechangedat
       type: FLOAT
       mode: NULLABLE
@@ -617,12 +636,15 @@ fields:
     - name: atleast18atreg
       type: STRING
       mode: NULLABLE
+  description: String flag indicating whether the user was at least 18 at registration.
     - name: metricsenabled
       type: BOOLEAN
       mode: NULLABLE
+  description: True if analytics collection is enabled for the user.
     - name: amrvalues
       type: STRING
       mode: NULLABLE
+  description: Authentication method references used during login.
     - name: purchasetoken
       type: STRING
       mode: NULLABLE
@@ -632,6 +654,7 @@ fields:
     - name: _
       type: STRING
       mode: NULLABLE
+  description: Unused or internal field from the FxA log payload.
     - name: originaltransactionids
       type: STRING
       mode: NULLABLE
@@ -681,9 +704,11 @@ fields:
     - name: jse_shortmsg
       type: STRING
       mode: NULLABLE
+  description: Short error message from the jse cause chain.
     - name: message
       type: STRING
       mode: NULLABLE
+  description: Error message from the jse cause chain.
   - name: message
     type: STRING
     mode: NULLABLE
@@ -712,12 +737,15 @@ fields:
     - name: offeringid
       type: STRING
       mode: NULLABLE
+  description: Subscription offering identifier from the jse info payload.
     - name: interval
       type: STRING
       mode: NULLABLE
+  description: Subscription billing interval from the jse info payload.
   - name: jse_shortmsg
     type: STRING
     mode: NULLABLE
+  description: Short error message from the VError jse error payload.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

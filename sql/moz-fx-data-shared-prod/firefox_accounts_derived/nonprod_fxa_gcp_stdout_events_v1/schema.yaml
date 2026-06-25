@@ -419,6 +419,7 @@ fields:
     - name: signal
       type: STRING
       mode: NULLABLE
+  description: WAF signal identifier associated with the request.
     - name: port
       type: FLOAT
       mode: NULLABLE
@@ -440,12 +441,15 @@ fields:
     - name: header
       type: STRING
       mode: NULLABLE
+  description: HTTP header value logged by the server.
     - name: usergroupheader_notnull
       type: STRING
       mode: NULLABLE
+  description: Non-null version of the LDAP group header field.
     - name: usergroupheader
       type: STRING
       mode: NULLABLE
+  description: Comma-separated LDAP group memberships of the operator, for admin server events.
     - name: duration
       type: FLOAT
       mode: NULLABLE
@@ -488,9 +492,11 @@ fields:
     - name: auto_completed
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the admin panel search was auto-completed.
     - name: search_type
       type: STRING
       mode: NULLABLE
+  description: Type of account search performed (e.g., 'email').
     - name: name
       type: STRING
       mode: NULLABLE
@@ -515,6 +521,7 @@ fields:
     - name: rp
       type: STRING
       mode: NULLABLE
+  description: Relying party identifier from the log payload.
     - name: assertion_verification_time
       type: FLOAT
       mode: NULLABLE

@@ -2,28 +2,34 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: submission_date
 - name: mau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Count of distinct FxA users active within the 28-day window ending on submission_date.
 - name: wau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Count of distinct FxA users active within the 7-day window ending on submission_date.
 - name: dau
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Count of distinct FxA users active on submission_date.
 - name: mau_tier1_inclusive
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Count of distinct FxA users who were seen in a Tier 1 country (United States, France, Germany,
+    United Kingdom, or Canada) at least once within the 28-day MAU window.
 - name: id_bucket
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: User bucket number (0–19) derived by hashing the user_id modulo 20. Used to compute confidence
+    intervals for MAU/WAU/DAU metrics.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: country

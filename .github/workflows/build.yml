@@ -855,6 +855,7 @@ jobs:
     name: Validate Backfills
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
     environment: *build-env
     needs: [generate-sql, decide-runs]

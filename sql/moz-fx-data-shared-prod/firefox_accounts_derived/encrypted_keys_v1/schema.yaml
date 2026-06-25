@@ -2,8 +2,10 @@ fields:
 - name: key_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Identifier for the encryption key (e.g., 'fxa_hmac_prod'). Used to look up the correct AEAD-encrypted
+    keyset for HMAC operations.
 - name: ciphertext
   type: BYTES
   mode: NULLABLE
-  description: ''
+  description: AEAD-encrypted keyset bytes storing the HMAC key material. Decrypted at query time using
+    the GCP-managed keyring to produce HMAC keys for user ID hashing.

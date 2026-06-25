@@ -216,9 +216,11 @@ fields:
     - name: codes
       type: STRING
       mode: NULLABLE
+  description: Array or list of codes associated with the event (e.g., backup authentication codes).
     - name: skew
       type: FLOAT
       mode: NULLABLE
+  description: Time skew in seconds between the client and server clocks, used for BrowserID assertion validation.
     - name: auth
       type: STRING
       mode: NULLABLE
@@ -369,6 +371,7 @@ fields:
     - name: lastaccesstimeenabled
       type: BOOLEAN
       mode: NULLABLE
+  description: True if tracking of the last device access time is enabled for this session.
     - name: mysql
       type: FLOAT
       mode: NULLABLE
@@ -441,12 +444,15 @@ fields:
     - name: verifyhash
       type: STRING
       mode: NULLABLE
+  description: Verification hash associated with the email or session verification event.
     - name: securityevent
       type: STRING
       mode: NULLABLE
+  description: Security event type identifier (e.g., 'account.created', 'account.reset.success').
     - name: tokenid
       type: STRING
       mode: NULLABLE
+  description: Identifier for the session or verification token associated with the event.
     - name: verificationmethod
       type: STRING
       mode: NULLABLE
@@ -519,6 +525,7 @@ fields:
     - name: pushcallback
       type: STRING
       mode: NULLABLE
+  description: Push notification callback URL for the device.
     - name: errcode
       type: STRING
       mode: NULLABLE
@@ -537,6 +544,7 @@ fields:
     - name: notificationsubtype
       type: STRING
       mode: NULLABLE
+  description: Subtype of the Apple App Store notification for IAP events.
     - name: originaltransactionid
       type: STRING
       mode: NULLABLE
@@ -546,15 +554,19 @@ fields:
     - name: bundleid
       type: STRING
       mode: NULLABLE
+  description: Apple App Store bundle identifier for IAP subscription events.
     - name: notificationtype
       type: STRING
       mode: NULLABLE
+  description: Apple App Store notification type for IAP events (e.g., 'DID_RENEW', 'CANCEL').
     - name: renewalinfo
       type: STRING
       mode: NULLABLE
+  description: Apple App Store renewal information JSON string for IAP subscription events.
     - name: transactioninfo
       type: STRING
       mode: NULLABLE
+  description: Apple App Store transaction information JSON string for IAP subscription events.
     - name: device_model
       type: STRING
       mode: NULLABLE
@@ -699,6 +711,7 @@ fields:
     - name: refresh_token
       type: STRING
       mode: NULLABLE
+  description: OAuth refresh token identifier associated with the event.
     - name: zip
       type: STRING
       mode: NULLABLE
@@ -738,6 +751,7 @@ fields:
     - name: registered
       type: STRING
       mode: NULLABLE
+  description: String flag indicating whether the account was newly registered on this event.
     - name: param
       type: STRING
       mode: NULLABLE
@@ -780,6 +794,7 @@ fields:
     - name: numberremaining
       type: FLOAT
       mode: NULLABLE
+  description: Number of attempts or codes remaining before the action is blocked.
     - name: location
       type: STRING
       mode: NULLABLE
@@ -804,6 +819,7 @@ fields:
     - name: lastseen
       type: STRING
       mode: NULLABLE
+  description: Timestamp string of the last time the device or account was seen.
     - name: user_id
       type: STRING
       mode: NULLABLE

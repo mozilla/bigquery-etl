@@ -2,6 +2,7 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: The date partition of the log record, set to the date of the event timestamp.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -99,9 +100,13 @@ fields:
     - name: usergroupheader
       type: STRING
       mode: NULLABLE
+  description: Comma-separated list of LDAP/Mozillians group memberships for the admin panel operator performing
+    the action, used for access control and auditing.
     - name: search_type
       type: STRING
       mode: NULLABLE
+  description: The type of account search performed in the admin panel (e.g., 'email' to search by email
+    address, 'uid' to search by user ID).
     - name: event
       type: STRING
       mode: NULLABLE
@@ -111,6 +116,8 @@ fields:
     - name: auto_completed
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the admin panel search was auto-completed; false if it required manual completion
+    by the operator.
     - name: email
       type: BYTES
       mode: NULLABLE

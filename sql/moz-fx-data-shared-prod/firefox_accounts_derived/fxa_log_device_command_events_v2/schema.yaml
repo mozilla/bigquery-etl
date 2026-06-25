@@ -2,12 +2,16 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The time the event described by the log entry occurred, as reported
+    by the originating FxA service.
 - name: type
   type: STRING
   mode: NULLABLE
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: SHA-256 hashed Firefox Accounts user identifier (uid), hex-encoded.
+    Primary key for joining user-level tables.
 - name: index
   type: STRING
   mode: NULLABLE

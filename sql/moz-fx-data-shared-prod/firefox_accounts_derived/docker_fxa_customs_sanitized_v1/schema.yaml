@@ -19,16 +19,21 @@ fields:
   - name: labels
     type: RECORD
     mode: NULLABLE
+    description: GCP resource metadata labels attached to the log entry by Cloud Logging.
     fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
+      description: Cloud instance identifier of the node that generated the log entry
+        (e.g., 'i-xxxxxxxxxxxxxxxxx').
     - name: zone
       type: STRING
       mode: NULLABLE
+      description: Availability zone of the resource (e.g., 'us-west-1').
     - name: project_id
       type: STRING
       mode: NULLABLE
+      description: GCP project ID of the log source.
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -42,21 +47,29 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
+    description: Name field from the log payload, identifying the process or subsystem
+      (e.g., 'customs-server', 'configure-sentry').
   - name: v
     type: FLOAT
     mode: NULLABLE
+    description: Payload schema version number used by the FxA logging framework.
   - name: msg
     type: STRING
     mode: NULLABLE
+    description: Log message string from the FxA service payload.
   - name: level
     type: FLOAT
     mode: NULLABLE
+    description: Log severity level. Numeric Bunyan-style in some tables (30=info,
+      50=error); string level name in others.
   - name: op
     type: STRING
     mode: NULLABLE
+    description: Operation type from the log payload.
   - name: pid
     type: FLOAT
     mode: NULLABLE
+    description: Process ID of the FxA service instance that generated the log entry.
   - name: ip
     type: BYTES
     mode: NULLABLE
@@ -66,9 +79,11 @@ fields:
   - name: hostname
     type: STRING
     mode: NULLABLE
+    description: Hostname of the server or container that generated the log entry.
   - name: statuscode
     type: FLOAT
     mode: NULLABLE
+    description: HTTP or application status code from the log payload.
   - name: filename
     type: STRING
     mode: NULLABLE
@@ -132,6 +147,8 @@ fields:
   - name: timestamp
     type: STRING
     mode: NULLABLE
+    description: Application-level event timestamp as a Unix epoch nanoseconds float,
+      as reported by the FxA service. Distinct from the top-level Cloud Logging `timestamp`.
   - name: reason
     type: STRING
     mode: NULLABLE
@@ -141,6 +158,7 @@ fields:
   - name: message
     type: STRING
     mode: NULLABLE
+    description: Structured log message from the FxA service payload.
   - name: host
     type: STRING
     mode: NULLABLE
@@ -476,6 +494,8 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The time the event described by the log entry occurred, as reported
+    by the originating FxA service.
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -571,18 +591,25 @@ fields:
   - name: application
     type: STRING
     mode: NULLABLE
+    description: Application label identifying the FxA application (e.g., 'fxa').
   - name: stack
     type: STRING
     mode: NULLABLE
+    description: Stack label from the log metadata (e.g., 'default').
   - name: env
     type: STRING
     mode: NULLABLE
+    description: Deployment environment label (e.g., 'prod', 'stage').
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
+    description: GCP Compute resource name (compute.googleapis.com/resource_name),
+      identifying the VM or node that generated the log entry.
   - name: type
     type: STRING
     mode: NULLABLE
+    description: Type label from the log metadata indicating the log source category
+      (e.g., 'admin_panel').
 - name: operation
   type: RECORD
   mode: NULLABLE

@@ -2,27 +2,40 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: Date the record was ingested into the pipeline, used as the partition
+    key.
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: SHA-256 hashed Firefox Accounts user identifier (uid), hex-encoded.
+    Primary key for joining user-level tables.
 - name: service
   type: STRING
   mode: NULLABLE
+  description: The Mozilla service or OAuth relying party associated with the event
+    (e.g., 'sync', 'pocket-web', 'fenix', 'amo-web').
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country associated with the user or event, as a full country name (e.g.,
+    'United States', 'Germany').
 - name: language
   type: STRING
   mode: NULLABLE
+  description: BCP 47 language tag representing the user's preferred language (e.g.,
+    'en-US', 'de', 'fr').
 - name: app_version
   type: STRING
   mode: NULLABLE
 - name: os_name
   type: STRING
   mode: NULLABLE
+  description: Operating system name (e.g., 'Windows', 'Mac OS X', 'Android', 'iOS').
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: Operating system version string (e.g., '10' for Windows 10, '14.0'
+    for macOS Sonoma).
 - name: seen_in_tier1_country
   type: BOOLEAN
   mode: NULLABLE

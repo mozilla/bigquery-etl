@@ -19,25 +19,34 @@ fields:
   - name: labels
     type: RECORD
     mode: NULLABLE
+    description: GCP resource metadata labels attached to the log entry by Cloud Logging.
     fields:
     - name: project_id
       type: STRING
       mode: NULLABLE
+      description: GCP project ID of the log source.
     - name: pod_name
       type: STRING
       mode: NULLABLE
+      description: Kubernetes pod name that generated the log entry.
     - name: container_name
       type: STRING
       mode: NULLABLE
+      description: Container name within the pod that generated the log entry.
     - name: cluster_name
       type: STRING
       mode: NULLABLE
+      description: Kubernetes cluster name where the FxA service is running (e.g.,
+        'fxa-prod').
     - name: namespace_name
       type: STRING
       mode: NULLABLE
+      description: Kubernetes namespace of the pod that generated the log entry (e.g.,
+        'fxa').
     - name: location
       type: STRING
       mode: NULLABLE
+      description: GCP region of the log source (e.g., 'us-west1').
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -51,166 +60,235 @@ fields:
   - name: log_type
     type: STRING
     mode: NULLABLE
+    description: Log type classification for the FxA service event.
   - name: request
     type: STRING
     mode: NULLABLE
+    description: Full HTTP request line (method, path, protocol) from the log payload.
   - name: request_time
     type: FLOAT
     mode: NULLABLE
+    description: Time taken to process the request, in seconds.
   - name: x_forwarded_for
     type: STRING
     mode: NULLABLE
+    description: X-Forwarded-For header value containing the client IP and any intermediate
+      proxy addresses.
   - name: bytes_sent
     type: FLOAT
     mode: NULLABLE
+    description: Number of bytes sent in the HTTP response.
   - name: user_agent
     type: STRING
     mode: NULLABLE
+    description: User agent string identifying the browser and OS making the request.
   - name: x_forwarded_proto
     type: STRING
     mode: NULLABLE
+    description: X-Forwarded-Proto header value indicating the originating protocol
+      (e.g., 'https').
   - name: trace
     type: STRING
     mode: NULLABLE
+    description: Distributed tracing identifier from the application log payload.
   - name: remote_user
     type: STRING
     mode: NULLABLE
+    description: Authenticated remote user identifier from the log payload.
   - name: remote_addr
     type: STRING
     mode: NULLABLE
+    description: Remote IP address of the client making the request.
   - name: referrer
     type: STRING
     mode: NULLABLE
+    description: HTTP referrer URL from the log payload.
   - name: status
     type: STRING
     mode: NULLABLE
+    description: HTTP or application status value from the log payload.
   - name: logger
     type: STRING
     mode: NULLABLE
+    description: Name of the logger or component that emitted the log entry (e.g.,
+      'fxa-auth-server', 'fxa-content-server').
   - name: pid
     type: FLOAT
     mode: NULLABLE
+    description: Process ID of the FxA service instance that generated the log entry.
   - name: timestamp
     type: FLOAT
     mode: NULLABLE
+    description: Application-level event timestamp as a Unix epoch nanoseconds float,
+      as reported by the FxA service. Distinct from the top-level Cloud Logging `timestamp`.
   - name: fields
     type: RECORD
     mode: NULLABLE
+    description: Application-level structured event data from the FxA service.
     fields:
     - name: remoteaddresschain
       type: STRING
       mode: NULLABLE
+      description: Forwarding chain of client IP addresses from X-Forwarded-For headers.
     - name: t
       type: STRING
       mode: NULLABLE
+      description: Elapsed time in milliseconds for the operation.
     - name: method
       type: STRING
       mode: NULLABLE
+      description: HTTP method associated with the request (e.g., 'GET', 'POST').
     - name: status
       type: STRING
       mode: NULLABLE
+      description: HTTP or application status code for the event.
     - name: useragent
       type: STRING
       mode: NULLABLE
+      description: Raw user agent string from the request.
     - name: contentlength
       type: STRING
       mode: NULLABLE
+      description: HTTP Content-Length header value in bytes.
     - name: clientaddress
       type: STRING
       mode: NULLABLE
+      description: Client IP address as logged by the FxA service.
     - name: path
       type: STRING
       mode: NULLABLE
+      description: URL path of the request (e.g., '/v1/account/login').
     - name: errno
       type: FLOAT
       mode: NULLABLE
+      description: FxA error number. See FxA errno documentation for values (e.g.,
+        102 for unknown account, 110 for invalid auth token).
     - name: code
       type: FLOAT
       mode: NULLABLE
+      description: Code field from the event payload (e.g., OAuth authorization code,
+        error code).
     - name: agent
       type: STRING
       mode: NULLABLE
+      description: User agent string from the event payload.
     - name: client_id
       type: STRING
       mode: NULLABLE
+      description: Client identifier for the relying party application that initiated
+        the FxA authentication flow (e.g., Firefox Sync, Firefox Monitor). Null in
+        tables where `clientid` is used instead.
     - name: uid
       type: STRING
       mode: NULLABLE
+      description: Raw FxA user identifier. Use `user_id` for the hashed version.
     - name: referer
       type: STRING
       mode: NULLABLE
+      description: HTTP referer URL from the event payload.
     - name: message
       type: STRING
       mode: NULLABLE
+      description: Log message from the event payload.
     - name: event
       type: STRING
       mode: NULLABLE
+      description: Amplitude event name.
     - name: time
       type: FLOAT
       mode: NULLABLE
+      description: Event time as a Unix epoch milliseconds float.
     - name: event_type
       type: STRING
       mode: NULLABLE
+      description: Event type string identifying the category of event (e.g., 'fxa_email
+        - bounced', 'fxa_login - complete').
     - name: region
       type: STRING
       mode: NULLABLE
+      description: Geographic region associated with the event (e.g., 'California').
     - name: country
       type: STRING
       mode: NULLABLE
+      description: Country associated with the event, as a full country name (e.g.,
+        'United States').
     - name: session_id
       type: FLOAT
       mode: NULLABLE
+      description: Identifier for the user's FxA session, represented as an epoch
+        millisecond timestamp.
     - name: language
       type: STRING
       mode: NULLABLE
+      description: BCP 47 language tag for the user's locale at the time of the event
+        (e.g., 'en-US', 'de').
     - name: app_version
       type: STRING
       mode: NULLABLE
+      description: Firefox Accounts application version at the time of the event (e.g.,
+        '152.1', '195.0').
     - name: user_properties
       type: STRING
       mode: NULLABLE
+      description: Structured user properties for the amplitude event, as a JSON string.
     - name: event_properties
       type: STRING
       mode: NULLABLE
+      description: Structured event properties for the amplitude event, as a JSON
+        string.
     - name: device_id
       type: STRING
       mode: NULLABLE
+      description: SHA-256 hashed FxA device identifier, hex-encoded.
     - name: op
       type: STRING
       mode: NULLABLE
+      description: Operation or action type associated with the event.
     - name: os_name
       type: STRING
       mode: NULLABLE
+      description: Operating system name from the event payload (e.g., 'Windows',
+        'iOS', 'Android').
     - name: err
       type: STRING
       mode: NULLABLE
+      description: Error details associated with the event, if any.
     - name: joierrors
       type: STRING
       mode: NULLABLE
+      description: Joi schema validation error messages, populated when request validation
+        fails.
     - name: stack
       type: STRING
       mode: NULLABLE
+      description: Stack trace string. Populated on error events.
     - name: reason
       type: STRING
       mode: NULLABLE
+      description: Reason associated with the event (e.g., 'disconnect', 'unverified').
     - name: result
       type: STRING
       mode: NULLABLE
+      description: Result or outcome of the operation.
     - name: api
       type: FLOAT
       mode: NULLABLE
     - name: os_version
       type: STRING
       mode: NULLABLE
+      description: Operating system version string from the event payload.
     - name: user_id
       type: STRING
       mode: NULLABLE
+      description: SHA-256 hashed FxA user identifier, hex-encoded.
     - name: msg
       type: STRING
       mode: NULLABLE
+      description: Log message string from the structured event payload.
     - name: error
       type: STRING
       mode: NULLABLE
+      description: Error message or details associated with the event.
     - name: source
       type: STRING
       mode: NULLABLE
@@ -232,18 +310,24 @@ fields:
     - name: url
       type: STRING
       mode: NULLABLE
+      description: URL associated with the event.
     - name: version
       type: STRING
       mode: NULLABLE
+      description: Version string from the event payload.
     - name: directory
       type: STRING
       mode: NULLABLE
+      description: Directory path from the event payload.
     - name: port
       type: FLOAT
       mode: NULLABLE
+      description: Network port number associated with the request.
     - name: poolstats
       type: STRING
       mode: NULLABLE
+      description: Database connection pool statistics as a JSON string, including
+        pool UUID, connection limit, and active/free connection counts.
     - name: signal
       type: STRING
       mode: NULLABLE
@@ -265,6 +349,7 @@ fields:
     - name: host
       type: STRING
       mode: NULLABLE
+      description: Hostname of the server handling the request.
     - name: header
       type: STRING
       mode: NULLABLE
@@ -277,9 +362,15 @@ fields:
     - name: user
       type: BYTES
       mode: NULLABLE
+      description: SHA-256 hashed user identifier in bytes format, from the FxA admin
+        server logs.
     - name: email
       type: BYTES
       mode: NULLABLE
+      description: Hashed or redacted email identifier associated with the event.
+        Present only when the event is tied to a specific account action; null for
+        anonymous or pre-login flows. Stored as raw bytes (hashed) in admin server
+        tables. Not a raw email address.
     - name: search_type
       type: STRING
       mode: NULLABLE
@@ -289,6 +380,7 @@ fields:
     - name: payload
       type: STRING
       mode: NULLABLE
+      description: Raw payload string from the event.
     - name: user_agent
       type: STRING
       mode: NULLABLE
@@ -310,9 +402,11 @@ fields:
     - name: originaltransactionid
       type: STRING
       mode: NULLABLE
+      description: Original transaction identifier for subscription or payment events.
     - name: config
       type: STRING
       mode: NULLABLE
+      description: Configuration metadata associated with the event.
     - name: duration
       type: FLOAT
       mode: NULLABLE
@@ -325,24 +419,31 @@ fields:
     - name: cause
       type: STRING
       mode: NULLABLE
+      description: Cause or underlying reason for an error event.
     - name: success
       type: FLOAT
       mode: NULLABLE
+      description: Boolean indicating whether the operation succeeded.
     - name: device_model
       type: STRING
       mode: NULLABLE
+      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
+        6').
     - name: sample
       type: STRING
       mode: NULLABLE
     - name: request
       type: STRING
       mode: NULLABLE
+      description: Request metadata associated with the event.
     - name: name
       type: STRING
       mode: NULLABLE
+      description: Name field from the event payload.
     - name: closed
       type: BOOLEAN
       mode: NULLABLE
+      description: Boolean flag indicating a closed connection or session.
     - name: _res
       type: STRING
       mode: NULLABLE
@@ -352,18 +453,21 @@ fields:
     - name: service
       type: STRING
       mode: NULLABLE
+      description: Service or relying party identifier associated with the event.
     - name: locator
       type: STRING
       mode: NULLABLE
     - name: locale
       type: STRING
       mode: NULLABLE
+      description: BCP 47 locale string (e.g., 'en-US', 'fr-FR').
     - name: twofactorauthentication
       type: BOOLEAN
       mode: NULLABLE
     - name: profilechangedat
       type: FLOAT
       mode: NULLABLE
+      description: Unix epoch timestamp of the last profile change for the user.
     - name: atleast18atreg
       type: STRING
       mode: NULLABLE
@@ -376,21 +480,27 @@ fields:
     - name: purchasetoken
       type: STRING
       mode: NULLABLE
+      description: Google Play Store purchase token for in-app purchase events.
     - name: _
       type: STRING
       mode: NULLABLE
     - name: originaltransactionids
       type: STRING
       mode: NULLABLE
+      description: Stringified list of original transaction identifiers.
     - name: bundle
       type: STRING
       mode: NULLABLE
+      description: Bundle identifier. Reserved field.
     - name: userid
       type: STRING
       mode: NULLABLE
+      description: User identifier from the event payload. Use top-level `user_id`
+        for the hashed identifier.
     - name: errorcode
       type: FLOAT
       mode: NULLABLE
+      description: Application-level error code.
     - name: subscriptionsbyclientid
       type: STRING
       mode: NULLABLE
@@ -412,21 +522,27 @@ fields:
     - name: body
       type: STRING
       mode: NULLABLE
+      description: Request or response body.
     - name: phonenumber
       type: STRING
       mode: NULLABLE
     - name: query
       type: STRING
       mode: NULLABLE
+      description: URL query parameters associated with the request.
     - name: template
       type: STRING
       mode: NULLABLE
+      description: Email or notification template identifier (e.g., 'verifyEmail',
+        'newDeviceLogin').
     - name: to
       type: STRING
       mode: NULLABLE
+      description: Destination or recipient field.
     - name: action
       type: STRING
       mode: NULLABLE
+      description: Action type associated with the event.
     - name: timestamp
       type: STRING
       mode: NULLABLE
@@ -436,12 +552,17 @@ fields:
   - name: envversion
     type: STRING
     mode: NULLABLE
+    description: Log envelope version used by the FxA logging framework.
   - name: type
     type: STRING
     mode: NULLABLE
+    description: Log entry type classifier (e.g., 'amplitudeEvent').
   - name: severity
     type: FLOAT
     mode: NULLABLE
+    description: Application-level numeric log severity from the FxA service payload,
+      using syslog-style levels (6=informational, 2=critical). Distinct from the top-level
+      Cloud Logging `severity` STRING field.
   - name: jse_cause
     type: RECORD
     mode: NULLABLE
@@ -455,15 +576,20 @@ fields:
   - name: message
     type: STRING
     mode: NULLABLE
+    description: Structured log message from the FxA service payload.
   - name: level
     type: STRING
     mode: NULLABLE
+    description: Log severity level. Numeric Bunyan-style in some tables (30=info,
+      50=error); string level name in others.
   - name: stack
     type: STRING
     mode: NULLABLE
   - name: name
     type: STRING
     mode: NULLABLE
+    description: Name field from the log payload, identifying the process or subsystem
+      (e.g., 'customs-server', 'configure-sentry').
   - name: jse_info
     type: RECORD
     mode: NULLABLE
@@ -483,6 +609,7 @@ fields:
   - name: statuscode
     type: FLOAT
     mode: NULLABLE
+    description: HTTP or application status code from the log payload.
   - name: retrydelay
     type: FLOAT
     mode: NULLABLE
@@ -495,6 +622,7 @@ fields:
   - name: msg
     type: STRING
     mode: NULLABLE
+    description: Log message string from the FxA service payload.
   - name: scheme
     type: STRING
     mode: NULLABLE
@@ -504,6 +632,7 @@ fields:
   - name: useragent
     type: STRING
     mode: NULLABLE
+    description: User agent string from the log payload.
   - name: responseheaders
     type: RECORD
     mode: REPEATED
@@ -616,6 +745,8 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The time the event described by the log entry occurred, as reported
+    by the originating FxA service.
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -711,48 +842,72 @@ fields:
   - name: k8s_pod_app_kubernetes_io_component
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod label app.kubernetes.io/component, identifying the
+      component role within the application (e.g., 'auth', 'content').
   - name: k8s_pod_deployment
     type: STRING
     mode: NULLABLE
+    description: Kubernetes deployment name label for the pod that generated the log
+      entry.
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
+    description: GCP Compute resource name (compute.googleapis.com/resource_name),
+      identifying the VM or node that generated the log entry.
   - name: k8s_pod_env_code
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod environment code label (e.g., 'prod').
   - name: k8s_pod_pod_template_hash
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod template hash label, used to track pod revisions across
+      rolling deployments.
   - name: k8s_pod_app_kubernetes_io_name
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod label app.kubernetes.io/name, identifying the application
+      name.
   - name: k8s_pod_job_name
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod job name. Populated only for scheduled job pods.
   - name: k8s_pod_controller_uid
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod controller UID.
   - name: k8s_pod_redis
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod label for Redis workloads.
   - name: k8s_pod_batch_kubernetes_io_controller_uid
     type: STRING
     mode: NULLABLE
+    description: Kubernetes batch controller UID (batch.kubernetes.io/controller-uid).
+      Null for non-batch workloads.
   - name: k8s_pod_batch_kubernetes_io_job_name
     type: STRING
     mode: NULLABLE
+    description: Kubernetes batch job name (batch.kubernetes.io/job-name). Null for
+      non-batch workloads.
   - name: k8s_pod_run
     type: STRING
     mode: NULLABLE
   - name: logging_gke_io_top_level_controller_type
     type: STRING
     mode: NULLABLE
+    description: GKE top-level controller type managing the pod (e.g., 'Deployment',
+      'CronJob').
   - name: logging_gke_io_top_level_controller_name
     type: STRING
     mode: NULLABLE
+    description: GKE top-level controller name (e.g., the Deployment name) managing
+      the pod that generated the log entry.
   - name: k8s_pod_app_kubernetes_io_instance
     type: STRING
     mode: NULLABLE
+    description: Kubernetes pod label app.kubernetes.io/instance, identifying the
+      specific deployment instance.
 - name: operation
   type: RECORD
   mode: NULLABLE
@@ -845,129 +1000,167 @@ fields:
 - name: apphub
   type: RECORD
   mode: NULLABLE
+  description: GCP App Hub metadata associated with this log entry.
   fields:
   - name: application
     type: RECORD
     mode: NULLABLE
+    description: App Hub application context.
     fields:
     - name: container
       type: STRING
       mode: NULLABLE
+      description: App Hub application container.
     - name: location
       type: STRING
       mode: NULLABLE
+      description: App Hub application location.
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub application identifier.
   - name: service
     type: RECORD
     mode: NULLABLE
+    description: App Hub service context.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub service identifier.
     - name: environmentType
       type: STRING
       mode: NULLABLE
+      description: App Hub service environment type (e.g., 'PRODUCTION').
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: App Hub service criticality classification.
   - name: workload
     type: RECORD
     mode: NULLABLE
+    description: App Hub workload context.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub workload identifier.
     - name: environmentType
       type: STRING
       mode: NULLABLE
+      description: App Hub workload environment type.
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: App Hub workload criticality classification.
 - name: apphubDestination
   type: RECORD
   mode: NULLABLE
+  description: GCP App Hub destination metadata associated with this log entry.
   fields:
   - name: application
     type: RECORD
     mode: NULLABLE
+    description: App Hub destination application context.
     fields:
     - name: container
       type: STRING
       mode: NULLABLE
+      description: App Hub destination application container.
     - name: location
       type: STRING
       mode: NULLABLE
+      description: App Hub destination application location.
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub destination application identifier.
   - name: service
     type: RECORD
     mode: NULLABLE
+    description: App Hub destination service context.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub destination service identifier.
     - name: environmentType
       type: STRING
       mode: NULLABLE
+      description: App Hub destination service environment type.
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: App Hub destination service criticality classification.
   - name: workload
     type: RECORD
     mode: NULLABLE
+    description: App Hub destination workload context.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub destination workload identifier.
     - name: environmentType
       type: STRING
       mode: NULLABLE
+      description: App Hub destination workload environment type.
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: App Hub destination workload criticality classification.
 - name: apphubSource
   type: RECORD
   mode: NULLABLE
+  description: GCP App Hub source metadata associated with this log entry.
   fields:
   - name: application
     type: RECORD
     mode: NULLABLE
+    description: App Hub source application context.
     fields:
     - name: container
       type: STRING
       mode: NULLABLE
+      description: App Hub source application container.
     - name: location
       type: STRING
       mode: NULLABLE
+      description: App Hub source application location.
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub source application identifier.
   - name: service
     type: RECORD
     mode: NULLABLE
+    description: App Hub source service context.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub source service identifier.
     - name: environmentType
       type: STRING
       mode: NULLABLE
+      description: App Hub source service environment type.
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: App Hub source service criticality classification.
   - name: workload
     type: RECORD
     mode: NULLABLE
+    description: App Hub source workload context.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: App Hub source workload identifier.
     - name: environmentType
       type: STRING
       mode: NULLABLE
+      description: App Hub source workload environment type.
     - name: criticalityType
       type: STRING
       mode: NULLABLE

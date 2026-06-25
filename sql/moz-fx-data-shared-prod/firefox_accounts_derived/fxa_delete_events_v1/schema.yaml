@@ -5,6 +5,8 @@ fields:
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: SHA-256 hashed Firefox Accounts user identifier (uid), hex-encoded.
+    Primary key for joining user-level tables.
 - name: hmac_user_id
   type: STRING
   mode: NULLABLE

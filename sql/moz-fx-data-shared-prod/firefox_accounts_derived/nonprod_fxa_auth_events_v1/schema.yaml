@@ -16,16 +16,21 @@ fields:
   - name: labels
     type: RECORD
     mode: NULLABLE
+    description: GCP resource metadata labels attached to the log entry by Cloud Logging.
     fields:
     - name: zone
       type: STRING
       mode: NULLABLE
+      description: Availability zone of the resource (e.g., 'us-west-1').
     - name: instance_id
       type: STRING
       mode: NULLABLE
+      description: Cloud instance identifier of the node that generated the log entry
+        (e.g., 'i-xxxxxxxxxxxxxxxxx').
     - name: project_id
       type: STRING
       mode: NULLABLE
+      description: GCP project ID of the log source.
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -39,85 +44,119 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
+    description: Log entry type classifier (e.g., 'amplitudeEvent').
   - name: envversion
     type: STRING
     mode: NULLABLE
+    description: Log envelope version used by the FxA logging framework.
   - name: severity
     type: FLOAT
     mode: NULLABLE
+    description: Application-level numeric log severity from the FxA service payload,
+      using syslog-style levels (6=informational, 2=critical). Distinct from the top-level
+      Cloud Logging `severity` STRING field.
   - name: fields
     type: RECORD
     mode: NULLABLE
+    description: Application-level structured event data from the FxA service.
     fields:
     - name: t
       type: FLOAT
       mode: NULLABLE
+      description: Elapsed time in milliseconds for the operation.
     - name: errno
       type: FLOAT
       mode: NULLABLE
+      description: FxA error number. See FxA errno documentation for values (e.g.,
+        102 for unknown account, 110 for invalid auth token).
     - name: path
       type: STRING
       mode: NULLABLE
+      description: URL path of the request (e.g., '/v1/account/login').
     - name: keys
       type: BOOLEAN
       mode: NULLABLE
     - name: agent
       type: STRING
       mode: NULLABLE
+      description: User agent string from the event payload.
     - name: email
       type: STRING
       mode: NULLABLE
+      description: Hashed or redacted email identifier associated with the event.
+        Present only when the event is tied to a specific account action; null for
+        anonymous or pre-login flows. Stored as raw bytes (hashed) in admin server
+        tables. Not a raw email address.
     - name: method
       type: STRING
       mode: NULLABLE
+      description: HTTP method associated with the request (e.g., 'GET', 'POST').
     - name: uid
       type: STRING
       mode: NULLABLE
+      description: Raw FxA user identifier. Use `user_id` for the hashed version.
     - name: remoteaddresschain
       type: STRING
       mode: NULLABLE
+      description: Forwarding chain of client IP addresses from X-Forwarded-For headers.
     - name: lang
       type: STRING
       mode: NULLABLE
+      description: Language code from the event payload. See `jsonPayload.fields.language`
+        for the primary language field.
     - name: status
       type: FLOAT
       mode: NULLABLE
+      description: HTTP or application status code for the event.
     - name: country
       type: STRING
       mode: NULLABLE
+      description: Country associated with the event, as a full country name (e.g.,
+        'United States').
     - name: service
       type: STRING
       mode: NULLABLE
+      description: Service or relying party identifier associated with the event.
     - name: locale
       type: STRING
       mode: NULLABLE
+      description: BCP 47 locale string (e.g., 'en-US', 'fr-FR').
     - name: region
       type: STRING
       mode: NULLABLE
+      description: Geographic region associated with the event (e.g., 'California').
     - name: flowbegintime
       type: FLOAT
       mode: NULLABLE
+      description: Unix epoch timestamp of when the authentication flow began.
     - name: flowtype
       type: STRING
       mode: NULLABLE
     - name: flow_time
       type: FLOAT
       mode: NULLABLE
+      description: Elapsed time in milliseconds within the current authentication
+        flow.
     - name: flowcompletesignal
       type: STRING
       mode: NULLABLE
     - name: flow_id
       type: STRING
       mode: NULLABLE
+      description: Flow identifier for the authentication or account creation session.
+        See top-level `flow_id`.
     - name: time
       type: FLOAT
       mode: NULLABLE
+      description: Event time as a Unix epoch milliseconds float.
     - name: event
       type: STRING
       mode: NULLABLE
+      description: Amplitude event name.
     - name: useragent
       type: STRING
       mode: NULLABLE
+      description: Raw user agent string from the request.
     - name: emailcode
       type: STRING
       mode: NULLABLE
@@ -133,36 +172,50 @@ fields:
     - name: type
       type: STRING
       mode: NULLABLE
+      description: Event type classifier within the fields payload.
     - name: id
       type: STRING
       mode: NULLABLE
+      description: Unique identifier for the event record.
     - name: missingflowid
       type: BOOLEAN
       mode: NULLABLE
     - name: context
       type: STRING
       mode: NULLABLE
+      description: Context string for the event (e.g., OAuth flow context such as
+        'fx_desktop_v3').
     - name: data
       type: STRING
       mode: NULLABLE
+      description: Generic data field from the event payload.
     - name: success
       type: BOOLEAN
       mode: NULLABLE
+      description: Boolean indicating whether the operation succeeded.
     - name: op
       type: STRING
       mode: NULLABLE
+      description: Operation or action type associated with the event.
     - name: user_properties
       type: STRING
       mode: NULLABLE
+      description: Structured user properties for the amplitude event, as a JSON string.
     - name: app_version
       type: STRING
       mode: NULLABLE
+      description: Firefox Accounts application version at the time of the event (e.g.,
+        '152.1', '195.0').
     - name: event_properties
       type: STRING
       mode: NULLABLE
+      description: Structured event properties for the amplitude event, as a JSON
+        string.
     - name: event_type
       type: STRING
       mode: NULLABLE
+      description: Event type string identifying the category of event (e.g., 'fxa_email
+        - bounced', 'fxa_login - complete').
     - name: isserver
       type: BOOLEAN
       mode: NULLABLE
@@ -181,39 +234,54 @@ fields:
     - name: params
       type: STRING
       mode: NULLABLE
+      description: Request parameters from the event.
     - name: payload
       type: STRING
       mode: NULLABLE
+      description: Raw payload string from the event.
     - name: query
       type: STRING
       mode: NULLABLE
+      description: URL query parameters associated with the request.
     - name: language
       type: STRING
       mode: NULLABLE
+      description: BCP 47 language tag for the user's locale at the time of the event
+        (e.g., 'en-US', 'de').
     - name: scope
       type: STRING
       mode: NULLABLE
     - name: client_id
       type: STRING
       mode: NULLABLE
+      description: Client identifier for the relying party application that initiated
+        the FxA authentication flow (e.g., Firefox Sync, Firefox Monitor). Null in
+        tables where `clientid` is used instead.
     - name: template
       type: STRING
       mode: NULLABLE
+      description: Email or notification template identifier (e.g., 'verifyEmail',
+        'newDeviceLogin').
     - name: headers
       type: STRING
       mode: NULLABLE
     - name: session_id
       type: FLOAT
       mode: NULLABLE
+      description: Identifier for the user's FxA session, represented as an epoch
+        millisecond timestamp.
     - name: domain
       type: STRING
       mode: NULLABLE
+      description: Domain string associated with the event (e.g., an email domain).
     - name: templateversion
       type: FLOAT
       mode: NULLABLE
+      description: Email template version number.
     - name: to
       type: STRING
       mode: NULLABLE
+      description: Destination or recipient field.
     - name: lastaccesstimeenabled
       type: BOOLEAN
       mode: NULLABLE
@@ -226,6 +294,7 @@ fields:
     - name: profilechangedat
       type: FLOAT
       mode: NULLABLE
+      description: Unix epoch timestamp of the last profile change for the user.
     - name: verifiersetat
       type: FLOAT
       mode: NULLABLE
@@ -280,6 +349,7 @@ fields:
     - name: reason
       type: STRING
       mode: NULLABLE
+      description: Reason associated with the event (e.g., 'disconnect', 'unverified').
     - name: verifyhash
       type: STRING
       mode: NULLABLE
@@ -298,6 +368,7 @@ fields:
     - name: flowid
       type: STRING
       mode: NULLABLE
+      description: Flow identifier. See top-level `flow_id`.
     - name: recency
       type: STRING
       mode: NULLABLE
@@ -316,6 +387,7 @@ fields:
     - name: err
       type: STRING
       mode: NULLABLE
+      description: Error details associated with the event, if any.
     - name: hasid
       type: BOOLEAN
       mode: NULLABLE
@@ -325,12 +397,16 @@ fields:
     - name: clientid
       type: STRING
       mode: NULLABLE
+      description: Client identifier associated with the event.
     - name: os_version
       type: STRING
       mode: NULLABLE
+      description: Operating system version string from the event payload.
     - name: os_name
       type: STRING
       mode: NULLABLE
+      description: Operating system name from the event payload (e.g., 'Windows',
+        'iOS', 'Android').
     - name: uaos
       type: STRING
       mode: NULLABLE
@@ -367,6 +443,7 @@ fields:
     - name: originaltransactionid
       type: STRING
       mode: NULLABLE
+      description: Original transaction identifier for subscription or payment events.
     - name: bundleid
       type: STRING
       mode: NULLABLE
@@ -382,18 +459,23 @@ fields:
     - name: device_model
       type: STRING
       mode: NULLABLE
+      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
+        6').
     - name: body
       type: STRING
       mode: NULLABLE
+      description: Request or response body.
     - name: error
       type: STRING
       mode: NULLABLE
+      description: Error message or details associated with the event.
     - name: plan
       type: STRING
       mode: NULLABLE
     - name: subscriptionid
       type: STRING
       mode: NULLABLE
+      description: Subscription identifier for subscription-related events.
     - name: numsessions
       type: FLOAT
       mode: NULLABLE
@@ -409,6 +491,8 @@ fields:
     - name: code
       type: STRING
       mode: NULLABLE
+      description: Code field from the event payload (e.g., OAuth authorization code,
+        error code).
     - name: entrypoint
       type: STRING
       mode: NULLABLE
@@ -418,9 +502,11 @@ fields:
     - name: originaltransactionids
       type: STRING
       mode: NULLABLE
+      description: Stringified list of original transaction identifiers.
     - name: message
       type: STRING
       mode: NULLABLE
+      description: Log message from the event payload.
     - name: ipnmessage
       type: STRING
       mode: NULLABLE
@@ -433,6 +519,7 @@ fields:
     - name: msg
       type: STRING
       mode: NULLABLE
+      description: Log message string from the structured event payload.
     - name: traceid
       type: STRING
       mode: NULLABLE
@@ -445,6 +532,8 @@ fields:
     - name: poolstats
       type: STRING
       mode: NULLABLE
+      description: Database connection pool statistics as a JSON string, including
+        pool UUID, connection limit, and active/free connection counts.
     - name: lastaccesstime
       type: FLOAT
       mode: NULLABLE
@@ -490,6 +579,7 @@ fields:
     - name: purchasetoken
       type: STRING
       mode: NULLABLE
+      description: Google Play Store purchase token for in-app purchase events.
     - name: refresh_token
       type: STRING
       mode: NULLABLE
@@ -535,21 +625,26 @@ fields:
     - name: param
       type: STRING
       mode: NULLABLE
+      description: Parameter field from the event payload.
     - name: bodysize
       type: FLOAT
       mode: NULLABLE
     - name: stack
       type: STRING
       mode: NULLABLE
+      description: Stack trace string. Populated on error events.
     - name: port
       type: FLOAT
       mode: NULLABLE
+      description: Network port number associated with the request.
     - name: host
       type: STRING
       mode: NULLABLE
+      description: Hostname of the server handling the request.
     - name: statuscode
       type: FLOAT
       mode: NULLABLE
+      description: HTTP or application status code from the event payload.
     - name: provider
       type: STRING
       mode: NULLABLE
@@ -568,6 +663,8 @@ fields:
     - name: countrycode
       type: STRING
       mode: NULLABLE
+      description: Two-letter ISO 3166-1 country code associated with the event (e.g.,
+        'US', 'DE').
     - name: customerid
       type: STRING
       mode: NULLABLE
@@ -583,9 +680,11 @@ fields:
     - name: user_id
       type: STRING
       mode: NULLABLE
+      description: SHA-256 hashed FxA user identifier, hex-encoded.
     - name: device_id
       type: STRING
       mode: NULLABLE
+      description: SHA-256 hashed FxA device identifier, hex-encoded.
     - name: value
       type: STRING
       mode: NULLABLE
@@ -595,18 +694,26 @@ fields:
     - name: invoiceid
       type: STRING
       mode: NULLABLE
+      description: Invoice identifier for subscription billing events.
   - name: logger
     type: STRING
     mode: NULLABLE
+    description: Name of the logger or component that emitted the log entry (e.g.,
+      'fxa-auth-server', 'fxa-content-server').
   - name: timestamp
     type: FLOAT
     mode: NULLABLE
+    description: Application-level event timestamp as a Unix epoch nanoseconds float,
+      as reported by the FxA service. Distinct from the top-level Cloud Logging `timestamp`.
   - name: pid
     type: FLOAT
     mode: NULLABLE
+    description: Process ID of the FxA service instance that generated the log entry.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The time the event described by the log entry occurred, as reported
+    by the originating FxA service.
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -702,18 +809,25 @@ fields:
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
+    description: GCP Compute resource name (compute.googleapis.com/resource_name),
+      identifying the VM or node that generated the log entry.
   - name: env
     type: STRING
     mode: NULLABLE
+    description: Deployment environment label (e.g., 'prod', 'stage').
   - name: stack
     type: STRING
     mode: NULLABLE
+    description: Stack label from the log metadata (e.g., 'default').
   - name: type
     type: STRING
     mode: NULLABLE
+    description: Type label from the log metadata indicating the log source category
+      (e.g., 'admin_panel').
   - name: application
     type: STRING
     mode: NULLABLE
+    description: Application label identifying the FxA application (e.g., 'fxa').
 - name: operation
   type: RECORD
   mode: NULLABLE

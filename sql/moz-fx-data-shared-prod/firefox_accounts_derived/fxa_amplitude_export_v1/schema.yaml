@@ -5,6 +5,8 @@ fields:
 - mode: NULLABLE
   name: user_id
   type: STRING
+  description: SHA-256 hashed Firefox Accounts user identifier (uid), hex-encoded.
+    Primary key for joining user-level tables.
 - mode: NULLABLE
   name: insert_id
   type: STRING
@@ -14,9 +16,13 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Country associated with the user or event, as a full country name (e.g.,
+    'United States', 'Germany').
 - mode: NULLABLE
   name: language
   type: STRING
+  description: BCP 47 language tag representing the user's preferred language (e.g.,
+    'en-US', 'de', 'fr').
 - mode: REPEATED
   name: services
   type: STRING
@@ -51,9 +57,13 @@ fields:
 - mode: NULLABLE
   name: ua_version
   type: STRING
+  description: Browser or client version parsed from the user agent string (e.g.,
+    '120', '121').
 - mode: NULLABLE
   name: ua_browser
   type: STRING
+  description: Browser name parsed from the user agent string (e.g., 'Firefox', 'Firefox
+    iOS').
 - mode: NULLABLE
   name: app_version
   type: FLOAT

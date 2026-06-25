@@ -2,3 +2,5 @@ fields:
 - mode: NULLABLE
   name: user_id
   type: STRING
+  description: SHA-256 hashed Firefox Accounts user identifier (uid), hex-encoded.
+    Primary key for joining user-level tables.

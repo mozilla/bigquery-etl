@@ -16,16 +16,21 @@ fields:
   - name: labels
     type: RECORD
     mode: NULLABLE
+    description: GCP resource metadata labels attached to the log entry by Cloud Logging.
     fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
+      description: Cloud instance identifier of the node that generated the log entry
+        (e.g., 'i-xxxxxxxxxxxxxxxxx').
     - name: project_id
       type: STRING
       mode: NULLABLE
+      description: GCP project ID of the log source.
     - name: zone
       type: STRING
       mode: NULLABLE
+      description: Availability zone of the resource (e.g., 'us-west-1').
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -39,21 +44,31 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
+    description: Log entry type classifier (e.g., 'amplitudeEvent').
   - name: pid
     type: FLOAT
     mode: NULLABLE
+    description: Process ID of the FxA service instance that generated the log entry.
   - name: logger
     type: STRING
     mode: NULLABLE
+    description: Name of the logger or component that emitted the log entry (e.g.,
+      'fxa-auth-server', 'fxa-content-server').
   - name: timestamp
     type: FLOAT
     mode: NULLABLE
+    description: Application-level event timestamp as a Unix epoch nanoseconds float,
+      as reported by the FxA service. Distinct from the top-level Cloud Logging `timestamp`.
   - name: severity
     type: FLOAT
     mode: NULLABLE
+    description: Application-level numeric log severity from the FxA service payload,
+      using syslog-style levels (6=informational, 2=critical). Distinct from the top-level
+      Cloud Logging `severity` STRING field.
   - name: envversion
     type: STRING
     mode: NULLABLE
+    description: Log envelope version used by the FxA logging framework.
   - name: fields
     type: RECORD
     mode: NULLABLE
@@ -61,78 +76,110 @@ fields:
     - name: op
       type: STRING
       mode: NULLABLE
+      description: Operation or action type associated with the event.
     - name: os_version
       type: STRING
       mode: NULLABLE
+      description: Operating system version string from the event payload.
     - name: event_properties
       type: STRING
       mode: NULLABLE
+      description: Structured event properties for the amplitude event, as a JSON
+        string.
     - name: event_type
       type: STRING
       mode: NULLABLE
+      description: Event type string identifying the category of event (e.g., 'fxa_email
+        - bounced', 'fxa_login - complete').
     - name: country
       type: STRING
       mode: NULLABLE
+      description: Country associated with the event, as a full country name (e.g.,
+        'United States').
     - name: os_name
       type: STRING
       mode: NULLABLE
+      description: Operating system name from the event payload (e.g., 'Windows',
+        'iOS', 'Android').
     - name: time
       type: FLOAT
       mode: NULLABLE
+      description: Event time as a Unix epoch milliseconds float.
     - name: language
       type: STRING
       mode: NULLABLE
+      description: BCP 47 language tag for the user's locale at the time of the event
+        (e.g., 'en-US', 'de').
     - name: user_properties
       type: STRING
       mode: NULLABLE
+      description: Structured user properties for the amplitude event, as a JSON string.
     - name: session_id
       type: FLOAT
       mode: NULLABLE
+      description: Identifier for the user's FxA session, represented as an epoch
+        millisecond timestamp.
     - name: region
       type: STRING
       mode: NULLABLE
+      description: Geographic region associated with the event (e.g., 'California').
     - name: app_version
       type: STRING
       mode: NULLABLE
+      description: Firefox Accounts application version at the time of the event (e.g.,
+        '152.1', '195.0').
     - name: device_model
       type: STRING
       mode: NULLABLE
+      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
+        6').
     - name: err
       type: STRING
       mode: NULLABLE
+      description: Error details associated with the event, if any.
     - name: method
       type: STRING
       mode: NULLABLE
+      description: HTTP method associated with the request (e.g., 'GET', 'POST').
     - name: path
       type: STRING
       mode: NULLABLE
+      description: URL path of the request (e.g., '/v1/account/login').
     - name: clientaddress
       type: STRING
       mode: NULLABLE
+      description: Client IP address as logged by the FxA service.
     - name: remoteaddresschain
       type: STRING
       mode: NULLABLE
+      description: Forwarding chain of client IP addresses from X-Forwarded-For headers.
     - name: useragent
       type: STRING
       mode: NULLABLE
+      description: Raw user agent string from the request.
     - name: status
       type: STRING
       mode: NULLABLE
+      description: HTTP or application status code for the event.
     - name: t
       type: STRING
       mode: NULLABLE
+      description: Elapsed time in milliseconds for the operation.
     - name: contentlength
       type: STRING
       mode: NULLABLE
+      description: HTTP Content-Length header value in bytes.
     - name: referer
       type: STRING
       mode: NULLABLE
+      description: HTTP referer URL from the event payload.
     - name: violated
       type: STRING
       mode: NULLABLE
     - name: agent
       type: STRING
       mode: NULLABLE
+      description: User agent string from the event payload.
     - name: source
       type: STRING
       mode: NULLABLE
@@ -154,30 +201,41 @@ fields:
     - name: msg
       type: STRING
       mode: NULLABLE
+      description: Log message string from the structured event payload.
     - name: error
       type: STRING
       mode: NULLABLE
+      description: Error message or details associated with the event.
     - name: stack
       type: STRING
       mode: NULLABLE
+      description: Stack trace string. Populated on error events.
     - name: context
       type: STRING
       mode: NULLABLE
+      description: Context string for the event (e.g., OAuth flow context such as
+        'fx_desktop_v3').
     - name: event
       type: STRING
       mode: NULLABLE
+      description: Amplitude event name.
     - name: joierrors
       type: STRING
       mode: NULLABLE
+      description: Joi schema validation error messages, populated when request validation
+        fails.
     - name: user_id
       type: STRING
       mode: NULLABLE
+      description: SHA-256 hashed FxA user identifier, hex-encoded.
     - name: device_id
       type: STRING
       mode: NULLABLE
+      description: SHA-256 hashed FxA device identifier, hex-encoded.
     - name: config
       type: STRING
       mode: NULLABLE
+      description: Configuration metadata associated with the event.
     - name: tags
       type: STRING
       mode: NULLABLE
@@ -196,6 +254,7 @@ fields:
     - name: request
       type: STRING
       mode: NULLABLE
+      description: Request metadata associated with the event.
     - name: exception
       type: STRING
       mode: NULLABLE
@@ -217,12 +276,14 @@ fields:
     - name: message
       type: STRING
       mode: NULLABLE
+      description: Log message from the event payload.
     - name: value
       type: STRING
       mode: NULLABLE
     - name: param
       type: STRING
       mode: NULLABLE
+      description: Parameter field from the event payload.
     - name: amplitudeevent
       type: STRING
       mode: NULLABLE
@@ -232,6 +293,7 @@ fields:
   - name: hostname
     type: STRING
     mode: NULLABLE
+    description: Hostname of the server or container that generated the log entry.
   - name: flow_id
     type: STRING
     mode: NULLABLE
@@ -241,6 +303,7 @@ fields:
   - name: v
     type: FLOAT
     mode: NULLABLE
+    description: Payload schema version number used by the FxA logging framework.
   - name: country
     type: STRING
     mode: NULLABLE
@@ -253,9 +316,11 @@ fields:
   - name: useragent
     type: STRING
     mode: NULLABLE
+    description: User agent string from the log payload.
   - name: op
     type: STRING
     mode: NULLABLE
+    description: Operation type from the log payload.
   - name: locale
     type: STRING
     mode: NULLABLE
@@ -376,6 +441,8 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The time the event described by the log entry occurred, as reported
+    by the originating FxA service.
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -471,18 +538,25 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
+    description: Type label from the log metadata indicating the log source category
+      (e.g., 'admin_panel').
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
+    description: GCP Compute resource name (compute.googleapis.com/resource_name),
+      identifying the VM or node that generated the log entry.
   - name: application
     type: STRING
     mode: NULLABLE
+    description: Application label identifying the FxA application (e.g., 'fxa').
   - name: env
     type: STRING
     mode: NULLABLE
+    description: Deployment environment label (e.g., 'prod', 'stage').
   - name: stack
     type: STRING
     mode: NULLABLE
+    description: Stack label from the log metadata (e.g., 'default').
   - name: fxa________
     type: STRING
     mode: NULLABLE

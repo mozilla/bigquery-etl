@@ -2,6 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date_pacific
   type: DATE
+  description: The Pacific Time date for which this user record is computed and exported to Amplitude.
 - mode: NULLABLE
   name: user_id
   type: STRING
@@ -11,9 +12,14 @@ fields:
 - mode: NULLABLE
   name: insert_id
   type: STRING
+  description: Unique identifier for this Amplitude export record, constructed from the insertId of the
+    first qualifying event for the user on this day.
 - mode: NULLABLE
   name: region
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: region
 - mode: NULLABLE
   name: country
   type: STRING
@@ -48,15 +54,19 @@ fields:
 - mode: NULLABLE
   name: sync_device_count
   type: INTEGER
+  description: Maximum number of Sync-connected devices observed for this user during the export window.
 - mode: NULLABLE
   name: sync_active_devices_day
   type: INTEGER
+  description: Maximum count of active Sync devices for this user in the current day.
 - mode: NULLABLE
   name: sync_active_devices_week
   type: INTEGER
+  description: Maximum count of active Sync devices for this user in the current 7-day window.
 - mode: NULLABLE
   name: sync_active_devices_month
   type: INTEGER
+  description: Maximum count of active Sync devices for this user in the current 28-day window.
 - mode: NULLABLE
   name: ua_version
   type: STRING
@@ -72,12 +82,16 @@ fields:
 - mode: NULLABLE
   name: app_version
   type: FLOAT
+  description: Maximum FxA application version observed for this user on this date, as a float.
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
+  description: Bit field encoding user activity over the past 28 days. The rightmost bit (value 1) indicates
+    whether the user was active on submission_date_pacific.
 - mode: REPEATED
   name: rollup_events
   type: STRING
 - mode: NULLABLE
   name: timestamp
   type: DATETIME
+  description: Datetime representation of submission_date_pacific used when exporting events to Amplitude.

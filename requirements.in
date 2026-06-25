@@ -6,6 +6,7 @@
 # the private file second). If you see dependency weirdness in the private
 # image, check for version overlaps between requirements.txt and
 # requirements-private.txt first.
+anthropic==0.109.2
 attrs==25.4.0
 authlib==1.6.12
 beautifulsoup4==4.14.3
@@ -25,8 +26,8 @@ google-cloud-bigquery==3.40.0
 google-genai==1.68.0
 google-cloud-bigquery-storage[fastavro]==2.36.0
 google-cloud-datacatalog-lineage==0.4.0
+google-cloud-dlp==3.37.0
 google-cloud-storage==3.8.0
-google-genai
 isort==5.12.0
 Jinja2==3.1.6
 jmespath==1.0.1

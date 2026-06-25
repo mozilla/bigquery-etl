@@ -131,6 +131,7 @@ fields:
   - name: proxy_host
     type: STRING
     mode: NULLABLE
+  description: Hostname of the proxy server that forwarded the request to the FxA payments server.
   - name: bytes_sent
     type: FLOAT
     mode: NULLABLE
@@ -339,6 +340,8 @@ fields:
     - name: country_code
       type: STRING
       mode: NULLABLE
+  description: Two-letter ISO 3166-1 country code associated with the payments event (e.g., 'US', 'DE').
+    Distinct from the full country name in jsonPayload.fields.countrycode.
     - name: user_id
       type: STRING
       mode: NULLABLE
@@ -400,21 +403,27 @@ fields:
     - name: server_upload_time
       type: FLOAT
       mode: NULLABLE
+  description: Server-side timestamp when Amplitude received and processed the event batch.
     - name: code
       type: FLOAT
       mode: NULLABLE
+  description: HTTP status code returned by the Amplitude API for this batch of events.
     - name: payload_size_bytes
       type: FLOAT
       mode: NULLABLE
+  description: Size in bytes of the payload sent to the Amplitude API.
     - name: events_ingested
       type: FLOAT
       mode: NULLABLE
+  description: Number of events ingested by Amplitude in this batch.
   - name: minpublishedtime
     type: STRING
     mode: NULLABLE
+  description: Earliest event timestamp in the batch published to Amplitude.
   - name: outputcount
     type: FLOAT
     mode: NULLABLE
+  description: Number of output events successfully sent to Amplitude.
   - name: v
     type: FLOAT
     mode: NULLABLE
@@ -436,9 +445,11 @@ fields:
   - name: inputcount
     type: FLOAT
     mode: NULLABLE
+  description: Number of input events processed in this Amplitude publishing operation.
   - name: maxpublishedtime
     type: STRING
     mode: NULLABLE
+  description: Latest event timestamp in the batch published to Amplitude.
   - name: msg
     type: STRING
     mode: NULLABLE
@@ -452,15 +463,19 @@ fields:
     - name: code
       type: FLOAT
       mode: NULLABLE
+  description: Error code from the payments server error payload.
     - name: note
       type: STRING
       mode: NULLABLE
+  description: Note or description associated with the payments server error.
     - name: details
       type: STRING
       mode: NULLABLE
+  description: Detailed error information from the payments server error payload.
   - name: amplitudeerror
     type: STRING
     mode: NULLABLE
+  description: Error message or details returned by the Amplitude API when event ingestion fails.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

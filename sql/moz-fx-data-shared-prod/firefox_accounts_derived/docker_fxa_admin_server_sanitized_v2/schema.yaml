@@ -2,6 +2,7 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: The date partition of the log record, set to the date of the event timestamp.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -402,9 +403,11 @@ fields:
     - name: source
       type: STRING
       mode: NULLABLE
+  description: Source identifier associated with the request or event.
     - name: blocked
       type: STRING
       mode: NULLABLE
+  description: String flag indicating whether the request or action was blocked.
     - name: column
       type: FLOAT
       mode: NULLABLE
@@ -450,21 +453,27 @@ fields:
     - name: signal
       type: STRING
       mode: NULLABLE
+  description: Signal identifier from the WAF or security system associated with the request.
     - name: reqtime
       type: FLOAT
       mode: NULLABLE
+  description: Request processing time in milliseconds.
     - name: rp
       type: STRING
       mode: NULLABLE
+  description: Relying party identifier associated with the admin panel request.
     - name: assertion_verification_time
       type: FLOAT
       mode: NULLABLE
+  description: Time taken to verify the BrowserID assertion in milliseconds.
     - name: trustedissuers
       type: STRING
       mode: NULLABLE
+  description: List of trusted issuers accepted for BrowserID assertion verification.
     - name: assertion
       type: STRING
       mode: NULLABLE
+  description: BrowserID assertion string used for authentication, if present.
     - name: host
       type: STRING
       mode: NULLABLE
@@ -474,12 +483,17 @@ fields:
     - name: header
       type: STRING
       mode: NULLABLE
+  description: HTTP header value logged by the admin server.
     - name: usergroupheader
       type: STRING
       mode: NULLABLE
+  description: Comma-separated list of LDAP/Mozillians group memberships for the admin panel operator, used
+    for access control and auditing.
     - name: usergroupheader_notnull
       type: STRING
       mode: NULLABLE
+  description: Non-null version of the LDAP/Mozillians group header, used when the original header may be
+    empty.
     - name: user
       type: BYTES
       mode: NULLABLE
@@ -495,9 +509,12 @@ fields:
     - name: search_type
       type: STRING
       mode: NULLABLE
+  description: The type of account search performed in the admin panel (e.g., 'email' to search by email
+    address).
     - name: auto_completed
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the admin panel search was auto-completed; false if the operator completed it manually.
     - name: payload
       type: STRING
       mode: NULLABLE
@@ -510,6 +527,7 @@ fields:
     - name: ip_address
       type: STRING
       mode: NULLABLE
+  description: Client IP address as logged by the admin server.
     - name: document_version
       type: STRING
       mode: NULLABLE
@@ -537,12 +555,15 @@ fields:
     - name: duration
       type: FLOAT
       mode: NULLABLE
+  description: Duration of the request or operation in milliseconds.
     - name: info
       type: STRING
       mode: NULLABLE
+  description: Additional informational metadata from the event payload.
     - name: detail
       type: STRING
       mode: NULLABLE
+  description: Detailed description or context for the event.
     - name: cause
       type: STRING
       mode: NULLABLE
@@ -606,6 +627,7 @@ fields:
     - name: twofactorauthentication
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the user has two-factor authentication enabled on their account.
     - name: profilechangedat
       type: FLOAT
       mode: NULLABLE
@@ -615,12 +637,15 @@ fields:
     - name: atleast18atreg
       type: STRING
       mode: NULLABLE
+  description: String field indicating whether the user was at least 18 years old at registration.
     - name: metricsenabled
       type: BOOLEAN
       mode: NULLABLE
+  description: True if the user has analytics/metrics collection enabled.
     - name: amrvalues
       type: STRING
       mode: NULLABLE
+  description: Authentication method references (AMR) indicating which authentication factors were used.
     - name: purchasetoken
       type: STRING
       mode: NULLABLE
@@ -657,21 +682,27 @@ fields:
     - name: subscriptionsbyclientid
       type: STRING
       mode: NULLABLE
+  description: JSON string mapping OAuth client IDs to subscription details for the user.
     - name: pathname
       type: STRING
       mode: NULLABLE
+  description: URL pathname of the admin panel request.
     - name: interval
       type: STRING
       mode: NULLABLE
+  description: Subscription billing interval associated with the event.
     - name: offeringid
       type: STRING
       mode: NULLABLE
+  description: Subscription offering identifier associated with the event.
     - name: eligibilitystatus
       type: STRING
       mode: NULLABLE
+  description: Subscription eligibility status for the user.
     - name: requestcode
       type: STRING
       mode: NULLABLE
+  description: Request code or correlation ID from the admin server.
     - name: body
       type: STRING
       mode: NULLABLE
@@ -681,6 +712,7 @@ fields:
     - name: phonenumber
       type: STRING
       mode: NULLABLE
+  description: Phone number associated with the account, if present in the event.
     - name: query
       type: STRING
       mode: NULLABLE
@@ -711,6 +743,7 @@ fields:
     - name: errorname
       type: STRING
       mode: NULLABLE
+  description: Named error type from the admin server event payload.
   - name: envversion
     type: STRING
     mode: NULLABLE

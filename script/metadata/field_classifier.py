@@ -558,6 +558,38 @@ def parse_args():
             "multi-model run does not wipe a sibling model's rows."
         ),
     )
+    parser.add_argument(
+        "--no-sanitize",
+        action="store_true",
+        help=(
+            "Disable DLP sanitization of sample values before prompting. By "
+            "default, example/top values are scrubbed in-memory (tier-1 PII "
+            "masked, tier-2 special categories dropped); the profiling table is "
+            "left untouched."
+        ),
+    )
+    parser.add_argument(
+        "--dlp-project",
+        default=ANALYSIS_PROJECT,
+        help=(
+            "GCP project for DLP inspect/deidentify (DLP API must be enabled and "
+            f"the caller granted dlp.user). Default: {ANALYSIS_PROJECT}."
+        ),
+    )
+    parser.add_argument(
+        "--dlp-quota-project",
+        help=(
+            "Billing/quota project for DLP; defaults to --dlp-project. Set when "
+            "application-default credentials carry a quota project without DLP."
+        ),
+    )
+    parser.add_argument(
+        "--sanitize-report",
+        help=(
+            "Path to append a JSONL record per masked/dropped value (raw, clean, "
+            "infoTypes) for the periodic review. Optional."
+        ),
+    )
     args = parser.parse_args()
     if not (is_claude_model(args.model) or is_gemini_model(args.model)):
         parser.error(
@@ -587,6 +619,80 @@ def refresh_classifications(bq_client, project, dataset, table, model):
         pass
 
 
+def sanitize_columns(sanitizer, columns):
+    """DLP-scrub each column's example_value / top values, in place.
+
+    Non-destructive to the profiling table: only the in-memory column dicts are
+    mutated, so the classifier prompts on clean values while the stored table
+    keeps the originals for re-testing. Tier-1 hits are masked; tier-2 hits drop
+    the value (and, for top values, the whole entry). Returns one report dict per
+    changed value (table label added by the caller).
+    """
+    from sanitizer import DROP, KEEP, MASK
+
+    strings = []
+    for c in columns:
+        if c.get("example_value"):
+            strings.append(c["example_value"])
+        for v, _f in c.get("values") or []:
+            if v is not None:
+                strings.append(v)
+    if not strings:
+        return []
+
+    results = sanitizer.sanitize_many(strings)
+    changes = []
+    for c in columns:
+        col = c["column_name"]
+        ex = c.get("example_value")
+        if ex:
+            res = results.get(ex)
+            if res and res.action != KEEP:
+                c["example_value"] = res.value
+                changes.append(
+                    {
+                        "column": col,
+                        "field": "example_value",
+                        "action": res.action,
+                        "raw": ex,
+                        "clean": res.value,
+                        "info_types": res.info_types,
+                    }
+                )
+        if "values" in c:
+            kept = []
+            for v, f in c["values"] or []:
+                res = results.get(v)
+                if res and res.action == DROP:
+                    changes.append(
+                        {
+                            "column": col,
+                            "field": "values",
+                            "action": DROP,
+                            "raw": v,
+                            "clean": None,
+                            "info_types": res.info_types,
+                        }
+                    )
+                    continue
+                if res and res.action == MASK:
+                    changes.append(
+                        {
+                            "column": col,
+                            "field": "values",
+                            "action": MASK,
+                            "raw": v,
+                            "clean": res.value,
+                            "info_types": res.info_types,
+                        }
+                    )
+                    kept.append((res.value, f))
+                else:
+                    kept.append((v, f))
+            c["values"] = kept
+    return changes
+
+
 def main():
     """Classify columns from Phase 1 against the Mozilla data taxonomy."""
     args = parse_args()
@@ -612,6 +718,27 @@ def main():
 
     if args.refresh:
         refresh_classifications(bq_client, project, dataset, table, args.model)
+
+    sanitizer = None
+    sanitize_report = None
+    if args.no_sanitize:
+        logging.warning(
+            "Sanitization disabled (--no-sanitize): raw sample values will be "
+            "sent to the LLM."
+        )
+    else:
+        from sanitizer import Sanitizer
+
+        sanitizer = Sanitizer(
+            project=args.dlp_project,
+            quota_project=args.dlp_quota_project or args.dlp_project,
+        )
+        logging.info(
+            f"Sanitizer active (DLP project {args.dlp_project}): "
+            f"mask={sanitizer.mask} drop={sanitizer.drop}"
+        )
+        if args.sanitize_report:
+            sanitize_report = open(args.sanitize_report, "a")
 
     taxonomy = load_taxonomy()
     taxonomy_json = taxonomy_prompt_block(taxonomy)
@@ -680,6 +807,25 @@ def main():
             f"| {len(ping_probes)} probes | {len(pending)} columns "
             f"| {len(pending_metrics)} metric columns ---"
         )
+
+        # Scrub sample values before they reach the prompt. Metric columns carry
+        # no samples (the metrics STRUCT is never profiled), so only `pending`.
+        if sanitizer is not None and pending:
+            changes = sanitize_columns(sanitizer, pending)
+            if changes:
+                masked = sum(1 for c in changes if c["action"] == "mask")
+                dropped = sum(1 for c in changes if c["action"] == "drop")
+                affected = len({c["column"] for c in changes})
+                logging.info(
+                    f"  sanitized samples: {masked} masked, {dropped} dropped "
+                    f"across {affected} column(s)"
+                )
+                if sanitize_report is not None:
+                    for c in changes:
+                        sanitize_report.write(
+                            json.dumps({"table": f"{ds}.{tbl}", **c}) + "\n"
+                        )
+                    sanitize_report.flush()
 
         # Each work item is (column dict, pre-resolved matching probes). Profiled
         # columns match probes by their own name; metric columns were matched on

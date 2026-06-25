@@ -345,6 +345,7 @@ fields:
     - name: clientcapabilities
       type: STRING
       mode: NULLABLE
+  description: Browser or client capabilities string reported by the FxA content server.
     - name: message
       type: STRING
       mode: NULLABLE
@@ -354,6 +355,7 @@ fields:
     - name: messageid
       type: STRING
       mode: NULLABLE
+  description: Message identifier for a push notification or email message.
     - name: clientid
       type: STRING
       mode: NULLABLE
@@ -375,12 +377,15 @@ fields:
     - name: webhooks
       type: STRING
       mode: NULLABLE
+  description: Webhook configuration or payload associated with the event.
     - name: changed
       type: STRING
       mode: NULLABLE
+  description: String describing what changed in a profile update event.
     - name: removed
       type: STRING
       mode: NULLABLE
+  description: String describing what was removed in a profile update event.
     - name: directory
       type: STRING
       mode: NULLABLE
@@ -408,6 +413,7 @@ fields:
   - name: flow_id
     type: STRING
     mode: NULLABLE
+  description: Flow identifier from the top-level content server log payload.
   - name: v
     type: FLOAT
     mode: NULLABLE
@@ -423,9 +429,11 @@ fields:
   - name: flow_time
     type: FLOAT
     mode: NULLABLE
+  description: Elapsed time in milliseconds within the authentication flow, from the top-level payload.
   - name: region
     type: STRING
     mode: NULLABLE
+  description: Geographic region from the top-level content server log payload.
   - name: hostname
     type: STRING
     mode: NULLABLE
@@ -435,33 +443,42 @@ fields:
   - name: event
     type: STRING
     mode: NULLABLE
+  description: Event name from the top-level content server log payload.
   - name: country
     type: STRING
     mode: NULLABLE
   - name: locale
     type: STRING
     mode: NULLABLE
+  description: BCP 47 locale string from the top-level content server log payload.
   - name: service
     type: STRING
     mode: NULLABLE
+  description: Mozilla service identifier from the top-level content server log payload.
   - name: context
     type: STRING
     mode: NULLABLE
+  description: OAuth flow context from the top-level content server log payload.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+  description: UI touchpoint from the top-level content server log payload.
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign identifier from the top-level content server payload.
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign medium from the top-level content server payload.
   - name: utm_source
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign source from the top-level content server payload.
   - name: utm_content
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign content identifier from the top-level content server payload.
   - name: trace
     type: STRING
     mode: NULLABLE
@@ -537,6 +554,7 @@ fields:
   - name: proxy_host
     type: STRING
     mode: NULLABLE
+  description: Hostname of the proxy server that forwarded the request.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

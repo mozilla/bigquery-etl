@@ -200,6 +200,145 @@ def validate_override_depends_on_past_null_partition(backfill_entry: Backfill) -
         )
 
 
+def _resolve_custom_query_path(custom_query_path: str, backfill_file: Path) -> Path:
+    """Resolve a backfill entry's custom_query_path to an existing file.
+
+    custom_query_path is stored repo-root-relative. If that path doesn't exist
+    (e.g. validate was run from a different working directory), fall back to
+    resolving it as a file sitting next to the backfill.yaml.
+    """
+    path = Path(custom_query_path)
+    if path.exists():
+        return path
+    sibling = backfill_file.parent / path.name
+    if sibling.exists():
+        return sibling
+    raise ValueError(f"custom_query_path not found: {custom_query_path}")
+
+
+def _custom_query_parameters(backfill_entry: Backfill, backfill_file: Path) -> dict:
+    """Resolve the query parameters to bind when dry running a custom query.
+
+    Mirrors how `bqetl backfill` binds parameters at run time: the table's
+    date_partition_parameter (from the sibling metadata.yaml, defaulting to
+    submission_date) plus any scheduling `parameters`. The
+    override_depends_on_past_null_partition path forces submission_date as the
+    partition parameter even when metadata leaves it null, so honor that here too.
+    """
+    parameters: dict = {}
+
+    metadata_file = backfill_file.parent / METADATA_FILE
+    scheduling = {}
+    if metadata_file.exists():
+        scheduling = Metadata.from_file(metadata_file).scheduling or {}
+
+    # scheduling parameters are "name:type:value"; bind name -> type
+    for parameter in scheduling.get("parameters", []):
+        name, parameter_type, _ = parameter.strip().split(":", 2)
+        parameters[name] = parameter_type or "STRING"
+
+    if backfill_entry.override_depends_on_past_null_partition:
+        # the override binds submission_date per-partition regardless of metadata
+        date_partition_parameter = "submission_date"
+    else:
+        date_partition_parameter = scheduling.get(
+            "date_partition_parameter", "submission_date"
+        )
+
+    if date_partition_parameter and date_partition_parameter not in parameters:
+        parameters[date_partition_parameter] = "DATE"
+
+    return parameters
+
+
+def _validate_custom_py_syntax(query_path: Path, backfill_entry: Backfill) -> None:
+    """Syntax-check a custom .py query without executing it."""
+    source = query_path.read_text()
+    try:
+        compile(source, str(query_path), "exec")
+    except SyntaxError as e:
+        raise ValueError(
+            f"Custom query has a syntax error in {backfill_entry.custom_query_path} "
+            f"(entry {backfill_entry.entry_date}): {e}"
+        ) from e
+
+
+def validate_custom_query_path(
+    backfill_entry: Backfill,
+    backfill_file: Path,
+    dry_run=True,
+    use_cloud_function: bool = True,
+    billing_project: str = None,
+) -> None:
+    """Validate a backfill entry's custom query before it runs.
+
+    Only validates entries that would still be processed (Initiate status). SQL custom
+    queries are dry run against BigQuery and will validate the schema against schema.yaml.
+    Python script custom queries (.py) are syntax checked.
+    SQL dry runs are only run when dry_run=True.
+    """
+    # delay import to avoid pulling BigQuery deps into offline validation paths
+    from ..dryrun import DryRun
+
+    if backfill_entry.status != BackfillStatus.INITIATE:
+        return
+
+    if not backfill_entry.custom_query_path:
+        return
+
+    query_path = _resolve_custom_query_path(
+        backfill_entry.custom_query_path, backfill_file
+    )
+
+    if backfill_entry.custom_query_path.endswith(".py"):
+        _validate_custom_py_syntax(query_path, backfill_entry)
+        return
+    elif not dry_run:
+        return
+
+    dry_run = DryRun(
+        sqlfile=str(query_path),
+        use_cloud_function=use_cloud_function,
+        billing_project=billing_project,
+        query_parameters=_custom_query_parameters(backfill_entry, backfill_file),
+    )
+
+    if not dry_run.is_valid():
+        errors = dry_run.errors()
+        raise ValueError(
+            f"Custom query dry run failed for {backfill_entry.custom_query_path} "
+            f"(entry {backfill_entry.entry_date}): {errors}"
+        )
+
+    _validate_custom_query_schema(dry_run, backfill_entry, backfill_file)
+
+
+def _validate_custom_query_schema(
+    dry_run, backfill_entry: Backfill, backfill_file: Path
+) -> None:
+    """Check the custom query's output schema fits the table's schema.yaml."""
+    # delay import to prevent circular imports in 'bigquery_etl.schema'
+    from ..schema import SCHEMA_FILE, Schema
+
+    schema_path = backfill_file.parent / SCHEMA_FILE
+    if not schema_path.is_file():
+        return
+
+    query_schema_json = dry_run.get_schema()
+    if not query_schema_json.get("fields"):
+        # no schema came back from the dry run (e.g. DDL/DML); nothing to compare
+        return
+
+    query_schema = Schema.from_json(query_schema_json)
+    defined_schema = Schema.from_schema_file(schema_path)
+
+    if not query_schema.compatible(defined_schema):
+        raise ValueError(
+            f"Custom query schema is incompatible with {schema_path} for "
+            f"{backfill_entry.custom_query_path} (entry {backfill_entry.entry_date})."
+        )
+
+
 def validate_query_script_options(
     backfill_entry: Backfill, backfill_file: Path
 ) -> None:

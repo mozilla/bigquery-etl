@@ -867,7 +867,7 @@ jobs:
       - *copy-generated-sql
       - name: Verify that backfill.yaml files are valid
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl backfill validate
+          PATH=".venv/bin:$PATH" script/bqetl backfill validate --dry-run-custom-query
 
   push-generated-sql:
     name: Push Generated SQL

@@ -17,6 +17,7 @@ from .utils import (
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     NBR_DAYS_RETAINED,
     get_effective_retention_days,
+    resolve_date_partition_parameter,
 )
 
 
@@ -213,16 +214,14 @@ def _resolve_custom_query_path(custom_query_path: str, backfill_file: Path) -> P
     sibling = backfill_file.parent / path.name
     if sibling.exists():
         return sibling
-    raise ValueError(f"custom_query_path not found: {custom_query_path}")
+    raise ValueError(f"custom_query_path not found: {custom_query_path} or {sibling}")
 
 
 def _custom_query_parameters(backfill_entry: Backfill, backfill_file: Path) -> dict:
     """Resolve the query parameters to bind when dry running a custom query.
 
     Mirrors how `bqetl backfill` binds parameters at run time: the table's
-    date_partition_parameter (from the sibling metadata.yaml, defaulting to
-    submission_date) plus any scheduling `parameters`. The override_depends_on_past_null_partition
-    path forces submission_date as the partition parameter even when metadata leaves it null.
+    date_partition_parameter plus any scheduling `parameters`.
     """
     parameters: dict = {}
 
@@ -236,13 +235,9 @@ def _custom_query_parameters(backfill_entry: Backfill, backfill_file: Path) -> d
         name, parameter_type, _ = parameter.strip().split(":", 2)
         parameters[name] = parameter_type or "STRING"
 
-    if backfill_entry.override_depends_on_past_null_partition:
-        # the override binds submission_date per-partition regardless of metadata
-        date_partition_parameter = "submission_date"
-    else:
-        date_partition_parameter = scheduling.get(
-            "date_partition_parameter", "submission_date"
-        )
+    date_partition_parameter = resolve_date_partition_parameter(
+        scheduling, backfill_entry.override_depends_on_past_null_partition
+    )
 
     if date_partition_parameter and date_partition_parameter not in parameters:
         parameters[date_partition_parameter] = "DATE"
@@ -295,21 +290,21 @@ def validate_custom_query_path(
     elif not dry_run:
         return
 
-    dry_run = DryRun(
+    dry_run_result = DryRun(
         sqlfile=str(query_path),
         use_cloud_function=use_cloud_function,
         billing_project=billing_project,
         query_parameters=_custom_query_parameters(backfill_entry, backfill_file),
     )
 
-    if not dry_run.is_valid():
-        errors = dry_run.errors()
+    if not dry_run_result.is_valid():
+        errors = dry_run_result.errors()
         raise ValueError(
             f"Custom query dry run failed for {backfill_entry.custom_query_path} "
             f"(entry {backfill_entry.entry_date}): {errors}"
         )
 
-    _validate_custom_query_schema(dry_run, backfill_entry, backfill_file)
+    _validate_custom_query_schema(dry_run_result, backfill_entry, backfill_file)
 
 
 def _validate_custom_query_schema(

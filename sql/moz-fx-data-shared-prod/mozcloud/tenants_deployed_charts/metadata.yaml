@@ -9,8 +9,10 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:finops/billingetl-bq-scheduled
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:platform/backstage-gke
+  - workgroup:platform/platform-tf
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozcloud_tenants_syndicate.deployed_charts

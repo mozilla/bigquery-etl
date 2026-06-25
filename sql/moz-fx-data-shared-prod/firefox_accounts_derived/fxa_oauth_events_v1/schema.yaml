@@ -72,6 +72,7 @@ fields:
     - name: scope
       type: STRING
       mode: NULLABLE
+  description: OAuth scope string for the authorization request.
     - name: user
       type: STRING
       mode: NULLABLE
@@ -93,6 +94,7 @@ fields:
     - name: auth
       type: STRING
       mode: NULLABLE
+  description: Authentication method or token type used for the OAuth request.
     - name: remoteaddresschain
       type: STRING
       mode: NULLABLE
@@ -132,12 +134,15 @@ fields:
     - name: created_at
       type: STRING
       mode: NULLABLE
+  description: Timestamp string when the OAuth token was created.
     - name: expires_at
       type: STRING
       mode: NULLABLE
+  description: Timestamp string when the OAuth token expires.
     - name: ms
       type: FLOAT
       mode: NULLABLE
+  description: Elapsed time in milliseconds for the OAuth server operation.
     - name: uid
       type: STRING
       mode: NULLABLE
@@ -171,12 +176,15 @@ fields:
     - name: val
       type: STRING
       mode: NULLABLE
+  description: Generic value field from the OAuth event payload.
     - name: assertion
       type: STRING
       mode: NULLABLE
+  description: BrowserID assertion string used for OAuth authentication.
     - name: queuelength
       type: FLOAT
       mode: NULLABLE
+  description: Number of pending requests in the OAuth server connection queue.
     - name: options
       type: STRING
       mode: NULLABLE
@@ -219,6 +227,7 @@ fields:
     - name: profile_changed_at
       type: FLOAT
       mode: NULLABLE
+  description: Unix epoch timestamp of the last profile change for the user, from the OAuth server payload.
     - name: stack
       type: STRING
       mode: NULLABLE
@@ -234,6 +243,7 @@ fields:
     - name: client
       type: STRING
       mode: NULLABLE
+  description: OAuth client identifier or name associated with the event.
     - name: query
       type: STRING
       mode: NULLABLE
@@ -255,6 +265,7 @@ fields:
     - name: warning
       type: STRING
       mode: NULLABLE
+  description: Warning message from the OAuth server event payload.
     - name: user_id
       type: STRING
       mode: NULLABLE

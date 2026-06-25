@@ -1,9 +1,8 @@
-"""Intentionally invalid Python, used to exercise `bqetl backfill validate --dry-run`.
+"""Minimal valid Python, used to exercise `bqetl backfill validate --dry-run-custom-query`.
 
-The function definition below has a syntax error (missing closing paren), so the
-syntax check during backfill validation fails.
+Validation only syntax-checks the file, so a well-formed module passes.
 """
 
 
-def main(:
+def main():
     return 1

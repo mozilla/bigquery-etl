@@ -812,9 +812,11 @@ fields:
     - name: mailstatus
       type: STRING
       mode: NULLABLE
+  description: Status of the email send operation (e.g., 'sent', 'failed').
     - name: cutoff
       type: FLOAT
       mode: NULLABLE
+  description: Unix epoch timestamp cutoff used in batch deletion or cleanup operations.
     - name: now
       type: FLOAT
       mode: NULLABLE
@@ -824,21 +826,25 @@ fields:
     - name: count
       type: FLOAT
       mode: NULLABLE
+  description: Count or number associated with the event (e.g., number of items processed).
     - name: nvpdata
       type: STRING
       mode: NULLABLE
     - name: created
       type: FLOAT
       mode: NULLABLE
+  description: Unix epoch timestamp when the resource was created.
     - name: due
       type: FLOAT
       mode: NULLABLE
+  description: Unix epoch timestamp when the next scheduled operation is due.
     - name: reminders
       type: STRING
       mode: NULLABLE
     - name: maxsessions
       type: STRING
       mode: NULLABLE
+  description: Maximum number of sessions allowed for the cleanup operation configuration.
     - name: maxaccountsprocessed
       type: STRING
       mode: NULLABLE
@@ -875,15 +881,18 @@ fields:
     - name: deletions
       type: FLOAT
       mode: NULLABLE
+  description: Number of records deleted in a batch cleanup operation.
     - name: currentdeletions
       type: FLOAT
       mode: NULLABLE
+  description: Number of records deleted so far in the current batch of a cleanup operation.
     - name: maxsessionsdeleted
       type: STRING
       mode: NULLABLE
     - name: account
       type: STRING
       mode: NULLABLE
+  description: Account identifier associated with the event.
     - name: codemaxage
       type: STRING
       mode: NULLABLE
@@ -965,24 +974,30 @@ fields:
     - name: uaformfactor
       type: STRING
       mode: NULLABLE
+  description: Form factor parsed from the user agent string (e.g., 'phone', 'tablet').
     - name: devicetype
       type: STRING
       mode: NULLABLE
+  description: Device type identifier from the FxA device record.
     - name: bundlekey
       type: STRING
       mode: NULLABLE
+  description: Encryption key bundle key identifier for auth server key operations.
     - name: authkey
       type: STRING
       mode: NULLABLE
+  description: Auth key identifier for device authentication operations.
     - name: devicename
       type: STRING
       mode: NULLABLE
+  description: Name of the FxA device associated with the event.
     - name: providerid
       type: STRING
       mode: NULLABLE
     - name: uadevicetype
       type: STRING
       mode: NULLABLE
+  description: Device type parsed from the user agent string.
     - name: mustverify
       type: BOOLEAN
       mode: NULLABLE
@@ -1040,6 +1055,7 @@ fields:
     - name: cloudtaskid
       type: STRING
       mode: NULLABLE
+  description: Google Cloud Tasks task identifier associated with the event.
     - name: product
       type: STRING
       mode: NULLABLE
@@ -1076,12 +1092,15 @@ fields:
     - name: jse_shortmsg
       type: STRING
       mode: NULLABLE
+  description: Short error message from the VError jse (JavaScript Error) cause chain.
     - name: jse_info
       type: STRING
       mode: NULLABLE
+  description: Additional error info object from the VError jse cause chain, serialized as a string.
     - name: cloudtaskqueueerror
       type: STRING
       mode: NULLABLE
+  description: Error message from the Google Cloud Tasks queue operation.
     - name: bundle
       type: STRING
       mode: NULLABLE
@@ -1091,18 +1110,23 @@ fields:
     - name: sid
       type: STRING
       mode: NULLABLE
+  description: Session identifier associated with the event.
     - name: moreinfo
       type: STRING
       mode: NULLABLE
+  description: Additional context or reference URL for an error event.
     - name: from
       type: STRING
       mode: NULLABLE
+  description: Source identifier for an email or message event (e.g., sender address).
     - name: messagesid
       type: STRING
       mode: NULLABLE
+  description: Twilio message SID for SMS delivery events.
     - name: rawdlrdonedate
       type: STRING
       mode: NULLABLE
+  description: Raw DLR (Delivery Receipt) done date string from the SMS delivery provider.
     - name: errorcode
       type: STRING
       mode: NULLABLE
@@ -1112,15 +1136,19 @@ fields:
     - name: segmentscount
       type: FLOAT
       mode: NULLABLE
+  description: Number of SMS segments used to deliver the message.
     - name: encoding
       type: STRING
       mode: NULLABLE
+  description: Character encoding used for the SMS message (e.g., 'UTF-8', 'GSM').
     - name: recordedfuture
       type: BOOLEAN
       mode: NULLABLE
+  description: Flag indicating the IP was found in a Recorded Future threat intelligence feed.
     - name: jse_cause
       type: STRING
       mode: NULLABLE
+  description: Underlying cause from the VError jse error chain, serialized as a string.
   - name: envversion
     type: STRING
     mode: NULLABLE

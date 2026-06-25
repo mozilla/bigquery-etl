@@ -32,6 +32,8 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: FxA application version most recently observed for this user-service combination on the submission
+    date (e.g., '333.6').
 - name: os_name
   type: STRING
   mode: NULLABLE
@@ -47,6 +49,10 @@ fields:
 - name: seen_in_tier1_country
   type: BOOLEAN
   mode: NULLABLE
+  description: True if the user was active in one of the Tier 1 countries (United States, France, Germany,
+    United Kingdom, or Canada) for this service on submission_date.
 - name: registered
   type: BOOLEAN
   mode: NULLABLE
+  description: True if the user completed a new account registration ('fxa_reg - complete') for this service
+    on submission_date.

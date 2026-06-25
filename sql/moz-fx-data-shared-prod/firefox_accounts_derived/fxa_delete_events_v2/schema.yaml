@@ -2,6 +2,8 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Earliest timestamp when the account deletion event was received from the FxA GCP-based auth
+    server for this user.
 - name: user_id
   type: STRING
   mode: NULLABLE
@@ -9,6 +11,8 @@ fields:
 - name: hmac_user_id
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed FxA user identifier (uid), hex-encoded, produced using the fxa_hmac_prod
+    key. Used for privacy-preserving cross-table joins.
 - name: user_id_unhashed
   type: STRING
   mode: NULLABLE

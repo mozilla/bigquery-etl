@@ -2,21 +2,34 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: submission_date
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+  description: Bit field encoding user-service activity over the past 28 days. The rightmost bit represents
+    whether the user was active on submission_date; each bit to the left represents one earlier day.
 - name: days_seen_in_tier1_country_bits
   type: INTEGER
   mode: NULLABLE
+  description: Bit field encoding whether the user was seen in a Tier 1 country (United States, France,
+    Germany, United Kingdom, or Canada) for each of the past 28 days.
 - name: days_registered_bits
   type: INTEGER
   mode: NULLABLE
+  description: Bit field encoding registration event occurrence over the past 28 days. A set bit indicates
+    a 'fxa_reg - complete' event was observed on that day.
 - name: resurrected_same_service
   type: BOOLEAN
   mode: NULLABLE
+  description: True if the user returned to this specific service for the first time after a gap of more
+    than 28 days (i.e., not seen in the previous 28-day window for this service).
 - name: resurrected_any_service
   type: BOOLEAN
   mode: NULLABLE
+  description: True if the user returned to any FxA service for the first time after a gap of more than
+    28 days (i.e., not seen in the previous 28-day window for any service).
 - name: user_id
   type: STRING
   mode: NULLABLE
@@ -44,6 +57,7 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: Most recently observed FxA application version for this user-service combination.
 - name: os_name
   type: STRING
   mode: NULLABLE

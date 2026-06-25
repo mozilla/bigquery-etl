@@ -8,6 +8,8 @@ fields:
 - name: type
   type: STRING
   mode: NULLABLE
+  description: Device command event type (e.g., 'device.command.invoked', 'device.command.retrieved', 'device.command.deviceIdMissing').
+    Indicates the lifecycle stage of the command.
 - name: user_id
   type: STRING
   mode: NULLABLE
@@ -17,24 +19,40 @@ fields:
 - name: index
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed index value, hex-encoded, identifying the position of the command in
+    the device's command queue.
 - name: command
   type: STRING
   mode: NULLABLE
+  description: URI identifying the command type sent to the target device (e.g., 'https://identity.mozilla.com/cmd/open-uri',
+    'https://identity.mozilla.com/cmd/close-uri/v1').
 - name: target
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed FxA device identifier of the command recipient, hex-encoded. Null when
+    the target device ID is missing.
 - name: target_os
   type: STRING
   mode: NULLABLE
+  description: Operating system of the target device that received the command (e.g., 'Windows', 'Android').
+    Null when device metadata is unavailable.
 - name: target_type
   type: STRING
   mode: NULLABLE
+  description: Form factor of the target device (e.g., 'desktop', 'mobile', 'tablet'). Null when device
+    metadata is unavailable.
 - name: sender
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed FxA device identifier of the command sender, hex-encoded. Null when the
+    sender device ID is missing.
 - name: sender_os
   type: STRING
   mode: NULLABLE
+  description: Operating system of the device that sent the command (e.g., 'Android', 'iOS', 'Windows').
+    Null when device metadata is unavailable.
 - name: sender_type
   type: STRING
   mode: NULLABLE
+  description: Form factor of the device that sent the command (e.g., 'mobile', 'desktop', 'tablet'). Null
+    when device metadata is unavailable.

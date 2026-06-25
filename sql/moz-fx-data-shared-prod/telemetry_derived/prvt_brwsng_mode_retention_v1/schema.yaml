@@ -1,12 +1,16 @@
 fields:
-- description: Submission Date - Date of the DAG run - always 8 days after first seen date
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
   mode: NULLABLE
   name: submission_date
   type: DATE
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: First Seen Date - Date client was first seen
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - name: saw_onboarding
   type: BOOLEAN
   mode: NULLABLE

@@ -173,7 +173,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
             (SELECT SPLIT(REGEXP_REPLACE(campaign_name, r"(?i)^new", ""), "_") AS t)
         )
     -- Campaign Artifact Schema - Microsoft Ads v1 / Google Ads v1
-    -- (`ms_v1` and `gads_v1` share the same paid-search taxonomy.)
+    -- (`ms_v1`, `msads_v1`, and `gads_v1` share the same taxonomy.)
     -- Take the first 15 underscore-separated segments, or 16 when `audience` is
     -- present. `audience` presence is detected by inspecting position 7: a locale
     -- code there means position 7 is `language` (no audience), anything else (e.g.
@@ -194,7 +194,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
     -- correctly detected.) Once the campaign names are normalized upstream
     -- (consistent field set, no truncation, correct delimiters), this branch should
     -- be replaced with a straightforward positional parse like the networks above.
-    WHEN REGEXP_CONTAINS(campaign_name, r"^(ms_v1|gads_v1)")
+    WHEN REGEXP_CONTAINS(campaign_name, r"^(ms_v1|msads_v1|gads_v1)")
       THEN (
           SELECT
             IF(
@@ -663,6 +663,30 @@ SELECT
       )[7]
     ],
     [STRUCT('audience' AS key, 'all' AS value)]
+  ),
+  -- Test `msads_` prefix
+  mozfun.assert.map_equals(
+    marketing.parse_campaign_name(
+      'msads_v1_firefox_app_latam_sv_all_all_es_desktop_all_app_conversion_app-download_mcpi_install_adgap'
+    ),
+    [
+      STRUCT('ad_network' AS key, 'msads' AS value),
+      STRUCT('version' AS key, 'v1' AS value),
+      STRUCT('product' AS key, 'firefox' AS value),
+      STRUCT('initiative' AS key, 'app' AS value),
+      STRUCT('region' AS key, 'latam' AS value),
+      STRUCT('country_code' AS key, 'sv' AS value),
+      STRUCT('city' AS key, 'all' AS value),
+      STRUCT('audience' AS key, 'all' AS value),
+      STRUCT('language' AS key, 'es' AS value),
+      STRUCT('device' AS key, 'desktop' AS value),
+      STRUCT('operating_system' AS key, 'all' AS value),
+      STRUCT('campaign_type' AS key, 'app' AS value),
+      STRUCT('campaign_goal' AS key, 'conversion' AS value),
+      STRUCT('campaign_group' AS key, 'app-download' AS value),
+      STRUCT('bidding_type' AS key, 'mcpi' AS value),
+      STRUCT('optimization_goal' AS key, 'install' AS value)
+    ]
   ),
   -- Test - Campaign Artifact Schema - Apple Search Ads - version 1
   mozfun.assert.equals(

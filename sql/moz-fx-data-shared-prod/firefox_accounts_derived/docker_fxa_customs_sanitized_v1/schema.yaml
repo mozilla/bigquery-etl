@@ -24,16 +24,28 @@ fields:
   - name: labels
     type: RECORD
     mode: NULLABLE
+    description: !include-field-description
+      field: resource.labels
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
     fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: resource.labels.instance_id
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: zone
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: resource.labels.zone
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: project_id
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: resource.labels.project_id
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -50,21 +62,39 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.name
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: v
     type: FLOAT
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.v
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: msg
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.msg
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: level
     type: FLOAT
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.level
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: op
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.op
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: pid
     type: FLOAT
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.pid
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: ip
     type: BYTES
     mode: NULLABLE
@@ -74,9 +104,15 @@ fields:
   - name: hostname
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.hostname
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: statuscode
     type: FLOAT
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.statuscode
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: filename
     type: STRING
     mode: NULLABLE
@@ -140,6 +176,9 @@ fields:
   - name: timestamp
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.timestamp
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: reason
     type: STRING
     mode: NULLABLE
@@ -149,6 +188,9 @@ fields:
   - name: message
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.message
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: host
     type: STRING
     mode: NULLABLE
@@ -484,6 +526,9 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    field: timestamp
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -603,18 +648,33 @@ fields:
   - name: application
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: labels.application
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: stack
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: labels.stack
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: env
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: labels.env
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: labels.compute_googleapis_com_resource_name
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: type
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: labels.type
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: operation
   type: RECORD
   mode: NULLABLE

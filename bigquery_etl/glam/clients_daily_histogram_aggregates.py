@@ -11,7 +11,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .client_side_sampled_metrics import get as get_sampled_metrics
-from .utils import get_schema, ping_type_from_table
+from .utils import get_schema, is_static_labeled_counter, ping_type_from_table
 
 ATTRIBUTES = ",".join(
     [
@@ -55,6 +55,9 @@ def get_distribution_metrics(
         "labeled_timing_distribution",
         "labeled_custom_distribution",
         "labeled_memory_distribution",
+        # Static labeled_counters are categorical histograms (Glean's replacement
+        # for Legacy Telemetry's histogram-categorical) and are processed here.
+        "labeled_counter",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
@@ -78,6 +81,12 @@ def get_distribution_metrics(
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
+                # Only static labeled_counters (predefined `labels`) are
+                # categorical histograms; dynamic ones stay in the scalar pipeline.
+                if metric_type == "labeled_counter" and not is_static_labeled_counter(
+                    product, field["name"]
+                ):
+                    continue
                 if field["name"] in sampled_metrics.get(metric_type, []):
                     found_sampled_metrics[metric_type].append(field["name"])
                 elif field["name"] not in excluded_metrics:
@@ -99,7 +108,15 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
     labeled = []
     unlabeled = []
     for name, metric_type, value_path in sorted(items):
-        if metric_type.startswith("labeled"):
+        if metric_type == "labeled_counter":
+            # A static labeled_counter's key/value array IS the categorical
+            # histogram (label -> count), so feed it in directly (no `.values`)
+            # as an unlabeled histogram. get_distribution_metrics filters out
+            # dynamic labeled_counters (no predefined `labels`).
+            unlabeled.append(
+                f"""('', "{name}", "{metric_type}", metrics.{metric_type}.{name})"""
+            )
+        elif metric_type.startswith("labeled"):
             labeled.append(f"""
                 (
                     "{name}",

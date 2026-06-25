@@ -8,6 +8,10 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: The earliest calendar date on which the user was observed in any FxA event log (auth, auth_bounce,
+    content, or oauth). Used as the partition key.
 - name: services_used
   type: STRING
   mode: REPEATED
+  description: Sorted array of distinct Mozilla service identifiers the user has been active on across all
+    time (e.g., ['sync', 'fenix']).

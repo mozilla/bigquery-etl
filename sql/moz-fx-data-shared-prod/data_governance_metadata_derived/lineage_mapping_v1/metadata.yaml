@@ -1,0 +1,31 @@
+friendly_name: Lineage Mapping
+description: |-
+  Maps each derived BigQuery table profiled in column_profiles_v1 to its
+  upstream telemetry ping by walking DataHub lineage. One row per source table.
+  Consumed by probe_definitions_v1 (and by the schema_enricher agent in
+  data-shared-llm-agents) so probe descriptions can be joined back to columns.
+  Each run overwrites its own resolved_at date partition.
+labels:
+  incremental: true
+owners:
+- phlee@mozilla.com
+scheduling:
+  dag_name: bqetl_data_governance_metadata
+  arguments: [
+    "--date", "{{ ds }}",
+  ]
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'data_governance_metadata_derived', 'column_profiles_v1']
+  secrets:
+  - deploy_target: DATAHUB_GMS_TOKEN
+    key: bqetl_data_governance_metadata__datahub_gms_token
+bigquery:
+  time_partitioning:
+    type: day
+    field: resolved_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - source_dataset
+    - source_table

@@ -143,6 +143,7 @@ fields:
   - name: proxy_host
     type: STRING
     mode: NULLABLE
+  description: Hostname of the proxy server that forwarded the request to the FxA service.
   - name: envversion
     type: STRING
     mode: NULLABLE
@@ -231,6 +232,7 @@ fields:
     - name: messageid
       type: STRING
       mode: NULLABLE
+  description: Message identifier for a push notification or email message.
     - name: clientid
       type: STRING
       mode: NULLABLE
@@ -252,6 +254,7 @@ fields:
     - name: clientcapabilities
       type: STRING
       mode: NULLABLE
+  description: Browser or client capabilities string reported by the content server.
     - name: referer
       type: STRING
       mode: NULLABLE
@@ -351,12 +354,15 @@ fields:
     - name: changed
       type: STRING
       mode: NULLABLE
+  description: String describing what changed in a profile update event.
     - name: removed
       type: STRING
       mode: NULLABLE
+  description: String describing what was removed in a profile update event.
     - name: webhooks
       type: STRING
       mode: NULLABLE
+  description: Webhook configuration or payload associated with the event.
     - name: joierrors
       type: STRING
       mode: NULLABLE
@@ -378,9 +384,11 @@ fields:
     - name: country_code
       type: STRING
       mode: NULLABLE
+  description: Two-letter ISO 3166-1 country code associated with the event (e.g., 'US').
     - name: resourceservers
       type: STRING
       mode: NULLABLE
+  description: JSON string listing the OAuth resource servers the token grants access to.
     - name: user_id
       type: STRING
       mode: NULLABLE

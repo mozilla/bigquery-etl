@@ -2,6 +2,7 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Timestamp when the account deletion event was received from the FxA auth server.
 - name: user_id
   type: STRING
   mode: NULLABLE
@@ -11,3 +12,5 @@ fields:
 - name: hmac_user_id
   type: STRING
   mode: NULLABLE
+  description: HMAC-SHA-256 hashed FxA user identifier (uid), hex-encoded, produced using the fxa_hmac_prod
+    key. Used for privacy-preserving cross-table joins.

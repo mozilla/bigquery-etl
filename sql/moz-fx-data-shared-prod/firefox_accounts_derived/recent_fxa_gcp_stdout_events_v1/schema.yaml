@@ -2,6 +2,8 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: Identifier for the FxA server that produced this log entry, derived from the logger name
+    (e.g., 'content' for fxa-content-server). This table contains only the most recent ~2 days of data.
 - name: logName
   type: STRING
   mode: NULLABLE

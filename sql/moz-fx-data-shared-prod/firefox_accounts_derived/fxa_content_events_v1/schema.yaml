@@ -237,6 +237,7 @@ fields:
     - name: violated
       type: STRING
       mode: NULLABLE
+  description: Content Security Policy directive that was violated, from CSP report events.
     - name: agent
       type: STRING
       mode: NULLABLE
@@ -246,21 +247,27 @@ fields:
     - name: source
       type: STRING
       mode: NULLABLE
+  description: Source file where a JavaScript error occurred.
     - name: line
       type: FLOAT
       mode: NULLABLE
+  description: Line number in the source file where a JavaScript error occurred.
     - name: blocked
       type: STRING
       mode: NULLABLE
+  description: URI that was blocked by the Content Security Policy.
     - name: column
       type: FLOAT
       mode: NULLABLE
+  description: Column number in the source file where a JavaScript error occurred.
     - name: referrer
       type: STRING
       mode: NULLABLE
+  description: HTTP referrer URL from the content server request.
     - name: sample
       type: STRING
       mode: NULLABLE
+  description: Sample code fragment from a CSP violation report.
     - name: msg
       type: STRING
       mode: NULLABLE
@@ -318,18 +325,23 @@ fields:
     - name: tags
       type: STRING
       mode: NULLABLE
+  description: Tags associated with a Sentry error event.
     - name: release
       type: STRING
       mode: NULLABLE
+  description: FxA content server release version associated with the Sentry event.
     - name: level
       type: STRING
       mode: NULLABLE
+  description: Log severity level string for the event (e.g., 'error', 'warning').
     - name: project
       type: STRING
       mode: NULLABLE
+  description: Sentry project identifier associated with the error event.
     - name: extra
       type: STRING
       mode: NULLABLE
+  description: Extra context data from a Sentry error event, serialized as a string.
     - name: request
       type: STRING
       mode: NULLABLE
@@ -339,21 +351,27 @@ fields:
     - name: exception
       type: STRING
       mode: NULLABLE
+  description: Exception information from a Sentry error event, serialized as a string.
     - name: fingerprint
       type: STRING
       mode: NULLABLE
+  description: Sentry fingerprint used to group error events.
     - name: culprit
       type: STRING
       mode: NULLABLE
+  description: Sentry culprit string identifying the function or module responsible for the error.
     - name: logger
       type: STRING
       mode: NULLABLE
+  description: Logger name from the Sentry event payload.
     - name: event_id
       type: STRING
       mode: NULLABLE
+  description: Unique identifier for the Sentry error event.
     - name: platform
       type: STRING
       mode: NULLABLE
+  description: Platform identifier for the Sentry event (e.g., 'javascript').
     - name: message
       type: STRING
       mode: NULLABLE
@@ -363,6 +381,7 @@ fields:
     - name: value
       type: STRING
       mode: NULLABLE
+  description: Generic value field from the event payload.
     - name: param
       type: STRING
       mode: NULLABLE
@@ -372,9 +391,11 @@ fields:
     - name: amplitudeevent
       type: STRING
       mode: NULLABLE
+  description: Amplitude event type string when the log entry represents an Amplitude event.
   - name: region
     type: STRING
     mode: NULLABLE
+  description: Geographic region from the content server log payload.
   - name: hostname
     type: STRING
     mode: NULLABLE
@@ -384,9 +405,12 @@ fields:
   - name: flow_id
     type: STRING
     mode: NULLABLE
+  description: Flow identifier for the authentication session, from the top-level content server payload.
   - name: flow_time
     type: FLOAT
     mode: NULLABLE
+  description: Elapsed time in milliseconds within the authentication flow, from the top-level content server
+    payload.
   - name: v
     type: FLOAT
     mode: NULLABLE
@@ -396,12 +420,15 @@ fields:
   - name: country
     type: STRING
     mode: NULLABLE
+  description: Country from the top-level content server log payload.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+  description: UI touchpoint that initiated the flow, from the top-level content server payload.
   - name: event
     type: STRING
     mode: NULLABLE
+  description: Event name from the top-level content server payload.
   - name: useragent
     type: STRING
     mode: NULLABLE
@@ -417,24 +444,31 @@ fields:
   - name: locale
     type: STRING
     mode: NULLABLE
+  description: BCP 47 locale string from the top-level content server payload.
   - name: service
     type: STRING
     mode: NULLABLE
+  description: Mozilla service or relying party from the top-level content server payload.
   - name: context
     type: STRING
     mode: NULLABLE
+  description: OAuth flow context from the top-level content server payload.
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign identifier from the top-level content server payload.
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign medium from the top-level content server payload.
   - name: utm_content
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign content identifier from the top-level content server payload.
   - name: utm_source
     type: STRING
     mode: NULLABLE
+  description: Marketing campaign source from the top-level content server payload.
   - name: user_properties
     type: RECORD
     mode: NULLABLE
@@ -442,9 +476,11 @@ fields:
     - name: ua_browser
       type: STRING
       mode: NULLABLE
+  description: Browser name from the user properties payload (e.g., 'Firefox').
     - name: utm_campaign
       type: STRING
       mode: NULLABLE
+  description: Marketing campaign identifier stored in user properties.
     - name: _append
       type: RECORD
       mode: NULLABLE
@@ -452,42 +488,56 @@ fields:
       - name: fxa_services_used
         type: STRING
         mode: NULLABLE
+  description: Service name being appended to the fxa_services_used Amplitude user property array for this
+    event.
       - name: experiments
         type: STRING
         mode: REPEATED
+  description: Array of experiment identifiers being appended to the user's experiment list.
     - name: flow_id
       type: STRING
       mode: NULLABLE
+  description: Flow identifier stored in user properties.
     - name: entrypoint
       type: STRING
       mode: NULLABLE
+  description: Entrypoint stored in user properties.
     - name: utm_source
       type: STRING
       mode: NULLABLE
+  description: Marketing campaign source stored in user properties.
     - name: ua_version
       type: STRING
       mode: NULLABLE
+  description: Browser version stored in user properties.
     - name: utm_content
       type: STRING
       mode: NULLABLE
+  description: Marketing campaign content identifier stored in user properties.
     - name: utm_medium
       type: STRING
       mode: NULLABLE
+  description: Marketing campaign medium stored in user properties.
     - name: utm_term
       type: STRING
       mode: NULLABLE
+  description: Marketing campaign search term stored in user properties.
     - name: newsletter_state
       type: STRING
       mode: NULLABLE
+  description: Newsletter subscription state from user properties (e.g., 'subscribed', 'unsubscribed').
   - name: user_id
     type: STRING
     mode: NULLABLE
+  description: SHA-256 hashed FxA user identifier from the top-level content server payload.
   - name: os_version
     type: STRING
     mode: NULLABLE
+  description: Operating system version from the top-level content server payload.
   - name: device_id
     type: STRING
     mode: NULLABLE
+  description: SHA-256 hashed FxA device identifier from the top-level content server payload.
   - name: event_properties
     type: RECORD
     mode: NULLABLE
@@ -495,42 +545,57 @@ fields:
     - name: service
       type: STRING
       mode: NULLABLE
+  description: Mozilla service identifier from the event properties of the content server amplitude event.
     - name: reason
       type: STRING
       mode: NULLABLE
+  description: Reason for the event from the content server amplitude event properties (e.g., 'old', 'no',
+    'duplicate').
     - name: connect_device_flow
       type: STRING
       mode: NULLABLE
+  description: Connect-another-device flow type from event properties (e.g., 'store_buttons', 'signin').
     - name: email_provider
       type: STRING
       mode: NULLABLE
+  description: Email provider of the user's address (e.g., 'gmail.com', 'hotmail.com') from event properties.
     - name: email_type
       type: STRING
       mode: NULLABLE
+  description: Email type for email-related amplitude events (e.g., 'registration').
     - name: oauth_client_id
       type: STRING
       mode: NULLABLE
+  description: OAuth client ID from the content server amplitude event properties.
     - name: connect_device_os
       type: STRING
       mode: NULLABLE
+  description: Target OS for the connect-another-device flow from event properties (e.g., 'android', 'ios').
   - name: event_type
     type: STRING
     mode: NULLABLE
+  description: Amplitude event type from the top-level content server payload (e.g., 'fxa_reg - view', 'fxa_login
+    - complete').
   - name: os_name
     type: STRING
     mode: NULLABLE
+  description: Operating system name from the top-level content server payload.
   - name: app_version
     type: STRING
     mode: NULLABLE
+  description: FxA application version from the top-level content server payload.
   - name: language
     type: STRING
     mode: NULLABLE
+  description: BCP 47 language tag from the top-level content server payload.
   - name: session_id
     type: FLOAT
     mode: NULLABLE
+  description: FxA session identifier from the top-level content server payload.
   - name: device_model
     type: STRING
     mode: NULLABLE
+  description: Device model from the top-level content server payload.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

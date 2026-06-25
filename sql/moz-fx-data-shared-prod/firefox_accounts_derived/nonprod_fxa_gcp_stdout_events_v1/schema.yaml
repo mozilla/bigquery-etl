@@ -2,6 +2,8 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: Identifier for the FxA server that produced this log entry in the stage/nonprod environment,
+    derived from the logger name (e.g., 'content' for fxa-content-server).
 - name: logName
   type: STRING
   mode: NULLABLE

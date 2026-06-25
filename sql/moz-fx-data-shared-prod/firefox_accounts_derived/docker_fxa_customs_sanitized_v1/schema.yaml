@@ -2,6 +2,7 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: The date partition of the log record, set to the date of the event timestamp.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -98,9 +99,11 @@ fields:
   - name: ip
     type: BYTES
     mode: NULLABLE
+  description: SHA-256 hashed client IP address in bytes format. The raw IP is sanitized during ETL.
   - name: rtime
     type: STRING
     mode: NULLABLE
+  description: Request processing time string from the customs server.
   - name: hostname
     type: STRING
     mode: NULLABLE
@@ -116,63 +119,84 @@ fields:
   - name: filename
     type: STRING
     mode: NULLABLE
+  description: IP blocklist filename that was loaded or matched (e.g., 'firehol_webserver.netset', 'firehol_level1.netset').
   - name: filesize
     type: FLOAT
     mode: NULLABLE
+  description: Size in bytes of the IP blocklist file that was loaded.
   - name: reputation
     type: FLOAT
     mode: NULLABLE
+  description: Reputation score for the client IP address from the reputation service.
   - name: err
     type: STRING
     mode: NULLABLE
   - name: email
     type: BYTES
     mode: NULLABLE
+  description: SHA-256 hashed email address in bytes format associated with the customs check. The raw email
+    is sanitized during ETL.
   - name: action
     type: STRING
     mode: NULLABLE
+  description: Action associated with the customs request being checked (e.g., account login, email verification).
   - name: block
     type: BOOLEAN
     mode: NULLABLE
+  description: True if the customs server determined the request should be blocked.
   - name: suspect
     type: BOOLEAN
     mode: NULLABLE
+  description: True if the customs server flagged the request as suspicious without fully blocking it.
   - name: unblock
     type: BOOLEAN
     mode: NULLABLE
+  description: True if an unblock code was provided with the request.
   - name: foundin
     type: FLOAT
     mode: NULLABLE
+  description: Numeric indicator of which blocklist or heuristic detected the IP address.
   - name: errno
     type: FLOAT
     mode: NULLABLE
+  description: Error number returned by the customs server.
   - name: regex
     type: STRING
     mode: NULLABLE
+  description: Regular expression pattern matched against the user agent string for exemption checks.
   - name: listhitcount
     type: FLOAT
     mode: NULLABLE
+  description: Number of blocklist entries that matched the client IP address.
   - name: listhits
     type: STRING
     mode: NULLABLE
+  description: Stringified list of blocklist names that matched the client IP address.
   - name: suggested_action
     type: STRING
     mode: NULLABLE
+  description: Suggested action from the customs server for this request (e.g., 'block', 'allow').
   - name: heuristic
     type: STRING
     mode: NULLABLE
+  description: Name of the heuristic rule that triggered a customs action.
   - name: id
     type: STRING
     mode: NULLABLE
+  description: Identifier for the customs check or event record.
   - name: reportonly
     type: BOOLEAN
     mode: NULLABLE
+  description: True if the customs server is operating in report-only mode (logs actions without enforcing
+    them).
   - name: heuristic_description
     type: STRING
     mode: NULLABLE
+  description: Human-readable description of the heuristic rule that triggered the customs action.
   - name: confidence
     type: FLOAT
     mode: NULLABLE
+  description: Confidence score for the heuristic-based detection.
   - name: timestamp
     type: STRING
     mode: NULLABLE
@@ -182,9 +206,11 @@ fields:
   - name: reason
     type: STRING
     mode: NULLABLE
+  description: Reason string describing why the customs decision was made.
   - name: loadedin
     type: FLOAT
     mode: NULLABLE
+  description: Time in milliseconds taken to load the IP blocklist file.
   - name: message
     type: STRING
     mode: NULLABLE
@@ -520,9 +546,11 @@ fields:
   - name: blockreason
     type: STRING
     mode: NULLABLE
+  description: Specific reason the request was blocked by the customs server.
   - name: data
     type: STRING
     mode: NULLABLE
+  description: Generic data payload associated with the customs log event.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

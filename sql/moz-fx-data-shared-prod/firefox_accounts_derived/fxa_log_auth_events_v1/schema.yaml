@@ -2,52 +2,70 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: timestamp
 - name: event
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Non-Amplitude event name from the FxA auth server log (e.g., 'account.confirmed', 'account.verified').
+    Amplitude event types are excluded and captured separately in fxa_auth_events_v1.
 - name: flow_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: flow_id
 - name: entrypoint
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: UI touchpoint or entrypoint that initiated the authentication flow.
 - name: service
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: service
 - name: useragent
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: useragent
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: os_version
 - name: utm_source
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Marketing campaign source for the flow session. Not stored if the DNT request header was
+    set.
 - name: utm_campaign
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Marketing campaign identifier for the flow session. Not stored if the DNT request header
+    was set.
 - name: utm_content
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Marketing campaign content identifier for the flow session. Not stored if the DNT request
+    header was set.
 - name: utm_medium
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Marketing campaign medium for the flow session. Not stored if the DNT request header was
+    set.
 - name: utm_term
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Marketing campaign search term for the flow session. Not stored if the DNT request header
+    was set.
 - name: device_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_accounts_derived/firefox_accounts_derived.yaml
+    field: device_id

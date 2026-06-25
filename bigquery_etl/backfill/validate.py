@@ -2,7 +2,7 @@
 
 import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from ..backfill.parse import (
     BACKFILL_FILE,
@@ -221,14 +221,13 @@ def _custom_query_parameters(backfill_entry: Backfill, backfill_file: Path) -> d
 
     Mirrors how `bqetl backfill` binds parameters at run time: the table's
     date_partition_parameter (from the sibling metadata.yaml, defaulting to
-    submission_date) plus any scheduling `parameters`. The
-    override_depends_on_past_null_partition path forces submission_date as the
-    partition parameter even when metadata leaves it null, so honor that here too.
+    submission_date) plus any scheduling `parameters`. The override_depends_on_past_null_partition
+    path forces submission_date as the partition parameter even when metadata leaves it null.
     """
     parameters: dict = {}
 
     metadata_file = backfill_file.parent / METADATA_FILE
-    scheduling = {}
+    scheduling: dict = {}
     if metadata_file.exists():
         scheduling = Metadata.from_file(metadata_file).scheduling or {}
 
@@ -268,7 +267,7 @@ def validate_custom_query_path(
     backfill_file: Path,
     dry_run=True,
     use_cloud_function: bool = True,
-    billing_project: str = None,
+    billing_project: Optional[str] = None,
 ) -> None:
     """Validate a backfill entry's custom query before it runs.
 

@@ -1,16 +1,3 @@
-2026-06-25:
-  start_date: 2026-06-20
-  end_date: 2026-06-24
-  reason: example of a custom SQL query whose schema does not match schema.yaml for backfill validate --dry-run
-  watchers:
-  - bewu@mozilla.com
-  status: Initiate
-  custom_query_path: sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/backfill_schema_mismatch.sql
-  shredder_mitigation: false
-  override_retention_limit: false
-  override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
-
 2025-12-12:
   start_date: 2025-10-15
   end_date: 2025-12-12

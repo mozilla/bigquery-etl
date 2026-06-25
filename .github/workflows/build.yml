@@ -865,6 +865,7 @@ jobs:
       - *restore-venv
       - *download-generated-sql
       - *copy-generated-sql
+      - *auth-gcp-dryrun
       - name: Verify that backfill.yaml files are valid
         run: |
           PATH=".venv/bin:$PATH" script/bqetl backfill validate --dry-run-custom-query

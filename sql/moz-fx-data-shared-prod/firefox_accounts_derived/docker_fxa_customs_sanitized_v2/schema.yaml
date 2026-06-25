@@ -2,6 +2,7 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: The date partition of the log record, set to the date of the event timestamp.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -117,6 +118,7 @@ fields:
     - name: traceid
       type: STRING
       mode: NULLABLE
+  description: Distributed trace identifier associated with the customs server request.
     - name: remoteaddresschain
       type: STRING
       mode: NULLABLE
@@ -159,6 +161,7 @@ fields:
     - name: processingtimemillis
       type: FLOAT
       mode: NULLABLE
+  description: Time taken to process the customs request in milliseconds.
     - name: email
       type: STRING
       mode: NULLABLE
@@ -360,6 +363,7 @@ fields:
     - name: granttype
       type: STRING
       mode: NULLABLE
+  description: OAuth grant type associated with the token or request being customs-checked.
     - name: clientid
       type: STRING
       mode: NULLABLE
@@ -840,6 +844,7 @@ fields:
   - name: regex
     type: STRING
     mode: NULLABLE
+  description: Regular expression pattern matched against the user agent string for exemption checks.
   - name: msg
     type: STRING
     mode: NULLABLE
@@ -925,15 +930,19 @@ fields:
   - name: loadedin
     type: FLOAT
     mode: NULLABLE
+  description: Time in milliseconds taken to load the IP blocklist file.
   - name: filename
     type: STRING
     mode: NULLABLE
+  description: IP blocklist filename that was loaded or matched.
   - name: filesize
     type: FLOAT
     mode: NULLABLE
+  description: Size in bytes of the IP blocklist file that was loaded.
   - name: error
     type: STRING
     mode: NULLABLE
+  description: Error string from the customs server event payload.
   - name: port
     type: FLOAT
     mode: NULLABLE
@@ -1247,6 +1256,7 @@ fields:
   - name: ip
     type: BYTES
     mode: NULLABLE
+  description: SHA-256 hashed client IP address in bytes format. The raw IP is sanitized during ETL.
   - name: statuscode
     type: FLOAT
     mode: NULLABLE
@@ -1256,39 +1266,52 @@ fields:
   - name: rtime
     type: STRING
     mode: NULLABLE
+  description: Request processing time string from the customs server.
   - name: action
     type: STRING
     mode: NULLABLE
+  description: Action associated with the customs request being checked.
   - name: email
     type: BYTES
     mode: NULLABLE
+  description: SHA-256 hashed email address in bytes format associated with the customs check. The raw email
+    is sanitized during ETL.
   - name: unblock
     type: BOOLEAN
     mode: NULLABLE
+  description: True if an unblock code was provided with the request.
   - name: suspect
     type: BOOLEAN
     mode: NULLABLE
+  description: True if the customs server flagged the request as suspicious without fully blocking it.
   - name: block
     type: BOOLEAN
     mode: NULLABLE
+  description: True if the customs server determined the request should be blocked.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+  description: UI touchpoint or entrypoint associated with the customs-checked request.
   - name: service
     type: STRING
     mode: NULLABLE
+  description: Mozilla service or relying party associated with the customs-checked request.
   - name: errno
     type: FLOAT
     mode: NULLABLE
+  description: Error number returned by the customs server.
   - name: foundin
     type: FLOAT
     mode: NULLABLE
+  description: Numeric indicator of which blocklist or heuristic detected the IP address.
   - name: listhits
     type: STRING
     mode: NULLABLE
+  description: Stringified list of blocklist names that matched the client IP address.
   - name: listhitcount
     type: FLOAT
     mode: NULLABLE
+  description: Number of blocklist entries that matched the client IP address.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

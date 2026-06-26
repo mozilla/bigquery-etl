@@ -785,7 +785,9 @@ jobs:
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
-          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
+          # Routine tests are I/O-bound (each runs a BigQuery query), so use
+          # more workers than cores. Tune up if BigQuery quota allows.
+          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 16
       - name: Validate doc examples
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}

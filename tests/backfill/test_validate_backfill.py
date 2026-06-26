@@ -3,6 +3,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+import yaml
 
 from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
@@ -17,6 +18,7 @@ from bigquery_etl.backfill.utils import (
     get_effective_retention_days,
 )
 from bigquery_etl.backfill.validate import (
+    validate_custom_query_path,
     validate_default_reason,
     validate_default_watchers,
     validate_depends_on_past_end_date,
@@ -579,3 +581,285 @@ class TestValidateBackfill(object):
             query_script_date_arg="date",
         )
         validate_query_script_options(entry, TEST_BACKFILL_FILE)
+
+    def _custom_query_entry(self, custom_query_path, status=BackfillStatus.INITIATE):
+        return Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            [VALID_WATCHER],
+            status=status,
+            custom_query_path=custom_query_path,
+        )
+
+    def test_validate_custom_query_path_valid(self, tmp_path):
+        """A custom SQL query that dry runs successfully should pass validation."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1 WHERE @submission_date IS NOT NULL")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            dry_run_cls.return_value.is_valid.return_value = True
+            validate_custom_query_path(entry, backfill_file)
+
+        # the partition parameter should be bound for the dry run
+        _, kwargs = dry_run_cls.call_args
+        assert kwargs["query_parameters"] == {"submission_date": "DATE"}
+
+    def _write_metadata(self, tmp_path, scheduling):
+        """Write a minimal metadata.yaml with the given scheduling block."""
+        (tmp_path / METADATA_FILE).write_text(
+            yaml.dump(
+                {
+                    "friendly_name": "test",
+                    "description": "test",
+                    "owners": ["nobody@mozilla.com"],
+                    "scheduling": scheduling,
+                }
+            )
+        )
+
+    def _write_schema(self, tmp_path, fields):
+        """Write a schema.yaml with the given fields."""
+        (tmp_path / "schema.yaml").write_text(yaml.dump({"fields": fields}))
+
+    def test_validate_custom_query_path_binds_custom_partition_parameter(
+        self, tmp_path
+    ):
+        """The dry run should bind the table's date_partition_parameter, not submission_date."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1 WHERE @first_seen_date IS NOT NULL")
+        backfill_file = tmp_path / BACKFILL_FILE
+        self._write_metadata(tmp_path, {"date_partition_parameter": "first_seen_date"})
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            dry_run_cls.return_value.is_valid.return_value = True
+            validate_custom_query_path(entry, backfill_file)
+
+        _, kwargs = dry_run_cls.call_args
+        assert kwargs["query_parameters"] == {"first_seen_date": "DATE"}
+
+    def test_validate_custom_query_path_binds_scheduling_parameters(self, tmp_path):
+        """The dry run should bind scheduling parameters alongside the partition parameter."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT @submission_date, @n")
+        backfill_file = tmp_path / BACKFILL_FILE
+        self._write_metadata(tmp_path, {"parameters": ["n:INT64:1"]})
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            dry_run_cls.return_value.is_valid.return_value = True
+            validate_custom_query_path(entry, backfill_file)
+
+        _, kwargs = dry_run_cls.call_args
+        assert kwargs["query_parameters"] == {"n": "INT64", "submission_date": "DATE"}
+
+    def test_validate_custom_query_path_override_null_partition_binds_submission_date(
+        self, tmp_path
+    ):
+        """With override_depends_on_past_null_partition, submission_date is bound even when the metadata partition parameter is null."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1 WHERE @submission_date IS NOT NULL")
+        backfill_file = tmp_path / BACKFILL_FILE
+        self._write_metadata(
+            tmp_path,
+            {
+                "date_partition_parameter": None,
+                "parameters": ["submission_date:DATE:{{ds}}"],
+            },
+        )
+        entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            [VALID_WATCHER],
+            status=BackfillStatus.INITIATE,
+            custom_query_path=str(query_file),
+            override_depends_on_past_null_partition=True,
+        )
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            dry_run_cls.return_value.is_valid.return_value = True
+            validate_custom_query_path(entry, backfill_file)
+
+        _, kwargs = dry_run_cls.call_args
+        assert kwargs["query_parameters"] == {"submission_date": "DATE"}
+
+    def test_validate_custom_query_path_schema_compatible_should_pass(self, tmp_path):
+        """A custom query whose output fits the schema.yaml should pass."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1")
+        backfill_file = tmp_path / BACKFILL_FILE
+        # schema.yaml declares two columns; the query returns a compatible subset
+        self._write_schema(
+            tmp_path,
+            [
+                {"name": "submission_date", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "client_id", "type": "STRING", "mode": "NULLABLE"},
+            ],
+        )
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            instance = dry_run_cls.return_value
+            instance.is_valid.return_value = True
+            instance.get_schema.return_value = {
+                "fields": [
+                    {"name": "client_id", "type": "STRING", "mode": "NULLABLE"},
+                ]
+            }
+            validate_custom_query_path(entry, backfill_file)
+
+    def test_validate_custom_query_path_schema_incompatible_should_fail(self, tmp_path):
+        """A custom query producing a column not in the schema.yaml should raise."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1")
+        backfill_file = tmp_path / BACKFILL_FILE
+        self._write_schema(
+            tmp_path,
+            [{"name": "submission_date", "type": "DATE", "mode": "NULLABLE"}],
+        )
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            instance = dry_run_cls.return_value
+            instance.is_valid.return_value = True
+            instance.get_schema.return_value = {
+                "fields": [
+                    {"name": "unexpected_col", "type": "STRING", "mode": "NULLABLE"},
+                ]
+            }
+            with pytest.raises(ValueError) as e:
+                validate_custom_query_path(entry, backfill_file)
+
+        assert "schema is incompatible" in str(e.value)
+
+    def test_validate_custom_query_path_no_schema_file_skips_schema_check(
+        self, tmp_path
+    ):
+        """With no schema.yaml, the dry run still validates but the schema check is skipped."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            instance = dry_run_cls.return_value
+            instance.is_valid.return_value = True
+            validate_custom_query_path(entry, backfill_file)
+
+        # schema check short-circuits before reading the dry run schema
+        instance.get_schema.assert_not_called()
+
+    def test_validate_custom_query_path_invalid_should_fail(self, tmp_path):
+        """A custom SQL query that fails the dry run should raise."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT bad syntax")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            instance = dry_run_cls.return_value
+            instance.is_valid.return_value = False
+            instance.errors.return_value = [{"message": "Syntax error"}]
+            with pytest.raises(ValueError) as e:
+                validate_custom_query_path(entry, backfill_file)
+
+        assert "Custom query dry run failed" in str(e.value)
+
+    def test_validate_custom_query_path_python_valid_syntax(self, tmp_path):
+        """A .py custom query with valid syntax should pass the syntax check without dry running."""
+        query_file = tmp_path / "backfill_custom.py"
+        query_file.write_text("def main():\n    return 1\n")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            validate_custom_query_path(entry, backfill_file)
+
+        # .py is syntax-checked offline, never dry run
+        dry_run_cls.assert_not_called()
+
+    def test_validate_custom_query_path_python_invalid_syntax_should_fail(
+        self, tmp_path
+    ):
+        """A .py custom query with a syntax error should raise a ValueError."""
+        query_file = tmp_path / "backfill_custom.py"
+        query_file.write_text("def main(:\n    return 1\n")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            with pytest.raises(ValueError) as e:
+                validate_custom_query_path(entry, backfill_file)
+
+        assert "syntax error" in str(e.value).lower()
+        dry_run_cls.assert_not_called()
+
+    def test_validate_custom_query_path_python_not_executed(self, tmp_path):
+        """A .py custom query's syntax check should not execute its module-level code."""
+        query_file = tmp_path / "backfill_custom.py"
+        # would raise at import time if executed, but is syntactically valid
+        query_file.write_text("raise RuntimeError('should not run')\n")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(query_file))
+
+        with patch("bigquery_etl.dryrun.DryRun"):
+            validate_custom_query_path(entry, backfill_file)
+
+    def test_validate_custom_query_path_skips_complete_status(self, tmp_path):
+        """A Complete-status entry should be skipped without dry running."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1")
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(
+            str(query_file), status=BackfillStatus.COMPLETE
+        )
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            validate_custom_query_path(entry, backfill_file)
+
+        dry_run_cls.assert_not_called()
+
+    def test_validate_custom_query_path_skips_when_none(self, tmp_path):
+        """An entry without a custom_query_path should be a no-op."""
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(None)
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            validate_custom_query_path(entry, backfill_file)
+
+        dry_run_cls.assert_not_called()
+
+    def test_validate_custom_query_path_missing_file_should_fail(self, tmp_path):
+        """A custom_query_path that doesn't resolve to a file should raise a ValueError."""
+        backfill_file = tmp_path / BACKFILL_FILE
+        entry = self._custom_query_entry(str(tmp_path / "does_not_exist.sql"))
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            with pytest.raises(ValueError) as e:
+                validate_custom_query_path(entry, backfill_file)
+
+        assert "custom_query_path not found" in str(e.value)
+        dry_run_cls.assert_not_called()
+
+    def test_validate_custom_query_path_resolves_sibling(self, tmp_path):
+        """A custom_query_path that only exists next to backfill.yaml should still resolve."""
+        query_file = tmp_path / "backfill_custom.sql"
+        query_file.write_text("SELECT 1")
+        backfill_file = tmp_path / BACKFILL_FILE
+        # stored path points somewhere that doesn't exist; only the sibling does
+        entry = self._custom_query_entry("sql/proj/dataset/table/backfill_custom.sql")
+
+        with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
+            dry_run_cls.return_value.is_valid.return_value = True
+            validate_custom_query_path(entry, backfill_file)
+
+        args, kwargs = dry_run_cls.call_args
+        assert kwargs["sqlfile"] == str(query_file)

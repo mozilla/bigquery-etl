@@ -656,3 +656,152 @@ fields:
   description: The unique subscription item identifier assigned by the provider (e.g., a Stripe subscription item ID). Null for providers that
     do not use subscription item-level identifiers.
   type: STRING
+- name: provider_subscription_updated_at
+  description: The timestamp at which the subscription record was last updated by the payment provider. Reflects the most recent change recorded
+    on the provider side.
+  type: TIMESTAMP
+- name: provider_subscriptions_history_id
+  description: A unique identifier for a historical snapshot of a provider subscription record, typically combining a provider subscription ID
+    with a timestamp to distinguish each version over time.
+  type: STRING
+- name: reason
+  description: A human-readable label describing the reason for a subscription state change or event, such as 'New Customer', 'Auto-Renew Disabled',
+    'Payment Failure', or 'Trial Converted'.
+  type: STRING
+- name: service_id
+  description: A short identifier for the Mozilla service associated with the subscription, such as 'VPN', 'Relay', or 'MDN'.
+  type: STRING
+- name: service_subscriptions_history_id
+  description: A unique identifier for a historical snapshot of a service-level subscription record, encoding the payment provider, subscription
+    ID, service, start time, and snapshot timestamp.
+  type: STRING
+- name: started_at
+  description: The timestamp at which the subscription period or event began. Represents when the subscriber first gained access in the relevant
+    billing cycle or status period.
+  type: TIMESTAMP
+- name: started_reason
+  description: The reason a subscription was initiated, indicating whether the subscriber is a new or returning customer and whether the subscription
+    began with a trial period (e.g., 'New Customer', 'Returning Customer Trial').
+  type: STRING
+- name: state
+  description: The US state or Canadian province code associated with the subscriber's billing address. Null when the subscriber is located outside
+    of a region that uses state-level codes.
+  type: STRING
+- name: status
+  description: The current lifecycle status of the subscription, such as 'active', 'expired', 'revoked', or 'in billing retry period'.
+- name: stripe_customers_revised_changelog_id
+  description: A unique identifier for a specific version of a Stripe customer record in the revised changelog, combining the Stripe customer
+    ID with a timestamp to track changes over time.
+  type: STRING
+- name: stripe_subscriptions_changelog_id
+  description: A unique identifier for a specific version of a Stripe subscription entry in the changelog, combining the Stripe subscription ID
+    with a timestamp to track each recorded change.
+  type: STRING
+- name: stripe_subscriptions_revised_changelog_id
+  description: A unique identifier for a specific version of a Stripe subscription record in the revised changelog, combining the Stripe subscription
+    ID with a timestamp to distinguish each historical snapshot.
+  type: STRING
+- name: subscription_acknowledgement_state
+  description: An integer flag indicating whether a subscription has been acknowledged by the subscriber, where 1 represents acknowledged and
+    0 represents not yet acknowledged.
+- name: subscription_auto_renew
+  description: Indicates whether automatic renewal is currently enabled for the subscription. True means the subscription will renew automatically
+    at the end of the billing period; false means it will not.
+- name: subscription_auto_renew_disabled_at
+  description: The timestamp at which automatic renewal was disabled for the subscription. Null when auto-renew is still enabled.
+- name: subscription_auto_renewing
+  description: Indicates whether the subscription is currently set to auto-renew at the end of the billing period. True means renewal is enabled;
+    false means the subscription will lapse.
+- name: subscription_auto_resume_time
+  description: The scheduled timestamp at which a paused subscription is set to automatically resume. Null when no automatic resumption is planned.
+- name: subscription_billing_cycle_anchor
+  description: The timestamp that defines the anchor point for the subscription's billing cycle, determining when future billing periods start
+    and end.
+- name: subscription_bundle_id
+  description: The application bundle identifier associated with the subscription, typically representing the app through which the subscription
+    was purchased (e.g., an iOS app bundle ID).
+- name: subscription_cancel_at
+  description: The scheduled timestamp at which the subscription is set to be cancelled. Null when no future cancellation has been scheduled.
+- name: subscription_cancel_at_period_end
+  description: Indicates whether the subscription is scheduled to cancel at the end of the current billing period. True means the subscription
+    will not renew; false means it will continue.
+- name: subscription_cancel_reason
+  description: An integer code representing the reason a subscription was cancelled, such as voluntary cancellation, non-payment, or other provider-defined
+    categories. Null when no cancellation reason was recorded.
+- name: subscription_cancel_survey_result_cancel_survey_reason
+  description: An integer code representing the subscriber's selected reason for cancellation as captured by a cancellation survey. Null when
+    the subscriber did not complete the survey.
+- name: subscription_cancel_survey_result_user_input_cancel_reason
+  description: Free-text input provided by the subscriber explaining their reason for cancellation in a cancellation survey. Null when the subscriber
+    did not provide a written response.
+- name: subscription_canceled_at
+  description: The timestamp at which the subscription was cancelled. Null when the subscription has not been cancelled.
+- name: subscription_cancellation_details_comment
+  description: A structured comment describing the cancellation action, such as administrative cancellations or automatic cancellations due to
+    checkout failures. Null when no comment was recorded.
+- name: subscription_cancellation_details_feedback
+  description: Feedback text provided as part of the cancellation details for the subscription. Null when no feedback was captured.
+- name: subscription_cancellation_details_reason
+  description: The machine-readable reason for subscription cancellation as reported by the payment provider, such as 'cancellation_requested',
+    'payment_failed', or 'payment_disputed'. Null when no reason was provided.
+- name: subscription_collection_method
+  description: The method used to collect payment for the subscription, either 'charge_automatically' for automatic card charging or 'send_invoice'
+    for invoice-based billing.
+- name: subscription_country_code
+  description: The ISO 3166-1 alpha-2 country code associated with the subscriber's location or billing address. Null when the country could not
+    be determined.
+- name: subscription_country_name
+  description: The full name of the country associated with the subscriber's location or billing address, derived from the country code.
+- name: subscription_created
+  description: The timestamp at which the subscription was originally created in the payment provider's system.
+- name: subscription_current_period_discount_amount
+  description: The monetary discount amount applied to the subscription during the current billing period. A value of 0 indicates no discount
+    was applied.
+- name: subscription_current_period_discount_name
+  description: The human-readable name of the discount or promotional offer applied to the subscription in the current billing period. Null when
+    no discount was applied.
+- name: subscription_current_period_discount_promotion_code
+  description: The promotion code redeemed by the subscriber that is associated with the current billing period discount. Null when no promotion
+    code was applied.
+- name: subscription_current_period_end
+  description: The timestamp at which the current billing period ends for the subscription. Null when the period end is not defined.
+- name: subscription_current_period_ends_at
+  description: The timestamp marking the end of the subscription's current billing period, as recorded in the subscription platform. Null when
+    not applicable or not yet determined.
+- name: subscription_current_period_start
+  description: The timestamp at which the current billing period began for the subscription. Null when the period start is not defined.
+- name: subscription_current_period_started_at
+  description: The timestamp marking the start of the subscription's current billing period, as recorded in the subscription platform. Null when
+    not applicable or not yet determined.
+- name: subscription_customer_address_country
+  description: The ISO 3166-1 alpha-2 country code from the customer's billing address on file. Null when no billing address country has been
+    recorded.
+- name: subscription_customer_created
+  description: The timestamp at which the customer account was created in the payment provider's system.
+- name: subscription_customer_default_source_id
+  description: The identifier of the customer's default payment source (e.g., a card ID) as stored in the payment provider's system. Null when
+    no default payment source is set.
+- name: subscription_customer_discount_coupon_amount_off
+  description: The fixed monetary amount deducted by the coupon applied to the customer's account. Null when no fixed-amount coupon is associated
+    with the customer.
+- name: subscription_customer_discount_coupon_created
+  description: The timestamp at which the coupon applied to the customer's account discount was created in the payment provider's system. Null
+    when no coupon is associated.
+- name: subscription_customer_discount_coupon_currency
+  description: The currency in which the customer's discount coupon amount is denominated. Null when the coupon is percentage-based or no coupon
+    is associated with the customer.
+- name: subscription_customer_discount_coupon_duration
+  description: Describes how long the coupon discount applies to the customer, such as 'once' for a single billing cycle or 'repeating' for a
+    set number of months. Null when no coupon is associated.
+- name: subscription_customer_discount_coupon_duration_in_months
+  description: The number of months for which a 'repeating' coupon discount applies to the customer's account. Null when the coupon is not repeating
+    or no coupon is associated.
+- name: subscription_customer_discount_coupon_id
+  description: The unique identifier of the coupon applied as a discount to the customer's account in the payment provider's system. Null when
+    no coupon is associated.
+- name: subscription_customer_discount_coupon_metadata
+  description: A JSON object containing arbitrary metadata attached to the customer's discount coupon by the payment provider. Null when no coupon
+    metadata is present.
+- name: subscription_customer_discount_coupon_name
+  description: The human-readable name of the coupon applied as a discount to the customer's account, such as a promotional campaign name. Null
+    when no coupon is associated.

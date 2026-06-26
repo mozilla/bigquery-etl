@@ -336,3 +336,154 @@ fields:
   description: A SHA-256 hash of the Mozilla Accounts user identifier, used for privacy-preserving joins and deduplication across datasets. Null
     when the source account ID is unavailable.
   type: STRING
+- name: name
+  description: The human-readable name of the Mozilla subscription product (e.g., 'Mozilla VPN', 'Relay Premium', 'MDN Plus'). Identifies which
+    product line the record belongs to.
+  type: STRING
+- name: old_subscription_auto_renew
+  description: Indicates whether the previous subscription was configured to automatically renew at the end of each billing period. True means
+    auto-renew was enabled; false means the subscription was set to expire without renewal.
+- name: old_subscription_auto_renew_disabled_at
+  description: The timestamp at which auto-renewal was disabled on the previous subscription. Null when auto-renewal was never disabled or is
+    still active.
+- name: old_subscription_country_code
+  description: The ISO 3166-1 alpha-2 country code associated with the previous subscription (e.g., 'US', 'DE', 'CA'). Represents the billing
+    or registration country for the subscriber.
+- name: old_subscription_country_name
+  description: The full country name associated with the previous subscription (e.g., 'United States', 'Germany', 'Canada'). This is the human-readable
+    counterpart to old_subscription_country_code.
+- name: old_subscription_current_period_discount_amount
+  description: The monetary discount amount applied to the current billing period of the previous subscription, in the plan's currency. A value
+    of 0 indicates no discount was applied during that period.
+- name: old_subscription_current_period_discount_name
+  description: The descriptive name of the discount applied to the current billing period of the previous subscription (e.g., '100% off for one
+    year for PPP customers'). Null when no discount was applied.
+- name: old_subscription_current_period_discount_promotion_code
+  description: The promotional code associated with the current-period discount on the previous subscription. Null when no promotion code was
+    used or tracked for the current period.
+- name: old_subscription_current_period_ends_at
+  description: The timestamp at which the current billing period of the previous subscription was scheduled to end. Marks the expiry boundary
+    of the period before any renewal or cancellation.
+- name: old_subscription_current_period_started_at
+  description: The timestamp at which the current billing period of the previous subscription began. Defines the start boundary of the most recent
+    billing cycle.
+- name: old_subscription_ended_at
+  description: The timestamp at which the previous subscription ended or was terminated. Null when the subscription had not yet ended at the time
+    the record was created.
+- name: old_subscription_ended_reason
+  description: The reason the previous subscription ended (e.g., cancellation, non-payment, or upgrade). Null when the subscription had not ended
+    or the reason was not recorded.
+- name: old_subscription_first_touch_attribution_entrypoint
+  description: The Mozilla-defined entrypoint identifier from the first marketing touch that led to the previous subscription (e.g., 'www.mozilla.org-vpn-product-page').
+    Represents the initial surface or page where the user was first attributed.
+- name: old_subscription_first_touch_attribution_entrypoint_experiment
+  description: The name of the A/B or multivariate experiment associated with the first-touch attribution entrypoint for the previous subscription
+    (e.g., 'vpn-landing-bundle-promo'). Null when no experiment was running at that entrypoint.
+- name: old_subscription_first_touch_attribution_entrypoint_variation
+  description: The specific experiment variation the user encountered at the first-touch attribution entrypoint for the previous subscription
+    (e.g., 'react', 'treatment-d'). Null when no experiment variation was recorded.
+- name: old_subscription_first_touch_attribution_impression_at
+  description: The timestamp of the first marketing impression that is attributed to the previous subscription. Represents when the user first
+    encountered the attributable touchpoint.
+- name: old_subscription_first_touch_attribution_utm_campaign
+  description: The UTM campaign parameter from the first-touch attribution event for the previous subscription (e.g., 'vpn-product-page', 'welcome9').
+    Identifies the marketing campaign that first drove the user to the product.
+- name: old_subscription_first_touch_attribution_utm_content
+  description: The UTM content parameter from the first-touch attribution event for the previous subscription, used to differentiate ads or links
+    within the same campaign. Null when not present in the originating URL.
+- name: old_subscription_first_touch_attribution_utm_medium
+  description: The UTM medium parameter from the first-touch attribution event for the previous subscription, indicating the marketing channel
+    (e.g., 'referral', 'organic', 'email'). Null when not captured.
+- name: old_subscription_first_touch_attribution_utm_source
+  description: The UTM source parameter from the first-touch attribution event for the previous subscription, identifying the originating website
+    or platform (e.g., 'www.mozilla.org-vpn-product-page', 'google'). Null when not captured.
+- name: old_subscription_first_touch_attribution_utm_term
+  description: The UTM term parameter from the first-touch attribution event for the previous subscription, typically used to capture paid search
+    keywords. Null when not applicable or not recorded.
+- name: old_subscription_has_fraudulent_charges
+  description: Indicates whether the previous subscription had any charges flagged as fraudulent. True means at least one fraudulent charge was
+    detected; false means no fraudulent charges were identified.
+- name: old_subscription_has_refunds
+  description: Indicates whether any refunds were issued against the previous subscription. True means at least one refund was processed; false
+    means no refunds occurred.
+- name: old_subscription_id
+  description: The unique identifier for the previous subscription, typically including the payment provider prefix and subscription reference
+    (e.g., 'Stripe-sub_...' or 'Google-...'). Used to trace subscription history across events.
+- name: old_subscription_initial_discount_name
+  description: The descriptive name of the discount applied at the time the previous subscription was initially created (e.g., '20% off Mozilla
+    VPN (NA) Affiliate'). Null when no initial discount was applied.
+- name: old_subscription_initial_discount_promotion_code
+  description: The promotional code used when the previous subscription was first created (e.g., 'MOZILLA20', 'DEAL20'). Null when no promotion
+    code was applied at subscription creation.
+- name: old_subscription_is_active
+  description: Indicates whether the previous subscription was active at the time the record was captured. True means the subscription was in
+    good standing; null or false indicates it was not active.
+- name: old_subscription_is_bundle
+  description: Indicates whether the previous subscription was part of a product bundle. True means it was bundled with other products; false
+    means it was a standalone subscription.
+- name: old_subscription_is_trial
+  description: Indicates whether the previous subscription was in a free or discounted trial period. True means the subscription was a trial;
+    false means it was a fully paid subscription.
+- name: old_subscription_last_touch_attribution_channel_group
+  description: The high-level marketing channel group from the last-touch attribution for the previous subscription (e.g., 'Direct', 'Marketing
+    Paid', 'Product Owned'). Groups the last touch into a broad channel category for reporting.
+- name: old_subscription_last_touch_attribution_entrypoint
+  description: The Mozilla-defined entrypoint identifier from the last marketing touch before the previous subscription was created (e.g., 'www.mozilla.org-vpn-product-page').
+    Represents the final surface the user interacted with prior to subscribing.
+- name: old_subscription_last_touch_attribution_entrypoint_experiment
+  description: The name of the A/B or multivariate experiment associated with the last-touch attribution entrypoint for the previous subscription.
+    Null when no experiment was active at the final touchpoint.
+- name: old_subscription_last_touch_attribution_entrypoint_variation
+  description: The specific experiment variation encountered at the last-touch attribution entrypoint for the previous subscription (e.g., 'treatment-d',
+    'react'). Null when no experiment variation was recorded.
+- name: old_subscription_last_touch_attribution_impression_at
+  description: The timestamp of the last marketing impression attributed to the previous subscription, representing the most recent touchpoint
+    before the subscription was created.
+- name: old_subscription_last_touch_attribution_utm_campaign
+  description: The UTM campaign parameter from the last-touch attribution event for the previous subscription (e.g., 'vpn-product-page', 'fx-vpn').
+    Identifies the marketing campaign most recently associated with the subscription.
+- name: old_subscription_last_touch_attribution_utm_content
+  description: The UTM content parameter from the last-touch attribution event for the previous subscription, used to distinguish between specific
+    ad creatives or links within a campaign. Null when not present.
+- name: old_subscription_last_touch_attribution_utm_medium
+  description: The UTM medium parameter from the last-touch attribution event for the previous subscription, indicating the marketing channel
+    type (e.g., 'referral', 'firefox-desktop', 'email'). Null when not captured.
+- name: old_subscription_last_touch_attribution_utm_source
+  description: The UTM source parameter from the last-touch attribution event for the previous subscription, identifying the originating website
+    or platform (e.g., 'www.mozilla.org-vpn-product-page', 'google'). Null when not captured.
+- name: old_subscription_last_touch_attribution_utm_term
+  description: The UTM term parameter from the last-touch attribution event for the previous subscription, typically used for paid search keyword
+    tracking. Null when not applicable or not recorded.
+- name: old_subscription_mozilla_account_id
+  description: The Mozilla Account identifier (FxA UID) of the subscriber associated with the previous subscription. Used to link subscription
+    records to a specific Mozilla Account.
+- name: old_subscription_mozilla_account_id_sha256
+  description: The SHA-256 hash of the Mozilla Account ID associated with the previous subscription. Used as a privacy-preserving identifier when
+    joining or sharing subscriber data.
+- name: old_subscription_ongoing_discount_amount
+  description: The monetary amount of the ongoing recurring discount applied to the previous subscription, in the plan's currency. A value of
+    0 indicates no ongoing discount was active.
+- name: old_subscription_ongoing_discount_ends_at
+  description: The timestamp at which the ongoing recurring discount on the previous subscription is scheduled to expire. Null when no ongoing
+    discount was applied or it has no defined end date.
+- name: old_subscription_ongoing_discount_name
+  description: The descriptive name of the ongoing recurring discount applied to the previous subscription (e.g., '100% off for one year for PPP
+    customers'). Null when no ongoing discount was active.
+- name: old_subscription_ongoing_discount_promotion_code
+  description: The promotional code associated with the ongoing recurring discount on the previous subscription. Null when no promotion code was
+    used or recorded for the ongoing discount.
+- name: old_subscription_payment_method
+  description: The specific payment method used for the previous subscription (e.g., 'Card', 'PayPal', 'Apple Pay', 'Google Play Store'). Indicates
+    how the subscriber was charged each billing period.
+- name: old_subscription_payment_provider
+  description: The payment provider or platform that processed charges for the previous subscription (e.g., 'Stripe', 'PayPal', 'Apple', 'Google').
+    Indicates the underlying billing infrastructure used.
+- name: old_subscription_plan_amount
+  description: The base price of the plan for the previous subscription, expressed in the plan's currency. Represents the full list price before
+    any discounts are applied.
+- name: old_subscription_plan_currency
+  description: The ISO 4217 currency code for the previous subscription plan's pricing (e.g., 'USD', 'EUR', 'GBP'). Reflects the currency in which
+    the subscriber was billed.
+- name: old_subscription_plan_interval
+  description: The billing interval of the previous subscription plan, indicating how frequently the subscriber was charged (e.g., '1 month' for
+    monthly billing, '1 year' for annual billing).

@@ -62,7 +62,7 @@ fields:
 - name: bucket
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The label of the scalar value bucket the count applies to, used to build per-bucket aggregate distributions of the scalar metric.
 - name: count
   type: INT64
   mode: NULLABLE

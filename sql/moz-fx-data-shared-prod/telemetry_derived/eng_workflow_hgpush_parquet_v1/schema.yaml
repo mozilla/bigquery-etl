@@ -8,54 +8,60 @@ fields:
 - name: metadata
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Metadata added by the ingestion pipeline about the received hgpush ping,
+    including the ingestion date, document ID, and receipt timestamp.
   fields:
   - name: date
     type: STRING
     mode: NULLABLE
-    description: ''
+    description: The date string when the ping was received on the server side.
   - name: document_id
     type: STRING
     mode: NULLABLE
-    description: ''
+    description: The document ID specified in the URI when the client sent this message.
   - name: timestamp
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: Timestamp (in nanoseconds) when the ping was received on the server
+      side.
 - name: changeset_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The Mercurial changeset (commit) hash identifying the changeset associated
+    with this push event.
 - name: review_system_used
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The code review system used for the change (e.g. Phabricator), or unset
+    if no review system was detected.
 - name: repository
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The Mercurial source repository the push was made to.
 - name: push_date
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Unix timestamp (in seconds) of when the push occurred.
 - name: landing_system
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: The system used to land the change to the repository (e.g. lando),
+    or unset if landed manually.
 - name: diffstat
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: Summary statistics describing the size of the change in this push,
+    including lines added, lines deleted, and number of files changed.
   fields:
   - name: additions
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: The number of lines added across all files in this push.
   - name: changed_files
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: The number of files changed in this push.
   - name: deletions
     type: INT64
     mode: NULLABLE
-    description: ''
+    description: The number of lines deleted across all files in this push.

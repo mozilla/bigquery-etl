@@ -74,4 +74,4 @@ fields:
 - name: endpoint_v2
   type: INT64
   mode: NULLABLE
-  description: ''
+  description: Count of Contile tiles requests made to the AdMarketplace endpoint, recorded under the v2 endpoint instrumentation.

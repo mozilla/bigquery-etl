@@ -98,7 +98,8 @@ fields:
 - name: payload
   type: RECORD
   mode: NULLABLE
-  description: ''
+  description: The crash ping payload, containing crash timing, process type, metadata
+    annotations, and related diagnostic information reported with the crash.
   fields:
   - name: crashDate
     type: STRING
@@ -116,7 +117,8 @@ fields:
   - name: metadata
     type: RECORD
     mode: NULLABLE
-    description: ''
+    description: Crash metadata annotations attached to the crash report, stored as
+      key-value pairs describing crash-specific diagnostic attributes.
     fields:
     - name: key_value
       type: RECORD
@@ -127,11 +129,11 @@ fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ''
+        description: The name of the crash metadata annotation.
       - name: value
         type: STRING
         mode: NULLABLE
-        description: ''
+        description: The value of the crash metadata annotation identified by the key.
   - name: processType
     type: STRING
     mode: NULLABLE
@@ -162,11 +164,12 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: ''
+      description: The experiment slug or identifier the client was enrolled in.
     - name: value
       type: STRING
       mode: NULLABLE
-      description: ''
+      description: The experiment branch the client was enrolled in for the experiment
+        identified by the key.
 - name: crash_time
   type: STRING
   mode: NULLABLE

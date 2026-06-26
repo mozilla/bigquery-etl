@@ -136,7 +136,8 @@ fields:
   - name: value
     type: RECORD
     mode: NULLABLE
-    description: ''
+    description: The enrollment details for the experiment identified by the corresponding key, including the
+      assigned branch, enrollment ID, and experiment framework type.
     fields:
     - name: branch
       type: STRING

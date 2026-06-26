@@ -1103,3 +1103,169 @@ fields:
 - name: subscription_logical_subscription_started_at
   description: Timestamp indicating when the logical subscription first started, representing the beginning of the subscriber's continuous relationship
     with the product. This value does not reset on renewal but may change if a new logical subscription is created.
+- name: subscription_metadata_amount
+  description: The subscription charge amount in the smallest unit of the associated currency (e.g., cents
+    for USD). Null when no charge amount metadata is available for the subscription.
+- name: subscription_metadata_appliedPromotionCode
+  description: The promotional or discount code that was applied at the time of subscription sign-up.
+    Null when no promotion code was used.
+- name: subscription_metadata_cancellation_reason
+  description: The reason a subscription was cancelled, typically reflecting automated Firefox Accounts
+    (FxA) account lifecycle events such as user-requested deletion, unverified account cleanup, or administrative
+    removal. Null when the subscription has not been cancelled or no reason was recorded.
+- name: subscription_metadata_cancelled_for_customer_at
+  description: The timestamp at which the subscription was cancelled on behalf of the customer, indicating
+    when the cancellation became effective. Null when the subscription has not been cancelled.
+- name: subscription_metadata_currency
+  description: The ISO 4217 currency code associated with the subscription charge amount, which may appear
+    in upper or lower case. Null when currency metadata is unavailable.
+- name: subscription_metadata_form_of_payment
+  description: The payment platform or method used to process the subscription, such as 'APPLE_APP_STORE'.
+    This field identifies the storefront or payment gateway through which the subscription was purchased.
+- name: subscription_metadata_is_mutable
+  description: Indicates whether the subscription record is still subject to change. True means the subscription
+    can be modified; false means it is in a final, immutable state.
+- name: subscription_metadata_latest_notification_subtype
+  description: The subtype of the most recent store notification received for the subscription, providing
+    additional context to the notification type (e.g., 'AUTO_RENEW_DISABLED', 'VOLUNTARY'). Null when
+    no subtype notification has been recorded.
+- name: subscription_metadata_latest_notification_type
+  description: The type of the most recent store notification received for the subscription, such as 'DID_RENEW',
+    'EXPIRED', or 'DID_FAIL_TO_RENEW'. Null when no notification has been recorded.
+- name: subscription_metadata_package_name
+  description: The application package name associated with the subscription as registered in the app
+    store (e.g., 'org.mozilla.firefox.vpn'). This identifies the app for which the subscription was purchased.
+- name: subscription_metadata_plan_change_date
+  description: The timestamp at which the subscription plan was most recently changed, such as when a
+    user upgraded or downgraded between billing intervals. Null when no plan change has occurred.
+- name: subscription_metadata_previous_plan_id
+  description: The identifier of the subscription plan that was active before the most recent plan change.
+    Null when no prior plan change has occurred.
+- name: subscription_metadata_purchase_token
+  description: A unique token issued by the app store (e.g., Google Play) to identify and verify a specific
+    subscription purchase. This token is used to query and validate the subscription's status with the
+    store.
+- name: subscription_metadata_replaced_by_another_purchase
+  description: Indicates whether this subscription purchase has been superseded by a different purchase.
+    False means the subscription has not been replaced by another purchase.
+- name: subscription_metadata_session_entrypoint
+  description: The entrypoint identifier that describes where in the Mozilla web ecosystem the user's
+    subscription session originated, such as a product page or in-product navigation element. Null when
+    no session entrypoint was recorded.
+- name: subscription_metadata_session_entrypoint_experiment
+  description: The name of the A/B or multivariate experiment associated with the session entrypoint at
+    the time the subscription was initiated. Null when no experiment was active for the session.
+- name: subscription_metadata_session_entrypoint_variation
+  description: The specific experiment variation or treatment that the user was assigned to during the
+    subscription session. Null when no experiment variation was recorded.
+- name: subscription_metadata_session_flow_id
+  description: A unique identifier for the Firefox Accounts authentication flow session during which the
+    subscription was initiated. Null when no flow ID was captured for the session.
+- name: subscription_metadata_sku
+  description: The store-specific product SKU identifier representing the subscription product and billing
+    interval (e.g., a monthly or annual VPN subscription). This is used to match the purchase to a specific
+    product offering in the app store.
+- name: subscription_metadata_sku_type
+  description: The type of the store product SKU, indicating the nature of the purchase. A value of 'subs'
+    indicates a recurring subscription product as opposed to a one-time in-app purchase.
+- name: subscription_metadata_user_id
+  description: An obfuscated identifier representing the user associated with the subscription, typically
+    corresponding to the app store account. Null when a user ID could not be resolved.
+- name: subscription_metadata_utm_campaign
+  description: The UTM campaign parameter captured during the subscription session, identifying the specific
+    marketing campaign that drove the subscription. Null when no UTM campaign parameter was present.
+- name: subscription_metadata_utm_content
+  description: The UTM content parameter captured during the subscription session, used to differentiate
+    between links or creatives within the same campaign. Null when no UTM content parameter was present.
+- name: subscription_metadata_utm_medium
+  description: The UTM medium parameter captured during the subscription session, describing the marketing
+    channel or traffic type (e.g., 'referral', 'organic', 'firefox-desktop'). Null when no UTM medium
+    parameter was present.
+- name: subscription_metadata_utm_source
+  description: The UTM source parameter captured during the subscription session, identifying the referring
+    website, browser component, or marketing platform that drove the user to subscribe. Null when no UTM
+    source parameter was present.
+- name: subscription_metadata_utm_term
+  description: The UTM term parameter captured during the subscription session, typically used to identify
+    the browser UI element or keyword that initiated the session (e.g., 'bento', 'sidebar'). Null when
+    no UTM term parameter was present.
+- name: subscription_metadata_verified_at
+  description: The timestamp at which the subscription record or purchase was most recently verified against
+    the app store or payment provider. This reflects the last time the subscription's validity was confirmed.
+- name: subscription_mozilla_account_id
+  description: The unique identifier for the Mozilla account (Firefox Accounts) associated with the subscription,
+    stored as a hexadecimal string. This links the subscription to a specific authenticated user account.
+- name: subscription_mozilla_account_id_sha256
+  description: The SHA-256 hash of the Mozilla account ID associated with the subscription, provided as
+    a hex-encoded string. This is used for privacy-preserving joins and cross-dataset analysis without
+    exposing the raw account identifier.
+- name: subscription_obfuscated_external_account_id
+  description: An obfuscated identifier representing the external account (e.g., app store account) linked
+    to the subscription. This field is currently unpopulated and reserved for future use.
+- name: subscription_obfuscated_external_profile_id
+  description: An obfuscated identifier representing the external user profile linked to the subscription.
+    This field is currently unpopulated and reserved for future use.
+- name: subscription_ongoing_discount_amount
+  description: The ongoing discount amount applied to the subscription's recurring charges, expressed
+    as a numeric value. A value of 0 indicates no active ongoing discount is applied.
+- name: subscription_ongoing_discount_ends_at
+  description: The timestamp at which the ongoing discount applied to the subscription is scheduled to
+    expire. Null when no ongoing discount is active.
+- name: subscription_ongoing_discount_name
+  description: The human-readable name of the ongoing discount applied to the subscription. This field
+    is currently unpopulated and reserved for future discount name tracking.
+- name: subscription_ongoing_discount_promotion_code
+  description: The promotion code associated with the ongoing discount applied to the subscription. This
+    field is currently unpopulated and reserved for future promotion code tracking.
+- name: subscription_order_id
+  description: The unique order identifier assigned by the app store (e.g., Google Play) for a specific
+    subscription transaction. This can be used to trace individual billing events within the store's system.
+- name: subscription_original_transaction_id
+  description: The identifier of the original transaction that initiated the subscription, as assigned
+    by the app store. For renewals, this links back to the first purchase transaction of the subscription
+    lifecycle.
+- name: subscription_other_services
+  description: An array of other Mozilla subscription services associated with the same account, where
+    each element includes the service's identifier, name, and tier. An empty array indicates no other
+    active services are linked.
+- name: subscription_payment_method
+  description: A human-readable label for the payment method used to process the subscription, such as
+    'Apple App Store'. This describes the storefront or payment platform at a display level.
+- name: subscription_payment_method_id
+  description: The unique identifier for the payment method on file for the subscription, typically assigned
+    by the payment processor (e.g., Stripe). Null when the payment method is managed by an external app
+    store rather than a direct payment processor.
+- name: subscription_payment_provider
+  description: The name of the payment provider or platform responsible for processing the subscription's
+    billing, such as 'Apple'. This identifies the top-level payment ecosystem handling the transaction.
+- name: subscription_payment_state
+  description: An integer code representing the current payment state of the subscription as reported
+    by the app store. Common values include 0 (payment pending), 1 (payment received), and 2 (free trial
+    or deferred).
+- name: subscription_pending_setup_intent_id
+  description: The identifier of a pending Stripe Setup Intent associated with the subscription, used
+    when a new payment method is being collected or confirmed. Null when there is no pending payment method
+    setup for the subscription.
+- name: subscription_plan_amount
+  description: The price of the subscription plan as a decimal numeric value in the plan's currency. This
+    represents the recurring charge amount per billing interval before any discounts are applied.
+- name: subscription_plan_currency
+  description: The ISO 4217 currency code (in uppercase) in which the subscription plan is priced, such
+    as 'USD', 'EUR', or 'GBP'. This determines the currency of the plan amount charged to the subscriber.
+- name: subscription_plan_interval
+  description: A human-readable description of the subscription billing interval, combining the interval
+    count and unit (e.g., '1 month', '1 year', '6 months'). This describes how frequently the subscriber
+    is billed.
+- name: subscription_plan_interval_count
+  description: The numeric count of interval units that make up one billing period for the subscription
+    plan. For example, a value of 6 combined with a monthly interval type indicates a semi-annual plan.
+- name: subscription_plan_interval_months
+  description: The total duration of the subscription billing interval expressed in months. Values of
+    1, 6, and 12 correspond to monthly, semi-annual, and annual plans respectively.
+- name: subscription_plan_interval_type
+  description: The base time unit of the subscription plan's billing interval, either 'month' or 'year'.
+    This is used together with the interval count to define the full billing period.
+- name: subscription_plan_summary
+  description: A concise human-readable summary of the subscription plan combining the billing interval,
+    currency, and price (e.g., '1 month USD 9.99'). This provides a quick description of the plan's key
+    pricing attributes.

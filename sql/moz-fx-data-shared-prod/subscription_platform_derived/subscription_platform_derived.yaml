@@ -161,3 +161,178 @@ fields:
 - name: date
   description: The calendar date associated with the record, typically representing the snapshot or reporting date for the data in the table.
   type: DATE
+- name: ended_at
+  description: The timestamp at which the subscription or period ended. Represents the scheduled or actual end date/time of the subscription term.
+  type: TIMESTAMP
+- name: ended_reason
+  description: The reason a subscription ended, such as 'Cancelled by Customer', 'Payment Failed', 'Refund', or 'Price Change Not Approved by
+    Customer'. Null when the subscription has not yet ended.
+  type: STRING
+- name: entrypoint
+  description: The entrypoint identifier indicating the surface or page where the user initiated the subscription flow. Null when no entrypoint
+    was recorded.
+  type: STRING
+- name: entrypoint_experiment
+  description: The name of the A/B or multivariate experiment associated with the entrypoint at the time the user initiated the subscription flow.
+    Null when no experiment was active.
+  type: STRING
+- name: entrypoint_variation
+  description: The specific variation or branch of the entrypoint experiment that the user was assigned to. Null when no experiment variation
+    was recorded.
+  type: STRING
+- name: event_timestamp
+  description: The precise timestamp at which the event occurred, including sub-second precision. This field is always populated and uniquely
+    identifies when an action was recorded.
+  type: TIMESTAMP
+- name: event_type
+  description: A string identifying the type of Firefox Accounts event that occurred, combining the event category and action (e.g., 'fxa_reg
+    - view', 'fxa_rp_button - view'). Represents a specific user interaction step in the authentication or subscription flow.
+  type: STRING
+- name: firestore_export_event_id
+  description: A unique identifier for the Firestore export event, used to deduplicate and trace individual document change records exported from
+    Firestore. Each value corresponds to a single exported document operation.
+  type: STRING
+- name: firestore_export_operation
+  description: The type of Firestore document operation captured in the export, either 'CREATE' for newly created documents or 'UPDATE' for modifications
+    to existing documents.
+  type: STRING
+- name: first_touch_attribution_entrypoint
+  description: The entrypoint surface or page where the user was first attributed before subscribing, representing the earliest recorded touchpoint
+    in their acquisition journey. Null when no first-touch entrypoint was captured.
+- name: first_touch_attribution_entrypoint_experiment
+  description: The name of the experiment associated with the user's first-touch entrypoint, identifying which A/B test was active at that initial
+    touchpoint. Null when no experiment was associated with the first touch.
+- name: first_touch_attribution_entrypoint_variation
+  description: The experiment variation the user was assigned to at their first-touch entrypoint, indicating which branch of the experiment they
+    experienced. Null when no variation was recorded for the first touch.
+- name: first_touch_attribution_impression_at
+  description: The timestamp of the user's first recorded attribution impression, marking the earliest moment they were exposed to a tracked acquisition
+    touchpoint. Null when no first-touch impression was recorded.
+- name: first_touch_attribution_utm_campaign
+  description: The UTM campaign parameter from the user's first-touch attribution, identifying the marketing or product campaign that initially
+    drove the user. Null when no UTM campaign was present at first touch.
+- name: first_touch_attribution_utm_content
+  description: The UTM content parameter from the user's first-touch attribution, used to differentiate between links or creative variations within
+    the same campaign at the initial touchpoint. Null when no UTM content was recorded.
+- name: first_touch_attribution_utm_medium
+  description: The UTM medium parameter from the user's first-touch attribution, indicating the marketing channel (e.g., 'referral', 'email',
+    'organic') that initially brought the user. Null when no UTM medium was recorded at first touch.
+- name: first_touch_attribution_utm_source
+  description: The UTM source parameter from the user's first-touch attribution, identifying the specific website or origin (e.g., 'www.mozilla.org-vpn-product-page')
+    that first referred the user. Null when no UTM source was recorded.
+- name: first_touch_attribution_utm_term
+  description: The UTM term parameter from the user's first-touch attribution, typically used to identify paid search keywords or specific link
+    identifiers at the initial touchpoint. Null when no UTM term was recorded.
+- name: flow_id
+  description: A unique identifier representing a single Firefox Accounts authentication or registration flow session. Used to group related events
+    that occur within the same user flow.
+  type: STRING
+- name: fxa_uid
+  description: The hashed Firefox Accounts user identifier (UID) uniquely identifying a Mozilla account holder. Used to link subscription and
+    event records to a specific FxA user.
+  type: STRING
+- name: google_sku_ids
+  description: An array of Google Play Store SKU identifiers associated with the subscription or product. Each element represents a distinct product
+    SKU offered through the Google Play billing system.
+  type: STRING
+- name: has_fraudulent_charge_refunds
+  description: Indicates whether the subscription has had any refunds issued specifically due to fraudulent charges. True when at least one fraudulent
+    charge refund has been processed; false otherwise.
+  type: BOOLEAN
+- name: has_fraudulent_charges
+  description: Indicates whether the subscription has been associated with any fraudulent charges. True when at least one fraudulent charge has
+    been detected; false otherwise. Null when fraud assessment data is unavailable.
+  type: BOOLEAN
+- name: has_refunds
+  description: Indicates whether the subscription has had any refunds processed, regardless of reason. True when at least one refund has been
+    issued; false otherwise. Null when refund data is unavailable.
+  type: BOOLEAN
+- name: id
+  description: A unique identifier for the record, typically encoding the payment provider, provider-specific subscription or transaction ID,
+    and relevant timestamps. Used as the primary key to uniquely identify a row.
+  type: STRING
+- name: in_billing_grace_period
+  description: Indicates whether the subscription is currently within a billing grace period following a failed payment. True when the subscription
+    is in grace period and still considered active despite a missed payment; false otherwise. Null when not applicable.
+  type: BOOLEAN
+- name: initial_discount_name
+  description: The human-readable name of the discount or promotional offer applied at the time the subscription was first created (e.g., 'Holiday
+    Offer 2023', '20% off Mozilla VPN (NA) Affiliate'). Null when no initial discount was applied.
+  type: STRING
+- name: initial_discount_promotion_code
+  description: The promotion or coupon code redeemed by the subscriber at the time of initial subscription (e.g., 'HOLIDAY20', 'MOZILLA20'). Null
+    when no promotion code was used at signup.
+  type: STRING
+- name: is_active
+  description: Indicates whether the subscription is currently in an active state. True when the subscription is active and the user has access
+    to the product; false when it is cancelled, expired, or otherwise inactive.
+  type: BOOLEAN
+- name: is_bundle
+  description: Indicates whether the subscription is part of a product bundle (i.e., includes multiple Mozilla products). True when the subscription
+    covers a bundle offering; false when it covers a single product.
+  type: BOOLEAN
+- name: is_deleted
+  description: Indicates whether the record has been marked as deleted in the source system. True when the record has been soft-deleted; false
+    when it remains active in the source data.
+  type: BOOLEAN
+- name: is_trial
+  description: Indicates whether the subscription period represents a free trial. True when the subscriber is in a trial period; false when they
+    are on a paid subscription.
+  type: BOOLEAN
+- name: last_touch_attribution_channel_group
+  description: A high-level grouping of the acquisition channel from the user's most recent attribution touchpoint (e.g., 'Direct', 'Marketing
+    Owned', 'Marketing Paid', 'Product Owned', 'Miscellaneous'). Null when no last-touch channel could be determined.
+- name: last_touch_attribution_entrypoint
+  description: The entrypoint surface or page associated with the user's most recent attribution touchpoint before subscribing. Null when no last-touch
+    entrypoint was recorded.
+- name: last_touch_attribution_entrypoint_experiment
+  description: The name of the experiment associated with the user's last-touch entrypoint, identifying which A/B test was active at that most
+    recent touchpoint. Null when no experiment was associated with the last touch.
+- name: last_touch_attribution_entrypoint_variation
+  description: The experiment variation the user was assigned to at their last-touch entrypoint, indicating which branch of the experiment they
+    experienced most recently. Null when no variation was recorded for the last touch.
+- name: last_touch_attribution_impression_at
+  description: The timestamp of the user's most recent recorded attribution impression, marking the last moment they were exposed to a tracked
+    acquisition touchpoint before subscribing. Null when no last-touch impression was recorded.
+- name: last_touch_attribution_utm_campaign
+  description: The UTM campaign parameter from the user's last-touch attribution, identifying the marketing or product campaign most recently
+    associated with the user before subscribing. Null when no UTM campaign was present at last touch.
+- name: last_touch_attribution_utm_content
+  description: The UTM content parameter from the user's last-touch attribution, used to differentiate between links or creative variations within
+    the same campaign at the most recent touchpoint. Null when no UTM content was recorded.
+- name: last_touch_attribution_utm_medium
+  description: The UTM medium parameter from the user's last-touch attribution, indicating the marketing channel (e.g., 'referral', 'email', 'organic')
+    most recently associated with the user. Null when no UTM medium was recorded at last touch.
+- name: last_touch_attribution_utm_source
+  description: The UTM source parameter from the user's last-touch attribution, identifying the specific website or origin most recently responsible
+    for referring the user. Null when no UTM source was recorded.
+- name: last_touch_attribution_utm_term
+  description: The UTM term parameter from the user's last-touch attribution, typically used to identify paid search keywords or specific link
+    identifiers at the most recent touchpoint. Null when no UTM term was recorded.
+- name: logical_subscriptions_history_id
+  description: A unique identifier representing a historical state of a logical subscription record, encoding the provider, subscription ID, and
+    relevant timestamps. Used to track changes to a subscription over time.
+  type: STRING
+- name: metadata
+  description: A JSON object containing provider-specific or product-specific metadata associated with the record, such as download URLs, product
+    configuration, web icon URLs, and other supplementary attributes.
+- name: metadata_form_of_payment
+  description: The payment method or platform used to process the subscription, as recorded in the subscription metadata (e.g., 'APPLE_APP_STORE').
+    Identifies the billing provider for the subscription.
+- name: metadata_latest_notification_type
+  description: The most recent App Store server notification type received for the subscription (e.g., 'DID_RENEW', 'SUBSCRIBED', 'EXPIRED', 'REFUND').
+    Null when no notification type has been recorded.
+- name: metadata_user_id
+  description: The provider-assigned user identifier stored in subscription metadata, typically a hashed or opaque string used by the billing
+    platform to identify the subscriber. Null when no user ID was provided in the metadata.
+- name: metadata_verified_at
+  description: The timestamp at which the subscription metadata was last verified or validated against the billing provider. Indicates the most
+    recent time the metadata state was confirmed as accurate.
+- name: mozilla_account_id
+  description: The Mozilla Accounts (FxA) user identifier associated with the subscription, represented as a hexadecimal string. Used to link
+    subscription records to a specific Mozilla account holder. Null when no account ID is available.
+  type: STRING
+- name: mozilla_account_id_sha256
+  description: A SHA-256 hash of the Mozilla Accounts user identifier, used for privacy-preserving joins and deduplication across datasets. Null
+    when the source account ID is unavailable.
+  type: STRING

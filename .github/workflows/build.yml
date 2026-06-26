@@ -787,7 +787,7 @@ jobs:
         run: |
           # Routine tests are I/O-bound (each runs a BigQuery query), so use
           # more workers than cores. Tune up if BigQuery quota allows.
-          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 16
+          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 32
       - name: Validate doc examples
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}

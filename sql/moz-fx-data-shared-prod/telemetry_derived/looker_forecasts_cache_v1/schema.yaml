@@ -1,0 +1,63 @@
+fields:
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: key
+- name: submission_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: dau_forecast
+  type: FLOAT64
+  mode: NULLABLE
+  description: The forecasted Daily Active Users (DAU) value for this date; null when not yet populated.
+- name: dau_target
+  type: FLOAT64
+  mode: NULLABLE
+  description: The DAU target or goal value for this date as set in planning; null when not yet populated.
+- name: cdou_forecast
+  type: FLOAT64
+  mode: NULLABLE
+  description: The forecasted Cumulative Days of Use (CDOU) value for this date; null when not yet populated.
+- name: cdou_target
+  type: FLOAT64
+  mode: NULLABLE
+  description: The CDOU target or goal value for this date; null when not yet populated.
+- name: dau_forecast_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower confidence bound of the DAU forecast for this date; null when not yet populated.
+- name: dau_forecast_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper confidence bound of the DAU forecast for this date; null when not yet populated.
+- name: new_profiles_forecast
+  type: FLOAT64
+  mode: NULLABLE
+  description: The forecasted new profile count for this date; null when not yet populated.
+- name: new_profiles_target
+  type: FLOAT64
+  mode: NULLABLE
+  description: The new profile target or goal value for this date; null when not yet populated.
+- name: cum_new_profiles_forecast
+  type: FLOAT64
+  mode: NULLABLE
+  description: The cumulative forecasted new profile count up to this date within the current period; null
+    when not yet populated.
+- name: cum_new_profiles_target
+  type: FLOAT64
+  mode: NULLABLE
+  description: The cumulative new profiles target for this date within the current period; null when not
+    yet populated.
+- name: new_profiles_forecast_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower confidence bound of the new profiles forecast; null when not yet populated.
+- name: new_profiles_forecast_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper confidence bound of the new profiles forecast; null when not yet populated.

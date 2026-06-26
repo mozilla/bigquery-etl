@@ -1,0 +1,113 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: window_start
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: window_start
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: version
+- name: display_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: display_version
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
+- name: application
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: application
+- name: os_name
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_name
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: architecture
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
+- name: count
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: count
+- name: main_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of main process (browser) crashes reported in crash pings during this aggregation
+    window.
+- name: content_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of content process crashes (excluding shutdown kills) reported during this aggregation
+    window.
+- name: startup_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of crashes flagged as startup crashes (occurred during Firefox launch) during this
+    aggregation window.
+- name: content_shutdown_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of content process crashes that occurred during process shutdown (ShutDownKill
+    IPC errors) during this aggregation window.
+- name: gpu_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of GPU process crashes reported via the main ping subprocess_crashes_with_dump
+    histogram during this aggregation window.
+- name: plugin_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of NPAPI plugin process crashes reported via the main ping subprocess_crashes_with_dump
+    histogram during this aggregation window.
+- name: gmplugin_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of Gecko Media Plugin (GMP) process crashes reported via the main ping subprocess_crashes_with_dump
+    histogram during this aggregation window.
+- name: usage_hours
+  type: FLOAT64
+  mode: NULLABLE
+  description: The total usage hours (clamped to 0–24 hours per ping) across all pings in this aggregation
+    window, derived from subsession_length in main pings and core ping durations.

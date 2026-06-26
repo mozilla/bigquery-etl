@@ -38,6 +38,8 @@ fields:
 - name: join_key
   type: STRING
   mode: NULLABLE
+  description: A synthetic composite key used for joining this table with downstream aggregation tables,
+    formed by concatenating client_id, os, app_version, app_build_id, and channel.
 - name: histogram_aggregates
   type: RECORD
   mode: REPEATED

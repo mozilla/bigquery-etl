@@ -1,0 +1,61 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: date
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: document_id
+    type: STRING
+    mode: NULLABLE
+    description: ''
+  - name: timestamp
+    type: INT64
+    mode: NULLABLE
+    description: ''
+- name: changeset_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: review_system_used
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: repository
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: push_date
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: landing_system
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: diffstat
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: additions
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: changed_files
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: deletions
+    type: INT64
+    mode: NULLABLE
+    description: ''

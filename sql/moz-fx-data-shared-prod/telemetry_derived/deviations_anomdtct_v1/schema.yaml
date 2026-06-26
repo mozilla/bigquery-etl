@@ -1,0 +1,25 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: date
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric
+- name: deviation
+  type: FLOAT64
+  mode: NULLABLE
+  description: ''
+- name: ci_deviation
+  type: FLOAT64
+  mode: NULLABLE
+  description: ''
+- name: geography
+  type: STRING
+  mode: NULLABLE
+  description: ''

@@ -17,7 +17,9 @@ fields:
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: application_name
   mode: NULLABLE
   name: application_name
   type: STRING
@@ -51,7 +53,9 @@ fields:
   mode: NULLABLE
   name: country_code
   type: STRING
-- description: NULL
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: process_crash_counts
   mode: REPEATED
   type: RECORD
   name: process_crash_counts
@@ -59,16 +63,15 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: key
+    description: The Firefox process type (e.g., 'main', 'content', 'gpu') for which crashes are counted.
   - mode: NULLABLE
     name: value
     type: INTEGER
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: value
-- description: NULL
+    description: The number of detected crashes of the corresponding process type, excluding shutdown-kill
+      crashes.
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: process_shutdown_kill_crash_counts
   mode: REPEATED
   type: RECORD
   name: process_shutdown_kill_crash_counts
@@ -76,15 +79,12 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: key
+    description: The Firefox process type (e.g., 'main', 'content', 'gpu') for which shutdown-kill crashes
+      are counted.
   - mode: NULLABLE
     name: value
     type: INTEGER
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: value
+    description: The number of shutdown-kill crashes of the corresponding process type.
 - description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: profile_group_id

@@ -1,60 +1,71 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
-  type: DATE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: submission_date
-- mode: NULLABLE
-  name: country_name
+- name: os
   type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: country_name
-- mode: NULLABLE
-  name: channel
-  type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: channel
-- mode: NULLABLE
-  name: build_id
-  type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: build_id
-- mode: NULLABLE
-  name: os
-  type: STRING
+  mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: os
-- mode: NULLABLE
-  name: os_version
-  type: STRING
+- name: app_version
+  type: INT64
+  mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: os_version
-- mode: NULLABLE
-  name: attribution_source
+    field: app_version
+- name: app_build_id
   type: STRING
+  mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: attribution_source
-- mode: NULLABLE
-  name: distribution_id
+    field: app_build_id
+- name: channel
   type: STRING
+  mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: distribution_id
-- mode: NULLABLE
-  name: attribution_ua
+    field: channel
+- name: metric
   type: STRING
+  mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: attribution_ua
-- mode: NULLABLE
-  name: num_activated
-  type: INTEGER
-  description: The number of clients in this cohort considered 'activated' by day 6 — i.e., active on at
-    least 5 of their first 7 days (days 0 through 6) since first-seen, derived from days_seen_bits.
+    field: metric
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_type
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: key
+- name: process
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: process
+- name: client_agg_type
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_agg_type
+- name: agg_type
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: agg_type
+- name: bucket
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: count
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: count

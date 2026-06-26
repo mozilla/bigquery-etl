@@ -458,9 +458,8 @@ fields:
     - name: details
       type: STRING
       mode: NULLABLE
-    description: !include-field-description
-      field: jsonPayload.error
-      file: bigquery_etl/schema/firefox_accounts_derived.yaml
+    description: Structured error object from the log payload, containing the numeric
+      error code, a human-readable note, and additional details.
   - name: amplitudeerror
     type: STRING
     mode: NULLABLE

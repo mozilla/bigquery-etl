@@ -805,3 +805,152 @@ fields:
 - name: subscription_customer_discount_coupon_name
   description: The human-readable name of the coupon applied as a discount to the customer's account, such as a promotional campaign name. Null
     when no coupon is associated.
+- name: subscription_customer_discount_coupon_percent_off
+  description: The percentage discount applied to a customer-level coupon, expressed as a float (e.g., 20.0 for 20% off). Null when no customer-level
+    coupon discount is active.
+- name: subscription_customer_discount_coupon_redeem_by
+  description: The expiration timestamp by which the customer-level discount coupon must be redeemed. Null when no redemption deadline is set
+    or no coupon is active.
+- name: subscription_customer_discount_end
+  description: The timestamp at which the customer-level discount is scheduled to end. Null when no customer-level discount is currently applied.
+- name: subscription_customer_discount_id
+  description: The unique Stripe identifier for the discount applied at the customer level (e.g., 'di_...'). Null when no customer-level discount
+    exists.
+- name: subscription_customer_discount_invoice_id
+  description: The identifier of the invoice associated with the customer-level discount, if applicable. Null when the discount is not tied to
+    a specific invoice.
+- name: subscription_customer_discount_invoice_item_id
+  description: The identifier of the invoice line item associated with the customer-level discount, if applicable. Null when the discount is not
+    tied to a specific invoice item.
+- name: subscription_customer_discount_promotion_code_id
+  description: The identifier of the promotion code used to apply the customer-level discount (e.g., 'promo_...'). Null when no promotion code
+    was used to apply the discount.
+- name: subscription_customer_discount_start
+  description: The timestamp at which the customer-level discount became active. Null when no customer-level discount is currently or has been
+    applied.
+- name: subscription_customer_discount_subscription_id
+  description: The identifier of the subscription associated with the customer-level discount, when the discount is scoped to a specific subscription.
+    Null when the discount is not tied to a particular subscription.
+- name: subscription_customer_id
+  description: The unique Stripe identifier for the customer associated with the subscription (e.g., 'cus_...'). This ID links subscription records
+    to the billing customer entity in Stripe.
+- name: subscription_customer_is_deleted
+  description: Indicates whether the Stripe customer account has been deleted. True means the customer record has been removed from Stripe; false
+    means it remains active.
+- name: subscription_customer_logical_subscription_number
+  description: A sequential count of the customer's subscriptions across all products, ordered by start date, representing the Nth logical subscription
+    for that customer. Used to identify repeat subscribers regardless of product.
+- name: subscription_customer_metadata_geoip_date
+  description: The timestamp at which the GeoIP-based location was recorded for the customer, as stored in Stripe customer metadata. Null when
+    no GeoIP date has been captured.
+- name: subscription_customer_metadata_paypalAgreementId
+  description: The PayPal Billing Agreement ID associated with the customer, as stored in Stripe customer metadata (e.g., 'B-...'). Null when
+    the customer does not use PayPal as a payment method.
+- name: subscription_customer_metadata_userid
+  description: The Firefox Accounts (FxA) user ID associated with the customer, as stored in Stripe customer metadata. Null when no FxA user ID
+    has been linked to the customer.
+- name: subscription_customer_metadata_userid_sha256
+  description: The SHA-256 hash of the Firefox Accounts (FxA) user ID associated with the customer, used for privacy-safe user identification.
+    Null when no FxA user ID is available to hash.
+- name: subscription_customer_service_subscription_number
+  description: A sequential count of the customer's subscriptions within a specific product or service, ordered by start date, representing the
+    Nth subscription for that customer for that service. Used to identify repeat subscribers on a per-service basis.
+- name: subscription_customer_shipping_address_country
+  description: The two-letter ISO country code of the customer's shipping address as stored in Stripe (e.g., 'US', 'DE', 'FR'). Null when no shipping
+    address has been provided.
+- name: subscription_customer_subscription_number
+  description: A sequential count representing the Nth overall subscription record for the customer across all products and time periods, ordered
+    by start date. Higher values indicate customers with a longer history of subscription activity.
+- name: subscription_customer_tax_exempt
+  description: The tax exemption status of the customer as recorded in Stripe. A value of 'none' indicates the customer has no tax exemption;
+    null indicates the status is unknown or not set.
+- name: subscription_days_until_due
+  description: The number of days after the billing period ends before payment is due for invoice-based subscriptions. Null for subscriptions
+    that require immediate payment at the time of billing.
+- name: subscription_default_payment_method_id
+  description: The Stripe identifier of the default payment method assigned to the subscription (e.g., 'pm_...'). Null when no subscription-level
+    default payment method has been set, falling back to the customer default.
+- name: subscription_default_source_id
+  description: The Stripe identifier of the default payment source assigned to the subscription. Null when no legacy payment source is associated
+    with the subscription.
+- name: subscription_default_tax_rates
+  description: An array of tax rate objects applied by default to subscription invoices, each containing fields such as identifier, percentage,
+    display name, jurisdiction, and whether the tax is inclusive. An empty array indicates no default tax rates are applied.
+- name: subscription_developer_payload
+  description: An optional developer-defined payload string attached to the subscription, used to pass custom metadata from the originating application.
+    Null when no developer payload has been set.
+- name: subscription_discount_coupon_amount_off
+  description: The fixed monetary amount in the smallest currency unit (e.g., cents) that the subscription-level discount coupon deducts from
+    the invoice. Null when the coupon uses a percentage-based discount or no coupon is active.
+- name: subscription_discount_coupon_created
+  description: The timestamp at which the coupon associated with the subscription-level discount was created in Stripe. Null when no subscription-level
+    coupon discount is applied.
+- name: subscription_discount_coupon_currency
+  description: The three-letter ISO currency code for the subscription-level discount coupon, applicable when the coupon specifies a fixed monetary
+    amount off. Null when the coupon is percentage-based, not currency-specific, or no coupon is active.
+- name: subscription_discount_coupon_duration
+  description: Describes how long the subscription-level coupon discount applies; 'once' for a single billing cycle, 'repeating' for a set number
+    of months, or 'forever' for the lifetime of the subscription. Null when no subscription-level coupon is active.
+- name: subscription_discount_coupon_duration_in_months
+  description: The number of months for which a 'repeating' subscription-level coupon discount applies. Null when the coupon duration is 'once'
+    or 'forever', or when no subscription-level coupon is active.
+- name: subscription_discount_coupon_id
+  description: The unique Stripe identifier for the coupon applied at the subscription level (e.g., '7Hwj5mGU'). Null when no subscription-level
+    coupon discount is active.
+- name: subscription_discount_coupon_metadata
+  description: A JSON object containing arbitrary key-value metadata attached to the subscription-level discount coupon in Stripe. Null when no
+    subscription-level coupon is active.
+- name: subscription_discount_coupon_name
+  description: The human-readable display name of the coupon applied at the subscription level (e.g., 'Holiday Offer 2023'). Null when no subscription-level
+    coupon discount is active.
+- name: subscription_discount_coupon_percent_off
+  description: The percentage discount applied by the subscription-level coupon, expressed as a float (e.g., 100.0 for fully free, 20.0 for 20%
+    off). Null when no subscription-level coupon is active or the coupon uses a fixed amount discount.
+- name: subscription_discount_coupon_redeem_by
+  description: The expiration timestamp by which the subscription-level discount coupon must be redeemed. Null when no redemption deadline is
+    set or no coupon is active.
+- name: subscription_discount_end
+  description: The timestamp at which the subscription-level discount is scheduled to end. Null when the discount has no expiration or no subscription-level
+    discount is applied.
+- name: subscription_discount_id
+  description: The unique Stripe identifier for the discount applied at the subscription level (e.g., 'di_...'). Null when no subscription-level
+    discount exists.
+- name: subscription_discount_invoice_id
+  description: The identifier of the invoice associated with the subscription-level discount, if applicable. Null when the discount is not tied
+    to a specific invoice.
+- name: subscription_discount_invoice_item_id
+  description: The identifier of the invoice line item associated with the subscription-level discount, if applicable. Null when the discount
+    is not tied to a specific invoice item.
+- name: subscription_discount_promotion_code_id
+  description: The identifier of the promotion code used to apply the subscription-level discount (e.g., 'promo_...'). Null when no promotion
+    code was used to apply the discount.
+- name: subscription_discount_start
+  description: The timestamp at which the subscription-level discount became active. Null when no subscription-level discount has been applied.
+- name: subscription_end
+  description: The timestamp marking the end of the current subscription billing period. This field is always populated and represents when the
+    subscription's current term is set to expire.
+  type: TIMESTAMP
+- name: subscription_ended_at
+  description: The timestamp at which the subscription was fully terminated or cancelled. Null when the subscription is still active and has not
+    yet ended.
+- name: subscription_ended_reason
+  description: The reason a subscription was terminated, with possible values of 'Customer Initiated' (voluntary cancellation), 'Payment Failure'
+    (non-payment), or 'Other'. Null when the subscription has not yet ended.
+- name: subscription_environment
+  description: The environment in which the subscription was created, such as 'Production'. Used to distinguish live subscription records from
+    test or staging data.
+- name: subscription_expiry_time
+  description: The timestamp at which the subscription access is set to expire, typically used for app store or non-Stripe managed subscriptions.
+    Always populated for records where this concept applies.
+- name: subscription_external_account_id
+  description: An external account identifier associated with the subscription, used when the subscription is managed via a third-party platform
+    or store. Null when no external account mapping exists.
+- name: subscription_first_touch_attribution_entrypoint
+  description: The marketing or product entrypoint where the user first encountered a subscription offer, as captured in attribution data (e.g.,
+    'www.mozilla.org-vpn-product-page'). Null when first-touch attribution data is not available.
+- name: subscription_first_touch_attribution_entrypoint_experiment
+  description: The name of the A/B or multivariate experiment that was active at the user's first-touch attribution entrypoint (e.g., 'vpn-landing-page-sub-position').
+    Null when no experiment was associated with the first-touch entrypoint.
+- name: subscription_first_touch_attribution_entrypoint_variation
+  description: The specific experiment variation or treatment the user was assigned to at the first-touch attribution entrypoint (e.g., 'a', 'b',
+    'control', 'treatment-d'). Null when no experiment variation is associated with the first-touch entrypoint.

@@ -1,0 +1,18 @@
+friendly_name: SUMO Content Quality KPIs
+description: |
+  Day-level SUMO content quality score, the weighted blend of KB freshness (0.3), KB helpfulness (0.4), support deflection / 1 - SSER (0.2), and KB search success rate / SSR (0.1). Each component is sourced from its own KPI layer: freshness and helpfulness from kb_quality_metrics_daily_v1 (en-US articles), deflection from sumo_sser_kpis (all products/locales), and SSR from sumo_search_success_kpis (en-US search locale). Exposes both the daily score and a 14-day moving-average score (content_quality_score_14_ma) along with the underlying component rates and their 14-day moving averages / lags.
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  owner1: phlee
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.sumo_metrics_derived.kb_quality_metrics_daily_v1
+  - moz-fx-data-shared-prod.sumo_metrics_derived.sumo_search_success_kpis
+  - moz-fx-data-shared-prod.sumo_metrics_derived.sumo_sser_kpis

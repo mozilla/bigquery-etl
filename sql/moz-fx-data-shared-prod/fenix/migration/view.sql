@@ -172,7 +172,8 @@ SELECT
     STRUCT(
       ping_info.server_knobs_config.event_threshold,
       ping_info.server_knobs_config.metrics_enabled,
-      ping_info.server_knobs_config.pings_enabled
+      ping_info.server_knobs_config.pings_enabled,
+      ping_info.server_knobs_config.session_sample_rate
     ) AS `server_knobs_config`,
     CAST(NULL AS TIMESTAMP) AS `parsed_start_time`,
     CAST(NULL AS TIMESTAMP) AS `parsed_end_time`
@@ -504,7 +505,8 @@ SELECT
           STRUCT(pings_enabled.key, pings_enabled.value)
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
-      ) AS `pings_enabled`
+      ) AS `pings_enabled`,
+      ping_info.server_knobs_config.session_sample_rate
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
@@ -836,7 +838,8 @@ SELECT
           STRUCT(pings_enabled.key, pings_enabled.value)
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
-      ) AS `pings_enabled`
+      ) AS `pings_enabled`,
+      ping_info.server_knobs_config.session_sample_rate
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
@@ -1168,7 +1171,8 @@ SELECT
           STRUCT(pings_enabled.key, pings_enabled.value)
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
-      ) AS `pings_enabled`
+      ) AS `pings_enabled`,
+      ping_info.server_knobs_config.session_sample_rate
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
@@ -1500,7 +1504,8 @@ SELECT
           STRUCT(pings_enabled.key, pings_enabled.value)
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
-      ) AS `pings_enabled`
+      ) AS `pings_enabled`,
+      ping_info.server_knobs_config.session_sample_rate
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time

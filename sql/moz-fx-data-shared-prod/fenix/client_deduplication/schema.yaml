@@ -347,6 +347,8 @@ fields:
         type: STRING
       - name: value
         type: BOOLEAN
+    - name: session_sample_rate
+      type: FLOAT
   - name: parsed_start_time
     type: TIMESTAMP
   - name: parsed_end_time

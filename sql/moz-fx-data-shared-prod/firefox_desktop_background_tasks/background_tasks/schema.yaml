@@ -616,6 +616,10 @@ fields:
         mode: NULLABLE
       description: Map of ping names to boolean values indicating whether the ping
         is enabled
+    - name: session_sample_rate
+      type: FLOAT
+      mode: NULLABLE
+      description: "Remote override for the session sampling rate (0.0\u20131.0)."
     description: The Server Knobs configuration applied via applyServerKnobsConfig.
       Contains the complete configuration including metrics_enabled, pings_enabled,
       and event_threshold settings.

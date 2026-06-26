@@ -59085,6 +59085,36 @@ fields:
         for that.
 
         '
+    - name: netwerk_happy_eyeballs_https_rr_features_by_resolver
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: which connection-bootstrapping features the HTTPS
+        DNS records carried, combined across all HTTPS records received for a connection
+        (the union of features over every record, not per record), split by the resolver
+        type (DoH/TRR vs native) that produced the HTTPS response. The "total" category
+        is incremented once per connection that saw at least one non-empty HTTPS record
+        and serves as the denominator; each feature category is incremented once per
+        connection whose combined records carried that feature. "ech" and the address
+        hints can only be delivered ahead of the first connection via the DNS record,
+        not via an Alt-Svc header. Used to compare how often DoH versus native resolution
+        yields a usable (and h3-capable) HTTPS record. This is the resolver-split
+        companion of happy_eyeballs_https_rr_features.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE
@@ -59237,6 +59267,10 @@ fields:
         mode: NULLABLE
       description: Map of ping names to boolean values indicating whether the ping
         is enabled
+    - name: session_sample_rate
+      type: FLOAT
+      mode: NULLABLE
+      description: "Remote override for the session sampling rate (0.0\u20131.0)."
     description: The Server Knobs configuration applied via applyServerKnobsConfig.
       Contains the complete configuration including metrics_enabled, pings_enabled,
       and event_threshold settings.

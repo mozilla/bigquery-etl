@@ -38,9 +38,8 @@ fields:
 - name: key
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: key
+  description: The aggregation key for the probe/metric — for a labeled metric this is the label, otherwise
+    empty. Identifies the specific keyed dimension the counts apply to.
 - name: process
   type: STRING
   mode: NULLABLE

@@ -26,9 +26,9 @@ fields:
 - name: index
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: index
+  description: The index identifying this event type (the category and event combination) within the event
+    encoding scheme, used together with numeric_index to reference the event compactly in downstream event
+    tables.
 - name: event_properties
   type: RECORD
   mode: REPEATED

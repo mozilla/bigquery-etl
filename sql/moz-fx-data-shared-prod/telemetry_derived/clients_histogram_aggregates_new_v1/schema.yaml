@@ -86,9 +86,8 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: key
+    description: The aggregation key for the histogram metric — for a labeled (keyed) histogram this is the
+      label, otherwise empty.
   - name: process
     type: STRING
     mode: NULLABLE
@@ -111,12 +110,9 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: !include-field-description
-        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-        field: key
+      description: The histogram bucket label (the bucket's lower bound) for this aggregated entry.
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: !include-field-description
-        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-        field: value
+      description: The aggregated number of samples that fell into the corresponding histogram bucket across
+        the client's submissions.

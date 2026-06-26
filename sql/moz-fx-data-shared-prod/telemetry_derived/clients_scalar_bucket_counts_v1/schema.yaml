@@ -38,9 +38,8 @@ fields:
 - name: key
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: key
+  description: The aggregation key for the scalar metric — for a keyed scalar this is the key, otherwise
+    empty.
 - name: process
   type: STRING
   mode: NULLABLE
@@ -66,6 +65,4 @@ fields:
 - name: count
   type: INT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: count
+  description: The number of clients whose aggregated scalar value fell into the corresponding bucket.

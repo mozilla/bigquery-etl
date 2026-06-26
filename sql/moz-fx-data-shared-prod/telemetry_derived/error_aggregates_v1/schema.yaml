@@ -20,9 +20,8 @@ fields:
 - name: version
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: version
+  description: The Firefox application version reported by the ping (from environment.build.version, falling
+    back to the app_version in the ping URI).
 - name: display_version
   type: STRING
   mode: NULLABLE
@@ -68,9 +67,7 @@ fields:
 - name: count
   type: INT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: count
+  description: The number of pings aggregated into this row for the given dimension combination.
 - name: main_crashes
   type: INT64
   mode: NULLABLE

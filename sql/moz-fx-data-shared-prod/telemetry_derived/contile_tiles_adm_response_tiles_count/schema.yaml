@@ -66,9 +66,7 @@ fields:
 - name: value
   type: INT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: value
+  description: The number of tiles returned in AdMarketplace responses, for the given dimension combination.
 - name: submission_date
   type: DATE
   mode: NULLABLE

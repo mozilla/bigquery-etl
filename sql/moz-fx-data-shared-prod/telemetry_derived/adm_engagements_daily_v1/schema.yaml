@@ -25,9 +25,8 @@ fields:
 - name: version
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: version
+  description: The major version number of the application, extracted as the first dot-separated component
+    of app_version (e.g., '128').
 - name: normalized_channel
   type: STRING
   mode: NULLABLE

@@ -14,9 +14,9 @@ fields:
 - name: name
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: name
+  description: The human-readable display name of the add-on identified by addon_id (e.g., 'Adblock Plus'),
+    chosen as the most frequently reported name across clients that had the add-on installed on the submission
+    date. May be null when no name was reported.
 - name: most_common_default_search_engine
   type: STRING
   mode: NULLABLE

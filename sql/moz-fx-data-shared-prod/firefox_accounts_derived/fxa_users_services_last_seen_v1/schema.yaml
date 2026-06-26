@@ -25,8 +25,8 @@ fields:
 - name: service
   type: STRING
   mode: NULLABLE
-  description: The Mozilla service or OAuth relying party associated with the event
-    (e.g., 'sync', 'pocket-web', 'fenix', 'amo-web').
+  description: The Mozilla service or relying party associated with the event (e.g.,
+    'sync', 'fenix', 'fx-private-relay', 'amo-web').
 - name: country
   type: STRING
   mode: NULLABLE

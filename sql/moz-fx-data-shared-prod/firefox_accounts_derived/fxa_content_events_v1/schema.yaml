@@ -21,8 +21,7 @@ fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
-      description: Cloud instance identifier of the node that generated the log entry
-        (e.g., 'i-xxxxxxxxxxxxxxxxx').
+      description: Cloud instance identifier of the node that generated the log entry.
     - name: project_id
       type: STRING
       mode: NULLABLE
@@ -30,7 +29,7 @@ fields:
     - name: zone
       type: STRING
       mode: NULLABLE
-      description: Availability zone of the resource (e.g., 'us-west-1').
+      description: Availability zone of the resource.
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -53,7 +52,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Name of the logger or component that emitted the log entry (e.g.,
-      'fxa-auth-server', 'fxa-content-server').
+      'fxa-auth-server', 'fxa-content-server', 'fxa-oauth-server'). Used to derive
+      the top-level `fxa_server` field.
   - name: timestamp
     type: FLOAT
     mode: NULLABLE
@@ -89,8 +89,8 @@ fields:
     - name: event_type
       type: STRING
       mode: NULLABLE
-      description: Event type string identifying the category of event (e.g., 'fxa_email
-        - bounced', 'fxa_login - complete').
+      description: Event type string identifying the category of event (e.g., 'fxa_login
+        - complete', 'fxa_email - sent').
     - name: country
       type: STRING
       mode: NULLABLE
@@ -127,12 +127,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Firefox Accounts application version at the time of the event (e.g.,
-        '152.1', '195.0').
+        '333.6').
     - name: device_model
       type: STRING
       mode: NULLABLE
-      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
-        6').
+      description: Device model associated with the event (e.g., 'iPhone', 'iPad').
     - name: err
       type: STRING
       mode: NULLABLE
@@ -140,11 +139,11 @@ fields:
     - name: method
       type: STRING
       mode: NULLABLE
-      description: HTTP method associated with the request (e.g., 'GET', 'POST').
+      description: HTTP method associated with the request.
     - name: path
       type: STRING
       mode: NULLABLE
-      description: URL path of the request (e.g., '/v1/account/login').
+      description: URL path of the request.
     - name: clientaddress
       type: STRING
       mode: NULLABLE
@@ -213,12 +212,13 @@ fields:
     - name: context
       type: STRING
       mode: NULLABLE
-      description: Context string for the event (e.g., OAuth flow context such as
-        'fx_desktop_v3').
+      description: Context string for the event (OAuth flow context).
     - name: event
       type: STRING
       mode: NULLABLE
-      description: Amplitude event name.
+      description: Event name from the FxA service payload. In Amplitude-connected
+        tables this is an Amplitude event name; in admin and log tables it is a service-level
+        action name.
     - name: joierrors
       type: STRING
       mode: NULLABLE
@@ -538,8 +538,7 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
-    description: Type label from the log metadata indicating the log source category
-      (e.g., 'admin_panel').
+    description: Type label from the log metadata indicating the log source category.
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
@@ -548,15 +547,15 @@ fields:
   - name: application
     type: STRING
     mode: NULLABLE
-    description: Application label identifying the FxA application (e.g., 'fxa').
+    description: Application label identifying the FxA application.
   - name: env
     type: STRING
     mode: NULLABLE
-    description: Deployment environment label (e.g., 'prod', 'stage').
+    description: Deployment environment label.
   - name: stack
     type: STRING
     mode: NULLABLE
-    description: Stack label from the log metadata (e.g., 'default').
+    description: Stack label from the log metadata.
   - name: fxa________
     type: STRING
     mode: NULLABLE

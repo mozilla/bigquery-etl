@@ -21,7 +21,7 @@ fields:
     - name: zone
       type: STRING
       mode: NULLABLE
-      description: Availability zone of the resource (e.g., 'us-west-1').
+      description: Availability zone of the resource.
     - name: project_id
       type: STRING
       mode: NULLABLE
@@ -29,13 +29,12 @@ fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
-      description: Cloud instance identifier of the node that generated the log entry
-        (e.g., 'i-xxxxxxxxxxxxxxxxx').
+      description: Cloud instance identifier of the node that generated the log entry.
     - name: namespace_name
       type: STRING
       mode: NULLABLE
       description: Kubernetes namespace of the pod that generated the log entry (e.g.,
-        'fxa').
+        'fxa-prod').
     - name: location
       type: STRING
       mode: NULLABLE
@@ -52,7 +51,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Kubernetes cluster name where the FxA service is running (e.g.,
-        'fxa-prod').
+        'webservices-high-prod').
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -102,7 +101,7 @@ fields:
     - name: method
       type: STRING
       mode: NULLABLE
-      description: HTTP method associated with the request (e.g., 'GET', 'POST').
+      description: HTTP method associated with the request.
     - name: contentlength
       type: STRING
       mode: NULLABLE
@@ -110,7 +109,7 @@ fields:
     - name: path
       type: STRING
       mode: NULLABLE
-      description: URL path of the request (e.g., '/v1/account/login').
+      description: URL path of the request.
     - name: t
       type: STRING
       mode: NULLABLE
@@ -130,12 +129,13 @@ fields:
     - name: event
       type: STRING
       mode: NULLABLE
-      description: Amplitude event name.
+      description: Event name from the FxA service payload. In Amplitude-connected
+        tables this is an Amplitude event name; in admin and log tables it is a service-level
+        action name.
     - name: context
       type: STRING
       mode: NULLABLE
-      description: Context string for the event (e.g., OAuth flow context such as
-        'fx_desktop_v3').
+      description: Context string for the event (OAuth flow context).
     - name: os_name
       type: STRING
       mode: NULLABLE
@@ -145,7 +145,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Firefox Accounts application version at the time of the event (e.g.,
-        '152.1', '195.0').
+        '333.6').
     - name: time
       type: FLOAT
       mode: NULLABLE
@@ -184,8 +184,8 @@ fields:
     - name: event_type
       type: STRING
       mode: NULLABLE
-      description: Event type string identifying the category of event (e.g., 'fxa_email
-        - bounced', 'fxa_login - complete').
+      description: Event type string identifying the category of event (e.g., 'fxa_login
+        - complete', 'fxa_email - sent').
     - name: event_properties
       type: STRING
       mode: NULLABLE
@@ -198,8 +198,7 @@ fields:
     - name: device_model
       type: STRING
       mode: NULLABLE
-      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
-        6').
+      description: Device model associated with the event (e.g., 'iPhone', 'iPad').
     - name: agent
       type: STRING
       mode: NULLABLE
@@ -297,7 +296,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Name of the logger or component that emitted the log entry (e.g.,
-      'fxa-auth-server', 'fxa-content-server').
+      'fxa-auth-server', 'fxa-content-server', 'fxa-oauth-server'). Used to derive
+      the top-level `fxa_server` field.
   - name: op
     type: STRING
     mode: NULLABLE
@@ -398,7 +398,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: X-Forwarded-Proto header value indicating the originating protocol
-      (e.g., 'https').
+      ('http' or 'https').
   - name: referrer
     type: STRING
     mode: NULLABLE
@@ -506,15 +506,15 @@ fields:
   - name: application
     type: STRING
     mode: NULLABLE
-    description: Application label identifying the FxA application (e.g., 'fxa').
+    description: Application label identifying the FxA application.
   - name: stack
     type: STRING
     mode: NULLABLE
-    description: Stack label from the log metadata (e.g., 'default').
+    description: Stack label from the log metadata.
   - name: env
     type: STRING
     mode: NULLABLE
-    description: Deployment environment label (e.g., 'prod', 'stage').
+    description: Deployment environment label.
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
@@ -523,8 +523,7 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
-    description: Type label from the log metadata indicating the log source category
-      (e.g., 'admin_panel').
+    description: Type label from the log metadata indicating the log source category.
   - name: k8s_pod_app_kubernetes_io_name
     type: STRING
     mode: NULLABLE

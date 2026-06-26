@@ -24,12 +24,11 @@ fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
-      description: Cloud instance identifier of the node that generated the log entry
-        (e.g., 'i-xxxxxxxxxxxxxxxxx').
+      description: Cloud instance identifier of the node that generated the log entry.
     - name: zone
       type: STRING
       mode: NULLABLE
-      description: Availability zone of the resource (e.g., 'us-west-1').
+      description: Availability zone of the resource.
     - name: project_id
       type: STRING
       mode: NULLABLE
@@ -591,15 +590,15 @@ fields:
   - name: application
     type: STRING
     mode: NULLABLE
-    description: Application label identifying the FxA application (e.g., 'fxa').
+    description: Application label identifying the FxA application.
   - name: stack
     type: STRING
     mode: NULLABLE
-    description: Stack label from the log metadata (e.g., 'default').
+    description: Stack label from the log metadata.
   - name: env
     type: STRING
     mode: NULLABLE
-    description: Deployment environment label (e.g., 'prod', 'stage').
+    description: Deployment environment label.
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
@@ -608,8 +607,7 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
-    description: Type label from the log metadata indicating the log source category
-      (e.g., 'admin_panel').
+    description: Type label from the log metadata indicating the log source category.
 - name: operation
   type: RECORD
   mode: NULLABLE

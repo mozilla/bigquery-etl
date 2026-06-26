@@ -37,12 +37,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Kubernetes cluster name where the FxA service is running (e.g.,
-        'fxa-prod').
+        'webservices-high-prod').
     - name: namespace_name
       type: STRING
       mode: NULLABLE
       description: Kubernetes namespace of the pod that generated the log entry (e.g.,
-        'fxa').
+        'fxa-prod').
     - name: location
       type: STRING
       mode: NULLABLE
@@ -86,7 +86,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: X-Forwarded-Proto header value indicating the originating protocol
-      (e.g., 'https').
+      ('http' or 'https').
   - name: trace
     type: STRING
     mode: NULLABLE
@@ -111,7 +111,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Name of the logger or component that emitted the log entry (e.g.,
-      'fxa-auth-server', 'fxa-content-server').
+      'fxa-auth-server', 'fxa-content-server', 'fxa-oauth-server'). Used to derive
+      the top-level `fxa_server` field.
   - name: pid
     type: FLOAT
     mode: NULLABLE
@@ -137,7 +138,7 @@ fields:
     - name: method
       type: STRING
       mode: NULLABLE
-      description: HTTP method associated with the request (e.g., 'GET', 'POST').
+      description: HTTP method associated with the request.
     - name: status
       type: STRING
       mode: NULLABLE
@@ -157,12 +158,11 @@ fields:
     - name: path
       type: STRING
       mode: NULLABLE
-      description: URL path of the request (e.g., '/v1/account/login').
+      description: URL path of the request.
     - name: errno
       type: FLOAT
       mode: NULLABLE
-      description: FxA error number. See FxA errno documentation for values (e.g.,
-        102 for unknown account, 110 for invalid auth token).
+      description: FxA error number. See FxA errno documentation for values.
     - name: code
       type: FLOAT
       mode: NULLABLE
@@ -193,7 +193,9 @@ fields:
     - name: event
       type: STRING
       mode: NULLABLE
-      description: Amplitude event name.
+      description: Event name from the FxA service payload. In Amplitude-connected
+        tables this is an Amplitude event name; in admin and log tables it is a service-level
+        action name.
     - name: time
       type: FLOAT
       mode: NULLABLE
@@ -201,8 +203,8 @@ fields:
     - name: event_type
       type: STRING
       mode: NULLABLE
-      description: Event type string identifying the category of event (e.g., 'fxa_email
-        - bounced', 'fxa_login - complete').
+      description: Event type string identifying the category of event (e.g., 'fxa_login
+        - complete', 'fxa_email - sent').
     - name: region
       type: STRING
       mode: NULLABLE
@@ -226,7 +228,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Firefox Accounts application version at the time of the event (e.g.,
-        '152.1', '195.0').
+        '333.6').
     - name: user_properties
       type: STRING
       mode: NULLABLE
@@ -265,7 +267,7 @@ fields:
     - name: reason
       type: STRING
       mode: NULLABLE
-      description: Reason associated with the event (e.g., 'disconnect', 'unverified').
+      description: Reason associated with the event.
     - name: result
       type: STRING
       mode: NULLABLE
@@ -423,12 +425,12 @@ fields:
     - name: success
       type: FLOAT
       mode: NULLABLE
-      description: Boolean indicating whether the operation succeeded.
+      description: Indicates whether the operation succeeded; in some tables a count
+        of successful operations associated with the event.
     - name: device_model
       type: STRING
       mode: NULLABLE
-      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
-        6').
+      description: Device model associated with the event (e.g., 'iPhone', 'iPad').
     - name: sample
       type: STRING
       mode: NULLABLE
@@ -460,7 +462,7 @@ fields:
     - name: locale
       type: STRING
       mode: NULLABLE
-      description: BCP 47 locale string (e.g., 'en-US', 'fr-FR').
+      description: BCP 47 locale string.
     - name: twofactorauthentication
       type: BOOLEAN
       mode: NULLABLE
@@ -533,8 +535,7 @@ fields:
     - name: template
       type: STRING
       mode: NULLABLE
-      description: Email or notification template identifier (e.g., 'verifyEmail',
-        'newDeviceLogin').
+      description: Email or notification template identifier.
     - name: to
       type: STRING
       mode: NULLABLE
@@ -1031,7 +1032,7 @@ fields:
     - name: environmentType
       type: STRING
       mode: NULLABLE
-      description: App Hub service environment type (e.g., 'PRODUCTION').
+      description: App Hub service environment type.
     - name: criticalityType
       type: STRING
       mode: NULLABLE

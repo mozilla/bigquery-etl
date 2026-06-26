@@ -12,8 +12,8 @@ fields:
 - name: service
   type: STRING
   mode: NULLABLE
-  description: The Mozilla service or OAuth relying party associated with the event
-    (e.g., 'sync', 'pocket-web', 'fenix', 'amo-web').
+  description: The Mozilla service or relying party associated with the event (e.g.,
+    'sync', 'fenix', 'fx-private-relay', 'amo-web').
 - name: country
   type: STRING
   mode: NULLABLE
@@ -34,8 +34,7 @@ fields:
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: Operating system version string (e.g., '10' for Windows 10, '14.0'
-    for macOS Sonoma).
+  description: Operating system version string (e.g., '10', '10.15', '16').
 - name: seen_in_tier1_country
   type: BOOLEAN
   mode: NULLABLE

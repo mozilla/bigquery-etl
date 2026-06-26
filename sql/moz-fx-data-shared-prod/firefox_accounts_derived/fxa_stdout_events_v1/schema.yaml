@@ -26,7 +26,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Kubernetes namespace of the pod that generated the log entry (e.g.,
-        'fxa').
+        'fxa-prod').
     - name: location
       type: STRING
       mode: NULLABLE
@@ -43,7 +43,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Kubernetes cluster name where the FxA service is running (e.g.,
-        'fxa-prod').
+        'webservices-high-prod').
 - name: textPayload
   type: STRING
   mode: NULLABLE
@@ -58,7 +58,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: X-Forwarded-Proto header value indicating the originating protocol
-      (e.g., 'https').
+      ('http' or 'https').
   - name: request_time
     type: FLOAT
     mode: NULLABLE
@@ -127,7 +127,7 @@ fields:
     - name: method
       type: STRING
       mode: NULLABLE
-      description: HTTP method associated with the request (e.g., 'GET', 'POST').
+      description: HTTP method associated with the request.
     - name: clientaddress
       type: STRING
       mode: NULLABLE
@@ -143,7 +143,7 @@ fields:
     - name: path
       type: STRING
       mode: NULLABLE
-      description: URL path of the request (e.g., '/v1/account/login').
+      description: URL path of the request.
     - name: t
       type: STRING
       mode: NULLABLE
@@ -163,13 +163,13 @@ fields:
     - name: event_type
       type: STRING
       mode: NULLABLE
-      description: Event type string identifying the category of event (e.g., 'fxa_email
-        - bounced', 'fxa_login - complete').
+      description: Event type string identifying the category of event (e.g., 'fxa_login
+        - complete', 'fxa_email - sent').
     - name: app_version
       type: STRING
       mode: NULLABLE
       description: Firefox Accounts application version at the time of the event (e.g.,
-        '152.1', '195.0').
+        '333.6').
     - name: user_properties
       type: STRING
       mode: NULLABLE
@@ -200,8 +200,7 @@ fields:
     - name: device_model
       type: STRING
       mode: NULLABLE
-      description: Device model associated with the event (e.g., 'iPhone14,3', 'Pixel
-        6').
+      description: Device model associated with the event (e.g., 'iPhone', 'iPad').
     - name: message
       type: STRING
       mode: NULLABLE
@@ -239,8 +238,7 @@ fields:
     - name: countrycode
       type: STRING
       mode: NULLABLE
-      description: Two-letter ISO 3166-1 country code associated with the event (e.g.,
-        'US', 'DE').
+      description: Two-letter ISO 3166-1 country code associated with the event.
     - name: country_code
       type: STRING
       mode: NULLABLE
@@ -255,12 +253,13 @@ fields:
     - name: context
       type: STRING
       mode: NULLABLE
-      description: Context string for the event (e.g., OAuth flow context such as
-        'fx_desktop_v3').
+      description: Context string for the event (OAuth flow context).
     - name: event
       type: STRING
       mode: NULLABLE
-      description: Amplitude event name.
+      description: Event name from the FxA service payload. In Amplitude-connected
+        tables this is an Amplitude event name; in admin and log tables it is a service-level
+        action name.
   - name: pid
     type: FLOAT
     mode: NULLABLE
@@ -274,7 +273,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Name of the logger or component that emitted the log entry (e.g.,
-      'fxa-auth-server', 'fxa-content-server').
+      'fxa-auth-server', 'fxa-content-server', 'fxa-oauth-server'). Used to derive
+      the top-level `fxa_server` field.
   - name: severity
     type: FLOAT
     mode: NULLABLE

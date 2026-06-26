@@ -21,12 +21,11 @@ fields:
     - name: instance_id
       type: STRING
       mode: NULLABLE
-      description: Cloud instance identifier of the node that generated the log entry
-        (e.g., 'i-xxxxxxxxxxxxxxxxx').
+      description: Cloud instance identifier of the node that generated the log entry.
     - name: zone
       type: STRING
       mode: NULLABLE
-      description: Availability zone of the resource (e.g., 'us-west-1').
+      description: Availability zone of the resource.
     - name: project_id
       type: STRING
       mode: NULLABLE
@@ -62,12 +61,11 @@ fields:
     - name: locale
       type: STRING
       mode: NULLABLE
-      description: BCP 47 locale string (e.g., 'en-US', 'fr-FR').
+      description: BCP 47 locale string.
     - name: template
       type: STRING
       mode: NULLABLE
-      description: Email or notification template identifier (e.g., 'verifyEmail',
-        'newDeviceLogin').
+      description: Email or notification template identifier.
     - name: flow_id
       type: STRING
       mode: NULLABLE
@@ -94,7 +92,9 @@ fields:
     - name: event
       type: STRING
       mode: NULLABLE
-      description: Amplitude event name.
+      description: Event name from the FxA service payload. In Amplitude-connected
+        tables this is an Amplitude event name; in admin and log tables it is a service-level
+        action name.
     - name: time
       type: FLOAT
       mode: NULLABLE
@@ -121,8 +121,8 @@ fields:
     - name: event_type
       type: STRING
       mode: NULLABLE
-      description: Event type string identifying the category of event (e.g., 'fxa_email
-        - bounced', 'fxa_login - complete').
+      description: Event type string identifying the category of event (e.g., 'fxa_login
+        - complete', 'fxa_email - sent').
     - name: session_id
       type: STRING
       mode: NULLABLE
@@ -145,7 +145,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Firefox Accounts application version at the time of the event (e.g.,
-        '152.1', '195.0').
+        '333.6').
     - name: language
       type: STRING
       mode: NULLABLE
@@ -241,7 +241,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Name of the logger or component that emitted the log entry (e.g.,
-      'fxa-auth-server', 'fxa-content-server').
+      'fxa-auth-server', 'fxa-content-server', 'fxa-oauth-server'). Used to derive
+      the top-level `fxa_server` field.
   - name: envversion
     type: STRING
     mode: NULLABLE
@@ -350,16 +351,15 @@ fields:
   - name: env
     type: STRING
     mode: NULLABLE
-    description: Deployment environment label (e.g., 'prod', 'stage').
+    description: Deployment environment label.
   - name: type
     type: STRING
     mode: NULLABLE
-    description: Type label from the log metadata indicating the log source category
-      (e.g., 'admin_panel').
+    description: Type label from the log metadata indicating the log source category.
   - name: stack
     type: STRING
     mode: NULLABLE
-    description: Stack label from the log metadata (e.g., 'default').
+    description: Stack label from the log metadata.
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
@@ -368,7 +368,7 @@ fields:
   - name: application
     type: STRING
     mode: NULLABLE
-    description: Application label identifying the FxA application (e.g., 'fxa').
+    description: Application label identifying the FxA application.
   - name: pro
     type: STRING
     mode: NULLABLE

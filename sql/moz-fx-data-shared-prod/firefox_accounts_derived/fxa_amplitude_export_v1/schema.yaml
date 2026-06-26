@@ -58,7 +58,7 @@ fields:
   name: ua_version
   type: STRING
   description: Browser or client version parsed from the user agent string (e.g.,
-    '120', '121').
+    '148.0', '149.0').
 - mode: NULLABLE
   name: ua_browser
   type: STRING

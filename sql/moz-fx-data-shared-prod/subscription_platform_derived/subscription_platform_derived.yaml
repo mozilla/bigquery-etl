@@ -954,3 +954,152 @@ fields:
 - name: subscription_first_touch_attribution_entrypoint_variation
   description: The specific experiment variation or treatment the user was assigned to at the first-touch attribution entrypoint (e.g., 'a', 'b',
     'control', 'treatment-d'). Null when no experiment variation is associated with the first-touch entrypoint.
+- name: subscription_first_touch_attribution_impression_at
+  description: Timestamp of the first marketing impression that can be attributed to the subscription. Represents the earliest recorded touchpoint
+    in the attribution chain leading to the subscription.
+- name: subscription_first_touch_attribution_utm_campaign
+  description: UTM campaign parameter captured at the first attribution touchpoint for the subscription. Identifies the marketing campaign (e.g.,
+    'vpn-product-page', 'july2020') that first drove traffic toward the subscription.
+- name: subscription_first_touch_attribution_utm_content
+  description: UTM content parameter captured at the first attribution touchpoint for the subscription. Used to differentiate ads or links within
+    the same campaign, such as specific creative variants or placement identifiers.
+- name: subscription_first_touch_attribution_utm_medium
+  description: UTM medium parameter captured at the first attribution touchpoint for the subscription. Describes the marketing channel through
+    which the user first arrived, such as 'referral', 'email', or 'organic'.
+- name: subscription_first_touch_attribution_utm_source
+  description: UTM source parameter captured at the first attribution touchpoint for the subscription. Identifies the specific origin of the traffic,
+    such as a referring website or browser entry point (e.g., 'www.mozilla.org-vpn-product-page', 'firefox-browser').
+- name: subscription_first_touch_attribution_utm_term
+  description: UTM term parameter captured at the first attribution touchpoint for the subscription. Typically records keyword or placement identifiers
+    associated with the initial traffic source, and is null for the vast majority of subscriptions.
+- name: subscription_has_fraudulent_charges
+  description: Indicates whether the subscription has been associated with any fraudulent charges. A value of true means at least one fraudulent
+    charge has been detected; false means no fraudulent charges are on record.
+- name: subscription_has_refunds
+  description: Indicates whether the subscription has had any refunds issued. A value of true means at least one refund has been processed; false
+    means no refunds have occurred.
+- name: subscription_id
+  description: Unique identifier for a subscription record, scoped to the originating platform (e.g., Apple App Store, Google Play, Stripe). The
+    format encodes the platform and key subscription metadata.
+  type: STRING
+- name: subscription_initial_discount_name
+  description: Human-readable name of the discount or promotional offer applied when the subscription was first created. Null if no discount was
+    applied at subscription start.
+- name: subscription_initial_discount_promotion_code
+  description: Promotion code used to apply the initial discount at the time the subscription was created (e.g., 'MOZILLA20', 'HOLIDAY20'). Null
+    if no promotional code was applied.
+- name: subscription_introductory_price_info_introductory_price_amount_micros
+  description: Introductory price amount for the subscription in micros (millionths of the currency unit), as provided by the app store. Null
+    if no introductory pricing was offered.
+- name: subscription_introductory_price_info_introductory_price_currency_code
+  description: ISO 4217 currency code associated with the subscription's introductory price (e.g., 'USD', 'EUR'). Null if no introductory pricing
+    was offered.
+- name: subscription_introductory_price_info_introductory_price_cycles
+  description: Number of billing cycles for which the introductory price applies to the subscription. Null if no introductory pricing was offered.
+- name: subscription_introductory_price_info_introductory_price_period
+  description: Billing period duration for the introductory price (e.g., an ISO 8601 duration string). Null if no introductory pricing was offered.
+- name: subscription_is_active
+  description: Indicates whether the subscription is currently active. A value of true means the subscription is in good standing and the user
+    has access; false means it has expired, been cancelled, or otherwise terminated.
+- name: subscription_is_bundle
+  description: Indicates whether the subscription is part of a product bundle. A value of true means the subscription was purchased as part of
+    a multi-product bundle; false means it is a standalone subscription.
+- name: subscription_is_trial
+  description: Indicates whether the subscription is or was in a free trial period. A value of true means the subscription started with a trial;
+    false means no trial was associated with the subscription.
+- name: subscription_item_id
+  description: Unique identifier for an individual subscription line item within the subscription, typically a Stripe subscription item ID (e.g.,
+    'si_...'). Used to reference a specific plan or product within a subscription.
+  type: STRING
+- name: subscription_items
+  description: Array of subscription line item objects, each containing details about the plan, product, pricing, quantity, and metadata associated
+    with the subscription. Reflects the full structure of items attached to the subscription as returned by the billing provider.
+- name: subscription_kind
+  description: Identifies the type or kind of subscription resource as defined by the billing platform (e.g., 'androidpublisher#subscriptionPurchase').
+    Used to distinguish the schema or API resource type of the subscription record.
+- name: subscription_last_touch_attribution_channel_group
+  description: High-level marketing channel grouping associated with the last attribution touchpoint before subscription conversion (e.g., 'Marketing
+    Owned', 'Direct', 'Product Owned'). Used for top-level attribution reporting.
+- name: subscription_last_touch_attribution_entrypoint
+  description: The last recorded entrypoint through which the user engaged before subscribing, typically identifying a specific page or product
+    surface (e.g., 'www.mozilla.org-vpn-product-page'). Null if no entrypoint was captured.
+- name: subscription_last_touch_attribution_entrypoint_experiment
+  description: Identifier for the A/B or multivariate experiment associated with the last attribution entrypoint prior to subscription. Null if
+    the user was not part of an experiment at their last touchpoint.
+- name: subscription_last_touch_attribution_entrypoint_variation
+  description: The specific experiment variation or branch encountered at the last attribution entrypoint before subscription (e.g., 'a', 'b',
+    'control', 'treatment-d'). Null if no experiment variation was recorded.
+- name: subscription_last_touch_attribution_impression_at
+  description: Timestamp of the most recent marketing impression attributed to the subscription, representing the last touchpoint before conversion.
+    Null if no impression was recorded.
+- name: subscription_last_touch_attribution_utm_campaign
+  description: UTM campaign parameter from the last attribution touchpoint before subscription conversion. Identifies the marketing campaign most
+    recently associated with driving the user toward subscribing.
+- name: subscription_last_touch_attribution_utm_content
+  description: UTM content parameter from the last attribution touchpoint before subscription conversion. Differentiates between specific ad creatives,
+    link placements, or content variants at the final touchpoint.
+- name: subscription_last_touch_attribution_utm_medium
+  description: UTM medium parameter from the last attribution touchpoint before subscription conversion. Describes the marketing channel most
+    recently driving traffic, such as 'referral', 'email', or 'organic'.
+- name: subscription_last_touch_attribution_utm_source
+  description: UTM source parameter from the last attribution touchpoint before subscription conversion. Identifies the most recent traffic origin,
+    such as a specific referring website or browser surface.
+- name: subscription_last_touch_attribution_utm_term
+  description: UTM term parameter from the last attribution touchpoint before subscription conversion. Records keyword or placement identifiers
+    from the final touchpoint; null for the vast majority of subscriptions.
+- name: subscription_last_transaction_currency
+  description: ISO 4217 currency code of the most recent transaction associated with the subscription (e.g., 'USD', 'EUR', 'GBP'). Reflects the
+    currency in which the subscriber was billed.
+- name: subscription_last_transaction_expires_date
+  description: Timestamp indicating when the current subscription period expires or expired, as recorded in the most recent transaction. Used
+    to determine the end of the subscriber's paid access window.
+- name: subscription_last_transaction_in_app_ownership_type
+  description: Ownership type of the in-app subscription as indicated by the app store for the last transaction (e.g., 'PURCHASED'). Distinguishes
+    how the entitlement was obtained, such as a direct purchase versus a family sharing grant.
+- name: subscription_last_transaction_is_upgraded
+  description: Indicates whether the last transaction represents an upgrade from a lower-tier subscription. A value of true means the subscriber
+    upgraded; false or null means no upgrade was recorded.
+- name: subscription_last_transaction_offer_identifier
+  description: Identifier of any promotional offer applied to the last subscription transaction. Null if no offer was associated with the most
+    recent transaction.
+- name: subscription_last_transaction_offer_type
+  description: Numeric code representing the type of offer applied to the last transaction (e.g., 1 for an introductory offer). Null if no offer
+    type was associated with the most recent transaction.
+- name: subscription_last_transaction_original_purchase_date
+  description: Timestamp of the original purchase date for the subscription as recorded in the last transaction. This reflects when the subscription
+    was first purchased, even if the most recent transaction is a renewal.
+- name: subscription_last_transaction_price
+  description: Price charged in the last transaction, expressed in the smallest unit of the transaction currency (e.g., micros or cents depending
+    on the platform). A value of 0 typically indicates a free trial or fully discounted period.
+- name: subscription_last_transaction_product_id
+  description: Platform-specific product identifier for the subscription SKU associated with the last transaction (e.g., 'org.mozilla.ios.FirefoxVPN.product.1_month_subscription').
+    Identifies the specific billing plan purchased.
+- name: subscription_last_transaction_purchase_date
+  description: Timestamp of when the last transaction was processed or the current subscription period began. For auto-renewing subscriptions,
+    this is updated with each renewal.
+- name: subscription_last_transaction_revocation_date
+  description: Timestamp of when the last transaction was revoked, such as due to a refund or dispute. Null if the transaction has not been revoked.
+- name: subscription_last_transaction_revocation_reason
+  description: Numeric code indicating the reason the last transaction was revoked (e.g., 0 for other reasons, 1 for an app issue). Null if the
+    transaction was not revoked.
+- name: subscription_last_transaction_storefront
+  description: ISO 3166-1 alpha-3 country code of the app store storefront where the last transaction occurred (e.g., 'USA', 'DEU', 'GBR'). Indicates
+    the country-specific store the subscriber used to purchase.
+- name: subscription_last_transaction_transaction_id
+  description: Unique identifier assigned by the app store or billing platform to the most recent transaction for the subscription. Used to trace
+    and reconcile individual billing events.
+- name: subscription_last_transaction_type
+  description: Describes the type of the last subscription transaction as defined by the billing platform (e.g., 'Auto-Renewable Subscription').
+    Indicates the billing mechanism under which the transaction was processed.
+- name: subscription_latest_invoice_id
+  description: Unique identifier of the most recent invoice generated for the subscription, typically a Stripe invoice ID (e.g., 'in_...'). Used
+    to look up billing details for the latest charge.
+- name: subscription_linked_purchase_token
+  description: Token linking this subscription purchase to a previous purchase on the Google Play platform, used to track subscription upgrades,
+    downgrades, or replacements. Null if there is no linked prior purchase.
+- name: subscription_logical_subscription_id
+  description: A platform-prefixed unique identifier representing a logical subscription, which groups together related subscription records across
+    renewals and changes (e.g., 'Stripe-sub_...-<start_date>'). Used to track the full lifecycle of a single subscriber relationship.
+- name: subscription_logical_subscription_started_at
+  description: Timestamp indicating when the logical subscription first started, representing the beginning of the subscriber's continuous relationship
+    with the product. This value does not reset on renewal but may change if a new logical subscription is created.

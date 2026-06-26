@@ -120,6 +120,9 @@ fields:
     - name: processingtimemillis
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.processingtimemillis
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: event
       type: STRING
       mode: NULLABLE
@@ -147,6 +150,9 @@ fields:
     - name: templatename
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.templatename
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: flowbegintime
       type: STRING
       mode: NULLABLE
@@ -156,6 +162,9 @@ fields:
     - name: currenttime
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.currenttime
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: event_type
       type: STRING
       mode: NULLABLE

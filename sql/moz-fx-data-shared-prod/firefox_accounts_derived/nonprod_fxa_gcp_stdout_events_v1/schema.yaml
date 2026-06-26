@@ -2,6 +2,9 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: fxa_server
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -261,21 +264,39 @@ fields:
     - name: violated
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.violated
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: referrer
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.referrer
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: source
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.source
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: blocked
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.blocked
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: column
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.column
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: line
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.line
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: event_properties
       type: STRING
       mode: NULLABLE
@@ -369,6 +390,9 @@ fields:
     - name: sample
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.sample
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: stack
       type: STRING
       mode: NULLABLE
@@ -522,6 +546,9 @@ fields:
     - name: assertion
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.assertion
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: document_type
       type: STRING
       mode: NULLABLE

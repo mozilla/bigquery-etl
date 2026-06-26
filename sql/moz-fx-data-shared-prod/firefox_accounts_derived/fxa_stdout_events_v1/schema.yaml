@@ -458,6 +458,9 @@ fields:
     - name: details
       type: STRING
       mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.error
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: amplitudeerror
     type: STRING
     mode: NULLABLE

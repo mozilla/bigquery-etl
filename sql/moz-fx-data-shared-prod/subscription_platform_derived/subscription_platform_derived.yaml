@@ -1104,168 +1104,313 @@ fields:
   description: Timestamp indicating when the logical subscription first started, representing the beginning of the subscriber's continuous relationship
     with the product. This value does not reset on renewal but may change if a new logical subscription is created.
 - name: subscription_metadata_amount
-  description: The subscription charge amount in the smallest unit of the associated currency (e.g., cents
-    for USD). Null when no charge amount metadata is available for the subscription.
+  description: The subscription charge amount in the smallest unit of the associated currency (e.g., cents for USD). Null when no charge amount
+    metadata is available for the subscription.
 - name: subscription_metadata_appliedPromotionCode
-  description: The promotional or discount code that was applied at the time of subscription sign-up.
-    Null when no promotion code was used.
+  description: The promotional or discount code that was applied at the time of subscription sign-up. Null when no promotion code was used.
 - name: subscription_metadata_cancellation_reason
-  description: The reason a subscription was cancelled, typically reflecting automated Firefox Accounts
-    (FxA) account lifecycle events such as user-requested deletion, unverified account cleanup, or administrative
-    removal. Null when the subscription has not been cancelled or no reason was recorded.
+  description: The reason a subscription was cancelled, typically reflecting automated Firefox Accounts (FxA) account lifecycle events such as
+    user-requested deletion, unverified account cleanup, or administrative removal. Null when the subscription has not been cancelled or no reason
+    was recorded.
 - name: subscription_metadata_cancelled_for_customer_at
-  description: The timestamp at which the subscription was cancelled on behalf of the customer, indicating
-    when the cancellation became effective. Null when the subscription has not been cancelled.
+  description: The timestamp at which the subscription was cancelled on behalf of the customer, indicating when the cancellation became effective.
+    Null when the subscription has not been cancelled.
 - name: subscription_metadata_currency
-  description: The ISO 4217 currency code associated with the subscription charge amount, which may appear
-    in upper or lower case. Null when currency metadata is unavailable.
+  description: The ISO 4217 currency code associated with the subscription charge amount, which may appear in upper or lower case. Null when currency
+    metadata is unavailable.
 - name: subscription_metadata_form_of_payment
-  description: The payment platform or method used to process the subscription, such as 'APPLE_APP_STORE'.
-    This field identifies the storefront or payment gateway through which the subscription was purchased.
+  description: The payment platform or method used to process the subscription, such as 'APPLE_APP_STORE'. This field identifies the storefront
+    or payment gateway through which the subscription was purchased.
 - name: subscription_metadata_is_mutable
-  description: Indicates whether the subscription record is still subject to change. True means the subscription
-    can be modified; false means it is in a final, immutable state.
+  description: Indicates whether the subscription record is still subject to change. True means the subscription can be modified; false means
+    it is in a final, immutable state.
 - name: subscription_metadata_latest_notification_subtype
-  description: The subtype of the most recent store notification received for the subscription, providing
-    additional context to the notification type (e.g., 'AUTO_RENEW_DISABLED', 'VOLUNTARY'). Null when
-    no subtype notification has been recorded.
+  description: The subtype of the most recent store notification received for the subscription, providing additional context to the notification
+    type (e.g., 'AUTO_RENEW_DISABLED', 'VOLUNTARY'). Null when no subtype notification has been recorded.
 - name: subscription_metadata_latest_notification_type
-  description: The type of the most recent store notification received for the subscription, such as 'DID_RENEW',
-    'EXPIRED', or 'DID_FAIL_TO_RENEW'. Null when no notification has been recorded.
+  description: The type of the most recent store notification received for the subscription, such as 'DID_RENEW', 'EXPIRED', or 'DID_FAIL_TO_RENEW'.
+    Null when no notification has been recorded.
 - name: subscription_metadata_package_name
-  description: The application package name associated with the subscription as registered in the app
-    store (e.g., 'org.mozilla.firefox.vpn'). This identifies the app for which the subscription was purchased.
+  description: The application package name associated with the subscription as registered in the app store (e.g., 'org.mozilla.firefox.vpn').
+    This identifies the app for which the subscription was purchased.
 - name: subscription_metadata_plan_change_date
-  description: The timestamp at which the subscription plan was most recently changed, such as when a
-    user upgraded or downgraded between billing intervals. Null when no plan change has occurred.
+  description: The timestamp at which the subscription plan was most recently changed, such as when a user upgraded or downgraded between billing
+    intervals. Null when no plan change has occurred.
 - name: subscription_metadata_previous_plan_id
-  description: The identifier of the subscription plan that was active before the most recent plan change.
-    Null when no prior plan change has occurred.
+  description: The identifier of the subscription plan that was active before the most recent plan change. Null when no prior plan change has
+    occurred.
 - name: subscription_metadata_purchase_token
-  description: A unique token issued by the app store (e.g., Google Play) to identify and verify a specific
-    subscription purchase. This token is used to query and validate the subscription's status with the
-    store.
+  description: A unique token issued by the app store (e.g., Google Play) to identify and verify a specific subscription purchase. This token
+    is used to query and validate the subscription's status with the store.
 - name: subscription_metadata_replaced_by_another_purchase
-  description: Indicates whether this subscription purchase has been superseded by a different purchase.
-    False means the subscription has not been replaced by another purchase.
+  description: Indicates whether this subscription purchase has been superseded by a different purchase. False means the subscription has not
+    been replaced by another purchase.
 - name: subscription_metadata_session_entrypoint
-  description: The entrypoint identifier that describes where in the Mozilla web ecosystem the user's
-    subscription session originated, such as a product page or in-product navigation element. Null when
-    no session entrypoint was recorded.
+  description: The entrypoint identifier that describes where in the Mozilla web ecosystem the user's subscription session originated, such as
+    a product page or in-product navigation element. Null when no session entrypoint was recorded.
 - name: subscription_metadata_session_entrypoint_experiment
-  description: The name of the A/B or multivariate experiment associated with the session entrypoint at
-    the time the subscription was initiated. Null when no experiment was active for the session.
+  description: The name of the A/B or multivariate experiment associated with the session entrypoint at the time the subscription was initiated.
+    Null when no experiment was active for the session.
 - name: subscription_metadata_session_entrypoint_variation
-  description: The specific experiment variation or treatment that the user was assigned to during the
-    subscription session. Null when no experiment variation was recorded.
+  description: The specific experiment variation or treatment that the user was assigned to during the subscription session. Null when no experiment
+    variation was recorded.
 - name: subscription_metadata_session_flow_id
-  description: A unique identifier for the Firefox Accounts authentication flow session during which the
-    subscription was initiated. Null when no flow ID was captured for the session.
+  description: A unique identifier for the Firefox Accounts authentication flow session during which the subscription was initiated. Null when
+    no flow ID was captured for the session.
 - name: subscription_metadata_sku
-  description: The store-specific product SKU identifier representing the subscription product and billing
-    interval (e.g., a monthly or annual VPN subscription). This is used to match the purchase to a specific
-    product offering in the app store.
+  description: The store-specific product SKU identifier representing the subscription product and billing interval (e.g., a monthly or annual
+    VPN subscription). This is used to match the purchase to a specific product offering in the app store.
 - name: subscription_metadata_sku_type
-  description: The type of the store product SKU, indicating the nature of the purchase. A value of 'subs'
-    indicates a recurring subscription product as opposed to a one-time in-app purchase.
+  description: The type of the store product SKU, indicating the nature of the purchase. A value of 'subs' indicates a recurring subscription
+    product as opposed to a one-time in-app purchase.
 - name: subscription_metadata_user_id
-  description: An obfuscated identifier representing the user associated with the subscription, typically
-    corresponding to the app store account. Null when a user ID could not be resolved.
+  description: An obfuscated identifier representing the user associated with the subscription, typically corresponding to the app store account.
+    Null when a user ID could not be resolved.
 - name: subscription_metadata_utm_campaign
-  description: The UTM campaign parameter captured during the subscription session, identifying the specific
-    marketing campaign that drove the subscription. Null when no UTM campaign parameter was present.
+  description: The UTM campaign parameter captured during the subscription session, identifying the specific marketing campaign that drove the
+    subscription. Null when no UTM campaign parameter was present.
 - name: subscription_metadata_utm_content
-  description: The UTM content parameter captured during the subscription session, used to differentiate
-    between links or creatives within the same campaign. Null when no UTM content parameter was present.
+  description: The UTM content parameter captured during the subscription session, used to differentiate between links or creatives within the
+    same campaign. Null when no UTM content parameter was present.
 - name: subscription_metadata_utm_medium
-  description: The UTM medium parameter captured during the subscription session, describing the marketing
-    channel or traffic type (e.g., 'referral', 'organic', 'firefox-desktop'). Null when no UTM medium
-    parameter was present.
+  description: The UTM medium parameter captured during the subscription session, describing the marketing channel or traffic type (e.g., 'referral',
+    'organic', 'firefox-desktop'). Null when no UTM medium parameter was present.
 - name: subscription_metadata_utm_source
-  description: The UTM source parameter captured during the subscription session, identifying the referring
-    website, browser component, or marketing platform that drove the user to subscribe. Null when no UTM
-    source parameter was present.
+  description: The UTM source parameter captured during the subscription session, identifying the referring website, browser component, or marketing
+    platform that drove the user to subscribe. Null when no UTM source parameter was present.
 - name: subscription_metadata_utm_term
-  description: The UTM term parameter captured during the subscription session, typically used to identify
-    the browser UI element or keyword that initiated the session (e.g., 'bento', 'sidebar'). Null when
-    no UTM term parameter was present.
+  description: The UTM term parameter captured during the subscription session, typically used to identify the browser UI element or keyword that
+    initiated the session (e.g., 'bento', 'sidebar'). Null when no UTM term parameter was present.
 - name: subscription_metadata_verified_at
-  description: The timestamp at which the subscription record or purchase was most recently verified against
-    the app store or payment provider. This reflects the last time the subscription's validity was confirmed.
+  description: The timestamp at which the subscription record or purchase was most recently verified against the app store or payment provider.
+    This reflects the last time the subscription's validity was confirmed.
 - name: subscription_mozilla_account_id
-  description: The unique identifier for the Mozilla account (Firefox Accounts) associated with the subscription,
-    stored as a hexadecimal string. This links the subscription to a specific authenticated user account.
+  description: The unique identifier for the Mozilla account (Firefox Accounts) associated with the subscription, stored as a hexadecimal string.
+    This links the subscription to a specific authenticated user account.
 - name: subscription_mozilla_account_id_sha256
-  description: The SHA-256 hash of the Mozilla account ID associated with the subscription, provided as
-    a hex-encoded string. This is used for privacy-preserving joins and cross-dataset analysis without
-    exposing the raw account identifier.
+  description: The SHA-256 hash of the Mozilla account ID associated with the subscription, provided as a hex-encoded string. This is used for
+    privacy-preserving joins and cross-dataset analysis without exposing the raw account identifier.
 - name: subscription_obfuscated_external_account_id
-  description: An obfuscated identifier representing the external account (e.g., app store account) linked
-    to the subscription. This field is currently unpopulated and reserved for future use.
+  description: An obfuscated identifier representing the external account (e.g., app store account) linked to the subscription. This field is
+    currently unpopulated and reserved for future use.
 - name: subscription_obfuscated_external_profile_id
-  description: An obfuscated identifier representing the external user profile linked to the subscription.
-    This field is currently unpopulated and reserved for future use.
+  description: An obfuscated identifier representing the external user profile linked to the subscription. This field is currently unpopulated
+    and reserved for future use.
 - name: subscription_ongoing_discount_amount
-  description: The ongoing discount amount applied to the subscription's recurring charges, expressed
-    as a numeric value. A value of 0 indicates no active ongoing discount is applied.
+  description: The ongoing discount amount applied to the subscription's recurring charges, expressed as a numeric value. A value of 0 indicates
+    no active ongoing discount is applied.
 - name: subscription_ongoing_discount_ends_at
-  description: The timestamp at which the ongoing discount applied to the subscription is scheduled to
-    expire. Null when no ongoing discount is active.
+  description: The timestamp at which the ongoing discount applied to the subscription is scheduled to expire. Null when no ongoing discount is
+    active.
 - name: subscription_ongoing_discount_name
-  description: The human-readable name of the ongoing discount applied to the subscription. This field
-    is currently unpopulated and reserved for future discount name tracking.
+  description: The human-readable name of the ongoing discount applied to the subscription. This field is currently unpopulated and reserved for
+    future discount name tracking.
 - name: subscription_ongoing_discount_promotion_code
-  description: The promotion code associated with the ongoing discount applied to the subscription. This
-    field is currently unpopulated and reserved for future promotion code tracking.
+  description: The promotion code associated with the ongoing discount applied to the subscription. This field is currently unpopulated and reserved
+    for future promotion code tracking.
 - name: subscription_order_id
-  description: The unique order identifier assigned by the app store (e.g., Google Play) for a specific
-    subscription transaction. This can be used to trace individual billing events within the store's system.
+  description: The unique order identifier assigned by the app store (e.g., Google Play) for a specific subscription transaction. This can be
+    used to trace individual billing events within the store's system.
 - name: subscription_original_transaction_id
-  description: The identifier of the original transaction that initiated the subscription, as assigned
-    by the app store. For renewals, this links back to the first purchase transaction of the subscription
-    lifecycle.
+  description: The identifier of the original transaction that initiated the subscription, as assigned by the app store. For renewals, this links
+    back to the first purchase transaction of the subscription lifecycle.
 - name: subscription_other_services
-  description: An array of other Mozilla subscription services associated with the same account, where
-    each element includes the service's identifier, name, and tier. An empty array indicates no other
-    active services are linked.
+  description: An array of other Mozilla subscription services associated with the same account, where each element includes the service's identifier,
+    name, and tier. An empty array indicates no other active services are linked.
 - name: subscription_payment_method
-  description: A human-readable label for the payment method used to process the subscription, such as
-    'Apple App Store'. This describes the storefront or payment platform at a display level.
+  description: A human-readable label for the payment method used to process the subscription, such as 'Apple App Store'. This describes the storefront
+    or payment platform at a display level.
 - name: subscription_payment_method_id
-  description: The unique identifier for the payment method on file for the subscription, typically assigned
-    by the payment processor (e.g., Stripe). Null when the payment method is managed by an external app
-    store rather than a direct payment processor.
+  description: The unique identifier for the payment method on file for the subscription, typically assigned by the payment processor (e.g., Stripe).
+    Null when the payment method is managed by an external app store rather than a direct payment processor.
 - name: subscription_payment_provider
-  description: The name of the payment provider or platform responsible for processing the subscription's
-    billing, such as 'Apple'. This identifies the top-level payment ecosystem handling the transaction.
+  description: The name of the payment provider or platform responsible for processing the subscription's billing, such as 'Apple'. This identifies
+    the top-level payment ecosystem handling the transaction.
 - name: subscription_payment_state
-  description: An integer code representing the current payment state of the subscription as reported
-    by the app store. Common values include 0 (payment pending), 1 (payment received), and 2 (free trial
-    or deferred).
+  description: An integer code representing the current payment state of the subscription as reported by the app store. Common values include
+    0 (payment pending), 1 (payment received), and 2 (free trial or deferred).
 - name: subscription_pending_setup_intent_id
-  description: The identifier of a pending Stripe Setup Intent associated with the subscription, used
-    when a new payment method is being collected or confirmed. Null when there is no pending payment method
-    setup for the subscription.
+  description: The identifier of a pending Stripe Setup Intent associated with the subscription, used when a new payment method is being collected
+    or confirmed. Null when there is no pending payment method setup for the subscription.
 - name: subscription_plan_amount
-  description: The price of the subscription plan as a decimal numeric value in the plan's currency. This
-    represents the recurring charge amount per billing interval before any discounts are applied.
+  description: The price of the subscription plan as a decimal numeric value in the plan's currency. This represents the recurring charge amount
+    per billing interval before any discounts are applied.
 - name: subscription_plan_currency
-  description: The ISO 4217 currency code (in uppercase) in which the subscription plan is priced, such
-    as 'USD', 'EUR', or 'GBP'. This determines the currency of the plan amount charged to the subscriber.
+  description: The ISO 4217 currency code (in uppercase) in which the subscription plan is priced, such as 'USD', 'EUR', or 'GBP'. This determines
+    the currency of the plan amount charged to the subscriber.
 - name: subscription_plan_interval
-  description: A human-readable description of the subscription billing interval, combining the interval
-    count and unit (e.g., '1 month', '1 year', '6 months'). This describes how frequently the subscriber
-    is billed.
+  description: A human-readable description of the subscription billing interval, combining the interval count and unit (e.g., '1 month', '1 year',
+    '6 months'). This describes how frequently the subscriber is billed.
 - name: subscription_plan_interval_count
-  description: The numeric count of interval units that make up one billing period for the subscription
-    plan. For example, a value of 6 combined with a monthly interval type indicates a semi-annual plan.
+  description: The numeric count of interval units that make up one billing period for the subscription plan. For example, a value of 6 combined
+    with a monthly interval type indicates a semi-annual plan.
 - name: subscription_plan_interval_months
-  description: The total duration of the subscription billing interval expressed in months. Values of
-    1, 6, and 12 correspond to monthly, semi-annual, and annual plans respectively.
+  description: The total duration of the subscription billing interval expressed in months. Values of 1, 6, and 12 correspond to monthly, semi-annual,
+    and annual plans respectively.
 - name: subscription_plan_interval_type
-  description: The base time unit of the subscription plan's billing interval, either 'month' or 'year'.
-    This is used together with the interval count to define the full billing period.
+  description: The base time unit of the subscription plan's billing interval, either 'month' or 'year'. This is used together with the interval
+    count to define the full billing period.
 - name: subscription_plan_summary
-  description: A concise human-readable summary of the subscription plan combining the billing interval,
-    currency, and price (e.g., '1 month USD 9.99'). This provides a quick description of the plan's key
-    pricing attributes.
+  description: A concise human-readable summary of the subscription plan combining the billing interval, currency, and price (e.g., '1 month USD
+    9.99'). This provides a quick description of the plan's key pricing attributes.
+- name: subscription_price_amount_micros
+  description: The price of the subscription plan expressed in micros (millionths of the currency unit), e.g. 9990000 represents 9.99 in the subscription's
+    currency. This field is always populated.
+- name: subscription_price_change_new_price_currency
+  description: The ISO 4217 currency code of the new price when a subscription price change is pending or in effect. Null when no price change
+    is associated with the subscription.
+- name: subscription_price_change_new_price_price_micros
+  description: The new subscription price in micros (millionths of the currency unit) associated with a pending or completed price change. Null
+    when no price change is associated with the subscription.
+- name: subscription_price_change_state
+  description: An integer code representing the current state of a subscription price change (e.g. pending, agreed). Null when no price change
+    is associated with the subscription.
+- name: subscription_price_currency_code
+  description: The ISO 4217 currency code in which the subscription is billed, such as USD, EUR, or GBP. Reflects the currency applicable to the
+    subscriber's region or storefront.
+- name: subscription_product_name
+  description: The human-readable name of the Mozilla product the subscription is for, such as 'Mozilla VPN'. May be null for subscriptions where
+    product mapping is unavailable.
+- name: subscription_promotion_code
+  description: The promotional or discount code applied to the subscription at the time of purchase. Null when no promotion code was used.
+- name: subscription_promotion_type
+  description: An integer code indicating the type of promotion applied to the subscription (e.g. free trial, introductory price). Null when no
+    promotion is associated with the subscription.
+- name: subscription_provider
+  description: The payment provider or app store through which the subscription was purchased, such as 'Apple' or 'Google'. Identifies the billing
+    platform managing the subscription.
+- name: subscription_provider_customer_id
+  description: The unique customer identifier assigned by the subscription provider (e.g. a Stripe customer ID prefixed with 'cus_'). May be null
+    for subscriptions managed through app stores that do not expose a provider-level customer ID.
+- name: subscription_provider_plan_id
+  description: The unique identifier for the subscription plan as defined by the subscription provider or app store, such as a Stripe price ID
+    or an Apple App Store product identifier. Used to look up plan details like billing interval and price.
+- name: subscription_provider_product_id
+  description: The unique product identifier as defined by the subscription provider or app store, representing the top-level product offering
+    (e.g. the iOS app bundle identifier). Groups all plans belonging to the same product.
+- name: subscription_provider_status
+  description: The current status of the subscription as reported by the provider, such as 'Active', 'Expired', 'Revoked', or 'InBillingRetry'.
+    Reflects the real-time state of the subscription in the provider's system.
+- name: subscription_provider_subscription_created_at
+  description: The timestamp at which the subscription was first created in the provider's system. Represents the original creation time, not
+    the start of the current billing period.
+- name: subscription_provider_subscription_id
+  description: The unique identifier for the subscription assigned by the subscription provider or app store. Used to correlate subscription records
+    across systems and provider events.
+- name: subscription_provider_subscription_item_id
+  description: The unique identifier for a line item within the subscription, as assigned by the provider (e.g. a Stripe subscription item ID
+    prefixed with 'si_'). Null for subscriptions managed through app stores that do not expose subscription item-level identifiers.
+- name: subscription_provider_subscription_updated_at
+  description: The timestamp of the most recent update to the subscription record as reported by the provider. Changes whenever the provider modifies
+    the subscription, such as on renewal, cancellation, or status changes.
+- name: subscription_purchase_type
+  description: An integer code indicating how the subscription was purchased (e.g. 0 for a standard purchase). Null for subscriptions where purchase
+    type information is not available from the provider.
+- name: subscription_renewal_info_auto_renew_product_id
+  description: The product identifier of the plan that the subscription is scheduled to renew into at the end of the current billing period. May
+    differ from the current plan if the subscriber has changed their plan.
+- name: subscription_renewal_info_auto_renew_status
+  description: An integer flag indicating whether the subscription is set to auto-renew, where 1 means auto-renewal is enabled and 0 means the
+    subscription will expire at the end of the current period.
+- name: subscription_renewal_info_currency
+  description: The ISO 4217 currency code in which the upcoming renewal will be billed. Null when auto-renewal is disabled or renewal pricing
+    information is not available.
+- name: subscription_renewal_info_expiration_intent
+  description: An integer code indicating the reason the subscription is expected to expire, such as 1 for customer-initiated cancellation or
+    2 for a billing issue. Null when the subscription is active and not expected to expire.
+- name: subscription_renewal_info_grace_period_expires_date
+  description: The timestamp at which the billing grace period for the subscription expires, giving the subscriber additional time to resolve
+    a payment issue. Null when the subscription is not currently in a grace period.
+- name: subscription_renewal_info_is_in_billing_retry_period
+  description: A boolean indicating whether the subscription is currently in an Apple billing retry period, where the provider is attempting to
+    collect payment. True means a retry is in progress; false means it is not.
+- name: subscription_renewal_info_offer_identifier
+  description: The identifier of a promotional offer applied to the subscription's renewal, such as an App Store offer code. Null when no offer
+    is associated with the renewal.
+- name: subscription_renewal_info_offer_type
+  description: An integer code indicating the type of promotional offer applied to the subscription renewal (e.g. introductory offer, promotional
+    offer). Null when no offer is associated with the renewal.
+- name: subscription_renewal_info_renewal_price
+  description: The price in the smallest currency unit (e.g. cents or equivalent) that the subscriber will be charged upon the next renewal. Null
+    when renewal pricing information is not available, such as when auto-renewal is disabled.
+- name: subscription_service_id
+  description: A short identifier for the Mozilla service the subscription provides access to, such as 'VPN', 'Relay', or 'MDN'. Used to categorize
+    subscriptions by the underlying service.
+- name: subscription_service_name
+  description: The human-readable name of the Mozilla service the subscription provides access to, such as 'Mozilla VPN', 'Relay Premium', or
+    'MDN Plus'. Corresponds to the service identified by subscription_service_id.
+- name: subscription_service_tier
+  description: The specific tier or feature level of the subscription within a service, such as 'Email Masking' or 'Email & Phone Masking' for
+    Relay. Null for services that do not have multiple tiers.
+- name: subscription_services
+  description: An array of structs describing all Mozilla services included in the subscription, each containing a service id, name, and optional
+    tier. Represents the full set of services a subscriber has access to under a given subscription.
+- name: subscription_start
+  description: The timestamp at which the current subscription period or subscription lifecycle began. Null when the subscription start time cannot
+    be determined.
+  type: TIMESTAMP
+- name: subscription_start_date
+  description: The timestamp representing the date when the subscription started, typically the first billing date or activation date. Null when
+    the subscription start date is not available.
+  type: TIMESTAMP
+- name: subscription_start_time
+  description: The precise timestamp at which the subscription became active or the current subscription period started. Always populated for
+    records where subscription timing is tracked.
+- name: subscription_started_at
+  description: The timestamp at which the subscription was originally started, representing the beginning of the subscriber's relationship with
+    the product. Used to calculate subscription age and cohort membership.
+  type: TIMESTAMP
+- name: subscription_started_reason
+  description: A description of why the subscription was initiated, distinguishing between new customers, returning customers, and those starting
+    with a free trial (e.g. 'New Customer', 'Returning Customer Trial'). Helps identify acquisition patterns.
+- name: subscription_status
+  description: An integer code representing the current status of the subscription as reported by the provider, such as 1 for active, 2 for expired,
+    3 for in billing retry, or 5 for revoked. Maps to provider-defined lifecycle states.
+  type: STRING
+- name: subscription_trial_end
+  description: The timestamp at which the free trial period for the subscription ended or is scheduled to end. Null for subscriptions that do
+    not have or never had a trial period.
+- name: subscription_trial_start
+  description: The timestamp at which the free trial period for the subscription began. Null for subscriptions that do not have or never had a
+    trial period.
+- name: subscription_user_cancellation_time
+  description: The timestamp at which the subscriber explicitly requested cancellation of the subscription. Null for subscriptions that have not
+    been cancelled by the user.
+- name: synced_at
+  description: The timestamp at which the subscription record was last synchronized from the upstream provider into the data warehouse. Used to
+    track data freshness and identify recently updated records.
+  type: TIMESTAMP
+- name: timestamp
+  description: The timestamp associated with the event or record, indicating when the subscription action or state snapshot occurred. Always populated.
+  type: TIMESTAMP
+- name: trial_end
+  description: The timestamp at which the subscription's free trial period ended or is scheduled to end. Null for subscriptions that do not have
+    a trial period.
+  type: TIMESTAMP
+- name: trial_start
+  description: The timestamp at which the subscription's free trial period began. Null for subscriptions that do not have a trial period.
+  type: TIMESTAMP
+- name: type
+  description: Indicates the origin of the record, distinguishing between 'original' records sourced directly from provider events and 'synthetic_subscription_period_start'
+    records generated to represent inferred subscription period boundaries.
+  type: STRING
+- name: utm_campaign
+  description: The UTM campaign parameter from the URL used when the subscription was initiated, identifying the specific marketing campaign that
+    drove the acquisition (e.g. 'vpn-product-page', 'discovery'). Null when no UTM campaign was captured.
+  type: STRING
+- name: utm_content
+  description: The UTM content parameter from the URL used when the subscription was initiated, identifying the specific link or creative element
+    within a campaign that the subscriber clicked (e.g. 'signedIn', 'hero-cta'). Null when no UTM content was captured.
+  type: STRING
+- name: utm_medium
+  description: The UTM medium parameter from the URL used when the subscription was initiated, identifying the marketing channel through which
+    the subscriber arrived (e.g. 'firefox-desktop', 'referral', 'email'). Null when no UTM medium was captured.
+  type: STRING
+- name: utm_source
+  description: The UTM source parameter from the URL used when the subscription was initiated, identifying the specific referrer or origin site
+    that drove the acquisition (e.g. 'toolbar', 'www.mozilla.org-vpn-product-page'). Null when no UTM source was captured.
+  type: STRING
+- name: utm_term
+  description: The UTM term parameter from the URL used when the subscription was initiated, typically identifying a specific UI element or keyword
+    associated with the acquisition (e.g. 'settings', 'bento'). Null when no UTM term was captured.
+  type: STRING

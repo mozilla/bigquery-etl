@@ -1414,3 +1414,19 @@ fields:
   description: The UTM term parameter from the URL used when the subscription was initiated, typically identifying a specific UI element or keyword
     associated with the acquisition (e.g. 'settings', 'bento'). Null when no UTM term was captured.
   type: STRING
+- name: valid_from
+  description: The timestamp at which the record version became effective, used to track the start of a validity window in slowly changing dimension
+    tables. Records with earlier timestamps represent prior states of the same entity.
+  type: TIMESTAMP
+- name: valid_to
+  description: The timestamp at which the record version ceased to be effective, marking the end of its validity window. A sentinel value of 9999-12-31T23:59:59.999999+00:00
+    indicates the record is the current, active version.
+  type: TIMESTAMP
+- name: was_active_at_day_end
+  description: Indicates whether the subscription was in an active state at the end of the day. True means the subscription was active at day-end;
+    false means it had lapsed or been cancelled by that point.
+  type: BOOLEAN
+- name: was_active_at_day_start
+  description: Indicates whether the subscription was in an active state at the start of the day. True means the subscription was active at day-start;
+    false means it was not yet active or had already ended before the day began.
+  type: BOOLEAN

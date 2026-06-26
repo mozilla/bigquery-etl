@@ -569,8 +569,9 @@ fields:
       description: Database path or connection string identifier.
     - name: utm_term
       type: STRING
-      description: UTM term parameter from the originating URL, used for tracking paid
-        keyword campaigns.
+      description: In FxA, repurposed from the standard paid-search UTM term to track
+        A/B test cohort assignments (e.g., 'my-experiment-var-a'). Not a paid search
+        keyword.
     - name: utm_source
       type: STRING
       description: UTM source parameter from the originating URL.

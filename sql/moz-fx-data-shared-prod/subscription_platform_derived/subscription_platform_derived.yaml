@@ -487,3 +487,172 @@ fields:
 - name: old_subscription_plan_interval
   description: The billing interval of the previous subscription plan, indicating how frequently the subscriber was charged (e.g., '1 month' for
     monthly billing, '1 year' for annual billing).
+- name: old_subscription_plan_interval_count
+  description: The number of interval units in the billing cycle of the subscription plan before a change event. Combined with the interval type,
+    this defines the billing frequency (e.g., a value of 1 with an interval type of 'month' means billed every 1 month).
+- name: old_subscription_plan_interval_months
+  description: The duration in months of the billing cycle for the subscription plan prior to a change event. For example, a value of 1 indicates
+    a monthly plan and 12 indicates an annual plan.
+- name: old_subscription_plan_interval_type
+  description: The billing interval unit for the subscription plan before a change event, either 'month' for monthly billing or 'year' for annual
+    billing.
+- name: old_subscription_plan_summary
+  description: A human-readable summary of the subscription plan prior to a change event, combining the billing interval, currency, and price
+    into a single string (e.g., '1 month USD 9.99' or '1 year EUR 59.88').
+- name: old_subscription_product_name
+  description: The display name of the Mozilla subscription product associated with the subscription before a change event, such as 'Mozilla VPN'
+    or 'Relay Premium'.
+- name: old_subscription_provider
+  description: The payment or subscription provider managing the subscription before a change event, such as 'Stripe', 'Google', or 'Apple'.
+- name: old_subscription_provider_customer_id
+  description: The unique customer identifier assigned by the subscription provider (e.g., a Stripe customer ID) for the subscription prior to
+    a change event. Null for providers that do not use customer-level IDs.
+- name: old_subscription_provider_plan_id
+  description: The unique plan or price identifier assigned by the subscription provider for the subscription before a change event, such as a
+    Stripe price ID or an Apple/Google in-app product identifier.
+- name: old_subscription_provider_product_id
+  description: The unique product identifier assigned by the subscription provider for the subscription prior to a change event, such as a Stripe
+    product ID or an Apple/Google app bundle identifier.
+- name: old_subscription_provider_status
+  description: The status of the subscription as reported by the provider before a change event, reflecting provider-specific values such as 'active',
+    'past_due', 'trialing', or platform-specific states like 'SUBSCRIPTION_STATE_CANCELED'.
+- name: old_subscription_provider_subscription_created_at
+  description: The timestamp at which the subscription was originally created in the provider's system, as recorded before a change event.
+- name: old_subscription_provider_subscription_id
+  description: The unique subscription identifier assigned by the provider for the subscription prior to a change event, such as a Stripe subscription
+    ID or a Google/Apple purchase token.
+- name: old_subscription_provider_subscription_item_id
+  description: The unique subscription item identifier assigned by the provider (e.g., a Stripe subscription item ID) for the subscription before
+    a change event. Null for providers that do not use subscription item-level IDs.
+- name: old_subscription_provider_subscription_updated_at
+  description: The timestamp of the most recent update to the subscription in the provider's system, as recorded before a change event.
+- name: old_subscription_started_at
+  description: The timestamp at which the subscription became active prior to a change event, representing when the subscriber's current billing
+    term originally began.
+- name: old_subscription_started_reason
+  description: The reason a subscription was initiated before a change event, indicating whether it originated from a new customer, a returning
+    customer, or a trial (e.g., 'New Customer', 'Returning Customer', 'New Customer Trial').
+- name: ongoing_discount_amount
+  description: The monetary amount of any ongoing discount applied to the subscription in the plan's currency. A value of 0 indicates no active
+    discount.
+  type: NUMERIC
+- name: ongoing_discount_ends_at
+  description: The timestamp at which the currently active subscription discount expires. Null indicates the discount is either indefinite or
+    there is no active discount.
+  type: TIMESTAMP
+- name: ongoing_discount_name
+  description: The human-readable name of the ongoing discount or coupon campaign applied to the subscription, such as a promotional offer or
+    internal testing coupon. Null when no discount is active.
+  type: STRING
+- name: ongoing_discount_promotion_code
+  description: The promotion code used to apply the ongoing discount to the subscription. Null when no promotion code was used or no discount
+    is active.
+  type: STRING
+- name: original_subscription_id
+  description: The identifier of the original subscription from the provider, used to link a subscription back to its originating purchase, particularly
+    for Apple App Store subscriptions that may be renewed or restored.
+  type: STRING
+- name: payment_method
+  description: The specific payment method used by the subscriber, such as 'Card', 'PayPal', 'Apple Pay', 'Google Pay', 'Apple App Store', or
+    'Google Play Store'. Null for subscriptions where payment method details are unavailable.
+  type: STRING
+- name: payment_provider
+  description: The top-level payment provider processing the subscription transaction, one of 'Stripe', 'PayPal', 'Google', or 'Apple'.
+  type: STRING
+- name: plan_amount
+  description: The price of the subscription plan in the smallest currency unit (e.g., cents for USD), as defined in the provider's billing system.
+    Use plan_currency to interpret the unit.
+- name: plan_capabilities
+  description: An array of capability identifiers granted to the subscriber by the specific subscription plan, used for access control and feature
+    entitlement.
+  type: STRING
+- name: plan_currency
+  description: The ISO 4217 lowercase currency code for the subscription plan's pricing (e.g., 'usd', 'eur', 'gbp').
+  type: STRING
+- name: plan_ended_at
+  description: The timestamp at which the subscription plan was retired or ended in the billing system. Null indicates the plan is still active
+    or this information is not available.
+  type: TIMESTAMP
+- name: plan_id
+  description: The unique identifier for the subscription plan as defined in the provider's billing system, such as a Stripe price ID or an Apple/Google
+    in-app product identifier.
+  type: STRING
+- name: plan_interval
+  description: The billing interval unit for the subscription plan, either 'month' for monthly billing or 'year' for annual billing.
+  type: STRING
+- name: plan_interval_count
+  description: The number of interval units that make up one billing cycle for the subscription plan. For example, a value of 1 with a monthly
+    interval means a standard monthly plan, while 6 with a monthly interval means a semi-annual plan.
+  type: INT64
+- name: plan_interval_months
+  description: The total duration of the subscription billing cycle expressed in months. For example, 1 for a monthly plan, 6 for a semi-annual
+    plan, and 12 for an annual plan.
+  type: INT64
+- name: plan_interval_timezone
+  description: The timezone used to determine billing interval boundaries for the subscription plan, expressed as a timezone name (e.g., 'America/Los_Angeles').
+  type: STRING
+- name: plan_interval_type
+  description: The billing interval type for the subscription plan, indicating whether it is billed on a 'month' or 'year' basis.
+  type: STRING
+- name: plan_name
+  description: The human-readable display name of the subscription plan as configured in the billing system, which may include locale, currency,
+    or frequency information (e.g., 'USD English Daily').
+  type: STRING
+- name: plan_started_at
+  description: The timestamp at which the subscription plan became active in the billing system. Null when this information is not available or
+    applicable.
+  type: TIMESTAMP
+- name: plan_summary
+  description: A human-readable summary combining the subscription plan's billing interval, currency, and price into a single string (e.g., '1
+    year USD 59.88' or '1 month EUR 9.99').
+  type: STRING
+- name: product_capabilities
+  description: An array of capability identifiers granted to the subscriber at the product level, used for access control and feature entitlement
+    across all plans within that product.
+  type: STRING
+- name: product_id
+  description: The unique identifier for the Mozilla subscription product in the provider's billing system, such as a Stripe product ID or an
+    Apple/Google app bundle identifier.
+  type: STRING
+- name: product_name
+  description: The display name of the Mozilla subscription product, such as 'Mozilla VPN', 'Relay Premium', or 'Mozilla VPN & Firefox Relay'.
+  type: STRING
+- name: promotion_code
+  description: The promotion code applied to the subscription at the time of purchase or renewal. Null when no promotion code was used.
+  type: STRING
+- name: promotion_codes
+  description: An array of promotion codes that have been applied to the subscription, capturing all codes used across the subscription's lifetime.
+  type: STRING
+- name: promotion_discounts_amount
+  description: The total monetary discount amount applied to the subscription through promotions, expressed in the smallest currency unit (e.g.,
+    cents). Null when no promotional discount is present.
+  type: INT64
+- name: provider
+  description: The subscription or payment provider managing the subscription, such as 'Stripe', 'Paypal', 'Google Play', or 'Apple Store'.
+  type: STRING
+- name: provider_customer_id
+  description: The unique customer identifier assigned by the subscription provider (e.g., a Stripe customer ID). Null for providers that do not
+    use customer-level identifiers.
+  type: STRING
+- name: provider_plan_id
+  description: The unique plan or price identifier assigned by the subscription provider, such as a Stripe price ID or an Apple/Google in-app
+    product identifier.
+  type: STRING
+- name: provider_product_id
+  description: The unique product identifier assigned by the subscription provider, such as a Stripe product ID or an Apple/Google app bundle
+    identifier.
+  type: STRING
+- name: provider_status
+  description: The current status of the subscription as reported by the provider, reflecting provider-specific values such as 'active', 'canceled',
+    'past_due', or platform-specific states like 'SUBSCRIPTION_STATE_EXPIRED' or 'Revoked'.
+  type: STRING
+- name: provider_subscription_created_at
+  description: The timestamp at which the subscription was originally created in the provider's system.
+  type: TIMESTAMP
+- name: provider_subscription_id
+  description: The unique subscription identifier assigned by the provider, such as a Stripe subscription ID or a Google/Apple purchase token.
+  type: STRING
+- name: provider_subscription_item_id
+  description: The unique subscription item identifier assigned by the provider (e.g., a Stripe subscription item ID). Null for providers that
+    do not use subscription item-level identifiers.
+  type: STRING

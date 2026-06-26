@@ -519,7 +519,8 @@ fields:
       description: Request parameters from the event.
     - name: success
       type: FLOAT
-      description: Count of successful operations associated with the event.
+      description: Indicates whether the operation succeeded; in some tables a count of
+        successful operations associated with the event.
     - name: templateversion
       type: FLOAT
       description: Email template version number.

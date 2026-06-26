@@ -1,0 +1,7 @@
+{{ app_id }}_2026_06_11:
+  start_date: 2026-06-01
+  end_date: 2026-06-11
+  reason: New aggregated events table, initial backfill.
+  watchers:
+  - jjalkanen@mozilla.com
+  status: Complete

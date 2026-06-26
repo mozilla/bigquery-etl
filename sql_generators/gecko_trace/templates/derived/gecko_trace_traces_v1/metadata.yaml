@@ -1,0 +1,24 @@
+---
+friendly_name: Gecko Trace Traces
+description: |-
+  Aggregated gecko trace patterns with Merkle-chain signatures.
+
+  One row per unique execution pattern, identified by trace_signature (SHA256).
+  Accumulates hit_count across daily runs, tracking first/latest observation dates
+  and average duration.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  clustering:
+    fields:
+      - trace_signature

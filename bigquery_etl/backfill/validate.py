@@ -308,7 +308,7 @@ def validate_custom_query_path(
 
 
 def _validate_custom_query_schema(
-    dry_run, backfill_entry: Backfill, backfill_file: Path
+    dry_run_result, backfill_entry: Backfill, backfill_file: Path
 ) -> None:
     """Check the custom query's output schema fits the table's schema.yaml."""
     # delay import to prevent circular imports in 'bigquery_etl.schema'
@@ -318,7 +318,7 @@ def _validate_custom_query_schema(
     if not schema_path.is_file():
         return
 
-    query_schema_json = dry_run.get_schema()
+    query_schema_json = dry_run_result.get_schema()
     if not query_schema_json.get("fields"):
         # no schema came back from the dry run (e.g. DDL/DML); nothing to compare
         return

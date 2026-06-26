@@ -270,7 +270,9 @@ fields:
       description: Error message or details associated with the event.
     - name: event
       type: STRING
-      description: Amplitude event name.
+      description: Event name from the FxA service payload. In Amplitude-connected tables
+        this is an Amplitude event name; in admin and log tables it is a service-level
+        action name (e.g., 'account.login', 'account-search', 'disable-login').
     - name: event_properties
       type: STRING
       description: Structured event properties for the amplitude event, as a JSON string.
@@ -1225,8 +1227,9 @@ fields:
 
 - name: service
   type: STRING
-  description: The Mozilla service or OAuth relying party associated with the event
-    (e.g., 'sync', 'pocket-web', 'fenix', 'amo-web').
+  description: The Mozilla service or OAuth relying party associated with the event.
+    May be a human-readable name (e.g., 'sync', 'pocket-web', 'content-server') or a
+    raw OAuth client ID hex string (e.g., '5882386c6d801776').
 
 - name: country
   type: STRING

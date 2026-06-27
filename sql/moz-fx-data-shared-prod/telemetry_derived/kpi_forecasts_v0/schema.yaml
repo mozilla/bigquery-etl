@@ -24,9 +24,8 @@ fields:
 - name: value
   type: FLOAT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: value
+  description: The numeric value for the given measure — the observed actual when measure is 'observed',
+    otherwise the forecasted value at that measure's percentile.
 - name: metric_alias
   type: STRING
   mode: NULLABLE

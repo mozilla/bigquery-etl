@@ -8,9 +8,8 @@ fields:
 - name: date
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: date
+  description: The date the forecast or actual value applies to (YYYY-MM-DD), including future dates for
+    forecasted points.
 - name: target
   type: STRING
   mode: NULLABLE
@@ -26,9 +25,8 @@ fields:
 - name: value
   type: FLOAT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: value
+  description: The observed (actual) value of the target metric on the date; null for future dates where
+    only forecast values (yhat_*) are available.
 - name: yhat_p5
   type: FLOAT64
   mode: NULLABLE

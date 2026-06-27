@@ -141,15 +141,12 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: key
+    description: The experiment slug identifying the experiment the client was enrolled in.
   - name: value
     type: RECORD
     mode: NULLABLE
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: value
+    description: The enrollment details for the experiment identified by key, including the assigned branch
+      and additional enrollment metadata.
     fields:
     - name: branch
       type: STRING
@@ -164,9 +161,8 @@ fields:
       - name: type
         type: STRING
         mode: NULLABLE
-        description: !include-field-description
-          file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-          field: type
+        description: The type of the experiment enrollment, identifying the framework or mechanism that enrolled
+          the client (e.g., Nimbus).
       - name: enrollment_id
         type: STRING
         mode: NULLABLE

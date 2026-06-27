@@ -2,9 +2,8 @@ fields:
 - name: key
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: key
+  description: The cache key identifying the forecast scenario this row belongs to (the metric/dimension
+    grouping the cached forecast values apply to).
 - name: submission_date
   type: TIMESTAMP
   mode: NULLABLE

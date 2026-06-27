@@ -32,9 +32,8 @@ fields:
 - name: key
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: key
+  description: The aggregation key for the metric — for a labeled (keyed) metric this is the label, otherwise
+    empty.
 - name: metric
   type: STRING
   mode: NULLABLE

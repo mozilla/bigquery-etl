@@ -1,0 +1,100 @@
+fields:
+- name: sample_id
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
+- name: app_version
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
+- name: histogram_aggregates
+  type: RECORD
+  mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: histogram_aggregates
+  fields:
+  - name: agg_type
+    type: STRING
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the aggregation method applied to client histogram
+      values. Always 'summed_histogram' in this table.
+  - name: aggregates
+    type: RECORD
+    mode: REPEATED
+    description: Within each histogram_aggregates entry, a repeated key-value struct where each entry represents
+      a histogram bucket key and its summed count across the aggregation period.
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: The histogram bucket label (the bucket's lower bound) for this aggregated entry.
+    - name: value
+      type: INT64
+      mode: NULLABLE
+      description: The aggregated count of samples that fell into the corresponding histogram bucket.
+  - name: first_bucket
+    type: INT64
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the minimum value of the first histogram bucket.
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the key for keyed histograms (e.g., an add-on ID,
+      engine name, or URL). Empty string for non-keyed histograms.
+  - name: last_bucket
+    type: INT64
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the maximum value of the last histogram bucket.
+  - name: latest_version
+    type: INT64
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the latest Firefox major version seen for this client
+      during the aggregation window.
+  - name: metric
+    type: STRING
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the name of the telemetry histogram probe (e.g.,
+      'uptake_remote_content_result_1', 'ssl_time_until_handshake_finished_keyed_by_ka').
+  - name: metric_type
+    type: STRING
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the type of histogram (e.g., 'histogram-exponential',
+      'histogram-linear', 'histogram-boolean', 'histogram-categorical', 'histogram-count', 'histogram-flag').
+  - name: num_buckets
+    type: INT64
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the total number of buckets in this histogram.
+  - name: process
+    type: STRING
+    mode: NULLABLE
+    description: Within each histogram_aggregates entry, the Firefox process type from which the histogram
+      was reported (e.g., 'parent', 'content').

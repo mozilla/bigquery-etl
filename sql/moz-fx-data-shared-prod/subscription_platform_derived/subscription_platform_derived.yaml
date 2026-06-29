@@ -218,8 +218,8 @@ fields:
   description: The UTM medium parameter from the user's first-touch attribution, indicating the marketing channel (e.g., 'referral', 'email',
     'organic') that initially brought the user. Null when no UTM medium was recorded at first touch.
 - name: first_touch_attribution_utm_source
-  description: The UTM source parameter from the user's first-touch attribution, identifying the specific website or origin (e.g., 'www.mozilla.org-vpn-product-page')
-    that first referred the user. Null when no UTM source was recorded.
+  description: The UTM source parameter from the user's first-touch attribution, identifying the specific website or origin
+    (e.g., 'www.mozilla.org-vpn-product-page') that first referred the user. Null when no UTM source was recorded.
 - name: first_touch_attribution_utm_term
   description: The UTM term parameter from the user's first-touch attribution, typically used to identify paid search keywords or specific link
     identifiers at the initial touchpoint. Null when no UTM term was recorded.
@@ -374,8 +374,8 @@ fields:
   description: The reason the previous subscription ended (e.g., cancellation, non-payment, or upgrade). Null when the subscription had not ended
     or the reason was not recorded.
 - name: old_subscription_first_touch_attribution_entrypoint
-  description: The Mozilla-defined entrypoint identifier from the first marketing touch that led to the previous subscription (e.g., 'www.mozilla.org-vpn-product-page').
-    Represents the initial surface or page where the user was first attributed.
+  description: The Mozilla-defined entrypoint identifier from the first marketing touch that led to the previous subscription
+    (e.g., 'www.mozilla.org-vpn-product-page'). Represents the initial surface or page where the user was first attributed.
 - name: old_subscription_first_touch_attribution_entrypoint_experiment
   description: The name of the A/B or multivariate experiment associated with the first-touch attribution entrypoint for the previous subscription
     (e.g., 'vpn-landing-bundle-promo'). Null when no experiment was running at that entrypoint.
@@ -428,8 +428,8 @@ fields:
   description: The high-level marketing channel group from the last-touch attribution for the previous subscription (e.g., 'Direct', 'Marketing
     Paid', 'Product Owned'). Groups the last touch into a broad channel category for reporting.
 - name: old_subscription_last_touch_attribution_entrypoint
-  description: The Mozilla-defined entrypoint identifier from the last marketing touch before the previous subscription was created (e.g., 'www.mozilla.org-vpn-product-page').
-    Represents the final surface the user interacted with prior to subscribing.
+  description: The Mozilla-defined entrypoint identifier from the last marketing touch before the previous subscription was created
+    (e.g., 'www.mozilla.org-vpn-product-page'). Represents the final surface the user interacted with prior to subscribing.
 - name: old_subscription_last_touch_attribution_entrypoint_experiment
   description: The name of the A/B or multivariate experiment associated with the last-touch attribution entrypoint for the previous subscription.
     Null when no experiment was active at the final touchpoint.
@@ -949,8 +949,8 @@ fields:
   description: The marketing or product entrypoint where the user first encountered a subscription offer, as captured in attribution data (e.g.,
     'www.mozilla.org-vpn-product-page'). Null when first-touch attribution data is not available.
 - name: subscription_first_touch_attribution_entrypoint_experiment
-  description: The name of the A/B or multivariate experiment that was active at the user's first-touch attribution entrypoint (e.g., 'vpn-landing-page-sub-position').
-    Null when no experiment was associated with the first-touch entrypoint.
+  description: The name of the A/B or multivariate experiment that was active at the user's first-touch attribution entrypoint
+    (e.g., 'vpn-landing-page-sub-position'). Null when no experiment was associated with the first-touch entrypoint.
 - name: subscription_first_touch_attribution_entrypoint_variation
   description: The specific experiment variation or treatment the user was assigned to at the first-touch attribution entrypoint (e.g., 'a', 'b',
     'control', 'treatment-d'). Null when no experiment variation is associated with the first-touch entrypoint.
@@ -1072,8 +1072,8 @@ fields:
   description: Price charged in the last transaction, expressed in the smallest unit of the transaction currency (e.g., micros or cents depending
     on the platform). A value of 0 typically indicates a free trial or fully discounted period.
 - name: subscription_last_transaction_product_id
-  description: Platform-specific product identifier for the subscription SKU associated with the last transaction (e.g., 'org.mozilla.ios.FirefoxVPN.product.1_month_subscription').
-    Identifies the specific billing plan purchased.
+  description: Platform-specific product identifier for the subscription SKU associated with the last transaction
+    (e.g., 'org.mozilla.ios.FirefoxVPN.product.1_month_subscription'). Identifies the specific billing plan purchased.
 - name: subscription_last_transaction_purchase_date
   description: Timestamp of when the last transaction was processed or the current subscription period began. For auto-renewing subscriptions,
     this is updated with each renewal.
@@ -1391,8 +1391,8 @@ fields:
   description: The timestamp at which the subscription's free trial period began. Null for subscriptions that do not have a trial period.
   type: TIMESTAMP
 - name: type
-  description: Indicates the origin of the record, distinguishing between 'original' records sourced directly from provider events and 'synthetic_subscription_period_start'
-    records generated to represent inferred subscription period boundaries.
+  description: Indicates the origin of the record, distinguishing between 'original' records sourced directly from provider events
+    and 'synthetic_subscription_period_start' records generated to represent inferred subscription period boundaries.
   type: STRING
 - name: utm_campaign
   description: The UTM campaign parameter from the URL used when the subscription was initiated, identifying the specific marketing campaign that
@@ -1419,8 +1419,8 @@ fields:
     tables. Records with earlier timestamps represent prior states of the same entity.
   type: TIMESTAMP
 - name: valid_to
-  description: The timestamp at which the record version ceased to be effective, marking the end of its validity window. A sentinel value of 9999-12-31T23:59:59.999999+00:00
-    indicates the record is the current, active version.
+  description: The timestamp at which the record version ceased to be effective, marking the end of its validity window. A sentinel value
+    of 9999-12-31T23:59:59.999999+00:00 indicates the record is the current, active version.
   type: TIMESTAMP
 - name: was_active_at_day_end
   description: Indicates whether the subscription was in an active state at the end of the day. True means the subscription was active at day-end;

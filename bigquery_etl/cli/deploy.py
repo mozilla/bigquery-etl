@@ -39,7 +39,7 @@ from bigquery_etl.deploy import (
 )
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
-from bigquery_etl.routine.parse_routine import ROUTINE_FILES
+from bigquery_etl.routine.parse_routine import ROUTINE_FILES, RawRoutine
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
@@ -394,7 +394,8 @@ def deploy(
             for f in files:
                 deployed_source_identities.add(extract_from_query_path(f))
 
-        for source_project, files in routines_by_source.items():
+        for source_project in _order_routine_source_projects(routines_by_source):
+            files = routines_by_source[source_project]
             result = _publish_routines_to_target(
                 target,
                 source_project,
@@ -581,6 +582,58 @@ def _strip_materialized_view(target_file: Path) -> Path:
     new_query_file.write_text(sql_content)
     target_file.unlink()
     return new_query_file
+
+
+def _order_routine_source_projects(
+    routines_by_source: Dict[str, Set[Path]],
+) -> List[str]:
+    """Order source-project routine batches so dependencies publish first.
+
+    `_publish_to_target` is called once per source project, but a routine in
+    one project may depend on a routine in another (e.g. a public `mozfun` UDF
+    that delegates to a `moz-fx-data-shared-prod` UDF). Publishing the batches
+    in arbitrary order can fail with "Function not found" when a dependent is
+    published before its dependency. Build a project-level dependency graph from
+    each routine's parsed dependencies and return the projects in dependency-first
+    order. Within-batch ordering is still handled by `_publish_to_target`.
+    """
+    # map of routine name (dataset.name) -> source project being published
+    name_to_project: Dict[str, str] = {}
+    routine_dependencies: Dict[str, List[str]] = {}
+    for source_project, files in routines_by_source.items():
+        for f in files:
+            raw_routine = RawRoutine.from_file(f)
+            name_to_project[raw_routine.name] = source_project
+            routine_dependencies[raw_routine.name] = raw_routine.dependencies
+
+    # project -> set of other projects providing routines it depends on
+    project_edges: Dict[str, Set[str]] = defaultdict(set)
+    for routine_name, dependencies in routine_dependencies.items():
+        source_project = name_to_project[routine_name]
+        for dependency in dependencies:
+            dependency_project = name_to_project.get(dependency)
+            if dependency_project and dependency_project != source_project:
+                project_edges[source_project].add(dependency_project)
+
+    # depth-first topological sort, dependencies before dependents
+    ordered: List[str] = []
+    state: Dict[str, str] = {}
+
+    def visit(project: str) -> None:
+        if state.get(project) == "done":
+            return
+        if state.get(project) == "visiting":
+            # cyclic dependency between projects; fall back to best-effort order
+            return
+        state[project] = "visiting"
+        for dependency_project in sorted(project_edges.get(project, ())):
+            visit(dependency_project)
+        state[project] = "done"
+        ordered.append(project)
+
+    for project in routines_by_source:
+        visit(project)
+    return ordered
 
 
 def _collect_isolated_dependencies(

@@ -40,6 +40,14 @@ _TOP_VALUES_K = 50
 _MAX_VALUE_CHARS = 256
 _TIER3_COLUMNS = {"metrics"}
 
+# Profile each table's most recent non-empty partition within the last
+# _PARTITION_LOOKBACK_MONTHS, with an upper bound of
+# (run_date - _PARTITION_SETTLE_DAYS) to skip the current, still-filling
+# partition. Recovers active tables that had no data on the exact run-date day,
+# without ever profiling tables that went dark over a year ago.
+_PARTITION_SETTLE_DAYS = 1
+_PARTITION_LOOKBACK_MONTHS = 12
+
 _SKIP_TABLE_TYPES = {"VIEW", "MATERIALIZED VIEW"}
 
 # Profile errors that are expected/benign (the table just isn't profilable) vs.
@@ -421,25 +429,72 @@ def build_nested_profile_queries(
     return results
 
 
-def get_partition_filter(
-    client: bigquery.Client, table: str, run_date: str
-) -> str | None:
-    """Return a WHERE clause scoped to the partition 7 days before run_date.
+def _latest_nonempty_partitions(
+    client: bigquery.Client, project: str, dataset: str, run_date: str
+) -> dict[str, str]:
+    """Return each table's most recent non-empty partition date for the dataset.
 
-    Anchored to run_date (the --date / profiled_at partition being written), NOT
-    CURRENT_DATE, so the scanned source data corresponds to the partition
-    produced and reruns/backfills of a given date are reproducible. run_date
-    must be a validated ISO date (YYYY-MM-DD). Returns None for unpartitioned
-    tables.
+    Looks within [run_date - _PARTITION_LOOKBACK_MONTHS, run_date -
+    _PARTITION_SETTLE_DAYS] via one INFORMATION_SCHEMA.PARTITIONS query (metadata
+    only, no table scan), returning {table_name: 'YYYY-MM-DD'}. Tables with no
+    data in that window are absent from the map. Returns {} (and logs) on query
+    failure, so callers degrade to the settle-day fallback.
     """
-    table_ref = client.get_table(table)
-    tp = table_ref.time_partitioning
+    _validate_bq_identifier(project, "project")
+    _validate_bq_identifier(dataset, "dataset")
+    query = f"""
+        SELECT table_name, MAX(SAFE.PARSE_DATE('%Y%m%d', partition_id)) AS latest
+        FROM `{project}`.`{dataset}`.INFORMATION_SCHEMA.PARTITIONS
+        WHERE total_rows > 0
+          AND SAFE.PARSE_DATE('%Y%m%d', partition_id) BETWEEN
+              DATE_SUB(DATE('{run_date}'), INTERVAL {_PARTITION_LOOKBACK_MONTHS} MONTH)
+              AND DATE_SUB(DATE('{run_date}'), INTERVAL {_PARTITION_SETTLE_DAYS} DAY)
+        GROUP BY table_name
+    """
+    try:
+        rows = list(client.query(query).result())
+    except Exception as e:
+        logger.warning(
+            "Partition discovery failed for %s.%s (%s); falling back to the "
+            "settle-day partition per table.",
+            project,
+            dataset,
+            e,
+        )
+        return {}
+    return {r.table_name: r.latest.isoformat() for r in rows if r.latest is not None}
+
+
+def get_partition_filter(
+    client: bigquery.Client,
+    table: str,
+    run_date: str,
+    partition_target: str | None = None,
+) -> str | None:
+    """Return a WHERE clause scoping the scan to one source partition.
+
+    partition_target is the most recent non-empty partition date ('YYYY-MM-DD')
+    for this table, precomputed in bulk by _latest_nonempty_partitions. When None
+    — the table has no data in the last 12 months, or partition discovery failed
+    — falls back to (run_date - _PARTITION_SETTLE_DAYS); if that day is empty the
+    table is benignly skipped, matching prior behavior. Anchored to run_date (the
+    --date / profiled_at partition being written), NOT CURRENT_DATE, so
+    reruns/backfills of a given date are reproducible. run_date must be a
+    validated ISO date (YYYY-MM-DD). Returns None for unpartitioned tables.
+    """
+    tp = client.get_table(table).time_partitioning
     if tp is None:
         return None
-    field = tp.field
-    if field:
-        return f"DATE(`{field}`) = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
-    return f"_PARTITIONDATE = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
+    target = (
+        partition_target
+        or (
+            datetime.date.fromisoformat(run_date)
+            - datetime.timedelta(days=_PARTITION_SETTLE_DAYS)
+        ).isoformat()
+    )
+    if tp.field:
+        return f"DATE(`{tp.field}`) = DATE('{target}')"
+    return f"_PARTITIONDATE = DATE('{target}')"
 
 
 def sample_id_is_populated(
@@ -544,9 +599,10 @@ def _run_profile_query(
     table: str,
     columns: list[tuple[str, str, str]],
     run_date: str,
+    partition_target: str | None = None,
 ) -> tuple[dict[str, Any], float]:
     """Execute the profiling query and return (column_stats_dict, gb_scanned)."""
-    partition_filter = get_partition_filter(client, table, run_date)
+    partition_filter = get_partition_filter(client, table, run_date, partition_target)
 
     # Decide how to sample. Prefer the deterministic sample_id bucket, but only
     # when that column is actually populated; tables sourced from server-side
@@ -685,16 +741,17 @@ def profile_bq_table(
     table: str,
     run_date: str,
     region: str,
+    partition_target: str | None = None,
 ) -> str:
     """Profile every column in a single BigQuery table; return stats as JSON.
 
     Samples 1% via the sample_id bucket when that column is present and
     populated, falling back to TABLESAMPLE when sample_id is all-NULL.
-    Applies a partition filter scoped to 7 days before run_date when a date
-    partition column is detected, so the scanned data matches the profiled_at
-    partition. Fields inside REPEATED structs are profiled via UNNEST with the
-    same sampling. Simple ARRAY<scalar> columns are listed as tier
-    "scalar_array" with no stats.
+    Applies a partition filter scoped to partition_target (the table's most
+    recent non-empty partition, on or before run_date - _PARTITION_SETTLE_DAYS;
+    see get_partition_filter) when a date partition column is detected. Fields
+    inside REPEATED structs are profiled via UNNEST with the same sampling.
+    Simple ARRAY<scalar> columns are listed as tier "scalar_array" with no stats.
     Fields under _TIER3_COLUMNS (e.g. metrics) remain tier "undocumented".
 
     Returns a JSON object with column stats, or {"error": "..."} if the table
@@ -721,7 +778,7 @@ def profile_bq_table(
                 }
             )
         column_stats, gb_scanned = _run_profile_query(
-            client, fully_qualified, columns, run_date
+            client, fully_qualified, columns, run_date, partition_target
         )
 
         return json.dumps(
@@ -920,6 +977,7 @@ def main() -> None:
     # resolve each dataset's region (TABLE_STORAGE is queryable only per region).
     work: list[tuple[str, str]] = []
     dataset_regions: dict[str, str] = {}
+    partition_targets: dict[str, dict[str, str]] = {}
     for dataset in args.source_datasets:
         try:
             dataset_regions[dataset] = _dataset_region(
@@ -934,6 +992,9 @@ def main() -> None:
             )
             continue
         tables = _discover_base_tables(args.source_project, dataset, table_filter)
+        partition_targets[dataset] = _latest_nonempty_partitions(
+            client, args.source_project, dataset, args.date
+        )
         logger.info(
             "Discovered %d base table(s) to profile in %s.%s",
             len(tables),
@@ -982,6 +1043,7 @@ def main() -> None:
             table_name,
             args.date,
             dataset_regions[dataset],
+            partition_target=partition_targets.get(dataset, {}).get(table_name),
         )
 
     rows: list[dict[str, Any]] = []

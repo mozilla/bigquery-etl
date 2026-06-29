@@ -855,6 +855,7 @@ jobs:
     name: Validate Backfills
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
     environment: *build-env
     needs: [generate-sql, decide-runs]
@@ -865,9 +866,12 @@ jobs:
       - *restore-venv
       - *download-generated-sql
       - *copy-generated-sql
+      - *auth-gcp-dryrun
       - name: Verify that backfill.yaml files are valid
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl backfill validate
+          PATH=".venv/bin:$PATH" script/bqetl backfill validate --dry-run-custom-query
 
   push-generated-sql:
     name: Push Generated SQL

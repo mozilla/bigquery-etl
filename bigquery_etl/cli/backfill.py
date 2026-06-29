@@ -48,6 +48,7 @@ from ..backfill.utils import (
 )
 from ..backfill.validate import (
     BackfillConfigurationError,
+    validate_custom_query_path,
     validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
@@ -62,6 +63,7 @@ from ..cli.utils import (
     is_authenticated,
     project_id_option,
     sql_dir_option,
+    use_cloud_function_option,
 )
 from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
@@ -405,6 +407,16 @@ def create(
 @sql_dir_option
 @project_id_option()
 @ignore_missing_metadata_option
+@click.option(
+    "--dry-run-custom-query",
+    is_flag=True,
+    default=False,
+    help="Also dry run any custom_query_path SQL against BigQuery. "
+    "Requires GCP authentication. Off by default so pre-commit doesn't require auth.",
+)
+# cloud function and billing project are only for the optional dry run
+@use_cloud_function_option
+@billing_project_option()
 @click.pass_context
 def validate(
     ctx,
@@ -412,6 +424,9 @@ def validate(
     sql_dir,
     project_id,
     ignore_missing_metadata,
+    dry_run_custom_query,
+    use_cloud_function,
+    billing_project,
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
@@ -455,6 +470,14 @@ def validate(
                 sql_dir, table_name
             )
             validate_file(backfill_file)
+            for entry in table_entries:
+                validate_custom_query_path(
+                    entry,
+                    backfill_file,
+                    dry_run=dry_run_custom_query,
+                    use_cloud_function=use_cloud_function,
+                    billing_project=billing_project,
+                )
         except (yaml.YAMLError, ValueError) as e:
             errors[table_name].append(
                 f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
@@ -477,7 +500,7 @@ def validate(
                 continue
             click.echo(f"{table_name}:")
             click.echo("\n".join(error_list))
-            raise BackfillConfigurationError
+        raise BackfillConfigurationError
     elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."

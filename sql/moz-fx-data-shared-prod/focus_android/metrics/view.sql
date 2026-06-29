@@ -1234,7 +1234,10 @@ SELECT
       metrics.custom_distribution.networking_http_3_pmtud_pmtu,
       metrics.custom_distribution.networking_http_3_pmtud_probes_acked,
       metrics.custom_distribution.networking_http_3_pmtud_probes_lost,
-      metrics.custom_distribution.networking_http_3_pmtud_probes_sent
+      metrics.custom_distribution.networking_http_3_pmtud_probes_sent,
+      metrics.custom_distribution.networking_http_3_min_rtt,
+      metrics.custom_distribution.networking_http_3_rtt,
+      metrics.custom_distribution.networking_http_3_rtt_var
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -3192,7 +3195,10 @@ SELECT
       metrics.custom_distribution.networking_http_3_pmtud_pmtu,
       metrics.custom_distribution.networking_http_3_pmtud_probes_acked,
       metrics.custom_distribution.networking_http_3_pmtud_probes_lost,
-      metrics.custom_distribution.networking_http_3_pmtud_probes_sent
+      metrics.custom_distribution.networking_http_3_pmtud_probes_sent,
+      metrics.custom_distribution.networking_http_3_min_rtt,
+      metrics.custom_distribution.networking_http_3_rtt,
+      metrics.custom_distribution.networking_http_3_rtt_var
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -5150,7 +5156,10 @@ SELECT
       metrics.custom_distribution.networking_http_3_pmtud_pmtu,
       metrics.custom_distribution.networking_http_3_pmtud_probes_acked,
       metrics.custom_distribution.networking_http_3_pmtud_probes_lost,
-      metrics.custom_distribution.networking_http_3_pmtud_probes_sent
+      metrics.custom_distribution.networking_http_3_pmtud_probes_sent,
+      metrics.custom_distribution.networking_http_3_min_rtt,
+      metrics.custom_distribution.networking_http_3_rtt,
+      metrics.custom_distribution.networking_http_3_rtt_var
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

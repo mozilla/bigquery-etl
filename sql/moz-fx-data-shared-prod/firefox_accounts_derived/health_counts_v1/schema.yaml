@@ -1,13 +1,17 @@
 fields:
-  - mode: NULLABLE
-    name: date
-    type: TIMESTAMP
-  - mode: NULLABLE
-    name: type
-    type: STRING
-  - mode: NULLABLE
-    name: state
-    type: STRING
-  - mode: NULLABLE
-    name: count
-    type: INTEGER
+- mode: NULLABLE
+  name: date
+  type: TIMESTAMP
+  description: Event date derived from `DATE(timestamp)`, used as the partition key
+    in some log-derived tables. Distinct from `submission_date` (the pipeline ingestion
+    date). Use `submission_date` for incremental processing; use this field when you
+    need the event's occurrence date.
+- mode: NULLABLE
+  name: type
+  type: STRING
+- mode: NULLABLE
+  name: state
+  type: STRING
+- mode: NULLABLE
+  name: count
+  type: INTEGER

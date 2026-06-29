@@ -89,6 +89,7 @@ fields:
     - name: processingtimemillis
       type: FLOAT
       mode: NULLABLE
+      description: Time in milliseconds taken to process the event.
     - name: event
       type: STRING
       mode: NULLABLE
@@ -111,6 +112,7 @@ fields:
     - name: templatename
       type: STRING
       mode: NULLABLE
+      description: Name of the email or notification template used for the event.
     - name: flowbegintime
       type: STRING
       mode: NULLABLE
@@ -118,6 +120,7 @@ fields:
     - name: currenttime
       type: FLOAT
       mode: NULLABLE
+      description: Current server time as a Unix epoch milliseconds float.
     - name: event_type
       type: STRING
       mode: NULLABLE

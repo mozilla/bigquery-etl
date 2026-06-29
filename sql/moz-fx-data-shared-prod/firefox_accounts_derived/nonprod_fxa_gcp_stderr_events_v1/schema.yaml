@@ -2,6 +2,9 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: FxA server component that generated the log entry, derived from the
+    logger name by extracting the service token (e.g., auth, content, oauth, profile,
+    customs). Use to filter to a specific FxA service log stream.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -94,9 +97,11 @@ fields:
     - name: traceid
       type: STRING
       mode: NULLABLE
+      description: Distributed tracing identifier for correlating events across services.
     - name: keys
       type: BOOLEAN
       mode: NULLABLE
+      description: JSON-encoded account key bundle or key metadata.
     - name: errno
       type: FLOAT
       mode: NULLABLE
@@ -170,6 +175,7 @@ fields:
     - name: missingflowid
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the event was missing a flow_id at logging time.
     - name: event_properties
       type: STRING
       mode: NULLABLE
@@ -241,6 +247,7 @@ fields:
     - name: is_placeholder
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether this record is a placeholder entry.
     - name: region
       type: STRING
       mode: NULLABLE
@@ -277,9 +284,12 @@ fields:
     - name: events
       type: FLOAT
       mode: NULLABLE
+      description: JSON-encoded list of sub-events or event sequence associated with
+        the log entry.
     - name: recency
       type: STRING
       mode: NULLABLE
+      description: Recency classification of the user session.
     - name: session_id
       type: FLOAT
       mode: NULLABLE
@@ -300,6 +310,7 @@ fields:
     - name: flowtype
       type: STRING
       mode: NULLABLE
+      description: Type classification of the authentication flow.
     - name: flow_time
       type: FLOAT
       mode: NULLABLE
@@ -312,9 +323,11 @@ fields:
     - name: flowcompletesignal
       type: STRING
       mode: NULLABLE
+      description: Event name that signalled flow completion.
     - name: headers
       type: STRING
       mode: NULLABLE
+      description: JSON-encoded HTTP request headers associated with the event.
     - name: success
       type: BOOLEAN
       mode: NULLABLE
@@ -359,12 +372,14 @@ fields:
     - name: granttype
       type: STRING
       mode: NULLABLE
+      description: OAuth grant type.
     - name: lastaccesstime
       type: FLOAT
       mode: NULLABLE
     - name: bodysize
       type: FLOAT
       mode: NULLABLE
+      description: Size of the HTTP request body in bytes.
     - name: body
       type: STRING
       mode: NULLABLE
@@ -376,18 +391,23 @@ fields:
     - name: deviceid
       type: STRING
       mode: NULLABLE
+      description: FxA device identifier. See also device_id for the hashed version.
     - name: newsletters
       type: STRING
       mode: NULLABLE
+      description: JSON-encoded list of newsletter subscription identifiers the user
+        opted into.
     - name: emailcode
       type: STRING
       mode: NULLABLE
+      description: Verification code sent to the user's email address.
     - name: codes
       type: STRING
       mode: NULLABLE
     - name: tokenverificationid
       type: STRING
       mode: NULLABLE
+      description: Identifier for a token verification attempt.
     - name: verificationmethod
       type: STRING
       mode: NULLABLE
@@ -397,27 +417,36 @@ fields:
     - name: isboom
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the error is a Boom HTTP error object.
     - name: _original
       type: STRING
       mode: NULLABLE
+      description: Original raw value before transformation or normalization.
     - name: output
       type: STRING
       mode: NULLABLE
+      description: Output value or result string from the operation.
     - name: isserver
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the event originated from a server-side operation rather
+        than a client request.
     - name: details
       type: STRING
       mode: NULLABLE
+      description: Additional detail string associated with the event.
     - name: disabledat
       type: STRING
       mode: NULLABLE
+      description: Unix epoch timestamp of when the account was disabled.
     - name: authsalt
       type: STRING
       mode: NULLABLE
+      description: Authentication salt value used in account credential derivation.
     - name: lockedat
       type: STRING
       mode: NULLABLE
+      description: Unix epoch timestamp of when the account was locked.
     - name: profilechangedat
       type: FLOAT
       mode: NULLABLE
@@ -425,72 +454,101 @@ fields:
     - name: verifiersetat
       type: FLOAT
       mode: NULLABLE
+      description: Unix epoch timestamp of when the account verifier (password) was
+        last set.
     - name: ecosystemanonid
       type: STRING
       mode: NULLABLE
+      description: Anonymized ecosystem user identifier for cross-product analytics,
+        derived without exposing the raw user ID.
     - name: createdat
       type: FLOAT
       mode: NULLABLE
+      description: Unix epoch timestamp of when the account or resource was created.
     - name: primaryemail
       type: STRING
       mode: NULLABLE
+      description: Hashed primary email address for the FxA account. Not a raw email
+        address.
     - name: keyschangedat
       type: FLOAT
       mode: NULLABLE
+      description: Unix epoch timestamp of when the account encryption keys were last
+        changed.
     - name: _uuidfields
       type: STRING
       mode: NULLABLE
+      description: Comma-separated list of field names containing UUID strings, used
+        for schema normalization metadata.
     - name: normalizedemail
       type: STRING
       mode: NULLABLE
+      description: Normalized form of the account email address (lowercased, Gmail
+        dots removed).
     - name: wrapwrapkb
       type: STRING
       mode: NULLABLE
+      description: Double-wrapped kB key value used in FxA sync key exchange.
     - name: metricsoptoutat
       type: STRING
       mode: NULLABLE
+      description: Unix epoch timestamp of when the user opted out of metrics collection.
     - name: ka
       type: STRING
       mode: NULLABLE
+      description: Key agreement value used in FxA account key derivation.
     - name: verifierversion
       type: FLOAT
       mode: NULLABLE
+      description: Version of the account verifier (password hashing algorithm) in
+        use.
     - name: emails
       type: STRING
       mode: NULLABLE
+      description: JSON-encoded list of email objects associated with the account.
     - name: emailverified
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the account's primary email address has been verified.
     - name: _intboolfields
       type: STRING
       mode: NULLABLE
+      description: Comma-separated list of field names cast from integer to boolean
+        during log normalization.
     - name: enabled
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the feature or configuration option is enabled.
     - name: productid
       type: STRING
       mode: NULLABLE
+      description: Mozilla subscription product identifier. See also product_id.
     - name: planid
       type: STRING
       mode: NULLABLE
+      description: Subscription plan identifier.
     - name: lastseen
       type: STRING
       mode: NULLABLE
     - name: uabrowser
       type: STRING
       mode: NULLABLE
+      description: Browser name parsed from the user agent string.
     - name: errcode
       type: STRING
       mode: NULLABLE
     - name: uabrowserversion
       type: STRING
       mode: NULLABLE
+      description: Browser version string parsed from the user agent.
     - name: uaos
       type: STRING
       mode: NULLABLE
+      description: Operating system name parsed from the user agent string.
     - name: uaosversion
       type: STRING
       mode: NULLABLE
+      description: Operating system version string parsed from the user agent.
     - name: pushcallback
       type: STRING
       mode: NULLABLE
@@ -525,9 +583,12 @@ fields:
     - name: entrypoint
       type: STRING
       mode: NULLABLE
+      description: Entry point identifier for the authentication or account creation
+        flow.
     - name: command
       type: STRING
       mode: NULLABLE
+      description: Device command name dispatched or received.
     - name: browser
       type: STRING
       mode: NULLABLE
@@ -537,15 +598,20 @@ fields:
     - name: verifiedat
       type: STRING
       mode: NULLABLE
+      description: Unix epoch timestamp of when the account or email was verified.
     - name: isprimary
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the associated email address is the account's primary email.
     - name: isverified
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the account has been verified.
     - name: accountrecreated
       type: BOOLEAN
       mode: NULLABLE
+      description: Whether the account was recreated (deleted and re-registered with
+        the same email).
     - name: error
       type: STRING
       mode: NULLABLE
@@ -553,21 +619,27 @@ fields:
     - name: currenttime
       type: FLOAT
       mode: NULLABLE
+      description: Current server time as a Unix epoch milliseconds float.
     - name: templatename
       type: STRING
       mode: NULLABLE
+      description: Name of the email or notification template used for the event.
     - name: processingtimemillis
       type: FLOAT
       mode: NULLABLE
+      description: Time in milliseconds taken to process the event.
     - name: origin
       type: STRING
       mode: NULLABLE
     - name: entrypoint_variation
       type: STRING
       mode: NULLABLE
+      description: A/B variation identifier for the entrypoint experiment.
     - name: entrypoint_experiment
       type: STRING
       mode: NULLABLE
+      description: A/B experiment identifier associated with the entrypoint that started
+        the authentication flow.
     - name: code
       type: STRING
       mode: NULLABLE
@@ -576,6 +648,7 @@ fields:
     - name: redirectto
       type: STRING
       mode: NULLABLE
+      description: URL the user was redirected to after the authentication flow.
     - name: subscriptionid
       type: STRING
       mode: NULLABLE
@@ -587,24 +660,31 @@ fields:
     - name: plan_id
       type: STRING
       mode: NULLABLE
+      description: Subscription plan identifier. See also planid.
     - name: product_id
       type: STRING
       mode: NULLABLE
+      description: Mozilla subscription product identifier.
     - name: utm_medium
       type: STRING
       mode: NULLABLE
+      description: UTM medium parameter from the originating URL.
     - name: utm_campaign
       type: STRING
       mode: NULLABLE
+      description: UTM campaign parameter from the originating URL.
     - name: utm_source
       type: STRING
       mode: NULLABLE
+      description: UTM source parameter from the originating URL.
     - name: priceid
       type: STRING
       mode: NULLABLE
+      description: Stripe price identifier for a subscription plan.
     - name: postalcode
       type: STRING
       mode: NULLABLE
+      description: Postal code from the subscription billing address.
     - name: countrycode
       type: STRING
       mode: NULLABLE
@@ -612,6 +692,8 @@ fields:
     - name: utm_content
       type: STRING
       mode: NULLABLE
+      description: UTM content parameter from the originating URL, used to differentiate
+        ads or links.
     - name: purchasetoken
       type: STRING
       mode: NULLABLE
@@ -625,6 +707,9 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
+      description: In FxA, repurposed from the standard paid-search UTM term to track
+        A/B test cohort assignments (e.g., 'my-experiment-var-a'). Not a paid search
+        keyword.
     - name: connlimit
       type: FLOAT
       mode: NULLABLE
@@ -640,6 +725,7 @@ fields:
     - name: dbpath
       type: STRING
       mode: NULLABLE
+      description: Database path or connection string identifier.
     - name: config
       type: STRING
       mode: NULLABLE
@@ -647,51 +733,67 @@ fields:
     - name: target
       type: STRING
       mode: NULLABLE
+      description: Target resource or endpoint associated with the event.
     - name: targetos
       type: STRING
       mode: NULLABLE
+      description: Target operating system for the event.
     - name: sender
       type: STRING
       mode: NULLABLE
+      description: Sender identifier for email or notification events.
     - name: sendertype
       type: STRING
       mode: NULLABLE
+      description: Type of email sender used for the notification.
     - name: index
       type: FLOAT
       mode: NULLABLE
+      description: Index position within a list or sequence in the event payload.
     - name: targettype
       type: STRING
       mode: NULLABLE
+      description: Type of the target resource for the event.
     - name: senderos
       type: STRING
       mode: NULLABLE
+      description: Operating system of the sender in a device command event.
     - name: numsessions
       type: FLOAT
       mode: NULLABLE
+      description: Number of active sessions for the account.
     - name: ipaddress
       type: STRING
       mode: NULLABLE
+      description: Client IP address associated with the event.
     - name: location
       type: STRING
       mode: NULLABLE
+      description: JSON-encoded location object containing city, country, and region
+        for the request.
     - name: automatic_tax
       type: STRING
       mode: NULLABLE
+      description: Whether tax was calculated automatically for a subscription event.
     - name: refresh_token
       type: STRING
       mode: NULLABLE
     - name: plan
       type: STRING
       mode: NULLABLE
+      description: Subscription plan name or identifier associated with the event.
     - name: unblockcode
       type: STRING
       mode: NULLABLE
+      description: One-time code sent to the user to unblock their account after rate
+        limiting.
     - name: numberremaining
       type: FLOAT
       mode: NULLABLE
     - name: remaining
       type: FLOAT
       mode: NULLABLE
+      description: Remaining allowed attempts before rate limiting applies.
     - name: message
       type: STRING
       mode: NULLABLE
@@ -703,18 +805,25 @@ fields:
     - name: zip
       type: STRING
       mode: NULLABLE
+      description: Postal ZIP code from the subscription billing address.
     - name: customeruid
       type: STRING
       mode: NULLABLE
+      description: Unique identifier for the customer in the subscription billing
+        system.
     - name: ipnmessage
       type: STRING
       mode: NULLABLE
+      description: IPN (Instant Payment Notification) message payload for subscription
+        billing events.
     - name: purchase
       type: STRING
       mode: NULLABLE
+      description: Purchase identifier or metadata for a subscription purchase.
     - name: token
       type: STRING
       mode: NULLABLE
+      description: Authentication or session token associated with the event.
     - name: count
       type: FLOAT
       mode: NULLABLE
@@ -828,6 +937,7 @@ fields:
     - name: syscall
       type: STRING
       mode: NULLABLE
+      description: System call name associated with an OS-level error event.
     - name: isaxioserror
       type: BOOLEAN
       mode: NULLABLE
@@ -845,12 +955,15 @@ fields:
     - name: requestid
       type: STRING
       mode: NULLABLE
+      description: Unique identifier for the HTTP request.
     - name: raw
       type: STRING
       mode: NULLABLE
+      description: Raw log line or payload before parsing.
     - name: rawtype
       type: STRING
       mode: NULLABLE
+      description: Type classification of the raw log payload.
     - name: statuscode
       type: FLOAT
       mode: NULLABLE
@@ -899,6 +1012,7 @@ fields:
   - name: ip
     type: STRING
     mode: NULLABLE
+    description: Client IP address from the customs server log payload.
   - name: v
     type: FLOAT
     mode: NULLABLE
@@ -914,6 +1028,7 @@ fields:
   - name: err
     type: STRING
     mode: NULLABLE
+    description: Error details from the top-level log payload.
   - name: level
     type: FLOAT
     mode: NULLABLE
@@ -926,6 +1041,7 @@ fields:
   - name: rtime
     type: STRING
     mode: NULLABLE
+    description: Request processing time from the customs server log payload, in seconds.
   - name: name
     type: STRING
     mode: NULLABLE
@@ -934,39 +1050,56 @@ fields:
   - name: filename
     type: STRING
     mode: NULLABLE
+    description: Name of an IP blocklist data file associated with the log event.
   - name: filesize
     type: FLOAT
     mode: NULLABLE
+    description: File size in bytes associated with the log event.
   - name: suspect
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the IP or account was flagged as suspect by the customs server.
   - name: email
     type: STRING
     mode: NULLABLE
+    description: Hashed or redacted email identifier. Not a raw email address.
   - name: action
     type: STRING
     mode: NULLABLE
+    description: Action type from the customs server log payload.
   - name: block
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the request was blocked by the customs server.
   - name: unblock
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the request was unblocked by the customs server.
   - name: regex
     type: STRING
     mode: NULLABLE
+    description: Regular expression pattern used in user-agent blocklist matching
+      (e.g., matching browser or device strings to identify blocked clients).
   - name: locale
     type: STRING
     mode: NULLABLE
+    description: BCP 47 locale string (e.g., 'en-US', 'fr', 'de') from the FxA content
+      server log payload.
   - name: flow_time
     type: FLOAT
     mode: NULLABLE
+    description: Milliseconds elapsed since the authentication flow began, as reported
+      by the FxA content server. Pair with `flow_id` to measure funnel completion
+      latency.
   - name: flow_id
     type: STRING
     mode: NULLABLE
+    description: UUID flow identifier from the FxA content server log payload, linking
+      all events in a single authentication session.
   - name: country
     type: STRING
     mode: NULLABLE
+    description: Country associated with the event, as a full country name.
   - name: useragent
     type: STRING
     mode: NULLABLE
@@ -974,33 +1107,49 @@ fields:
   - name: region
     type: STRING
     mode: NULLABLE
+    description: Geographic region associated with the event.
   - name: event
     type: STRING
     mode: NULLABLE
+    description: FxA content server event name (e.g., 'flow.signin.view', 'flow.signin.submit').
+      Excludes Amplitude-captured event types.
   - name: context
     type: STRING
     mode: NULLABLE
+    description: OAuth context string identifying the FxA flow type (e.g., 'oauth',
+      'fx_desktop_v3'). Set when the flow originates from a relying party OAuth integration.
   - name: service
     type: STRING
     mode: NULLABLE
+    description: The Mozilla service or relying party associated with the event.
   - name: errno
     type: FLOAT
     mode: NULLABLE
+    description: FxA error number from the customs server payload.
   - name: foundin
     type: FLOAT
     mode: NULLABLE
+    description: IP blocklist name in which the client address was found.
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+    description: UTM medium parameter identifying the marketing channel (e.g., 'cpc',
+      'email', 'social').
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+    description: UTM campaign parameter identifying the marketing campaign that drove
+      the user to FxA.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+    description: FxA entry point where the user started the flow, set by Firefox UI
+      callsites (e.g., 'menupanel', 'preferences', 'synced-tabs'). Not a fixed enum.
   - name: utm_source
     type: STRING
     mode: NULLABLE
+    description: UTM source parameter identifying the traffic origin (e.g., 'google',
+      'email'). Present when the user arrived at FxA via a tracked marketing URL.
   - name: message
     type: STRING
     mode: NULLABLE
@@ -1318,18 +1467,23 @@ fields:
   - name: loadedin
     type: FLOAT
     mode: NULLABLE
+    description: Time in milliseconds for the page or resource to load.
   - name: host
     type: STRING
     mode: NULLABLE
+    description: Hostname from the top-level log payload.
   - name: port
     type: FLOAT
     mode: NULLABLE
+    description: Network port from the top-level log payload.
   - name: reputation
     type: FLOAT
     mode: NULLABLE
   - name: utm_content
     type: STRING
     mode: NULLABLE
+    description: UTM content parameter used to distinguish links within the same campaign
+      (for A/B testing creative).
   - name: statuscode
     type: FLOAT
     mode: NULLABLE
@@ -1337,12 +1491,15 @@ fields:
   - name: blockreason
     type: STRING
     mode: NULLABLE
+    description: Reason the request was blocked by the customs server.
   - name: listhits
     type: STRING
     mode: NULLABLE
+    description: JSON-encoded list of IP blocklist names that matched the request.
   - name: listhitcount
     type: FLOAT
     mode: NULLABLE
+    description: Number of IP blocklists that matched the request.
   - name: kind
     type: STRING
     mode: NULLABLE

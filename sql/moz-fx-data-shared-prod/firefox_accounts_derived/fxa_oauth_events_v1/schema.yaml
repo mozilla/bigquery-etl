@@ -133,6 +133,8 @@ fields:
     - name: assertion
       type: STRING
       mode: NULLABLE
+      description: Assertion string used in device pairing or browser verification
+        flows.
     - name: queuelength
       type: FLOAT
       mode: NULLABLE

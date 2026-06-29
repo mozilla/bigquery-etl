@@ -2,6 +2,10 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: Event date derived from `DATE(timestamp)`, used as the partition key
+    in some log-derived tables. Distinct from `submission_date` (the pipeline ingestion
+    date). Use `submission_date` for incremental processing; use this field when you
+    need the event's occurrence date.
 - name: logName
   type: STRING
   mode: NULLABLE

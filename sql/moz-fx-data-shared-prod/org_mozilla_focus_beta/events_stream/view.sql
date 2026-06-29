@@ -73,6 +73,7 @@ SELECT
       LAX_BOOL(event_extra.isDecryptSuccess) AS `isDecryptSuccess`,
       LAX_BOOL(event_extra.issued_by_cca) AS `issued_by_cca`,
       LAX_BOOL(event_extra.lang_tags_match) AS `lang_tags_match`,
+      LAX_BOOL(event_extra.no_connectivity) AS `no_connectivity`,
       LAX_BOOL(event_extra.no_rule) AS `no_rule`,
       LAX_BOOL(event_extra.open_successful) AS `open_successful`,
       LAX_BOOL(event_extra.origin_fixable) AS `origin_fixable`,
@@ -93,6 +94,7 @@ SELECT
       LAX_BOOL(event_extra.toggle_state) AS `toggle_state`,
       LAX_BOOL(event_extra.toggled_on) AS `toggled_on`,
       LAX_BOOL(event_extra.triggered_externally) AS `triggered_externally`,
+      LAX_BOOL(event_extra.trr_only) AS `trr_only`,
       LAX_BOOL(event_extra.userAction) AS `userAction`,
       LAX_BOOL(event_extra.vulnerable) AS `vulnerable`,
       LAX_BOOL(event_extra.wasActive) AS `wasActive`
@@ -224,6 +226,7 @@ SELECT
       JSON_VALUE(event_extra.caller) AS `caller`,
       JSON_VALUE(event_extra.canaries) AS `canaries`,
       JSON_VALUE(event_extra.cancel_reason) AS `cancel_reason`,
+      JSON_VALUE(event_extra.captive_portal_state) AS `captive_portal_state`,
       JSON_VALUE(event_extra.captivePortal) AS `captivePortal`,
       JSON_VALUE(event_extra.captiveState) AS `captiveState`,
       JSON_VALUE(event_extra.category) AS `category`,

@@ -2,6 +2,8 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: Date the record was ingested into the pipeline, used as the partition
+    key.
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -47,3 +49,4 @@ fields:
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: Operating system version string (e.g., '10', '10.15', '16').

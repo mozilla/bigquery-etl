@@ -2,142 +2,165 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: |
-    Used for partitioning in BigQuery and
+  description: 'Used for partitioning in BigQuery and
+
     represents the date partition processed
+
     by BQETL.
 
+    '
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
-  description: |
-    Timestamp when the last recorded event
+  description: 'Timestamp when the last recorded event
+
     took place. The date value for this field
+
     can be older or the same in comparison
+
     to submission_date.
 
+    '
 - mode: NULLABLE
   name: user_id
   type: STRING
-  description: |
-    36-char long hash randomly assigned when the account
+  description: '36-char long hash randomly assigned when the account
+
     is created
 
+    '
 - mode: NULLABLE
   name: service
   type: STRING
-  description: |
-    The service identifier. For Sync it may be empty or sync.
+  description: 'The service identifier. For Sync it may be empty or sync.
+
     For OAuth reliers it is their hex client id.
+
     Example: sync
 
+    '
 - mode: NULLABLE
   name: device_id
   type: STRING
-  description: |
-    This DOES NOT correspond to a physical device! Everytime a user logs out and back
+  description: 'This DOES NOT correspond to a physical device! Everytime a user logs
+    out and back
+
     in will have a different value for device_id. This should be treated more like
+
     a session identified (in our case, session does not expire).
+
     There are two ways in which device_id field value gets populated/generated:
-    1. If the current flow session does not have a device_id associated with it we set
+
+    1. If the current flow session does not have a device_id associated with it we
+    set
+
     it to the device_id/deviceId value found inside urlParams object.
-    2. If during the above process we find urlParams object to not have this attribute set,
-    then we use uuid.v4() to generate a new unique value and assign it to deviceId flow session.
+
+    2. If during the above process we find urlParams object to not have this attribute
+    set,
+
+    then we use uuid.v4() to generate a new unique value and assign it to deviceId
+    flow session.
+
     _devide_id generation: https://github.com/mozilla/fxa/blob/main/packages/fxa-content-server/app/scripts/models/flow.js#L61-L69_
 
+    '
 - mode: NULLABLE
   name: os_name
   type: STRING
-  description: |
-    Name of the operating system the device was using.
+  description: 'Name of the operating system the device was using.
+
     E.g. Android
 
+    '
 - mode: NULLABLE
   name: flow_id
   type: STRING
-  description: |
-    The flow identifier. A randomly-generated opaque id.
+  description: 'The flow identifier. A randomly-generated opaque id.
 
+    '
 - mode: NULLABLE
   name: event_type
   type: STRING
-  description: |
-    Type of the FxA event recorded.
+  description: 'Type of the FxA event recorded.
 
+    '
 - mode: NULLABLE
   name: country
   type: STRING
-  description: |
-    2 char string representing the country where the device was located.
+  description: '2 char string representing the country where the device was located.
 
+    '
 - mode: NULLABLE
   name: language
   type: STRING
-  description:
-    Language settings used by the device.
-
+  description: Language settings used by the device.
 - mode: NULLABLE
   name: entrypoint
   type: STRING
-  description: |
-    The entrypoint of the flow session.
-    Typically a UI touchpoint like "preferences".
-
+  description: FxA entry point where the user started the authentication flow, set
+    by Firefox UI callsites (e.g., 'menupanel', 'preferences', 'synced-tabs'). Not
+    a fixed enum. Sourced from `jsonPayload.fields.entrypoint` in auth tables, `jsonPayload.entrypoint`
+    in content tables, or Amplitude `user_properties` in aggregated tables.
 - mode: NULLABLE
   name: utm_term
   type: STRING
-  description: |
-    Marketing campaign search term
-    for the flow session.
-    Not stored if the DNT request header was 1.
+  description: 'In FxA, repurposed from the standard paid-search UTM term to track
+    A/B test cohort assignments (e.g., ''my-experiment-var-a''). Not a paid search
+    keyword. Sourced from Amplitude `user_properties`.
 
+    Not stored if the DNT request header was 1.'
 - mode: NULLABLE
   name: utm_medium
   type: STRING
-  description: |
-    Marketing campaign medium for the flow session.
-    Not stored if the DNT request header was 1.
+  description: 'UTM medium parameter identifying the marketing channel (e.g., ''cpc'',
+    ''email'', ''social''). Sourced from Amplitude `user_properties` in aggregated
+    tables.
 
+    Not stored if the DNT request header was 1.'
 - mode: NULLABLE
   name: utm_source
   type: STRING
-  description: |
-    Marketing campaign source for
-    the flow session.
-    Not stored if the DNT request header was 1.
+  description: 'UTM source parameter identifying the traffic origin (e.g., ''google'',
+    ''newsletter'', ''email''). Captured when users arrive at FxA via a marketing
+    campaign URL. Sourced from Amplitude `user_properties` in aggregated tables.
 
+    Not stored if the DNT request header was 1.'
 - mode: NULLABLE
   name: utm_campaign
   type: STRING
-  description: |
-    Marketing campaign identifier
-    for the flow session.
-    Not stored if the DNT request header was 1.
+  description: 'UTM campaign parameter identifying the specific marketing campaign
+    (e.g., ''spring_sale'', ''email-onboarding''). Sourced from Amplitude `user_properties`
+    in aggregated tables.
 
+    Not stored if the DNT request header was 1.'
 - mode: NULLABLE
   name: utm_content
   type: STRING
-  description: |
-    Marketing campaign content identifier
-    for the flow session.
-    Not stored if the DNT request header was 1.
+  description: 'UTM content parameter used to differentiate links within the same
+    campaign, typically for A/B testing creative. Sourced from Amplitude `user_properties`
+    in aggregated tables.
 
+    Not stored if the DNT request header was 1.'
 - mode: NULLABLE
   name: ua_version
   type: STRING
-  description: |
-    The user's browser version.
+  description: 'The user''s browser version.
 
+    '
 - mode: NULLABLE
   name: ua_browser
   type: STRING
-  description: |
-    The user's web browser, e.g. 'Firefox' or 'Chrome'.
+  description: 'The user''s web browser, e.g. ''Firefox'' or ''Chrome''.
 
+    '
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
-  description: |
-    Represents specific device's activity over the last 28 days.
+  description: 'Represents specific device''s activity over the last 28 days.
+
     The rightmost bit represents whether the user was active
+
     in the current day.
+
+    '

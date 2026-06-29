@@ -13,6 +13,10 @@ fields:
 - mode: NULLABLE
   name: region
   type: STRING
+  description: Geographic subdivision name derived from the user's IP address (e.g.,
+    'California', 'Bavaria'). In aggregated tables, this is the mode-last value across
+    all events on the submission date. Full name format, not ISO code. Pair with `country`
+    for full geo context.
 - mode: NULLABLE
   name: country
   type: STRING
@@ -76,3 +80,5 @@ fields:
 - mode: NULLABLE
   name: timestamp
   type: DATETIME
+  description: The time the event described by the log entry occurred, as reported
+    by the originating FxA service.

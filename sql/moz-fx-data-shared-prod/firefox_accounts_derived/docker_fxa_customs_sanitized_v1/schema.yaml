@@ -2,6 +2,10 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: Event date derived from `DATE(timestamp)`, used as the partition key
+    in some log-derived tables. Distinct from `submission_date` (the pipeline ingestion
+    date). Use `submission_date` for incremental processing; use this field when you
+    need the event's occurrence date.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -72,9 +76,11 @@ fields:
   - name: ip
     type: BYTES
     mode: NULLABLE
+    description: Client IP address from the customs server log payload.
   - name: rtime
     type: STRING
     mode: NULLABLE
+    description: Request processing time from the customs server log payload, in seconds.
   - name: hostname
     type: STRING
     mode: NULLABLE
@@ -86,45 +92,59 @@ fields:
   - name: filename
     type: STRING
     mode: NULLABLE
+    description: Name of an IP blocklist data file associated with the log event.
   - name: filesize
     type: FLOAT
     mode: NULLABLE
+    description: File size in bytes associated with the log event.
   - name: reputation
     type: FLOAT
     mode: NULLABLE
   - name: err
     type: STRING
     mode: NULLABLE
+    description: Error details from the top-level log payload.
   - name: email
     type: BYTES
     mode: NULLABLE
+    description: Hashed or redacted email identifier. Not a raw email address.
   - name: action
     type: STRING
     mode: NULLABLE
+    description: Action type from the customs server log payload.
   - name: block
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the request was blocked by the customs server.
   - name: suspect
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the IP or account was flagged as suspect by the customs server.
   - name: unblock
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether the request was unblocked by the customs server.
   - name: foundin
     type: FLOAT
     mode: NULLABLE
+    description: IP blocklist name in which the client address was found.
   - name: errno
     type: FLOAT
     mode: NULLABLE
+    description: FxA error number from the customs server payload.
   - name: regex
     type: STRING
     mode: NULLABLE
+    description: Regular expression pattern used in user-agent blocklist matching
+      (e.g., matching browser or device strings to identify blocked clients).
   - name: listhitcount
     type: FLOAT
     mode: NULLABLE
+    description: Number of IP blocklists that matched the request.
   - name: listhits
     type: STRING
     mode: NULLABLE
+    description: JSON-encoded list of IP blocklist names that matched the request.
   - name: suggested_action
     type: STRING
     mode: NULLABLE
@@ -154,6 +174,7 @@ fields:
   - name: loadedin
     type: FLOAT
     mode: NULLABLE
+    description: Time in milliseconds for the page or resource to load.
   - name: message
     type: STRING
     mode: NULLABLE
@@ -161,9 +182,11 @@ fields:
   - name: host
     type: STRING
     mode: NULLABLE
+    description: Hostname from the top-level log payload.
   - name: port
     type: FLOAT
     mode: NULLABLE
+    description: Network port from the top-level log payload.
   - name: config
     type: RECORD
     mode: NULLABLE
@@ -487,6 +510,7 @@ fields:
   - name: blockreason
     type: STRING
     mode: NULLABLE
+    description: Reason the request was blocked by the customs server.
   - name: data
     type: STRING
     mode: NULLABLE

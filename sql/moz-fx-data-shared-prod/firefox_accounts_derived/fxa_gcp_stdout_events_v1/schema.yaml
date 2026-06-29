@@ -2,6 +2,9 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: FxA server component that generated the log entry, derived from the
+    logger name by extracting the service token (e.g., auth, content, oauth, profile,
+    customs). Use to filter to a specific FxA service log stream.
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -294,21 +297,28 @@ fields:
     - name: source
       type: STRING
       mode: NULLABLE
+      description: Source identifier for the event (e.g., originating service or component).
     - name: blocked
       type: STRING
       mode: NULLABLE
+      description: Whether the action was blocked (e.g., by rate limiting or IP blocklist).
     - name: column
       type: FLOAT
       mode: NULLABLE
+      description: Source code column number associated with the log event.
     - name: line
       type: FLOAT
       mode: NULLABLE
+      description: Source code line number associated with the log event.
     - name: referrer
       type: STRING
       mode: NULLABLE
+      description: HTTP referrer URL at the time of the event.
     - name: violated
       type: STRING
       mode: NULLABLE
+      description: CSP directive that was violated, from a content security policy
+        report.
     - name: url
       type: STRING
       mode: NULLABLE
@@ -348,6 +358,8 @@ fields:
     - name: assertion
       type: STRING
       mode: NULLABLE
+      description: Assertion string used in device pairing or browser verification
+        flows.
     - name: host
       type: STRING
       mode: NULLABLE
@@ -434,6 +446,7 @@ fields:
     - name: sample
       type: STRING
       mode: NULLABLE
+      description: Sampling rate or sample value associated with the log entry.
     - name: request
       type: STRING
       mode: NULLABLE
@@ -867,3 +880,4 @@ fields:
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: App Hub workload criticality classification.

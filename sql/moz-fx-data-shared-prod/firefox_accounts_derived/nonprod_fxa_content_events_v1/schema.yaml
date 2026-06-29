@@ -206,24 +206,32 @@ fields:
     - name: referrer
       type: STRING
       mode: NULLABLE
+      description: HTTP referrer URL at the time of the event.
     - name: blocked
       type: STRING
       mode: NULLABLE
+      description: Whether the action was blocked (e.g., by rate limiting or IP blocklist).
     - name: violated
       type: STRING
       mode: NULLABLE
+      description: CSP directive that was violated, from a content security policy
+        report.
     - name: source
       type: STRING
       mode: NULLABLE
+      description: Source identifier for the event (e.g., originating service or component).
     - name: line
       type: FLOAT
       mode: NULLABLE
+      description: Source code line number associated with the log event.
     - name: column
       type: FLOAT
       mode: NULLABLE
+      description: Source code column number associated with the log event.
     - name: sample
       type: STRING
       mode: NULLABLE
+      description: Sampling rate or sample value associated with the log entry.
     - name: err
       type: STRING
       mode: NULLABLE
@@ -305,6 +313,8 @@ fields:
   - name: flow_id
     type: STRING
     mode: NULLABLE
+    description: UUID flow identifier from the FxA content server log payload, linking
+      all events in a single authentication session.
   - name: v
     type: FLOAT
     mode: NULLABLE
@@ -316,9 +326,13 @@ fields:
   - name: flow_time
     type: FLOAT
     mode: NULLABLE
+    description: Milliseconds elapsed since the authentication flow began, as reported
+      by the FxA content server. Pair with `flow_id` to measure funnel completion
+      latency.
   - name: region
     type: STRING
     mode: NULLABLE
+    description: Geographic region associated with the event.
   - name: hostname
     type: STRING
     mode: NULLABLE
@@ -326,33 +340,51 @@ fields:
   - name: event
     type: STRING
     mode: NULLABLE
+    description: FxA content server event name (e.g., 'flow.signin.view', 'flow.signin.submit').
+      Excludes Amplitude-captured event types.
   - name: country
     type: STRING
     mode: NULLABLE
+    description: Country associated with the event, as a full country name.
   - name: locale
     type: STRING
     mode: NULLABLE
+    description: BCP 47 locale string (e.g., 'en-US', 'fr', 'de') from the FxA content
+      server log payload.
   - name: service
     type: STRING
     mode: NULLABLE
+    description: The Mozilla service or relying party associated with the event.
   - name: context
     type: STRING
     mode: NULLABLE
+    description: OAuth context string identifying the FxA flow type (e.g., 'oauth',
+      'fx_desktop_v3'). Set when the flow originates from a relying party OAuth integration.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+    description: FxA entry point where the user started the flow, set by Firefox UI
+      callsites (e.g., 'menupanel', 'preferences', 'synced-tabs'). Not a fixed enum.
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+    description: UTM campaign parameter identifying the marketing campaign that drove
+      the user to FxA.
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+    description: UTM medium parameter identifying the marketing channel (e.g., 'cpc',
+      'email', 'social').
   - name: utm_source
     type: STRING
     mode: NULLABLE
+    description: UTM source parameter identifying the traffic origin (e.g., 'google',
+      'email'). Present when the user arrived at FxA via a tracked marketing URL.
   - name: utm_content
     type: STRING
     mode: NULLABLE
+    description: UTM content parameter used to distinguish links within the same campaign
+      (for A/B testing creative).
   - name: trace
     type: STRING
     mode: NULLABLE

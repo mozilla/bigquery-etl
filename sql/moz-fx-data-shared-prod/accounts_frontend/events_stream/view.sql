@@ -26,6 +26,7 @@ SELECT
       JSON_VALUE(event_extra.hyb) AS `hyb`,
       JSON_VALUE(event_extra.id) AS `id`,
       JSON_VALUE(event_extra.label) AS `label`,
+      JSON_VALUE(event_extra.mobile_device_count) AS `mobile_device_count`,
       JSON_VALUE(event_extra.nimbus_user_id) AS `nimbus_user_id`,
       JSON_VALUE(event_extra.os_family) AS `os_family`,
       JSON_VALUE(event_extra.os_major) AS `os_major`,

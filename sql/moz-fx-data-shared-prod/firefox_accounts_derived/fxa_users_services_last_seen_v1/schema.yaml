@@ -2,6 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: !include-field-description
+    field: submission_date
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -53,3 +56,6 @@ fields:
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: os_version
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml

@@ -29,3 +29,6 @@ LEFT JOIN
   AND wns.page_location_locale = map.locale
 WHERE
   REGEXP_CONTAINS(s.ga_client_id || '-' || s.ga_session_id, r"^[0-9]+\.{1}[0-9]+\-{1}[0-9]+$")
+  -- Excluding events from the testing phase.
+  AND wns.event_date >= "2025-07-16"
+  AND s.session_date >= "2025-07-16"

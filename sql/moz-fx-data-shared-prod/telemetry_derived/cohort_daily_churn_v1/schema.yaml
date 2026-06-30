@@ -236,4 +236,6 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: The source of a profile installation - Available for Mobile Only
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: install_source

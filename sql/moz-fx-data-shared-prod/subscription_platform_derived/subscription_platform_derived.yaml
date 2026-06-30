@@ -1364,8 +1364,8 @@ fields:
   description: A description of why the subscription was initiated, distinguishing between new customers, returning customers, and those starting
     with a free trial (e.g. 'New Customer', 'Returning Customer Trial'). Helps identify acquisition patterns.
 - name: subscription_status
-  description: An integer code representing the current status of the subscription as reported by the provider, such as 1 for active, 2 for expired,
-    3 for in billing retry, or 5 for revoked. Maps to provider-defined lifecycle states.
+  description: The current status of the subscription as a string value, such as 'active', 'past_due', 'unpaid', 'canceled', 'incomplete', 'incomplete_expired',
+    'trialing', or 'paused'. Reflects the subscription's lifecycle state as reported by the payment provider (e.g. Stripe).
   type: STRING
 - name: subscription_trial_end
   description: The timestamp at which the free trial period for the subscription ended or is scheduled to end. Null for subscriptions that do

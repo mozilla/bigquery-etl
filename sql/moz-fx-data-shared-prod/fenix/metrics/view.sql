@@ -397,7 +397,9 @@ SELECT
       metrics.counter.glean_migration_error,
       metrics.counter.glean_migration_failed_metrics,
       metrics.counter.glean_migration_metrics_in_sqlite,
-      metrics.counter.glean_migration_migrated_metrics
+      metrics.counter.glean_migration_migrated_metrics,
+      metrics.counter.network_no_vary_search_header_received,
+      metrics.counter.network_no_vary_search_parse_error
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1166,7 +1168,10 @@ SELECT
       metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features,
       metrics.labeled_counter.geolocation_network_failures,
-      metrics.labeled_counter.networking_http_3_quic_version
+      metrics.labeled_counter.networking_http_3_quic_version,
+      metrics.labeled_counter.network_no_vary_search_hit_by_rule,
+      metrics.labeled_counter.network_no_vary_search_match,
+      metrics.labeled_counter.network_no_vary_search_rule_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2629,7 +2634,9 @@ SELECT
       metrics.counter.glean_migration_error,
       metrics.counter.glean_migration_failed_metrics,
       metrics.counter.glean_migration_metrics_in_sqlite,
-      metrics.counter.glean_migration_migrated_metrics
+      metrics.counter.glean_migration_migrated_metrics,
+      metrics.counter.network_no_vary_search_header_received,
+      metrics.counter.network_no_vary_search_parse_error
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3398,7 +3405,10 @@ SELECT
       metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features,
       metrics.labeled_counter.geolocation_network_failures,
-      metrics.labeled_counter.networking_http_3_quic_version
+      metrics.labeled_counter.networking_http_3_quic_version,
+      metrics.labeled_counter.network_no_vary_search_hit_by_rule,
+      metrics.labeled_counter.network_no_vary_search_match,
+      metrics.labeled_counter.network_no_vary_search_rule_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4881,7 +4891,9 @@ SELECT
       metrics.counter.glean_migration_error,
       metrics.counter.glean_migration_failed_metrics,
       metrics.counter.glean_migration_metrics_in_sqlite,
-      metrics.counter.glean_migration_migrated_metrics
+      metrics.counter.glean_migration_migrated_metrics,
+      metrics.counter.network_no_vary_search_header_received,
+      metrics.counter.network_no_vary_search_parse_error
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5650,7 +5662,10 @@ SELECT
       metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features,
       metrics.labeled_counter.geolocation_network_failures,
-      metrics.labeled_counter.networking_http_3_quic_version
+      metrics.labeled_counter.networking_http_3_quic_version,
+      metrics.labeled_counter.network_no_vary_search_hit_by_rule,
+      metrics.labeled_counter.network_no_vary_search_match,
+      metrics.labeled_counter.network_no_vary_search_rule_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

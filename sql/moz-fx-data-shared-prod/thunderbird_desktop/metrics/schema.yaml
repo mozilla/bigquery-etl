@@ -2402,6 +2402,21 @@ fields:
       description: 'The number of metrics migrated from Rkv storage to SQLite storage.
 
         '
+    - name: network_no_vary_search_header_received
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of cacheable HTTP responses that carried a No-Vary-Search
+        response header. Only counts responses that reach the cache-write path; headers
+        on non-cacheable responses are not counted.
+
+        '
+    - name: network_no_vary_search_parse_error
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of received No-Vary-Search headers (on cacheable responses)
+        that failed to parse and fell back to exact-match behavior.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -18544,6 +18559,53 @@ fields:
         once per connection that completes its handshake. Used to track the effect
         of enabling compatible version negotiation (RFC 9368/9369), i.e. how often
         connections end up on QUIC v2 versus v1.
+
+        '
+    - name: network_no_vary_search_hit_by_rule
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Breakdown by variation rule of the cache hits won via No-Vary-Search
+        (the ''matched'' outcome of no_vary_search_match). The sum across labels equals
+        no_vary_search_match[''matched''].
+
+        '
+    - name: network_no_vary_search_match
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Outcome of a No-Vary-Search secondary cache lookup, recorded only
+        when the secondary index had at least one candidate for the request''s base
+        path. ''matched'' means an equivalent cached entry was found and used as a
+        cache hit that exact-URL matching would have missed; ''not_matched'' means
+        candidates existed but none were equivalent.
+
+        '
+    - name: network_no_vary_search_rule_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The parsed variation rule of each received No-Vary-Search header,
+        recorded once per cacheable response. ''exact_match'' includes both key-order-only
+        headers and headers that failed to parse.
 
         '
   - name: labeled_string

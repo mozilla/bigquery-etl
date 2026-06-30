@@ -139,8 +139,5 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: >
-    The source of a profile installation (fenix only; NULL for all other apps and desktop).
-    NULL for cohorts with cohort_date before the backfill start date (2025-01-01) —
-    filters or breakdowns by this field should include a cohort_date >= guard to avoid
-    silently grouping pre-backfill cohorts under NULL.
+  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
+    the install source could not be determined.

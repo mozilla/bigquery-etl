@@ -9,3 +9,5 @@ description: |-
   etc. are based on the values at the time the cohort is created.
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
+owners:
+- kbammarito@mozilla.com

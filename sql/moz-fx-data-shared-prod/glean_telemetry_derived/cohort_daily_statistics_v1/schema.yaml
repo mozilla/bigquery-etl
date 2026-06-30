@@ -142,4 +142,5 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: The source of a profile installation - Available for Mobile Only
+  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
+    the install source could not be determined.

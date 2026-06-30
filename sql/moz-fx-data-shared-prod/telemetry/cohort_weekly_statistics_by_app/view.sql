@@ -1,6 +1,12 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.cohort_weekly_statistics_by_app`
 AS
+-- NOTE: install_source is a cohort grain dimension here (populated for fenix; NULL for all
+-- other apps). Fenix cohorts split into one row per install_source per
+-- (normalized_app_name, cohort_date_week, activity_date_week). This view recomputes live from
+-- rolling_cohorts_v2 with no backfill, so the change takes effect immediately on deploy.
+-- Consumers expecting one row per app-week must group by or sum nbr_clients_in_cohort /
+-- nbr_active_clients across install_source before computing pct_retained.
 WITH clients_first_seen AS (
   SELECT
     normalized_app_name,

@@ -6,135 +6,201 @@ fields:
 - mode: NULLABLE
   name: cohort_date
   type: DATE
-  description: Cohort Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cohort_date
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-  description: Activity Segment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: activity_segment
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: App Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Attribution Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_campaign
 - name: attribution_content
   type: STRING
   mode: NULLABLE
-  description: Attribution Content
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_content
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
-  description: Attribution Experiment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_experiment
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Attribution Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: Attribution Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
-  description: Attribution Variation
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_variation
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: device_model
   type: STRING
   mode: NULLABLE
-  description: Device Model
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: device_model
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Default Browser
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: Normalized App Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_app_name
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
-  description: Operating System Version - Major
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version_major
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
-  description: Operating System Version - Minor
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version_minor
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: Adjust Ad Group
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_ad_group
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: Adjust Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_campaign
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: Adjust Creative
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_creative
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: Adjust Network
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_network
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_campaign
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_medium
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_source
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Content
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_content
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Term
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_term
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Install Referrer Response
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_install_referrer_response
 - name: row_source
   type: STRING
   mode: NULLABLE
-  description: Row Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: row_source
 - name: num_clients_in_cohort
   type: INTEGER
   mode: NULLABLE
-  description: Number of Clients in Cohort
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: num_clients_in_cohort
 - name: num_clients_returned_on_day_1
   type: INTEGER
   mode: NULLABLE

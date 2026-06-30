@@ -33,6 +33,21 @@ MAX_BACKFILL_ENTRY_AGE_DAYS = 28
 NBR_DAYS_RETAINED = 775
 
 
+def resolve_date_partition_parameter(
+    scheduling: dict, override_depends_on_past_null_partition: Optional[bool] = False
+) -> Optional[str]:
+    """Resolve the date partition parameter name a backfill binds at run time.
+
+    Mirrors what `bqetl query backfill` does after merging scheduling overrides: the parameter is
+    scheduling["date_partition_parameter"], defaulting to submission_date.
+    The override_depends_on_past_null_partition path forces submission_date even when metadata
+    leaves it null, matching the scheduling override applied in `backfill initiate`.
+    """
+    if override_depends_on_past_null_partition:
+        return "submission_date"
+    return scheduling.get("date_partition_parameter", "submission_date")
+
+
 def get_effective_retention_days(metadata: Metadata) -> int:
     """Return the effective retention limit in days.
 

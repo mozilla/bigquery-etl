@@ -34,6 +34,7 @@ from ..backfill.utils import (
     QUALIFIED_TABLE_NAME_RE,
     get_effective_retention_days,
     qualified_table_name_matching,
+    resolve_date_partition_parameter,
 )
 from ..cli import check
 from ..cli.format import format
@@ -908,9 +909,7 @@ def backfill(
         # adding copy logic for cleaner handling of overrides
         scheduling_metadata = metadata.scheduling.copy()
         scheduling_metadata.update(json.loads(scheduling_overrides))
-        date_partition_parameter = scheduling_metadata.get(
-            "date_partition_parameter", "submission_date"
-        )
+        date_partition_parameter = resolve_date_partition_parameter(scheduling_metadata)
         scheduling_parameters = scheduling_metadata.get("parameters", [])
         date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 

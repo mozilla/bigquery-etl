@@ -1,0 +1,32 @@
+friendly_name: Probe Definitions
+description: |-
+  Probe (Glean metric or Legacy Telemetry field) definitions for every distinct
+  source ping listed in lineage_mapping_v1. Glean entries are fetched from the
+  Glean Dictionary JSON API; legacy entries are read from the closest
+  upstream _stable table's DataHub schema. Consumed by the schema_enricher
+  agent in data-shared-llm-agents to write column descriptions in bigquery-etl.
+  Each run overwrites its own fetched_at date partition.
+labels:
+  incremental: true
+owners:
+- phlee@mozilla.com
+scheduling:
+  dag_name: bqetl_data_governance_metadata
+  arguments: [
+    "--date", "{{ ds }}",
+  ]
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'data_governance_metadata_derived', 'lineage_mapping_v1']
+  secrets:
+  - deploy_target: DATAHUB_GMS_TOKEN
+    key: bqetl_data_governance_metadata__datahub_gms_token
+bigquery:
+  time_partitioning:
+    type: day
+    field: fetched_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - ping_platform
+    - source_ping

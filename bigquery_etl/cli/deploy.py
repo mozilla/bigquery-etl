@@ -624,6 +624,12 @@ def _order_routine_source_projects(
             return
         if state.get(project) == "visiting":
             # cyclic dependency between projects; fall back to best-effort order
+            log.warning(
+                "Routine publish ordering: cyclic dependency involving source "
+                "project %s; falling back to best-effort order. Cross-project "
+                "routine references may need to be published in multiple passes.",
+                project,
+            )
             return
         state[project] = "visiting"
         for dependency_project in sorted(project_edges.get(project, ())):

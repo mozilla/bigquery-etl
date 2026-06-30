@@ -5,6 +5,7 @@ import multiprocessing
 import re
 import shutil
 import sys
+import traceback
 from collections import defaultdict
 from collections.abc import MutableMapping
 from functools import partial
@@ -730,21 +731,7 @@ def _resolve_isolated_schema(
     if target_schema.exists() and not refresh_for_field_addition:
         text = target_schema.read_text()
         if "!include" in text:
-            try:
-                Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
-            except Exception as e:
-                # `!include`/`!include-field-description` targets are shared,
-                # repo-root-relative files (e.g. <dataset>.yaml) that live in
-                # the real source tree, not the rewritten isolated/stage tree.
-                # Resolving them against the stage sql_dir can hit a stubbed or
-                # incomplete copy and raise (e.g. KeyError: 'fields'). Fall back
-                # to the default loader (real repo) so a cosmetic include can't
-                # fail the deploy.
-                log.warning(
-                    f"Could not flatten includes for {target_schema} against "
-                    f"{sql_dir} ({e}); retrying with default include resolution."
-                )
-                Schema.from_yaml(text).to_yaml_file(target_schema)
+            Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
         return
 
     # 2. dry-run the rewritten target query — primary source of truth.
@@ -752,8 +739,18 @@ def _resolve_isolated_schema(
     source_select_err: Optional[Exception] = None
     get_table_err: Optional[Exception] = None
     try:
-        Schema.from_query_file(target_file).to_yaml_file(target_schema)
-        return
+        target_schema_obj = Schema.from_query_file(target_file)
+        if target_schema_obj.schema.get("fields"):
+            target_schema_obj.to_yaml_file(target_schema)
+            return
+        # Dry run produced no schema (e.g. the query is dry-run-skip-listed or
+        # timed out). Don't clobber target_schema with an empty schema — that
+        # later fails in to_bigquery_schema() with KeyError: 'fields'. Fall
+        # through to resolving from the prod source table instead.
+        log.warning(
+            f"Target dry-run produced no schema for {source_project}."
+            f"{source_dataset}.{source_table}, falling back to source schema."
+        )
     except Exception as e:
         target_dry_run_err = e
         log.warning(
@@ -794,6 +791,24 @@ def _resolve_isolated_schema(
             f"get_table failed for {source_project}.{source_dataset}."
             f"{source_table} ({e})"
         )
+
+    # 5. Fall back to the checked-in schema.yaml already copied into the target
+    # tree. Reached when re-derivation isn't possible — e.g. an
+    # allow_field_addition table (step 1 skipped) whose query is
+    # dry-run-skip-listed (step 2) and whose prod source the runtime
+    # credentials can't read (steps 3-4). The checked-in schema is the
+    # authoritative source of truth; resolve `!include`s against the real repo
+    # (default loader), since the shared include targets live there, not in the
+    # rewritten target tree.
+    if target_schema.exists():
+        log.warning(
+            f"Could not re-derive schema for {source_project}.{source_dataset}."
+            f"{source_table}; using the checked-in schema.yaml."
+        )
+        text = target_schema.read_text()
+        if "!include" in text:
+            Schema.from_yaml(text).to_yaml_file(target_schema)
+        return
 
     raise FailedDeployException(
         f"Cannot resolve schema for {source_project}.{source_dataset}."
@@ -1066,6 +1081,7 @@ def _deploy_artifact_callback(
     except Exception as e:
         results[artifact_id] = ("failed", str(e))
         click.echo(f"✗ {artifact_id} (failed: {e})", err=True)
+        click.echo(traceback.format_exc(), err=True)
 
 
 def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -> bool:

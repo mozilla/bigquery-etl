@@ -115,3 +115,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: A unique identifier (UUID) for the client.
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source of a profile installation - Available for Mobile Only

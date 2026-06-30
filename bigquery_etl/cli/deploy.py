@@ -730,7 +730,21 @@ def _resolve_isolated_schema(
     if target_schema.exists() and not refresh_for_field_addition:
         text = target_schema.read_text()
         if "!include" in text:
-            Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
+            try:
+                Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
+            except Exception as e:
+                # `!include`/`!include-field-description` targets are shared,
+                # repo-root-relative files (e.g. <dataset>.yaml) that live in
+                # the real source tree, not the rewritten isolated/stage tree.
+                # Resolving them against the stage sql_dir can hit a stubbed or
+                # incomplete copy and raise (e.g. KeyError: 'fields'). Fall back
+                # to the default loader (real repo) so a cosmetic include can't
+                # fail the deploy.
+                log.warning(
+                    f"Could not flatten includes for {target_schema} against "
+                    f"{sql_dir} ({e}); retrying with default include resolution."
+                )
+                Schema.from_yaml(text).to_yaml_file(target_schema)
         return
 
     # 2. dry-run the rewritten target query — primary source of truth.

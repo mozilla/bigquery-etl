@@ -109,13 +109,7 @@ def deploy_table(
             client=client,
             id_token=id_token if not use_cloud_function or id_token else get_id_token(),
         )
-        # A dry-run-skipped query (or one whose dry run produced no schema,
-        # e.g. it timed out) yields an empty schema with no "fields". There's
-        # nothing to validate against in that case, so skip the comparison
-        # rather than letting Schema.equal() raise KeyError: 'fields'.
-        if query_schema.schema.get("fields") and not existing_schema.equal(
-            query_schema
-        ):
+        if not existing_schema.equal(query_schema):
             raise FailedDeployException(
                 f"Query {artifact_file} does not match "
                 f"schema in {existing_schema_path}. "

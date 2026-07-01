@@ -5997,10 +5997,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The number of history items opened from the History sidebar. This
-        metric was generated to correspond to the Legacy Telemetry scalar sidebar.link.
-
-        '
+      description: "The number of links opened from the sidebar, labeled by which\
+        \ sidebar\npanel the click originated from:\n  - bookmarks: a bookmark opened\
+        \ from the Bookmarks sidebar panel\n  - history: a history link opened from\
+        \ the History sidebar panel\n  - synced_tabs: a synced tab opened from the\
+        \ Synced Tabs sidebar\n"
     - name: sidebar_search
       type: RECORD
       mode: REPEATED

@@ -268,7 +268,6 @@ SELECT
       JSON_VALUE(event_extra.family_name) AS `family_name`,
       JSON_VALUE(event_extra.fathom_infer_label) AS `fathom_infer_label`,
       JSON_VALUE(event_extra.fathom_infer_score) AS `fathom_infer_score`,
-      JSON_VALUE(event_extra.feature) AS `feature`,
       JSON_VALUE(event_extra.feature_id) AS `feature_id`,
       JSON_VALUE(event_extra.feature_ids) AS `feature_ids`,
       JSON_VALUE(event_extra.featureId) AS `featureId`,

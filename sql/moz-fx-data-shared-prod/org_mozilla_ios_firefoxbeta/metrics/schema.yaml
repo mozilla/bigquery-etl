@@ -3525,7 +3525,7 @@ fields:
       description: 'Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
 
 
-        Duplication of `run_maintenance_chk_pnt_time_temp` for glean-sym testing.
+        Duplication of `run_maintenance_chk_pnt_time` for glean-sym testing.
 
         '
     - name: places_manager_run_maintenance_optimize_time_temp

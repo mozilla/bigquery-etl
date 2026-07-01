@@ -139,3 +139,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play Store Attribution Install Referrer Response
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source of a profile installation - Available for Mobile Only

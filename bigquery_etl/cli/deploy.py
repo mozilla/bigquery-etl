@@ -5,7 +5,6 @@ import multiprocessing
 import re
 import shutil
 import sys
-import traceback
 from collections import defaultdict
 from collections.abc import MutableMapping
 from functools import partial

@@ -1081,7 +1081,6 @@ def _deploy_artifact_callback(
     except Exception as e:
         results[artifact_id] = ("failed", str(e))
         click.echo(f"✗ {artifact_id} (failed: {e})", err=True)
-        click.echo(traceback.format_exc(), err=True)
 
 
 def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -> bool:

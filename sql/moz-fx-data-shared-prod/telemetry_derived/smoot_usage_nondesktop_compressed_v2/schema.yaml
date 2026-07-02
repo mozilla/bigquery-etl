@@ -73,6 +73,15 @@ fields:
       type: INT64
       mode: NULLABLE
       description: Weekly Active Users (WAU) on the snapshot date, counting clients active at least one day in the previous 7 days.
+  - name: day_6
+    type: RECORD
+    mode: NULLABLE
+    description: Metrics evaluated 6 days after the profile-creation (cohort) anchor date.
+    fields:
+    - name: new_profiles
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients whose profile was created exactly 6 days before the snapshot date.
   - name: day_13
     type: RECORD
     mode: NULLABLE
@@ -109,12 +118,3 @@ fields:
       type: INT64
       mode: NULLABLE
       description: Count of clients whose profile was created exactly 13 days before the snapshot date.
-  - name: day_6
-    type: RECORD
-    mode: NULLABLE
-    description: Metrics evaluated 6 days after the profile-creation (cohort) anchor date.
-    fields:
-    - name: new_profiles
-      type: INT64
-      mode: NULLABLE
-      description: Count of clients whose profile was created exactly 6 days before the snapshot date.

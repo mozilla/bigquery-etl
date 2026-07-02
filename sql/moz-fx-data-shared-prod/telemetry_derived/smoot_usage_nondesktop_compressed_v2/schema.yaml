@@ -8,9 +8,8 @@ fields:
 - name: usage
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: usage
+  description: A categorical label indicating the type of non-desktop Firefox product activity observed,
+    formatted as 'Any <product> Activity' (e.g., 'Any Fenix Activity').
 - name: id_bucket
   type: INT64
   mode: NULLABLE
@@ -50,9 +49,8 @@ fields:
 - name: metrics
   type: RECORD
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: metrics
+  description: Nested struct of DAU, WAU, MAU, and retention counts produced by the smoot_usage_from_28_bits
+    UDF, keyed by cohort day offset (day_0, day_6, day_13).
   fields:
   - name: day_0
     type: RECORD

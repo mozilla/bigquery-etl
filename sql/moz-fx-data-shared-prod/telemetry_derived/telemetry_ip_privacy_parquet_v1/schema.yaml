@@ -14,9 +14,9 @@ fields:
 - name: fields
   type: RECORD
   mode: NULLABLE
-  description: '[inferred] Nested record holding the per-record IP-privacy field entries loaded from the source
+  description: Nested record holding the per-record IP-privacy field entries loaded from the source
     parquet, including the client identifier, IP-derived geolocation, and the IP address value used for IP
-    privacy analysis.'
+    privacy analysis.
   fields:
   - name: client_id
     type: STRING
@@ -30,5 +30,5 @@ fields:
   - name: ip
     type: STRING
     mode: NULLABLE
-    description: '[inferred] The IP address value associated with this telemetry record, captured for IP privacy
-      analysis.'
+    description: The IP address value associated with this telemetry record, captured for IP privacy
+      analysis.

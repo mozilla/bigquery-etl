@@ -344,6 +344,27 @@ fields:
         `browser.engagement.total_uri_count_normal_and_private_mode`.
 
         '
+    - name: browser_engagement_active_ticks_non_synthesized
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of five-second intervals (''ticks'') the user was considered
+
+        ''active'', counting only non-synthesized events.
+
+
+        This is a corrected version of `active_ticks` that excludes synthesized
+
+        mouse and pointer events (for example, the synthesized pointer move that
+
+        is dispatched when content shifts under a stationary cursor during
+
+        scrolling, reflow or content insertion). Such synthesized events inflated
+
+        `active_ticks` starting in Firefox 140. Recorded side-by-side with
+
+        `active_ticks` for data continuity while the correction is evaluated.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

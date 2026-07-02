@@ -2901,7 +2901,9 @@ SELECT
       metrics.counter.use_counter_css_page_css_corner_top_right_shape,
       metrics.counter.use_counter_css_page_css_corner_top_shape,
       metrics.counter.use_counter_doc_midiaccess_granted,
-      metrics.counter.use_counter_page_midiaccess_granted
+      metrics.counter.use_counter_page_midiaccess_granted,
+      metrics.counter.use_counter_css_doc_css_moz_image_decoding,
+      metrics.counter.use_counter_css_page_css_moz_image_decoding
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

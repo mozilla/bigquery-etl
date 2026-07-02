@@ -9,6 +9,7 @@ SELECT
     STRUCT(LAX_BOOL(event_extra.linking) AS `linking`) AS `boolean`,
     STRUCT(
       JSON_VALUE(event_extra.error_code) AS `error_code`,
+      JSON_VALUE(event_extra.platform) AS `platform`,
       JSON_VALUE(event_extra.reason) AS `reason`,
       JSON_VALUE(event_extra.scopes) AS `scopes`,
       JSON_VALUE(event_extra.type) AS `type`

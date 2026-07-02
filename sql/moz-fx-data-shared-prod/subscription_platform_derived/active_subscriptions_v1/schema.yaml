@@ -2,45 +2,87 @@ fields:
 - name: active_date
   type: DATE
   mode: NULLABLE
+  description: The calendar date for which active subscription counts are aggregated. Each row represents
+    a unique combination of dimensions on this date.
 - name: plan_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - name: country
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: country
 - name: country_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: country_name
 - name: provider
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: provider
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_amount
 - name: plan_currency
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_currency
 - name: plan_interval
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval_count
 - name: product_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_id
 - name: product_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_name
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
+  description: A human-readable label identifying the specific pricing plan, combining interval, currency,
+    and amount (e.g. "1-year-eur-59.88", "1-month-apple").
 - name: promotion_codes
   type: STRING
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_codes
 - name: promotion_discounts_amount
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_discounts_amount
 - name: count
   type: INTEGER
   mode: NULLABLE
+  description: The number of active subscriptions matching the combination of dimensions on the given `active_date`.
+    Aggregated across mozilla_vpn, relay, and hubs product datasets.

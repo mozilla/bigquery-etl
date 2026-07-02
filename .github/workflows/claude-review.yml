@@ -98,6 +98,15 @@ jobs:
               -f id="$id"
           done
 
+      - name: Unset runner tokens before agent step
+        if: github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false'
+        # Prevents a prompt injection in this step from using these to touch the Actions
+        # cache/artifacts API or mint an OIDC token.
+        run: |
+          echo "ACTIONS_RUNTIME_TOKEN=" >> "$GITHUB_ENV"
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN=" >> "$GITHUB_ENV"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL=" >> "$GITHUB_ENV"
+
       - name: Run Claude Code Review
         if: github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false'
         # Mozilla org allowlist permits either "anthropics/claude-code-action@v1" (mutable tag)

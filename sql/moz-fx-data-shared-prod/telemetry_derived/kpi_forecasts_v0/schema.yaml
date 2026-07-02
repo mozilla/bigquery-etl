@@ -1,0 +1,74 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: aggregation_period
+  type: STRING
+  mode: NULLABLE
+  description: The time granularity for this row; 'day' for daily values or 'month' for monthly aggregated
+    values.
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: source
+- name: measure
+  type: STRING
+  mode: NULLABLE
+  description: The specific measure being reported; 'observed' for actuals, or a percentile label (e.g.,
+    'p05', 'p50', 'mean', 'p95') for forecast confidence intervals.
+- name: value
+  type: FLOAT64
+  mode: NULLABLE
+  description: The numeric value for the given measure — the observed actual when measure is 'observed',
+    otherwise the forecasted value at that measure's percentile.
+- name: metric_alias
+  type: STRING
+  mode: NULLABLE
+  description: A human-readable alias for the metric used in reporting (e.g., 'desktop_dau', 'mobile_dau').
+- name: metric_hub_app_name
+  type: STRING
+  mode: NULLABLE
+  description: The Metric Hub application name identifying the product scope (e.g., 'firefox_desktop', 'multi_product').
+- name: metric_hub_slug
+  type: STRING
+  mode: NULLABLE
+  description: The Metric Hub metric slug uniquely identifying the metric definition (e.g., 'daily_active_users_v2').
+- name: metric_start_date
+  type: DATE
+  mode: NULLABLE
+  description: The earliest date of historical data used to train the forecast model for this metric.
+- name: metric_end_date
+  type: DATE
+  mode: NULLABLE
+  description: The last date of historical data used to train the forecast model.
+- name: metric_collected_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The timestamp at which the metric data was collected from the source table.
+- name: forecast_start_date
+  type: DATE
+  mode: NULLABLE
+  description: The first date in the forecast horizon (the day after the last observed date).
+- name: forecast_end_date
+  type: DATE
+  mode: NULLABLE
+  description: The last date in the forecast horizon for this model run.
+- name: forecast_trained_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The timestamp at which the forecast model was trained on historical data.
+- name: forecast_predicted_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The timestamp at which predictions were generated after model training.
+- name: forecast_parameters
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: forecast_parameters

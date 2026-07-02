@@ -16,7 +16,9 @@ fields:
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description: null
+- description: The normalized name of the Mozilla application that produced the crash
+    data (e.g., 'Firefox', 'Fennec'), taken as the most frequently observed value
+    across the client's crashes for the day.
   mode: NULLABLE
   name: application_name
   type: STRING
@@ -50,7 +52,9 @@ fields:
   mode: NULLABLE
   name: country_code
   type: STRING
-- description: null
+- description: An array of per-process-type crash counts, where each entry's key is
+    the process type (e.g., 'main', 'content', 'gpu') and value is the number of detected
+    crashes of that process type, excluding shutdown-kill crashes.
   mode: REPEATED
   type: RECORD
   name: process_crash_counts
@@ -58,15 +62,16 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: A string identifier representing the specific action, search engine,
-      or event type associated with a record, such as a search entry point or provider
-      key. An empty string indicates no specific key was recorded.
+    description: The Firefox process type (e.g., 'main', 'content', 'gpu') for which
+      crashes are counted.
   - mode: NULLABLE
     name: value
     type: INTEGER
-    description: A generic integer value associated with a measurement, event, or
-      metric. The specific meaning depends on the context of the surrounding fields.
-- description: null
+    description: The number of detected crashes of the corresponding process type,
+      excluding shutdown-kill crashes.
+- description: An array of per-process-type counts of shutdown-kill crashes, where
+    each entry's key is the process type (e.g., 'main', 'content', 'gpu') and value
+    is the number of crashes of that process type attributed to a shutdown kill.
   mode: REPEATED
   type: RECORD
   name: process_shutdown_kill_crash_counts
@@ -74,14 +79,13 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: A string identifier representing the specific action, search engine,
-      or event type associated with a record, such as a search entry point or provider
-      key. An empty string indicates no specific key was recorded.
+    description: The Firefox process type (e.g., 'main', 'content', 'gpu') for which
+      shutdown-kill crashes are counted.
   - mode: NULLABLE
     name: value
     type: INTEGER
-    description: A generic integer value associated with a measurement, event, or
-      metric. The specific meaning depends on the context of the surrounding fields.
+    description: The number of shutdown-kill crashes of the corresponding process
+      type.
 - description: A UUID that identifies a group of profiles belonging to the same user
     or installation context. Null when profile group information is unavailable.
   mode: NULLABLE

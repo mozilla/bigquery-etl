@@ -1,0 +1,180 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
+- name: build_version
+  type: STRING
+  mode: NULLABLE
+  description: The version string associated with the specific Firefox build. Identifies
+    the release version of the compiled browser artifact.
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: application
+  type: STRING
+  mode: NULLABLE
+  description: The display name of the Mozilla application (e.g., 'Firefox', 'FirefoxForFireTV',
+    'Focus'). Represents the branded product name rather than the internal application
+    identifier.
+- name: os_name
+  type: STRING
+  mode: NULLABLE
+  description: The standardized name of the operating system on the client device,
+    such as 'Windows', 'Mac', 'Linux', or 'Android'. Similar to normalized_os but
+    may reflect a slightly different normalization source.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+  description: The CPU architecture of the system on which the application is running
+    (e.g., 'x86-64', 'aarch64', 'arm'). Identifies the instruction set architecture
+    of the client device.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: experiment_id
+  type: STRING
+  mode: NULLABLE
+  description: The unique identifier for a specific experiment or study the client
+    participated in (e.g. 'daily-briefing-v1', 'e10sCohort'). This is used to join
+    enrollment data across tables.
+- name: experiment_branch
+  type: STRING
+  mode: NULLABLE
+  description: The branch of an experiment that the client was assigned to (e.g. 'control',
+    'treatment'). This identifies which variant of the experiment the client experienced.
+- name: e10s_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates whether the Electrolysis (e10s) multi-process architecture
+    was enabled for the Firefox session. A value of true means the browser was running
+    in multi-process mode; false means it was running in single-process mode.
+- name: e10s_cohort
+  type: STRING
+  mode: NULLABLE
+  description: The Electrolysis (e10s) multi-process experiment cohort to which the
+    client was assigned. This field is deprecated and is null in all current records,
+    as the e10s rollout has been completed.
+- name: gfx_compositor
+  type: STRING
+  mode: NULLABLE
+  description: The graphics compositor backend used by Firefox (e.g. WebRender, OpenGL,
+    or Direct3D) as reported in the client's telemetry environment. This identifies
+    the rendering pipeline active during the session.
+- name: payload
+  type: RECORD
+  mode: NULLABLE
+  description: The crash ping payload, containing crash timing, process type, metadata
+    annotations, and related diagnostic information reported with the crash.
+  fields:
+  - name: crashDate
+    type: STRING
+    mode: NULLABLE
+    description: The calendar date of the crash in ISO 8601 format (YYYY-MM-DD), per-day
+      resolution.
+  - name: crashTime
+    type: STRING
+    mode: NULLABLE
+    description: The crash time as seconds since the Unix epoch with per-hour resolution,
+      from the crash payload.
+  - name: hasCrashEnvironment
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the crash report included the full Firefox environment block.
+      True if environment data is present.
+  - name: metadata
+    type: RECORD
+    mode: NULLABLE
+    description: Crash metadata annotations attached to the crash report, stored as
+      key-value pairs describing crash-specific diagnostic attributes.
+    fields:
+    - name: key_value
+      type: RECORD
+      mode: REPEATED
+      description: Array of key-value pairs from the crash metadata annotation block,
+        containing crash-specific diagnostic information such as startup_crash, moz_crash_reason,
+        and remote_type.
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+        description: The name of the crash metadata annotation.
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: The value of the crash metadata annotation identified by the
+          key.
+  - name: processType
+    type: STRING
+    mode: NULLABLE
+    description: The type of Firefox process that crashed (e.g., 'main', 'content',
+      'gpu', 'rdd').
+  - name: version
+    type: INT64
+    mode: NULLABLE
+    description: The crash ping payload schema version number.
+- name: profile_created
+  type: INT64
+  mode: NULLABLE
+  description: A numeric representation of the date on which the Firefox profile was
+    created, typically expressed as days since a reference epoch. Used to track when
+    a user first established their profile.
+- name: experiments
+  type: RECORD
+  mode: NULLABLE
+  description: An array of key-value pairs representing all active experiment enrollments
+    for the client at the time of the ping, where the key is the experiment slug and
+    the value is the assigned branch. This captures the full set of concurrent experiment
+    enrollments.
+  fields:
+  - name: key_value
+    type: RECORD
+    mode: REPEATED
+    description: Array of key-value pairs representing the Normandy experiments and
+      branches the client was enrolled in at the time of the crash.
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: The experiment slug or identifier the client was enrolled in.
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: The experiment branch the client was enrolled in for the experiment
+        identified by the key.
+- name: crash_time
+  type: STRING
+  mode: NULLABLE
+  description: The timestamp at which a crash occurred, represented as a string. This
+    records the wall-clock time of the crash event.

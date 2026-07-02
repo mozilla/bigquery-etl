@@ -1,0 +1,136 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.
+- name: sample_id
+  type: INT64
+  mode: NULLABLE
+  description: "A deterministic sample bucket identifier (0\u201399) derived from\
+    \ the client_id, used to create reproducible random samples of the user population\
+    \ for analysis or experimentation."
+- name: events
+  type: STRING
+  mode: NULLABLE
+  description: A serialized or structured representation of one or more browser events
+    recorded in the telemetry payload. This field serves as a container for event
+    data associated with a given submission.
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
+- name: build_architecture
+  type: STRING
+  mode: NULLABLE
+  description: The CPU architecture for which the Firefox build was compiled (e.g.,
+    'x86-64', 'aarch64', 'x86'). May differ from the system architecture when running
+    a 32-bit build on a 64-bit OS.
+- name: profile_creation_date
+  type: FLOAT64
+  mode: NULLABLE
+  description: The date on which the Firefox profile was created, formatted as a YYYYMMDD
+    string. Used to determine profile age and cohort membership.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates whether Firefox is set as the default browser on the client's
+    device. True means it is the default; false means another browser is set as default.
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The referring source from attribution parameters, typically the website
+    or property that directed the user to download Firefox (e.g., 'www.google.com',
+    'www.bing.com'). Null when attribution data is unavailable.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: The user agent type of the browser the user was using when they downloaded
+    Firefox, as captured in attribution parameters (e.g., 'chrome', 'edge', 'firefox').
+    Null when attribution data is unavailable.
+- name: display_version
+  type: STRING
+  mode: NULLABLE
+  description: The user-facing version string of the Firefox application as displayed
+    in the UI (e.g., '151.0.2', '115.31.0esr'). This may differ from the internal
+    build version and includes ESR and other release-track suffixes.
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: The city associated with the client's IP address or profile geography
+    at the time of the record. May be null when city-level geolocation is unavailable
+    or suppressed.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: subdivision1
+  type: STRING
+  mode: NULLABLE
+  description: The first-level administrative subdivision (e.g., state, province,
+    or region) derived from the client's geographic location, represented as a code.
+    Null indicates the subdivision could not be determined.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  description: An array of key-value pairs representing all active experiment enrollments
+    for the client at the time of the ping, where the key is the experiment slug and
+    the value is the assigned branch. This captures the full set of concurrent experiment
+    enrollments.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: The slug identifier of the experiment the client was enrolled in.
+  - name: value
+    type: STRING
+    mode: NULLABLE
+    description: The experiment branch name the client was assigned to (e.g., 'control',
+      'treatment-a').

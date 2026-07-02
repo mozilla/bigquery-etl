@@ -1,0 +1,112 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: window_start
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The UTC timestamp marking the beginning of a time window used for aggregation
+    or analysis. Together with window_end, it defines the interval over which metrics
+    are computed.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox application version reported by the ping (from environment.build.version,
+    falling back to the app_version in the ping URI).
+- name: display_version
+  type: STRING
+  mode: NULLABLE
+  description: The user-facing version string of the Firefox application as displayed
+    in the UI (e.g., '151.0.2', '115.31.0esr'). This may differ from the internal
+    build version and includes ESR and other release-track suffixes.
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+  description: A timestamp-based identifier for the specific Firefox build, formatted
+    as YYYYMMDDHHmmss (e.g., '20260514164700'). Uniquely identifies a compiled build
+    artifact.
+- name: application
+  type: STRING
+  mode: NULLABLE
+  description: The display name of the Mozilla application (e.g., 'Firefox', 'FirefoxForFireTV',
+    'Focus'). Represents the branded product name rather than the internal application
+    identifier.
+- name: os_name
+  type: STRING
+  mode: NULLABLE
+  description: The standardized name of the operating system on the client device,
+    such as 'Windows', 'Mac', 'Linux', or 'Android'. Similar to normalized_os but
+    may reflect a slightly different normalization source.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The full version string of the operating system on which the browser
+    is running (e.g., '10.0', '13.5.1'). Combines major, minor, and patch components
+    into a single human-readable string.
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+  description: The CPU architecture of the system on which the application is running
+    (e.g., 'x86-64', 'aarch64', 'arm'). Identifies the instruction set architecture
+    of the client device.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: count
+  type: INT64
+  mode: NULLABLE
+  description: The number of pings aggregated into this row for the given dimension
+    combination.
+- name: main_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of main process (browser) crashes reported in crash pings
+    during this aggregation window.
+- name: content_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of content process crashes (excluding shutdown kills) reported
+    during this aggregation window.
+- name: startup_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of crashes flagged as startup crashes (occurred during Firefox
+    launch) during this aggregation window.
+- name: content_shutdown_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of content process crashes that occurred during process shutdown
+    (ShutDownKill IPC errors) during this aggregation window.
+- name: gpu_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of GPU process crashes reported via the main ping subprocess_crashes_with_dump
+    histogram during this aggregation window.
+- name: plugin_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of NPAPI plugin process crashes reported via the main ping
+    subprocess_crashes_with_dump histogram during this aggregation window.
+- name: gmplugin_crashes
+  type: INT64
+  mode: NULLABLE
+  description: The count of Gecko Media Plugin (GMP) process crashes reported via
+    the main ping subprocess_crashes_with_dump histogram during this aggregation window.
+- name: usage_hours
+  type: FLOAT64
+  mode: NULLABLE
+  description: "The total usage hours (clamped to 0\u201324 hours per ping) across\
+    \ all pings in this aggregation window, derived from subsession_length in main\
+    \ pings and core ping durations."

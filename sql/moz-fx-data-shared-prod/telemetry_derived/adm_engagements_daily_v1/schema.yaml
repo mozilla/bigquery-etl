@@ -1,0 +1,51 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: placement
+  type: STRING
+  mode: NULLABLE
+  description: The named slot or location within the Firefox New Tab page where a
+    sponsored or editorial content item was displayed (e.g., 'newtab_spocs', 'newtab_stories_1').
+    Null when no placement is associated with the event.
+- name: partner
+  type: STRING
+  mode: NULLABLE
+  description: The name of the advertising partner associated with the engagement
+    (e.g., 'amazon' for Amazon-sponsored search redirects).
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: The major version number of the application, extracted as the first
+    dot-separated component of app_version (e.g., '128').
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
+- name: n_engagements
+  type: INT64
+  mode: NULLABLE
+  description: The count of user engagements (clicks or search redirects) with the
+    partner placement for this combination of dimensions on the submission date.
+- name: interaction
+  type: STRING
+  mode: NULLABLE
+  description: The type of user interaction with the partner placement, such as 'click'
+    for top-site tiles or 'redirect' for search engine replacements.
+- name: phase
+  type: STRING
+  mode: NULLABLE
+  description: The rollout or experiment phase that the engagement belongs to, such
+    as 'phase2', 'phase3', or 'rollout'. Null for engagements not associated with
+    a tracked experiment.

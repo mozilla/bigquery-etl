@@ -57,3 +57,6 @@ fields:
 - mode: NULLABLE
   name: num_activated
   type: INTEGER
+  description: "The number of clients in this cohort considered 'activated' by day\
+    \ 6 \u2014 i.e., active on at least 5 of their first 7 days (days 0 through 6)\
+    \ since first-seen, derived from days_seen_bits."

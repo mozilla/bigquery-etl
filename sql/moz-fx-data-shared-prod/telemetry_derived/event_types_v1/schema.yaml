@@ -1,0 +1,71 @@
+fields:
+- name: category
+  type: STRING
+  mode: NULLABLE
+  description: A high-cardinality string label grouping the event or metric into a
+    functional area or feature domain (e.g., 'devtools.main', 'doh', 'pwmgr'). May
+    be null when no category classification applies to the record.
+- name: event
+  type: STRING
+  mode: NULLABLE
+  description: A string identifying a specific telemetry event recorded during the
+    session, typically in 'action.object' format (e.g., 'trigger.reason', 'saw_toggle.toggle').
+    This field categorizes the type of interaction or occurrence being tracked.
+- name: first_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The timestamp of the earliest event or ping recorded for the client
+    within the relevant period. This field may be null when no qualifying events were
+    observed.
+- name: numeric_index
+  type: INT64
+  mode: NULLABLE
+  description: A sequential integer index used to order or identify records within
+    an aggregated or ranked dataset. Values are unique and typically assigned in ascending
+    order.
+- name: index
+  type: STRING
+  mode: NULLABLE
+  description: The index identifying this event type (the category and event combination)
+    within the event encoding scheme, used together with numeric_index to reference
+    the event compactly in downstream event tables.
+- name: event_properties
+  type: RECORD
+  mode: REPEATED
+  description: An array of structured key-value properties associated with an event,
+    where each value may itself be an array of sub-properties with an ordering index.
+    This captures additional metadata dimensions attached to a single event record.
+  fields:
+  - name: index
+    type: INT64
+    mode: NULLABLE
+    description: The positional index of a property entry within the event_properties
+      array, used to preserve or reconstruct ordering. Values start at 1 and increase
+      sequentially.
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: The key name of a property within the event_properties array, identifying
+      the dimension or attribute being described (e.g. 'os', 'source', 'session_id',
+      'reason').
+  - name: value
+    type: RECORD
+    mode: REPEATED
+    description: An array of structured sub-properties associated with this event
+      property, where each entry pairs a key with a value and carries an ordering
+      index.
+    fields:
+    - name: index
+      type: INT64
+      mode: NULLABLE
+      description: The positional index of a sub-property entry within the value array,
+        used to preserve or reconstruct ordering. Values start at 1 and increase sequentially.
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: The key name of a sub-property within the value array, identifying
+        the dimension or attribute being described.
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: The value of the corresponding sub-property within the value array.

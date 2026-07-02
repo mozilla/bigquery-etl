@@ -1,0 +1,71 @@
+fields:
+- name: time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The UTC timestamp representing the time associated with the record,
+    truncated to a granularity such as day or hour depending on the table.
+- name: app
+  type: STRING
+  mode: NULLABLE
+  description: The name or identifier of the Mozilla application associated with the
+    telemetry record (e.g., Firefox, Fenix).
+- name: endpoint
+  type: STRING
+  mode: NULLABLE
+  description: The telemetry or data pipeline endpoint to which the ping was submitted.
+    This field identifies the ingestion target for the record.
+- name: environment
+  type: STRING
+  mode: NULLABLE
+  description: A label or identifier representing the deployment or operational environment
+    context associated with the record (e.g., production, staging). This field provides
+    context about the environment from which the data originated.
+- name: geo_country_code
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code derived from the client's IP address
+    at ping submission time. This represents the country-level geographic location
+    of the client.
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+  description: The collection methodology or storage format of the metric, such as
+    'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the metric
+    values should be interpreted and aggregated.
+- name: realm
+  type: STRING
+  mode: NULLABLE
+  description: The deployment realm or environment to which the client or data record
+    belongs (e.g., a specific server region or infrastructure partition). Used to
+    segment data by operational environment.
+- name: srv_hostname
+  type: STRING
+  mode: NULLABLE
+  description: The hostname of the Contile server instance that served the AdMarketplace
+    tiles response.
+- name: ua_form_factor
+  type: STRING
+  mode: NULLABLE
+  description: The form factor of the device as derived from the user agent string,
+    such as 'desktop', 'phone', or 'tablet'.
+- name: ua_os_family
+  type: STRING
+  mode: NULLABLE
+  description: The operating system family as parsed from the user agent string, such
+    as 'Windows', 'Mac OS X', or 'Linux'.
+- name: uri_method
+  type: STRING
+  mode: NULLABLE
+  description: The HTTP method used in a URI request (e.g., GET, POST). Identifies
+    the type of action performed in the request.
+- name: value
+  type: INT64
+  mode: NULLABLE
+  description: The number of tiles returned in AdMarketplace responses, for the given
+    dimension combination.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.

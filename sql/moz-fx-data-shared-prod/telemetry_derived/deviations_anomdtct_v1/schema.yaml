@@ -1,0 +1,29 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: The calendar date associated with the record, formatted as a YYYY-MM-DD
+    string. This typically represents the day on which the activity or metric was
+    measured.
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
+- name: deviation
+  type: FLOAT64
+  mode: NULLABLE
+  description: The deviation of the metric's observed value from its expected (forecast)
+    value for the given date, as produced by the anomaly-detection model.
+- name: ci_deviation
+  type: FLOAT64
+  mode: NULLABLE
+  description: The deviation of the metric's observed value from the bounds of the
+    forecast confidence interval; zero indicates the value fell within the expected
+    confidence interval.
+- name: geography
+  type: STRING
+  mode: NULLABLE
+  description: The geographic region the metric is reported for (e.g. a country/region
+    label or 'Worldwide').

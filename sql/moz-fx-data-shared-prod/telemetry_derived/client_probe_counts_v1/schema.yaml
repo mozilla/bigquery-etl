@@ -1,0 +1,81 @@
+fields:
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
+- name: app_version
+  type: INT64
+  mode: NULLABLE
+  description: The full version string of the application at the time of the event
+    (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
+    version identifier.
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+  description: The collection methodology or storage format of the metric, such as
+    'histogram-exponential', 'scalar', or 'keyed-scalar'. Determines how the metric
+    values should be interpreted and aggregated.
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: "The aggregation key for the probe/metric \u2014 for a labeled metric\
+    \ this is the label, otherwise empty. Identifies the specific keyed dimension\
+    \ the counts apply to."
+- name: process
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox process type from which a measurement or event originated,
+    such as 'parent' (the main browser process), 'content' (a content renderer process),
+    or 'gpu' (the GPU process).
+- name: client_agg_type
+  type: STRING
+  mode: NULLABLE
+  description: Describes the aggregation method applied to client-level metric values,
+    such as 'summed_histogram', 'count', 'avg', 'sum', 'min', or 'max'. Determines
+    how individual client observations were combined into the stored aggregate.
+- name: agg_type
+  type: STRING
+  mode: NULLABLE
+  description: The aggregation type used for the metric data, indicating how the underlying
+    values were combined. The only observed value is 'histogram'.
+- name: total_users
+  type: INT64
+  mode: NULLABLE
+  description: The total count of users associated with the record or group, representing
+    the full population for the given aggregation.
+- name: aggregates
+  type: RECORD
+  mode: REPEATED
+  description: A key-value map representing aggregated metric values, where each key
+    identifies a histogram bucket or metric dimension and the value holds the corresponding
+    aggregated numeric result.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: The histogram bucket boundary string (as an index or value) within
+      the aggregated histogram distribution.
+  - name: value
+    type: FLOAT64
+    mode: NULLABLE
+    description: The normalized bucket count (proportion of clients in this bucket)
+      as a float, used for computing percentiles across clients.

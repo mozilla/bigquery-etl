@@ -1,0 +1,12 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID that uniquely identifies a Firefox client installation. Used
+    to join and deduplicate records across tables at the individual client level.

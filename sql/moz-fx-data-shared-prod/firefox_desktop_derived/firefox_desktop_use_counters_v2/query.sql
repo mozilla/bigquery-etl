@@ -4771,6 +4771,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_mediadevices_getusermedia
     ) AS use_counter_doc_mediadevices_getusermedia,
+    SUM(metrics.counter.use_counter_doc_midiaccess_granted) AS use_counter_doc_midiaccess_granted,
     SUM(
       metrics.counter.use_counter_doc_mixed_content_not_upgraded_audio_failure
     ) AS use_counter_doc_mixed_content_not_upgraded_audio_failure,
@@ -6030,6 +6031,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_page_mediadevices_getusermedia
     ) AS use_counter_page_mediadevices_getusermedia,
+    SUM(metrics.counter.use_counter_page_midiaccess_granted) AS use_counter_page_midiaccess_granted,
     SUM(
       metrics.counter.use_counter_page_mixed_content_not_upgraded_audio_failure
     ) AS use_counter_page_mixed_content_not_upgraded_audio_failure,
@@ -9216,6 +9218,7 @@ pivoted_raw AS (
         use_counter_doc_mediadevices_enumeratedevices,
         use_counter_doc_mediadevices_getdisplaymedia,
         use_counter_doc_mediadevices_getusermedia,
+        use_counter_doc_midiaccess_granted,
         use_counter_doc_mixed_content_not_upgraded_audio_failure,
         use_counter_doc_mixed_content_not_upgraded_audio_success,
         use_counter_doc_mixed_content_not_upgraded_image_failure,
@@ -9729,6 +9732,7 @@ pivoted_raw AS (
         use_counter_page_mediadevices_enumeratedevices,
         use_counter_page_mediadevices_getdisplaymedia,
         use_counter_page_mediadevices_getusermedia,
+        use_counter_page_midiaccess_granted,
         use_counter_page_mixed_content_not_upgraded_audio_failure,
         use_counter_page_mixed_content_not_upgraded_audio_success,
         use_counter_page_mixed_content_not_upgraded_image_failure,

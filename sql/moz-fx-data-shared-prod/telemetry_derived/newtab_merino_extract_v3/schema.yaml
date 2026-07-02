@@ -20,6 +20,8 @@ fields:
 - mode: NULLABLE
   name: report_count
   type: INTEGER
+  description: Total number of times users submitted content reports for the corpus item via the report
+    content dialog in the reporting period.
 - mode: NULLABLE
   name: region
   type: STRING

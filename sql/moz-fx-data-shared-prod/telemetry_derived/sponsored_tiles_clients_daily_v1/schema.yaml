@@ -82,9 +82,7 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: key
+    description: The experiment slug identifying the experiment the client was enrolled in.
   - mode: NULLABLE
     name: value
     type: STRING
@@ -97,15 +95,22 @@ fields:
 - mode: NULLABLE
   name: sponsored_tiles_click_count
   type: INTEGER
+  description: Number of times the client clicked on a sponsored topsite tile on the new tab page on this
+    submission date.
 - mode: NULLABLE
   name: sponsored_tiles_impression_count
   type: INTEGER
+  description: Number of sponsored topsite tile impressions recorded for the client on this submission date.
 - mode: NULLABLE
   name: sponsored_tiles_dismissal_count
   type: INTEGER
+  description: Number of times the client dismissed (blocked) a sponsored topsite tile on this submission
+    date.
 - mode: NULLABLE
   name: sponsored_tiles_disable_count
   type: INTEGER
+  description: Number of times the client toggled off sponsored topsite tiles via the topsites pref changed
+    event on this submission date.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING

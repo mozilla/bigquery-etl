@@ -288,8 +288,8 @@ def build_profile_query(
         else:
             # distinct/null stay on the raw value (exact); top-values and example
             # are length-capped so long-string columns can't bloat the in-memory
-            # result (DENG-11334).
-            capped = f"SUBSTR(CAST({sql_ref} AS STRING), 1, {_MAX_VALUE_CHARS})"
+            # SAFE_CAST so non-UTF-8 BYTES degrades to NULL rather than erroring the whole query
+            capped = f"SUBSTR(SAFE_CAST({sql_ref} AS STRING), 1, {_MAX_VALUE_CHARS})"
             col_stats.append(f"APPROX_COUNT_DISTINCT({sql_ref}) AS `{alias}__distinct`")
             col_stats.append(
                 f"APPROX_TOP_COUNT({capped}, {_TOP_VALUES_K}) AS `{alias}__top_values`"
@@ -355,7 +355,9 @@ def build_nested_profile_queries(
                     f"SUBSTR(TO_JSON_STRING({sql_ref}), 1, {_MAX_VALUE_CHARS})"
                 )
             else:
-                capped = f"SUBSTR(CAST({sql_ref} AS STRING), 1, {_MAX_VALUE_CHARS})"
+                capped = (
+                    f"SUBSTR(SAFE_CAST({sql_ref} AS STRING), 1, {_MAX_VALUE_CHARS})"
+                )
                 col_stats.append(
                     f"APPROX_COUNT_DISTINCT({sql_ref}) AS `{alias}__distinct`"
                 )

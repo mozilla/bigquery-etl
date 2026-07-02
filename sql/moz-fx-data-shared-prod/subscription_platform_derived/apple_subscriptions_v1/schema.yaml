@@ -59,14 +59,15 @@ fields:
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
-  description: The date and time when this subscription period ended or is scheduled to end. For active
-    subscriptions, this reflects the next expiration date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_at
 - mode: NULLABLE
   name: ended_reason
   type: STRING
-  description: The reason the subscription ended. Possible values; "Cancelled by Customer", "Payment Failed",
-    "Price Change Not Approved by Customer", "Product Unavailable at Renewal", "Refund". Null for active
-    subscriptions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_reason
 - mode: NULLABLE
   name: fxa_uid
   type: STRING

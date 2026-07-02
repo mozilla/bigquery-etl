@@ -2,6 +2,9 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: fxa_server
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -402,21 +405,39 @@ fields:
     - name: source
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.source
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: blocked
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.blocked
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: column
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.column
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: line
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.line
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: referrer
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.referrer
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: violated
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.violated
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: url
       type: STRING
       mode: NULLABLE
@@ -465,6 +486,9 @@ fields:
     - name: assertion
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.assertion
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: host
       type: STRING
       mode: NULLABLE
@@ -564,6 +588,9 @@ fields:
     - name: sample
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.sample
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: request
       type: STRING
       mode: NULLABLE
@@ -1116,3 +1143,6 @@ fields:
     - name: criticalityType
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: apphub.workload.criticalityType
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml

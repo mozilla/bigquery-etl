@@ -46,12 +46,16 @@ def main():
             write_disposition="WRITE_TRUNCATE",
         )
 
-        sql = f"""
+        sql = """
             SELECT * EXCEPT (submission_date)
             FROM iprospect.adspend_raw_v1
-            WHERE submission_date = '{args.date}'
-            AND `date` = '{active_date}'
+            WHERE submission_date = @submission_date
+            AND `date` = @active_date
         """
+        job_config.query_parameters = [
+            bigquery.ScalarQueryParameter("submission_date", "STRING", args.date),
+            bigquery.ScalarQueryParameter("active_date", "STRING", active_date),
+        ]
         job = client.query(sql, job_config=job_config)
         print(f"Running job {job.job_id}")
         job.result()

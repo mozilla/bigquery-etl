@@ -2,66 +2,120 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
+  description: The SHA-256 hash of the customer's Mozilla Account user ID, used to identify the subscriber
+    without exposing the raw account ID.
 - mode: NULLABLE
   name: subscription_id
   type: STRING
+  description: The unique identifier for this subscription period, derived from the Apple original transaction
+    ID. For multi-period subscriptions, a suffix (e.g. "-1", "-2") is appended to distinguish subsequent
+    periods.
 - mode: NULLABLE
   name: original_subscription_id
   type: STRING
+  description: The original Apple transaction ID for the first subscription period. Null when this is the
+    first (or only) subscription period; populated when this is a subsequent resubscription period.
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: status
   type: STRING
+  description: The current status of the Apple subscription. Possible values; "active", "expired", "in billing
+    retry period", "in billing grace period", "revoked".
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
+  description: The timestamp of the latest Apple App Store Server API verification event that determined
+    the subscription's current state.
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
+  description: The date and time when the paid subscription period started, after any free trial ended.
+    Null when the subscription started entirely within a trial period.
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
+  description: The date and time of the original purchase of the subscription (i.e. the first transaction
+    date for this original transaction ID).
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
+  description: The start date and time of the free trial period for this subscription, if one was offered.
+    Null when no trial was associated with this subscription period.
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
+  description: The end date and time of the free trial period for this subscription. Null when no trial
+    was associated with this subscription period.
 - mode: NULLABLE
   name: cancel_at_period_end
   type: BOOLEAN
+  description: True when the customer has disabled auto-renewal, meaning the subscription will not renew
+    at the end of the current period. False when auto-renewal is enabled.
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_at
 - mode: NULLABLE
   name: ended_reason
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_reason
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
+  description: The SHA-256 hash of the customer's Firefox Accounts (Mozilla Account) user ID, used to link
+    this subscription to a Mozilla Account.
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: provider
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval_count
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
+  description: The timezone used when computing billing interval boundaries, always "America/Los_Angeles"
+    for Apple subscriptions.
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_id
 - mode: NULLABLE
   name: in_billing_grace_period
   type: BOOLEAN
+  description: True when the subscription is currently in a billing grace period (Apple is still attempting
+    to charge the customer but service is not yet interrupted). Null for all records except the most recent
+    period.
 - mode: NULLABLE
   name: billing_grace_period
   type: INTERVAL
+  description: The length of the billing grace period as an interval. Populated only when `in_billing_grace_period`
+    is true; otherwise zero-length.
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_codes

@@ -2,66 +2,107 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
+  description: SHA-256 hex-encoded Firefox Accounts (FxA) user ID of the subscriber. Matches `fxa_uid` —
+    both fields carry the same hashed identifier.
 - mode: NULLABLE
   name: subscription_id
   type: STRING
+  description: Unique identifier for this subscription period. For the initial purchase this equals the
+    Google Play purchase token; for subsequent periods (e.g. after an upgrade or downgrade) a numeric suffix
+    is appended to distinguish them.
 - mode: NULLABLE
   name: original_subscription_id
   type: STRING
+  description: Google Play purchase token of the original subscription before any plan change. Null when
+    the subscription has never been replaced by a new purchase.
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: Google Play SKU identifier for the subscription plan, e.g. `org.mozilla.gps.mozillavpn.product.12_month_subscription`.
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
+  description: Timestamp of the most-recent Google Play IAP event that contributed to this subscription
+    record.
 - mode: NULLABLE
   name: subscription_start
   type: TIMESTAMP
+  description: When the paid subscription period began. Null when the entire active period was a free trial,
+    i.e. the subscription ended before the trial period concluded.
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
+  description: Timestamp of the earliest Google Play IAP event observed for this subscription, representing
+    when the subscription was first created.
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
+  description: Start of the free-trial period for this subscription. Null when no free trial was associated
+    with this subscription.
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
+  description: End of the free-trial period for this subscription. Null when no free trial was associated
+    with this subscription.
 - mode: NULLABLE
   name: canceled_for_customer_at
   type: STRING
+  description: Timestamp string indicating when the customer cancelled the subscription. Null when the subscription
+    has not been cancelled by the user.
 - mode: NULLABLE
   name: subscription_end
   type: TIMESTAMP
+  description: Timestamp when the subscription period ends or ended (i.e. the Google Play expiry time for
+    this period).
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
+  description: SHA-256 hex-encoded Firefox Accounts user ID of the subscriber. Null when the subscription
+    event could not be linked to an FxA account.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: ISO 3166-1 alpha-2 country code (lowercased) of the subscriber's Google Play account at the
+    time of the most recent event.
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: Payment provider for this subscription. Always `Google Play` for records in this table.
 - mode: NULLABLE
   name: plan_amount
   type: INTEGER
+  description: Subscription plan price in the minor unit of the plan currency (e.g. cents for USD), derived
+    by dividing `price_amount_micros` by 10,000.
 - mode: NULLABLE
   name: plan_currency
   type: STRING
+  description: ISO 4217 currency code (lowercased) for the subscription plan price, e.g. `usd` or `eur`.
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: Billing interval unit for the subscription plan. One of `month` or `year`.
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: Number of `plan_interval` units per billing cycle. For example, a value of `6` with `plan_interval`
+    = `month` indicates a semi-annual plan.
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
+  description: Timezone used for computing plan interval boundaries. Always `Etc/UTC` for Google Play subscriptions.
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: Google Play application package name identifying the product. Always `org.mozilla.firefox.vpn`
+    for Mozilla VPN subscriptions.
 - mode: NULLABLE
   name: in_billing_grace_period
   type: BOOLEAN
+  description: True when the subscription is currently in a billing grace period — that is, the most recent
+    payment failed (`payment_state = 0`) but auto-renewal is still enabled. Only the most-recent active
+    period for a given purchase token can be in a billing grace period.
 - mode: NULLABLE
   name: billing_grace_period
   type: INTERVAL
+  description: Duration of the billing grace period as a BigQuery INTERVAL. Set to `INTERVAL 1 MONTH` when
+    `in_billing_grace_period` is true, otherwise `INTERVAL 0 DAY`.

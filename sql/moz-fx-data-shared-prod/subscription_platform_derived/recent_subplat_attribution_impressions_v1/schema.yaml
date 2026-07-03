@@ -2,54 +2,88 @@ fields:
 - name: flow_id
   type: STRING
   mode: NULLABLE
+  description: Unique identifier for the Firefox Accounts authentication or subscription flow session during
+    which this attribution impression was recorded.
 - name: flow_started_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: The timestamp when the FxA flow session that produced this impression began.
 - name: impression_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: The timestamp when the subscription platform attribution impression event was recorded.
 - name: event_type
   type: STRING
   mode: NULLABLE
+  description: The type of FxA or subscription platform event that generated this attribution impression
+    (e.g. a pageview or flow start event).
 - name: entrypoint
   type: STRING
   mode: NULLABLE
+  description: The entrypoint identifier indicating the surface or page where the user began the subscription
+    or sign-in flow (e.g. 'www.mozilla.org-vpn-product-page').
 - name: entrypoint_experiment
   type: STRING
   mode: NULLABLE
+  description: The experiment slug associated with the entrypoint if the user entered the flow as part of
+    an A/B experiment. Null when no experiment was active.
 - name: entrypoint_variation
   type: STRING
   mode: NULLABLE
+  description: The experiment variation identifier assigned to the user at the entrypoint. Null when no
+    experiment was active.
 - name: utm_campaign
   type: STRING
   mode: NULLABLE
+  description: The UTM campaign parameter from the referring URL, identifying the marketing or product campaign
+    that drove this impression.
 - name: utm_content
   type: STRING
   mode: NULLABLE
+  description: The UTM content parameter from the referring URL, used to differentiate between links within
+    the same campaign or to identify specific creative elements.
 - name: utm_medium
   type: STRING
   mode: NULLABLE
+  description: The UTM medium parameter from the referring URL, indicating the marketing channel type (e.g.
+    'referral', 'organic', 'email', 'firefox-desktop').
 - name: utm_source
   type: STRING
   mode: NULLABLE
+  description: The UTM source parameter from the referring URL, identifying the specific source that drove
+    traffic to this impression (e.g. 'www.mozilla.org-vpn-product-page', 'google', 'toolbar').
 - name: utm_term
   type: STRING
   mode: NULLABLE
+  description: The UTM term parameter from the referring URL, typically used to capture paid search keywords
+    associated with this impression.
 - name: mozilla_account_ids_sha256
   type: STRING
   mode: REPEATED
+  description: Array of SHA-256-hashed Mozilla Account (FxA) user IDs associated with this impression flow,
+    used for privacy-preserving attribution matching to subscription events.
 - name: oauth_client_ids
   type: STRING
   mode: REPEATED
+  description: Array of OAuth client IDs for the Mozilla services that were accessed or targeted during
+    this flow session.
 - name: oauth_client_names
   type: STRING
   mode: REPEATED
+  description: Array of human-readable names corresponding to the OAuth clients in oauth_client_ids, identifying
+    the Mozilla services involved in this flow.
 - name: product_ids
   type: STRING
   mode: REPEATED
+  description: Array of subscription product identifiers (provider product IDs) associated with the subscription
+    plans encountered during this flow.
 - name: plan_ids
   type: STRING
   mode: REPEATED
+  description: Array of subscription plan or price identifiers (provider plan IDs) for the plans encountered
+    during this attribution flow.
 - name: service_ids
   type: STRING
   mode: REPEATED
+  description: Array of Mozilla service short identifiers (e.g. 'VPN', 'Relay') for the services associated
+    with the subscription plans in this impression flow.

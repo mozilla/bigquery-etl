@@ -2,15 +2,24 @@ fields:
 - name: date
   type: DATE
   mode: REQUIRED
+  description: The calendar date for which the exchange rate applies, used as the table's partition key.
 - name: base_currency
   type: STRING
   mode: REQUIRED
+  description: ISO 4217 currency code of the source currency being converted from (e.g. 'EUR', 'GBP'). The
+    rate expresses how many units of `quote_currency` one unit of this currency buys.
 - name: quote_currency
   type: STRING
   mode: REQUIRED
+  description: ISO 4217 currency code of the target currency being converted to (e.g. 'USD'). All rows in
+    this table use USD as the quote currency.
 - name: price_type
   type: STRING
   mode: REQUIRED
+  description: The type of exchange rate quote sourced from the OANDA API. Currently always 'mid', representing
+    the midpoint between the bid and ask prices.
 - name: price
   type: NUMERIC
   mode: REQUIRED
+  description: The exchange rate from `base_currency` to `quote_currency` on the given `date`, rounded to
+    9 decimal places. Multiply a price in `base_currency` by this value to convert it to `quote_currency`.

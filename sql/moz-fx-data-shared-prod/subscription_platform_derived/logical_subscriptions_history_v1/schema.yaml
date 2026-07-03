@@ -43,25 +43,9 @@ fields: !include-fields
     - name: provider_subscription_updated_at
       type: TIMESTAMP
       mode: NULLABLE
-      description: |-
-        When the provider subscription was last updated.
-    - !include-fields
-      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
-      parent_field: subscription
-      field_names:
-      - provider_customer_id
-      - mozilla_account_id
-      - mozilla_account_id_sha256
-      field_replacements:
-      - !include-field
-        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
-        field: subscription.provider_customer_id
-        append_description: |-
-          This will be null for Google and Apple subscriptions.
-      - !include-field
-        table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_history_v1
-        field: subscription.mozilla_account_id
-    - name: customer_subscription_number
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+        field: provider_subscription_updated_at
       type: INTEGER
       mode: NULLABLE
       description: |-

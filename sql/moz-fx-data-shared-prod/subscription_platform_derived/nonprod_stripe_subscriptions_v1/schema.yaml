@@ -26,8 +26,9 @@ fields:
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
-  description: The Fivetran sync timestamp (synced_at) of the underlying history record used to populate
-    this current-state view.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: event_timestamp
 - mode: NULLABLE
   name: created
   type: TIMESTAMP

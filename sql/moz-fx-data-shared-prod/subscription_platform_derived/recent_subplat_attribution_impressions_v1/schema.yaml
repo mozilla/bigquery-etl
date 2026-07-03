@@ -11,7 +11,9 @@ fields:
 - name: impression_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: The timestamp when the subscription platform attribution impression event was recorded.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_last_touch_attribution_impression_at
 - name: event_type
   type: STRING
   mode: NULLABLE
@@ -20,43 +22,51 @@ fields:
 - name: entrypoint
   type: STRING
   mode: NULLABLE
-  description: The entrypoint identifier indicating the surface or page where the user began the subscription
-    or sign-in flow (e.g. 'www.mozilla.org-vpn-product-page').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_last_touch_attribution_entrypoint
 - name: entrypoint_experiment
   type: STRING
   mode: NULLABLE
-  description: The experiment slug associated with the entrypoint if the user entered the flow as part of
-    an A/B experiment. Null when no experiment was active.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_last_touch_attribution_entrypoint_experiment
 - name: entrypoint_variation
   type: STRING
   mode: NULLABLE
-  description: The experiment variation identifier assigned to the user at the entrypoint. Null when no
-    experiment was active.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_first_touch_attribution_entrypoint_variation
 - name: utm_campaign
   type: STRING
   mode: NULLABLE
-  description: The UTM campaign parameter from the referring URL, identifying the marketing or product campaign
-    that drove this impression.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_first_touch_attribution_utm_campaign
 - name: utm_content
   type: STRING
   mode: NULLABLE
-  description: The UTM content parameter from the referring URL, used to differentiate between links within
-    the same campaign or to identify specific creative elements.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_last_touch_attribution_utm_content
 - name: utm_medium
   type: STRING
   mode: NULLABLE
-  description: The UTM medium parameter from the referring URL, indicating the marketing channel type (e.g.
-    'referral', 'organic', 'email', 'firefox-desktop').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_last_touch_attribution_utm_medium
 - name: utm_source
   type: STRING
   mode: NULLABLE
-  description: The UTM source parameter from the referring URL, identifying the specific source that drove
-    traffic to this impression (e.g. 'www.mozilla.org-vpn-product-page', 'google', 'toolbar').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_first_touch_attribution_utm_source
 - name: utm_term
   type: STRING
   mode: NULLABLE
-  description: The UTM term parameter from the referring URL, typically used to capture paid search keywords
-    associated with this impression.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_first_touch_attribution_utm_term
 - name: mozilla_account_ids_sha256
   type: STRING
   mode: REPEATED

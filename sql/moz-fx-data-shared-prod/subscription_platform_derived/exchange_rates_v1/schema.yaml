@@ -14,3 +14,6 @@ fields:
 - name: price
   type: NUMERIC
   mode: REQUIRED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_last_transaction_price

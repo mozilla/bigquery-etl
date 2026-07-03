@@ -1,0 +1,9 @@
+fields:
+- name: key_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: ciphertext
+  type: BYTES
+  mode: NULLABLE
+  description: ''

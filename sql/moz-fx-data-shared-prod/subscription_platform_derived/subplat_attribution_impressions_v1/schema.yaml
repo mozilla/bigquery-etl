@@ -14,8 +14,9 @@ fields:
 - name: impression_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: Timestamp of the specific impression event within the flow, such as when a subscription product
-    page or signup form was viewed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: impression_at
 - name: event_type
   type: STRING
   mode: NULLABLE

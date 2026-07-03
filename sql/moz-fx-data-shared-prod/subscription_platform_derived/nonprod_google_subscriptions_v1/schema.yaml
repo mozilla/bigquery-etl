@@ -2,33 +2,39 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
-  description: The Firefox Accounts user ID (SHA-256 hashed) of the subscriber, used as the customer identifier
-    in this non-production Google Play IAP dataset.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: customer_id
 - mode: NULLABLE
   name: subscription_id
   type: STRING
-  description: The unique identifier for this Google Play subscription period. For a subscription with multiple
-    active date ranges, a suffix (e.g. '-1') is appended to the original document ID to form subsequent
-    period IDs.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_id
 - mode: NULLABLE
   name: original_subscription_id
   type: STRING
-  description: The original Google Play Firestore document ID for this subscription. Null for the first
-    (or only) active period; populated for subsequent renewal periods that follow a coverage gap.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: original_subscription_id
 - mode: NULLABLE
   name: plan_id
   type: STRING
-  description: The Google Play SKU identifier for the subscription plan (e.g. 'org.mozilla.gps.mozillavpn.product.1_month_subscription').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
-  description: The timestamp of the Google Play IAP event that produced the most recent state of this subscription
-    record.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: event_timestamp
 - mode: NULLABLE
   name: subscription_start
   type: TIMESTAMP
-  description: The timestamp when the paid subscription period began, after any free trial. Null if the
-    subscription period fell entirely within a trial.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_start
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
@@ -56,8 +62,9 @@ fields:
 - mode: NULLABLE
   name: subscription_end
   type: TIMESTAMP
-  description: The timestamp when this subscription period ends or ended (the Google Play expiry time for
-    this active date range).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_end
 - mode: NULLABLE
   name: fxa_uid
   type: STRING

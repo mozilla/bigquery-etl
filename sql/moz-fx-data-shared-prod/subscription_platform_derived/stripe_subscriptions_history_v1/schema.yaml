@@ -2,120 +2,192 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
+  description: The Stripe customer ID (e.g. "cus_xxx") associated with this subscription.
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
+  description: SHA256 hash of the Firefox Account user ID associated with this subscription's customer.
+    Used as a privacy-preserving identifier to join with other Firefox Account data.
 - mode: NULLABLE
   name: subscription_id
   type: STRING
+  description: The Stripe subscription ID (e.g. "sub_xxx").
 - mode: NULLABLE
   name: subscription_item_id
   type: STRING
+  description: The Stripe subscription item ID (e.g. "si_xxx"). Each subscription in this platform has exactly
+    one subscription item.
 - mode: NULLABLE
   name: synced_at
   type: TIMESTAMP
+  description: Timestamp when this row was last synced from Stripe via Fivetran (_fivetran_synced).
 - mode: NULLABLE
   name: valid_from
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: valid_from
 - mode: NULLABLE
   name: valid_to
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: valid_to
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
+  description: Timestamp when the Stripe subscription was originally created.
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
+  description: Timestamp when the subscription's free trial period started. Null if the subscription had
+    no trial.
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
+  description: Timestamp when the subscription's free trial period ended or is scheduled to end. Null if
+    the subscription had no trial.
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
+  description: The effective start date of the subscription, set to the trial end date if a trial existed,
+    otherwise the subscription creation date.
 - mode: NULLABLE
   name: cancel_at
   type: TIMESTAMP
+  description: Timestamp at which the subscription is scheduled to be canceled at the end of its current
+    period (if set). Null if no cancellation is scheduled.
 - mode: NULLABLE
   name: cancel_at_period_end
   type: BOOLEAN
+  description: True if the subscription is set to cancel at the end of the current billing period (auto-renewal
+    disabled), false if it will continue renewing.
 - mode: NULLABLE
   name: canceled_at
   type: TIMESTAMP
+  description: Timestamp when the subscription was canceled (i.e. when cancel_at_period_end was set to true
+    or the subscription was immediately canceled). Null if not canceled.
 - mode: NULLABLE
   name: canceled_for_customer_at
   type: STRING
+  description: Unix timestamp (as a string) representing when the subscription was canceled on behalf of
+    the customer, extracted from the subscription metadata field "cancelled_for_customer_at".
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
+  description: Timestamp when the subscription ended (the subscription period expired after cancellation
+    or payment failure). Null for active subscriptions.
 - mode: NULLABLE
   name: status
   type: STRING
+  description: The Stripe subscription status; "active", "past_due", "trialing", "canceled", "incomplete",
+    or "incomplete_expired".
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: The Stripe product ID for the plan associated with this subscription (e.g. "prod_xxx").
 - mode: NULLABLE
   name: product_name
   type: STRING
+  description: Human-readable name of the Stripe product (e.g. "Mozilla VPN", "Relay Premium", "Mozilla
+    Monitor Plus").
 - mode: REPEATED
   name: product_capabilities
   type: STRING
+  description: Array of capability strings defined in the product's metadata (e.g. feature flags granted
+    to subscribers of this product).
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: The Stripe plan or price ID for this subscription (e.g. "plan_xxx" or "price_xxx"). Backfilled
+    from subscription items for history records predating plan changes.
 - mode: NULLABLE
   name: plan_started_at
   type: TIMESTAMP
+  description: Timestamp when the current plan period started, derived from the preceding plan_ended_at
+    value. Null for the initial plan period.
 - mode: NULLABLE
   name: plan_ended_at
   type: TIMESTAMP
+  description: Timestamp when the plan period ended (i.e. when the subscription switched to a different
+    plan). Null if no plan change has occurred.
 - mode: NULLABLE
   name: plan_name
   type: STRING
+  description: Human-readable nickname for the Stripe plan (e.g. "USD English Monthly"), intended for internal
+    use and not displayed to customers.
 - mode: REPEATED
   name: plan_capabilities
   type: STRING
+  description: Array of capability strings defined in the plan's metadata (e.g. feature flags granted to
+    subscribers of this specific plan).
 - mode: NULLABLE
   name: plan_amount
   type: INTEGER
+  description: The plan price per billing period in the smallest currency unit (e.g. cents). Reflects the
+    actual charge amount when Stripe's multi-currency prices feature is in use.
 - mode: NULLABLE
   name: billing_scheme
   type: STRING
+  description: How the price per period is computed. Always "per_unit" for this platform's subscriptions.
 - mode: NULLABLE
   name: plan_currency
   type: STRING
+  description: Three-letter ISO currency code (lowercase) for this subscription's plan. Reflects the actual
+    charge currency when Stripe's multi-currency prices feature is in use.
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: The billing frequency for this plan; "month" for monthly billing, "year" for annual billing.
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: The number of interval units between billing cycles. Typically 1; occasionally 6 for semi-annual
+    plans.
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
+  description: Timezone used for the billing interval. Always "Etc/UTC" for this platform.
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: The payment provider for the most recent paid invoice; "Stripe" for card payments or "Paypal"
+    for PayPal payments. Null when no paid invoice exists yet.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Two-letter country code (lowercase) for the subscriber's billing location. Derived from the
+    payment method and customer address, using Stripe Tax hierarchy after 2022-12-01.
 - mode: NULLABLE
   name: state
   type: STRING
+  description: State or province code for the subscriber's billing location (e.g. US state code or Canadian
+    province code). Derived from billing detail addresses or postal code lookups.
 - mode: NULLABLE
   name: has_refunds
   type: BOOLEAN
+  description: True if any refund (Stripe refund or PayPal refund) has been issued for this subscription,
+    false otherwise.
 - mode: NULLABLE
   name: has_fraudulent_charges
   type: BOOLEAN
+  description: True if any charge on this subscription was flagged as fraudulent by user report, Stripe's
+    automated fraud detection, or a fraudulent refund, false otherwise.
 - mode: NULLABLE
   name: has_fraudulent_charge_refunds
   type: BOOLEAN
+  description: True if a fraudulent charge was both flagged and subsequently refunded (i.e. a succeeded
+    refund exists on a charge flagged as fraudulent), false otherwise.
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+  description: Array of promotion codes applied to this subscription's paid invoices.
 - mode: NULLABLE
   name: promotion_discounts_amount
   type: INTEGER
+  description: Total discount amount in the smallest currency unit (e.g. cents) applied via promotion codes
+    across all paid invoices for this subscription. Accounts for currency differences when multi-currency
+    prices are used.
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -123,27 +195,45 @@ fields:
   - name: flow_id
     type: STRING
     mode: NULLABLE
+  description: The Firefox Accounts session flow ID recorded at subscription time, used to correlate this
+    subscription with user funnel events.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+  description: The entrypoint recorded in subscription metadata at the time of the subscription session
+    (e.g. "www.mozilla.org-vpn-product-page").
   - name: entrypoint_experiment
     type: STRING
     mode: NULLABLE
+  description: The entrypoint experiment identifier recorded in subscription metadata, if an A/B experiment
+    was active during the subscription session.
   - name: entrypoint_variation
     type: STRING
     mode: NULLABLE
+  description: The variation of the entrypoint experiment that the subscriber was assigned to during the
+    subscription session.
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+  description: The UTM campaign parameter recorded in subscription metadata at the time of the subscription
+    session.
   - name: utm_content
     type: STRING
     mode: NULLABLE
+  description: The UTM content parameter recorded in subscription metadata at the time of the subscription
+    session.
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+  description: The UTM medium parameter recorded in subscription metadata at the time of the subscription
+    session.
   - name: utm_source
     type: STRING
     mode: NULLABLE
+  description: The UTM source parameter recorded in subscription metadata at the time of the subscription
+    session.
   - name: utm_term
     type: STRING
     mode: NULLABLE
+  description: The UTM term parameter recorded in subscription metadata at the time of the subscription
+    session.

@@ -1430,3 +1430,327 @@ fields:
   description: Indicates whether the subscription was in an active state at the start of the day. True means the subscription was active at day-start;
     false means it was not yet active or had already ended before the day began.
   type: BOOLEAN
+- name: customer_subscription_number
+  description: Ordinal position of this subscription within the customer's overall history of logical
+    subscriptions. A value of 1 means it is the customer's first subscription, 2 their second, and so
+    on.
+- name: first_touch_attribution
+  description: First-touch attribution for the subscription, capturing the earliest marketing impression
+    that influenced the subscription. Null for Stripe subscriptions created by SubPlat 3 (launched June
+    2025) and later, and null for Google and Apple subscriptions.
+- name: last_touch_attribution
+  description: Last-touch attribution for the subscription, capturing the most recent marketing impression
+    prior to subscription. For SubPlat 3 subscriptions (launched June 2025) this reflects values stored
+    by SubPlat; for earlier subscriptions this is the most recent impression found in SubPlat/FxA logs.
+    Null for Google and Apple subscriptions.
+- name: services
+  description: Array of services provided by this subscription. Each element identifies a Mozilla service
+    (e.g. VPN, Relay, Monitor) that the subscriber has access to under this subscription.
+- name: services_id
+  description: Short identifier for the service within the services array (e.g. "VPN", "Relay", "Monitor",
+    "FPN", "MDN", "Hubs").
+- name: services_name
+  description: Human-readable name of the service within the services array (e.g. "Mozilla VPN", "Relay
+    Premium", "Mozilla Monitor Plus").
+- name: services_tier
+  description: Tier or plan level for the service within the services array, when applicable (e.g. "Email
+    Masking", "Email & Phone Masking", "Plus 5"). Null when no tier information is available for the service.
+- name: month_end_date
+  type: DATE
+  description: The end date of the month during which the logical subscription was active.
+- name: month_start_date
+  type: DATE
+  description: The start date of the month during which the logical subscription was active. Used as the
+    primary partition and filter key for this rolling-window table.
+- name: was_active_at_month_end
+  type: BOOLEAN
+  description: Whether the logical subscription was active at the end of the month (true) or had ended
+    before that date (false).
+- name: was_active_at_month_start
+  type: BOOLEAN
+  description: Whether the logical subscription was active at the start of the month (true) or not yet
+    started or already ended by that date (false).
+- name: subscription_customer_invoice_settings_default_payment_method_id
+  description: Stripe ID of the default payment method (`pm_*`) set at the customer invoice-settings level,
+    used for invoices when no subscription-level or invoice-level payment method is specified.
+- name: billing_cycle_anchor
+  description: Timestamp that anchors the billing cycle, determining when renewal invoices are generated.
+- name: cancellation_details_comment
+  description: Additional comment or automated note recorded at cancellation time (e.g., 'administrative_cancellation:subplat_script'
+    for script-initiated cancellations).
+- name: cancellation_details_feedback
+  description: Subscriber-provided free-text feedback given at cancellation. Currently always null.
+- name: cancellation_details_reason
+  description: Stripe-categorised reason for the subscription cancellation; 'cancellation_requested' for
+    voluntary cancellations, 'payment_failed' for involuntary churn, or 'payment_disputed' for chargebacks.
+- name: collection_method
+  description: How Stripe collects payment for this subscription; 'charge_automatically' for card-on-file
+    charging, or 'send_invoice' for PayPal and invoice-based billing.
+- name: current_period_end
+  description: Timestamp marking the end of the current billing period, after which the subscription renews
+    or expires.
+- name: current_period_start
+  description: Timestamp marking the beginning of the current billing period.
+- name: days_until_due
+  description: Number of days after invoice creation before payment is due. Set to 1 for standard subscriptions
+    or 30 for invoice-based subscriptions.
+- name: default_payment_method_id
+  description: Stripe payment method ID set as the default for this specific subscription. Null when the
+    customer's default payment method is used instead.
+- name: default_source_id
+  description: Stripe payment source ID set as the default for this subscription (legacy card sources).
+    Currently always null in favour of payment method IDs.
+- name: default_tax_rates_created
+  description: Timestamp when the Stripe tax rate object was created.
+- name: default_tax_rates_description
+  description: Short local name or abbreviation for the tax (e.g., 'USt' for German VAT, 'TVA' for French
+    VAT, 'IVA' for Italian/Spanish VAT).
+- name: default_tax_rates_display_name
+  description: Display name of the tax rate shown on invoices. Always 'VAT' for SubPlat subscriptions.
+- name: default_tax_rates_id
+  description: Stripe tax rate object ID (prefixed with 'txr_') applied by default to invoices for this
+    subscription.
+- name: default_tax_rates_inclusive
+  description: True if the tax is included in the displayed price (inclusive VAT); false if tax is added
+    on top. Always true for SubPlat subscriptions.
+- name: default_tax_rates_jurisdiction
+  description: Jurisdiction string for the tax rate (e.g., country or region). Currently always null for
+    SubPlat subscriptions.
+- name: default_tax_rates_metadata
+  description: Arbitrary key-value metadata attached to the Stripe tax rate object.
+- name: default_tax_rates_percentage
+  description: Tax rate percentage applied to invoices (e.g., 19.0 for German 19% VAT, 20.0 for French
+    20% VAT).
+- name: discount_coupon_amount_off
+  description: Fixed amount discounted in the smallest currency unit by the subscription-level coupon.
+    Null when a percentage discount is used.
+- name: discount_coupon_created
+  description: Timestamp when the subscription-level coupon was created in Stripe.
+- name: discount_coupon_currency
+  description: ISO 4217 currency code for a subscription-level fixed-amount coupon. Null for percentage-off
+    coupons.
+- name: discount_coupon_duration
+  description: How long the subscription-level coupon applies; 'once', 'repeating' (for a fixed number
+    of months), or 'forever'.
+- name: discount_coupon_duration_in_months
+  description: Number of months the subscription-level repeating coupon applies. Only populated when duration
+    is 'repeating'.
+- name: discount_coupon_id
+  description: Stripe coupon ID applied as the subscription-level discount (e.g., '7Hwj5mGU' for purchase
+    power parity discounts).
+- name: discount_coupon_metadata
+  description: Arbitrary key-value metadata attached to the subscription-level coupon object in Stripe.
+- name: discount_coupon_name
+  description: Human-readable name of the subscription-level coupon (e.g., 'Holiday Offer 2023', 'Cybersecurity
+    Awareness Month 2023').
+- name: discount_coupon_percent_off
+  description: Percentage discount applied by the subscription-level coupon (e.g., 100.0 for PPP customers,
+    20.0 for promotional offers).
+- name: discount_coupon_redeem_by
+  description: Timestamp after which the subscription-level coupon can no longer be redeemed. Null for
+    coupons with no expiry.
+- name: discount_end
+  description: Timestamp when the subscription-level discount expired or is scheduled to expire.
+- name: discount_id
+  description: Stripe discount object ID applied at the subscription level (prefixed with 'di_'). Null
+    when no subscription-level discount is active.
+- name: discount_invoice_id
+  description: Stripe invoice ID to which the subscription-level discount was applied. Currently always
+    null.
+- name: discount_invoice_item_id
+  description: Stripe invoice item ID to which the subscription-level discount was applied. Currently
+    always null.
+- name: discount_promotion_code_id
+  description: Stripe promotion code ID used to apply the subscription-level discount.
+- name: discount_start
+  description: Timestamp when the subscription-level discount became active.
+- name: items_created
+  description: Timestamp when the subscription item was created within the subscription.
+- name: items_id
+  description: Stripe subscription item ID (prefixed with 'si_') for this plan line item within the subscription.
+- name: items_metadata
+  description: Arbitrary key-value metadata attached to the subscription item object in Stripe.
+- name: items_plan_aggregate_usage
+  description: Aggregation method for metered billing. Always null for SubPlat subscriptions since usage_type
+    is 'licensed'.
+- name: items_plan_amount
+  description: Plan price in the smallest currency unit (e.g., cents for USD). For example, 999 = $9.99
+    monthly or 5988 = $59.88 annually.
+- name: items_plan_billing_scheme
+  description: Stripe billing scheme for this plan. Always 'per_unit' for SubPlat subscriptions.
+- name: items_plan_created
+  description: Timestamp when the Stripe plan object was created.
+- name: items_plan_currency
+  description: ISO 4217 currency code for the plan price (e.g., 'usd', 'eur', 'chf').
+- name: items_plan_id
+  description: Stripe plan or price ID for the billing plan (e.g., 'price_1Iw7qSJNcmPzuWtRMUZpOwLm' for
+    USD English Monthly).
+- name: items_plan_interval
+  description: Billing interval unit for this plan, either 'month' or 'year'.
+- name: items_plan_interval_count
+  description: Number of interval units per billing cycle. Typically 1 (monthly or yearly), or 6 for semi-annual
+    plans.
+- name: items_plan_metadata
+  description: Key-value metadata attached to the Stripe plan, including product display details, capabilities,
+    promotion codes, and URLs.
+- name: items_plan_nickname
+  description: Human-readable nickname of the Stripe plan describing the currency, language, and billing
+    interval (e.g., 'USD English Monthly', 'EUR German Annual').
+- name: items_plan_product_created
+  description: Timestamp when the Stripe product object was created.
+- name: items_plan_product_description
+  description: Short marketing description of the product as configured in Stripe. Null for products that
+    rely on plan-level metadata descriptions.
+- name: items_plan_product_id
+  description: Stripe product ID for the subscription product (e.g., 'prod_FvnsFHIfezy3ZI' for Mozilla
+    VPN, 'prod_KGizMiBqUJdYoY' for Relay Premium).
+- name: items_plan_product_metadata
+  description: Key-value metadata attached to the Stripe product, containing product display configuration
+    such as capabilities, icons, legal URLs, and supported platforms.
+- name: items_plan_product_name
+  description: Human-readable name of the Stripe product (e.g., 'Mozilla VPN', 'Relay Premium', 'Mozilla
+    Monitor Plus').
+- name: items_plan_product_statement_descriptor
+  description: Text that appears on the subscriber's card statement for charges from this product (e.g.,
+    'Mozilla VPN', 'Firefox Relay').
+- name: items_plan_product_updated
+  description: Timestamp when the Stripe product object was last updated.
+- name: items_plan_tiers_mode
+  description: Tiered pricing mode for the plan. Always null for SubPlat subscriptions which use per_unit
+    billing.
+- name: items_plan_trial_period_days
+  description: Number of trial days offered by the plan. Null for most plans; set to 30 for plans with
+    a 30-day trial.
+- name: items_plan_usage_type
+  description: Stripe usage type for this plan. Always 'licensed' for SubPlat subscriptions, meaning charges
+    are per subscription rather than metered usage.
+- name: items_quantity
+  description: Quantity of the plan being subscribed to within this subscription item. Typically 1 for
+    per-user plans.
+- name: latest_invoice_id
+  description: Stripe invoice ID (prefixed with 'in_') for the most recent invoice generated for this
+    subscription.
+- name: metadata_amount
+  description: Original plan amount in the smallest currency unit stored in subscription metadata, typically
+    matching the plan amount at the time of subscription creation.
+- name: metadata_appliedPromotionCode
+  description: Promotional code entered by the customer at checkout, stored in subscription metadata (e.g.,
+    'MOZILLA20', 'HOLIDAY20').
+- name: metadata_cancellation_reason
+  description: SubPlat-specific cancellation reason stored in subscription metadata, indicating FxA-driven
+    deletions (e.g., 'fxa_user_requested_account_delete', 'fxa_unverified_account_delete').
+- name: metadata_cancelled_for_customer_at
+  description: Timestamp stored in subscription metadata indicating when the subscription was cancelled
+    on behalf of the customer by the SubPlat service layer.
+- name: metadata_currency
+  description: Currency code stored in subscription metadata at creation time (e.g., 'usd', 'eur'), which
+    may differ from the current plan currency for historical subscriptions.
+- name: metadata_plan_change_date
+  description: Timestamp stored in subscription metadata recording when the customer last changed their
+    subscription plan.
+- name: metadata_previous_plan_id
+  description: Stripe plan or price ID of the plan the customer was on before their most recent plan change,
+    stored in subscription metadata.
+- name: metadata_session_entrypoint
+  description: The product page or surface captured at checkout session time (e.g., 'www.mozilla.org-vpn-product-page'),
+    stored in subscription metadata for attribution.
+- name: metadata_session_entrypoint_experiment
+  description: Name of the A/B experiment active at the entrypoint when the subscription was created,
+    stored in subscription metadata.
+- name: metadata_session_entrypoint_variation
+  description: The experiment variation at the entrypoint when the subscription was created, stored in
+    subscription metadata.
+- name: metadata_session_flow_id
+  description: FxA session flow ID captured at checkout time and stored in subscription metadata, linking
+    the subscription to the originating FxA flow.
+- name: metadata_utm_campaign
+  description: UTM campaign parameter captured at subscription creation time and stored in metadata for
+    attribution (e.g., 'vpn-product-page').
+- name: metadata_utm_content
+  description: UTM content parameter captured at subscription creation time and stored in metadata (e.g.,
+    'get-started-us', 'notsignedin').
+- name: metadata_utm_medium
+  description: UTM medium parameter captured at subscription creation time and stored in metadata (e.g.,
+    'referral', 'firefox-desktop').
+- name: metadata_utm_source
+  description: UTM source parameter captured at subscription creation time and stored in metadata (e.g.,
+    'www.mozilla.org-vpn-product-page', 'monitor-product').
+- name: metadata_utm_term
+  description: UTM term parameter captured at subscription creation time and stored in metadata (e.g.,
+    'bento', 'settings').
+- name: pending_setup_intent_id
+  description: Stripe SetupIntent ID (prefixed with 'seti_') for a pending payment method setup operation.
+    Null when no setup is in progress.
+- name: start_date
+  description: Timestamp when the subscription's billing officially started.
+- name: flow_started_at
+  type: TIMESTAMP
+  description: Timestamp when the FxA flow session began, marking the start of the user's authentication
+    or subscription journey.
+- name: mozilla_account_ids_sha256
+  type: STRING
+  description: Array of SHA-256-hashed Mozilla Account user IDs associated with the flow, allowing linkage
+    to user-level data without exposing raw identifiers.
+- name: oauth_client_ids
+  type: STRING
+  description: Array of OAuth client IDs for the subscription platform services (e.g., Mozilla VPN, Firefox
+    Relay) observed in the flow.
+- name: oauth_client_names
+  type: STRING
+  description: Array of human-readable OAuth client names corresponding to the oauth_client_ids (e.g.,
+    'guardian-vpn', 'fx-private-relay').
+- name: plan_ids
+  type: STRING
+  description: Array of Stripe plan/price IDs for the subscription plans linked to this impression flow.
+- name: product_ids
+  type: STRING
+  description: Array of Stripe product IDs for subscription products linked to this impression flow.
+- name: service_ids
+  type: STRING
+  description: Array of subscription platform service identifiers associated with the flow, used to identify
+    which Mozilla services were involved.
+- name: checkout_type
+  description: Type of checkout flow used during the subscription purchase. Currently unpopulated in this
+    table.
+- name: country_code_source
+  description: Method or data source used to determine the country_code (e.g., GeoIP or user-declared).
+    Currently unpopulated in this table.
+- name: event_time
+  description: Timestamp when the user action actually occurred, derived from the event payload; falls
+    back to log_timestamp when not present.
+- name: language
+  description: Browser or client language tag reported during the flow (e.g., 'en-US', 'de', 'fr'). 'unknown'
+    when the language could not be determined.
+- name: log_timestamp
+  description: Timestamp when the event was written to the log pipeline, used as the partitioning time;
+    may differ slightly from event_time.
+- name: logger
+  description: The FxA server component that generated the event, either 'fxa-content-server' (browser-side
+    flow events) or 'fxa-auth-server' (authentication events).
+- name: oauth_client_id
+  description: OAuth 2.0 client ID of the subscription platform service the user was authenticating with
+    (e.g., 'e6eb0d1e856335fc' for Mozilla VPN, '802d56ef2a9af9fa' for Firefox Monitor).
+- name: oauth_client_name
+  description: Human-readable name of the OAuth client corresponding to oauth_client_id (e.g., 'guardian-vpn',
+    'fx-monitor', 'fx-private-relay').
+- name: os_name
+  description: Operating system name of the user's device as reported by the FxA client (e.g., 'Windows',
+    'Mac OS X', 'Android', 'iOS').
+- name: os_version
+  description: Version of the operating system reported by the FxA client (e.g., '10' for Windows 10,
+    '18.7' for iOS 18.7).
+- name: ua_browser
+  description: Browser name parsed from the user-agent string (e.g., 'Firefox', 'Chrome', 'Mobile Safari',
+    'Samsung Internet').
+- name: ua_version
+  description: Version of the browser parsed from the user-agent string (e.g., '151.0' for Firefox 151).
+- name: subscription_metadata
+  description: Arbitrary key-value metadata attached to the subscription in Stripe, including attribution
+    parameters (UTM values, entrypoint, flow ID) and SubPlat-specific operational fields.
+- name: subscription
+  type: RECORD
+  description: The Apple logical subscription as it ostensibly was during the time range this history
+    record is considered valid for, normalized into the cross-provider logical subscription schema.
+- name: impression_at
+  type: TIMESTAMP
+  description: The timestamp when the subscription platform attribution impression event was recorded.

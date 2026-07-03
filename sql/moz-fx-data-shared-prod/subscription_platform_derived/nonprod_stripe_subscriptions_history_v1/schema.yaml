@@ -31,14 +31,15 @@ fields:
 - mode: NULLABLE
   name: valid_from
   type: TIMESTAMP
-  description: The start of the validity window for this history record, derived from the Fivetran _fivetran_start
-    field. Together with valid_to, this defines the period during which this snapshot was the current state
-    of the subscription.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: valid_from
 - mode: NULLABLE
   name: valid_to
   type: TIMESTAMP
-  description: The end of the validity window for this history record. Null for the most recent (current)
-    snapshot of a subscription; otherwise the valid_from of the next history record.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: valid_to
 - mode: NULLABLE
   name: created
   type: TIMESTAMP

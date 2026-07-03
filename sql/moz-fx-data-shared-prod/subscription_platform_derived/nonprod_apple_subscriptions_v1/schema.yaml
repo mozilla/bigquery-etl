@@ -2,34 +2,39 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
-  description: The Firefox Accounts user ID (SHA-256 hashed) of the subscriber, used as the customer identifier
-    in this non-production Apple IAP dataset.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: customer_id
 - mode: NULLABLE
   name: subscription_id
   type: STRING
-  description: The unique identifier for this Apple App Store subscription period. For a subscription with
-    multiple active date ranges, a suffix (e.g. '-1') is appended to the original transaction ID to form
-    subsequent period IDs.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_id
 - mode: NULLABLE
   name: original_subscription_id
   type: STRING
-  description: The Apple original transaction ID that this subscription period is derived from. Null for
-    the first (or only) active period; populated for renewal periods that follow a gap in coverage.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: original_subscription_id
 - mode: NULLABLE
   name: plan_id
   type: STRING
-  description: The Apple App Store product identifier (e.g. 'org.mozilla.ios.FirefoxVPN.product.1_month_subscription')
-    representing the subscription plan purchased.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: status
   type: STRING
-  description: The current lifecycle status of the Apple subscription, derived from the Apple status code.
-    Possible values include 'active' (subscription is currently valid) and 'expired' (subscription has ended).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_status
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
-  description: The timestamp of the most recent Apple App Store notification event that was used to populate
-    this subscription record.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: event_timestamp
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
@@ -69,9 +74,9 @@ fields:
 - mode: NULLABLE
   name: ended_reason
   type: STRING
-  description: The reason the subscription ended, mapped from Apple's expiration_intent and revocation_reason
-    codes. Values include 'Cancelled by Customer', 'Payment Failed', 'Price Change Not Approved by Customer',
-    'Product Unavailable at Renewal', and 'Refund'. Null if the subscription has not yet ended.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_reason
 - mode: NULLABLE
   name: fxa_uid
   type: STRING

@@ -2,66 +2,132 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_customer_id
 - mode: NULLABLE
   name: subscription_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_id
 - mode: NULLABLE
   name: original_subscription_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: original_subscription_id
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: event_timestamp
 - mode: NULLABLE
   name: subscription_start
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_start
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_discount_coupon_created
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_trial_start
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_trial_end
 - mode: NULLABLE
   name: canceled_for_customer_at
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: canceled_for_customer_at
 - mode: NULLABLE
   name: subscription_end
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_end
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: fxa_uid
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: country
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_provider
 - mode: NULLABLE
   name: plan_amount
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_amount
 - mode: NULLABLE
   name: plan_currency
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_currency
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_interval
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_interval_count
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval_timezone
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_last_transaction_product_id
 - mode: NULLABLE
   name: in_billing_grace_period
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: in_billing_grace_period
 - mode: NULLABLE
   name: billing_grace_period
   type: INTERVAL
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: billing_grace_period

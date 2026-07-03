@@ -2,105 +2,208 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: customer_id
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: fxa_uid
 - mode: NULLABLE
   name: subscription_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_id
 - mode: NULLABLE
   name: subscription_item_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_item_id
 - mode: NULLABLE
   name: synced_at
   type: TIMESTAMP
+  description: The timestamp when this record was last synced from Stripe via Fivetran (_fivetran_synced),
+    representing the most recent sync time for this row.
 - mode: NULLABLE
   name: valid_from
   type: TIMESTAMP
+  description: The start of the validity window for this history record, derived from the Fivetran _fivetran_start
+    field. Together with valid_to, this defines the period during which this snapshot was the current state
+    of the subscription.
 - mode: NULLABLE
   name: valid_to
   type: TIMESTAMP
+  description: The end of the validity window for this history record. Null for the most recent (current)
+    snapshot of a subscription; otherwise the valid_from of the next history record.
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: created
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: trial_start
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: trial_end
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_start_date
 - mode: NULLABLE
   name: cancel_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: cancel_at
 - mode: NULLABLE
   name: cancel_at_period_end
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: cancel_at_period_end
 - mode: NULLABLE
   name: canceled_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: canceled_at
 - mode: NULLABLE
   name: canceled_for_customer_at
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: canceled_for_customer_at
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: ended_at
 - mode: NULLABLE
   name: status
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: status
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_id
 - mode: NULLABLE
   name: product_name
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_name
 - mode: REPEATED
   name: product_capabilities
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_capabilities
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: plan_started_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_started_at
 - mode: NULLABLE
   name: plan_ended_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_ended_at
 - mode: NULLABLE
   name: plan_name
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_name
 - mode: REPEATED
   name: plan_capabilities
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_capabilities
 - mode: NULLABLE
   name: plan_amount
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_amount
 - mode: NULLABLE
   name: billing_scheme
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: billing_scheme
 - mode: NULLABLE
   name: plan_currency
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_currency
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval_count
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval_timezone
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: provider
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: country
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_codes
 - mode: NULLABLE
   name: promotion_discounts_amount
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_discounts_amount

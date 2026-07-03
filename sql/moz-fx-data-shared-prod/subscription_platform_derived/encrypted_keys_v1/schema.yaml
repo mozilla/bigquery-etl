@@ -2,8 +2,10 @@ fields:
 - name: key_id
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: Identifier for the encryption key set used to encrypt the ciphertext. This references the
+    namespace or key ring under which the key was created (e.g. 'subplat_namespaces_prod').
 - name: ciphertext
   type: BYTES
   mode: NULLABLE
-  description: ''
+  description: Encrypted binary payload produced using the key identified by `key_id`. This contains sensitive
+    data encrypted at rest via the subscription platform's key management system.

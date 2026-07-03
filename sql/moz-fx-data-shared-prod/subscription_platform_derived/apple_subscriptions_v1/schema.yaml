@@ -11,9 +11,15 @@ fields:
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: status
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_status
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
@@ -35,27 +41,45 @@ fields:
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_at
 - mode: NULLABLE
   name: ended_reason
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_ended_reason
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_provider
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_plan_interval_count
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_last_transaction_product_id
 - mode: NULLABLE
   name: in_billing_grace_period
   type: BOOLEAN
@@ -65,3 +89,6 @@ fields:
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_codes

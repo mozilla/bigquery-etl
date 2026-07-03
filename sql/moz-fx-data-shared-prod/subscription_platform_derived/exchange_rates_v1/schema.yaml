@@ -21,5 +21,6 @@ fields:
 - name: price
   type: NUMERIC
   mode: REQUIRED
-  description: The exchange rate from `base_currency` to `quote_currency` on the given `date`, rounded to
-    9 decimal places. Multiply a price in `base_currency` by this value to convert it to `quote_currency`.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_last_transaction_price

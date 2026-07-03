@@ -1430,3 +1430,7 @@ fields:
   description: Indicates whether the subscription was in an active state at the start of the day. True means the subscription was active at day-start;
     false means it was not yet active or had already ended before the day began.
   type: BOOLEAN
+- name: subscription
+  type: RECORD
+  description: The Apple logical subscription as it ostensibly was during the time range this history
+    record is considered valid for, normalized into the cross-provider logical subscription schema.

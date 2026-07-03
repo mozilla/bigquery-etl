@@ -2,25 +2,33 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
-  description: The Stripe customer ID (e.g. "cus_xxx") associated with this subscription.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: customer_id
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
-  description: SHA256 hash of the Firefox Account user ID associated with this subscription's customer.
-    Used as a privacy-preserving identifier to join with other Firefox Account data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: fxa_uid
 - mode: NULLABLE
   name: subscription_id
   type: STRING
-  description: The Stripe subscription ID (e.g. "sub_xxx").
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_id
 - mode: NULLABLE
   name: subscription_item_id
   type: STRING
-  description: The Stripe subscription item ID (e.g. "si_xxx"). Each subscription in this platform has exactly
-    one subscription item.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_item_id
 - mode: NULLABLE
   name: synced_at
   type: TIMESTAMP
-  description: Timestamp when this row was last synced from Stripe via Fivetran (_fivetran_synced).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: synced_at
 - mode: NULLABLE
   name: valid_from
   type: TIMESTAMP
@@ -36,143 +44,177 @@ fields:
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
-  description: Timestamp when the Stripe subscription was originally created.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: created
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
-  description: Timestamp when the subscription's free trial period started. Null if the subscription had
-    no trial.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: trial_start
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
-  description: Timestamp when the subscription's free trial period ended or is scheduled to end. Null if
-    the subscription had no trial.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: trial_end
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
-  description: The effective start date of the subscription, set to the trial end date if a trial existed,
-    otherwise the subscription creation date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_start_date
 - mode: NULLABLE
   name: cancel_at
   type: TIMESTAMP
-  description: Timestamp at which the subscription is scheduled to be canceled at the end of its current
-    period (if set). Null if no cancellation is scheduled.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: cancel_at
 - mode: NULLABLE
   name: cancel_at_period_end
   type: BOOLEAN
-  description: True if the subscription is set to cancel at the end of the current billing period (auto-renewal
-    disabled), false if it will continue renewing.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: cancel_at_period_end
 - mode: NULLABLE
   name: canceled_at
   type: TIMESTAMP
-  description: Timestamp when the subscription was canceled (i.e. when cancel_at_period_end was set to true
-    or the subscription was immediately canceled). Null if not canceled.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: canceled_at
 - mode: NULLABLE
   name: canceled_for_customer_at
   type: STRING
-  description: Unix timestamp (as a string) representing when the subscription was canceled on behalf of
-    the customer, extracted from the subscription metadata field "cancelled_for_customer_at".
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: canceled_for_customer_at
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
-  description: Timestamp when the subscription ended (the subscription period expired after cancellation
-    or payment failure). Null for active subscriptions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_ended_at
 - mode: NULLABLE
   name: status
   type: STRING
-  description: The Stripe subscription status; "active", "past_due", "trialing", "canceled", "incomplete",
-    or "incomplete_expired".
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_status
 - mode: NULLABLE
   name: product_id
   type: STRING
-  description: The Stripe product ID for the plan associated with this subscription (e.g. "prod_xxx").
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_last_transaction_product_id
 - mode: NULLABLE
   name: product_name
   type: STRING
-  description: Human-readable name of the Stripe product (e.g. "Mozilla VPN", "Relay Premium", "Mozilla
-    Monitor Plus").
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_product_name
 - mode: REPEATED
   name: product_capabilities
   type: STRING
-  description: Array of capability strings defined in the product's metadata (e.g. feature flags granted
-    to subscribers of this product).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: product_capabilities
 - mode: NULLABLE
   name: plan_id
   type: STRING
-  description: The Stripe plan or price ID for this subscription (e.g. "plan_xxx" or "price_xxx"). Backfilled
-    from subscription items for history records predating plan changes.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_id
 - mode: NULLABLE
   name: plan_started_at
   type: TIMESTAMP
-  description: Timestamp when the current plan period started, derived from the preceding plan_ended_at
-    value. Null for the initial plan period.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_started_at
 - mode: NULLABLE
   name: plan_ended_at
   type: TIMESTAMP
-  description: Timestamp when the plan period ended (i.e. when the subscription switched to a different
-    plan). Null if no plan change has occurred.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_ended_at
 - mode: NULLABLE
   name: plan_name
   type: STRING
-  description: Human-readable nickname for the Stripe plan (e.g. "USD English Monthly"), intended for internal
-    use and not displayed to customers.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_name
 - mode: REPEATED
   name: plan_capabilities
   type: STRING
-  description: Array of capability strings defined in the plan's metadata (e.g. feature flags granted to
-    subscribers of this specific plan).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_capabilities
 - mode: NULLABLE
   name: plan_amount
   type: INTEGER
-  description: The plan price per billing period in the smallest currency unit (e.g. cents). Reflects the
-    actual charge amount when Stripe's multi-currency prices feature is in use.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_amount
 - mode: NULLABLE
   name: billing_scheme
   type: STRING
-  description: How the price per period is computed. Always "per_unit" for this platform's subscriptions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: billing_scheme
 - mode: NULLABLE
   name: plan_currency
   type: STRING
-  description: Three-letter ISO currency code (lowercase) for this subscription's plan. Reflects the actual
-    charge currency when Stripe's multi-currency prices feature is in use.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_currency
 - mode: NULLABLE
   name: plan_interval
   type: STRING
-  description: The billing frequency for this plan; "month" for monthly billing, "year" for annual billing.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_interval
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
-  description: The number of interval units between billing cycles. Typically 1; occasionally 6 for semi-annual
-    plans.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_plan_interval_count
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
-  description: Timezone used for the billing interval. Always "Etc/UTC" for this platform.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: plan_interval_timezone
 - mode: NULLABLE
   name: provider
   type: STRING
-  description: The payment provider for the most recent paid invoice; "Stripe" for card payments or "Paypal"
-    for PayPal payments. Null when no paid invoice exists yet.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_provider
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Two-letter country code (lowercase) for the subscriber's billing location. Derived from the
-    payment method and customer address, using Stripe Tax hierarchy after 2022-12-01.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: country
 - mode: NULLABLE
   name: state
   type: STRING
-  description: State or province code for the subscriber's billing location (e.g. US state code or Canadian
-    province code). Derived from billing detail addresses or postal code lookups.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: subscription_price_change_state
 - mode: NULLABLE
   name: has_refunds
   type: BOOLEAN
-  description: True if any refund (Stripe refund or PayPal refund) has been issued for this subscription,
-    false otherwise.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_has_refunds
 - mode: NULLABLE
   name: has_fraudulent_charges
   type: BOOLEAN
-  description: True if any charge on this subscription was flagged as fraudulent by user report, Stripe's
-    automated fraud detection, or a fraudulent refund, false otherwise.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: old_subscription_has_fraudulent_charges
 - mode: NULLABLE
   name: has_fraudulent_charge_refunds
   type: BOOLEAN
@@ -181,13 +223,15 @@ fields:
 - mode: REPEATED
   name: promotion_codes
   type: STRING
-  description: Array of promotion codes applied to this subscription's paid invoices.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_codes
 - mode: NULLABLE
   name: promotion_discounts_amount
   type: INTEGER
-  description: Total discount amount in the smallest currency unit (e.g. cents) applied via promotion codes
-    across all paid invoices for this subscription. Accounts for currency differences when multi-currency
-    prices are used.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
+    field: promotion_discounts_amount
 - name: attribution
   type: RECORD
   mode: NULLABLE

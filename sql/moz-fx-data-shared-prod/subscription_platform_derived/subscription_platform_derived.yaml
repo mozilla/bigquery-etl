@@ -1430,3 +1430,47 @@ fields:
   description: Indicates whether the subscription was in an active state at the start of the day. True means the subscription was active at day-start;
     false means it was not yet active or had already ended before the day began.
   type: BOOLEAN
+- name: customer_subscription_number
+  description: Ordinal position of this subscription within the customer's overall history of logical
+    subscriptions. A value of 1 means it is the customer's first subscription, 2 their second, and so
+    on.
+- name: first_touch_attribution
+  description: First-touch attribution for the subscription, capturing the earliest marketing impression
+    that influenced the subscription. Null for Stripe subscriptions created by SubPlat 3 (launched June
+    2025) and later, and null for Google and Apple subscriptions.
+- name: last_touch_attribution
+  description: Last-touch attribution for the subscription, capturing the most recent marketing impression
+    prior to subscription. For SubPlat 3 subscriptions (launched June 2025) this reflects values stored
+    by SubPlat; for earlier subscriptions this is the most recent impression found in SubPlat/FxA logs.
+    Null for Google and Apple subscriptions.
+- name: services
+  description: Array of services provided by this subscription. Each element identifies a Mozilla service
+    (e.g. VPN, Relay, Monitor) that the subscriber has access to under this subscription.
+- name: services_id
+  description: Short identifier for the service within the services array (e.g. "VPN", "Relay", "Monitor",
+    "FPN", "MDN", "Hubs").
+- name: services_name
+  description: Human-readable name of the service within the services array (e.g. "Mozilla VPN", "Relay
+    Premium", "Mozilla Monitor Plus").
+- name: services_tier
+  description: Tier or plan level for the service within the services array, when applicable (e.g. "Email
+    Masking", "Email & Phone Masking", "Plus 5"). Null when no tier information is available for the service.
+- name: month_end_date
+  type: DATE
+  description: The end date of the month during which the logical subscription was active.
+- name: month_start_date
+  type: DATE
+  description: The start date of the month during which the logical subscription was active. Used as the
+    primary partition and filter key for this rolling-window table.
+- name: was_active_at_month_end
+  type: BOOLEAN
+  description: Whether the logical subscription was active at the end of the month (true) or had ended
+    before that date (false).
+- name: was_active_at_month_start
+  type: BOOLEAN
+  description: Whether the logical subscription was active at the start of the month (true) or not yet
+    started or already ended by that date (false).
+- name: subscription
+  type: RECORD
+  description: The Apple logical subscription as it ostensibly was during the time range this history
+    record is considered valid for, normalized into the cross-provider logical subscription schema.

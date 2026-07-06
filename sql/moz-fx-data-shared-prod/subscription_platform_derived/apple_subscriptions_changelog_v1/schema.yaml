@@ -2,33 +2,28 @@ fields:
 - name: id
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: id
+  description: |-
+    Changelog ID.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: timestamp
+  description: |-
+    When the associated Firestore record change occurred.
 - name: firestore_export_event_id
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: firestore_export_event_id
+  description: |-
+    The associated Firestore export event ID.
 - name: firestore_export_operation
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: firestore_export_operation
+  description: |-
+    The associated Firestore export operation ("IMPORT", "CREATE", "UPDATE", or "DELETE").
 - name: subscription
   type: RECORD
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription
+  description: |-
+    The Apple subscription as it ostensibly was after the change occurred.
   fields:
   - name: environment
     type: STRING

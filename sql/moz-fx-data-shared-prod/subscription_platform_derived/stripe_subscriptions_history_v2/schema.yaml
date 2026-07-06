@@ -2,21 +2,19 @@ fields:
 - name: id
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: id
+  description: |-
+    History record ID.
 - name: valid_from
   type: TIMESTAMP
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: valid_from
+  description: |-
+    Start of the time range this history record is considered valid for (inclusive).
 - name: valid_to
   type: TIMESTAMP
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: valid_to
+  description: |-
+    End of the time range this history record is considered valid for (non-inclusive).
+    Open-ended history records will have this set to the max timestamp value (9999-12-31 23:59:59.999999).
 - name: stripe_subscriptions_revised_changelog_id
   type: STRING
   mode: NULLABLE
@@ -30,9 +28,8 @@ fields:
 - name: subscription
   type: RECORD
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription
+  description: |-
+    Stripe subscription as it ostensibly was during the time range this history record is considered valid for.
   fields: !flatten-lists
   - !include-field
     table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_revised_changelog_v1

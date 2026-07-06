@@ -2,15 +2,13 @@ fields: !flatten-lists
 - name: id
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: id
+  description: |-
+    Revised changelog ID.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: timestamp
+  description: |-
+    When the change ostensibly occurred.
 - name: created_at
   type: TIMESTAMP
   mode: NULLABLE
@@ -19,9 +17,12 @@ fields: !flatten-lists
 - name: type
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: type
+  description: |-
+    Type of revised changelog.
+
+    * "original" indicates the changelog wasn't altered from what SubPlat recorded.
+    * "adjusted_..." indicates a minor adjustment was made, like altering when the change was considered to have occurred.
+    * "synthetic_..." indicates the changelog was synthesized based on other available data.
 - name: google_subscriptions_changelog_id
   type: STRING
   mode: NULLABLE

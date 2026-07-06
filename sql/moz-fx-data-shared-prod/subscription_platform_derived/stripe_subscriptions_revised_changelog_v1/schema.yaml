@@ -32,9 +32,8 @@ fields:
     - name: metadata
       type: RECORD
       mode: NULLABLE
-      description: !include-field-description
-        file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-        field: metadata
+      description: |-
+        Set of key-value pairs attached to the subscription.
       fields:
       - name: appliedPromotionCode
         type: STRING

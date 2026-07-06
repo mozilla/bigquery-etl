@@ -4,7 +4,7 @@ fields:
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_id
+    field: id
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

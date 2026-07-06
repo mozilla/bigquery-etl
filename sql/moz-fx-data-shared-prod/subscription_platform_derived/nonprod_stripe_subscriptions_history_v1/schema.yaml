@@ -4,7 +4,7 @@ fields:
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_customer_id
+    field: customer_id
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
@@ -46,19 +46,19 @@ fields:
   type: TIMESTAMP
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_discount_coupon_created
+    field: created
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_trial_start
+    field: trial_start
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_trial_end
+    field: trial_end
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
@@ -70,19 +70,19 @@ fields:
   type: TIMESTAMP
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_cancel_at
+    field: cancel_at
 - mode: NULLABLE
   name: cancel_at_period_end
   type: BOOLEAN
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_cancel_at_period_end
+    field: cancel_at_period_end
 - mode: NULLABLE
   name: canceled_at
   type: TIMESTAMP
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_canceled_at
+    field: canceled_at
 - mode: NULLABLE
   name: canceled_for_customer_at
   type: STRING
@@ -94,25 +94,25 @@ fields:
   type: TIMESTAMP
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_ended_at
+    field: ended_at
 - mode: NULLABLE
   name: status
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_status
+    field: status
 - mode: NULLABLE
   name: product_id
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_last_transaction_product_id
+    field: product_id
 - mode: NULLABLE
   name: product_name
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_product_name
+    field: product_name
 - mode: REPEATED
   name: product_capabilities
   type: STRING
@@ -154,31 +154,31 @@ fields:
   type: INTEGER
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_amount
+    field: plan_amount
 - mode: NULLABLE
   name: billing_scheme
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: items_plan_billing_scheme
+    field: billing_scheme
 - mode: NULLABLE
   name: plan_currency
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_currency
+    field: plan_currency
 - mode: NULLABLE
   name: plan_interval
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_interval
+    field: plan_interval
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_interval_count
+    field: plan_interval_count
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
@@ -190,7 +190,7 @@ fields:
   type: STRING
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_provider
+    field: provider
 - mode: NULLABLE
   name: country
   type: STRING

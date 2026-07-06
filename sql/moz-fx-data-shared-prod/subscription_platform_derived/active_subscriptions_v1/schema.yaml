@@ -19,49 +19,49 @@ fields:
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_country_name
+    field: country_name
 - name: provider
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_provider
+    field: provider
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_amount
+    field: plan_amount
 - name: plan_currency
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_currency
+    field: plan_currency
 - name: plan_interval
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_interval
+    field: plan_interval
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_plan_interval_count
+    field: plan_interval_count
 - name: product_id
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: subscription_last_transaction_product_id
+    field: product_id
 - name: product_name
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-    field: old_subscription_product_name
+    field: product_name
 - name: pricing_plan
   type: STRING
   mode: NULLABLE

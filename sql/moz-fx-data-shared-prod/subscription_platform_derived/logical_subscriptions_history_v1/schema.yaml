@@ -45,7 +45,7 @@ fields: !include-fields
       mode: NULLABLE
       description: !include-field-description
         file: sql/moz-fx-data-shared-prod/subscription_platform_derived/subscription_platform_derived.yaml
-        field: old_subscription_provider_subscription_updated_at
+        field: subscription_provider_subscription_updated_at
     - !include-fields
       file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
       parent_field: subscription

@@ -476,6 +476,12 @@ fields:
         and the `browser.search.region` pref.
 
         '
+    - name: quick_suggest_suggestion_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The suggestion ID from MARS/Merino.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

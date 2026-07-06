@@ -20961,6 +20961,15 @@ fields:
       description: 'If there was an error loading the sqlite database, record it.
 
         '
+    - name: preferences_toolbar_tab_strip_shortcut
+      type: STRING
+      mode: NULLABLE
+      description: 'The toolbar shortcut used when the tab strip is enabled.
+
+        Possible values are: share, bookmark, translate, homepage, back, summarize
+        or none.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

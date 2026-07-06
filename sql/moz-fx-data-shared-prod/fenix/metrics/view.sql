@@ -1333,7 +1333,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
       metrics.string.startup_profiles_ini_status,
-      metrics.string.glean_database_load_error
+      metrics.string.glean_database_load_error,
+      metrics.string.preferences_toolbar_tab_strip_shortcut
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3570,7 +3571,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
       metrics.string.startup_profiles_ini_status,
-      metrics.string.glean_database_load_error
+      metrics.string.glean_database_load_error,
+      metrics.string.preferences_toolbar_tab_strip_shortcut
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -5827,7 +5829,8 @@ SELECT
       metrics.string.nimbus_qa_prefs_string_user_value,
       metrics.string.profiles_source,
       metrics.string.startup_profiles_ini_status,
-      metrics.string.glean_database_load_error
+      metrics.string.glean_database_load_error,
+      metrics.string.preferences_toolbar_tab_strip_shortcut
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

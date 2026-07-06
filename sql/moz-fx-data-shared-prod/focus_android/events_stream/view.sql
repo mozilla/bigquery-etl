@@ -98,6 +98,7 @@ SELECT
       LAX_BOOL(event_extra.origin_fixable) AS `origin_fixable`,
       LAX_BOOL(event_extra.package_name) AS `package_name`,
       LAX_BOOL(event_extra.poisoned) AS `poisoned`,
+      LAX_BOOL(event_extra.primary_password_set) AS `primary_password_set`,
       LAX_BOOL(event_extra.psi_available) AS `psi_available`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.restricted) AS `restricted`,
@@ -119,6 +120,7 @@ SELECT
       LAX_BOOL(event_extra.wasActive) AS `wasActive`
     ) AS `boolean`,
     STRUCT(
+      LAX_INT64(event_extra.attempt) AS `attempt`,
       LAX_INT64(event_extra.attemptCount) AS `attemptCount`,
       LAX_INT64(event_extra.average_words_per_request) AS `average_words_per_request`,
       LAX_INT64(event_extra.average_words_per_second) AS `average_words_per_second`,
@@ -180,6 +182,7 @@ SELECT
       LAX_INT64(event_extra.number_of_logins_migrated) AS `number_of_logins_migrated`,
       LAX_INT64(event_extra.number_of_logins_quarantined) AS `number_of_logins_quarantined`,
       LAX_INT64(event_extra.number_of_logins_to_migrate) AS `number_of_logins_to_migrate`,
+      LAX_INT64(event_extra.number_of_vulnerable_passwords) AS `number_of_vulnerable_passwords`,
       LAX_INT64(event_extra.opened_tabs) AS `opened_tabs`,
       LAX_INT64(event_extra.output_tokens) AS `output_tokens`,
       LAX_INT64(event_extra.pc_negotiation_count) AS `pc_negotiation_count`,
@@ -291,6 +294,7 @@ SELECT
       JSON_VALUE(event_extra.duration) AS `duration`,
       JSON_VALUE(event_extra.email) AS `email`,
       JSON_VALUE(event_extra.end_reason) AS `end_reason`,
+      JSON_VALUE(event_extra.end_state) AS `end_state`,
       JSON_VALUE(event_extra.engine_id) AS `engine_id`,
       JSON_VALUE(event_extra.engine_name) AS `engine_name`,
       JSON_VALUE(event_extra.engine_type) AS `engine_type`,

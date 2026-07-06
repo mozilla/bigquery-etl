@@ -13253,6 +13253,21 @@ fields:
         headers and headers that failed to parse.
 
         '
+    - name: places_semantic_history_indexing_stopped
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times background semantic-history indexing stopped advancing
+        because recent chunks were too slow. The "failsafe" label counts the hard
+        brake; the "soft" label counts stops gated on the minimum number of embeddings.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -37845,6 +37860,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The value of the "nimbus.qa.int-user" pref.
+
+        '
+    - name: places_database_semantic_history_num_entries
+      type: INTEGER
+      mode: NULLABLE
+      description: 'PLACES: Number of entries (embeddings) stored in the semantic
+        history database. Reported occasionally (approx after every 40 major updates).
 
         '
   - name: labeled_boolean

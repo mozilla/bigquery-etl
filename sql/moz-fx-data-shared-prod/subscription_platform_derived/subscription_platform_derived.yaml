@@ -1514,7 +1514,7 @@ fields:
   description: True if the tax is included in the displayed price (inclusive VAT); false if tax is added
     on top. Always true for SubPlat subscriptions.
 - name: default_tax_rates_jurisdiction
-  description: Jurisdiction string for the tax rate (e.g., country or region). Currently always null for
+  description: Jurisdiction string for the tax rate (e.g., country or region). Null for
     SubPlat subscriptions.
 - name: default_tax_rates_metadata
   description: Arbitrary key-value metadata attached to the Stripe tax rate object.

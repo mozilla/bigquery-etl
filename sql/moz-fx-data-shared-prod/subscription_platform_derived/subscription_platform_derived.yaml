@@ -1557,8 +1557,7 @@ fields:
 - name: discount_invoice_id
   description: Stripe invoice ID to which the subscription-level discount was applied.
 - name: discount_invoice_item_id
-  description: Stripe invoice item ID to which the subscription-level discount was applied. Currently
-    always null.
+  description: Stripe invoice item ID to which the subscription-level discount was applied.
 - name: discount_promotion_code_id
   description: Stripe promotion code ID used to apply the subscription-level discount.
 - name: discount_start

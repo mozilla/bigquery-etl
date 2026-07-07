@@ -21,5 +21,4 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  override_depends_on_past_null_partition: false
   ignore_date_partition_offset: false

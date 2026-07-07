@@ -1479,7 +1479,7 @@ fields:
   description: Additional comment or automated note recorded at cancellation time (e.g., 'administrative_cancellation:subplat_script'
     for script-initiated cancellations).
 - name: cancellation_details_feedback
-  description: Subscriber-provided free-text feedback given at cancellation. Currently always null.
+  description: Subscriber-provided free-text feedback given at cancellation.
 - name: cancellation_details_reason
   description: Stripe-categorised reason for the subscription cancellation; 'cancellation_requested' for
     voluntary cancellations, 'payment_failed' for involuntary churn, or 'payment_disputed' for chargebacks.

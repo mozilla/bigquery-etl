@@ -167,3 +167,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of Clients Returned Any Day Between Day 1 and Day 28
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source of a profile installation - Available for Mobile Only

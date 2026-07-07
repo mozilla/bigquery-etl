@@ -13,9 +13,8 @@ fields:
 - name: source
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: source
+  description: Whether the row contains observed historical data ('historical') or model-generated predictions
+    ('forecast').
 - name: measure
   type: STRING
   mode: NULLABLE

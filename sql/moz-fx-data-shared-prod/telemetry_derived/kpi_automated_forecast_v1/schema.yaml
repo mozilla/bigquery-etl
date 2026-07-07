@@ -188,6 +188,4 @@ fields:
 - name: metric
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: metric
+  description: The business KPI being forecasted (e.g., 'DAU', 'CDOU', 'QDAU', 'QCDOU').

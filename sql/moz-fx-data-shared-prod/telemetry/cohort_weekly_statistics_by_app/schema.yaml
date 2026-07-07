@@ -1,0 +1,40 @@
+fields:
+- mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+  description: A human-readable, standardized name for the Firefox application that
+    submitted the telemetry, such as 'Firefox Desktop', 'Fenix', 'Firefox iOS', or
+    'Focus Android'. This normalizes across different app identifiers.
+- mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: The source through which the application was installed, such as 'com.android.vending'
+    for the Google Play Store. A null value indicates the install source could not
+    be determined.
+- mode: NULLABLE
+  name: cohort_date_week
+  type: DATE
+  description: The Monday-aligned week start date of the week in which a client or
+    user was first observed, defining their membership in a weekly cohort. Used for
+    week-level retention and longitudinal analysis.
+- mode: NULLABLE
+  name: nbr_clients_in_cohort
+  type: INTEGER
+  description: Number of Clients in Cohort
+- mode: NULLABLE
+  name: activity_date_week
+  type: DATE
+  description: The Monday-aligned start date of the ISO week in which the user activity
+    occurred, used for weekly aggregations.
+- mode: NULLABLE
+  name: weeks_after_first_seen_week
+  type: INTEGER
+  description: Number of weeks between the cohort week and the activity week
+- mode: NULLABLE
+  name: nbr_active_clients
+  type: INTEGER
+  description: Number of Clients Active in the Activity Week
+- mode: NULLABLE
+  name: pct_retained
+  type: FLOAT
+  description: Fraction of the cohort active in the activity week

@@ -30,6 +30,7 @@ SELECT
       JSON_VALUE(event_extra.nimbus_user_id) AS `nimbus_user_id`,
       JSON_VALUE(event_extra.os_family) AS `os_family`,
       JSON_VALUE(event_extra.os_major) AS `os_major`,
+      JSON_VALUE(event_extra.outcome) AS `outcome`,
       JSON_VALUE(event_extra.ppa) AS `ppa`,
       JSON_VALUE(event_extra.prf) AS `prf`,
       JSON_VALUE(event_extra.reason) AS `reason`,

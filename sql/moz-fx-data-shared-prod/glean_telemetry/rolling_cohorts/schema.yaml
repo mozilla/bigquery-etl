@@ -1,20 +1,21 @@
 fields:
 - mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: A unique identifier (UUID) for the client.
+- mode: NULLABLE
   name: cohort_date
   type: DATE
-  description: Cohort Date
-- mode: NULLABLE
-  name: activity_date
-  type: DATE
-  description: Activity Date
+  description: Cohort Date - First Seen Date
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Activity Segment
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
@@ -40,17 +41,14 @@ fields:
   type: STRING
   description: Attribution Variation
 - mode: NULLABLE
-  name: paid_vs_organic
-  type: STRING
-  description: Flag indicating if the client is attributed to a paid vs an organic source.
-- mode: NULLABLE
   name: city
   type: STRING
   description: City
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: device_model
   type: STRING
@@ -58,27 +56,28 @@ fields:
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: Is Default Browser
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING
-  description: Normalized App Name
+  description: Normalized app Name
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
@@ -86,11 +85,13 @@ fields:
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Operating System Major Version
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Operating System Minor Version
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
@@ -127,6 +128,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play Store Attribution Term - Available for Mobile Only
+- name: row_source
+  type: STRING
+  mode: NULLABLE
+  description: Flag indicating source - i.e. Desktop or Mobile
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
@@ -134,13 +139,6 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
-    the install source could not be determined.
-- mode: NULLABLE
-  name: num_clients_in_cohort
-  type: INTEGER
-  description: Number of Clients in Cohort
-- mode: NULLABLE
-  name: num_clients_active_on_day
-  type: INTEGER
-  description: Number of Clients Active on Day
+  description: The source through which the application was installed, such as 'com.android.vending'
+    for the Google Play Store. A null value indicates the install source could not
+    be determined.

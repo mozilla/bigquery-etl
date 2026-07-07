@@ -166,3 +166,9 @@ fields:
   mode: NULLABLE
   description: A UUID that uniquely identifies a Firefox client installation. Used
     to join and deduplicate records across tables at the individual client level.
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source through which the application was installed, such as 'com.android.vending'
+    for the Google Play Store. A null value indicates the install source could not
+    be determined.

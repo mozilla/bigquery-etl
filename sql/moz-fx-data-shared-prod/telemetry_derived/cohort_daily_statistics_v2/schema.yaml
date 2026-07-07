@@ -206,3 +206,9 @@ fields:
   description: The raw install referrer string returned by the Google Play Store at
     the time of installation, containing UTM and other attribution parameters as a
     URL-encoded query string. Null when no referrer response was captured.
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source through which the application was installed, such as 'com.android.vending'
+    for the Google Play Store. A null value indicates the install source could not
+    be determined.

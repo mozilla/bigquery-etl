@@ -1,131 +1,136 @@
 fields:
 - mode: NULLABLE
-  name: table_last_updated_date
-  type: DATE
-  description: Date the table was last updated
-- mode: NULLABLE
   name: cohort_date
   type: DATE
   description: The specific calendar date on which a client or user was first observed,
     defining their membership in a daily cohort. Used for day-level retention and
     cohort analysis.
-- name: activity_segment
+- mode: NULLABLE
+  name: activity_date
+  type: DATE
+  description: Activity Date
+- mode: NULLABLE
+  name: activity_segment
   type: STRING
-  mode: NULLABLE
   description: A categorical label describing the user's activity level, such as 'core_user',
     'regular_user', 'casual_user', 'infrequent_user', or 'other', based on their engagement
     frequency.
-- name: app_version
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
   description: The full version string of the application at the time of the event
     (e.g., '151.0.2'). Combines major, minor, and patch components into a single human-readable
     version identifier.
-- name: attribution_campaign
+- mode: NULLABLE
+  name: attribution_campaign
   type: STRING
-  mode: NULLABLE
   description: The marketing campaign name associated with the Firefox installation,
     sourced from attribution parameters (e.g., 'SET_DEFAULT_BROWSER'). Null when attribution
     data is unavailable.
-- name: attribution_content
+- mode: NULLABLE
+  name: attribution_content
   type: STRING
-  mode: NULLABLE
   description: The content variant or creative identifier from the marketing attribution
     parameters, used to distinguish specific ad placements or page elements (e.g.,
     'body-download-button'). Null when attribution data is unavailable.
-- name: attribution_experiment
+- mode: NULLABLE
+  name: attribution_experiment
   type: STRING
-  mode: NULLABLE
   description: The experiment identifier from attribution parameters, indicating whether
     the install was part of a specific marketing experiment (e.g., 'download-privacy').
     Null when no experiment was associated with the attribution.
-- name: attribution_medium
+- mode: NULLABLE
+  name: attribution_medium
   type: STRING
-  mode: NULLABLE
   description: The marketing medium from attribution parameters describing how the
     user arrived at the download (e.g., 'referral', 'firefox-desktop'). Null when
     attribution data is unavailable.
-- name: attribution_source
+- mode: NULLABLE
+  name: attribution_source
   type: STRING
-  mode: NULLABLE
   description: The referring source from attribution parameters, typically the website
     or property that directed the user to download Firefox (e.g., 'www.google.com',
     'www.bing.com'). Null when attribution data is unavailable.
-- name: attribution_variation
+- mode: NULLABLE
+  name: attribution_variation
   type: STRING
-  mode: NULLABLE
   description: The A/B test variation from attribution parameters that the user was
     assigned to during the download funnel (e.g., 'treatment', 'control'). Null when
     no variation was recorded.
-- name: city
+- mode: NULLABLE
+  name: paid_vs_organic
   type: STRING
-  mode: NULLABLE
+  description: Flag indicating if the client is attributed to a paid vs an organic
+    source.
+- mode: NULLABLE
+  name: city
+  type: STRING
   description: The city associated with the client's IP address or profile geography
     at the time of the record. May be null when city-level geolocation is unavailable
     or suppressed.
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
     from the client's IP address or profile geography. Used for geographic segmentation
     of telemetry data.
-- name: device_model
+- mode: NULLABLE
+  name: device_model
   type: STRING
-  mode: NULLABLE
   description: The model identifier of the device on which the browser is running
     (e.g., 'iPhone14,5'). This field may be null for desktop or unrecognized device
     types where model information is unavailable.
-- name: distribution_id
+- mode: NULLABLE
+  name: distribution_id
   type: STRING
-  mode: NULLABLE
   description: An identifier for the Firefox distribution package the client is running,
     such as 'default' for the standard Mozilla build or partner-specific identifiers
     like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
     identifier is available.
-- name: is_default_browser
+- mode: NULLABLE
+  name: is_default_browser
   type: BOOLEAN
-  mode: NULLABLE
   description: Indicates whether Firefox is set as the default browser on the client's
     device. True means it is the default; false means another browser is set as default.
-- name: locale
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
   description: The language and region locale of the Firefox browser or application,
     such as 'en' for English or 'fr' for French. A null value indicates the locale
     could not be determined.
-- name: normalized_app_name
+- mode: NULLABLE
+  name: normalized_app_name
   type: STRING
-  mode: NULLABLE
   description: A human-readable, standardized name for the Firefox application that
     submitted the telemetry, such as 'Firefox Desktop', 'Fenix', 'Firefox iOS', or
     'Focus Android'. This normalizes across different app identifiers.
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: The standardized release channel of the Firefox application, such as
     'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
     does not match a known value.
-- name: normalized_os
+- mode: NULLABLE
+  name: normalized_os
   type: STRING
-  mode: NULLABLE
   description: The standardized operating system name for the client device, such
     as 'Windows', 'Mac', or 'Linux'. This normalizes raw OS strings into a consistent
     set of values.
-- name: normalized_os_version
+- mode: NULLABLE
+  name: normalized_os_version
   type: STRING
-  mode: NULLABLE
   description: The standardized version string of the client's operating system, such
     as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
     representation across different OS reporting formats.
-- name: os_version_major
+- mode: NULLABLE
+  name: os_version_major
   type: INTEGER
-  mode: NULLABLE
   description: "The major version number component of the operating system. For example,\
     \ a value of 10 corresponds to Windows 10 or macOS 10.x, while values like 13\u2013\
     16 correspond to major iOS/macOS releases."
-- name: os_version_minor
+- mode: NULLABLE
+  name: os_version_minor
   type: INTEGER
-  mode: NULLABLE
   description: The minor version number component of the operating system, representing
     the second numeric segment of the full OS version string. A value of 0 is by far
     the most common, indicating that most clients are on a base major release with
@@ -190,52 +195,20 @@ fields:
   description: The raw install referrer string returned by the Google Play Store at
     the time of installation, containing UTM and other attribution parameters as a
     URL-encoded query string. Null when no referrer response was captured.
-- name: row_source
-  type: STRING
-  mode: NULLABLE
-  description: The platform origin of a row, either 'Desktop' or 'Mobile', indicating
-    whether the data came from a desktop or mobile Firefox client.
-- name: num_clients_in_cohort
-  type: INTEGER
-  mode: NULLABLE
-  description: The total number of distinct clients belonging to the defined cohort
-    at the time of aggregation. Used as a denominator in retention and engagement
-    calculations.
-- name: num_clients_returned_on_day_1
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Returned on Day 1
-- name: num_clients_returned_any_day_between_day_1_and_day_2
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Returned Any Day Between Day 1 and Day 2
-- name: num_clients_returned_any_day_between_day_1_and_day_3
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Return Any Day Between Day 1 and Day 3
-- name: num_clients_returned_any_day_between_day_1_and_day_4
-  type: INTEGER
-  mode: NULLABLE
-  description: Number Clients Returned Any Day Between Day 1 and Day 4
-- name: num_clients_returned_any_day_between_day_1_and_day_5
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Returned Any Day Between Day 1 and Day 5
-- name: num_clients_returned_any_day_between_day_1_and_day_6
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Returned Any Day Between Day 1 and Day 6
-- name: num_clients_returned_any_day_between_day_1_and_day_7
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Returned Any Day Between Day 1 and Day 7
-- name: num_clients_returned_any_day_between_day_1_and_day_28
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of Clients Returned Any Day Between Day 1 and Day 28
 - name: install_source
   type: STRING
   mode: NULLABLE
   description: The source through which the application was installed, such as 'com.android.vending'
     for the Google Play Store. A null value indicates the install source could not
     be determined.
+- mode: NULLABLE
+  name: num_clients_in_cohort
+  type: INTEGER
+  description: The total number of distinct clients belonging to the defined cohort
+    at the time of aggregation. Used as a denominator in retention and engagement
+    calculations.
+- mode: NULLABLE
+  name: num_clients_active_on_day
+  type: INTEGER
+  description: The number of distinct clients that were active on a given day within
+    the cohort or segment. A value of 0 indicates no clients were active on that day.

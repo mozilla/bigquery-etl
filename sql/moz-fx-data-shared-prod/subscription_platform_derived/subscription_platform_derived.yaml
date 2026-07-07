@@ -2,78 +2,58 @@ fields:
 - name: active
   description: Indicates whether the subscription or record is currently active. True means the subscription is active; false means it is inactive
     or expired.
-  type: BOOLEAN
 - name: apple_product_ids
   description: List of Apple App Store product identifiers associated with a subscription offering. Each entry corresponds to a product ID used
     to identify the subscription on Apple's platform.
-  type: STRING
 - name: auto_renew
   description: Indicates whether the subscription is set to automatically renew at the end of the current billing period. True means auto-renewal
     is enabled; false means the subscription will not renew automatically.
-  type: BOOLEAN
 - name: auto_renew_disabled_at
   description: Timestamp at which auto-renewal was disabled for the subscription. Null if auto-renewal has never been disabled.
-  type: TIMESTAMP
 - name: billing_grace_period
   description: The grace period interval granted after a failed billing attempt before the subscription is cancelled. A zero-length interval indicates
     no grace period is in effect.
-  type: INTERVAL
 - name: billing_scheme
   description: The billing scheme used to calculate the subscription charge. A value of 'per_unit' means the customer is charged a fixed price
     per unit quantity.
-  type: STRING
 - name: cancel_at
   description: Timestamp at which the subscription is scheduled to be cancelled in the future. Null if no future cancellation has been scheduled.
-  type: TIMESTAMP
 - name: cancel_at_period_end
   description: Indicates whether the subscription is set to cancel at the end of the current billing period. True means cancellation is pending
     at period end; false means no such cancellation is scheduled.
-  type: BOOLEAN
 - name: canceled_at
   description: Timestamp at which the subscription was actually cancelled. Null if the subscription has not been cancelled.
-  type: TIMESTAMP
 - name: canceled_for_customer_at
   description: Timestamp at which the subscription was cancelled from the customer's perspective, which may differ from the system-level cancellation
     time. Null if the subscription has not been cancelled for the customer.
-  type: STRING
 - name: country
   description: Two-letter ISO country code associated with the subscription or customer record, typically derived from billing or geolocation
     data. Null if the country could not be determined.
-  type: STRING
 - name: country_code
   description: Two-letter ISO 3166-1 alpha-2 country code representing the country associated with a customer or subscription. Values are uppercase
     (e.g., 'US', 'DE').
-  type: STRING
 - name: country_name
   description: Full English name of the country associated with the customer or subscription record. Null if the country could not be resolved
     from available data.
-  type: STRING
 - name: created
   description: Timestamp at which the subscription or related object was originally created in the billing system.
-  type: TIMESTAMP
 - name: created_at
   description: Timestamp at which the record was created or last written into this table, typically reflecting a pipeline ingestion or snapshot
     time.
-  type: TIMESTAMP
 - name: current_period_discount_amount
   description: The monetary discount amount applied to the current billing period, expressed in the subscription's currency. A value of zero indicates
     no discount was applied.
-  type: NUMERIC
 - name: current_period_discount_name
   description: The human-readable name of the discount or promotion applied during the current billing period. Null if no discount is active in
     the current period.
-  type: STRING
 - name: current_period_discount_promotion_code
   description: The promotion code string used to apply a discount during the current billing period. Null if no promotion code was applied.
-  type: STRING
 - name: current_period_ends_at
   description: Timestamp at which the current subscription billing period ends. Null for subscriptions that are not currently in an active billing
     period.
-  type: TIMESTAMP
 - name: current_period_started_at
   description: Timestamp at which the current subscription billing period began. Null for subscriptions that are not currently in an active billing
     period.
-  type: TIMESTAMP
 - name: customer_address_country
   description: The country code from the customer's billing address on file. Null if no billing address country has been recorded for the customer.
 - name: customer_created
@@ -134,7 +114,6 @@ fields:
 - name: customer_id
   description: The hashed unique identifier for the customer in the billing system. Used to associate subscriptions and transactions with a specific
     customer account.
-  type: STRING
 - name: customer_invoice_settings_default_payment_method_id
   description: The identifier of the payment method set as the default for invoices on the customer's account. Null if no default invoice payment
     method has been configured.
@@ -160,42 +139,32 @@ fields:
     null means the status is unavailable.
 - name: date
   description: The calendar date associated with the record, typically representing the snapshot or reporting date for the data in the table.
-  type: DATE
 - name: ended_at
   description: The timestamp at which the subscription or period ended. Represents the scheduled or actual end date/time of the subscription term.
-  type: TIMESTAMP
 - name: ended_reason
   description: The reason a subscription ended, such as 'Cancelled by Customer', 'Payment Failed', 'Refund', or 'Price Change Not Approved by
     Customer'. Null when the subscription has not yet ended.
-  type: STRING
 - name: entrypoint
   description: The entrypoint identifier indicating the surface or page where the user initiated the subscription flow. Null when no entrypoint
     was recorded.
-  type: STRING
 - name: entrypoint_experiment
   description: The name of the A/B or multivariate experiment associated with the entrypoint at the time the user initiated the subscription flow.
     Null when no experiment was active.
-  type: STRING
 - name: entrypoint_variation
   description: The specific variation or branch of the entrypoint experiment that the user was assigned to. Null when no experiment variation
     was recorded.
-  type: STRING
 - name: event_timestamp
   description: The precise timestamp at which the event occurred, including sub-second precision. This field is always populated and uniquely
     identifies when an action was recorded.
-  type: TIMESTAMP
 - name: event_type
   description: A string identifying the type of Firefox Accounts event that occurred, combining the event category and action (e.g., 'fxa_reg
     - view', 'fxa_rp_button - view'). Represents a specific user interaction step in the authentication or subscription flow.
-  type: STRING
 - name: firestore_export_event_id
   description: A unique identifier for the Firestore export event, used to deduplicate and trace individual document change records exported from
     Firestore. Each value corresponds to a single exported document operation.
-  type: STRING
 - name: firestore_export_operation
   description: The type of Firestore document operation captured in the export, either 'CREATE' for newly created documents or 'UPDATE' for modifications
     to existing documents.
-  type: STRING
 - name: first_touch_attribution_entrypoint
   description: The entrypoint surface or page where the user was first attributed before subscribing, representing the earliest recorded touchpoint
     in their acquisition journey. Null when no first-touch entrypoint was captured.
@@ -226,59 +195,45 @@ fields:
 - name: flow_id
   description: A unique identifier representing a single Firefox Accounts authentication or registration flow session. Used to group related events
     that occur within the same user flow.
-  type: STRING
 - name: fxa_uid
   description: The hashed Firefox Accounts user identifier (UID) uniquely identifying a Mozilla account holder. Used to link subscription and
     event records to a specific FxA user.
-  type: STRING
 - name: google_sku_ids
   description: An array of Google Play Store SKU identifiers associated with the subscription or product. Each element represents a distinct product
     SKU offered through the Google Play billing system.
-  type: STRING
 - name: has_fraudulent_charge_refunds
   description: Indicates whether the subscription has had any refunds issued specifically due to fraudulent charges. True when at least one fraudulent
     charge refund has been processed; false otherwise.
-  type: BOOLEAN
 - name: has_fraudulent_charges
   description: Indicates whether the subscription has been associated with any fraudulent charges. True when at least one fraudulent charge has
     been detected; false otherwise. Null when fraud assessment data is unavailable.
-  type: BOOLEAN
 - name: has_refunds
   description: Indicates whether the subscription has had any refunds processed, regardless of reason. True when at least one refund has been
     issued; false otherwise. Null when refund data is unavailable.
-  type: BOOLEAN
 - name: id
   description: A unique identifier for the record, typically encoding the payment provider, provider-specific subscription or transaction ID,
     and relevant timestamps. Used as the primary key to uniquely identify a row.
-  type: STRING
 - name: in_billing_grace_period
   description: Indicates whether the subscription is currently within a billing grace period following a failed payment. True when the subscription
     is in grace period and still considered active despite a missed payment; false otherwise. Null when not applicable.
-  type: BOOLEAN
 - name: initial_discount_name
   description: The human-readable name of the discount or promotional offer applied at the time the subscription was first created (e.g., 'Holiday
     Offer 2023', '20% off Mozilla VPN (NA) Affiliate'). Null when no initial discount was applied.
-  type: STRING
 - name: initial_discount_promotion_code
   description: The promotion or coupon code redeemed by the subscriber at the time of initial subscription (e.g., 'HOLIDAY20', 'MOZILLA20'). Null
     when no promotion code was used at signup.
-  type: STRING
 - name: is_active
   description: Indicates whether the subscription is currently in an active state. True when the subscription is active and the user has access
     to the product; false when it is cancelled, expired, or otherwise inactive.
-  type: BOOLEAN
 - name: is_bundle
   description: Indicates whether the subscription is part of a product bundle (i.e., includes multiple Mozilla products). True when the subscription
     covers a bundle offering; false when it covers a single product.
-  type: BOOLEAN
 - name: is_deleted
   description: Indicates whether the record has been marked as deleted in the source system. True when the record has been soft-deleted; false
     when it remains active in the source data.
-  type: BOOLEAN
 - name: is_trial
   description: Indicates whether the subscription period represents a free trial. True when the subscriber is in a trial period; false when they
     are on a paid subscription.
-  type: BOOLEAN
 - name: last_touch_attribution_channel_group
   description: A high-level grouping of the acquisition channel from the user's most recent attribution touchpoint (e.g., 'Direct', 'Marketing
     Owned', 'Marketing Paid', 'Product Owned', 'Miscellaneous'). Null when no last-touch channel could be determined.
@@ -312,7 +267,6 @@ fields:
 - name: logical_subscriptions_history_id
   description: A unique identifier representing a historical state of a logical subscription record, encoding the provider, subscription ID, and
     relevant timestamps. Used to track changes to a subscription over time.
-  type: STRING
 - name: metadata
   description: A JSON object containing provider-specific or product-specific metadata associated with the record, such as download URLs, product
     configuration, web icon URLs, and other supplementary attributes.
@@ -331,15 +285,12 @@ fields:
 - name: mozilla_account_id
   description: The Mozilla Accounts (FxA) user identifier associated with the subscription, represented as a hexadecimal string. Used to link
     subscription records to a specific Mozilla account holder. Null when no account ID is available.
-  type: STRING
 - name: mozilla_account_id_sha256
   description: A SHA-256 hash of the Mozilla Accounts user identifier, used for privacy-preserving joins and deduplication across datasets. Null
     when the source account ID is unavailable.
-  type: STRING
 - name: name
   description: The human-readable name of the Mozilla subscription product (e.g., 'Mozilla VPN', 'Relay Premium', 'MDN Plus'). Identifies which
     product line the record belongs to.
-  type: STRING
 - name: old_subscription_auto_renew
   description: Indicates whether the previous subscription was configured to automatically renew at the end of each billing period. True means
     auto-renew was enabled; false means the subscription was set to expire without renewal.
@@ -535,172 +486,128 @@ fields:
 - name: ongoing_discount_amount
   description: The monetary amount of any ongoing discount applied to the subscription in the plan's currency. A value of 0 indicates no active
     discount.
-  type: NUMERIC
 - name: ongoing_discount_ends_at
   description: The timestamp at which the currently active subscription discount expires. Null indicates the discount is either indefinite or
     there is no active discount.
-  type: TIMESTAMP
 - name: ongoing_discount_name
   description: The human-readable name of the ongoing discount or coupon campaign applied to the subscription, such as a promotional offer or
     internal testing coupon. Null when no discount is active.
-  type: STRING
 - name: ongoing_discount_promotion_code
   description: The promotion code used to apply the ongoing discount to the subscription. Null when no promotion code was used or no discount
     is active.
-  type: STRING
 - name: original_subscription_id
   description: The identifier of the original subscription from the provider, used to link a subscription back to its originating purchase, particularly
     for Apple App Store subscriptions that may be renewed or restored.
-  type: STRING
 - name: payment_method
   description: The specific payment method used by the subscriber, such as 'Card', 'PayPal', 'Apple Pay', 'Google Pay', 'Apple App Store', or
     'Google Play Store'. Null for subscriptions where payment method details are unavailable.
-  type: STRING
 - name: payment_provider
   description: The top-level payment provider processing the subscription transaction, one of 'Stripe', 'PayPal', 'Google', or 'Apple'.
-  type: STRING
 - name: plan_amount
   description: The price of the subscription plan in the smallest currency unit (e.g., cents for USD), as defined in the provider's billing system.
     Use plan_currency to interpret the unit.
 - name: plan_capabilities
   description: An array of capability identifiers granted to the subscriber by the specific subscription plan, used for access control and feature
     entitlement.
-  type: STRING
 - name: plan_currency
   description: The ISO 4217 lowercase currency code for the subscription plan's pricing (e.g., 'usd', 'eur', 'gbp').
-  type: STRING
 - name: plan_ended_at
   description: The timestamp at which the subscription plan was retired or ended in the billing system. Null indicates the plan is still active
     or this information is not available.
-  type: TIMESTAMP
 - name: plan_id
   description: The unique identifier for the subscription plan as defined in the provider's billing system, such as a Stripe price ID or an Apple/Google
     in-app product identifier.
-  type: STRING
 - name: plan_interval
   description: The billing interval unit for the subscription plan, either 'month' for monthly billing or 'year' for annual billing.
-  type: STRING
 - name: plan_interval_count
   description: The number of interval units that make up one billing cycle for the subscription plan. For example, a value of 1 with a monthly
     interval means a standard monthly plan, while 6 with a monthly interval means a semi-annual plan.
-  type: INT64
 - name: plan_interval_months
   description: The total duration of the subscription billing cycle expressed in months. For example, 1 for a monthly plan, 6 for a semi-annual
     plan, and 12 for an annual plan.
-  type: INT64
 - name: plan_interval_timezone
   description: The timezone used to determine billing interval boundaries for the subscription plan, expressed as a timezone name (e.g., 'America/Los_Angeles').
-  type: STRING
 - name: plan_interval_type
   description: The billing interval type for the subscription plan, indicating whether it is billed on a 'month' or 'year' basis.
-  type: STRING
 - name: plan_name
   description: The human-readable display name of the subscription plan as configured in the billing system, which may include locale, currency,
     or frequency information (e.g., 'USD English Daily').
-  type: STRING
 - name: plan_started_at
   description: The timestamp at which the subscription plan became active in the billing system. Null when this information is not available or
     applicable.
-  type: TIMESTAMP
 - name: plan_summary
   description: A human-readable summary combining the subscription plan's billing interval, currency, and price into a single string (e.g., '1
     year USD 59.88' or '1 month EUR 9.99').
-  type: STRING
 - name: product_capabilities
   description: An array of capability identifiers granted to the subscriber at the product level, used for access control and feature entitlement
     across all plans within that product.
-  type: STRING
 - name: product_id
   description: The unique identifier for the Mozilla subscription product in the provider's billing system, such as a Stripe product ID or an
     Apple/Google app bundle identifier.
-  type: STRING
 - name: product_name
   description: The display name of the Mozilla subscription product, such as 'Mozilla VPN', 'Relay Premium', or 'Mozilla VPN & Firefox Relay'.
-  type: STRING
 - name: promotion_code
   description: The promotion code applied to the subscription at the time of purchase or renewal. Null when no promotion code was used.
-  type: STRING
 - name: promotion_codes
   description: An array of promotion codes that have been applied to the subscription, capturing all codes used across the subscription's lifetime.
-  type: STRING
 - name: promotion_discounts_amount
   description: The total monetary discount amount applied to the subscription through promotions, expressed in the smallest currency unit (e.g.,
     cents). Null when no promotional discount is present.
-  type: INT64
 - name: provider
   description: The subscription or payment provider managing the subscription, such as 'Stripe', 'Paypal', 'Google Play', or 'Apple Store'.
-  type: STRING
 - name: provider_customer_id
   description: The unique customer identifier assigned by the subscription provider (e.g., a Stripe customer ID). Null for providers that do not
     use customer-level identifiers.
-  type: STRING
 - name: provider_plan_id
   description: The unique plan or price identifier assigned by the subscription provider, such as a Stripe price ID or an Apple/Google in-app
     product identifier.
-  type: STRING
 - name: provider_product_id
   description: The unique product identifier assigned by the subscription provider, such as a Stripe product ID or an Apple/Google app bundle
     identifier.
-  type: STRING
 - name: provider_status
   description: The current status of the subscription as reported by the provider, reflecting provider-specific values such as 'active', 'canceled',
     'past_due', or platform-specific states like 'SUBSCRIPTION_STATE_EXPIRED' or 'Revoked'.
-  type: STRING
 - name: provider_subscription_created_at
   description: The timestamp at which the subscription was originally created in the provider's system.
-  type: TIMESTAMP
 - name: provider_subscription_id
   description: The unique subscription identifier assigned by the provider, such as a Stripe subscription ID or a Google/Apple purchase token.
-  type: STRING
 - name: provider_subscription_item_id
   description: The unique subscription item identifier assigned by the provider (e.g., a Stripe subscription item ID). Null for providers that
     do not use subscription item-level identifiers.
-  type: STRING
 - name: provider_subscription_updated_at
   description: The timestamp at which the subscription record was last updated by the payment provider. Reflects the most recent change recorded
     on the provider side.
-  type: TIMESTAMP
 - name: provider_subscriptions_history_id
   description: A unique identifier for a historical snapshot of a provider subscription record, typically combining a provider subscription ID
     with a timestamp to distinguish each version over time.
-  type: STRING
 - name: reason
   description: A human-readable label describing the reason for a subscription state change or event, such as 'New Customer', 'Auto-Renew Disabled',
     'Payment Failure', or 'Trial Converted'.
-  type: STRING
 - name: service_id
   description: A short identifier for the Mozilla service associated with the subscription, such as 'VPN', 'Relay', or 'MDN'.
-  type: STRING
 - name: service_subscriptions_history_id
   description: A unique identifier for a historical snapshot of a service-level subscription record, encoding the payment provider, subscription
     ID, service, start time, and snapshot timestamp.
-  type: STRING
 - name: started_at
   description: The timestamp at which the subscription period or event began. Represents when the subscriber first gained access in the relevant
     billing cycle or status period.
-  type: TIMESTAMP
 - name: started_reason
   description: The reason a subscription was initiated, indicating whether the subscriber is a new or returning customer and whether the subscription
     began with a trial period (e.g., 'New Customer', 'Returning Customer Trial').
-  type: STRING
 - name: state
   description: The US state or Canadian province code associated with the subscriber's billing address. Null when the subscriber is located outside
     of a region that uses state-level codes.
-  type: STRING
 - name: status
   description: The current lifecycle status of the subscription, such as 'active', 'expired', 'revoked', or 'in billing retry period'.
 - name: stripe_customers_revised_changelog_id
   description: A unique identifier for a specific version of a Stripe customer record in the revised changelog, combining the Stripe customer
     ID with a timestamp to track changes over time.
-  type: STRING
 - name: stripe_subscriptions_changelog_id
   description: A unique identifier for a specific version of a Stripe subscription entry in the changelog, combining the Stripe subscription ID
     with a timestamp to track each recorded change.
-  type: STRING
 - name: stripe_subscriptions_revised_changelog_id
   description: A unique identifier for a specific version of a Stripe subscription record in the revised changelog, combining the Stripe subscription
     ID with a timestamp to distinguish each historical snapshot.
-  type: STRING
 - name: subscription_acknowledgement_state
   description: An integer flag indicating whether a subscription has been acknowledged by the subscriber, where 1 represents acknowledged and
     0 represents not yet acknowledged.
@@ -929,7 +836,6 @@ fields:
 - name: subscription_end
   description: The timestamp marking the end of the current subscription billing period. This field is always populated and represents when the
     subscription's current term is set to expire.
-  type: TIMESTAMP
 - name: subscription_ended_at
   description: The timestamp at which the subscription was fully terminated or cancelled. Null when the subscription is still active and has not
     yet ended.
@@ -981,7 +887,6 @@ fields:
 - name: subscription_id
   description: Unique identifier for a subscription record, scoped to the originating platform (e.g., Apple App Store, Google Play, Stripe). The
     format encodes the platform and key subscription metadata.
-  type: STRING
 - name: subscription_initial_discount_name
   description: Human-readable name of the discount or promotional offer applied when the subscription was first created. Null if no discount was
     applied at subscription start.
@@ -1010,7 +915,6 @@ fields:
 - name: subscription_item_id
   description: Unique identifier for an individual subscription line item within the subscription, typically a Stripe subscription item ID (e.g.,
     'si_...'). Used to reference a specific plan or product within a subscription.
-  type: STRING
 - name: subscription_items
   description: Array of subscription line item objects, each containing details about the plan, product, pricing, quantity, and metadata associated
     with the subscription. Reflects the full structure of items attached to the subscription as returned by the billing provider.
@@ -1348,25 +1252,21 @@ fields:
 - name: subscription_start
   description: The timestamp at which the current subscription period or subscription lifecycle began. Null when the subscription start time cannot
     be determined.
-  type: TIMESTAMP
 - name: subscription_start_date
   description: The timestamp representing the date when the subscription started, typically the first billing date or activation date. Null when
     the subscription start date is not available.
-  type: TIMESTAMP
 - name: subscription_start_time
   description: The precise timestamp at which the subscription became active or the current subscription period started. Always populated for
     records where subscription timing is tracked.
 - name: subscription_started_at
   description: The timestamp at which the subscription was originally started, representing the beginning of the subscriber's relationship with
     the product. Used to calculate subscription age and cohort membership.
-  type: TIMESTAMP
 - name: subscription_started_reason
   description: A description of why the subscription was initiated, distinguishing between new customers, returning customers, and those starting
     with a free trial (e.g. 'New Customer', 'Returning Customer Trial'). Helps identify acquisition patterns.
 - name: subscription_status
   description: The current status of the subscription as a string value, such as 'active', 'past_due', 'unpaid', 'canceled', 'incomplete', 'incomplete_expired',
     'trialing', or 'paused'. Reflects the subscription's lifecycle state as reported by the payment provider (e.g. Stripe).
-  type: STRING
 - name: subscription_trial_end
   description: The timestamp at which the free trial period for the subscription ended or is scheduled to end. Null for subscriptions that do
     not have or never had a trial period.
@@ -1379,57 +1279,43 @@ fields:
 - name: synced_at
   description: The timestamp at which the subscription record was last synchronized from the upstream provider into the data warehouse. Used to
     track data freshness and identify recently updated records.
-  type: TIMESTAMP
 - name: timestamp
   description: The timestamp associated with the event or record, indicating when the subscription action or state snapshot occurred. Always populated.
-  type: TIMESTAMP
 - name: trial_end
   description: The timestamp at which the subscription's free trial period ended or is scheduled to end. Null for subscriptions that do not have
     a trial period.
-  type: TIMESTAMP
 - name: trial_start
   description: The timestamp at which the subscription's free trial period began. Null for subscriptions that do not have a trial period.
-  type: TIMESTAMP
 - name: type
   description: Indicates the origin of the record, distinguishing between 'original' records sourced directly from provider events
     and 'synthetic_subscription_period_start' records generated to represent inferred subscription period boundaries.
-  type: STRING
 - name: utm_campaign
   description: The UTM campaign parameter from the URL used when the subscription was initiated, identifying the specific marketing campaign that
     drove the acquisition (e.g. 'vpn-product-page', 'discovery'). Null when no UTM campaign was captured.
-  type: STRING
 - name: utm_content
   description: The UTM content parameter from the URL used when the subscription was initiated, identifying the specific link or creative element
     within a campaign that the subscriber clicked (e.g. 'signedIn', 'hero-cta'). Null when no UTM content was captured.
-  type: STRING
 - name: utm_medium
   description: The UTM medium parameter from the URL used when the subscription was initiated, identifying the marketing channel through which
     the subscriber arrived (e.g. 'firefox-desktop', 'referral', 'email'). Null when no UTM medium was captured.
-  type: STRING
 - name: utm_source
   description: The UTM source parameter from the URL used when the subscription was initiated, identifying the specific referrer or origin site
     that drove the acquisition (e.g. 'toolbar', 'www.mozilla.org-vpn-product-page'). Null when no UTM source was captured.
-  type: STRING
 - name: utm_term
   description: The UTM term parameter from the URL used when the subscription was initiated, typically identifying a specific UI element or keyword
     associated with the acquisition (e.g. 'settings', 'bento'). Null when no UTM term was captured.
-  type: STRING
 - name: valid_from
   description: The timestamp at which the record version became effective, used to track the start of a validity window in slowly changing dimension
     tables. Records with earlier timestamps represent prior states of the same entity.
-  type: TIMESTAMP
 - name: valid_to
   description: The timestamp at which the record version ceased to be effective, marking the end of its validity window. A sentinel value
     of 9999-12-31T23:59:59.999999+00:00 indicates the record is the current, active version.
-  type: TIMESTAMP
 - name: was_active_at_day_end
   description: Indicates whether the subscription was in an active state at the end of the day. True means the subscription was active at day-end;
     false means it had lapsed or been cancelled by that point.
-  type: BOOLEAN
 - name: was_active_at_day_start
   description: Indicates whether the subscription was in an active state at the start of the day. True means the subscription was active at day-start;
     false means it was not yet active or had already ended before the day began.
-  type: BOOLEAN
 - name: customer_subscription_number
   description: Ordinal position of this subscription within the customer's overall history of logical
     subscriptions. A value of 1 means it is the customer's first subscription, 2 their second, and so
@@ -1456,18 +1342,14 @@ fields:
   description: Tier or plan level for the service within the services array, when applicable (e.g. "Email
     Masking", "Email & Phone Masking", "Plus 5"). Null when no tier information is available for the service.
 - name: month_end_date
-  type: DATE
   description: The end date of the month during which the logical subscription was active.
 - name: month_start_date
-  type: DATE
   description: The start date of the month during which the logical subscription was active. Used as the
     primary partition and filter key for this rolling-window table.
 - name: was_active_at_month_end
-  type: BOOLEAN
   description: Whether the logical subscription was active at the end of the month (true) or had ended
     before that date (false).
 - name: was_active_at_month_start
-  type: BOOLEAN
   description: Whether the logical subscription was active at the start of the month (true) or not yet
     started or already ended by that date (false).
 - name: subscription_customer_invoice_settings_default_payment_method_id
@@ -1682,29 +1564,22 @@ fields:
 - name: start_date
   description: Timestamp when the subscription's billing officially started.
 - name: flow_started_at
-  type: TIMESTAMP
   description: Timestamp when the FxA flow session began, marking the start of the user's authentication
     or subscription journey.
 - name: mozilla_account_ids_sha256
-  type: STRING
   description: Array of SHA-256-hashed Mozilla Account user IDs associated with the flow, allowing linkage
     to user-level data without exposing raw identifiers.
 - name: oauth_client_ids
-  type: STRING
   description: Array of OAuth client IDs for the subscription platform services (e.g., Mozilla VPN, Firefox
     Relay) observed in the flow.
 - name: oauth_client_names
-  type: STRING
   description: Array of human-readable OAuth client names corresponding to the oauth_client_ids (e.g.,
     'guardian-vpn', 'fx-private-relay').
 - name: plan_ids
-  type: STRING
   description: Array of Stripe plan/price IDs for the subscription plans linked to this impression flow.
 - name: product_ids
-  type: STRING
   description: Array of Stripe product IDs for subscription products linked to this impression flow.
 - name: service_ids
-  type: STRING
   description: Array of subscription platform service identifiers associated with the flow, used to identify
     which Mozilla services were involved.
 - name: checkout_type
@@ -1746,9 +1621,7 @@ fields:
   description: Arbitrary key-value metadata attached to the subscription in Stripe, including attribution
     parameters (UTM values, entrypoint, flow ID) and SubPlat-specific operational fields.
 - name: subscription
-  type: RECORD
   description: The Apple logical subscription as it ostensibly was during the time range this history
     record is considered valid for, normalized into the cross-provider logical subscription schema.
 - name: impression_at
-  type: TIMESTAMP
   description: The timestamp when the subscription platform attribution impression event was recorded.

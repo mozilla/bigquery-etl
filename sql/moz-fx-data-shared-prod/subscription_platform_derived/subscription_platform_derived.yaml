@@ -1499,7 +1499,7 @@ fields:
     customer's default payment method is used instead.
 - name: default_source_id
   description: Stripe payment source ID set as the default for this subscription (legacy card sources).
-    Currently always null in favour of payment method IDs.
+    Is set to null when there is a value for payment method ID.
 - name: default_tax_rates_created
   description: Timestamp when the Stripe tax rate object was created.
 - name: default_tax_rates_description

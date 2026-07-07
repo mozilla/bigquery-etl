@@ -1555,8 +1555,7 @@ fields:
   description: Stripe discount object ID applied at the subscription level (prefixed with 'di_'). Null
     when no subscription-level discount is active.
 - name: discount_invoice_id
-  description: Stripe invoice ID to which the subscription-level discount was applied. Currently always
-    null.
+  description: Stripe invoice ID to which the subscription-level discount was applied.
 - name: discount_invoice_item_id
   description: Stripe invoice item ID to which the subscription-level discount was applied. Currently
     always null.

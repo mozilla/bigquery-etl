@@ -47,29 +47,51 @@ _SKIP_TABLE_TYPES = {"VIEW", "MATERIALIZED VIEW"}
 # task should fail rather than silently writing nothing.
 _BENIGN_ERROR_MARKERS = ("is empty", "not found", "exceeds column limit")
 
-# Intentionally narrow: only leaf names that are unambiguously PII regardless of
-# table context. Suffix patterns like _id are excluded — they match too many
-# non-PII columns (campaign_id, etc).
+# Leaf-name PII detection (see is_pii_column). Matching is on the separator-
+# stripped, lowercased leaf, so snake_case and camelCase spellings of the same
+# name collapse together (account_id / accountId -> "accountid"). Deliberately
+# errs toward precision - it must not flag non-PII columns such as
+# x_foxsec_ip_reputation, fxa_configured, master_password_enabled, or
+# has_phone_number:
+#   * _PII_LEAF_NAMES    - the whole normalized leaf must EQUAL an entry, so clean
+#     camelCase spellings of a known name are caught (phoneNumber, ipAddress,
+#     displayName). Entries are normalized (lowercased, separators stripped) at
+#     definition, so members stay readable in any case and always match the leaf.
+#   * _PII_LEAF_SUFFIXES - the normalized leaf ends with one of these. Only `email`
+#     qualifies: it is unanchored (catches normalizedEmail, recoveryEmail) and so
+#     also suppresses email-ending names that are not PII - snake_case flags
+#     (has_email, as on main) and camelCase ones (hasEmail, voicemail). Accepted:
+#     it only drops profiling stats, never leaks. A `phonenumber` / `ipaddress`
+#     suffix is deliberately NOT used - it would wrongly suppress non-PII flags
+#     (has_phone_number, has_ip_address).
+# This is a best-effort first-line filter, NOT a complete PII guarantee.
 _PII_LEAF_NAMES = {
-    "account",
-    "account_id",
-    "email",
-    "first_name",
-    "last_name",
-    "full_name",
-    "fxa",
-    "fxa_id",
-    "phone",
-    "phone_number",
-    "address",
-    "ip",
-    "ip_address",
-    "password",
-    "date_of_birth",
-    "dob",
-    "birthdate",
+    re.sub(r"[^a-z0-9]", "", _name.lower())
+    for _name in {
+        "account",
+        "account_id",
+        "email_address",
+        "first_name",
+        "last_name",
+        "full_name",
+        "display_name",
+        "username",
+        "nickname",
+        "fxa",
+        "fxa_id",
+        "phone",
+        "phone_number",
+        "address",
+        "ip",
+        "ip_addr",
+        "ip_address",
+        "password",
+        "date_of_birth",
+        "dob",
+        "birthdate",
+    }
 }
-_PII_LEAF_SUFFIXES = ("_email",)
+_PII_LEAF_SUFFIXES = ("email",)
 
 # Explicit destination schema, matching schema.yaml. profiled_at is a DATE here
 # (the partition key) rather than the TIMESTAMP used by the original tool.
@@ -130,8 +152,17 @@ def _truncate(value: Any) -> Any:
 
 
 def is_pii_column(field_path: str) -> bool:
-    """Return True if the leaf segment matches a known PII name or suffix."""
-    leaf = field_path.split(".")[-1].lower()
+    """Return True if the leaf segment looks like a known PII field.
+
+    Matches the separator-stripped, lowercased leaf against _PII_LEAF_NAMES, so
+    clean camelCase spellings of a known name are caught (phoneNumber, ipAddress,
+    displayName, emailAddress), or the unanchored `email` suffix (normalizedEmail).
+    Errs toward precision: prefixed/decorated variants (clientIpAddress,
+    userPhoneNumber, user_email_address, passwordHash) are not flagged, to avoid
+    suppressing non-PII columns like has_phone_number. This is a best-effort
+    first-line filter, not a complete guarantee - unmatched variants are profiled.
+    """
+    leaf = re.sub(r"[^a-z0-9]", "", field_path.split(".")[-1].lower())
     return leaf in _PII_LEAF_NAMES or leaf.endswith(_PII_LEAF_SUFFIXES)
 
 

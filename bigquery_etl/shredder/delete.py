@@ -334,6 +334,7 @@ def delete_from_partition(
     clustering_fields: Optional[Iterable[str]] = None,
     reservation_override: Optional[str] = None,
     column_removal_backfill: Optional[bool] = None,
+    dest_partition_nonempty: bool = False,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
@@ -375,6 +376,13 @@ def delete_from_partition(
             use_dml = False
         job_config.destination = destination_table
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+
+    # For column removal backfills, the destination is v2. The first time a partition
+    # is written, we seed it from v1 (dropping columns). Later runs read from v2 instead.
+    v1_table_id = sql_table_id(target)
+    v2_table_id = re.sub("_v1$", "_v2", v1_table_id)
+    seed_from_v1 = not (column_removal_backfill and dest_partition_nonempty)
+    read_table_id = v1_table_id if seed_from_v1 else v2_table_id
 
     def create_job(client) -> bigquery.QueryJob:
         def normalized_expr(expr: str) -> str:
@@ -455,11 +463,14 @@ def delete_from_partition(
                 partition_condition = partition.condition
 
             if column_removal_backfill:
-                select_expression = generate_compatible_select_expression(
-                    client,
-                    sql_table_id(target),
-                    re.sub("_v1$", "_v2", sql_table_id(target)),
-                )
+                if seed_from_v1:
+                    select_expression = generate_compatible_select_expression(
+                        client,
+                        v1_table_id,
+                        v2_table_id,
+                    )
+                else:
+                    select_expression = "_target.*"
             elif event_id_backfill:
                 select_expression = """
                     _target.* REPLACE (
@@ -477,7 +488,7 @@ def delete_from_partition(
                 SELECT
                   {select_expression},
                 FROM
-                  `{sql_table_id(target)}` AS _target
+                  `{read_table_id}` AS _target
                 {field_joins}
                 WHERE
                   {f"({field_conditions}) AND " if field_conditions else ""}
@@ -506,6 +517,7 @@ def delete_from_partition_with_sampling(
     temp_dataset: str,
     reservation_override: str,
     column_removal_backfill: bool,
+    dest_partition_nonempty: bool = False,
     **wait_for_job_kwargs,
 ):
     """Return callable to delete from a partition of a target table per sample id."""
@@ -513,11 +525,24 @@ def delete_from_partition_with_sampling(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
     )
-    target_table = f"{sql_table_id(target)}${partition.id}"
+    # For column removal backfills, the destination is v2. The first time a partition
+    # is written, we seed it from v1 (dropping columns). Later runs read from v2 instead.
+    v1_table_id = sql_table_id(target)
+    v2_table_id = re.sub("_v1$", "_v2", v1_table_id)
+    destination_table_id = v2_table_id if column_removal_backfill else v1_table_id
+    read_table_id = (
+        v2_table_id
+        if column_removal_backfill and dest_partition_nonempty
+        else v1_table_id
+    )
+    target_table = f"{destination_table_id}${partition.id}"
 
     def delete_by_sample(client) -> Union[bigquery.CopyJob, bigquery.QueryJob]:
+        # Match the intermediate tables' clustering to the destination table. For
+        # column removal the destination partition may not exist yet on the first
+        # (seed) run, so read clustering from the base destination table.
         intermediate_clustering_fields = client.get_table(
-            target_table
+            destination_table_id if column_removal_backfill else target_table
         ).clustering_fields
 
         tasks = [
@@ -535,6 +560,7 @@ def delete_from_partition_with_sampling(
                 check_table_existence=True,
                 reservation_override=reservation_override,
                 column_removal_backfill=column_removal_backfill,
+                dest_partition_nonempty=dest_partition_nonempty,
                 **{
                     **wait_for_job_kwargs,
                     # override task id with sample id suffix
@@ -576,7 +602,7 @@ def delete_from_partition_with_sampling(
         else:
             # copy job doesn't have dry runs so dry run base partition for byte estimate
             return client.query(
-                f"SELECT * FROM `{sql_table_id(target)}` WHERE {partition.condition}",
+                f"SELECT * FROM `{read_table_id}` WHERE {partition.condition}",
                 job_config=bigquery.QueryJobConfig(dry_run=True),
             )
 
@@ -663,6 +689,30 @@ def list_partitions(
     return partitions
 
 
+def get_populated_partitions(client, table_id):
+    """Return the set of partition ids that already contain rows in table_id.
+
+    Used by the column removal backfill to tell which v2 partitions have already been written.
+    """
+    project, dataset, table = table_id.split(".")
+    try:
+        rows = client.query(
+            dedent(f"""
+                SELECT
+                  partition_id
+                FROM
+                  `{project}.{dataset}.INFORMATION_SCHEMA.PARTITIONS`
+                WHERE
+                  table_name = '{table}'
+                  AND partition_id IS NOT NULL
+                  AND total_rows > 0
+                """).strip(),
+        ).result()
+    except NotFound:
+        return set()
+    return {row["partition_id"] for row in rows}
+
+
 @dataclass
 class Task:
     """Return type for delete_from_table."""
@@ -714,6 +764,13 @@ def delete_from_table(
         logging.warning(f"Skipping {sql_table_id(target)} due to NotFound exception")
         return ()  # type: ignore
     partition_expr = get_partition_expr(table)
+    # For column-removal backfills, once a partition has data in v2, we read from v2 instead of
+    # v1 so deletions aren't undone if the deletion request rolls out of the lookback window
+    nonempty_partitions = (
+        get_populated_partitions(client, re.sub("_v1$", "_v2", sql_table_id(target)))
+        if column_removal_backfill
+        else set()
+    )
     for partition in list_partitions(
         client,
         table,
@@ -752,6 +809,7 @@ def delete_from_table(
                 temp_dataset=temp_dataset,
                 reservation_override=reservation_override,
                 column_removal_backfill=column_removal_backfill,
+                dest_partition_nonempty=partition.id in nonempty_partitions,
                 **kwargs,
             ),
         )

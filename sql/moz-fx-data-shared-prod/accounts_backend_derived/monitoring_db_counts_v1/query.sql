@@ -105,6 +105,13 @@ WITH table_counts AS (
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
+    'passkeys' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_passkeys_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
     'password_change_tokens' AS table_name,
     COUNT(*) AS total_rows
   FROM
@@ -249,6 +256,26 @@ WITH table_counts AS (
         FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
       WHERE
         providerId = 2 -- see LinkedAccountProviderIds at https://github.com/mozilla/fxa/blob/main/packages/fxa-settings/src/lib/types.ts
+    )
+  UNION ALL
+    (
+      SELECT
+        "accounts_with_passkeys" AS table_name,
+        COUNT(DISTINCT uid) AS total_rows
+      FROM
+        `moz-fx-data-shared-prod.accounts_db_external.fxa_passkeys_v1`
+        FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+    )
+  UNION ALL
+    (
+      SELECT
+        "passkeys_with_prf_enabled" AS table_name,
+        COUNT(*) AS total_rows
+      FROM
+        `moz-fx-data-shared-prod.accounts_db_external.fxa_passkeys_v1`
+        FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+      WHERE
+        prfEnabled = TRUE
     )
 )
 SELECT

@@ -1,0 +1,41 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: credentialId
+  type: STRING
+  mode: NULLABLE
+  description: WebAuthn credential ID in hexadecimal format.
+- name: publicKey
+  type: STRING
+  mode: NULLABLE
+  description: Passkey public key in hexadecimal format.
+- name: signCount
+  type: INTEGER
+  mode: NULLABLE
+- name: transports
+  type: JSON
+  mode: NULLABLE
+- name: aaguid
+  type: STRING
+  mode: NULLABLE
+  description: Authenticator Attestation GUID in hexadecimal format.
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: lastUsedAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: backupEligible
+  type: BOOLEAN
+  mode: NULLABLE
+- name: backupState
+  type: BOOLEAN
+  mode: NULLABLE
+- name: prfEnabled
+  type: BOOLEAN
+  mode: NULLABLE

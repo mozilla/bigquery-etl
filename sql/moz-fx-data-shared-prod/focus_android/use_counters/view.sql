@@ -2903,7 +2903,9 @@ SELECT
       metrics.counter.use_counter_doc_midiaccess_granted,
       metrics.counter.use_counter_page_midiaccess_granted,
       metrics.counter.use_counter_css_doc_css_moz_image_decoding,
-      metrics.counter.use_counter_css_page_css_moz_image_decoding
+      metrics.counter.use_counter_css_page_css_moz_image_decoding,
+      metrics.counter.use_counter_doc_edit_context_canvas,
+      metrics.counter.use_counter_page_edit_context_canvas
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5830,7 +5832,9 @@ SELECT
       metrics.counter.use_counter_doc_midiaccess_granted,
       metrics.counter.use_counter_page_midiaccess_granted,
       metrics.counter.use_counter_css_doc_css_moz_image_decoding,
-      metrics.counter.use_counter_css_page_css_moz_image_decoding
+      metrics.counter.use_counter_css_page_css_moz_image_decoding,
+      metrics.counter.use_counter_doc_edit_context_canvas,
+      metrics.counter.use_counter_page_edit_context_canvas
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8757,7 +8761,9 @@ SELECT
       metrics.counter.use_counter_doc_midiaccess_granted,
       metrics.counter.use_counter_page_midiaccess_granted,
       metrics.counter.use_counter_css_doc_css_moz_image_decoding,
-      metrics.counter.use_counter_css_page_css_moz_image_decoding
+      metrics.counter.use_counter_css_page_css_moz_image_decoding,
+      metrics.counter.use_counter_doc_edit_context_canvas,
+      metrics.counter.use_counter_page_edit_context_canvas
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

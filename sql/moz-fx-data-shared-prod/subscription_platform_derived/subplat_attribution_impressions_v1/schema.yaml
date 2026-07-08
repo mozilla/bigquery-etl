@@ -2,54 +2,101 @@ fields:
 - name: flow_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier representing a single Firefox Accounts authentication
+    or registration flow session. Used to group related events that occur within the
+    same user flow.
 - name: flow_started_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: Timestamp when the FxA flow session began, marking the start of the
+    user's authentication or subscription journey.
 - name: impression_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: The timestamp when the subscription platform attribution impression
+    event was recorded.
 - name: event_type
   type: STRING
   mode: NULLABLE
+  description: A string identifying the type of Firefox Accounts event that occurred,
+    combining the event category and action (e.g., 'fxa_reg - view', 'fxa_rp_button
+    - view'). Represents a specific user interaction step in the authentication or
+    subscription flow.
 - name: entrypoint
   type: STRING
   mode: NULLABLE
+  description: The entrypoint identifier indicating the surface or page where the
+    user initiated the subscription flow. Null when no entrypoint was recorded.
 - name: entrypoint_experiment
   type: STRING
   mode: NULLABLE
+  description: The name of the A/B or multivariate experiment associated with the
+    entrypoint at the time the user initiated the subscription flow. Null when no
+    experiment was active.
 - name: entrypoint_variation
   type: STRING
   mode: NULLABLE
+  description: The specific variation or branch of the entrypoint experiment that
+    the user was assigned to. Null when no experiment variation was recorded.
 - name: utm_campaign
   type: STRING
   mode: NULLABLE
+  description: The UTM campaign parameter from the URL used when the subscription
+    was initiated, identifying the specific marketing campaign that drove the acquisition
+    (e.g. 'vpn-product-page', 'discovery'). Null when no UTM campaign was captured.
 - name: utm_content
   type: STRING
   mode: NULLABLE
+  description: The UTM content parameter from the URL used when the subscription was
+    initiated, identifying the specific link or creative element within a campaign
+    that the subscriber clicked (e.g. 'signedIn', 'hero-cta'). Null when no UTM content
+    was captured.
 - name: utm_medium
   type: STRING
   mode: NULLABLE
+  description: The UTM medium parameter from the URL used when the subscription was
+    initiated, identifying the marketing channel through which the subscriber arrived
+    (e.g. 'firefox-desktop', 'referral', 'email'). Null when no UTM medium was captured.
 - name: utm_source
   type: STRING
   mode: NULLABLE
+  description: The UTM source parameter from the URL used when the subscription was
+    initiated, identifying the specific referrer or origin site that drove the acquisition
+    (e.g. 'toolbar', 'www.mozilla.org-vpn-product-page'). Null when no UTM source
+    was captured.
 - name: utm_term
   type: STRING
   mode: NULLABLE
+  description: The UTM term parameter from the URL used when the subscription was
+    initiated, typically identifying a specific UI element or keyword associated with
+    the acquisition (e.g. 'settings', 'bento'). Null when no UTM term was captured.
 - name: mozilla_account_ids_sha256
   type: STRING
   mode: REPEATED
+  description: Array of SHA-256-hashed Mozilla Account user IDs associated with the
+    flow, allowing linkage to user-level data without exposing raw identifiers.
 - name: oauth_client_ids
   type: STRING
   mode: REPEATED
+  description: Array of OAuth client IDs for the subscription platform services (e.g.,
+    Mozilla VPN, Firefox Relay) observed in the flow.
 - name: oauth_client_names
   type: STRING
   mode: REPEATED
+  description: Array of human-readable OAuth client names corresponding to the oauth_client_ids
+    (e.g., 'guardian-vpn', 'fx-private-relay').
 - name: product_ids
   type: STRING
   mode: REPEATED
+  description: Array of Stripe product IDs for subscription products linked to this
+    impression flow.
 - name: plan_ids
   type: STRING
   mode: REPEATED
+  description: Array of Stripe plan/price IDs for the subscription plans linked to
+    this impression flow.
 - name: service_ids
   type: STRING
   mode: REPEATED
+  description: Array of subscription platform service identifiers associated with
+    the flow, used to identify which Mozilla services were involved.

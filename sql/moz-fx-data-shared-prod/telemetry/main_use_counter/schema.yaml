@@ -12246,6 +12246,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page has requestMIDIAccess granted
+    - name: use_counter2_editcontextcanvas_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document attaches an EditContext to a canvas element
+    - name: use_counter2_editcontextcanvas_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page attaches an EditContext to a canvas element
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24351,6 +24359,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page has requestMIDIAccess granted
+        - name: use_counter2_editcontextcanvas_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document attaches an EditContext to a canvas element
+        - name: use_counter2_editcontextcanvas_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page attaches an EditContext to a canvas element
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

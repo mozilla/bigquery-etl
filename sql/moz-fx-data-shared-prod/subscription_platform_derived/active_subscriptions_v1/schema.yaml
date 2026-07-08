@@ -5,42 +5,70 @@ fields:
 - name: plan_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the subscription plan as defined in the provider's
+    billing system, such as a Stripe price ID or an Apple/Google in-app product identifier.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Two-letter ISO country code associated with the subscription or customer
+    record, typically derived from billing or geolocation data. Null if the country
+    could not be determined.
 - name: country_name
   type: STRING
   mode: NULLABLE
+  description: Full English name of the country associated with the customer or subscription
+    record. Null if the country could not be resolved from available data.
 - name: provider
   type: STRING
   mode: NULLABLE
+  description: The subscription or payment provider managing the subscription, such
+    as 'Stripe', 'Paypal', 'Google Play', or 'Apple Store'.
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
+  description: The price of the subscription plan in the smallest currency unit (e.g.,
+    cents for USD), as defined in the provider's billing system. Use plan_currency
+    to interpret the unit.
 - name: plan_currency
   type: STRING
   mode: NULLABLE
+  description: The ISO 4217 lowercase currency code for the subscription plan's pricing
+    (e.g., 'usd', 'eur', 'gbp').
 - name: plan_interval
   type: STRING
   mode: NULLABLE
+  description: The billing interval unit for the subscription plan, either 'month'
+    for monthly billing or 'year' for annual billing.
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
+  description: The number of interval units that make up one billing cycle for the
+    subscription plan. For example, a value of 1 with a monthly interval means a standard
+    monthly plan, while 6 with a monthly interval means a semi-annual plan.
 - name: product_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the Mozilla subscription product in the provider's
+    billing system, such as a Stripe product ID or an Apple/Google app bundle identifier.
 - name: product_name
   type: STRING
   mode: NULLABLE
+  description: The display name of the Mozilla subscription product, such as 'Mozilla
+    VPN', 'Relay Premium', or 'Mozilla VPN & Firefox Relay'.
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
 - name: promotion_codes
   type: STRING
   mode: REPEATED
+  description: An array of promotion codes that have been applied to the subscription,
+    capturing all codes used across the subscription's lifetime.
 - name: promotion_discounts_amount
   type: INTEGER
   mode: NULLABLE
+  description: The total monetary discount amount applied to the subscription through
+    promotions, expressed in the smallest currency unit (e.g., cents). Null when no
+    promotional discount is present.
 - name: count
   type: INTEGER
   mode: NULLABLE

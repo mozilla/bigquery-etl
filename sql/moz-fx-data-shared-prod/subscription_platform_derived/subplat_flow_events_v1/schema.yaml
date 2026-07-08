@@ -2,90 +2,165 @@ fields:
 - name: logger
   type: STRING
   mode: NULLABLE
+  description: The FxA server component that generated the event, either 'fxa-content-server'
+    (browser-side flow events) or 'fxa-auth-server' (authentication events).
 - name: log_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Timestamp when the event was written to the log pipeline, used as the
+    partitioning time; may differ slightly from event_time.
 - name: event_time
   type: TIMESTAMP
   mode: NULLABLE
+  description: Timestamp when the user action actually occurred, derived from the
+    event payload; falls back to log_timestamp when not present.
 - name: event_type
   type: STRING
   mode: NULLABLE
+  description: A string identifying the type of Firefox Accounts event that occurred,
+    combining the event category and action (e.g., 'fxa_reg - view', 'fxa_rp_button
+    - view'). Represents a specific user interaction step in the authentication or
+    subscription flow.
 - name: flow_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier representing a single Firefox Accounts authentication
+    or registration flow session. Used to group related events that occur within the
+    same user flow.
 - name: mozilla_account_id_sha256
   type: STRING
   mode: NULLABLE
+  description: A SHA-256 hash of the Mozilla Accounts user identifier, used for privacy-preserving
+    joins and deduplication across datasets. Null when the source account ID is unavailable.
 - name: oauth_client_id
   type: STRING
   mode: NULLABLE
+  description: OAuth 2.0 client ID of the subscription platform service the user was
+    authenticating with (e.g., 'e6eb0d1e856335fc' for Mozilla VPN, '802d56ef2a9af9fa'
+    for Firefox Monitor).
 - name: oauth_client_name
   type: STRING
   mode: NULLABLE
+  description: Human-readable name of the OAuth client corresponding to oauth_client_id
+    (e.g., 'guardian-vpn', 'fx-monitor', 'fx-private-relay').
 - name: checkout_type
   type: STRING
   mode: NULLABLE
+  description: Type of checkout flow used during the subscription purchase. Currently
+    unpopulated in this table.
 - name: payment_provider
   type: STRING
   mode: NULLABLE
+  description: The top-level payment provider processing the subscription transaction,
+    one of 'Stripe', 'PayPal', 'Google', or 'Apple'.
 - name: subscription_id
   type: STRING
   mode: NULLABLE
+  description: Unique identifier for a subscription record, scoped to the originating
+    platform (e.g., Apple App Store, Google Play, Stripe). The format encodes the
+    platform and key subscription metadata.
 - name: product_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the Mozilla subscription product in the provider's
+    billing system, such as a Stripe product ID or an Apple/Google app bundle identifier.
 - name: plan_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the subscription plan as defined in the provider's
+    billing system, such as a Stripe price ID or an Apple/Google in-app product identifier.
 - name: entrypoint
   type: STRING
   mode: NULLABLE
+  description: The entrypoint identifier indicating the surface or page where the
+    user initiated the subscription flow. Null when no entrypoint was recorded.
 - name: entrypoint_experiment
   type: STRING
   mode: NULLABLE
+  description: The name of the A/B or multivariate experiment associated with the
+    entrypoint at the time the user initiated the subscription flow. Null when no
+    experiment was active.
 - name: entrypoint_variation
   type: STRING
   mode: NULLABLE
+  description: The specific variation or branch of the entrypoint experiment that
+    the user was assigned to. Null when no experiment variation was recorded.
 - name: utm_campaign
   type: STRING
   mode: NULLABLE
+  description: The UTM campaign parameter from the URL used when the subscription
+    was initiated, identifying the specific marketing campaign that drove the acquisition
+    (e.g. 'vpn-product-page', 'discovery'). Null when no UTM campaign was captured.
 - name: utm_content
   type: STRING
   mode: NULLABLE
+  description: The UTM content parameter from the URL used when the subscription was
+    initiated, identifying the specific link or creative element within a campaign
+    that the subscriber clicked (e.g. 'signedIn', 'hero-cta'). Null when no UTM content
+    was captured.
 - name: utm_medium
   type: STRING
   mode: NULLABLE
+  description: The UTM medium parameter from the URL used when the subscription was
+    initiated, identifying the marketing channel through which the subscriber arrived
+    (e.g. 'firefox-desktop', 'referral', 'email'). Null when no UTM medium was captured.
 - name: utm_source
   type: STRING
   mode: NULLABLE
+  description: The UTM source parameter from the URL used when the subscription was
+    initiated, identifying the specific referrer or origin site that drove the acquisition
+    (e.g. 'toolbar', 'www.mozilla.org-vpn-product-page'). Null when no UTM source
+    was captured.
 - name: utm_term
   type: STRING
   mode: NULLABLE
+  description: The UTM term parameter from the URL used when the subscription was
+    initiated, typically identifying a specific UI element or keyword associated with
+    the acquisition (e.g. 'settings', 'bento'). Null when no UTM term was captured.
 - name: promotion_code
   type: STRING
   mode: NULLABLE
+  description: The promotion code applied to the subscription at the time of purchase
+    or renewal. Null when no promotion code was used.
 - name: country_code_source
   type: STRING
   mode: NULLABLE
+  description: Method or data source used to determine the country_code (e.g., GeoIP
+    or user-declared). Currently unpopulated in this table.
 - name: country_code
   type: STRING
   mode: NULLABLE
+  description: Two-letter ISO 3166-1 alpha-2 country code representing the country
+    associated with a customer or subscription. Values are uppercase (e.g., 'US',
+    'DE').
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Two-letter ISO country code associated with the subscription or customer
+    record, typically derived from billing or geolocation data. Null if the country
+    could not be determined.
 - name: language
   type: STRING
   mode: NULLABLE
+  description: Browser or client language tag reported during the flow (e.g., 'en-US',
+    'de', 'fr'). 'unknown' when the language could not be determined.
 - name: os_name
   type: STRING
   mode: NULLABLE
+  description: Operating system name of the user's device as reported by the FxA client
+    (e.g., 'Windows', 'Mac OS X', 'Android', 'iOS').
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: Version of the operating system reported by the FxA client (e.g., '10'
+    for Windows 10, '18.7' for iOS 18.7).
 - name: ua_browser
   type: STRING
   mode: NULLABLE
+  description: Browser name parsed from the user-agent string (e.g., 'Firefox', 'Chrome',
+    'Mobile Safari', 'Samsung Internet').
 - name: ua_version
   type: STRING
   mode: NULLABLE
+  description: Version of the browser parsed from the user-agent string (e.g., '151.0'
+    for Firefox 151).

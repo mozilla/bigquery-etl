@@ -2,6 +2,8 @@ fields:
 - name: date
   type: DATE
   mode: REQUIRED
+  description: The calendar date associated with the record, typically representing
+    the snapshot or reporting date for the data in the table.
 - name: base_currency
   type: STRING
   mode: REQUIRED
@@ -14,3 +16,7 @@ fields:
 - name: price
   type: NUMERIC
   mode: REQUIRED
+  description: 'The foreign-exchange conversion rate used to convert one unit of the
+    base
+
+    currency into the quote currency for the given price type on this date.'

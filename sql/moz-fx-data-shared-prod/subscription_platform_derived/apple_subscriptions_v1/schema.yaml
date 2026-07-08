@@ -2,66 +2,121 @@ fields:
 - mode: NULLABLE
   name: customer_id
   type: STRING
+  description: The hashed unique identifier for the customer in the billing system.
+    Used to associate subscriptions and transactions with a specific customer account.
 - mode: NULLABLE
   name: subscription_id
   type: STRING
+  description: Unique identifier for a subscription record, scoped to the originating
+    platform (e.g., Apple App Store, Google Play, Stripe). The format encodes the
+    platform and key subscription metadata.
 - mode: NULLABLE
   name: original_subscription_id
   type: STRING
+  description: The identifier of the original subscription from the provider, used
+    to link a subscription back to its originating purchase, particularly for Apple
+    App Store subscriptions that may be renewed or restored.
 - mode: NULLABLE
   name: plan_id
   type: STRING
+  description: The unique identifier for the subscription plan as defined in the provider's
+    billing system, such as a Stripe price ID or an Apple/Google in-app product identifier.
 - mode: NULLABLE
   name: status
   type: STRING
+  description: The current lifecycle status of the subscription, such as 'active',
+    'expired', 'revoked', or 'in billing retry period'.
 - mode: NULLABLE
   name: event_timestamp
   type: TIMESTAMP
+  description: The precise timestamp at which the event occurred, including sub-second
+    precision. This field is always populated and uniquely identifies when an action
+    was recorded.
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
+  description: The timestamp representing the date when the subscription started,
+    typically the first billing date or activation date. Null when the subscription
+    start date is not available.
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
+  description: Timestamp at which the subscription or related object was originally
+    created in the billing system.
 - mode: NULLABLE
   name: trial_start
   type: TIMESTAMP
+  description: The timestamp at which the subscription's free trial period began.
+    Null for subscriptions that do not have a trial period.
 - mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
+  description: The timestamp at which the subscription's free trial period ended or
+    is scheduled to end. Null for subscriptions that do not have a trial period.
 - mode: NULLABLE
   name: cancel_at_period_end
   type: BOOLEAN
+  description: Indicates whether the subscription is set to cancel at the end of the
+    current billing period. True means cancellation is pending at period end; false
+    means no such cancellation is scheduled.
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
+  description: The timestamp at which the subscription or period ended. Represents
+    the scheduled or actual end date/time of the subscription term.
 - mode: NULLABLE
   name: ended_reason
   type: STRING
+  description: The reason a subscription ended, such as 'Cancelled by Customer', 'Payment
+    Failed', 'Refund', or 'Price Change Not Approved by Customer'. Null when the subscription
+    has not yet ended.
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
+  description: The hashed Firefox Accounts user identifier (UID) uniquely identifying
+    a Mozilla account holder. Used to link subscription and event records to a specific
+    FxA user.
 - mode: NULLABLE
   name: provider
   type: STRING
+  description: The subscription or payment provider managing the subscription, such
+    as 'Stripe', 'Paypal', 'Google Play', or 'Apple Store'.
 - mode: NULLABLE
   name: plan_interval
   type: STRING
+  description: The billing interval unit for the subscription plan, either 'month'
+    for monthly billing or 'year' for annual billing.
 - mode: NULLABLE
   name: plan_interval_count
   type: INTEGER
+  description: The number of interval units that make up one billing cycle for the
+    subscription plan. For example, a value of 1 with a monthly interval means a standard
+    monthly plan, while 6 with a monthly interval means a semi-annual plan.
 - mode: NULLABLE
   name: plan_interval_timezone
   type: STRING
+  description: The timezone used to determine billing interval boundaries for the
+    subscription plan, expressed as a timezone name (e.g., 'America/Los_Angeles').
 - mode: NULLABLE
   name: product_id
   type: STRING
+  description: The unique identifier for the Mozilla subscription product in the provider's
+    billing system, such as a Stripe product ID or an Apple/Google app bundle identifier.
 - mode: NULLABLE
   name: in_billing_grace_period
   type: BOOLEAN
+  description: Indicates whether the subscription is currently within a billing grace
+    period following a failed payment. True when the subscription is in grace period
+    and still considered active despite a missed payment; false otherwise. Null when
+    not applicable.
 - mode: NULLABLE
   name: billing_grace_period
   type: INTERVAL
+  description: The grace period interval granted after a failed billing attempt before
+    the subscription is cancelled. A zero-length interval indicates no grace period
+    is in effect.
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+  description: An array of promotion codes that have been applied to the subscription,
+    capturing all codes used across the subscription's lifetime.

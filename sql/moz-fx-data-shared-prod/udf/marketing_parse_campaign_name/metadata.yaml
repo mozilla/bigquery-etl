@@ -1,0 +1,9 @@
+friendly_name: Parse Campaign Name
+description: |-
+  Parses a campaign name into known segments.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope

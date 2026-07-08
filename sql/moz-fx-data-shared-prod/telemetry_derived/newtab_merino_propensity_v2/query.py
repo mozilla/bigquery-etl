@@ -113,10 +113,6 @@ flattened_newtab_events AS (
     AND mozfun.map.get_key(ue.extra, 'corpus_item_id') IS NOT NULL
 ),
 
--- Aggregate straight to (country, corpus_item_id, position, format). The hourly
--- grain is intentionally dropped: compute_weights only ever groups on these keys,
--- so pre-aggregating here keeps the DataFrame pulled into pandas small even when
--- fetching all countries. Section events only (section_position IS NOT NULL).
 raw_grouped_totals AS (
   SELECT
     fne.country,

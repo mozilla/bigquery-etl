@@ -80,6 +80,7 @@ def parse_row(row):
 
 
 def main():
+    """Build taxonomy.json from the source CSV, dropping duplicate labels."""
     rows = []
     seen = set()
     with open(CSV_PATH, newline="") as f:

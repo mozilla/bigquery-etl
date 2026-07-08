@@ -76,7 +76,8 @@ fields:
   description: The ISO 3166-1 alpha-2 country code for the country in which Firefox Desktop activity took place, derived from IP geolocation at
     ingestion time (e.g., "US", "DE").
 - name: normalized_os
-  description: The normalized name of the operating system running the Firefox Desktop client, limited to Windows, Mac, or Linux for desktop platforms.
+  description: The normalized name of the operating system running the Firefox Desktop client, normalized to Windows, Mac, Linux, or Other for
+    desktop platforms (via mozfun.norm.os).
 - name: normalized_os_version
   description: The operating system version normalized to a consistent format at ingestion (e.g., "10.0" for Windows 10 and 11, "25.5.0" for macOS);
     use windows_build_number >= 22000 to distinguish Windows 11 from Windows 10.
@@ -85,7 +86,7 @@ fields:
     "Windows", "Darwin", "Linux", "OpenBSD", "Unknown"). See normalized_os for the value collapsed to Windows, Mac, Linux, or Other.
 - name: os_version
   description: The operating system version reported by the Firefox Desktop client prior to normalization (e.g., "10.0.26200" for Windows, "25.5.0"
-    for macOS); use windows_build_number >= 22000 to distinguish Windows 10 from Windows 11.
+    for macOS); use windows_build_number >= 22000 to distinguish Windows 11 from Windows 10.
 - name: profile_group_id
   description: A UUID that uniquely identifies the Firefox profile group on the client, allowing multiple profiles belonging to the same user
     installation to be associated without linking to other telemetry systems.

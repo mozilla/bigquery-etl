@@ -626,6 +626,26 @@ def refresh_classifications(bq_client, project, dataset, table, model):
         pass
 
 
+def suppress_high_cardinality_samples(columns):
+    """Drop example/top values for high-cardinality columns, in place.
+
+    High-cardinality columns (distinct_count over the profiler threshold) are
+    almost always identifiers/tokens/hashes: their top-N values carry no aggregate
+    signal (each occurs ~once) and are the values most likely to be a sensitive or
+    opaque identifier that DLP cannot detect (uid, session tokens, Stripe ids).
+    Keep the stats - distinct_count and the is_high_cardinality flag, which are the
+    signal the classifier actually uses - and drop the raw values. Returns the
+    number of columns suppressed.
+    """
+    n = 0
+    for c in columns:
+        if c.get("is_high_cardinality") and (c.get("example_value") or c.get("values")):
+            c["example_value"] = None
+            c["values"] = []
+            n += 1
+    return n
+
+
 def sanitize_columns(sanitizer, columns):
     """DLP-scrub each column's example_value / top values, in place.
 
@@ -820,6 +840,14 @@ def main():
 
         # Scrub sample values before they reach the prompt. Metric columns carry
         # no samples (the metrics STRUCT is never profiled), so only `pending`.
+        # First drop high-cardinality samples (opaque ids/tokens DLP can't see),
+        # then DLP-sanitize whatever low-cardinality values remain.
+        if pending:
+            n_hc = suppress_high_cardinality_samples(pending)
+            if n_hc:
+                logging.info(
+                    f"  suppressed samples for {n_hc} high-cardinality column(s)"
+                )
         if sanitizer is not None and pending:
             changes = sanitize_columns(sanitizer, pending)
             if changes:

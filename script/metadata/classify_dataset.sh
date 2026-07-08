@@ -50,6 +50,11 @@ export CLASSIFICATION_PROJECT CLASSIFICATION_DATASET
 # Forward the sanitize-report path to the classify_table.sh children, which pass
 # it to the classifier as --sanitize-report.
 [[ -n "${SANITIZE_REPORT:-}" ]] && export SANITIZE_REPORT
+# Forward the DLP project/quota so sanitization can run in a project with DLP
+# access even when writing output to one without it (e.g. a restricted prod
+# dataset). Children pass them to the classifier as --dlp-project/--dlp-quota-project.
+[[ -n "${DLP_PROJECT:-}" ]] && export DLP_PROJECT
+[[ -n "${DLP_QUOTA_PROJECT:-}" ]] && export DLP_QUOTA_PROJECT
 DEST_PROJECT="$CLASSIFICATION_PROJECT"
 DEST_DATASET="$CLASSIFICATION_DATASET"
 PROFILES_TABLE="${PROFILES_TABLE:-akomar_column_profiles_v1}"

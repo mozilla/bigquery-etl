@@ -43,6 +43,14 @@ REFRESH_ARG=""
 SANITIZE_ARG=""
 [[ -n "${SANITIZE_REPORT:-}" ]] && SANITIZE_ARG="--sanitize-report ${SANITIZE_REPORT}"
 
+# DLP runs in DLP_PROJECT (billed to DLP_QUOTA_PROJECT). Needed when the output
+# project (CLASSIFICATION_PROJECT) has no DLP access, e.g. writing to a restricted
+# prod dataset while DLP runs in a sandbox. Default (unset) lets the classifier
+# fall back to CLASSIFICATION_PROJECT.
+DLP_ARGS=""
+[[ -n "${DLP_PROJECT:-}" ]] && DLP_ARGS="--dlp-project ${DLP_PROJECT}"
+[[ -n "${DLP_QUOTA_PROJECT:-}" ]] && DLP_ARGS="${DLP_ARGS} --dlp-quota-project ${DLP_QUOTA_PROJECT}"
+
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 <project.dataset.table> [<project.dataset.table> ...]" >&2
     echo "Set \$MODELS to override the model list (default: $MODELS)." >&2
@@ -101,7 +109,7 @@ for TABLE in "$@"; do
 
     for MODEL in $MODELS; do
         banner "[2/2] field_classifier.py --model $MODEL"
-        "$PYTHON" script/metadata/field_classifier.py --table "$TABLE" --model "$MODEL" $REFRESH_ARG $SANITIZE_ARG
+        "$PYTHON" script/metadata/field_classifier.py --table "$TABLE" --model "$MODEL" $REFRESH_ARG $SANITIZE_ARG $DLP_ARGS
     done
 
     banner "DONE: $TABLE"

@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import re
+import time
 from argparse import ArgumentParser
 from datetime import datetime, timezone
 from functools import partial
@@ -243,10 +244,17 @@ def build_classification_prompt(
         f"{probes_section}\n\n"
         "Taxonomy (JSON list of {label, name, desc, examples}):\n"
         f"{taxonomy_json}\n\n"
-        "Pick the single most specific taxonomy label that fits. If multiple apply,"
-        " list the extras in secondary_labels. Use the Glean data_sensitivity signal"
-        " to disambiguate when present (e.g. highly_sensitive strongly implies"
-        " user.behavior, user.content, user.location.precise, etc.).\n\n"
+        "Pick the single most specific taxonomy label that fits the column's own"
+        " meaning. Do not choose a label more specific than the column itself"
+        " warrants just because sibling columns or the table are more specific: a"
+        " timestamp, boolean, or generic surrogate key on an identifier-bearing"
+        " table is not itself that identifier. Identifier leaves (e.g. *.fxid,"
+        " *.client_id, user.unique_id) apply only when the column value IS that"
+        " identifier; otherwise prefer the parent category (e.g. user.account). If"
+        " multiple labels apply, list the extras in secondary_labels. Use the Glean"
+        " data_sensitivity signal to disambiguate when present (e.g. highly_sensitive"
+        " strongly implies user.behavior, user.content, user.location.precise,"
+        " etc.).\n\n"
         "Respond with a JSON object only (no markdown fences):\n"
         '{"primary_label": "<label>", "secondary_labels": [], '
         '"confidence": "high|medium|low", "reasoning": "<1-2 sentences>", '
@@ -279,6 +287,49 @@ def call_gemini(gemini_client, model, prompt):
         contents=prompt,
     )
     return json.loads(_strip_json_fences(response.text))
+
+
+# HTTP-ish status codes / phrases that signal a transient upstream failure a
+# short retry can ride out. Vertex in particular returns sporadic 502s under
+# load, which previously dropped a column's classification silently.
+_TRANSIENT_MARKERS = (
+    "bad gateway",
+    "service unavailable",
+    "internal server error",
+    "deadline",
+    "timeout",
+    "temporarily",
+)
+
+
+def _is_transient(exc):
+    """Return True if the error looks like a transient failure worth retrying."""
+    code = getattr(exc, "code", None) or getattr(exc, "status_code", None)
+    if code in (429, 500, 502, 503, 504):
+        return True
+    msg = str(exc).lower()
+    return any(marker in msg for marker in _TRANSIENT_MARKERS)
+
+
+def invoke_with_retry(invoke_llm, prompt, *, retries=4, base_delay=2.0):
+    """Call the model, retrying transient failures with exponential backoff.
+
+    Non-transient errors (bad JSON, auth, quota exhaustion) re-raise immediately
+    so the caller's per-column skip still applies; only flaky 5xx/timeout errors
+    are retried.
+    """
+    for attempt in range(retries + 1):
+        try:
+            return invoke_llm(prompt)
+        except Exception as e:
+            if attempt >= retries or not _is_transient(e):
+                raise
+            delay = base_delay * (2**attempt)
+            logging.warning(
+                f"  transient model error (attempt {attempt + 1}/{retries + 1}), "
+                f"retrying in {delay:.0f}s: {e}"
+            )
+            time.sleep(delay)
 
 
 # --- BQ loaders ---
@@ -889,7 +940,7 @@ def main():
             )
 
             try:
-                result = invoke_llm(prompt)
+                result = invoke_with_retry(invoke_llm, prompt)
             except Exception as e:
                 logging.error(f"{args.model} call failed for {col_name}: {e}")
                 continue

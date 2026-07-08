@@ -46,7 +46,15 @@ MIN_CELL_IMPRESSIONS = 10
 MIN_OUTPUT_IMPRESSIONS = 2000
 ALS_ITERATIONS = 30
 LAYOUT = "SECTION_GRID"
-COUNTRY = "US"
+
+# A country needs at least this many impressions (over the window) to get its own
+# emitted propensity set. Below it, the country is not broken out and consumers fall
+# back to the global (country IS NULL) set.
+MIN_COUNTRY_IMPRESSIONS = 1_000_000
+# Shrinkage strength (in impression units) for blending a country's per-slot weight
+# toward the global weight: weight = (imp_c * w_c + K * w_global) / (imp_c + K).
+# High-volume slots stay country-specific; sparse slots lean global.
+BLEND_PSEUDOCOUNT = 50_000
 
 HISTORICAL_IMPRESSIONS_SQL = """
 WITH
@@ -56,7 +64,13 @@ private_pings AS (
     submission_timestamp,
     document_id,
     events,
-    metrics.string.newtab_content_country AS country,
+    -- Resolve to a two-char country code (NULL when unresolvable), matching the
+    -- normalized_country_code the downstream newtab_merino_extract job uses.
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      NULL,
+      metrics.string.newtab_content_country
+    ) AS country,
     metrics.object.newtab_content_inferred_interests AS inferred_interests,
     CAST(metrics.quantity.newtab_content_utc_offset AS NUMERIC) AS raw_offset
   FROM `moz-fx-data-shared-prod.firefox_desktop.newtab_content_live`
@@ -65,7 +79,14 @@ private_pings AS (
   -- 11 calendar dates: @date - 10 through @date.
   WHERE submission_timestamp >= TIMESTAMP_SUB(TIMESTAMP(@date), INTERVAL 10 DAY)
     AND submission_timestamp < TIMESTAMP_ADD(TIMESTAMP(@date), INTERVAL 1 DAY)
-    AND metrics.string.newtab_content_country IN ("US")
+    -- Keep all countries that resolve to a two-char code. Rows that resolve to
+    -- NULL are dropped so every fetched row has a real country; the pooled
+    -- "global" set (country IS NULL in the output) is built in Python.
+    AND mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      NULL,
+      metrics.string.newtab_content_country
+    ) IS NOT NULL
 ),
 
 deduplicated_pings AS (
@@ -79,8 +100,7 @@ deduplicated_pings AS (
 
 flattened_newtab_events AS (
   SELECT
-    UPPER(dp.country) AS country,
-    TIMESTAMP_TRUNC(dp.submission_timestamp, HOUR) AS event_hour,
+    dp.country,
     ue.name AS event_name,
     mozfun.map.get_key(ue.extra, 'corpus_item_id') AS corpus_item_id,
     mozfun.map.get_key(ue.extra, 'position') AS position,
@@ -93,71 +113,36 @@ flattened_newtab_events AS (
     AND mozfun.map.get_key(ue.extra, 'corpus_item_id') IS NOT NULL
 ),
 
+-- Aggregate straight to (country, corpus_item_id, position, format). The hourly
+-- grain is intentionally dropped: compute_weights only ever groups on these keys,
+-- so pre-aggregating here keeps the DataFrame pulled into pandas small even when
+-- fetching all countries. Section events only (section_position IS NOT NULL).
 raw_grouped_totals AS (
   SELECT
-    fne.event_hour,
-    fne.corpus_item_id,
     fne.country,
-    fne.position,
+    fne.corpus_item_id,
+    SAFE_CAST(fne.position AS INT64) AS position,
     fne.format,
-    fne.section_position,
     SUM(CASE WHEN fne.event_name = 'impression' THEN 1 ELSE 0 END) AS impressions,
     SUM(CASE WHEN fne.event_name = 'click' THEN 1 ELSE 0 END) AS clicks
   FROM flattened_newtab_events fne
   WHERE SAFE_CAST(fne.position AS INT64) <= 200
+    AND fne.section_position IS NOT NULL
   GROUP BY
-    fne.event_hour,
-    fne.corpus_item_id,
     fne.country,
-    fne.position,
-    fne.format,
-    fne.section_position
-),
-
-section_events AS (
-  SELECT
-    rw.event_hour,
-    rw.corpus_item_id,
-    rw.country,
-    rw.position,
-    rw.format,
-    rw.section_position,
-    rw.impressions,
-    rw.clicks
-  FROM raw_grouped_totals rw
-  WHERE rw.section_position IS NOT NULL
-),
-
-adjusted_totals AS (
-  SELECT
-    event_hour,
-    corpus_item_id,
-    country,
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
+    fne.corpus_item_id,
     position,
-    section_position,
-    format
-  FROM section_events
-  GROUP BY
-    event_hour,
-    corpus_item_id,
-    country,
-    position,
-    format,
-    section_position
+    fne.format
 )
 SELECT
-  att.event_hour AS time_hour,
-  att.corpus_item_id,
-  att.country,
-  att.impressions,
-  att.clicks,
-  att.format,
-  SAFE_CAST(att.position AS INT64) AS position,
-  att.section_position,
-  SAFE_DIVIDE(att.clicks, att.impressions) AS ctr
-FROM adjusted_totals att
+  rw.country,
+  rw.corpus_item_id,
+  rw.impressions,
+  rw.clicks,
+  rw.format,
+  rw.position,
+  SAFE_DIVIDE(rw.clicks, rw.impressions) AS ctr
+FROM raw_grouped_totals rw
 """
 
 
@@ -174,10 +159,43 @@ def fetch_historical_impressions(client, run_date):
     return df
 
 
+EMPTY_WEIGHTS = ["section_position", "position", "tile_format", "impressions", "weight"]
+
+
+def normalize_weights(weights, hist):
+    """Scale unnormalized weights so impressions/weight preserves overall CTR.
+
+    ``weights`` is indexed by (position, format) with an ``unnormalized_weight``
+    column; ``hist`` is the impression history the weights were derived from. The
+    factor is chosen so the total re-weighted impressions over the matched slots is
+    about the same as the raw impressions (i.e. overall CTR is preserved).
+
+    Returns the normalized weight Series aligned to ``weights.index`` and the scalar
+    normalization factor.
+    """
+    all_agg = (
+        hist[hist["position"] <= MAX_POSITION]
+        .groupby(["position", "format"])[["impressions", "clicks"]]
+        .sum()
+    )
+    norm_data = all_agg.join(weights[["unnormalized_weight"]], how="inner")
+
+    denom_sum = (norm_data["impressions"] / norm_data["unnormalized_weight"]).sum()
+    total_clicks = all_agg["clicks"].sum()
+    target_ctr = total_clicks / all_agg["impressions"].sum()
+
+    normalization_factor = target_ctr * denom_sum / norm_data["clicks"].sum()
+    return weights["unnormalized_weight"] * normalization_factor, normalization_factor
+
+
 def compute_weights(hist):
     """Compute propensity weights using lattice decomposition with ALS.
 
-    Returns a DataFrame with columns: position, tile_format, impressions, weight.
+    Operates on whatever impression history it is handed (all countries pooled, or a
+    single country's subset). Returns a DataFrame with columns: section_position,
+    position, tile_format, impressions, weight. Returns an empty DataFrame when the
+    input is too thin to fit the decomposition (e.g. a small country with no reliable
+    slots).
     """
     # === Phase 1: Build the lattice ===
     cell = (
@@ -227,6 +245,10 @@ def compute_weights(hist):
         f"Lattice: {len(reliable_slots)} reliable slots, "
         f"{len(bridge_items):,} bridge items, {len(cell_fit):,} cells"
     )
+
+    if len(cell_fit) == 0 or len(reliable_slots) == 0:
+        log.info("Not enough data to fit the decomposition; returning no weights.")
+        return pd.DataFrame(columns=EMPTY_WEIGHTS)
 
     # === Phase 2: Alternating least squares in log space ===
     # Model: log(ctr) = item_effect + slot_effect
@@ -333,27 +355,14 @@ def compute_weights(hist):
         & (merged["unnormalized_weight"] > 0)
     ]
 
+    if len(merged) == 0:
+        log.info("No slots cleared the output filters; returning no weights.")
+        return pd.DataFrame(columns=EMPTY_WEIGHTS)
+
     # === Phase 4: Normalize weights ===
-    all_agg = (
-        hist[hist["position"] <= MAX_POSITION]
-        .groupby(["position", "format"])[["impressions", "clicks"]]
-        .sum()
-    )
+    merged["weight"], normalization_factor = normalize_weights(merged, hist)
 
-    norm_data = all_agg.join(merged[["unnormalized_weight"]], how="inner")
-
-    denom_sum = (norm_data["impressions"] / norm_data["unnormalized_weight"]).sum()
-    total_impressions = all_agg["impressions"].sum()
-    total_clicks = all_agg["clicks"].sum()
-    target_ctr = total_clicks / total_impressions
-
-    normalization_factor = target_ctr * denom_sum / norm_data["clicks"].sum()
-
-    merged["weight"] = merged["unnormalized_weight"] * normalization_factor
-
-    log.info(
-        f"Normalization: target_ctr={target_ctr:.6f}, factor={normalization_factor:.4f}"
-    )
+    log.info(f"Normalization: factor={normalization_factor:.4f}")
 
     # === Phase 5: Build output with 'any' format ===
     output = merged[["weight", "impressions"]].reset_index()
@@ -402,9 +411,86 @@ def compute_weights(hist):
         f"formats={sorted(output['tile_format'].unique())}"
     )
 
-    return output[
-        ["section_position", "position", "tile_format", "impressions", "weight"]
-    ]
+    return output[EMPTY_WEIGHTS]
+
+
+def blend_weights(country_w, global_w, hist_country, k=BLEND_PSEUDOCOUNT):
+    """Blend a country's weights toward the global weights via shrinkage.
+
+    Per (position, tile_format) slot, with imp_c the country's impressions for that
+    slot:
+
+        weight = (imp_c * w_country + k * w_global) / (imp_c + k)
+
+    High-volume slots stay close to the country's own weight; sparse slots lean
+    toward global. Slots the global set lacks fall back to the country's weight. The
+    blended set is re-normalized against the country's own history so that
+    impressions/weight preserves the country's overall CTR (as compute_weights does).
+
+    Only slots present for the country are emitted; slots the country never served
+    are left to the global (country IS NULL) fallback downstream.
+
+    Returns a DataFrame with columns: section_position, position, tile_format,
+    impressions, weight.
+    """
+    keys = ["position", "tile_format"]
+    merged = country_w.merge(
+        global_w[keys + ["weight"]], on=keys, how="left", suffixes=("_c", "_g")
+    )
+    imp_c = merged["impressions"].astype(float)
+    w_c = merged["weight_c"]
+    w_g = merged["weight_g"].where(merged["weight_g"].notna(), w_c)
+    merged["unnormalized_weight"] = (imp_c * w_c + k * w_g) / (imp_c + k)
+
+    # Re-normalize against the country's own history (normalize_weights groups the
+    # history on the 'format' column and matches weights by (position, format)).
+    norm_input = merged.rename(columns={"tile_format": "format"}).set_index(
+        ["position", "format"]
+    )
+    _, normalization_factor = normalize_weights(norm_input, hist_country)
+    merged["weight"] = merged["unnormalized_weight"] * normalization_factor
+
+    merged["section_position"] = pd.array([None] * len(merged), dtype=pd.Int64Dtype())
+    merged["position"] = merged["position"].astype(int)
+    merged["impressions"] = merged["impressions"].astype(int)
+    return merged[EMPTY_WEIGHTS]
+
+
+def compute_all_countries(hist):
+    """Compute the global propensity set plus a blended set per high-volume country.
+
+    The global set (all resolved countries pooled) is emitted with country = NULL.
+    Every country whose total impressions clear MIN_COUNTRY_IMPRESSIONS gets its own
+    set, blended toward global by impression volume. Returns a single DataFrame with a
+    'country' column added to the standard weight columns.
+    """
+    global_w = compute_weights(hist)
+    global_w["country"] = None
+    frames = [global_w]
+
+    country_totals = (
+        hist.groupby("country")["impressions"].sum().sort_values(ascending=False)
+    )
+    emitted = 0
+    for country, total in country_totals.items():
+        if total < MIN_COUNTRY_IMPRESSIONS:
+            continue
+        hist_country = hist[hist["country"] == country]
+        country_w = compute_weights(hist_country)
+        if len(country_w) == 0:
+            log.info(
+                f"{country}: {total:,} impressions but no fittable weights; skipping."
+            )
+            continue
+        blended = blend_weights(country_w, global_w, hist_country)
+        blended["country"] = country
+        frames.append(blended)
+        emitted += 1
+        log.info(f"{country}: {total:,} impressions -> {len(blended)} blended slots")
+
+    result = pd.concat(frames, ignore_index=True)
+    log.info(f"Emitted global + {emitted} country sets; {len(result)} total rows")
+    return result
 
 
 def main():
@@ -419,11 +505,23 @@ def main():
     client = bigquery.Client(args.project)
 
     hist = fetch_historical_impressions(client, args.date)
-    result = compute_weights(hist)
-    result.insert(0, "snapshot_date", args.date)
-    result.insert(1, "snapshot_at", datetime.now(timezone.utc))
-    result.insert(2, "layout", LAYOUT)
-    result.insert(3, "country", COUNTRY)
+    result = compute_all_countries(hist)
+    result["snapshot_date"] = args.date
+    result["snapshot_at"] = datetime.now(timezone.utc)
+    result["layout"] = LAYOUT
+    result = result[
+        [
+            "snapshot_date",
+            "snapshot_at",
+            "layout",
+            "country",
+            "section_position",
+            "position",
+            "tile_format",
+            "impressions",
+            "weight",
+        ]
+    ]
 
     destination = (
         f"{args.project}.{args.destination_dataset}."

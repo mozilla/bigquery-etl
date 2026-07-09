@@ -1,0 +1,64 @@
+fields:
+- name: HAPPENED_AT
+  type: DATE
+  mode: NULLABLE
+  description: The calendar date on which the event or activity being measured occurred.
+- name: TILE_ID
+  type: INT64
+  mode: NULLABLE
+  description: A unique numeric identifier for a sponsored or organic tile displayed
+    in the Firefox New Tab experience. Each distinct tile asset is assigned its own
+    ID.
+- name: POSITION
+  type: INT64
+  mode: NULLABLE
+  description: The zero-based index position of a tile or content item within its
+    display grid or list. Lower values indicate positions closer to the top-left of
+    the layout.
+- name: IMPRESSION_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: The total number of times a tile or content item was displayed to users.
+    Higher values indicate more frequent exposure.
+- name: CLICK_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: The total number of clicks recorded for a tile or content item. A value
+    of 0 indicates the item was shown but never clicked.
+- name: SAVE_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: The total number of times a tile or content item was saved (e.g., to
+    Pocket) by users. A value of 0 indicates the item was never saved.
+- name: DISMISS_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: The total number of times a tile or content item was dismissed by the
+    user. A value of 0 indicates the item was never dismissed.
+- name: _GS_FILE_NAME
+  type: STRING
+  mode: NULLABLE
+  description: The full path and filename of the source file in Google Cloud Storage
+    from which this row was loaded, including directory structure, date partition,
+    and time partition.
+- name: _GS_FILE_ROW_NUMBER
+  type: INT64
+  mode: NULLABLE
+  description: The 0-based row number of this record within its source Google Cloud
+    Storage file, used to uniquely identify a row within a given file.
+- name: _GS_FILE_DATE
+  type: STRING
+  mode: NULLABLE
+  description: 'The date partition string extracted from the source Google Cloud Storage
+    file path, indicating the date the source data file covers (format: date=YYYY-MM-DD).'
+- name: _GS_FILE_TIME
+  type: STRING
+  mode: NULLABLE
+  description: 'The time partition string extracted from the source Google Cloud Storage
+    file path, indicating when the source data file was generated (format: time=HH-MM-SS-mmm
+    or a Unix timestamp).'
+- name: _LOADED_AT
+  type: INT64
+  mode: NULLABLE
+  description: The nanosecond-precision Unix timestamp (as an INT64) recording when
+    this row was loaded into the data warehouse from its source file.

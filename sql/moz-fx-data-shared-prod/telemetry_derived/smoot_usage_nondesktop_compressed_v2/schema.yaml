@@ -1,0 +1,132 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: usage
+  type: STRING
+  mode: NULLABLE
+  description: A categorical label indicating the type of non-desktop Firefox product
+    activity observed, formatted as 'Any <product> Activity' (e.g., 'Any Fenix Activity').
+- name: id_bucket
+  type: INT64
+  mode: NULLABLE
+  description: "A bucketing identifier (0\u201319) used to partition clients into\
+    \ evenly distributed groups, typically for sampling or incremental processing\
+    \ purposes."
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: The language and region locale of the Firefox browser or application,
+    such as 'en' for English or 'fr' for French. A null value indicates the locale
+    could not be determined.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: attributed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates whether the client or install event has a known marketing
+    attribution source (true) or was not attributed to any campaign or referral (false).
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  description: Nested struct of DAU, WAU, MAU, and retention counts produced by the
+    smoot_usage_from_28_bits UDF, keyed by cohort day offset (day_0, day_6, day_13).
+  fields:
+  - name: day_0
+    type: RECORD
+    mode: NULLABLE
+    description: Usage metrics evaluated on the snapshot (submission) date, day 0
+      of the observation window.
+    fields:
+    - name: active_days_in_week
+      type: INT64
+      mode: NULLABLE
+      description: Total number of active days summed across all clients within the
+        most recent 7-day window ending on the snapshot date.
+    - name: dau
+      type: INT64
+      mode: NULLABLE
+      description: Daily Active Users (DAU) on the snapshot date, counting clients
+        whose most recent activity was less than 1 day prior (active that day).
+    - name: mau
+      type: INT64
+      mode: NULLABLE
+      description: Monthly Active Users (MAU) on the snapshot date, counting clients
+        active at least one day in the previous 28 days.
+    - name: wau
+      type: INT64
+      mode: NULLABLE
+      description: Weekly Active Users (WAU) on the snapshot date, counting clients
+        active at least one day in the previous 7 days.
+  - name: day_6
+    type: RECORD
+    mode: NULLABLE
+    description: Metrics evaluated 6 days after the profile-creation (cohort) anchor
+      date.
+    fields:
+    - name: new_profiles
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients whose profile was created exactly 6 days before
+        the snapshot date.
+  - name: day_13
+    type: RECORD
+    mode: NULLABLE
+    description: Two-week retention metrics evaluated 13 days after the profile-creation
+      (cohort) anchor date, where week 0 covers days 0 through 6 and week 1 covers
+      days 7 through 13.
+    fields:
+    - name: active_in_week_0
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients active at least one day during week 0 (days 0
+        through 6 of the two-week window).
+    - name: active_in_week_1
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients active at least one day during week 1 (days 7
+        through 13 of the two-week window).
+    - name: active_in_weeks_0_and_1
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients active at least one day in both week 0 and week
+        1 of the two-week window.
+    - name: new_profile_active_in_week_0
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients whose profile was created 13 days before the snapshot
+        date that were active at least one day during week 0 (days 0 through 6).
+    - name: new_profile_active_in_week_1
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients whose profile was created 13 days before the snapshot
+        date that were active at least one day during week 1 (days 7 through 13).
+    - name: new_profile_active_in_weeks_0_and_1
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients whose profile was created 13 days before the snapshot
+        date that were active at least one day in both week 0 and week 1.
+    - name: new_profiles
+      type: INT64
+      mode: NULLABLE
+      description: Count of clients whose profile was created exactly 13 days before
+        the snapshot date.

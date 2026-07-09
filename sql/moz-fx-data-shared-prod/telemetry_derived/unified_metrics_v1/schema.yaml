@@ -115,6 +115,8 @@ fields:
 - mode: NULLABLE
   name: os_version_patch
   type: INTEGER
+  description: The patch version component of the normalized OS version string (e.g.,
+    11 for macOS 14.0.11).
 - mode: NULLABLE
   name: durations
   type: NUMERIC
@@ -183,6 +185,8 @@ fields:
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
+  description: Number of ad clicks on search engine result pages originating from
+    Firefox searches on this submission date. Null when no search data is available.
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER

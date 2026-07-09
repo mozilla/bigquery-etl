@@ -7,8 +7,8 @@ fields:
 - name: date_to
   type: DATE
   mode: NULLABLE
-  description: The inclusive end date of the reporting or aggregation window. Records
-    in the row apply to activity on or before this date.
+  description: The exclusive end date of the 7-day reporting window (the day after
+    the last included date).
 - name: browser_arch
   type: STRING
   mode: NULLABLE
@@ -35,15 +35,18 @@ fields:
 - name: gfx0_vendor_id
   type: STRING
   mode: NULLABLE
+  description: PCI vendor ID of the primary graphics adapter (e.g., '0x8086' for Intel,
+    '0x10de' for NVIDIA), used to identify GPU manufacturer in hardware aggregation.
 - name: gfx0_device_id
   type: STRING
   mode: NULLABLE
+  description: PCI device ID of the primary graphics adapter, identifying the specific
+    GPU model within the vendor's product line.
 - name: resolution
   type: STRING
   mode: NULLABLE
-  description: The resolution or outcome classification associated with a record,
-    such as a crash report or support ticket resolution state. Describes how or whether
-    the underlying issue was addressed.
+  description: The display screen resolution of the client's primary monitor (e.g.,
+    '1920x1080').
 - name: cpu_cores
   type: INTEGER
   mode: NULLABLE

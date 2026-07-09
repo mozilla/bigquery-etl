@@ -1,0 +1,34 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: timestamp
+  type: INT64
+  mode: NULLABLE
+  description: The precise UTC timestamp indicating when the event or record was ingested
+    or generated, with microsecond-level precision.
+- name: fields
+  type: RECORD
+  mode: NULLABLE
+  description: Nested record holding the per-record IP-privacy field entries loaded
+    from the source parquet, including the client identifier, IP-derived geolocation,
+    and the IP address value used for IP privacy analysis.
+  fields:
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+    description: Unique identifier for the Firefox client associated with this IP
+      privacy telemetry record.
+  - name: geo_country
+    type: STRING
+    mode: NULLABLE
+    description: ISO 3166-1 alpha-2 country code derived from the client's IP address
+      at ingestion time, used to validate IP-based geolocation for privacy analysis.
+  - name: ip
+    type: STRING
+    mode: NULLABLE
+    description: The IP address value associated with this telemetry record, captured
+      for IP privacy analysis.

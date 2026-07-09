@@ -296,7 +296,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
-      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
+      metrics.timing_distribution.ai_quick_answers_results_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -637,7 +638,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
-      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
+      metrics.timing_distribution.ai_quick_answers_results_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -978,7 +980,8 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
-      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
+      metrics.timing_distribution.ai_quick_answers_results_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,

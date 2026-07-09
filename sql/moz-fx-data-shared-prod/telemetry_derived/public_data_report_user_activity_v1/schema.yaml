@@ -1,0 +1,80 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The Monday-aligned week start date for this row, derived from DATE_TRUNC(submission_date,
+    WEEK(MONDAY)).
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: The full human-readable name of the country associated with the record
+    (e.g., 'United States', 'India', 'Brazil'). Provides a display-friendly alternative
+    to ISO country code fields.
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: Monthly Active Users (MAU). The count of distinct clients that were
+    active at least one day within the previous 28 days. See detailed MAU definition
+    in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
+- name: avg_hours_usage_daily
+  type: NUMERIC
+  mode: NULLABLE
+  description: The average number of hours per day the application was actively used.
+    Represents a measure of daily engagement intensity for the client or cohort.
+- name: intensity
+  type: FLOAT64
+  mode: NULLABLE
+  description: A measure of user engagement intensity, reflecting the frequency or
+    depth of usage within a given period. Higher values indicate more active usage
+    patterns.
+- name: new_profile_rate
+  type: FLOAT64
+  mode: NULLABLE
+  description: The rate at which new profiles are being created, expressed as a floating-point
+    value. This is typically computed as a ratio or proportion relative to a baseline
+    population or time window.
+- name: latest_version_ratio
+  type: FLOAT64
+  mode: NULLABLE
+  description: The proportion of clients or events associated with the latest Firefox
+    version relative to all versions in the cohort. A higher value indicates greater
+    adoption of the current release.
+- name: top_addons
+  type: RECORD
+  mode: REPEATED
+  description: An array of the most prevalent add-ons observed in a population, each
+    entry containing the add-on name and the proportion of users with that add-on
+    installed.
+  fields:
+  - name: addon_name
+    type: STRING
+    mode: NULLABLE
+    description: Within each top_addons entry, the display name of the user-installed
+      Firefox add-on.
+  - name: ratio
+    type: FLOAT64
+    mode: NULLABLE
+    description: Within each top_addons entry, the fraction of weekly active users
+      who have this add-on installed.
+- name: has_addon_ratio
+  type: FLOAT64
+  mode: NULLABLE
+  description: The fraction of weekly active users (distinct clients) who had at least
+    one qualifying add-on installed.
+- name: top_locales
+  type: RECORD
+  mode: REPEATED
+  description: An array of the most prevalent browser locales observed in a population,
+    each entry containing the locale string and the proportion of users with that
+    locale.
+  fields:
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: Within each top_locales entry, the BCP 47 locale code (e.g., 'en-US',
+      'de') representing the Firefox application locale.
+  - name: ratio
+    type: FLOAT64
+    mode: NULLABLE
+    description: Within each top_locales entry, the fraction of weekly active users
+      using this application locale.

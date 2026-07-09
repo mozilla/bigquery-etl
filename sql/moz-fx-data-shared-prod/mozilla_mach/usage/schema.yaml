@@ -759,6 +759,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: Time spent cleaning up after making a push to try.
+    - name: mach_try_git_backing_push_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Time spent pushing the source tree to the git-backing repo on
+        GitHub so that CI tasks can clone from it.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

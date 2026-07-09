@@ -71,7 +71,8 @@ SELECT
       metrics.timespan.mach_try_taskgraph_generation_duration,
       metrics.timespan.mach_try_vcs_cleanup,
       metrics.timespan.mach_try_vcs_prep,
-      metrics.timespan.mach_try_vcs_push
+      metrics.timespan.mach_try_vcs_push,
+      metrics.timespan.mach_try_git_backing_push_duration
     ) AS `timespan`
   ) AS `metrics`,
   normalized_app_name,

@@ -8,9 +8,8 @@ fields:
 - mode: NULLABLE
   name: device
   type: STRING
-  description: A string identifying the device on which the browser is running, typically
-    in 'Manufacturer-Model' format (e.g., 'iPhone14,5', 'MediaTek-SMART TV'). This
-    field is used to distinguish hardware types across the client population.
+  description: The device category, either 'desktop' (for Firefox Desktop) or 'mobile'
+    (for all other applications).
 - mode: NULLABLE
   name: client_id
   type: STRING
@@ -80,9 +79,8 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: A string identifier representing the specific action, search engine,
-      or event type associated with a record, such as a search entry point or provider
-      key. An empty string indicates no specific key was recorded.
+    description: The experiment slug identifying the experiment the client was enrolled
+      in.
   - mode: NULLABLE
     name: value
     type: STRING
@@ -96,15 +94,23 @@ fields:
 - mode: NULLABLE
   name: sponsored_tiles_click_count
   type: INTEGER
+  description: Number of times the client clicked on a sponsored topsite tile on the
+    new tab page on this submission date.
 - mode: NULLABLE
   name: sponsored_tiles_impression_count
   type: INTEGER
+  description: Number of sponsored topsite tile impressions recorded for the client
+    on this submission date.
 - mode: NULLABLE
   name: sponsored_tiles_dismissal_count
   type: INTEGER
+  description: Number of times the client dismissed (blocked) a sponsored topsite
+    tile on this submission date.
 - mode: NULLABLE
   name: sponsored_tiles_disable_count
   type: INTEGER
+  description: Number of times the client toggled off sponsored topsite tiles via
+    the topsites pref changed event on this submission date.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING

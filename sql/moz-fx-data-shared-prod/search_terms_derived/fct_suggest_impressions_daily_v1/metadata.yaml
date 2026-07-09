@@ -1,0 +1,55 @@
+friendly_name: Fact Suggest Impressions Daily
+description: |-
+  Row-level Firefox Suggest impression events, deduplicated at the
+  session/advertiser level (keeping the deepest typed partial per
+  session, by sequence_no).
+
+  Rows with no session_id or empty query (i.e. impressions that did not
+  match a Merino log entry) are excluded.
+
+  The experiments column is a repeated struct of (slug, branch)
+  representing active experiment enrollments at impression time.
+  To filter by experiment, UNNEST the array:
+    SELECT
+      * EXCEPT (experiments) -- or select columns without experiments
+    FROM
+      `moz-fx-data-shared-prod.search_terms_derived.fct_suggest_impressions_daily_v1`
+    CROSS JOIN UNNEST(experiments) AS experiments
+    WHERE
+      experiments.slug
+        = 'slug-name'
+      AND experiments.branch = 'control'
+
+  The match_type column indicates whether a position-0 result is an
+  explicit top pick ("best-match") or a standard suggestion
+  ("firefox-suggest"). Only populated for Glean impressions; NULL
+  for legacy impressions.
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_search_terms_daily
+  owner1: cbeck
+scheduling:
+  dag_name: bqetl_search_terms_daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 180.0
+  clustering:
+    fields:
+    - country
+    - form_factor
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:search-terms/aggregated
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
+  - workgroup:search-terms/sanitized-writer
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3

@@ -499,7 +499,8 @@ fields:
 - name: newtab_dismissal_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of times the user dismissed or closed the New Tab page without engaging with it.
+  description: Total number of content dismissals on the New Tab page (top-site tiles, organic and sponsored
+    Pocket stories, and topic selections combined).
 - name: list_card_clicks
   type: INTEGER
   mode: NULLABLE

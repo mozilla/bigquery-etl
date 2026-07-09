@@ -134,8 +134,7 @@ fields:
 - name: newtab_interactions_visits
   type: INTEGER
   mode: NULLABLE
-  description: The number of newtab visits in which the user performed at least one interaction (click,
-    search, or dismiss) for this dimension group.
+  description: The number of distinct newtab visits for this dimension group.
 - name: topsite_clicks
   type: INTEGER
   mode: NULLABLE

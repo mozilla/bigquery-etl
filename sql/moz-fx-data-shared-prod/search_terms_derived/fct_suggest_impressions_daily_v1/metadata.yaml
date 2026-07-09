@@ -15,7 +15,15 @@ description: |-
   The experiments column is a repeated struct of (slug, branch)
   representing active experiment enrollments at impression time.
   To filter by experiment, UNNEST the array:
-    WHERE EXISTS (SELECT 1 FROM UNNEST(experiments) e WHERE e.slug = 'my-experiment' AND e.branch = 'treatment')
+    SELECT
+      * EXCEPT (experiments) -- or select columns without experiments
+    FROM
+      `moz-fx-data-shared-prod.search_terms_derived.fct_suggest_impressions_daily_v1`
+    CROSS JOIN UNNEST(experiments) AS experiments
+    WHERE
+      experiments.slug
+        = 'slug-name'
+      AND experiments.branch = 'control'
 
 labels:
   incremental: true

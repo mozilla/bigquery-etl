@@ -1,0 +1,40 @@
+---
+friendly_name: Fact Suggest Impressions Daily
+
+owners:
+  - cbeck@mozilla.com
+
+description: |-
+  Row-level Firefox Suggest impression events, deduplicated at the
+  session/advertiser level (keeping the deepest typed partial per
+  session, by sequence_no).
+
+  Rows with no session_id or empty query (i.e. impressions that did not
+  match a Merino log entry) are excluded.
+
+  The experiments column is a repeated struct of (slug, branch)
+  representing active experiment enrollments at impression time.
+  To filter by experiment, UNNEST the array:
+    WHERE EXISTS (SELECT 1 FROM UNNEST(experiments) e WHERE e.slug = 'my-experiment' AND e.branch = 'treatment')
+
+labels:
+  incremental: true
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 180
+  clustering:
+    fields:
+      - country
+      - form_factor
+
+scheduling:
+  dag_name: bqetl_search_terms_daily
+
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated

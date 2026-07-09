@@ -1,0 +1,48 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date of the impression event.
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Two-letter ISO country code.
+- mode: NULLABLE
+  name: form_factor
+  type: STRING
+  description: >-
+    Form factor of the client device (e.g. "desktop", "phone").
+    Sourced from Merino logs.
+- mode: NULLABLE
+  name: advertiser
+  type: STRING
+  description: Advertiser name associated with the suggest result.
+- mode: NULLABLE
+  name: partial
+  type: STRING
+  description: >-
+    Normalized search query partial typed by the user at the time of the
+    impression, lowercased and trimmed. Sourced from Merino logs; rows
+    without a Merino match are excluded.
+- mode: NULLABLE
+  name: position
+  type: INTEGER
+  description: Position of the suggest result in the Firefox address bar dropdown.
+- fields:
+  - mode: NULLABLE
+    name: slug
+    type: STRING
+    description: Experiment slug identifier.
+  - mode: NULLABLE
+    name: branch
+    type: STRING
+    description: Experiment branch the client was enrolled in.
+  mode: REPEATED
+  name: experiments
+  type: RECORD
+  description: >-
+    Active experiments the client was enrolled in at the time of the impression.
+- mode: NULLABLE
+  name: is_clicked
+  type: BOOLEAN
+  description: Whether the suggest result was clicked by the user.

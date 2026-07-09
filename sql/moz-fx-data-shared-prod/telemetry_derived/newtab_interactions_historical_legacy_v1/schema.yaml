@@ -1,79 +1,73 @@
 fields:
-- name: date_from
+- name: HAPPENED_AT
   type: DATE
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: date_from
-- name: date_to
-  type: DATE
+    field: HAPPENED_AT
+- name: TILE_ID
+  type: INT64
   mode: NULLABLE
-  description: The exclusive end date of the 7-day reporting window (the day after the last included date).
-- name: browser_arch
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: TILE_ID
+- name: POSITION
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: POSITION
+- name: IMPRESSION_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: IMPRESSION_COUNT
+- name: CLICK_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: CLICK_COUNT
+- name: SAVE_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: SAVE_COUNT
+- name: DISMISS_COUNT
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: DISMISS_COUNT
+- name: _GS_FILE_NAME
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: browser_arch
-- name: os
+    field: _GS_FILE_NAME
+- name: _GS_FILE_ROW_NUMBER
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: _GS_FILE_ROW_NUMBER
+- name: _GS_FILE_DATE
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: os
-- name: memory_gb
-  type: INTEGER
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: memory_gb
-- name: is_wow64
-  type: BOOLEAN
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: is_wow64
-- name: gfx0_vendor_id
-  type: STRING
-  mode: NULLABLE
-  description: PCI vendor ID of the primary graphics adapter (e.g., '0x8086' for Intel, '0x10de' for NVIDIA),
-    used to identify GPU manufacturer in hardware aggregation.
-- name: gfx0_device_id
-  type: STRING
-  mode: NULLABLE
-  description: PCI device ID of the primary graphics adapter, identifying the specific GPU model within
-    the vendor's product line.
-- name: resolution
-  type: STRING
-  mode: NULLABLE
-  description: The display screen resolution of the client's primary monitor (e.g., '1920x1080').
-- name: cpu_cores
-  type: INTEGER
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: cpu_cores
-- name: cpu_vendor
+    field: _GS_FILE_DATE
+- name: _GS_FILE_TIME
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: cpu_vendor
-- name: cpu_speed
-  type: STRING
+    field: _GS_FILE_TIME
+- name: _LOADED_AT
+  type: INT64
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: cpu_speed
-- name: has_flash
-  type: BOOLEAN
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: has_flash
-- name: client_count
-  type: INTEGER
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: client_count
+    field: _LOADED_AT

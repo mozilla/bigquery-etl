@@ -1,84 +1,107 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: submission_date
-- name: country
+- name: asofdate
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: country
-- name: app_name
+    field: asofdate
+- name: date
+  type: STRING
+  mode: NULLABLE
+  description: The date the forecast or actual value applies to (YYYY-MM-DD), including future dates for
+    forecasted points.
+- name: target
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: app_name
-- name: adjust_network
+    field: target
+- name: unit
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: adjust_network
-- name: attribution_medium
+    field: unit
+- name: value
+  type: FLOAT64
+  mode: NULLABLE
+  description: The observed (actual) value of the target metric on the date; null for future dates where
+    only forecast values (yhat_*) are available.
+- name: yhat_p5
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p5
+- name: yhat_p10
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p10
+- name: yhat_p20
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p20
+- name: yhat_p30
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p30
+- name: yhat_p40
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p40
+- name: yhat_p50
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p50
+- name: yhat_p60
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p60
+- name: yhat_p70
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p70
+- name: yhat_p80
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p80
+- name: yhat_p90
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p90
+- name: yhat_p95
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: yhat_p95
+- name: forecast_parameters
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: attribution_medium
-- name: attribution_source
+    field: forecast_parameters
+- name: forecast_date
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: attribution_source
-- name: first_seen_year
-  type: INTEGER
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: first_seen_year
-- name: channel
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: channel
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: install_source
-- name: is_default_browser
-  type: BOOLEAN
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: is_default_browser
-- name: os_grouped
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: os_grouped
-- name: segment
-  type: STRING
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: segment
-- name: dau
-  type: INTEGER
-  mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: dau
-- name: ma_28_dau
-  type: FLOAT
-  mode: NULLABLE
-  description: 28-day rolling average of daily active users for this segment combination, computed by averaging
-    DAU across the prior 28 days.
+    field: forecast_date

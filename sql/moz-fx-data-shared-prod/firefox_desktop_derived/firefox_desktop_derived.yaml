@@ -41,8 +41,8 @@ fields:
 - name: country
   description: The full country name in which Firefox Desktop activity took place, derived from IP geolocation at ping ingestion time.
 - name: dau
-  description: The count of daily active Firefox Desktop users for a given submission_date, where each qualifying client that submitted at least
-    one ping on that date is counted once.
+  description: The count of daily active Firefox Desktop users on a given submission_date — clients that reported at least one ping and qualify
+    as active.
 - name: dimensions
   description: A JSON object encoding the dimensional breakdown (e.g., channel, os, country) for a given Nimbus feature monitoring aggregate row,
     allowing flexible multi-dimensional slicing without a fixed schema.

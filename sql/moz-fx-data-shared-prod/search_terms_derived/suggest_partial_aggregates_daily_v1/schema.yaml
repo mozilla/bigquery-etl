@@ -47,14 +47,14 @@ fields:
   type: INTEGER
   description: >-
     Number of (session_id, advertiser) pairs that produced an impression
-    for this (country, form_factor, advertiser, partial) combination on this
+    for this (country, form_factor, advertiser, partial, position, experiments) combination on this
     date—each session contributes at most one impression per advertiser,
     attributed to the deepest typed partial.
 - mode: NULLABLE
   name: click_count
   type: INTEGER
   description: >-
-    Number of clicks for this (country, form_factor, advertiser, partial)
+    Number of clicks for this (country, form_factor, advertiser, partial, position, experiments)
     combination on this date. Counted from the deepest typed partial per
     (session_id, advertiser); clicks on earlier partials in the same session
     are not counted.

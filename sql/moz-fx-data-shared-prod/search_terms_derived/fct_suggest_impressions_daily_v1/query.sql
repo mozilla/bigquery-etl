@@ -15,4 +15,4 @@ WHERE
   AND query IS NOT NULL
   AND LENGTH(TRIM(query)) > 0
 QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY session_id, advertiser ORDER BY sequence_no DESC) = 1
+  ROW_NUMBER() OVER (PARTITION BY session_id, advertiser ORDER BY sequence_no DESC, request_id) = 1

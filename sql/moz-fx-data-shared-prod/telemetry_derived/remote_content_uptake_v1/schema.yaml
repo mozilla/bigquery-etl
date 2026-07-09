@@ -8,9 +8,7 @@ fields:
 - name: source
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: source
+  description: The identifier of the Remote Settings collection being tracked (e.g., 'main/whats-new-panel').
 - name: min_timestamp
   type: FLOAT64
   mode: NULLABLE
@@ -29,9 +27,8 @@ fields:
 - name: success
   type: INT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: success
+  description: Count of clients that successfully downloaded and applied an update for this Remote Settings
+    collection.
 - name: backoff
   type: INT64
   mode: NULLABLE

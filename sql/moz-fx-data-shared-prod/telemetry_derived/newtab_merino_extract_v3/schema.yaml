@@ -8,9 +8,9 @@ fields:
 - mode: NULLABLE
   name: impression_count
   type: INTEGER
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: impression_count
+  description: The propensity-weight-adjusted number of impressions for this corpus item. For section-layout
+    events the raw count is divided by the position-bias propensity weight; for non-section events the raw
+    count passes through unchanged.
 - mode: NULLABLE
   name: click_count
   type: INTEGER

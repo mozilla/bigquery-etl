@@ -8,9 +8,7 @@ fields:
 - mode: NULLABLE
   name: device
   type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: device
+  description: The device category, either 'desktop' (for Firefox Desktop) or 'mobile' (for all other applications).
 - mode: NULLABLE
   name: client_id
   type: STRING

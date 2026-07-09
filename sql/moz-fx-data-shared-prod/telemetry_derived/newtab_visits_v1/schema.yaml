@@ -189,13 +189,13 @@ fields:
 - mode: NULLABLE
   name: had_non_impression_engagement
   type: BOOLEAN
-  description: True if the user performed any non-impression engagement (such as clicking, dismissing, or
+  description: True if the user performed any non-impression engagement (such as clicking, searching, or
     saving) during this new tab visit; false if the visit consisted only of impressions.
 - mode: NULLABLE
   name: had_non_search_engagement
   type: BOOLEAN
   description: True if the user performed any non-search engagement (such as clicking a tile or Pocket story,
-    dismissal, etc.) during this new tab visit.
+    or saving) during this new tab visit.
 - fields:
   - mode: NULLABLE
     name: search_engine

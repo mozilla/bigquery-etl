@@ -104,8 +104,8 @@ fields:
 - mode: NULLABLE
   name: user_pref_firefox_suggest_enabled
   type: BOOLEAN
-  description: True if the client had the Firefox Suggest feature itself enabled on this submission date;
-    false otherwise.
+  description: True if the client had non-sponsored Firefox Suggest recommendations enabled on this submission
+    date; derived from the browser.urlbar.suggest.quicksuggest.nonsponsored preference.
 - fields:
   - mode: NULLABLE
     name: version

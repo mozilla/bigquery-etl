@@ -2,9 +2,8 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: submission_date
+  description: The Monday-aligned week start date for this row, derived from DATE_TRUNC(submission_date,
+    WEEK(MONDAY)).
 - name: country_name
   type: STRING
   mode: NULLABLE
@@ -59,9 +58,8 @@ fields:
 - name: has_addon_ratio
   type: FLOAT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: has_addon_ratio
+  description: The fraction of weekly active users (distinct clients) who had at least one qualifying add-on
+    installed.
 - name: top_locales
   type: RECORD
   mode: REPEATED

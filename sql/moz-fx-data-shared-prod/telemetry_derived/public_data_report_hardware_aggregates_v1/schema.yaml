@@ -8,9 +8,7 @@ fields:
 - name: date_to
   type: DATE
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: date_to
+  description: The exclusive end date of the 7-day reporting window (the day after the last included date).
 - name: browser_arch
   type: STRING
   mode: NULLABLE
@@ -48,9 +46,7 @@ fields:
 - name: resolution
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: resolution
+  description: The display screen resolution of the client's primary monitor (e.g., '1920x1080').
 - name: cpu_cores
   type: INTEGER
   mode: NULLABLE

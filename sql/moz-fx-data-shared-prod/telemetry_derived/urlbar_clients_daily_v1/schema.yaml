@@ -54,8 +54,8 @@ fields:
 - mode: NULLABLE
   name: in_navbar
   type: BOOLEAN
-  description: Whether the Firefox Suggest results were displayed inline in the URL bar (navbar) rather
-    than in a separate suggestions panel. Null when not recorded.
+  description: Whether the unified search/URL bar widget was present in the navigation toolbar for this
+    client. Null when not recorded.
 - mode: NULLABLE
   name: suggest_searches
   type: BOOLEAN

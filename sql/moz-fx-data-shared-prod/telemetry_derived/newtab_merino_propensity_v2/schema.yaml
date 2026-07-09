@@ -2,8 +2,8 @@ fields:
 - mode: NULLABLE
   name: snapshot_date
   type: DATE
-  description: The calendar date for which this propensity snapshot was computed, using 10 days of historical
-    impression data ending on this date.
+  description: The calendar date for which this propensity snapshot was computed, using 11 calendar days
+    of historical impression data (this date minus 10 through this date inclusive).
 - mode: NULLABLE
   name: snapshot_at
   type: TIMESTAMP

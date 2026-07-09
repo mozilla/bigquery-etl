@@ -20,9 +20,7 @@ fields:
 - name: app_version
   type: INT64
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: app_version
+  description: The major version number of the Firefox application (e.g., 151).
 - name: app_build_id
   type: STRING
   mode: NULLABLE

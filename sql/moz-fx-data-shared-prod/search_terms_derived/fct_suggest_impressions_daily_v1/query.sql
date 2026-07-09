@@ -5,6 +5,7 @@ SELECT
   advertiser,
   LOWER(TRIM(query)) AS partial,
   position,
+  match_type,
   experiments,
   is_clicked,
 FROM

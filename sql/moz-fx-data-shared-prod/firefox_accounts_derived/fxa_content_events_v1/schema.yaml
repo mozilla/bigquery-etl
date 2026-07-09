@@ -237,6 +237,9 @@ fields:
     - name: violated
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.violated
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: agent
       type: STRING
       mode: NULLABLE
@@ -246,21 +249,39 @@ fields:
     - name: source
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.source
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: line
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.line
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: blocked
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.blocked
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: column
       type: FLOAT
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.column
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: referrer
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.referrer
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: sample
       type: STRING
       mode: NULLABLE
+      description: !include-field-description
+        field: jsonPayload.fields.sample
+        file: bigquery_etl/schema/firefox_accounts_derived.yaml
     - name: msg
       type: STRING
       mode: NULLABLE
@@ -372,9 +393,15 @@ fields:
     - name: amplitudeevent
       type: STRING
       mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.fields
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: region
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.region
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: hostname
     type: STRING
     mode: NULLABLE
@@ -384,9 +411,15 @@ fields:
   - name: flow_id
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.flow_id
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: flow_time
     type: FLOAT
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.flow_time
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: v
     type: FLOAT
     mode: NULLABLE
@@ -396,12 +429,21 @@ fields:
   - name: country
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.country
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.entrypoint
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: event
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.event
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: useragent
     type: STRING
     mode: NULLABLE
@@ -417,24 +459,45 @@ fields:
   - name: locale
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.locale
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: service
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.service
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: context
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.context
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.utm_campaign
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.utm_medium
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: utm_content
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.utm_content
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: utm_source
     type: STRING
     mode: NULLABLE
+    description: !include-field-description
+      field: jsonPayload.utm_source
+      file: bigquery_etl/schema/firefox_accounts_derived.yaml
   - name: user_properties
     type: RECORD
     mode: NULLABLE

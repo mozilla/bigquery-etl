@@ -1,0 +1,110 @@
+fields:
+- name: app_display_version
+  description: The user-visible version string of the Firefox Desktop application (e.g., "152.0.3"), as reported via the Glean app_display_version
+    metric.
+- name: app_name
+  description: The name of the Firefox Desktop application as reported in the telemetry ping (e.g., "Firefox Desktop" or "Firefox Desktop MozillaOnline"
+    for distribution variants); used to distinguish browser variants within the dataset.
+- name: app_version
+  description: The Firefox Desktop application version reported by the client at ping submission — stored as the major-version integer (e.g.,
+    152) in some tables and as the full user-visible version string (e.g., "152.0.3") in others.
+- name: attribution_dlsource
+  description: An identifier indicating the download source through which Firefox Desktop was obtained (e.g., "mozorg", "mozillaci", "fxdotcom",
+    "desktoplauncher"); null when no download source attribution is available.
+- name: attribution_experiment
+  description: The name or identifier of the download-funnel experiment through which the Firefox Desktop installation was attributed (e.g., "download-privacy",
+    "download-as-default"); null or "(not set)" when no experiment attribution is present.
+- name: attribution_medium
+  description: The marketing medium through which the Firefox Desktop installation was attributed (equivalent to UTM medium), such as "referral",
+    "paidsearch", or "(direct)"; null when attribution data is unavailable.
+- name: attribution_source
+  description: The referral source through which the Firefox Desktop installation was attributed (equivalent to UTM source), such as "www.google.com"
+    or "www.bing.com"; null when attribution source data is unavailable.
+- name: attribution_ua
+  description: An identifier derived from the user-agent string of the browser used to download the Firefox Desktop installer, indicating which
+    browser the user was switching from (e.g., "chrome", "edge", "firefox", "ie").
+- name: attribution_variation
+  description: The name or identifier of the variation cohort within the attributed download-funnel experiment (e.g., "treatment", "control");
+    null or "(not set)" when no variation attribution is present.
+- name: channel
+  description: The release channel as reported by the client or distribution, un-normalized and possibly arbitrary (distribution partners may
+    set any string). See normalized_channel for the value normalized to release, beta, nightly, aurora, esr, or Other.
+- name: city
+  description: The city in which Firefox Desktop activity took place, derived from IP geolocation at ping ingestion time; may be null or "??"
+    when geolocation cannot resolve to city level.
+- name: client_id
+  description: A UUID that uniquely identifies a Firefox Desktop client installation; stable across sessions and used as the primary join key
+    for client-level tables in this dataset.
+- name: count_analysis_unit_ids
+  description: The count of distinct analysis unit identifiers (e.g., client_ids) observed for a given Nimbus experiment or rollout feature slice,
+    used to measure enrollment or exposure size in feature monitoring tables.
+- name: country
+  description: The full country name in which Firefox Desktop activity took place, derived from IP geolocation at ping ingestion time.
+- name: dau
+  description: The count of daily active Firefox Desktop users on a given submission_date — clients that reported at least one ping and qualify
+    as active.
+- name: dimensions
+  description: A JSON object encoding the dimensional breakdown (e.g., channel, os, country) for a given Nimbus feature monitoring aggregate row,
+    allowing flexible multi-dimensional slicing without a fixed schema.
+- name: distribution_id
+  description: The distribution identifier associated with the Firefox Desktop installation, identifying the partner or channel that distributed
+    the browser (e.g., "canonical-002", "mozilla-MSIX", "default").
+- name: experiments
+  description: An array of Nimbus experiments and rollouts the Firefox Desktop client was enrolled in at the time of the ping, where each element
+    contains the experiment slug (key) and the assigned branch name.
+- name: first_seen_date
+  description: The date on which the Mozilla data pipeline first received a ping from this Firefox Desktop client_id, used as a proxy for the
+    client's installation or activation date.
+- name: is_default_browser
+  description: True if Firefox Desktop is configured as the operating system's default browser on the client at the time of the ping; false if
+    another browser is set as default; null if the status could not be determined.
+- name: legacy_telemetry_client_id
+  description: The client UUID from the Firefox legacy (non-Glean) telemetry system, used to join Glean-based Firefox Desktop records with older
+    legacy telemetry datasets; may be null or a known canary value when the legacy client_id was unavailable at ping submission time.
+- name: locale
+  description: The IETF language tag representing the locale of the Firefox Desktop application at initialization (e.g., "en-US", "de").
+- name: metric
+  description: The name of a Firefox Desktop usage metric as found in the Glean dictionary, used to identify which feature or behavior is being
+    measured in metric-level tables such as use-counter aggregates.
+- name: normalized_app_name
+  description: The application name normalized at ingestion time to a consistent set of known Firefox Desktop variants, with unrecognized names
+    bucketed together, enabling consistent filtering across tables.
+- name: normalized_channel
+  description: 'The release channel on which the Firefox Desktop build is distributed, normalized to one of: release, beta, nightly, aurora, esr,
+    or Other.'
+- name: normalized_country_code
+  description: The ISO 3166-1 alpha-2 country code for the country in which Firefox Desktop activity took place, derived from IP geolocation at
+    ingestion time (e.g., "US", "DE").
+- name: normalized_os
+  description: The normalized name of the operating system running the Firefox Desktop client, normalized to Windows, Mac, Linux, or Other for
+    desktop platforms (via mozfun.norm.os).
+- name: normalized_os_version
+  description: The operating system version normalized to a consistent format at ingestion (e.g., "10.0" for Windows 10 and 11, "25.5.0" for macOS);
+    use windows_build_number >= 22000 to distinguish Windows 11 from Windows 10.
+- name: os
+  description: The operating system name as reported by the client, prior to normalization and sometimes containing raw or malformed values (e.g.,
+    "Windows", "Darwin", "Linux", "OpenBSD", "Unknown"). See normalized_os for the value collapsed to Windows, Mac, Linux, or Other.
+- name: os_version
+  description: The operating system version reported by the Firefox Desktop client prior to normalization (e.g., "10.0.26200" for Windows, "25.5.0"
+    for macOS); use windows_build_number >= 22000 to distinguish Windows 11 from Windows 10.
+- name: profile_group_id
+  description: A UUID that uniquely identifies the Firefox profile group on the client, allowing multiple profiles belonging to the same user
+    installation to be associated without linking to other telemetry systems.
+- name: rollout_slug
+  description: The unique slug identifier of a Nimbus rollout targeting Firefox Desktop clients, used to associate monitoring rows with a specific
+    gradual rollout configuration.
+- name: sample_id
+  description: An integer in the range 0–99 derived deterministically from the client_id, used to draw reproducible random samples of Firefox
+    Desktop clients for analysis and query cost reduction.
+- name: submission_date
+  description: The date when the Firefox Desktop telemetry ping is received on the server side, used as the primary partitioning dimension across
+    aggregates and client-level tables in this dataset.
+- name: submission_timestamp
+  description: The UTC timestamp at which the Firefox Desktop telemetry ping was received on the Mozilla ingestion server, providing sub-daily
+    precision for tables that require more granular time partitioning than submission_date.
+- name: value
+  description: The numeric measurement associated with a given metric and dimensional slice, representing an aggregate statistic (e.g., a rate,
+    mean, or count) computed over the analysis period in feature monitoring and metric tables.
+- name: windows_build_number
+  description: The Windows build number reported by the operating system (e.g., 19045 for Windows 10, 22000+ for Windows 11); only populated on
+    Windows clients and null on all other platforms.

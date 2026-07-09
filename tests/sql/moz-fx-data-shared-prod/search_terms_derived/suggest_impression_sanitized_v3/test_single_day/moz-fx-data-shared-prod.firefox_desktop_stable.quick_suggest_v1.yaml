@@ -14,6 +14,7 @@
     string:
       quick_suggest_advertiser: acme corp
       quick_suggest_block_id: 201
+      quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid11
     url2:
@@ -45,6 +46,7 @@
     string:
       quick_suggest_advertiser: dunder mifflin
       quick_suggest_block_id: 202
+      quick_suggest_match_type: "best-match"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid12
     url2:
@@ -76,6 +78,7 @@
     string:
       quick_suggest_advertiser: duff beer
       quick_suggest_block_id: 203
+      quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: null
     url2:
@@ -107,6 +110,7 @@
     string:
       quick_suggest_advertiser: glean store
       quick_suggest_block_id: 205
+      quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid_overlap
     url2:
@@ -139,6 +143,7 @@
     string:
       quick_suggest_advertiser: umbrella corp
       quick_suggest_block_id: 204
+      quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-click"
       quick_suggest_request_id: rid14
     url2:
@@ -171,6 +176,7 @@
     string:
       quick_suggest_advertiser: widget co
       quick_suggest_block_id: 130
+      quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid_glean_dup
     url2:
@@ -203,6 +209,7 @@
     string:
       quick_suggest_advertiser: widget co 2
       quick_suggest_block_id: 131
+      quick_suggest_match_type: "best-match"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid_glean_dup
     url2:

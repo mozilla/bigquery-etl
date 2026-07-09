@@ -25,6 +25,11 @@ description: |-
         = 'slug-name'
       AND experiments.branch = 'control'
 
+  The match_type column indicates whether a position-0 result is an
+  explicit top pick ("best-match") or a standard suggestion
+  ("firefox-suggest"). Only populated for Glean impressions; NULL
+  for legacy impressions.
+
 labels:
   incremental: true
 

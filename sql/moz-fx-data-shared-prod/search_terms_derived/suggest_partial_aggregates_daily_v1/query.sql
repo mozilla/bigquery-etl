@@ -5,6 +5,8 @@ WITH deduped AS (
     form_factor,
     advertiser,
     LOWER(TRIM(query)) AS partial,
+    position,
+    experiments,
     is_clicked,
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`
@@ -22,6 +24,8 @@ SELECT
   form_factor,
   advertiser,
   partial,
+  position,
+  experiments,
   COUNT(*) AS impression_count,
   COUNTIF(is_clicked) AS click_count,
 FROM
@@ -31,4 +35,6 @@ GROUP BY
   country,
   form_factor,
   advertiser,
-  partial
+  partial,
+  position,
+  experiments

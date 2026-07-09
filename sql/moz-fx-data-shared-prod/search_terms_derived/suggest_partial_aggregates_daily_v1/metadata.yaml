@@ -6,13 +6,18 @@ owners:
 
 description: |-
   Pre-aggregated Firefox Suggest impressions and clicks per
-  (country, form_factor, advertiser, partial) per day.
+  (country, form_factor, advertiser, partial, position, experiments) per day.
 
   Impressions are deduplicated at the session/advertiser level
   (keeping the deepest partial per session, by sequence_no)
 
   Rows with no session_id or empty query (i.e. impressions that did not
   match a Merino log entry) are excluded.
+
+  The experiments column is a repeated struct of (slug, branch)
+  representing active experiment enrollments at impression time.
+  To filter by experiment, UNNEST the array:
+    WHERE EXISTS (SELECT 1 FROM UNNEST(experiments) e WHERE e.slug = 'my-experiment' AND e.branch = 'treatment')
 
   Consumers can assemble arbitrary time windows by querying a
   date range and using COUNT(DISTINCT submission_date) to filter

@@ -25,6 +25,24 @@ fields:
     impression, lowercased and trimmed. Sourced from Merino logs; rows
     without a Merino match are excluded.
 - mode: NULLABLE
+  name: position
+  type: INTEGER
+  description: Position of the suggest result in the Firefox address bar dropdown.
+- fields:
+  - mode: NULLABLE
+    name: slug
+    type: STRING
+    description: Experiment slug identifier.
+  - mode: NULLABLE
+    name: branch
+    type: STRING
+    description: Experiment branch the client was enrolled in.
+  mode: REPEATED
+  name: experiments
+  type: RECORD
+  description: >-
+    Active experiments the client was enrolled in at the time of the impression.
+- mode: NULLABLE
   name: impression_count
   type: INTEGER
   description: >-

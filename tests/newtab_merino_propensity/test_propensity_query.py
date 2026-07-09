@@ -113,7 +113,6 @@ def test_compute_weights_empty_on_thin_input():
             "format": ["medium-card"],
             "impressions": [5],
             "clicks": [1],
-            "ctr": [0.2],
         }
     )
     out = compute_weights(hist)
@@ -134,7 +133,6 @@ def _synthetic_hist(countries, items, positions, fmt="medium-card", imp=100, cli
                         "format": fmt,
                         "impressions": imp,
                         "clicks": clicks,
-                        "ctr": clicks / imp,
                     }
                 )
     return pd.DataFrame(records)

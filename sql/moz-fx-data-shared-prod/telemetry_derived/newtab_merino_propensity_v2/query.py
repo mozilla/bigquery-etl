@@ -136,8 +136,7 @@ SELECT
   rw.impressions,
   rw.clicks,
   rw.format,
-  rw.position,
-  SAFE_DIVIDE(rw.clicks, rw.impressions) AS ctr
+  rw.position
 FROM raw_grouped_totals rw
 """
 

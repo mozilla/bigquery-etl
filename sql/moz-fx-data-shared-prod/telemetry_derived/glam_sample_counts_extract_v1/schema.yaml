@@ -1,0 +1,49 @@
+fields:
+- name: channel
+  type: INT64
+  mode: NULLABLE
+  description: An integer-encoded release channel identifier (e.g., 1 = nightly, 2 = beta, 3 = release).
+- name: app_version
+  type: INT64
+  mode: NULLABLE
+  description: The major version number of the application as an integer (e.g., 97, 98, 99).
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized operating system name (e.g., 'Windows', 'Mac', 'Linux'), or '*' for the
+    aggregate across all operating systems.
+- name: process
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: process
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: The aggregation key for the metric — for a labeled (keyed) metric this is the label, otherwise
+    empty.
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric
+- name: client_agg_type
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_agg_type
+- name: total_sample
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: total_sample

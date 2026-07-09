@@ -1,0 +1,191 @@
+fields:
+- name: ds
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The datestamp (as a UTC timestamp) representing the date partition
+    or time dimension associated with the record. This field is commonly used for
+    time-series partitioning and filtering.
+- name: trend
+  type: FLOAT64
+  mode: NULLABLE
+  description: The modeled trend component of a time series metric, representing the
+    smoothed underlying direction of the data after removing seasonality and noise.
+- name: yhat_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the forecast prediction interval for the predicted
+    value (yhat), representing the minimum plausible outcome at the model's configured
+    confidence level. Values are always present (non-null) for rows that include a
+    forecast.
+- name: yhat_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the forecast prediction interval for the predicted
+    value (yhat), representing the maximum plausible outcome at the model's configured
+    confidence level. Values are always present (non-null) for rows that include a
+    forecast.
+- name: trend_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the confidence interval for the modeled trend component
+    of a time series metric.
+- name: trend_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the confidence interval for the modeled trend component
+    of a time series metric.
+- name: additive_terms
+  type: FLOAT64
+  mode: NULLABLE
+  description: The sum of all additive component contributions from a time-series
+    forecasting model (e.g., trend, seasonality), representing the combined fitted
+    value before any transformations.
+- name: additive_terms_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the uncertainty interval for the sum of additive
+    forecasting model components, representing the pessimistic end of the predicted
+    range.
+- name: additive_terms_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the uncertainty interval for the sum of additive
+    forecasting model components, representing the optimistic end of the predicted
+    range.
+- name: extra_regressors_additive
+  type: FLOAT64
+  mode: NULLABLE
+  description: The additive contribution of extra regressors (e.g. external signals
+    or covariates) to a time-series forecast model. A value of 0.0 indicates no additive
+    regressor effect was applied.
+- name: extra_regressors_additive_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the additive extra regressors component from a time-series
+    forecast model, representing the lower end of the uncertainty interval for that
+    contribution. A value of 0.0 indicates no lower-bound regressor effect.
+- name: extra_regressors_additive_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the additive extra regressors component from a time-series
+    forecast model, representing the upper end of the uncertainty interval for that
+    contribution. A value of 0.0 indicates no upper-bound regressor effect.
+- name: holidays
+  type: FLOAT64
+  mode: NULLABLE
+  description: The estimated holiday effect component from a forecasting model, representing
+    the additive contribution of holiday events to the predicted metric. A value of
+    0.0 indicates no holiday effect for that period.
+- name: holidays_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the confidence interval for the holiday effect component
+    from a forecasting model. A value of 0.0 indicates no holiday effect uncertainty
+    for that period.
+- name: holidays_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the confidence interval for the holiday effect component
+    from a forecasting model. A value of 0.0 indicates no holiday effect uncertainty
+    for that period.
+- name: regressor_00
+  type: FLOAT64
+  mode: NULLABLE
+  description: The point estimate for the first regressor variable used in a forecasting
+    or modeling pipeline. A value of 0.0 indicates no contribution from this regressor
+    for that record.
+- name: regressor_00_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower-bound confidence interval estimate for the first regressor
+    variable in a forecasting or modeling pipeline. A value of 0.0 indicates no contribution
+    or an unbounded lower estimate.
+- name: regressor_00_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper-bound confidence interval estimate for the first regressor
+    variable in a forecasting or modeling pipeline. A value of 0.0 indicates no contribution
+    or an unbounded upper estimate.
+- name: weekly
+  type: FLOAT64
+  mode: NULLABLE
+  description: A floating-point metric value aggregated or forecasted on a weekly
+    basis. Typically represents a modeled or computed estimate rather than a raw event
+    count.
+- name: weekly_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of a confidence or credible interval for a weekly metric
+    estimate. Used alongside weekly and weekly_upper to express uncertainty in a modeled
+    weekly value.
+- name: weekly_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of a confidence or credible interval for a weekly metric
+    estimate. Used alongside weekly and weekly_lower to express uncertainty in a modeled
+    weekly value.
+- name: yearly
+  type: FLOAT64
+  mode: NULLABLE
+  description: The estimated yearly component of a time-series forecast, representing
+    the annualized trend or aggregated value projected over a full year. This floating-point
+    value can be positive or negative depending on the direction of the trend.
+- name: yearly_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the confidence interval for the yearly forecast
+    component, representing the most conservative end of the annual estimate. Values
+    can be negative, indicating a downward projected trend.
+- name: yearly_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the confidence interval for the yearly forecast
+    component, representing the most optimistic end of the annual estimate. Values
+    can be negative, indicating the upper bound of a downward projected trend.
+- name: multiplicative_terms
+  type: FLOAT64
+  mode: NULLABLE
+  description: The multiplicative component of a forecasting or modeling decomposition,
+    representing the combined multiplicative factor applied to the baseline. A value
+    of 0.0 indicates no multiplicative adjustment.
+- name: multiplicative_terms_lower
+  type: FLOAT64
+  mode: NULLABLE
+  description: The lower bound of the confidence interval for the multiplicative terms
+    in a forecasting or decomposition model. A value of 0.0 indicates no lower-bound
+    adjustment is estimated.
+- name: multiplicative_terms_upper
+  type: FLOAT64
+  mode: NULLABLE
+  description: The upper bound of the confidence interval for the multiplicative terms
+    in a forecasting or decomposition model. A value of 0.0 indicates no upper-bound
+    adjustment is estimated.
+- name: yhat
+  type: FLOAT64
+  mode: NULLABLE
+  description: The point estimate (predicted value) produced by a forecasting model
+    for a given time period. This is the central forecast value before any uncertainty
+    bounds are applied.
+- name: target
+  type: STRING
+  mode: NULLABLE
+  description: The product or audience target associated with a metric or forecast,
+    such as 'desktop' or 'mobile'. May also include suffixes indicating the specific
+    metric goal (e.g., 'desktop_DAU', 'mobile_CDOU').
+- name: forecast_date
+  type: STRING
+  mode: NULLABLE
+  description: The calendar date to which a forecast value corresponds, stored as
+    a string in ISO 8601 format (YYYY-MM-DD). This is the predicted future date within
+    a time-series forecasting output.
+- name: forecast_parameters
+  type: STRING
+  mode: NULLABLE
+  description: A JSON-serialized string containing the model type and hyperparameters
+    used to generate the forecast (e.g. Prophet model settings such as seasonality
+    and changepoint priors). This allows forecast results to be traced back to the
+    exact model configuration that produced them.
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: The business KPI being forecasted (e.g., 'DAU', 'CDOU', 'QDAU', 'QCDOU').

@@ -1,0 +1,85 @@
+fields:
+- name: cdou
+  type: INT64
+  mode: NULLABLE
+  description: A numeric measure representing the client days of use, reflecting how
+    many days a client has been active within a given period. Higher values indicate
+    more sustained engagement.
+- name: cumulative_new_profiles
+  type: INT64
+  mode: NULLABLE
+  description: The running total of new browser profiles created up to and including
+    the current reporting period. A value of 0 indicates no new profiles have been
+    created for that segment.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: dau
+  type: INT64
+  mode: NULLABLE
+  description: Daily Active Users (DAU). The count of distinct clients active on a
+    given day. See detailed DAU definitions for Desktop and Mobile in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#Definitions.
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: Monthly Active Users (MAU). The count of distinct clients that were
+    active at least one day within the previous 28 days. See detailed MAU definition
+    in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
+- name: wau
+  type: INT64
+  mode: NULLABLE
+  description: Weekly Active Users (WAU). In aggregate tables this is the count of
+    distinct clients active at least one day in the previous 7 days. See detailed
+    definition in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
+- name: new_profiles
+  type: INT64
+  mode: NULLABLE
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.
+- name: submission_year
+  type: INT64
+  mode: NULLABLE
+  description: The calendar year in which a ping or record was submitted to Mozilla's
+    ingestion pipeline, derived from the submission timestamp. Used for partitioning
+    and year-level aggregations.
+- name: id_bucket
+  type: INT64
+  mode: NULLABLE
+  description: "A bucketing identifier (0\u201319) used to partition clients into\
+    \ evenly distributed groups, typically for sampling or incremental processing\
+    \ purposes."
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: The Mozilla product name associated with the record, such as 'Fenix',
+    'Firefox iOS', 'Focus Android', or 'Fennec'. Identifies the application from which
+    the data originates.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: The marketing campaign name associated with a user's acquisition or
+    install event (e.g., 'SET_DEFAULT_BROWSER', 'non-fx-button'). Null when no campaign
+    attribution is available.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: An identifier for the Firefox distribution package the client is running,
+    such as 'default' for the standard Mozilla build or partner-specific identifiers
+    like 'canonical-002' or 'mozilla-MSIX'. This field is null when no distribution
+    identifier is available.

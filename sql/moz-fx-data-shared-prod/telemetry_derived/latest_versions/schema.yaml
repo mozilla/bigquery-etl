@@ -1,0 +1,13 @@
+fields:
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: latest_version
+  type: INT64
+  mode: NULLABLE
+  description: The most recent major version number of the Firefox browser available
+    or tracked at the time of the record. Used to compare client versions against
+    the current release.

@@ -325,7 +325,6 @@ SELECT
       JSON_VALUE(event_extra.engineId) AS `engineId`,
       JSON_VALUE(event_extra.enrollmentId) AS `enrollmentId`,
       JSON_VALUE(event_extra.enterprise) AS `enterprise`,
-      JSON_VALUE(event_extra.entry_point) AS `entry_point`,
       JSON_VALUE(event_extra.entrypoint) AS `entrypoint`,
       JSON_VALUE(event_extra.error) AS `error`,
       JSON_VALUE(event_extra.error_code) AS `error_code`,

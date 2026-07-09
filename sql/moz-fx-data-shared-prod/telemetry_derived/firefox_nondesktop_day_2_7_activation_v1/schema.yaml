@@ -1,0 +1,48 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: The Mozilla product name associated with the record, such as 'Fenix',
+    'Firefox iOS', 'Focus Android', or 'Fennec'. Identifies the application from which
+    the data originates.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: The major version number of the application (e.g., '119', '122'). Extracted
+    from the full dotted version string by taking only the component before the first
+    period.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The standardized release channel of the Firefox application, such as
+    'release', 'beta', 'nightly', 'esr', or 'aurora'. 'Other' is used when the channel
+    does not match a known value.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- name: new_profiles
+  type: INT64
+  mode: NULLABLE
+  description: The number of newly created Firefox profiles observed within the aggregation
+    period. A value of 0 indicates no new profiles were created for that record's
+    segment.
+- name: day_2_7_activated
+  type: INT64
+  mode: NULLABLE
+  description: Count of new profiles from day 1 that returned and were active on any
+    day from day 2 through day 7 (activation within the first week).

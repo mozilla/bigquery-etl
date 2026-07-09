@@ -1,0 +1,117 @@
+fields:
+- name: asofdate
+  type: STRING
+  mode: NULLABLE
+  description: The reference date for which the row's data is valid or calculated,
+    formatted as YYYY-MM-DD. Used in time-windowed or snapshot-based tables to indicate
+    the effective date of the record.
+- name: date
+  type: STRING
+  mode: NULLABLE
+  description: The date the forecast or actual value applies to (YYYY-MM-DD), including
+    future dates for forecasted points.
+- name: target
+  type: STRING
+  mode: NULLABLE
+  description: The product or audience target associated with a metric or forecast,
+    such as 'desktop' or 'mobile'. May also include suffixes indicating the specific
+    metric goal (e.g., 'desktop_DAU', 'mobile_CDOU').
+- name: unit
+  type: STRING
+  mode: NULLABLE
+  description: The time unit used for the aggregation period of the record. Values
+    are 'day' for daily aggregations and 'month' for monthly aggregations.
+- name: value
+  type: FLOAT64
+  mode: NULLABLE
+  description: The observed (actual) value of the target metric on the date; null
+    for future dates where only forecast values (yhat_*) are available.
+- name: yhat_p5
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 5th percentile of the forecasted value distribution, representing
+    the lower tail of the predicted outcome where 5% of simulated values fall below
+    this threshold. This field may be null when percentile-level forecast outputs
+    are not computed for a given row.
+- name: yhat_p10
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 10th percentile of the forecasted value distribution, indicating
+    that 10% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p20
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 20th percentile of the forecasted value distribution, indicating
+    that 20% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p30
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 30th percentile of the forecasted value distribution, indicating
+    that 30% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p40
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 40th percentile of the forecasted value distribution, indicating
+    that 40% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p50
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 50th percentile (median) of the forecasted value distribution,
+    representing the midpoint of simulated forecast outcomes. This field may be null
+    when percentile-level forecast outputs are not computed for a given row.
+- name: yhat_p60
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 60th percentile of the forecasted value distribution, indicating
+    that 60% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p70
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 70th percentile of the forecasted value distribution, indicating
+    that 70% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p80
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 80th percentile of the forecasted value distribution, indicating
+    that 80% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p90
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 90th percentile of the forecasted value distribution, indicating
+    that 90% of simulated forecast outcomes are expected to fall below this value.
+    This field may be null when percentile-level forecast outputs are not computed
+    for a given row.
+- name: yhat_p95
+  type: FLOAT64
+  mode: NULLABLE
+  description: The 95th percentile of the forecasted value distribution, representing
+    the upper tail of the predicted outcome where 95% of simulated values fall below
+    this threshold. This field may be null when percentile-level forecast outputs
+    are not computed for a given row.
+- name: forecast_parameters
+  type: STRING
+  mode: NULLABLE
+  description: A JSON-serialized string containing the model type and hyperparameters
+    used to generate the forecast (e.g. Prophet model settings such as seasonality
+    and changepoint priors). This allows forecast results to be traced back to the
+    exact model configuration that produced them.
+- name: forecast_date
+  type: STRING
+  mode: NULLABLE
+  description: The calendar date to which a forecast value corresponds, stored as
+    a string in ISO 8601 format (YYYY-MM-DD). This is the predicted future date within
+    a time-series forecasting output.

@@ -1,0 +1,24 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC calendar date on which a ping or record was received by Mozilla's
+    ingestion pipeline. Used as the primary partitioning and filtering dimension for
+    date-based analysis.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox release channel through which the client received its build,
+    such as 'release', 'beta', 'aurora', or 'esr'. Used to segment data by product
+    maturity and release train.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The raw operating system name as reported by the client, such as 'Windows_NT',
+    'Darwin', 'Linux', 'Android', or 'iOS'. This is the unprocessed OS string before
+    normalization.
+- name: num_clients
+  type: INT64
+  mode: NULLABLE
+  description: The number of distinct clients meeting the High-Confidence Mobile segment
+    criteria for this date, OS, and channel combination.

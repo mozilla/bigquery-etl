@@ -139,14 +139,13 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: A string identifier representing the specific action, search engine,
-      or event type associated with a record, such as a search entry point or provider
-      key. An empty string indicates no specific key was recorded.
+    description: The experiment slug identifying the experiment the client was enrolled
+      in.
   - name: value
     type: RECORD
     mode: NULLABLE
-    description: A generic integer value associated with a measurement, event, or
-      metric. The specific meaning depends on the context of the surrounding fields.
+    description: The enrollment details for the experiment identified by key, including
+      the assigned branch and additional enrollment metadata.
     fields:
     - name: branch
       type: STRING
@@ -161,11 +160,13 @@ fields:
       - name: type
         type: STRING
         mode: NULLABLE
-        description: The category of a browser add-on or extension, indicating its
-          nature. Common values include 'extension', 'locale', 'dictionary', and 'service'.
+        description: The type of the experiment enrollment, identifying the framework
+          or mechanism that enrolled the client (e.g., Nimbus).
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
+        description: The UUID identifying the specific enrollment instance for the
+          experiment within the experiments repeated struct.
 - name: visits_with_non_impression_engagement
   type: INTEGER
   mode: NULLABLE
@@ -181,6 +182,8 @@ fields:
 - name: visits_with_non_default_ui
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits where the page was not in the default Firefox
+    New Tab configuration (e.g., overridden by an extension or about:home/welcome).
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
@@ -346,21 +349,33 @@ fields:
 - name: wallpaper_clicks_had_previous_wallpaper
   type: INTEGER
   mode: NULLABLE
+  description: Number of wallpaper selections where the user already had a wallpaper
+    set (i.e., this was a wallpaper change rather than a first selection).
 - name: wallpaper_clicks_first_selected_wallpaper
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user selected a wallpaper for the very first time
+    (no prior wallpaper set).
 - name: wallpaper_category_clicks
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user clicked a wallpaper category option in the
+    wallpaper picker on the New Tab page.
 - name: wallpaper_highlight_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user dismissed the wallpaper feature highlight
+    tooltip on the New Tab page.
 - name: wallpaper_highlight_cta_clicks
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user clicked the CTA button on the wallpaper feature
+    highlight on the New Tab page.
 - name: weather_widget_impressions
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the weather widget was visible (impressed) to the user
+    on the New Tab page.
 - name: weather_widget_clicks
   type: INTEGER
   mode: NULLABLE
@@ -370,6 +385,7 @@ fields:
 - name: weather_widget_load_errors
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the weather widget failed to load on the New Tab page.
 - name: weather_widget_change_display_to_detailed
   type: INTEGER
   mode: NULLABLE
@@ -385,6 +401,7 @@ fields:
 - name: weather_widget_location_selected
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user selected a location for the weather widget.
 - name: visits_with_default_ui
   type: INTEGER
   mode: NULLABLE
@@ -393,9 +410,13 @@ fields:
 - name: visits_with_default_ui_with_non_impression_engagement
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits in the default UI configuration where the user
+    engaged with content beyond just seeing impressions (e.g., clicks or searches).
 - name: visits_with_default_ui_with_non_search_engagement
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits in the default UI configuration where the user
+    engaged with non-search content (e.g., clicked a topsite or Pocket story).
 - name: topic_preferences_set
   type: BOOLEAN
   mode: NULLABLE
@@ -416,9 +437,13 @@ fields:
 - name: pocket_thumbs_up
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user gave a thumbs-up rating to a Pocket story
+    on the New Tab page.
 - name: pocket_thumbs_down
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the user gave a thumbs-down rating to a Pocket story
+    on the New Tab page.
 - name: pocket_thumb_voting_events
   type: INTEGER
   mode: NULLABLE
@@ -427,6 +452,8 @@ fields:
 - name: topic_selection_selected_topics_first_time
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the user selected topics for personalization for the very first
+    time; true if this was their initial topic selection.
 - name: topic_selection_updates
   type: INTEGER
   mode: NULLABLE
@@ -455,42 +482,70 @@ fields:
 - name: non_search_engagement_count
   type: INTEGER
   mode: NULLABLE
+  description: Total number of non-search engagement actions (e.g., topsite clicks,
+    Pocket clicks) across all newtab visits for this client on this day.
 - name: newtab_dismissal_count
   type: INTEGER
   mode: NULLABLE
+  description: Total number of content dismissals on the New Tab page (top-site tiles,
+    organic and sponsored Pocket stories, and topic selections combined).
 - name: list_card_clicks
   type: INTEGER
   mode: NULLABLE
+  description: Total number of clicks on list-type widget cards (organic and sponsored
+    combined) on the New Tab page.
 - name: organic_list_card_clicks
   type: INTEGER
   mode: NULLABLE
+  description: Number of clicks on organic (non-sponsored) list-type widget cards
+    on the New Tab page.
 - name: sponsored_list_card_clicks
   type: INTEGER
   mode: NULLABLE
+  description: Number of clicks on sponsored list-type widget cards on the New Tab
+    page.
 - name: list_card_impressions
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times list-type widget cards were shown (impressed)
+    to the user on the New Tab page.
 - name: organic_list_card_impressions
   type: INTEGER
   mode: NULLABLE
+  description: Number of times organic list-type widget cards were shown to the user
+    on the New Tab page.
 - name: sponsored_list_card_impressions
   type: INTEGER
   mode: NULLABLE
+  description: Number of times sponsored list-type widget cards were shown to the
+    user on the New Tab page.
 - name: list_card_saves
   type: INTEGER
   mode: NULLABLE
+  description: Total number of saves from list-type widget cards (organic and sponsored
+    combined) on the New Tab page.
 - name: organic_list_card_saves
   type: INTEGER
   mode: NULLABLE
+  description: Number of saves from organic list-type widget cards on the New Tab
+    page.
 - name: sponsored_list_card_saves
   type: INTEGER
   mode: NULLABLE
+  description: Number of saves from sponsored list-type widget cards on the New Tab
+    page.
 - name: list_card_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: Total number of dismissals of list-type widget cards on the New Tab
+    page.
 - name: organic_list_card_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: Number of dismissals of organic list-type widget cards on the New Tab
+    page.
 - name: sponsored_list_card_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: Number of dismissals of sponsored list-type widget cards on the New
+    Tab page.

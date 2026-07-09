@@ -1,0 +1,49 @@
+fields:
+- name: channel
+  type: INT64
+  mode: NULLABLE
+  description: An integer-encoded release channel identifier (e.g., 1 = nightly, 2
+    = beta, 3 = release).
+- name: app_version
+  type: INT64
+  mode: NULLABLE
+  description: The major version number of the application as an integer (e.g., 97,
+    98, 99).
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized operating system name (e.g., 'Windows', 'Mac', 'Linux'),
+    or '*' for the aggregate across all operating systems.
+- name: process
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox process type from which a measurement or event originated,
+    such as 'parent' (the main browser process), 'content' (a content renderer process),
+    or 'gpu' (the GPU process).
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: "The aggregation key for the metric \u2014 for a labeled (keyed) metric\
+    \ this is the label, otherwise empty."
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: The name of the telemetry metric or histogram being recorded, such
+    as 'gc_ms' or 'thread_wakeup'. Used to identify which specific measurement a row
+    represents.
+- name: client_agg_type
+  type: STRING
+  mode: NULLABLE
+  description: Describes the aggregation method applied to client-level metric values,
+    such as 'summed_histogram', 'count', 'avg', 'sum', 'min', or 'max'. Determines
+    how individual client observations were combined into the stored aggregate.
+- name: total_sample
+  type: FLOAT64
+  mode: NULLABLE
+  description: The total size of the sample population considered in the computation,
+    used as a denominator or baseline for proportional calculations.

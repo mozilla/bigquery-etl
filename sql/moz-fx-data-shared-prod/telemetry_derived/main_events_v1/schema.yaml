@@ -69,14 +69,13 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: A string identifier representing the specific action, search engine,
-      or event type associated with a record, such as a search entry point or provider
-      key. An empty string indicates no specific key was recorded.
+    description: The experiment slug identifying the experiment the client was enrolled
+      in at the time of the event.
   - name: value
     type: RECORD
     mode: NULLABLE
-    description: A generic integer value associated with a measurement, event, or
-      metric. The specific meaning depends on the context of the surrounding fields.
+    description: The enrollment details for the experiment identified by key, including
+      the assigned branch, enrollment id, and experiment type.
     fields:
     - name: branch
       type: STRING
@@ -87,11 +86,13 @@ fields:
     - name: enrollment_id
       type: STRING
       mode: NULLABLE
+      description: The UUID identifying the specific enrollment instance for the experiment
+        within the experiments array.
     - name: type
       type: STRING
       mode: NULLABLE
-      description: The category of a browser add-on or extension, indicating its nature.
-        Common values include 'extension', 'locale', 'dictionary', and 'service'.
+      description: The type of the experiment enrollment, identifying the framework
+        or mechanism that enrolled the client (e.g., Nimbus).
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -159,14 +160,16 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: A string identifier representing the specific action, search engine,
-      or event type associated with a record, such as a search entry point or provider
-      key. An empty string indicates no specific key was recorded.
+    description: The key component of a key-value pair within the event_map_values
+      array, identifying a specific metadata attribute associated with a telemetry
+      event (e.g., 'source', 'trigger', 'networkID'). Keys are used to look up corresponding
+      values in the event's extra metadata.
   - name: value
     type: STRING
     mode: NULLABLE
-    description: A generic integer value associated with a measurement, event, or
-      metric. The specific meaning depends on the context of the surrounding fields.
+    description: The value component of a key-value pair within an event's map of
+      extra attributes. Common values include boolean strings (e.g. 'false'), numeric
+      strings, 'unavailable', or empty strings, depending on the attribute being recorded.
 - name: event_process
   type: STRING
   mode: NULLABLE

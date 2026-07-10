@@ -35,9 +35,14 @@ fields:
 - name: days_seen_session_start_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer encoding the days in the past 28 days on which the client had a session
+    start event. Each bit represents one day, with the least significant bit representing the submission
+    date.
 - name: days_seen_session_end_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer encoding the days in the past 28 days on which the client had a session
+    end event. Each bit represents one day, with the least significant bit representing the submission date.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -49,6 +54,7 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: The normalized user-visible version string of iOS (e.g., '18.5', '26.3.1').
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
@@ -60,6 +66,8 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
+  description: The city-level geolocation of the client derived from IP address. Null when city-level resolution
+    is unavailable.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -68,9 +76,12 @@ fields:
 - name: app_build
   type: STRING
   mode: NULLABLE
+  description: The CI build identifier for the Firefox iOS application (e.g., '73120').
 - name: app_channel
   type: STRING
   mode: NULLABLE
+  description: The release channel of the application as reported by the client (e.g., 'release', 'beta',
+    'developer').
 - name: app_display_version
   type: STRING
   mode: NULLABLE
@@ -94,9 +105,12 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: The date when the client was first observed sending a baseline ping.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether this is the client's first year of activity. True if the client's first_seen_date
+    falls within the current year window.
 - name: isp
   type: STRING
   mode: NULLABLE
@@ -108,3 +122,5 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: The primary administrative subdivision (e.g., state or province code) of the client derived
+    from IP geolocation. Null for clients where subdivision cannot be determined.

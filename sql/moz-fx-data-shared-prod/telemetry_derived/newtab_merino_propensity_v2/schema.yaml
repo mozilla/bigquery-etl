@@ -2,12 +2,16 @@ fields:
 - mode: NULLABLE
   name: snapshot_date
   type: DATE
+  description: The calendar date for which this propensity snapshot was computed, using 11 calendar days
+    of historical impression data (this date minus 10 through this date inclusive).
 - mode: NULLABLE
   name: snapshot_at
   type: TIMESTAMP
+  description: UTC timestamp recording when this propensity snapshot was written to BigQuery.
 - mode: NULLABLE
   name: layout
   type: STRING
+  description: The new tab page layout type for which these propensity weights were computed (e.g., 'SECTION_GRID').
 - mode: NULLABLE
   name: country
   type: STRING
@@ -17,6 +21,8 @@ fields:
 - mode: NULLABLE
   name: section_position
   type: INTEGER
+  description: The section position within a multi-section new tab layout. Currently always null as this
+    model version focuses on the main section grid.
 - mode: NULLABLE
   name: position
   type: INTEGER
@@ -26,9 +32,16 @@ fields:
 - mode: NULLABLE
   name: tile_format
   type: STRING
+  description: The display format of the tile slot (e.g., 'small-card', 'medium-card', 'large-card'). The
+    value 'any' represents the impression-weighted average weight across all formats for a given position.
 - mode: NULLABLE
   name: impressions
   type: INTEGER
+  description: Total number of impressions observed for this position and tile format combination over the
+    10-day look-back window used to compute the propensity weights.
 - mode: NULLABLE
   name: weight
   type: FLOAT
+  description: Propensity weight for this position and tile format, computed via Alternating Least Squares
+    (ALS) matrix decomposition to isolate position-bias effects from item quality. Normalised so that applying
+    these weights preserves the overall observed CTR across all positions.

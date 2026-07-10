@@ -1,0 +1,24 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
+- name: num_clients
+  type: INT64
+  mode: NULLABLE
+  description: The number of distinct clients meeting the High-Confidence Mobile segment criteria for this
+    date, OS, and channel combination.

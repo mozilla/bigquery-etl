@@ -54,9 +54,21 @@ def get_routines_from_dir(project_dir):
 
 def get_routines(project):
     """Return all routines that could be referenced by the project."""
-    return get_routines_from_dir(project) + get_routines_from_dir(
-        Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun"
-    )
+    sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+    # Routines may reference UDFs in their own project, in the shared `mozfun`
+    # library, and in `moz-fx-data-shared-prod` (e.g. a public `mozfun` UDF that
+    # delegates to a shared-prod implementation). All three are included so the
+    # dependency graph used to order publishing is complete.
+    routine_dirs = {
+        Path(project),
+        sql_dir / "mozfun",
+        sql_dir / "moz-fx-data-shared-prod",
+    }
+    return [
+        routine
+        for routine_dir in routine_dirs
+        for routine in get_routines_from_dir(routine_dir)
+    ]
 
 
 @attr.s(auto_attribs=True)
@@ -259,10 +271,17 @@ def read_routine_dir(*project_dirs):
 
 def parse_routines(project_dir):
     """Read routine contents of the project dir into ParsedRoutine instances."""
-    # collect udfs to parse
+    # collect udfs to parse. `mozfun` and `moz-fx-data-shared-prod` are always
+    # included so that a routine depending on them (e.g. a public `mozfun` UDF
+    # that delegates to a `moz-fx-data-shared-prod` UDF) has that dependency's
+    # definition available to inline as a temp function in its test SQL. Without
+    # this the test would invoke the real persistent routine instead of the
+    # local (possibly stubbed) definition.
+    sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
     raw_routines = read_routine_dir(
         project_dir,
-        Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun",
+        sql_dir / "mozfun",
+        sql_dir / "moz-fx-data-shared-prod",
     )
 
     # prepend udf definitions to tests

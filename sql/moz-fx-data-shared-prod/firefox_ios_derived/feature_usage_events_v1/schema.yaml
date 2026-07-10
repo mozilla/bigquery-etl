@@ -443,78 +443,117 @@ fields:
 - name: notification_status_authorized_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users whose device notification permission status is 'authorized' (notifications
+    are allowed).
 - name: notification_status_authorized
   type: INTEGER
   mode: NULLABLE
+  description: Total count of notification permission check events where the status was 'authorized' during
+    the ping period.
 - name: notification_status_notDetermined_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users whose device notification permission status is 'notDetermined' (the
+    user has not yet been asked).
 - name: notification_status_notDetermined
   type: INTEGER
   mode: NULLABLE
+  description: Total count of notification permission check events where the status was 'notDetermined'
+    during the ping period.
 - name: notification_status_denied_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users whose device notification permission status is 'denied' (the user
+    has blocked notifications).
 - name: notification_status_denied
   type: INTEGER
   mode: NULLABLE
+  description: Total count of notification permission check events where the status was 'denied' during
+    the ping period.
 - name: notification_alert_setting_not_supported_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users whose device does not support alert-style notifications for Firefox
+    iOS.
 - name: notification_alert_setting_not_supported
   type: INTEGER
   mode: NULLABLE
+  description: Total count of notification permission events where the alert setting was 'notSupported'
+    during the ping period.
 - name: notification_alert_setting_disabled_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who have alerts for Firefox iOS notifications disabled.
 - name: notification_alert_setting_disabled
   type: INTEGER
   mode: NULLABLE
+  description: Total count of notification permission events where the alert setting was 'disabled' during
+    the ping period.
 - name: notification_alert_setting_enabled_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who have alerts for Firefox iOS notifications enabled.
 - name: notification_alert_setting_enabled
   type: INTEGER
   mode: NULLABLE
+  description: Total count of notification permission events where the alert setting was 'enabled' during
+    the ping period.
 - name: address_autofill_prompt_dismissed_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who dismissed the address autofill prompt during the ping period.
 - name: address_autofill_prompt_dismissed
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the address autofill prompt was dismissed during the ping period.
 - name: address_autofill_prompt_expanded_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who expanded the address autofill prompt to see more details during
+    the ping period.
 - name: address_autofill_prompt_expanded
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the address autofill prompt was expanded during the ping period.
 - name: address_autofill_prompt_shown_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who were shown the address autofill prompt during the ping period.
 - name: address_autofill_prompt_shown
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the address autofill prompt was shown during the ping period.
 - name: address_autofilled_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who had at least one address form field successfully autofilled during
+    the ping period.
 - name: address_autofilled
   type: INTEGER
   mode: NULLABLE
+  description: Total number of address autofill events recorded during the ping period.
 - name: address_form_detected_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users for whom at least one address form was detected on a webpage during
+    the ping period.
 - name: address_form_detected
   type: INTEGER
   mode: NULLABLE
+  description: Total number of address form detection events recorded during the ping period.
 - name: address_modified_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who modified a saved address during the ping period.
 - name: address_modified
   type: INTEGER
   mode: NULLABLE
+  description: Total number of saved address modification events recorded during the ping period.
 - name: address_settings_autofill_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who accessed the address autofill settings during the ping period.
 - name: address_settings_autofill
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the address autofill settings were accessed during the ping period.

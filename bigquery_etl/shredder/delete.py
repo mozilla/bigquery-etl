@@ -346,11 +346,6 @@ def delete_from_partition(
             "type": "shredder",
         },
     )
-    # The event_id backfill logic in this function is just temporary for https://mozilla-hub.atlassian.net/browse/DENG-9800.
-    event_id_backfill = target.table_id == "events_stream_v1" and target.dataset_id in (
-        "firefox_desktop_derived",
-        "org_mozilla_firefox_derived",
-    )
     # whole table operations must use DML to protect against dropping partitions in the
     # case of conflicting write operations in ETL, and special partitions must use DML
     # because they can't be set as a query destination.
@@ -366,14 +361,12 @@ def delete_from_partition(
         )
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         job_config.clustering_fields = clustering_fields
-    elif not use_dml or column_removal_backfill or event_id_backfill:
+    elif not use_dml or column_removal_backfill:
         destination_table = f"{sql_table_id(target)}${partition.id}"
         if column_removal_backfill:
             # column removal requires a transformation using a SELECT query
             use_dml = False
             destination_table = destination_table.replace("_v1$", "_v2$")
-        elif event_id_backfill:
-            use_dml = False
         job_config.destination = destination_table
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
@@ -462,27 +455,11 @@ def delete_from_partition(
             else:
                 partition_condition = partition.condition
 
-            if column_removal_backfill:
-                if seed_from_v1:
-                    select_expression = generate_compatible_select_expression(
-                        client,
-                        v1_table_id,
-                        v2_table_id,
-                    )
-                else:
-                    select_expression = "_target.*"
-            elif event_id_backfill:
-                select_expression = """
-                    _target.* REPLACE (
-                      COALESCE(
-                        _target.event_id,
-                        CONCAT(_target.document_id, '-', _target.document_event_number),
-                        GENERATE_UUID()
-                      ) AS event_id
-                    )
-                """
-            else:
-                select_expression = "_target.*"
+            select_expression = (
+                generate_compatible_select_expression(client, v1_table_id, v2_table_id)
+                if column_removal_backfill and seed_from_v1
+                else "_target.*"
+            )
 
             query = reformat(f"""
                 SELECT

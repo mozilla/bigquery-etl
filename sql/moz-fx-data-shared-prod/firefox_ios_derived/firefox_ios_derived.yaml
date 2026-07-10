@@ -1,0 +1,146 @@
+fields:
+- name: active_hours
+  description: Total active hours spent in Firefox iOS by clients in this dimension group. Null when not collected.
+- name: adjust_network
+  type: STRING
+  description: The Adjust-attributed acquisition network through which the user installed Firefox iOS (e.g., 'Organic', 'Apple Search Ads', 'Unknown').
+- name: app_name
+  type: STRING
+  description: The name of the Firefox iOS application (e.g., 'Firefox iOS').
+- name: app_version
+  description: The user-visible version string of the Firefox iOS application at the time of the ping (e.g., '152.0').
+- name: attributed
+  description: Indicates whether the client installation has Adjust attribution data. True when attribution is known, false otherwise.
+- name: attribution_medium
+  description: The optional attribution medium (similar to UTM medium) associated with the client's install. Null when not available.
+- name: attribution_source
+  description: The optional attribution source (similar to UTM source) associated with the client's install. Null when not available.
+- name: channel
+  type: STRING
+  description: The release channel of the application (e.g., 'release', 'beta', 'nightly').
+- name: city
+  type: STRING
+  description: City-level geolocation of the client derived from IP address. Null when city-level resolution is unavailable.
+- name: country
+  type: STRING
+  description: Two-letter ISO 3166-1 country code derived from IP geolocation of the client.
+- name: daily_users
+  description: Total count of user-days recorded on the submission date for this dimension combination, equivalent to DAU.
+- name: dau
+  type: INT64
+  description: 'Daily Active Users count: the number of distinct clients active on the submission date for this dimension combination.'
+- name: distribution_id
+  type: STRING
+  description: The distribution partner identifier associated with the Firefox iOS installation. Null when not applicable.
+- name: first_seen_year
+  description: The calendar year in which the client was first seen (i.e., the year portion of the client's first-seen date).
+- name: install_source
+  type: STRING
+  description: The source from which Firefox iOS was installed (e.g., App Store). Null when not recorded.
+- name: is_default_browser
+  type: BOOLEAN
+  description: Whether the client has set Firefox iOS as the device default browser. True when Firefox is the default; null when the status is
+    unavailable.
+- name: locale
+  type: STRING
+  description: The locale of the Firefox iOS application during initialization (e.g., 'en', 'de'). Derived from the Glean locale metric.
+- name: mau
+  type: INT64
+  description: 'Monthly Active Users count: the number of distinct clients active in the 28-day window ending on the submission date.'
+- name: monthly_users
+  description: Total count of user-months for the 28-day window ending on the submission date for this dimension combination, equivalent to MAU.
+- name: os
+  description: The name of the operating system running on the client device (always 'iOS' for this dataset).
+- name: os_version
+  description: The full user-visible version string of iOS running on the client device (e.g., '18.5').
+- name: os_version_major
+  description: The major version component of the iOS operating system version.
+- name: os_version_minor
+  description: The minor version component of the iOS operating system version.
+- name: segment
+  description: User engagement segment derived from activity frequency. Values include 'core_user', 'casual_user', 'regular_user', 'infrequent_user',
+    and 'other' for users with no activity.
+- name: submission_date
+  type: DATE
+  description: The date when the aggregated metrics were computed and the partition was written.
+- name: uri_count
+  type: INT64
+  description: Total number of URIs visited by clients in this dimension group on the submission date. Null when not recorded.
+- name: wau
+  type: INT64
+  description: 'Weekly Active Users count: the number of distinct clients active in the 7-day window ending on the submission date.'
+- name: weekly_users
+  description: Total count of user-weeks for the 7-day window ending on the submission date for this dimension combination, equivalent to WAU.
+- name: client_id
+  type: STRING
+  description: A UUID uniquely identifying the Firefox iOS client installation.
+- name: normalized_channel
+  type: STRING
+  description: The normalized release channel of the application (e.g., 'release', 'nightly').
+- name: sample_id
+  type: INT64
+  description: A number between 0 and 99 derived from the client_id, used to filter data to a random sample for efficient analysis.
+- name: app_build
+  type: STRING
+  description: The CI build identifier for the Firefox iOS application (e.g., '73120').
+- name: app_channel
+  type: STRING
+  description: The release channel of the application as reported by the client (e.g., 'release', 'beta', 'developer').
+- name: first_seen_date
+  type: DATE
+  description: The date when the client was first observed sending a baseline ping.
+- name: geo_subdivision
+  type: STRING
+  description: The primary administrative subdivision (e.g., state or province code) of the client derived from IP geolocation. Null for clients
+    where subdivision cannot be determined.
+- name: is_new_profile
+  type: BOOLEAN
+  description: Indicates whether this is the client's first year of activity. True if the client's first_seen_date falls within the current year
+    window.
+- name: normalized_os_version
+  type: STRING
+  description: The normalized user-visible version string of iOS (e.g., '18.5', '26.3.1').
+- name: android_sdk_version
+  description: The Android SDK version. Always null for iOS clients.
+- name: app_display_version
+  description: The user-visible version string of the Firefox iOS application (e.g., '152.0').
+- name: architecture
+  description: The hardware architecture identifier of the device (e.g., 'D17AP', 'D37AP'). Corresponds to internal Apple chip/device board identifiers.
+- name: device_manufacturer
+  type: STRING
+  description: The manufacturer of the device running Firefox iOS (always 'Apple' for iOS devices).
+- name: device_model
+  description: The model identifier of the Apple device (e.g., 'iPhone14,5'). This is the internal Apple model string.
+- name: durations
+  description: The total foreground session duration in seconds recorded for this client on the most recent active day.
+- name: first_run_date
+  description: The date of the first run of the Firefox iOS application on this device.
+- name: isp
+  description: The name of the internet service provider associated with the client's IP address.
+- name: normalized_app_id
+  description: The normalized application identifier for the Firefox iOS app (e.g., 'org_mozilla_ios_firefox', 'org_mozilla_ios_firefoxbeta').
+- name: normalized_os
+  description: The normalized name of the operating system running on the client device (always 'iOS' for this dataset).
+- name: telemetry_sdk_build
+  description: The version of the Glean SDK used to collect the telemetry ping (e.g., '66.3.0').
+- name: adjust_ad_group
+  description: The Adjust-attributed ad group associated with the client's Firefox iOS install. Null when attribution is unavailable.
+- name: adjust_campaign
+  description: The Adjust-attributed campaign name associated with the client's Firefox iOS install. Null when attribution is unavailable.
+- name: adjust_creative
+  description: The Adjust-attributed creative identifier associated with the client's Firefox iOS install. Null when attribution is unavailable.
+- name: days_seen_session_end_bits
+  type: INT64
+  description: A 28-bit integer encoding the days in the past 28 days on which the client had a session end event. Each bit represents one day,
+    with the least significant bit representing the submission date.
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  description: Indicates whether the client has been identified as a suspicious or automated device. True when flagged as suspicious, false for
+    regular clients.
+- name: days_seen_session_start_bits
+  type: INT64
+  description: A 28-bit integer encoding the days in the past 28 days on which the client had a session start event. Each bit represents one day,
+    with the least significant bit representing the submission date.
+- name: days_since_seen
+  type: INT64
+  description: Number of days elapsed between the client's most recent active day and the as_of_date. Capped at 364 for long-inactive clients.

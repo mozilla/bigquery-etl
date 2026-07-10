@@ -385,6 +385,40 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: broken_site_report_breakage_category
+      type: STRING
+      mode: NULLABLE
+      description: 'The user-selected reason the site is broken (e.g. "media", "load",
+
+        "content"). Serialized as a single value even though the UI presents a
+
+        two-level picker. The option set is UI-driven and may change over time.
+
+        '
+    - name: broken_site_report_browser_info_graphics_device_pixel_ratio
+      type: STRING
+      mode: NULLABLE
+      description: 'The device pixel ratio (screen scale) as a decimal string, e.g.
+        "3.0".
+
+        '
+    - name: broken_site_report_tab_info_antitracking_block_list
+      type: STRING
+      mode: NULLABLE
+      description: 'Which content-blocking rule set is active for the tab: a single
+        value,
+
+        one of "basic" or "strict" (not a list of blocked items; those are in
+
+        blocked_origins). Named block_list to match the cross-platform schema.
+
+        '
+    - name: broken_site_report_tab_info_antitracking_etp_category
+      type: STRING
+      mode: NULLABLE
+      description: 'The user''s tracking-protection strength setting ("basic" or "strict").
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -401,6 +435,150 @@ fields:
         This metric is only attached to a ping if it already contains other data.
 
         '
+    - name: broken_site_report_browser_info_app_default_locales
+      type: STRING
+      mode: REPEATED
+      description: 'The app''s preferred locale list (e.g. ["en-US", "en"]).
+
+        '
+    - name: broken_site_report_tab_info_antitracking_blocked_origins
+      type: STRING
+      mode: REPEATED
+      description: 'Origins blocked by tracking protection on the reported page. Only
+
+        included when the user keeps the "list of items blocked by tracking
+
+        protection" option on.
+
+        '
+    - name: broken_site_report_tab_info_languages
+      type: STRING
+      mode: REPEATED
+      description: 'The languages the reported page actually saw (navigator.languages),
+
+        read from the page context at report time.
+
+        '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_browser_info_graphics_has_touch_screen
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the device reports a touch screen (navigator.maxTouchPoints
+        > 0).
+
+        '
+    - name: broken_site_report_browser_info_system_is_tablet
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the reporting device is a tablet (iPad).
+
+        '
+    - name: broken_site_report_tab_info_antitracking_is_private_browsing
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the reported tab is in private browsing mode.
+
+        '
+    - name: broken_site_report_tab_info_frameworks_fastclick
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the FastClick library was detected on the reported page
+
+        (detected via injected JS at report time).
+
+        '
+    - name: broken_site_report_tab_info_frameworks_marfeel
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the Marfeel framework was detected on the reported page
+
+        (detected via injected JS at report time).
+
+        '
+    - name: broken_site_report_tab_info_frameworks_mobify
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the Mobify framework was detected on the reported page
+
+        (detected via injected JS at report time).
+
+        '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_browser_info_system_memory
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Total physical memory of the device, in megabytes.
+
+        '
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_browser_info_app_default_useragent_string
+      type: STRING
+      mode: NULLABLE
+      description: 'The app''s default user agent string (the app-level UA, distinct
+        from the
+
+        per-page `tab_info.useragent_string`).
+
+        '
+    - name: broken_site_report_description
+      type: STRING
+      mode: NULLABLE
+      description: 'Optional free-text "Additional Details" entered by the user. May
+        contain
+
+        PII (free-form text).
+
+        '
+    - name: broken_site_report_tab_info_useragent_string
+      type: STRING
+      mode: NULLABLE
+      description: 'The user agent string the reported page actually saw
+
+        (navigator.userAgent), read from the page context at report time.
+
+        '
+  - name: url2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_url
+      type: STRING
+      mode: NULLABLE
+      description: 'The URL of the site the user is reporting. The user may edit this
+        before
+
+        submitting. May contain PII.
+
+        '
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_browser_info_app_default_useragent_string
+      type: STRING
+      mode: NULLABLE
+    - name: broken_site_report_description
+      type: STRING
+      mode: NULLABLE
+    - name: broken_site_report_tab_info_useragent_string
+      type: STRING
+      mode: NULLABLE
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

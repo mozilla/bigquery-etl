@@ -40,6 +40,7 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
+    - country
     - layout
     - position
     - tile_format
@@ -49,3 +50,6 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:mozsoc-ml/developers
   - workgroup:mozsoc-ml/service
+references:
+  checks.sql:
+  - ..

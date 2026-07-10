@@ -17,8 +17,40 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_breakage_category,
+      metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
+      metrics.string.broken_site_report_tab_info_antitracking_block_list,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
+    ) AS `string`,
+    STRUCT(
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.broken_site_report_browser_info_app_default_locales,
+      metrics.string_list.broken_site_report_tab_info_antitracking_blocked_origins,
+      metrics.string_list.broken_site_report_tab_info_languages
+    ) AS `string_list`,
+    STRUCT(
+      metrics.boolean.broken_site_report_browser_info_graphics_has_touch_screen,
+      metrics.boolean.broken_site_report_browser_info_system_is_tablet,
+      metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
+      metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
+      metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+    ) AS `boolean`,
+    STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
+    STRUCT(
+      metrics.text2.broken_site_report_browser_info_app_default_useragent_string,
+      metrics.text2.broken_site_report_description,
+      metrics.text2.broken_site_report_tab_info_useragent_string
+    ) AS `text2`,
+    STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(
+      metrics.text.broken_site_report_browser_info_app_default_useragent_string,
+      metrics.text.broken_site_report_description,
+      metrics.text.broken_site_report_tab_info_useragent_string
+    ) AS `text`,
+    STRUCT(metrics.url.broken_site_report_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -49,8 +81,40 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_breakage_category,
+      metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
+      metrics.string.broken_site_report_tab_info_antitracking_block_list,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
+    ) AS `string`,
+    STRUCT(
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.broken_site_report_browser_info_app_default_locales,
+      metrics.string_list.broken_site_report_tab_info_antitracking_blocked_origins,
+      metrics.string_list.broken_site_report_tab_info_languages
+    ) AS `string_list`,
+    STRUCT(
+      metrics.boolean.broken_site_report_browser_info_graphics_has_touch_screen,
+      metrics.boolean.broken_site_report_browser_info_system_is_tablet,
+      metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
+      metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
+      metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+    ) AS `boolean`,
+    STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
+    STRUCT(
+      metrics.text2.broken_site_report_browser_info_app_default_useragent_string,
+      metrics.text2.broken_site_report_description,
+      metrics.text2.broken_site_report_tab_info_useragent_string
+    ) AS `text2`,
+    STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(
+      metrics.text.broken_site_report_browser_info_app_default_useragent_string,
+      metrics.text.broken_site_report_description,
+      metrics.text.broken_site_report_tab_info_useragent_string
+    ) AS `text`,
+    STRUCT(metrics.url.broken_site_report_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -81,8 +145,40 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_breakage_category,
+      metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
+      metrics.string.broken_site_report_tab_info_antitracking_block_list,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
+    ) AS `string`,
+    STRUCT(
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.broken_site_report_browser_info_app_default_locales,
+      metrics.string_list.broken_site_report_tab_info_antitracking_blocked_origins,
+      metrics.string_list.broken_site_report_tab_info_languages
+    ) AS `string_list`,
+    STRUCT(
+      metrics.boolean.broken_site_report_browser_info_graphics_has_touch_screen,
+      metrics.boolean.broken_site_report_browser_info_system_is_tablet,
+      metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
+      metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
+      metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+    ) AS `boolean`,
+    STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
+    STRUCT(
+      metrics.text2.broken_site_report_browser_info_app_default_useragent_string,
+      metrics.text2.broken_site_report_description,
+      metrics.text2.broken_site_report_tab_info_useragent_string
+    ) AS `text2`,
+    STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(
+      metrics.text.broken_site_report_browser_info_app_default_useragent_string,
+      metrics.text.broken_site_report_description,
+      metrics.text.broken_site_report_tab_info_useragent_string
+    ) AS `text`,
+    STRUCT(metrics.url.broken_site_report_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

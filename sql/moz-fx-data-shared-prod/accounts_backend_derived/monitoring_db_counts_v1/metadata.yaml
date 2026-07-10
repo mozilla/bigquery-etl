@@ -39,8 +39,11 @@ references:
   - moz-fx-data-shared-prod.accounts_db_external.fxa_account_reset_tokens_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_carts_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_deleted_accounts_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_device_commands_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_devices_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_domain_blocklist_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_email_blocklist_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_email_bounces_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_key_fetch_tokens_v1 FOR SYSTEM_TIME

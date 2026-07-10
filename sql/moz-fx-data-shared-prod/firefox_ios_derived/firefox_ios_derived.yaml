@@ -51,8 +51,10 @@ fields:
   description: Total count of user-months for the 28-day window ending on the submission date for this dimension combination, equivalent to MAU.
 - name: os
   description: The name of the operating system running on the client device (always 'iOS' for this dataset).
+  type: STRING
 - name: os_version
   description: The full user-visible version string of iOS running on the client device (e.g., '18.5').
+  type: STRING
 - name: os_version_major
   description: The major version component of the iOS operating system version.
 - name: os_version_minor
@@ -111,6 +113,7 @@ fields:
   description: The manufacturer of the device running Firefox iOS (always 'Apple' for iOS devices).
 - name: device_model
   description: The model identifier of the Apple device (e.g., 'iPhone14,5'). This is the internal Apple model string.
+  type: STRING
 - name: durations
   description: The total foreground session duration in seconds recorded for this client on the most recent active day.
 - name: first_run_date
@@ -125,10 +128,13 @@ fields:
   description: The version of the Glean SDK used to collect the telemetry ping (e.g., '66.3.0').
 - name: adjust_ad_group
   description: The Adjust-attributed ad group associated with the client's Firefox iOS install. Null when attribution is unavailable.
+  type: STRING
 - name: adjust_campaign
   description: The Adjust-attributed campaign name associated with the client's Firefox iOS install. Null when attribution is unavailable.
+  type: STRING
 - name: adjust_creative
   description: The Adjust-attributed creative identifier associated with the client's Firefox iOS install. Null when attribution is unavailable.
+  type: STRING
 - name: days_seen_session_end_bits
   type: INT64
   description: A 28-bit integer encoding the days in the past 28 days on which the client had a session end event. Each bit represents one day,
@@ -144,3 +150,46 @@ fields:
 - name: days_since_seen
   type: INT64
   description: Number of days elapsed between the client's most recent active day and the as_of_date. Capped at 364 for long-inactive clients.
+- name: ios_version
+  type: STRING
+  description: The version of iOS running on the client's device.
+- name: first_reported_country
+  description: The first country reported by the client, determined by IP geolocation at the time of first ping.
+- name: first_reported_isp
+  description: The name of the Internet Service Provider first reported for the client, as determined by IP geolocation.
+- name: device_type
+  type: STRING
+  description: The type of iOS device; either 'iPhone' or 'iPad'. Null when the device type cannot be determined.
+- name: retained_week_4
+  description: Whether the client was retained at week 4 (i.e., sent a ping in the fourth week after first seen). False indicates the client did
+    not return at week 4.
+- name: paid_vs_organic_gclid
+  type: STRING
+  description: Google Click ID (gclid) used to distinguish paid from organic installs via Google campaign attribution. Null for all clients in
+    this sample.
+- name: days_sent_metrics_ping_bits
+  type: INT64
+  description: A bit pattern encoding which days in the current period the client sent a metrics ping, used for retention and engagement calculations.
+- name: funnel_id
+  type: STRING
+  description: A string encoding the ordered sequence of onboarding cards shown to the client (e.g., 'welcome_sign-to-sync_notification-permissions').
+    Null for clients whose onboarding cards could not be determined.
+- name: repeat_first_month_user
+  type: BOOLEAN
+  description: Whether the client was active more than once in their first calendar month, distinguishing engaged new users from one-time users.
+- name: funnel
+  type: STRING
+  description: The name of the onboarding funnel this record belongs to; always 'ios_onboarding_funnel' for this table.
+- name: is_mobile
+  type: BOOLEAN
+  description: Whether the client device is a mobile device; always true for iOS clients in this dataset.
+- name: retained_week_2
+  type: BOOLEAN
+  description: Whether the client was retained at week 2 (i.e., sent a ping in the second week after first seen). Null in the current sample,
+    likely populated for older cohorts.
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
+  description: The timestamp at which Adjust attributed the client's installation to a campaign. Null for unattributed clients.
+- name: n_metrics_ping
+  type: INT64
+  description: The number of metrics pings received from this client on this submission date.

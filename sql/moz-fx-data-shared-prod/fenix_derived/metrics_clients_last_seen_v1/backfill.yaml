@@ -1,3 +1,11 @@
+2026-07-10:
+  start_date: 2026-04-01
+  end_date: 2026-07-10
+  reason: DENG-11344
+  watchers:
+  - nalexander@mozilla.com
+  status: Initiate
+
 2026-05-15:
   start_date: 2026-03-30
   end_date: 2026-05-15
@@ -9,11 +17,3 @@
   shredder_mitigation: false
   override_retention_limit: false
   ignore_date_partition_offset: false
-
-2026-07-10:
-  start_date: 2026-04-01
-  end_date: 2026-07-10
-  reason: DENG-11344
-  watchers:
-  - nalexander@mozilla.com
-  status: Initiate

@@ -275,17 +275,16 @@ Build that input into a one-time helper table spanning the whole backfill range,
 per-partition custom query at the helper instead of the original source. This trades many
 repeated scans for one, and each per-partition query becomes a cheap sidefill against the helper.
 
-For example, suppose the table stores a 28-day rolling count of active users per
-`country`, and each partition rescans 28 days of a large `events_v1` table. First, materialize the
-per-day distinct-user counts once, spanning the whole backfill range plus the 27 days of lookback
-the first partition needs:
+For example, suppose the table stores a 28-day rolling event count per `country`, and each
+partition rescans 28 days of a large `events_v1` table. First, materialize the per-day counts
+once, spanning the whole backfill range plus the 27 days of lookback the first partition needs:
 
 ```sql
 CREATE OR REPLACE TABLE `moz-fx-data-shared-prod.analysis.rolling_helper_deng12345` AS
 SELECT
   submission_date,
   country,
-  COUNT(DISTINCT client_id) AS daily_users
+  COUNT(*) AS daily_events
 FROM
   `moz-fx-data-shared-prod.<dataset>.events_v1`
 WHERE
@@ -301,7 +300,7 @@ instead of the source events:
 SELECT
   @submission_date AS submission_date,
   country,
-  SUM(daily_users) AS rolling_28d_users
+  SUM(daily_events) AS rolling_28d_events
 FROM
   `moz-fx-data-shared-prod.analysis.rolling_helper_deng12345`
 WHERE

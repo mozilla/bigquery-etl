@@ -2,147 +2,215 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side; used as the partition field.
 - name: ping_date
   type: DATE
   mode: NULLABLE
+  description: The UTC date to which the event ping data is attributed, computed from the earlier of the
+    ping start and end times.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized release channel of the Firefox iOS application (e.g., 'release', 'beta', 'nightly').
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Two-letter ISO 3166-1 country code derived from IP geolocation of the client.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: The Adjust-attributed acquisition network through which users installed Firefox iOS (e.g.,
+    'Organic', 'Apple Search Ads'). Null when attribution is unavailable.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether clients in this group have Firefox iOS set as the device default browser. Null when
+    the status cannot be determined.
 - name: logins_autofill_failed_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who experienced at least one login autofill failure during the ping
+    period.
 - name: logins_autofill_failed
   type: INTEGER
   mode: NULLABLE
+  description: Total number of login autofill failure events recorded across all users during the ping period.
 - name: logins_autofilled_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who had at least one login successfully autofilled during the ping
+    period.
 - name: logins_autofilled
   type: INTEGER
   mode: NULLABLE
+  description: Total number of login autofill events recorded across all users during the ping period.
 - name: logins_management_add_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the 'Add' button in the logins management screen during
+    the ping period.
 - name: logins_management_add_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the 'Add' button was tapped in the logins management screen during
+    the ping period.
 - name: logins_management_logins_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped to open the logins management list during the ping period.
 - name: logins_management_logins_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the logins management list was opened during the ping period.
 - name: cc_autofill_failed_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who experienced at least one credit card autofill failure during
+    the ping period.
 - name: cc_autofill_failed
   type: INTEGER
   mode: NULLABLE
+  description: Total number of credit card autofill failure events recorded during the ping period.
 - name: cc_autofill_settings_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the credit card autofill settings option during the ping
+    period.
 - name: cc_autofill_settings_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card autofill settings option was tapped during the ping
+    period.
 - name: cc_autofill_toggle_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who toggled the credit card autofill setting during the ping period.
 - name: cc_autofill_toggle
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card autofill toggle was changed during the ping period.
 - name: cc_autofilled_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who had at least one credit card form field successfully autofilled
+    during the ping period.
 - name: cc_autofilled
   type: INTEGER
   mode: NULLABLE
+  description: Total number of credit card autofill events recorded across all users during the ping period.
 - name: cc_form_detected_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users for whom at least one credit card form was detected on a webpage
+    during the ping period.
 - name: cc_form_detected
   type: INTEGER
   mode: NULLABLE
+  description: Total number of credit card form detection events recorded during the ping period.
 - name: cc_sync_toggle_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who toggled credit card sync during the ping period.
 - name: cc_sync_toggle
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card sync toggle was changed during the ping period.
 - name: cc_autofill_prompt_dismissed_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who dismissed the credit card autofill prompt during the ping period.
 - name: cc_autofill_prompt_dismissed
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card autofill prompt was dismissed during the ping period.
 - name: cc_autofill_prompt_expanded_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who expanded the credit card autofill prompt to see more options
+    during the ping period.
 - name: cc_autofill_prompt_expanded
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card autofill prompt was expanded during the ping period.
 - name: cc_autofill_prompt_shown_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who were shown the credit card autofill prompt during the ping period.
 - name: cc_autofill_prompt_shown
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card autofill prompt was shown during the ping period.
 - name: cc_management_add_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the 'Add' button in the credit card management screen
+    during the ping period.
 - name: cc_management_add_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the 'Add' button was tapped in the credit card management screen during
+    the ping period.
 - name: cc_management_card_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped on a saved credit card in the management screen during
+    the ping period.
 - name: cc_management_card_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times a saved credit card was tapped in the management screen during the
+    ping period.
 - name: cc_save_prompt_create_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who chose to save a new credit card from the save prompt during the
+    ping period.
 - name: cc_save_prompt_create
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times a new credit card was saved from the save prompt during the ping period.
 - name: cc_save_prompt_shown_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who were shown the credit card save prompt during the ping period.
 - name: cc_save_prompt_shown
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the credit card save prompt was shown during the ping period.
 - name: cc_save_prompt_update_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who chose to update an existing credit card from the save prompt
+    during the ping period.
 - name: cc_save_prompt_update
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times an existing credit card was updated via the save prompt during the
+    ping period.
 - name: history_delete_tap_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped to delete a history item during the ping period.
 - name: history_delete_tap
   type: INTEGER
   mode: NULLABLE
+  description: Total number of history item delete taps recorded during the ping period.
 - name: history_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who opened the browser history view during the ping period.
 - name: history_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the browser history view was opened during the ping period.
 - name: history_removed_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who removed at least one history item during the ping period.
 - name: history_removed
   type: INTEGER
   mode: NULLABLE
+  description: Total number of individual history items removed during the ping period.
 - name: history_removed_all_users
   type: INTEGER
   mode: NULLABLE

@@ -414,7 +414,17 @@ class TestQuery:
             ) as f:
                 f.write("SELECT 1")
 
-            assert len(paths_matching_name_pattern("*", "sql/", None)) == 4
+            # Same table name in a dataset whose name is a suffix of another dataset
+            # (telemetry_derived vs glean_telemetry_derived). The "*{pattern}" suffix
+            # match means a bare "telemetry_derived.query_v1" over-matches this one.
+            os.makedirs("sql/moz-fx-data-shared-prod/glean_telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/glean_telemetry_derived/query_v1/query.sql",
+                "w",
+            ) as f:
+                f.write("SELECT 1")
+
+            assert len(paths_matching_name_pattern("*", "sql/", None)) == 5
             assert (
                 len(
                     paths_matching_name_pattern(
@@ -447,7 +457,31 @@ class TestQuery:
                 )
                 == 1
             )
-            assert len(paths_matching_name_pattern("*query*", "sql/", None)) == 4
+            assert len(paths_matching_name_pattern("*query*", "sql/", None)) == 5
+
+            # Known issue: A bare "dataset.table" over-matches glean_telemetry_derived
+            # because the "*{pattern}" suffix matches
+            assert (
+                len(
+                    paths_matching_name_pattern(
+                        "telemetry_derived.query_v1",
+                        "sql/",
+                        "moz-fx-data-shared-prod",
+                    )
+                )
+                == 2
+            )
+            # Fully qualifying with the project disambiguates the table name
+            assert (
+                len(
+                    paths_matching_name_pattern(
+                        "moz-fx-data-shared-prod.telemetry_derived.query_v1",
+                        "sql/",
+                        "moz-fx-data-shared-prod",
+                    )
+                )
+                == 1
+            )
             assert (
                 len(
                     paths_matching_name_pattern(

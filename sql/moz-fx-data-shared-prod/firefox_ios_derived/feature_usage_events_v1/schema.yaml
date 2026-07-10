@@ -214,153 +214,232 @@ fields:
 - name: history_removed_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who cleared all history during the ping period.
 - name: history_removed_all
   type: INTEGER
   mode: NULLABLE
+  description: Total number of 'remove all history' actions recorded during the ping period.
 - name: history_removed_today_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who removed today's browsing history during the ping period.
 - name: history_removed_today
   type: INTEGER
   mode: NULLABLE
+  description: Total number of 'remove today' history actions recorded during the ping period.
 - name: history_removed_today_and_yesterday_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who removed today's and yesterday's browsing history during the ping
+    period.
 - name: history_removed_today_and_yesterday
   type: INTEGER
   mode: NULLABLE
+  description: Total number of 'remove today and yesterday' history actions recorded during the ping period.
 - name: history_search_tap_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who used the search functionality within the history view during
+    the ping period.
 - name: history_search_tap
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the search bar was tapped within the history view during the ping period.
 - name: history_opened_item_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who opened a history item (navigated to a URL from history) during
+    the ping period.
 - name: history_opened_item
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times a history item was opened (URL navigated to from history) during the
+    ping period.
 - name: fxa_disconnect_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who disconnected from their Firefox Account (FxA) during the ping
+    period.
 - name: fxa_disconnect
   type: INTEGER
   mode: NULLABLE
+  description: Total number of Firefox Account disconnect events recorded during the ping period.
 - name: fxa_login_completed_view_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who reached the FxA login completed view during the ping period.
 - name: fxa_login_completed_view
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the FxA login completed view was shown during the ping period.
 - name: fxa_login_token_view_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who reached the FxA login token verification view during the ping
+    period.
 - name: fxa_login_token_view
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the FxA login token verification view was shown during the ping period.
 - name: fxa_login_view_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who reached the FxA login view (sign-in screen) during the ping period.
 - name: fxa_login_view
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the FxA login sign-in screen was shown during the ping period.
 - name: fxa_paired_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who completed FxA device pairing during the ping period.
 - name: fxa_paired
   type: INTEGER
   mode: NULLABLE
+  description: Total number of FxA device pairing completion events recorded during the ping period.
 - name: fxa_registration_code_view_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who reached the FxA registration code verification view during the
+    ping period.
 - name: fxa_registration_code_view
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the FxA registration code verification view was shown during the ping
+    period.
 - name: fxa_registration_completed_view_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who reached the FxA registration completed confirmation view during
+    the ping period.
 - name: fxa_registration_completed_view
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the FxA registration completed view was shown during the ping period.
 - name: fxa_registration_view_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who reached the FxA initial registration view during the ping period.
 - name: fxa_registration_view
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the FxA initial registration view was shown during the ping period.
 - name: fxa_use_email_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who chose the 'Use email' option during FxA sign-in during the ping
+    period.
 - name: fxa_use_email
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the 'Use email' option was selected during FxA sign-in during the ping
+    period. This field is PII-suppressed in profiling.
 - name: private_browsing_button_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the private browsing toggle button in preferences during
+    the ping period.
 - name: private_browsing_button_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the private browsing toggle button was tapped in preferences during
+    the ping period.
 - name: private_browsing_button_tapped_enter_private_mode_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the private browsing button specifically to enter private
+    mode during the ping period.
 - name: private_browsing_button_tapped_enter_private_mode
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the private browsing button was tapped to enter private mode during
+    the ping period.
 - name: private_browsing_icon_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the private browsing icon in the tabs tray during the
+    ping period.
 - name: private_browsing_icon_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the private browsing icon in the tabs tray was tapped during the ping
+    period.
 - name: app_icon_new_private_tab_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who opened a new private tab via the app icon shortcut during the
+    ping period.
 - name: app_icon_new_private_tab_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times a new private tab was opened via the app icon shortcut during the ping
+    period.
 - name: tabs_tray_new_private_tab_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who opened a new private tab from the tabs tray during the ping period.
 - name: tabs_tray_new_private_tab_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times a new private tab was opened from the tabs tray during the ping period.
 - name: private_browsing_button_tapped_add_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who used the private browsing icon 'add' action (opened a new private
+    tab) during the ping period.
 - name: private_browsing_button_tapped_add
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the private browsing icon 'add' (new private tab) action was triggered
+    during the ping period.
 - name: private_browsing_button_tapped_close_all_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who closed all private tabs using the private browsing icon during
+    the ping period.
 - name: private_browsing_button_tapped_close_all_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times all private tabs were closed using the private browsing icon action
+    during the ping period.
 - name: private_browsing_button_tapped_done_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who tapped the 'Done' action on the private browsing icon during
+    the ping period.
 - name: private_browsing_button_tapped_done
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the 'Done' action was triggered on the private browsing icon during
+    the ping period.
 - name: drag_location_bar_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who dragged the awesomebar location bar during the ping period.
 - name: drag_location_bar
   type: INTEGER
   mode: NULLABLE
+  description: Total number of times the awesomebar location bar was dragged during the ping period.
 - name: location_top_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who have configured the awesomebar location bar at the top of the
+    screen during the ping period.
 - name: location_top
   type: INTEGER
   mode: NULLABLE
+  description: Total number of sessions where the awesomebar location bar was positioned at the top of the
+    screen during the ping period.
 - name: location_bottom_users
   type: INTEGER
   mode: NULLABLE
+  description: Count of distinct users who have configured the awesomebar location bar at the bottom of
+    the screen during the ping period.
 - name: location_bottom
   type: INTEGER
   mode: NULLABLE
+  description: Total number of sessions where the awesomebar location bar was positioned at the bottom of
+    the screen during the ping period.
 - name: notification_status_authorized_users
   type: INTEGER
   mode: NULLABLE

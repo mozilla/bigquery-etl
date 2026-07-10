@@ -28,6 +28,14 @@ SELECT
   COALESCE(_current.uri_count, _previous.uri_count) AS uri_count,
   COALESCE(_current.is_default_browser, _previous.is_default_browser) AS is_default_browser,
   COALESCE(_current.is_large_device, _previous.is_large_device) AS is_large_device,
+  COALESCE(
+    _current.notifications_allowed,
+    _previous.notifications_allowed
+  ) AS notifications_allowed,
+  COALESCE(
+    _current.marketing_notifications_allowed,
+    _previous.marketing_notifications_allowed
+  ) AS marketing_notifications_allowed,
   COALESCE(_current.device_manufacturer, _previous.device_manufacturer) AS device_manufacturer,
   COALESCE(_current.isp_name, _previous.isp_name) AS isp_name,
 FROM

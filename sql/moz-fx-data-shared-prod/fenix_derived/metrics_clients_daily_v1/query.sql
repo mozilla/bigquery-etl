@@ -11,6 +11,10 @@ SELECT
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
   LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  LOGICAL_OR(metrics.boolean.metrics_notifications_allowed) AS notifications_allowed,
+  LOGICAL_OR(
+    metrics.boolean.events_marketing_notification_allowed
+  ) AS marketing_notifications_allowed,
   ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
@@ -36,6 +40,10 @@ SELECT
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
   LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  LOGICAL_OR(metrics.boolean.metrics_notifications_allowed) AS notifications_allowed,
+  LOGICAL_OR(
+    metrics.boolean.events_marketing_notification_allowed
+  ) AS marketing_notifications_allowed,
   ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
@@ -61,6 +69,10 @@ SELECT
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
   LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  LOGICAL_OR(metrics.boolean.metrics_notifications_allowed) AS notifications_allowed,
+  LOGICAL_OR(
+    metrics.boolean.events_marketing_notification_allowed
+  ) AS marketing_notifications_allowed,
   ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
@@ -86,6 +98,10 @@ SELECT
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
   LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  LOGICAL_OR(metrics.boolean.metrics_notifications_allowed) AS notifications_allowed,
+  LOGICAL_OR(
+    metrics.boolean.events_marketing_notification_allowed
+  ) AS marketing_notifications_allowed,
   ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
@@ -111,6 +127,10 @@ SELECT
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
   LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  LOGICAL_OR(metrics.boolean.metrics_notifications_allowed) AS notifications_allowed,
+  LOGICAL_OR(
+    metrics.boolean.events_marketing_notification_allowed
+  ) AS marketing_notifications_allowed,
   ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM

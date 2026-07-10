@@ -193,3 +193,14 @@ fields:
 - name: n_metrics_ping
   type: INT64
   description: The number of metrics pings received from this client on this submission date.
+- name: submission_timestamp
+  description: The UTC timestamp at which the Firefox iOS ping containing this Terms of Use event was
+    received by the ingestion pipeline.
+- name: is_bot_generated
+  description: Indicates whether this record is identified as bot-generated traffic rather than a real
+    user. True for automated or bot clients.
+- name: isp_name
+  description: The name of the Internet Service Provider associated with the client's IP address, derived
+    from GeoIP lookup.
+- name: normalized_country_code
+  description: ISO 3166-1 alpha-2 country code of the client derived from GeoIP lookup (e.g., 'US', 'DE').

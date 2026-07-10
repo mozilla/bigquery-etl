@@ -1,0 +1,68 @@
+fields:
+- name: category
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: category
+- name: event
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event
+- name: first_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_timestamp
+- name: numeric_index
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: numeric_index
+- name: index
+  type: STRING
+  mode: NULLABLE
+  description: The index identifying this event type (the category and event combination) within the event
+    encoding scheme, used together with numeric_index to reference the event compactly in downstream event
+    tables.
+- name: event_properties
+  type: RECORD
+  mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_properties
+  fields:
+  - name: index
+    type: INT64
+    mode: NULLABLE
+    description: The positional index of a property entry within the event_properties array, used to preserve
+      or reconstruct ordering. Values start at 1 and increase sequentially.
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: The key name of a property within the event_properties array, identifying the dimension or
+      attribute being described (e.g. 'os', 'source', 'session_id', 'reason').
+  - name: value
+    type: RECORD
+    mode: REPEATED
+    description: An array of structured sub-properties associated with this event property, where each entry
+      pairs a key with a value and carries an ordering index.
+    fields:
+    - name: index
+      type: INT64
+      mode: NULLABLE
+      description: The positional index of a sub-property entry within the value array, used to preserve or
+        reconstruct ordering. Values start at 1 and increase sequentially.
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: The key name of a sub-property within the value array, identifying the dimension or attribute
+        being described.
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: The value of the corresponding sub-property within the value array.

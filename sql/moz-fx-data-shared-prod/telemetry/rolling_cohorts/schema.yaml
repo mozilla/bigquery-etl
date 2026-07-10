@@ -1,0 +1,2 @@
+fields: !include-fields
+  table: moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2

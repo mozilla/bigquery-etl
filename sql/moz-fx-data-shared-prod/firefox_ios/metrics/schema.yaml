@@ -553,6 +553,13 @@ fields:
       description: 'Records if the user has summarization enabled.
 
         '
+    - name: user_search_google_lens_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user has the Google Lens image search feature enabled
+        in the settings.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -1155,6 +1155,15 @@ fields:
         succeed. Only recorded on Apple platforms.
 
         '
+    - name: preferences_google_lens_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the Google Lens search feature is both available to the
+        user and
+
+        enabled by them in the settings.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -27,7 +27,8 @@ SELECT
       LAX_BOOL(event_extra.is_private_mode) AS `is_private_mode`,
       LAX_BOOL(event_extra.is_toolbar) AS `is_toolbar`,
       LAX_BOOL(event_extra.outcome) AS `outcome`,
-      LAX_BOOL(event_extra.sampled_in) AS `sampled_in`
+      LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,
+      LAX_BOOL(event_extra.succeeded) AS `succeeded`
     ) AS `boolean`,
     STRUCT(
       LAX_INT64(event_extra.api_query_count) AS `api_query_count`,
@@ -37,6 +38,7 @@ SELECT
       LAX_INT64(event_extra.from_version) AS `from_version`,
       LAX_INT64(event_extra.groups_two_tabs_only) AS `groups_two_tabs_only`,
       LAX_INT64(event_extra.groups_with_more_than_two_tab) AS `groups_with_more_than_two_tab`,
+      LAX_INT64(event_extra.http_status) AS `http_status`,
       LAX_INT64(event_extra.index) AS `index`,
       LAX_INT64(event_extra.initial_version) AS `initial_version`,
       LAX_INT64(event_extra.length_chars) AS `length_chars`,

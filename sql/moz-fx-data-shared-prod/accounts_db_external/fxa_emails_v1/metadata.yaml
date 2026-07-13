@@ -16,6 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential/data-viewers
+  - workgroup:fxa/fraud-bot
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         id,\n         normalizedEmail,\n         email,\n         uid,\n         isVerified,\n         isPrimary,\n         verifiedAt,\n         createdAt\n       FROM\n         fxa.emails\n    ')

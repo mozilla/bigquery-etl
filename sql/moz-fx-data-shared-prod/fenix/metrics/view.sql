@@ -131,7 +131,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.browser_global_ai_control_is_blocking,
-      metrics.boolean.network_apple_fast_datapath_used
+      metrics.boolean.network_apple_fast_datapath_used,
+      metrics.boolean.preferences_google_lens_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2369,7 +2370,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.browser_global_ai_control_is_blocking,
-      metrics.boolean.network_apple_fast_datapath_used
+      metrics.boolean.network_apple_fast_datapath_used,
+      metrics.boolean.preferences_google_lens_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -4627,7 +4629,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.browser_global_ai_control_is_blocking,
-      metrics.boolean.network_apple_fast_datapath_used
+      metrics.boolean.network_apple_fast_datapath_used,
+      metrics.boolean.preferences_google_lens_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

@@ -49470,6 +49470,86 @@ fields:
         by whether it was resolved over DoH/TRR or natively.
 
         '
+    - name: browser_engagement_inactive_period_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Distribution of the duration of periods during which the user
+        was
+
+        considered ''inactive'', measured from when the user goes inactive until
+
+        the next activity resumes.
+
+
+        Combined with `consecutive_active_ticks`, this helps reason about user
+
+        interaction patterns more holistically and informs whether additional
+
+        active-tick intervals (e.g. 20s or 60s) should be introduced in the
+
+        future.
+
+
+        The `active_ticks` label measures inactive periods for the legacy stream
+
+        (all events). The `active_ticks_non_synthesized` label measures them for
+
+        the corrected stream, which excludes synthesized mouse and pointer
+
+        events. The two labels are recorded side-by-side for easier analysis.
+
+
+        An inactive period still in progress when a ping is submitted is not
+
+        recorded in that ping; it is recorded in a later ping once activity
+
+        resumes.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -51480,6 +51560,66 @@ fields:
       description: 'Happy Eyeballs: end-to-end time in milliseconds from algorithm
         start to a successful connection or final failure, keyed by whether the algorithm
         ultimately succeeded or failed.
+
+        '
+    - name: browser_engagement_consecutive_active_ticks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Distribution of the number of consecutive five-second intervals
+        (''ticks'')
+
+        the user was considered ''active'' before transitioning to inactive.
+
+
+        Each sample is the length of one uninterrupted run of active ticks,
+
+        recorded when the run ends. This complements the `active_ticks` counters
+
+        (which only track the total) by capturing how long users stay
+
+        continuously engaged, and helps inform whether additional active-tick
+
+        intervals should be introduced in the future.
+
+
+        The `active_ticks` label mirrors the legacy `active_ticks` counter,
+
+        counting all events. The `active_ticks_non_synthesized` label mirrors
+
+        `active_ticks_non_synthesized`, excluding synthesized mouse and pointer
+
+        events. The two labels are recorded side-by-side for easier analysis.
+
+
+        A run still in progress when a ping is submitted is not recorded in that
+
+        ping; it is recorded in a later ping once the run ends.
 
         '
   - name: labeled_quantity

@@ -16,6 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential/data-viewers
+  - workgroup:fxa/fraud-bot
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-oauth-prod-prod-fxa-oauth', 'SELECT\n         clientId,\n         userId,\n         type,\n         scope,\n         createdAt,\n         expiresAt,\n         profileChangedAt\n       FROM\n         fxa_oauth.tokens\n    ')

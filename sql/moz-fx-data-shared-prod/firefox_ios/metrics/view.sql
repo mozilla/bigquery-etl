@@ -46,7 +46,8 @@ SELECT
       metrics.boolean.app_choice_screen_acquisition,
       metrics.boolean.app_default_browser,
       metrics.boolean.user_ai_summarize_shake_gesture_enabled,
-      metrics.boolean.user_ai_summarize_summarization_enabled
+      metrics.boolean.user_ai_summarize_summarization_enabled,
+      metrics.boolean.user_search_google_lens_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -388,7 +389,8 @@ SELECT
       metrics.boolean.app_choice_screen_acquisition,
       metrics.boolean.app_default_browser,
       metrics.boolean.user_ai_summarize_shake_gesture_enabled,
-      metrics.boolean.user_ai_summarize_summarization_enabled
+      metrics.boolean.user_ai_summarize_summarization_enabled,
+      metrics.boolean.user_search_google_lens_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -730,7 +732,8 @@ SELECT
       metrics.boolean.app_choice_screen_acquisition,
       metrics.boolean.app_default_browser,
       metrics.boolean.user_ai_summarize_shake_gesture_enabled,
-      metrics.boolean.user_ai_summarize_summarization_enabled
+      metrics.boolean.user_ai_summarize_summarization_enabled,
+      metrics.boolean.user_search_google_lens_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,

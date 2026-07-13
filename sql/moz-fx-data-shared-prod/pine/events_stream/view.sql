@@ -9,6 +9,7 @@ SELECT
     STRUCT(
       LAX_BOOL(event_extra.after_reset) AS `after_reset`,
       LAX_BOOL(event_extra.alt_text_modal) AS `alt_text_modal`,
+      LAX_BOOL(event_extra.always_ask) AS `always_ask`,
       LAX_BOOL(event_extra.auto_show) AS `auto_show`,
       LAX_BOOL(event_extra.auto_translate) AS `auto_translate`,
       LAX_BOOL(event_extra.baseline) AS `baseline`,
@@ -224,6 +225,7 @@ SELECT
       JSON_VALUE(event_extra.breach_name) AS `breach_name`,
       JSON_VALUE(event_extra.build_id) AS `build_id`,
       JSON_VALUE(event_extra.bundle_policy) AS `bundle_policy`,
+      JSON_VALUE(event_extra.button) AS `button`,
       JSON_VALUE(event_extra.caller) AS `caller`,
       JSON_VALUE(event_extra.canaries) AS `canaries`,
       JSON_VALUE(event_extra.cancel_reason) AS `cancel_reason`,
@@ -324,6 +326,7 @@ SELECT
       JSON_VALUE(event_extra.generatedPasswo) AS `generatedPasswo`,
       JSON_VALUE(event_extra.given_name) AS `given_name`,
       JSON_VALUE(event_extra.hadPrevious) AS `hadPrevious`,
+      JSON_VALUE(event_extra.handler) AS `handler`,
       JSON_VALUE(event_extra.hang_duration) AS `hang_duration`,
       JSON_VALUE(event_extra.has_jsonfile) AS `has_jsonfile`,
       JSON_VALUE(event_extra.has_olddata) AS `has_olddata`,

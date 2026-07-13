@@ -77,6 +77,13 @@ fields:
 - mode: NULLABLE
   name: sequence_no
   type: INTEGER
+- mode: NULLABLE
+  name: match_type
+  type: STRING
+  description: >-
+    Whether the suggest result was a best/top match or not. Either
+    "best-match" or "firefox-suggest". Only populated for Glean
+    impressions; NULL for legacy impressions.
 - fields:
   - mode: NULLABLE
     name: slug

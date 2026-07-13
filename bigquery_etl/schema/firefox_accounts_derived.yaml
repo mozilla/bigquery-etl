@@ -3,7 +3,10 @@ fields:
 # GCP Cloud Logging fields, sourced from
 # https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry
 
-# Top-level scalars
+- name: timestamp
+  type: TIMESTAMP
+  description: The time the event described by the log entry occurred, as reported by
+    the originating FxA service.
 
 - name: logName
   type: STRING
@@ -41,19 +44,878 @@ fields:
   type: STRING
   description: The log entry payload, represented as a Unicode string (UTF-8).
 
-# Top-level payload and labels (parent only; sub-fields are user-defined)
-
 - name: jsonPayload
   type: RECORD
   description: The log entry payload, represented as a structure that is expressed as a
     JSON object.
+  fields:
+  - name: pid
+    type: FLOAT
+    description: Process ID of the FxA service instance that generated the log entry.
+  - name: timestamp
+    type: FLOAT
+    description: Application-level event timestamp as a Unix epoch nanoseconds float,
+      as reported by the FxA service. Distinct from the top-level Cloud Logging
+      `timestamp`.
+  - name: envversion
+    type: STRING
+    description: Log envelope version used by the FxA logging framework.
+  - name: logger
+    type: STRING
+    description: Name of the logger or component that emitted the log entry
+      (e.g., 'fxa-auth-server', 'fxa-content-server', 'fxa-oauth-server'). Used
+      to derive the top-level `fxa_server` field.
+  - name: severity
+    type: FLOAT
+    description: Application-level numeric log severity from the FxA service payload,
+      using syslog-style levels (6=informational, 2=critical). Distinct from the
+      top-level Cloud Logging `severity` STRING field.
+  - name: type
+    type: STRING
+    description: Log entry type classifier (e.g., 'amplitudeEvent').
+  - name: msg
+    type: STRING
+    description: Log message string from the FxA service payload.
+  - name: message
+    type: STRING
+    description: Structured log message from the FxA service payload.
+  - name: name
+    type: STRING
+    description: Name field from the log payload, identifying the process or subsystem
+      (e.g., 'customs-server', 'configure-sentry').
+  - name: statuscode
+    type: STRING
+    description: HTTP or application status code from the log payload.
+  - name: level
+    type: STRING
+    description: Log severity level. Numeric Bunyan-style in some tables (30=info,
+      50=error); string level name in others.
+  - name: useragent
+    type: STRING
+    description: User agent string from the log payload.
+  - name: hostname
+    type: STRING
+    description: Hostname of the server or container that generated the log entry.
+  - name: status
+    type: FLOAT
+    description: HTTP or application status value from the log payload.
+  - name: v
+    type: FLOAT
+    description: Payload schema version number used by the FxA logging framework.
+  - name: bytes_sent
+    type: FLOAT
+    description: Number of bytes sent in the HTTP response.
+  - name: log_type
+    type: STRING
+    description: Log type classification for the FxA service event.
+  - name: op
+    type: STRING
+    description: Operation type from the log payload.
+  - name: referrer
+    type: STRING
+    description: HTTP referrer URL from the log payload.
+  - name: remote_addr
+    type: STRING
+    description: Remote IP address of the client making the request.
+  - name: remote_user
+    type: STRING
+    description: Authenticated remote user identifier from the log payload.
+  - name: request
+    type: STRING
+    description: Full HTTP request line (method, path, protocol) from the log payload.
+  - name: request_time
+    type: FLOAT
+    description: Time taken to process the request, in seconds.
+  - name: trace
+    type: STRING
+    description: Distributed tracing identifier from the application log payload.
+  - name: user_agent
+    type: STRING
+    description: User agent string identifying the browser and OS making the request.
+  - name: x_forwarded_for
+    type: STRING
+    description: X-Forwarded-For header value containing the client IP and any intermediate
+      proxy addresses.
+  - name: x_forwarded_proto
+    type: STRING
+    description: X-Forwarded-Proto header value indicating the originating protocol
+      ('http' or 'https').
+  - name: locale
+    type: STRING
+    description: BCP 47 locale string (e.g., 'en-US', 'fr', 'de') from the FxA content
+      server log payload.
+  - name: event
+    type: STRING
+    description: FxA content server event name (e.g., 'flow.signin.view',
+      'flow.signin.submit'). Excludes Amplitude-captured event types.
+  - name: flow_id
+    type: STRING
+    description: UUID flow identifier from the FxA content server log payload, linking all
+      events in a single authentication session.
+  - name: flow_time
+    type: FLOAT
+    description: Milliseconds elapsed since the authentication flow began, as reported by
+      the FxA content server. Pair with `flow_id` to measure funnel completion latency.
+  - name: utm_source
+    type: STRING
+    description: UTM source parameter identifying the traffic origin (e.g., 'google',
+      'email'). Present when the user arrived at FxA via a tracked marketing URL.
+  - name: utm_campaign
+    type: STRING
+    description: UTM campaign parameter identifying the marketing campaign that drove the
+      user to FxA.
+  - name: utm_content
+    type: STRING
+    description: UTM content parameter used to distinguish links within the same campaign
+      (for A/B testing creative).
+  - name: utm_medium
+    type: STRING
+    description: UTM medium parameter identifying the marketing channel (e.g., 'cpc',
+      'email', 'social').
+  - name: entrypoint
+    type: STRING
+    description: FxA entry point where the user started the flow, set by Firefox UI
+      callsites (e.g., 'menupanel', 'preferences', 'synced-tabs'). Not a fixed enum.
+  - name: context
+    type: STRING
+    description: OAuth context string identifying the FxA flow type (e.g., 'oauth',
+      'fx_desktop_v3'). Set when the flow originates from a relying party OAuth integration.
+  - name: region
+    type: STRING
+    description: Geographic region associated with the event.
+  - name: country
+    type: STRING
+    description: Country associated with the event, as a full country name.
+  - name: service
+    type: STRING
+    description: The Mozilla service or relying party associated with the event.
+  - name: err
+    type: STRING
+    description: Error details from the top-level log payload.
+  - name: error
+    type: STRING
+    description: Error message from the top-level log payload.
+  - name: port
+    type: FLOAT
+    description: Network port from the top-level log payload.
+  - name: host
+    type: STRING
+    description: Hostname from the top-level log payload.
+  - name: ip
+    type: STRING
+    description: Client IP address from the customs server log payload.
+  - name: rtime
+    type: FLOAT
+    description: Request processing time from the customs server log payload, in seconds.
+  - name: action
+    type: STRING
+    description: Action type from the customs server log payload.
+  - name: email
+    type: STRING
+    description: Hashed or redacted email identifier. Not a raw email address.
+  - name: unblock
+    type: BOOLEAN
+    description: Whether the request was unblocked by the customs server.
+  - name: suspect
+    type: BOOLEAN
+    description: Whether the IP or account was flagged as suspect by the customs server.
+  - name: block
+    type: BOOLEAN
+    description: Whether the request was blocked by the customs server.
+  - name: blockreason
+    type: STRING
+    description: Reason the request was blocked by the customs server.
+  - name: regex
+    type: STRING
+    description: Regular expression pattern used in user-agent blocklist matching
+      (e.g., matching browser or device strings to identify blocked clients).
+  - name: loadedin
+    type: FLOAT
+    description: Time in milliseconds for the page or resource to load.
+  - name: filename
+    type: STRING
+    description: Name of an IP blocklist data file associated with the log event.
+  - name: filesize
+    type: FLOAT
+    description: File size in bytes associated with the log event.
+  - name: errno
+    type: FLOAT
+    description: FxA error number from the customs server payload.
+  - name: foundin
+    type: STRING
+    description: IP blocklist name in which the client address was found.
+  - name: listhits
+    type: STRING
+    description: JSON-encoded list of IP blocklist names that matched the request.
+  - name: listhitcount
+    type: FLOAT
+    description: Number of IP blocklists that matched the request.
+  - name: fields
+    type: RECORD
+    description: Application-level structured event data from the FxA service.
+    fields:
+    - name: user_id
+      type: STRING
+      description: SHA-256 hashed FxA user identifier, hex-encoded.
+    - name: device_id
+      type: STRING
+      description: SHA-256 hashed FxA device identifier, hex-encoded.
+    - name: err
+      type: STRING
+      description: Error details associated with the event, if any.
+    - name: msg
+      type: STRING
+      description: Log message string from the structured event payload.
+    - name: app_version
+      type: STRING
+      description: Firefox Accounts application version at the time of the event
+        (e.g., '333.6').
+    - name: error
+      type: STRING
+      description: Error message or details associated with the event.
+    - name: event
+      type: STRING
+      description: Event name from the FxA service payload. In Amplitude-connected tables
+        this is an Amplitude event name; in admin and log tables it is a service-level
+        action name.
+    - name: event_properties
+      type: STRING
+      description: Structured event properties for the amplitude event, as a JSON string.
+    - name: event_type
+      type: STRING
+      description: Event type string identifying the category of event
+        (e.g., 'fxa_login - complete', 'fxa_email - sent').
+    - name: op
+      type: STRING
+      description: Operation or action type associated with the event.
+    - name: stack
+      type: STRING
+      description: Stack trace string. Populated on error events.
+    - name: time
+      type: FLOAT
+      description: Event time as a Unix epoch milliseconds float.
+    - name: user_properties
+      type: STRING
+      description: Structured user properties for the amplitude event, as a JSON string.
+    - name: language
+      type: STRING
+      description: BCP 47 language tag for the user's locale at the time of the event
+        (e.g., 'en-US', 'de').
+    - name: message
+      type: STRING
+      description: Log message from the event payload.
+    - name: method
+      type: STRING
+      description: HTTP method associated with the request.
+    - name: path
+      type: STRING
+      description: URL path of the request.
+    - name: remoteaddresschain
+      type: STRING
+      description: Forwarding chain of client IP addresses from X-Forwarded-For headers.
+    - name: session_id
+      type: FLOAT
+      description: Identifier for the user's FxA session, represented as an epoch
+        millisecond timestamp.
+    - name: status
+      type: FLOAT
+      description: HTTP or application status code for the event.
+    - name: t
+      type: FLOAT
+      description: Elapsed time in milliseconds for the operation.
+    - name: device_model
+      type: STRING
+      description: Device model associated with the event (e.g., 'iPhone', 'iPad').
+    - name: os_name
+      type: STRING
+      description: Operating system name from the event payload (e.g., 'Windows', 'iOS',
+        'Android').
+    - name: os_version
+      type: STRING
+      description: Operating system version string from the event payload.
+    - name: port
+      type: FLOAT
+      description: Network port number associated with the request.
+    - name: useragent
+      type: STRING
+      description: Raw user agent string from the request.
+    - name: agent
+      type: STRING
+      description: User agent string from the event payload.
+    - name: email
+      type: STRING
+      description: Hashed or redacted email identifier associated with the event.
+        Present only when the event is tied to a specific account action; null for
+        anonymous or pre-login flows. Stored as raw bytes (hashed) in admin server
+        tables. Not a raw email address.
+    - name: uid
+      type: STRING
+      description: Raw FxA user identifier. Use `user_id` for the hashed version.
+    - name: clientid
+      type: STRING
+      description: Client identifier associated with the event.
+    - name: config
+      type: STRING
+      description: Configuration metadata associated with the event.
+    - name: country
+      type: STRING
+      description: Country associated with the event, as a full country name
+        (e.g., 'United States').
+    - name: region
+      type: STRING
+      description: Geographic region associated with the event (e.g., 'California').
+    - name: code
+      type: STRING
+      description: Code field from the event payload (e.g., OAuth authorization code,
+        error code).
+    - name: errno
+      type: FLOAT
+      description: FxA error number. See FxA errno documentation for values.
+    - name: host
+      type: STRING
+      description: Hostname of the server handling the request.
+    - name: originaltransactionid
+      type: STRING
+      description: Original transaction identifier for subscription or payment events.
+    - name: originaltransactionids
+      type: STRING
+      description: Stringified list of original transaction identifiers.
+    - name: payload
+      type: STRING
+      description: Raw payload string from the event.
+    - name: poolstats
+      type: STRING
+      description: Database connection pool statistics as a JSON string, including pool
+        UUID, connection limit, and active/free connection counts.
+    - name: purchasetoken
+      type: STRING
+      description: Google Play Store purchase token for in-app purchase events.
+    - name: query
+      type: STRING
+      description: URL query parameters associated with the request.
+    - name: template
+      type: STRING
+      description: Email or notification template identifier.
+    - name: id
+      type: STRING
+      description: Unique identifier for the event record.
+    - name: locale
+      type: STRING
+      description: BCP 47 locale string.
+    - name: reason
+      type: STRING
+      description: Reason associated with the event.
+    - name: request
+      type: STRING
+      description: Request metadata associated with the event.
+    - name: service
+      type: STRING
+      description: Service or relying party identifier associated with the event.
+    - name: subscriptionid
+      type: STRING
+      description: Subscription identifier for subscription-related events.
+    - name: to
+      type: STRING
+      description: Destination or recipient field.
+    - name: action
+      type: STRING
+      description: Action type associated with the event.
+    - name: body
+      type: STRING
+      description: Request or response body.
+    - name: name
+      type: STRING
+      description: Name field from the event payload.
+    - name: profilechangedat
+      type: FLOAT
+      description: Unix epoch timestamp of the last profile change for the user.
+    - name: response
+      type: STRING
+      description: Response data associated with the event.
+    - name: result
+      type: STRING
+      description: Result or outcome of the operation.
+    - name: statuscode
+      type: FLOAT
+      description: HTTP or application status code from the event payload.
+    - name: url
+      type: STRING
+      description: URL associated with the event.
+    - name: bundle
+      type: STRING
+      description: Bundle identifier. Reserved field.
+    - name: client_id
+      type: STRING
+      description: Client identifier for the relying party application that initiated
+        the FxA authentication flow (e.g., Firefox Sync, Firefox Monitor). Null in
+        tables where `clientid` is used instead.
+    - name: clientaddress
+      type: STRING
+      description: Client IP address as logged by the FxA service.
+    - name: closed
+      type: BOOLEAN
+      description: Boolean flag indicating a closed connection or session.
+    - name: contentlength
+      type: FLOAT
+      description: HTTP Content-Length header value in bytes.
+    - name: context
+      type: STRING
+      description: Context string for the event (OAuth flow context).
+    - name: countrycode
+      type: STRING
+      description: Two-letter ISO 3166-1 country code associated with the event.
+    - name: errorcode
+      type: STRING
+      description: Application-level error code.
+    - name: joierrors
+      type: STRING
+      description: Joi schema validation error messages, populated when request
+        validation fails.
+    - name: referer
+      type: STRING
+      description: HTTP referer URL from the event payload.
+    - name: userid
+      type: STRING
+      description: User identifier from the event payload. Use top-level `user_id`
+        for the hashed identifier.
+    - name: cause
+      type: STRING
+      description: Cause or underlying reason for an error event.
+    - name: data
+      type: STRING
+      description: Generic data field from the event payload.
+    - name: directory
+      type: STRING
+      description: Directory path from the event payload.
+    - name: domain
+      type: STRING
+      description: Domain string associated with the event (e.g., an email domain).
+    - name: flow_id
+      type: STRING
+      description: Flow identifier for the authentication or account creation session.
+        See top-level `flow_id`.
+    - name: flow_time
+      type: FLOAT
+      description: Elapsed time in milliseconds within the current authentication flow.
+
+    - name: flowbegintime
+      type: FLOAT
+      description: Unix epoch timestamp of when the authentication flow began.
+    - name: flowid
+      type: STRING
+      description: Flow identifier. See top-level `flow_id`.
+    - name: invoiceid
+      type: STRING
+      description: Invoice identifier for subscription billing events.
+    - name: lang
+      type: STRING
+      description: Language code from the event payload. See `jsonPayload.fields.language`
+        for the primary language field.
+    - name: param
+      type: STRING
+      description: Parameter field from the event payload.
+    - name: params
+      type: STRING
+      description: Request parameters from the event.
+    - name: success
+      type: FLOAT
+      description: Indicates whether the operation succeeded; in some tables a count of
+        successful operations associated with the event.
+    - name: templateversion
+      type: FLOAT
+      description: Email template version number.
+    - name: type
+      type: STRING
+      description: Event type classifier within the fields payload.
+    - name: user
+      type: BYTES
+      description: SHA-256 hashed user identifier in bytes format, from the FxA admin
+        server logs.
+    - name: version
+      type: STRING
+      description: Version string from the event payload.
+    - name: assertion
+      type: STRING
+      description: Assertion string used in device pairing or browser verification flows.
+    - name: line
+      type: FLOAT
+      description: Source code line number associated with the log event.
+    - name: referrer
+      type: STRING
+      description: HTTP referrer URL at the time of the event.
+    - name: violated
+      type: STRING
+      description: CSP directive that was violated, from a content security policy report.
+    - name: source
+      type: STRING
+      description: Source identifier for the event (e.g., originating service or component).
+    - name: blocked
+      type: BOOLEAN
+      description: Whether the action was blocked (e.g., by rate limiting or IP blocklist).
+    - name: sample
+      type: FLOAT
+      description: Sampling rate or sample value associated with the log entry.
+    - name: column
+      type: FLOAT
+      description: Source code column number associated with the log event.
+    - name: tokenverificationid
+      type: STRING
+      description: Identifier for a token verification attempt.
+    - name: targettype
+      type: STRING
+      description: Type of the target resource for the event.
+    - name: dbpath
+      type: STRING
+      description: Database path or connection string identifier.
+    - name: utm_term
+      type: STRING
+      description: In FxA, repurposed from the standard paid-search UTM term to track
+        A/B test cohort assignments (e.g., 'my-experiment-var-a'). Not a paid search
+        keyword.
+    - name: utm_source
+      type: STRING
+      description: UTM source parameter from the originating URL.
+    - name: remaining
+      type: FLOAT
+      description: Remaining allowed attempts before rate limiting applies.
+    - name: verifiedat
+      type: FLOAT
+      description: Unix epoch timestamp of when the account or email was verified.
+    - name: product_id
+      type: STRING
+      description: Mozilla subscription product identifier.
+    - name: planid
+      type: STRING
+      description: Subscription plan identifier.
+    - name: ecosystemanonid
+      type: STRING
+      description: Anonymized ecosystem user identifier for cross-product analytics,
+        derived without exposing the raw user ID.
+    - name: traceid
+      type: STRING
+      description: Distributed tracing identifier for correlating events across services.
+    - name: entrypoint_experiment
+      type: STRING
+      description: A/B experiment identifier associated with the entrypoint that started
+        the authentication flow.
+    - name: is_placeholder
+      type: BOOLEAN
+      description: Whether this record is a placeholder entry.
+    - name: index
+      type: FLOAT
+      description: Index position within a list or sequence in the event payload.
+    - name: ka
+      type: STRING
+      description: Key agreement value used in FxA account key derivation.
+    - name: isboom
+      type: BOOLEAN
+      description: Whether the error is a Boom HTTP error object.
+    - name: customeruid
+      type: STRING
+      description: Unique identifier for the customer in the subscription billing system.
+    - name: flowtype
+      type: STRING
+      description: Type classification of the authentication flow.
+    - name: keyschangedat
+      type: FLOAT
+      description: Unix epoch timestamp of when the account encryption keys were last
+        changed.
+    - name: templatename
+      type: STRING
+      description: Name of the email or notification template used for the event.
+    - name: disabledat
+      type: FLOAT
+      description: Unix epoch timestamp of when the account was disabled.
+    - name: _original
+      type: STRING
+      description: Original raw value before transformation or normalization.
+    - name: enabled
+      type: BOOLEAN
+      description: Whether the feature or configuration option is enabled.
+    - name: target
+      type: STRING
+      description: Target resource or endpoint associated with the event.
+    - name: wrapwrapkb
+      type: STRING
+      description: Double-wrapped kB key value used in FxA sync key exchange.
+    - name: automatic_tax
+      type: BOOLEAN
+      description: Whether tax was calculated automatically for a subscription event.
+    - name: entrypoint_variation
+      type: STRING
+      description: A/B variation identifier for the entrypoint experiment.
+    - name: lockedat
+      type: FLOAT
+      description: Unix epoch timestamp of when the account was locked.
+    - name: plan_id
+      type: STRING
+      description: Subscription plan identifier. See also planid.
+    - name: primaryemail
+      type: STRING
+      description: Hashed primary email address for the FxA account. Not a raw email
+        address.
+    - name: _intboolfields
+      type: STRING
+      description: Comma-separated list of field names cast from integer to boolean during
+        log normalization.
+    - name: _uuidfields
+      type: STRING
+      description: Comma-separated list of field names containing UUID strings, used for
+        schema normalization metadata.
+    - name: numsessions
+      type: FLOAT
+      description: Number of active sessions for the account.
+    - name: createdat
+      type: FLOAT
+      description: Unix epoch timestamp of when the account or resource was created.
+    - name: granttype
+      type: STRING
+      description: OAuth grant type.
+    - name: productid
+      type: STRING
+      description: Mozilla subscription product identifier. See also product_id.
+    - name: authsalt
+      type: STRING
+      description: Authentication salt value used in account credential derivation.
+    - name: emailverified
+      type: BOOLEAN
+      description: Whether the account's primary email address has been verified.
+    - name: uabrowserversion
+      type: STRING
+      description: Browser version string parsed from the user agent.
+    - name: isserver
+      type: BOOLEAN
+      description: Whether the event originated from a server-side operation rather than
+        a client request.
+    - name: accountrecreated
+      type: BOOLEAN
+      description: Whether the account was recreated (deleted and re-registered with the
+        same email).
+    - name: isprimary
+      type: BOOLEAN
+      description: Whether the associated email address is the account's primary email.
+    - name: sendertype
+      type: STRING
+      description: Type of email sender used for the notification.
+    - name: targetos
+      type: STRING
+      description: Target operating system for the event.
+    - name: entrypoint
+      type: STRING
+      description: Entry point identifier for the authentication or account creation flow.
+    - name: deviceid
+      type: STRING
+      description: FxA device identifier. See also device_id for the hashed version.
+    - name: postalcode
+      type: STRING
+      description: Postal code from the subscription billing address.
+    - name: details
+      type: STRING
+      description: Additional detail string associated with the event.
+    - name: emails
+      type: STRING
+      description: JSON-encoded list of email objects associated with the account.
+    - name: flowcompletesignal
+      type: STRING
+      description: Event name that signalled flow completion.
+    - name: verifiersetat
+      type: FLOAT
+      description: Unix epoch timestamp of when the account verifier (password) was last
+        set.
+    - name: uaos
+      type: STRING
+      description: Operating system name parsed from the user agent string.
+    - name: headers
+      type: STRING
+      description: JSON-encoded HTTP request headers associated with the event.
+    - name: metricsoptoutat
+      type: FLOAT
+      description: Unix epoch timestamp of when the user opted out of metrics collection.
+    - name: utm_medium
+      type: STRING
+      description: UTM medium parameter from the originating URL.
+    - name: events
+      type: STRING
+      description: JSON-encoded list of sub-events or event sequence associated with the
+        log entry.
+    - name: priceid
+      type: STRING
+      description: Stripe price identifier for a subscription plan.
+    - name: purchase
+      type: STRING
+      description: Purchase identifier or metadata for a subscription purchase.
+    - name: uaosversion
+      type: STRING
+      description: Operating system version string parsed from the user agent.
+    - name: output
+      type: STRING
+      description: Output value or result string from the operation.
+    - name: utm_campaign
+      type: STRING
+      description: UTM campaign parameter from the originating URL.
+    - name: uabrowser
+      type: STRING
+      description: Browser name parsed from the user agent string.
+    - name: normalizedemail
+      type: STRING
+      description: Normalized form of the account email address (lowercased, Gmail dots
+        removed).
+    - name: ipaddress
+      type: STRING
+      description: Client IP address associated with the event.
+    - name: utm_content
+      type: STRING
+      description: UTM content parameter from the originating URL, used to differentiate
+        ads or links.
+    - name: verifierversion
+      type: FLOAT
+      description: Version of the account verifier (password hashing algorithm) in use.
+    - name: sender
+      type: STRING
+      description: Sender identifier for email or notification events.
+    - name: missingflowid
+      type: BOOLEAN
+      description: Whether the event was missing a flow_id at logging time.
+    - name: keys
+      type: STRING
+      description: JSON-encoded account key bundle or key metadata.
+    - name: token
+      type: STRING
+      description: Authentication or session token associated with the event.
+    - name: ipnmessage
+      type: STRING
+      description: IPN (Instant Payment Notification) message payload for subscription
+        billing events.
+    - name: syscall
+      type: STRING
+      description: System call name associated with an OS-level error event.
+    - name: emailcode
+      type: STRING
+      description: Verification code sent to the user's email address.
+    - name: recency
+      type: STRING
+      description: Recency classification of the user session.
+    - name: command
+      type: STRING
+      description: Device command name dispatched or received.
+    - name: unblockcode
+      type: STRING
+      description: One-time code sent to the user to unblock their account after rate
+        limiting.
+    - name: location
+      type: STRING
+      description: JSON-encoded location object containing city, country, and region for
+        the request.
+    - name: newsletters
+      type: STRING
+      description: JSON-encoded list of newsletter subscription identifiers the user opted
+        into.
+    - name: bodysize
+      type: FLOAT
+      description: Size of the HTTP request body in bytes.
+    - name: redirectto
+      type: STRING
+      description: URL the user was redirected to after the authentication flow.
+    - name: senderos
+      type: STRING
+      description: Operating system of the sender in a device command event.
+    - name: zip
+      type: STRING
+      description: Postal ZIP code from the subscription billing address.
+    - name: isverified
+      type: BOOLEAN
+      description: Whether the account has been verified.
+    - name: raw
+      type: STRING
+      description: Raw log line or payload before parsing.
+    - name: rawtype
+      type: STRING
+      description: Type classification of the raw log payload.
+    - name: processingtimemillis
+      type: FLOAT
+      description: Time in milliseconds taken to process the event.
+    - name: currenttime
+      type: FLOAT
+      description: Current server time as a Unix epoch milliseconds float.
+    - name: hostname
+      type: STRING
+      description: Hostname of the server that processed the event.
+    - name: requestid
+      type: STRING
+      description: Unique identifier for the HTTP request.
+    - name: plan
+      type: STRING
+      description: Subscription plan name or identifier associated with the event.
 
 - name: labels
   type: RECORD
   description: A map of key, value pairs that provides additional information about the
     log entry.
-
-# httpRequest (HttpRequest type)
+  fields:
+  - name: compute_googleapis_com_resource_name
+    type: STRING
+    description: GCP Compute resource name (compute.googleapis.com/resource_name),
+      identifying the VM or node that generated the log entry.
+  - name: k8s_pod_app_kubernetes_io_component
+    type: STRING
+    description: Kubernetes pod label app.kubernetes.io/component, identifying the
+      component role within the application (e.g., 'auth', 'content').
+  - name: k8s_pod_app_kubernetes_io_instance
+    type: STRING
+    description: Kubernetes pod label app.kubernetes.io/instance, identifying the
+      specific deployment instance.
+  - name: k8s_pod_app_kubernetes_io_name
+    type: STRING
+    description: Kubernetes pod label app.kubernetes.io/name, identifying the
+      application name.
+  - name: k8s_pod_pod_template_hash
+    type: STRING
+    description: Kubernetes pod template hash label, used to track pod revisions across
+      rolling deployments.
+  - name: k8s_pod_deployment
+    type: STRING
+    description: Kubernetes deployment name label for the pod that generated the log
+      entry.
+  - name: application
+    type: STRING
+    description: Application label identifying the FxA application.
+  - name: env
+    type: STRING
+    description: Deployment environment label.
+  - name: k8s_pod_batch_kubernetes_io_controller_uid
+    type: STRING
+    description: Kubernetes batch controller UID (batch.kubernetes.io/controller-uid).
+      Null for non-batch workloads.
+  - name: k8s_pod_batch_kubernetes_io_job_name
+    type: STRING
+    description: Kubernetes batch job name (batch.kubernetes.io/job-name). Null for
+      non-batch workloads.
+  - name: k8s_pod_controller_uid
+    type: STRING
+    description: Kubernetes pod controller UID.
+  - name: k8s_pod_env_code
+    type: STRING
+    description: Kubernetes pod environment code label (e.g., 'prod').
+  - name: k8s_pod_job_name
+    type: STRING
+    description: Kubernetes pod job name. Populated only for scheduled job pods.
+  - name: k8s_pod_redis
+    type: STRING
+    description: Kubernetes pod label for Redis workloads.
+  - name: logging_gke_io_top_level_controller_name
+    type: STRING
+    description: GKE top-level controller name (e.g., the Deployment name) managing
+      the pod that generated the log entry.
+  - name: logging_gke_io_top_level_controller_type
+    type: STRING
+    description: GKE top-level controller type managing the pod (e.g., 'Deployment',
+      'CronJob').
+  - name: stack
+    type: STRING
+    description: Stack label from the log metadata.
+  - name: type
+    type: STRING
+    description: Type label from the log metadata indicating the log source category.
 
 - name: httpRequest
   type: RECORD
@@ -110,8 +972,6 @@ fields:
     type: STRING
     description: 'Protocol used for the request. Examples: "HTTP/1.1", "HTTP/2".'
 
-# operation (LogEntryOperation type)
-
 - name: operation
   type: RECORD
   description: Information about an operation associated with the log entry, if
@@ -132,8 +992,6 @@ fields:
     type: BOOLEAN
     description: Set this to True if this is the last log entry in the operation.
 
-# resource (MonitoredResource type; resource.labels.* deferred)
-
 - name: resource
   type: RECORD
   description: The monitored resource that produced this log entry.
@@ -142,8 +1000,36 @@ fields:
     type: STRING
     description: The monitored resource type. For example, the type of a Compute Engine
       VM instance is `gce_instance`.
-
-# sourceLocation (LogEntrySourceLocation type)
+  - name: labels
+    type: RECORD
+    description: GCP resource metadata labels attached to the log entry by Cloud Logging.
+    fields:
+    - name: project_id
+      type: STRING
+      description: GCP project ID of the log source.
+    - name: cluster_name
+      type: STRING
+      description: Kubernetes cluster name where the FxA service is running
+        (e.g., 'webservices-high-prod').
+    - name: container_name
+      type: STRING
+      description: Container name within the pod that generated the log entry.
+    - name: location
+      type: STRING
+      description: GCP region of the log source (e.g., 'us-west1').
+    - name: namespace_name
+      type: STRING
+      description: Kubernetes namespace of the pod that generated the log entry
+        (e.g., 'fxa-prod').
+    - name: pod_name
+      type: STRING
+      description: Kubernetes pod name that generated the log entry.
+    - name: instance_id
+      type: STRING
+      description: Cloud instance identifier of the node that generated the log entry.
+    - name: zone
+      type: STRING
+      description: Availability zone of the resource.
 
 - name: sourceLocation
   type: RECORD
@@ -162,8 +1048,6 @@ fields:
     description: Human-readable name of the function or method being invoked, with
       optional context such as the class or package name.
 
-# split (LogSplit type)
-
 - name: split
   type: RECORD
   description: Information indicating this LogEntry is part of a sequence of multiple log
@@ -181,8 +1065,6 @@ fields:
     description: The total number of log entries that the original LogEntry was split
       into.
 
-# errorGroups (LogErrorGroup type; REPEATED)
-
 - mode: REPEATED
   name: errorGroups
   type: RECORD
@@ -192,3 +1074,288 @@ fields:
     type: STRING
     description: The id is a unique identifier for a particular error group; it is the
       last part of the error group resource name.
+
+- name: apphub
+  type: RECORD
+  description: GCP App Hub metadata associated with this log entry.
+  fields:
+  - name: application
+    type: RECORD
+    description: App Hub application context.
+    fields:
+    - name: container
+      type: STRING
+      description: App Hub application container.
+    - name: id
+      type: STRING
+      description: App Hub application identifier.
+    - name: location
+      type: STRING
+      description: App Hub application location.
+  - name: service
+    type: RECORD
+    description: App Hub service context.
+    fields:
+    - name: criticalityType
+      type: STRING
+      description: App Hub service criticality classification.
+    - name: environmentType
+      type: STRING
+      description: App Hub service environment type.
+    - name: id
+      type: STRING
+      description: App Hub service identifier.
+  - name: workload
+    type: RECORD
+    description: App Hub workload context.
+    fields:
+    - name: criticalityType
+      type: STRING
+      description: App Hub workload criticality classification.
+    - name: environmentType
+      type: STRING
+      description: App Hub workload environment type.
+    - name: id
+      type: STRING
+      description: App Hub workload identifier.
+
+- name: apphubDestination
+  type: RECORD
+  description: GCP App Hub destination metadata associated with this log entry.
+  fields:
+  - name: application
+    type: RECORD
+    description: App Hub destination application context.
+    fields:
+    - name: container
+      type: STRING
+      description: App Hub destination application container.
+    - name: id
+      type: STRING
+      description: App Hub destination application identifier.
+    - name: location
+      type: STRING
+      description: App Hub destination application location.
+  - name: service
+    type: RECORD
+    description: App Hub destination service context.
+    fields:
+    - name: criticalityType
+      type: STRING
+      description: App Hub destination service criticality classification.
+    - name: environmentType
+      type: STRING
+      description: App Hub destination service environment type.
+    - name: id
+      type: STRING
+      description: App Hub destination service identifier.
+  - name: workload
+    type: RECORD
+    description: App Hub destination workload context.
+    fields:
+    - name: criticalityType
+      type: STRING
+      description: App Hub destination workload criticality classification.
+    - name: environmentType
+      type: STRING
+      description: App Hub destination workload environment type.
+    - name: id
+      type: STRING
+      description: App Hub destination workload identifier.
+
+- name: apphubSource
+  type: RECORD
+  description: GCP App Hub source metadata associated with this log entry.
+  fields:
+  - name: application
+    type: RECORD
+    description: App Hub source application context.
+    fields:
+    - name: container
+      type: STRING
+      description: App Hub source application container.
+    - name: id
+      type: STRING
+      description: App Hub source application identifier.
+    - name: location
+      type: STRING
+      description: App Hub source application location.
+  - name: service
+    type: RECORD
+    description: App Hub source service context.
+    fields:
+    - name: criticalityType
+      type: STRING
+      description: App Hub source service criticality classification.
+    - name: environmentType
+      type: STRING
+      description: App Hub source service environment type.
+    - name: id
+      type: STRING
+      description: App Hub source service identifier.
+  - name: workload
+    type: RECORD
+    description: App Hub source workload context.
+    fields:
+    - name: criticalityType
+      type: STRING
+      description: App Hub source workload criticality classification.
+    - name: environmentType
+      type: STRING
+      description: App Hub source workload environment type.
+    - name: id
+      type: STRING
+      description: App Hub source workload identifier.
+
+# FxA-derived fields shared across firefox_accounts_derived tables
+
+- name: user_id
+  type: STRING
+  description: SHA-256 hashed Firefox Accounts user identifier (uid), hex-encoded. Primary
+    key for joining user-level tables.
+
+- name: submission_date
+  type: DATE
+  description: Date the record was ingested into the pipeline, used as the partition key.
+
+- name: flow_id
+  type: STRING
+  description: 64-character hex string uniquely identifying a single authentication or
+    account creation attempt from start to finish. HMAC-signed by the auth server to
+    prevent forgery. Links all client-side and server-side events for one user session
+    across auth and content servers.
+
+- name: service
+  type: STRING
+  description: The Mozilla service or relying party associated with the event
+    (e.g., 'sync', 'fenix', 'fx-private-relay', 'amo-web').
+
+- name: country
+  type: STRING
+  description: Country associated with the user or event, as a full country name
+    (e.g., 'United States', 'Germany').
+
+- name: language
+  type: STRING
+  description: BCP 47 language tag representing the user's preferred language
+    (e.g., 'en-US', 'de', 'fr').
+
+- name: os_name
+  type: STRING
+  description: Operating system name (e.g., 'Windows', 'Mac OS X', 'Android', 'iOS').
+
+- name: os_version
+  type: STRING
+  description: Operating system version string (e.g., '10', '10.15', '16').
+
+- name: ua_browser
+  type: STRING
+  description: Browser name parsed from the user agent string (e.g., 'Firefox',
+    'Firefox iOS').
+
+- name: ua_version
+  type: STRING
+  description: Browser or client version parsed from the user agent string (e.g., '148.0',
+    '149.0').
+
+- name: event
+  type: STRING
+  description: FxA event name from the log payload (e.g., 'account.login',
+    'account.created' in auth tables; 'flow.signin.view', 'flow.signin.submit' in content
+    tables). Sourced from `jsonPayload.fields.event` (auth) or `jsonPayload.event`
+    (content) depending on the table.
+
+- name: device_id
+  type: STRING
+  description: SHA-256 hashed FxA device identifier, hex-encoded. Coalesced from
+    `jsonPayload.fields.device_id` and `jsonPayload.fields.deviceid` across log sources.
+    Use `user_id` for user-level joins; `device_id` is device-scoped.
+
+- name: entrypoint
+  type: STRING
+  description: FxA entry point where the user started the authentication flow, set by
+    Firefox UI callsites (e.g., 'menupanel', 'preferences', 'synced-tabs'). Not a fixed
+    enum. Sourced from `jsonPayload.fields.entrypoint` in auth tables,
+    `jsonPayload.entrypoint` in content tables, or Amplitude `user_properties` in
+    aggregated tables.
+
+- name: useragent
+  type: STRING
+  description: Raw HTTP User-Agent string from the FxA request. Sourced from
+    `jsonPayload.fields.useragent` in auth tables and `jsonPayload.useragent` in content
+    tables. Use `ua_browser` and `ua_version` for structured browser and version
+    extraction.
+
+- name: utm_source
+  type: STRING
+  description: UTM source parameter identifying the traffic origin (e.g., 'google',
+    'newsletter', 'email'). Captured when users arrive at FxA via a marketing campaign URL.
+    Sourced from Amplitude `user_properties` in aggregated tables.
+
+- name: utm_campaign
+  type: STRING
+  description: UTM campaign parameter identifying the specific marketing campaign (e.g.,
+    'spring_sale', 'email-onboarding'). Sourced from Amplitude `user_properties` in
+    aggregated tables.
+
+- name: utm_content
+  type: STRING
+  description: UTM content parameter used to differentiate links within the same campaign,
+    typically for A/B testing creative. Sourced from Amplitude `user_properties` in
+    aggregated tables.
+
+- name: utm_medium
+  type: STRING
+  description: UTM medium parameter identifying the marketing channel (e.g., 'cpc',
+    'email', 'social'). Sourced from Amplitude `user_properties` in aggregated tables.
+
+- name: utm_term
+  type: STRING
+  description: In FxA, repurposed from the standard paid-search UTM term to track A/B
+    test cohort assignments (e.g., 'my-experiment-var-a'). Not a paid search keyword.
+    Sourced from Amplitude `user_properties`.
+
+- name: flow_time
+  type: FLOAT
+  description: Milliseconds elapsed since the authentication flow began, as reported by
+    the FxA content server (`jsonPayload.flow_time`). Present in content server event
+    tables only. Pair with `flow_id` to measure authentication funnel latency.
+
+- name: locale
+  type: STRING
+  description: BCP 47 locale string (e.g., 'en-US', 'fr', 'de') from the FxA content
+    server log payload (`jsonPayload.locale`). Present in content server tables only. See
+    `language` in aggregated tables for the user-preference language field.
+
+- name: region
+  type: STRING
+  description: Geographic subdivision name derived from the user's IP address (e.g.,
+    'California', 'Bavaria'). In aggregated tables, this is the mode-last value across all
+    events on the submission date. Full name format, not ISO code. Pair with `country` for
+    full geo context.
+
+- name: fxa_server
+  type: STRING
+  description: FxA server component that generated the log entry, derived from the logger
+    name by extracting the service token (e.g., auth, content, oauth, profile, customs).
+    Use to filter to a specific FxA service log stream.
+
+- name: days_since_seen
+  type: INTEGER
+  description: Days since the user last appeared in any FxA event, as of
+    `submission_date`. Computed by `mozfun.bits28.days_since_seen()` over a 28-day
+    rolling window. Values 0 (active today) through 27; NULL if not active in the past
+    28 days.
+
+- name: days_since_seen_in_tier1_country
+  type: INTEGER
+  description: Days since the user was last seen from a Tier 1 country (United States,
+    Canada, United Kingdom, France, Germany), as of `submission_date`. Same 28-day window
+    as `days_since_seen`. NULL if not seen from a tier-1 country in the past 28 days.
+
+- name: date
+  type: DATE
+  description: Event date derived from `DATE(timestamp)`, used as the partition key in
+    some log-derived tables. Distinct from `submission_date` (the pipeline ingestion date).
+    Use `submission_date` for incremental processing; use this field when you need the
+    event's occurrence date.

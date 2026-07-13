@@ -30,6 +30,7 @@ WITH legacy_impressions AS (
     scenario,
     -- Truncate to just Firefox major version
     SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
+    CAST(NULL AS STRING) AS match_type,
     ARRAY_AGG(
       STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
     ) AS experiments,
@@ -63,6 +64,7 @@ glean_impressions AS (
     CAST(NULL AS STRING) AS scenario,
     -- Truncate to just Firefox major version
     SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
+    metrics.string.quick_suggest_match_type AS match_type,
     ARRAY_AGG(
       STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
     ) AS experiments,

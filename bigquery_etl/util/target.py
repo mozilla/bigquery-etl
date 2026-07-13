@@ -684,11 +684,13 @@ def _create_target_stub(
     stub_path = Path(sql_dir) / tgt_project / tgt_dataset / tgt_table
     stub_path.mkdir(parents=True, exist_ok=True)
 
-    # Wildcards represent multiple tables; no single schema to fetch.
-    if not is_wildcard:
-        _fetch_stub_schema(
-            project, dataset, name, stub_path / SCHEMA_FILE, id_token, sql_dir
-        )
+    # Fetch a schema so the stub deploys as a real table — otherwise a rewritten
+    # `…events_*` ref matches no table. Wildcards work too: `Schema.for_table`
+    # does a `SELECT *` dry-run that returns the union schema, and if the source
+    # isn't readable a single-field placeholder is written.
+    _fetch_stub_schema(
+        project, dataset, name, stub_path / SCHEMA_FILE, id_token, sql_dir
+    )
 
     (stub_path / MANIFEST_FILENAME).write_text(
         yaml.dump(

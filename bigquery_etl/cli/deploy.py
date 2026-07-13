@@ -39,7 +39,7 @@ from bigquery_etl.deploy import (
 )
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
-from bigquery_etl.routine.parse_routine import ROUTINE_FILES
+from bigquery_etl.routine.parse_routine import ROUTINE_FILES, RawRoutine
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
@@ -394,7 +394,8 @@ def deploy(
             for f in files:
                 deployed_source_identities.add(extract_from_query_path(f))
 
-        for source_project, files in routines_by_source.items():
+        for source_project in _order_routine_source_projects(routines_by_source):
+            files = routines_by_source[source_project]
             result = _publish_routines_to_target(
                 target,
                 source_project,
@@ -583,6 +584,64 @@ def _strip_materialized_view(target_file: Path) -> Path:
     return new_query_file
 
 
+def _order_routine_source_projects(
+    routines_by_source: Dict[str, Set[Path]],
+) -> List[str]:
+    """Order source-project routine batches so dependencies publish first.
+
+    `_publish_to_target` is called once per source project, but a routine in
+    one project may depend on a routine in another (e.g. a public `mozfun` UDF
+    that delegates to a `moz-fx-data-shared-prod` UDF). Publishing the batches
+    in arbitrary order can fail with "Function not found" when a dependent is
+    published before its dependency. Build a project-level dependency graph from
+    each routine's parsed dependencies and return the projects in dependency-first
+    order. Within-batch ordering is still handled by `_publish_to_target`.
+    """
+    # map of routine name (dataset.name) -> source project being published
+    name_to_project: Dict[str, str] = {}
+    routine_dependencies: Dict[str, List[str]] = {}
+    for source_project, files in routines_by_source.items():
+        for f in files:
+            raw_routine = RawRoutine.from_file(f)
+            name_to_project[raw_routine.name] = source_project
+            routine_dependencies[raw_routine.name] = raw_routine.dependencies
+
+    # project -> set of other projects providing routines it depends on
+    project_edges: Dict[str, Set[str]] = defaultdict(set)
+    for routine_name, dependencies in routine_dependencies.items():
+        source_project = name_to_project[routine_name]
+        for dependency in dependencies:
+            dependency_project = name_to_project.get(dependency)
+            if dependency_project and dependency_project != source_project:
+                project_edges[source_project].add(dependency_project)
+
+    # depth-first topological sort, dependencies before dependents
+    ordered: List[str] = []
+    state: Dict[str, str] = {}
+
+    def visit(project: str) -> None:
+        if state.get(project) == "done":
+            return
+        if state.get(project) == "visiting":
+            # cyclic dependency between projects; fall back to best-effort order
+            log.warning(
+                "Routine publish ordering: cyclic dependency involving source "
+                "project %s; falling back to best-effort order. Cross-project "
+                "routine references may need to be published in multiple passes.",
+                project,
+            )
+            return
+        state[project] = "visiting"
+        for dependency_project in sorted(project_edges.get(project, ())):
+            visit(dependency_project)
+        state[project] = "done"
+        ordered.append(project)
+
+    for project in routines_by_source:
+        visit(project)
+    return ordered
+
+
 def _collect_isolated_dependencies(
     artifacts: Dict[str, Tuple[Path, str]],
     sql_dir: str,
@@ -738,8 +797,18 @@ def _resolve_isolated_schema(
     source_select_err: Optional[Exception] = None
     get_table_err: Optional[Exception] = None
     try:
-        Schema.from_query_file(target_file).to_yaml_file(target_schema)
-        return
+        target_schema_obj = Schema.from_query_file(target_file)
+        if target_schema_obj.schema.get("fields"):
+            target_schema_obj.to_yaml_file(target_schema)
+            return
+        # Dry run produced no schema (e.g. the query is dry-run-skip-listed or
+        # timed out). Don't clobber target_schema with an empty schema — that
+        # later fails in to_bigquery_schema() with KeyError: 'fields'. Fall
+        # through to resolving from the prod source table instead.
+        log.warning(
+            f"Target dry-run produced no schema for {source_project}."
+            f"{source_dataset}.{source_table}, falling back to source schema."
+        )
     except Exception as e:
         target_dry_run_err = e
         log.warning(
@@ -780,6 +849,24 @@ def _resolve_isolated_schema(
             f"get_table failed for {source_project}.{source_dataset}."
             f"{source_table} ({e})"
         )
+
+    # 5. Fall back to the checked-in schema.yaml already copied into the target
+    # tree. Reached when re-derivation isn't possible — e.g. an
+    # allow_field_addition table (step 1 skipped) whose query is
+    # dry-run-skip-listed (step 2) and whose prod source the runtime
+    # credentials can't read (steps 3-4). The checked-in schema is the
+    # authoritative source of truth; resolve `!include`s against the real repo
+    # (default loader), since the shared include targets live there, not in the
+    # rewritten target tree.
+    if target_schema.exists():
+        log.warning(
+            f"Could not re-derive schema for {source_project}.{source_dataset}."
+            f"{source_table}; using the checked-in schema.yaml."
+        )
+        text = target_schema.read_text()
+        if "!include" in text:
+            Schema.from_yaml(text).to_yaml_file(target_schema)
+        return
 
     raise FailedDeployException(
         f"Cannot resolve schema for {source_project}.{source_dataset}."
@@ -949,6 +1036,12 @@ def _build_dependency_graph(
             for ref in references:
                 if ref in artifacts:
                     dependencies.add(ref)
+                elif "*" in ref and ref.replace("*", "wildcard") in artifacts:
+                    # A wildcard ref (e.g. `…events_*`) depends on its stub, which
+                    # is keyed with `*` replaced by `wildcard` (see
+                    # _create_target_stub). Add that edge so the stub table
+                    # deploys before the view that selects from it.
+                    dependencies.add(ref.replace("*", "wildcard"))
 
             try:
                 metadata = Metadata.of_query_file(file_path)

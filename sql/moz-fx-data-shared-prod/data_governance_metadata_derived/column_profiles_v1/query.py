@@ -14,6 +14,7 @@ The profiling logic is vendored verbatim from
 ``google.cloud.bigquery`` plus the Python standard library — the bigquery-etl
 runner image installs dependencies with ``--no-deps``.
 """
+
 import argparse
 import datetime
 import json
@@ -32,6 +33,11 @@ _BQ_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_\-]*$")
 _HIGH_CARDINALITY_THRESHOLD = 50
 _SKIP_DISTINCT_TYPES = {"STRUCT", "JSON", "RECORD", "ARRAY", "INTERVAL"}
 _MAX_PROFILABLE_COLUMNS = 500
+# Bound the profiler's in-memory result: keep the top K values per column and cap
+# each stored example / top-value string. Long-string / histogram columns would
+# otherwise dominate the accumulated rows and OOM the pod (DENG-11334).
+_TOP_VALUES_K = 50
+_MAX_VALUE_CHARS = 256
 _TIER3_COLUMNS = {"metrics"}
 
 _SKIP_TABLE_TYPES = {"VIEW", "MATERIALIZED VIEW"}
@@ -41,29 +47,51 @@ _SKIP_TABLE_TYPES = {"VIEW", "MATERIALIZED VIEW"}
 # task should fail rather than silently writing nothing.
 _BENIGN_ERROR_MARKERS = ("is empty", "not found", "exceeds column limit")
 
-# Intentionally narrow: only leaf names that are unambiguously PII regardless of
-# table context. Suffix patterns like _id are excluded — they match too many
-# non-PII columns (campaign_id, etc).
+# Leaf-name PII detection (see is_pii_column). Matching is on the separator-
+# stripped, lowercased leaf, so snake_case and camelCase spellings of the same
+# name collapse together (account_id / accountId -> "accountid"). Deliberately
+# errs toward precision - it must not flag non-PII columns such as
+# x_foxsec_ip_reputation, fxa_configured, master_password_enabled, or
+# has_phone_number:
+#   * _PII_LEAF_NAMES    - the whole normalized leaf must EQUAL an entry, so clean
+#     camelCase spellings of a known name are caught (phoneNumber, ipAddress,
+#     displayName). Entries are normalized (lowercased, separators stripped) at
+#     definition, so members stay readable in any case and always match the leaf.
+#   * _PII_LEAF_SUFFIXES - the normalized leaf ends with one of these. Only `email`
+#     qualifies: it is unanchored (catches normalizedEmail, recoveryEmail) and so
+#     also suppresses email-ending names that are not PII - snake_case flags
+#     (has_email, as on main) and camelCase ones (hasEmail, voicemail). Accepted:
+#     it only drops profiling stats, never leaks. A `phonenumber` / `ipaddress`
+#     suffix is deliberately NOT used - it would wrongly suppress non-PII flags
+#     (has_phone_number, has_ip_address).
+# This is a best-effort first-line filter, NOT a complete PII guarantee.
 _PII_LEAF_NAMES = {
-    "account",
-    "account_id",
-    "email",
-    "first_name",
-    "last_name",
-    "full_name",
-    "fxa",
-    "fxa_id",
-    "phone",
-    "phone_number",
-    "address",
-    "ip",
-    "ip_address",
-    "password",
-    "date_of_birth",
-    "dob",
-    "birthdate",
+    re.sub(r"[^a-z0-9]", "", _name.lower())
+    for _name in {
+        "account",
+        "account_id",
+        "email_address",
+        "first_name",
+        "last_name",
+        "full_name",
+        "display_name",
+        "username",
+        "nickname",
+        "fxa",
+        "fxa_id",
+        "phone",
+        "phone_number",
+        "address",
+        "ip",
+        "ip_addr",
+        "ip_address",
+        "password",
+        "date_of_birth",
+        "dob",
+        "birthdate",
+    }
 }
-_PII_LEAF_SUFFIXES = ("_email",)
+_PII_LEAF_SUFFIXES = ("email",)
 
 # Explicit destination schema, matching schema.yaml. profiled_at is a DATE here
 # (the partition key) rather than the TIMESTAMP used by the original tool.
@@ -112,9 +140,29 @@ def _json_default(obj: Any) -> str:
     return str(obj)
 
 
+def _truncate(value: Any) -> Any:
+    """Cap a stored string at _MAX_VALUE_CHARS; pass non-strings through.
+
+    Belt-and-suspenders alongside the SQL-side SUBSTR cap, so stored example /
+    top-value strings stay bounded regardless.
+    """
+    if isinstance(value, str) and len(value) > _MAX_VALUE_CHARS:
+        return value[:_MAX_VALUE_CHARS]
+    return value
+
+
 def is_pii_column(field_path: str) -> bool:
-    """Return True if the leaf segment matches a known PII name or suffix."""
-    leaf = field_path.split(".")[-1].lower()
+    """Return True if the leaf segment looks like a known PII field.
+
+    Matches the separator-stripped, lowercased leaf against _PII_LEAF_NAMES, so
+    clean camelCase spellings of a known name are caught (phoneNumber, ipAddress,
+    displayName, emailAddress), or the unanchored `email` suffix (normalizedEmail).
+    Errs toward precision: prefixed/decorated variants (clientIpAddress,
+    userPhoneNumber, user_email_address, passwordHash) are not flagged, to avoid
+    suppressing non-PII columns like has_phone_number. This is a best-effort
+    first-line filter, not a complete guarantee - unmatched variants are profiled.
+    """
+    leaf = re.sub(r"[^a-z0-9]", "", field_path.split(".")[-1].lower())
     return leaf in _PII_LEAF_NAMES or leaf.endswith(_PII_LEAF_SUFFIXES)
 
 
@@ -235,7 +283,7 @@ def _sample_bucket(run_date: str, table: str) -> int:
     Seeding by run_date makes a given --date reproducible; including the table
     name spreads buckets across tables instead of always sampling the same one.
     """
-    return random.Random(f"{run_date}:{table}").randint(1, 99)
+    return random.Random(f"{run_date}:{table}").randint(0, 99)
 
 
 def build_profile_query(
@@ -243,19 +291,20 @@ def build_profile_query(
     columns: list[tuple[str, str, str]],
     partition_filter: str | None = None,
     sample_id: int | None = None,
+    tablesample: bool = False,
 ) -> str:
     """Build a single query that profiles every profilable column in one pass.
 
     Profiles scalar and leaf tiers only. nested_leaf fields are profiled
     separately via build_nested_profile_queries (UNNEST-based).
 
-    sample_id selects the 1% bucket for tables with a sample_id column; the
-    caller passes a value derived deterministically from the run date so a
-    given --date always samples the same bucket.
+    Sampling is decided by the caller: a non-None sample_id adds a
+    ``sample_id = <bucket>`` filter (deterministic per run date), while
+    tablesample adds TABLESAMPLE SYSTEM (1 PERCENT) for tables whose sample_id
+    column is unpopulated. The two are mutually exclusive.
     """
     excluded_tiers = {"undocumented", "pii_suppressed", "nested_leaf", "scalar_array"}
     profilable = [(fp, dt) for fp, dt, tier in columns if tier not in excluded_tiers]
-    has_sample_id = any(fp == "sample_id" for fp, _ in profilable)
 
     col_stats = []
     for field_path, data_type in profilable:
@@ -263,25 +312,36 @@ def build_profile_query(
         sql_ref = field_path_to_sql(field_path)
         col_stats.append(f"COUNTIF({sql_ref} IS NULL) AS `{alias}__nulls`")
         if any(t in data_type.upper() for t in _SKIP_DISTINCT_TYPES):
+            # Complex type: no distinct/top-values; the example is a length-capped
+            # JSON string (CAST AS STRING is invalid for STRUCT/ARRAY/JSON).
             col_stats.append(f"NULL AS `{alias}__distinct`")
+            example_expr = f"SUBSTR(TO_JSON_STRING({sql_ref}), 1, {_MAX_VALUE_CHARS})"
         else:
+            # distinct/null stay on the raw value (exact); top-values and example
+            # are length-capped so long-string columns can't bloat the in-memory
+            # SAFE_CAST so non-UTF-8 BYTES degrades to NULL rather than erroring the whole query
+            capped = f"SUBSTR(SAFE_CAST({sql_ref} AS STRING), 1, {_MAX_VALUE_CHARS})"
             col_stats.append(f"APPROX_COUNT_DISTINCT({sql_ref}) AS `{alias}__distinct`")
             col_stats.append(
-                f"APPROX_TOP_COUNT({sql_ref}, 50) AS `{alias}__top_values`"
+                f"APPROX_TOP_COUNT({capped}, {_TOP_VALUES_K}) AS `{alias}__top_values`"
             )
-        col_stats.append(f"ANY_VALUE({sql_ref}) AS `{alias}__example`")
+            example_expr = capped
+        col_stats.append(f"ANY_VALUE({example_expr}) AS `{alias}__example`")
 
     select = ",\n        ".join(["COUNT(*) AS total_rows"] + col_stats)
+
+    from_clause = f"`{table}`"
+    if tablesample:
+        from_clause += " TABLESAMPLE SYSTEM (1 PERCENT)"
 
     where_clauses = []
     if partition_filter:
         where_clauses.append(partition_filter)
-    if has_sample_id:
-        bucket = sample_id if sample_id is not None else random.randint(1, 99)
-        where_clauses.append(f"`sample_id` = {bucket}")
+    if sample_id is not None:
+        where_clauses.append(f"`sample_id` = {sample_id}")
 
     where = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
-    return f"SELECT {select} FROM `{table}` {where}"
+    return f"SELECT {select} FROM {from_clause} {where}"
 
 
 def build_nested_profile_queries(
@@ -289,12 +349,16 @@ def build_nested_profile_queries(
     columns: list[tuple[str, str, str]],
     partition_filter: str | None = None,
     sample_id: int | None = None,
+    tablesample: bool = False,
 ) -> list[tuple[str, str, list[tuple[str, str]]]]:
     """Build one UNNEST-based profiling query per REPEATED parent column.
 
     Each query profiles all nested_leaf fields under a single REPEATED parent.
     Returns a list of (parent_column, query_sql, nested_fields) tuples.
     nested_fields is [(field_path, data_type), ...] for result parsing.
+
+    Sampling mirrors build_profile_query: caller-supplied sample_id bucket, or
+    TABLESAMPLE when the table's sample_id column is unpopulated.
     """
     nested_leaves = [(fp, dt) for fp, dt, tier in columns if tier == "nested_leaf"]
     if not nested_leaves:
@@ -304,10 +368,6 @@ def build_nested_profile_queries(
     for field_path, data_type in nested_leaves:
         parent = field_path.split(".")[0]
         by_parent.setdefault(parent, []).append((field_path, data_type))
-
-    has_sample_id = any(
-        fp == "sample_id" for fp, _, tier in columns if tier == "scalar"
-    )
 
     results = []
     for parent, fields in by_parent.items():
@@ -322,28 +382,38 @@ def build_nested_profile_queries(
             col_stats.append(f"COUNTIF({sql_ref} IS NULL) AS `{alias}__nulls`")
             if any(t in data_type.upper() for t in _SKIP_DISTINCT_TYPES):
                 col_stats.append(f"NULL AS `{alias}__distinct`")
+                example_expr = (
+                    f"SUBSTR(TO_JSON_STRING({sql_ref}), 1, {_MAX_VALUE_CHARS})"
+                )
             else:
+                capped = (
+                    f"SUBSTR(SAFE_CAST({sql_ref} AS STRING), 1, {_MAX_VALUE_CHARS})"
+                )
                 col_stats.append(
                     f"APPROX_COUNT_DISTINCT({sql_ref}) AS `{alias}__distinct`"
                 )
                 col_stats.append(
-                    f"APPROX_TOP_COUNT({sql_ref}, 50) AS `{alias}__top_values`"
+                    f"APPROX_TOP_COUNT({capped}, {_TOP_VALUES_K}) AS `{alias}__top_values`"
                 )
-            col_stats.append(f"ANY_VALUE({sql_ref}) AS `{alias}__example`")
+                example_expr = capped
+            col_stats.append(f"ANY_VALUE({example_expr}) AS `{alias}__example`")
 
         select = ",\n        ".join(["COUNT(*) AS total_rows"] + col_stats)
+
+        from_clause = f"`{table}`"
+        if tablesample:
+            from_clause += " TABLESAMPLE SYSTEM (1 PERCENT)"
 
         where_clauses = []
         if partition_filter:
             where_clauses.append(partition_filter)
-        if has_sample_id:
-            bucket = sample_id if sample_id is not None else random.randint(1, 99)
-            where_clauses.append(f"`sample_id` = {bucket}")
+        if sample_id is not None:
+            where_clauses.append(f"`sample_id` = {sample_id}")
 
         where = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
         query = (
             f"SELECT {select} "
-            f"FROM `{table}`, UNNEST(`{parent}`) AS `{unnest_alias}` "
+            f"FROM {from_clause}, UNNEST(`{parent}`) AS `{unnest_alias}` "
             f"{where}"
         )
         results.append((parent, query, fields))
@@ -370,6 +440,29 @@ def get_partition_filter(
     if field:
         return f"DATE(`{field}`) = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
     return f"_PARTITIONDATE = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
+
+
+def sample_id_is_populated(
+    client: bigquery.Client, table: str, partition_filter: str | None
+) -> bool:
+    """Return True if the table's sample_id column holds any non-NULL value.
+
+    Tables sourced from server-side Glean pings carry a sample_id column that is
+    never populated (these pings carry no client_id, which sample_id is derived
+    from), so it is entirely NULL. A ``sample_id = bucket`` sample would then
+    match no rows and the table would profile to zero columns, so the caller
+    uses this to decide whether to fall back to TABLESAMPLE. Checks the same
+    slice the profiler scans (the partition_filter), short-circuiting via
+    LIMIT 1 so the common populated case stays cheap.
+    """
+    where_clauses = ["`sample_id` IS NOT NULL"]
+    if partition_filter:
+        where_clauses.append(partition_filter)
+    query = (
+        f"SELECT EXISTS(SELECT 1 FROM `{table}` "
+        f"WHERE {' AND '.join(where_clauses)} LIMIT 1) AS populated"
+    )
+    return bool(list(client.query(query).result())[0].populated)
 
 
 def _dataset_region(client: bigquery.Client, project: str, dataset: str) -> str:
@@ -424,7 +517,7 @@ def _parse_profile_row(
     null_rate = round(null_count / total_rows * 100, 1) if total_rows > 0 else 0.0
 
     top_values_raw = getattr(row, f"{alias}__top_values", []) or []
-    values = [[item["value"], item["count"]] for item in top_values_raw]
+    values = [[_truncate(item["value"]), item["count"]] for item in top_values_raw]
 
     is_high_cardinality = (
         distinct_count is None or distinct_count > _HIGH_CARDINALITY_THRESHOLD
@@ -438,7 +531,7 @@ def _parse_profile_row(
         "is_high_cardinality": is_high_cardinality,
     }
     if is_high_cardinality:
-        entry["example"] = str(example) if example is not None else None
+        entry["example"] = _truncate(str(example)) if example is not None else None
         entry["values"] = values[:5]
     else:
         entry["values"] = values
@@ -454,15 +547,49 @@ def _run_profile_query(
 ) -> tuple[dict[str, Any], float]:
     """Execute the profiling query and return (column_stats_dict, gb_scanned)."""
     partition_filter = get_partition_filter(client, table, run_date)
-    sample_id = _sample_bucket(run_date, table)
-    query = build_profile_query(table, columns, partition_filter, sample_id)
+
+    # Decide how to sample. Prefer the deterministic sample_id bucket, but only
+    # when that column is actually populated; tables sourced from server-side
+    # Glean pings carry an all-NULL sample_id, where `sample_id = bucket` would
+    # scan zero rows. Fall back to TABLESAMPLE in that case.
+    sample_id: int | None = None
+    tablesample = False
+    if any(fp == "sample_id" for fp, _, _ in columns):
+        if sample_id_is_populated(client, table, partition_filter):
+            sample_id = _sample_bucket(run_date, table)
+        else:
+            tablesample = True
+            logger.info(
+                "sample_id present but unpopulated for %s; "
+                "falling back to TABLESAMPLE SYSTEM (1 PERCENT).",
+                table,
+            )
+    query = build_profile_query(
+        table, columns, partition_filter, sample_id, tablesample
+    )
 
     job = client.query(query)
     rows = list(job.result())
     gb_scanned = job.total_bytes_processed / 1e9
+    total_rows = rows[0].total_rows
+
+    # TABLESAMPLE SYSTEM samples whole storage blocks, so on a small table a 1%
+    # sample can resolve to zero rows even when the partition has data. Retry once
+    # with a full (unsampled) partition scan: a small partition is cheap to scan
+    # in full and yields exact stats, while a genuinely empty partition still
+    # returns zero. Clearing tablesample also drops sampling from the nested
+    # queries built below.
+    if total_rows == 0 and tablesample:
+        tablesample = False
+        query = build_profile_query(
+            table, columns, partition_filter, sample_id, tablesample
+        )
+        job = client.query(query)
+        rows = list(job.result())
+        gb_scanned += job.total_bytes_processed / 1e9
+        total_rows = rows[0].total_rows
 
     row = rows[0]
-    total_rows = row.total_rows
     results: dict[str, Any] = {}
 
     # The scanned slice (recent partition + 1% sample) can be empty even when the
@@ -489,7 +616,7 @@ def _run_profile_query(
         )
 
     nested_queries = build_nested_profile_queries(
-        table, columns, partition_filter, sample_id
+        table, columns, partition_filter, sample_id, tablesample
     )
     for _parent, nested_sql, nested_fields in nested_queries:
         try:
@@ -561,11 +688,13 @@ def profile_bq_table(
 ) -> str:
     """Profile every column in a single BigQuery table; return stats as JSON.
 
-    Samples 1% when a sample_id column is present. Applies a partition filter
-    scoped to 7 days before run_date when a date partition column is detected,
-    so the scanned data matches the profiled_at partition. Fields inside REPEATED
-    structs are profiled via UNNEST with the same sampling. Simple
-    ARRAY<scalar> columns are listed as tier "scalar_array" with no stats.
+    Samples 1% via the sample_id bucket when that column is present and
+    populated, falling back to TABLESAMPLE when sample_id is all-NULL.
+    Applies a partition filter scoped to 7 days before run_date when a date
+    partition column is detected, so the scanned data matches the profiled_at
+    partition. Fields inside REPEATED structs are profiled via UNNEST with the
+    same sampling. Simple ARRAY<scalar> columns are listed as tier
+    "scalar_array" with no stats.
     Fields under _TIER3_COLUMNS (e.g. metrics) remain tier "undocumented".
 
     Returns a JSON object with column stats, or {"error": "..."} if the table

@@ -2,6 +2,9 @@ fields:
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: user_id
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: first_seen_date
   type: DATE
   mode: NULLABLE

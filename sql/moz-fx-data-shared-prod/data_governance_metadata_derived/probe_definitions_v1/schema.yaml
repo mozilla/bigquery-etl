@@ -1,0 +1,31 @@
+fields:
+- name: ping_platform
+  type: STRING
+  mode: REQUIRED
+  description: glean or legacy_telemetry.
+- name: source_ping
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    Name of the telemetry ping (e.g. baseline, first-shutdown). For Glean
+    pings, formatted as app.ping (e.g. fenix.baseline) so the cache key is
+    unique per app.
+- name: probe_name
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Probe or metric name from the source artifact. Glean metrics use
+    snake_case (e.g. glean.baseline.duration); legacy telemetry probes use
+    the field path of the stable table schema (e.g. environment.system.os).
+- name: probe_description
+  type: STRING
+  mode: NULLABLE
+  description: Description from the Glean Dictionary (Glean) or the stable table column schema (legacy telemetry).
+- name: probe_type
+  type: STRING
+  mode: NULLABLE
+  description: Data type or kind of the probe (e.g. string, counter, labeled_counter, uint32).
+- name: fetched_at
+  type: DATE
+  mode: REQUIRED
+  description: Run date of the probe-definition fetch job. This is the table's partition column.

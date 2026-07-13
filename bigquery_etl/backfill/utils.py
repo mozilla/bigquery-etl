@@ -33,6 +33,21 @@ MAX_BACKFILL_ENTRY_AGE_DAYS = 28
 NBR_DAYS_RETAINED = 775
 
 
+def resolve_date_partition_parameter(
+    scheduling: dict, override_depends_on_past_null_partition: Optional[bool] = False
+) -> Optional[str]:
+    """Resolve the date partition parameter name a backfill binds at run time.
+
+    Mirrors what `bqetl query backfill` does after merging scheduling overrides: the parameter is
+    scheduling["date_partition_parameter"], defaulting to submission_date.
+    The override_depends_on_past_null_partition path forces submission_date even when metadata
+    leaves it null, matching the scheduling override applied in `backfill initiate`.
+    """
+    if override_depends_on_past_null_partition:
+        return "submission_date"
+    return scheduling.get("date_partition_parameter", "submission_date")
+
+
 def get_effective_retention_days(metadata: Metadata) -> int:
     """Return the effective retention limit in days.
 
@@ -146,6 +161,7 @@ def validate_table_metadata(
     qualified_table_name: str,
     ignore_missing_metadata: bool,
     reinitialize_table: bool = False,
+    override_depends_on_past_null_partition: bool = False,
 ) -> List[str]:
     """Run all metadata.yaml validation checks and return list of error strings."""
     if ignore_missing_metadata:
@@ -161,11 +177,15 @@ def validate_table_metadata(
 
     errors = []
     if not validate_depends_on_past(
-        sql_dir, qualified_table_name, reinitialize_table=reinitialize_table
+        sql_dir,
+        qualified_table_name,
+        reinitialize_table=reinitialize_table,
+        override_depends_on_past_null_partition=override_depends_on_past_null_partition,
     ):
         errors.append(
             f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}. "
-            "Use --reinitialize-table with `bqetl backfill create` to rebuild via the table's is_init() query."
+            "Use --reinitialize-table with `bqetl backfill create` to rebuild via the table's is_init() query, "
+            "or set override_depends_on_past_null_partition on a custom_query_path entry to backfill it per-partition."
         )
 
     if not validate_partitioning_type(sql_dir, qualified_table_name):
@@ -178,13 +198,20 @@ def validate_table_metadata(
 
 
 def validate_depends_on_past(
-    sql_dir: str, qualified_table_name: str, reinitialize_table: bool = False
+    sql_dir: str,
+    qualified_table_name: str,
+    reinitialize_table: bool = False,
+    override_depends_on_past_null_partition: bool = False,
 ) -> bool:
     """Check if the table depends on past and has null date_partition_parameter.
 
-    Fail if depends_on_past=true and date_partition_parameter=null, unless the
-    backfill reinitializes the table via its is_init() query (reinitialize_table=true),
-    which rebuilds the whole table without depending on prior partitions.
+    Fail if depends_on_past=true and date_partition_parameter=null, unless either:
+    - the backfill reinitializes the table via its is_init() query
+      (reinitialize_table=true), which rebuilds the whole table without depending on
+      prior partitions, or
+    - override_depends_on_past_null_partition=true, used with a custom_query_path that processes each
+      partition independently (so the depends-on-past replay assumption does not apply).
+      The custom_query_path requirement is enforced in validate.py.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
@@ -199,11 +226,15 @@ def validate_depends_on_past(
             table_metadata.scheduling["depends_on_past"]
             and table_metadata.scheduling["date_partition_parameter"] is None
         )
-        if depends_on_past_null_partition and reinitialize_table:
+        if not depends_on_past_null_partition:
+            return True
+        if override_depends_on_past_null_partition:
+            return True
+        if reinitialize_table:
             # The reinitialize path rebuilds the whole table from its is_init() query;
             # require that the query actually supports it.
             return query_supports_reinitialize(sql_dir, qualified_table_name)
-        return not depends_on_past_null_partition
+        return False
 
     return True
 

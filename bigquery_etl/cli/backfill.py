@@ -48,6 +48,7 @@ from ..backfill.utils import (
 )
 from ..backfill.validate import (
     BackfillConfigurationError,
+    validate_custom_query_path,
     validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
@@ -62,6 +63,7 @@ from ..cli.utils import (
     is_authenticated,
     project_id_option,
     sql_dir_option,
+    use_cloud_function_option,
 )
 from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
@@ -207,6 +209,16 @@ def backfill(ctx):
     "In some cases, this can cause inconsistencies in the data.",
 )
 @click.option(
+    "--override-depends-on-past-null-partition",
+    "--override_depends_on_past_null_partition",
+    is_flag=True,
+    help="If set, allow a custom_query_path backfill on a depends_on_past table with a "
+    "null date_partition_parameter to run per-partition instead of requiring "
+    "--reinitialize-table. Only valid with --custom-query-path, since the custom query "
+    "must process each partition independently of prior partitions. The custom query "
+    "must bind @submission_date (it is the partition parameter for the backfill).",
+)
+@click.option(
     "--reinitialize-table",
     "--reinitialize_table",
     flag_value=True,
@@ -248,6 +260,7 @@ def create(
     shredder_mitigation,
     override_retention_range_limit,
     override_depends_on_past_end_date,
+    override_depends_on_past_null_partition,
     reinitialize_table,
     reinitialize_sampling_batch_size,
     billing_project,
@@ -275,6 +288,9 @@ def create(
         override_depends_on_past_end_date = opts.get(
             "override_depends_on_past_end_date", False
         )
+        override_depends_on_past_null_partition = opts.get(
+            "override_depends_on_past_null_partition", False
+        )
         reinitialize_table = opts.get("reinitialize_table", None)
         reinitialize_sampling_batch_size = opts.get(
             "reinitialize_sampling_batch_size", None
@@ -285,6 +301,7 @@ def create(
         qualified_table_name,
         ignore_missing_metadata=True,
         reinitialize_table=reinitialize_table,
+        override_depends_on_past_null_partition=override_depends_on_past_null_partition,
     ):
         click.echo("\n".join(errors))
         sys.exit(1)
@@ -329,6 +346,7 @@ def create(
         reinitialize_sampling_batch_size=reinitialize_sampling_batch_size,
         override_retention_limit=override_retention_range_limit,
         override_depends_on_past_end_date=override_depends_on_past_end_date,
+        override_depends_on_past_null_partition=override_depends_on_past_null_partition,
         billing_project=billing_project,
         query_script_entrypoint=query_script_entrypoint or None,
         query_script_date_arg=query_script_date_arg or None,
@@ -389,6 +407,16 @@ def create(
 @sql_dir_option
 @project_id_option()
 @ignore_missing_metadata_option
+@click.option(
+    "--dry-run-custom-query",
+    is_flag=True,
+    default=False,
+    help="Also dry run any custom_query_path SQL against BigQuery. "
+    "Requires GCP authentication. Off by default so pre-commit doesn't require auth.",
+)
+# cloud function and billing project are only for the optional dry run
+@use_cloud_function_option
+@billing_project_option()
 @click.pass_context
 def validate(
     ctx,
@@ -396,6 +424,9 @@ def validate(
     sql_dir,
     project_id,
     ignore_missing_metadata,
+    dry_run_custom_query,
+    use_cloud_function,
+    billing_project,
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
@@ -414,16 +445,22 @@ def validate(
     for table_name, table_entries in backfills_dict.items():
         # initiate acts on the (single) Initiate-status entry, not necessarily the
         # newest by entry date, so derive the reinitialize flag from that same entry.
-        reinitialize_table = any(
-            entry.reinitialize_table
-            for entry in table_entries
-            if entry.status == BackfillStatus.INITIATE
+        # Prefer the Initiate entry's flags; fall back to Complete only when none is active.
+        flag_entries = [
+            entry for entry in table_entries if entry.status == BackfillStatus.INITIATE
+        ] or [
+            entry for entry in table_entries if entry.status == BackfillStatus.COMPLETE
+        ]
+        reinitialize_table = any(entry.reinitialize_table for entry in flag_entries)
+        override_depends_on_past_null_partition = any(
+            entry.override_depends_on_past_null_partition for entry in flag_entries
         )
         if metadata_errors := validate_table_metadata(
             sql_dir,
             table_name,
             ignore_missing_metadata,
             reinitialize_table=reinitialize_table,
+            override_depends_on_past_null_partition=override_depends_on_past_null_partition,
         ):
             click.echo("\n".join(metadata_errors))
             raise MetadataValidationError(str(metadata_errors))
@@ -433,6 +470,14 @@ def validate(
                 sql_dir, table_name
             )
             validate_file(backfill_file)
+            for entry in table_entries:
+                validate_custom_query_path(
+                    entry,
+                    backfill_file,
+                    dry_run=dry_run_custom_query,
+                    use_cloud_function=use_cloud_function,
+                    billing_project=billing_project,
+                )
         except (yaml.YAMLError, ValueError) as e:
             errors[table_name].append(
                 f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
@@ -455,7 +500,7 @@ def validate(
                 continue
             click.echo(f"{table_name}:")
             click.echo("\n".join(error_list))
-            raise BackfillConfigurationError
+        raise BackfillConfigurationError
     elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
@@ -652,7 +697,7 @@ def scheduled(
 @backfill.command(
     help="""Process entry in backfill.yaml with Initiate status that has not yet been processed.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 
@@ -966,9 +1011,15 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
-    scheduling_overrides = "{}"
+    scheduling_overrides_dict: dict[str, object] = {}
     if entry.ignore_date_partition_offset:
-        scheduling_overrides = '{"date_partition_offset": 0}'
+        scheduling_overrides_dict["date_partition_offset"] = 0
+    if entry.override_depends_on_past_null_partition:
+        # date_partition_parameter is null here, so backfill would write the whole
+        # staging table each run and only the last date would survive. Bind
+        # submission_date so each run decorates its own staging$YYYYMMDD partition.
+        scheduling_overrides_dict["date_partition_parameter"] = "submission_date"
+    scheduling_overrides = json.dumps(scheduling_overrides_dict)
 
     override_retention_limit = entry.override_retention_limit
 
@@ -998,9 +1049,17 @@ def _initiate_backfill(
         )
         return
 
-    # rewrite query to query the staging table instead of the prod table
-    # and copy previous partition if table depends on past
-    if metadata.scheduling.get("depends_on_past") and not is_python_script:
+    # Rewrite the query to read staging instead of prod, and seed the previous
+    # partition for depends_on_past tables.
+    #
+    # The override is the exception: its custom query reads its own prod partition
+    # via `* REPLACE`, so it must keep reading prod. Rewriting to staging would copy
+    # an empty partition over prod. It is partition-independent, so skip the block.
+    if (
+        metadata.scheduling.get("depends_on_past")
+        and not is_python_script
+        and not entry.override_depends_on_past_null_partition
+    ):
         query_path = (
             custom_query_path or Path("sql") / project / dataset / table / "query.sql"
         )
@@ -1033,7 +1092,7 @@ def _initiate_backfill(
     try:
         ctx.invoke(
             query_backfill,
-            name=f"{dataset}.{table}",
+            name=f"{project}.{dataset}.{table}",
             project_id=project,
             # convert date objects to datetime
             start_date=datetime.combine(entry.start_date, time.min),
@@ -1179,7 +1238,7 @@ def _initialize_previous_partition(
 @backfill.command(
     help="""Complete entry in backfill.yaml with Complete status that has not yet been processed..
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 
@@ -1338,6 +1397,17 @@ def _copy_backfill_staging_to_prod(
             )
             if not entry.ignore_date_partition_offset:
                 offset = table_metadata.scheduling.get("date_partition_offset", offset)
+
+        # The override ran per-partition, but date_partition_parameter is null,
+        # so get_backfill_partition returns None (treating it as the whole table).
+        # Resolve the partition from the partitioning field and copy each individually.
+        if (
+            entry.override_depends_on_past_null_partition
+            and partition_param is None
+            and table_metadata.bigquery
+            and table_metadata.bigquery.time_partitioning
+        ):
+            partition_param = table_metadata.bigquery.time_partitioning.field
 
         for backfill_date in backfill_date_range:
             if (

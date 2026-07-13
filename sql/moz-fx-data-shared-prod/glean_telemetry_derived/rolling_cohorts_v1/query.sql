@@ -39,6 +39,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_term,
   'Desktop' AS row_source,
   CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response,
+  CAST(NULL AS STRING) AS install_source,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users` au
 LEFT JOIN
@@ -91,7 +92,8 @@ SELECT
   mnpc.play_store_attribution_content,
   mnpc.play_store_attribution_term,
   'Mobile' AS row_source,
-  mnpc.play_store_attribution_install_referrer_response
+  mnpc.play_store_attribution_install_referrer_response,
+  mnpc.install_source
 FROM
   (
 --in case of multiple rows per client ID / first seen date (rare), pick 1
@@ -133,7 +135,8 @@ LEFT JOIN
       play_store_attribution_source,
       play_store_attribution_content,
       play_store_attribution_term,
-      play_store_attribution_install_referrer_response
+      play_store_attribution_install_referrer_response,
+      install_source
     FROM
       `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients`
     WHERE

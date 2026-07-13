@@ -2,116 +2,174 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the Firefox application variant (e.g., 'Fenix', 'Firefox Desktop', 'Firefox iOS'). Set to 'Other' if the app name
-    was not recognized.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_app_name
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: The campaign this client/install was attributed to (utm_campaign value, identifying a specific marketing campaign or promotion).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_campaign
 - name: attribution_content
   type: STRING
   mode: NULLABLE
-  description: The attribution content associated with the install; similar or the same as UTM content.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_content
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
-  description: The attribution experiment key associated with the install, used to track install-time experiment assignments.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_experiment
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
-  description: The attribution medium associated with the install; similar or the same as UTM medium.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: The attribution source associated with the install; similar or the same as UTM source.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
-  description: The attribution variation key associated with the install, identifying which experiment variation the user was exposed to.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_variation
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: device_model
   type: STRING
   mode: NULLABLE
-  description: The hardware device model identifier for the client, primarily populated for mobile clients (e.g., 'iPhone14,5', 'SM-A165F').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: device_model
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: The operating system version normalized to a consistent format at ingestion (e.g., '10.0' for Windows, '16' for Android, '26.3.1' for
-    iOS).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: The Adjust ad group that attributed this installation, available for mobile clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_ad_group
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: The Adjust campaign that attributed this installation, available for mobile clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_campaign
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: The Adjust creative asset that attributed this installation, available for mobile clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_creative
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: adjust_network
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: The Google Play Store campaign parameter associated with the installation referral, available for Android clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_campaign
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
-  description: The Google Play Store medium parameter associated with the installation referral, available for Android clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_medium
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
-  description: The Google Play Store source parameter associated with the installation referral, available for Android clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_source
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
-  description: The Google Play Store content parameter associated with the installation referral, available for Android clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_content
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
-  description: The Google Play Store search term associated with the installation referral, available for Android clients only.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_term
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
-  description: The full raw install referrer string returned by the Google Play Store for Android installations, containing all UTM and other attribution
-    parameters.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_install_referrer_response
 - name: cohort_date_week
   type: DATE
   mode: NULLABLE
-  description: The week of this client's first_seen_date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cohort_date_week
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: install_source

@@ -12,6 +12,7 @@ from click.testing import CliRunner
 from bigquery_etl.backfill.utils import NBR_DAYS_RETAINED
 from bigquery_etl.cli.query import (
     DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
+    _backfill_query,
     _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,
@@ -24,6 +25,7 @@ from bigquery_etl.cli.query import (
     schedule,
     update,
 )
+from bigquery_etl.metadata.parse_metadata import PartitionType
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
 from bigquery_etl.util.target import Target
@@ -412,7 +414,17 @@ class TestQuery:
             ) as f:
                 f.write("SELECT 1")
 
-            assert len(paths_matching_name_pattern("*", "sql/", None)) == 4
+            # Same table name in a dataset whose name is a suffix of another dataset
+            # (telemetry_derived vs glean_telemetry_derived). The "*{pattern}" suffix
+            # match means a bare "telemetry_derived.query_v1" over-matches this one.
+            os.makedirs("sql/moz-fx-data-shared-prod/glean_telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/glean_telemetry_derived/query_v1/query.sql",
+                "w",
+            ) as f:
+                f.write("SELECT 1")
+
+            assert len(paths_matching_name_pattern("*", "sql/", None)) == 5
             assert (
                 len(
                     paths_matching_name_pattern(
@@ -445,7 +457,31 @@ class TestQuery:
                 )
                 == 1
             )
-            assert len(paths_matching_name_pattern("*query*", "sql/", None)) == 4
+            assert len(paths_matching_name_pattern("*query*", "sql/", None)) == 5
+
+            # Known issue: A bare "dataset.table" over-matches glean_telemetry_derived
+            # because the "*{pattern}" suffix matches
+            assert (
+                len(
+                    paths_matching_name_pattern(
+                        "telemetry_derived.query_v1",
+                        "sql/",
+                        "moz-fx-data-shared-prod",
+                    )
+                )
+                == 2
+            )
+            # Fully qualifying with the project disambiguates the table name
+            assert (
+                len(
+                    paths_matching_name_pattern(
+                        "moz-fx-data-shared-prod.telemetry_derived.query_v1",
+                        "sql/",
+                        "moz-fx-data-shared-prod",
+                    )
+                )
+                == 1
+            )
             assert (
                 len(
                     paths_matching_name_pattern(
@@ -775,6 +811,58 @@ class TestQuery:
                 test_params = [arg for arg in call.args[0] if "--parameter=test" in arg]
                 assert len(test_params) == 1
                 assert test_params[0] == "--parameter=test:INT64:30"
+
+    @patch("bigquery_etl.cli.query._run_query")
+    def test_backfill_query_dedupes_date_partition_parameter(
+        self, mock_run_query, runner
+    ):
+        """A null-date_partition_parameter table that lists submission_date in `parameters`
+        (e.g. clients_first_seen_v3) is backfilled per-partition by overriding
+        date_partition_parameter to submission_date. That override decorates the destination
+        with the partition, but submission_date is already bound via `parameters`. bq rejects a
+        parameter bound twice, so _backfill_query must emit submission_date exactly once while
+        still decorating the destination."""
+        with runner.isolated_filesystem():
+            query_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(query_dir)
+            query_path = Path(query_dir) / "query.sql"
+            query_path.write_text(
+                "SELECT @submission_date AS submission_date "
+                "FROM t WHERE first_seen_date = @submission_date"
+            )
+
+            _backfill_query(
+                query_file_path=query_path,
+                project_id="moz-fx-data-shared-prod",
+                # overridden to submission_date so the destination gets decorated
+                date_partition_parameter="submission_date",
+                date_partition_offset=0,
+                max_rows=100,
+                dry_run=True,
+                # `parameters` already binds submission_date
+                scheduling_parameters=["submission_date:DATE:{{ds}}"],
+                args=[],
+                partitioning_type=PartitionType.DAY,
+                backfill_date=date(2026, 6, 7),
+                destination_table="moz-fx-data-shared-prod.telemetry_derived.query_v1",
+                run_checks=False,
+                checks_file_name="checks.sql",
+                billing_project="moz-fx-data-shared-prod",
+            )
+
+        assert mock_run_query.call_count == 1
+        query_arguments = mock_run_query.call_args.kwargs["query_arguments"]
+        submission_date_params = [
+            arg
+            for arg in query_arguments
+            if arg.startswith("--parameter=submission_date")
+        ]
+        # Bound exactly once (from `parameters`), not duplicated by the date-param append.
+        assert submission_date_params == ["--parameter=submission_date:DATE:2026-06-07"]
+        # The destination is still decorated with the per-partition suffix.
+        assert mock_run_query.call_args.kwargs["destination_table"].endswith(
+            "$20260607"
+        )
 
     def test_query_backfill_unpartitioned_with_parameters(self, runner):
         with (

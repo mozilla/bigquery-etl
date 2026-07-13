@@ -7,11 +7,13 @@ import pytest
 import yaml
 
 from bigquery_etl.cli.deploy import _collect_isolated_dependencies
+from bigquery_etl.util import target as target_module
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
     SCHEMA_FILE,
     Target,
     _normalize_table_ref,
+    _should_grant_impersonation_access,
     _substitute_3part_ref,
     collect_target_dependencies,
     extract_commit_from_dataset_name,
@@ -611,6 +613,34 @@ class TestTargetRefForSource:
         )
         assert (proj, ds, tbl) == ("dev-proj", "telemetry_derived", "tbl_v1")
 
+    def test_wildcard_preserves_star_and_matches_stub(self):
+        """A wildcard ref must keep its trailing `*` (not get sanitized to `_`)
+        so the rewritten ref resolves to the stub table, which `_create_target_stub`
+        names with `*` -> `wildcard`. This locks both sides of that invariant."""
+        target = Target(
+            name="stage",
+            project_id="stage-proj",
+            dataset="stage_ds",
+            artifact_prefix="{{ artifact.project_id }}__{{ artifact.dataset_id }}__",
+        )
+        common_args = (
+            target,
+            "stage-proj",
+            "moz-fx-data-marketing-prod",
+            "analytics_1",
+        )
+
+        # rewrite target for the wildcard ref: prefix applied, trailing * kept
+        _, _, ref_tbl = target_ref_for_source(*common_args, "events_*")
+        assert ref_tbl == "moz_fx_data_marketing_prod__analytics_1__events_*"
+
+        # stub is created from name.replace("*", "wildcard")
+        _, _, stub_tbl = target_ref_for_source(*common_args, "events_wildcard")
+        assert stub_tbl == "moz_fx_data_marketing_prod__analytics_1__events_wildcard"
+
+        # invariant: the rewritten `…events_*` wildcard must match the stub table
+        assert ref_tbl.endswith("*") and stub_tbl.startswith(ref_tbl[:-1])
+
 
 class TestSubstitute3PartRef:
     """Test _substitute_3part_ref handles common ref forms."""
@@ -635,6 +665,18 @@ class TestSubstitute3PartRef:
             ("ascholtz-dev", "test_ds", "test_tbl"),
         )
         assert "`ascholtz-dev`.`test_ds`.`test_tbl`" in out
+
+    def test_wildcard_ref_is_rewritten(self):
+        """Wildcard refs (ending in `*`) must be rewritten, not skipped — a
+        trailing `\\b` never matches after `*`, leaving the ref pointed at prod."""
+        sql = "SELECT * FROM `moz-fx-data-marketing-prod.analytics_1.events_*`"
+        out = _substitute_3part_ref(
+            sql,
+            ("moz-fx-data-marketing-prod", "analytics_1", "events_*"),
+            ("stage-proj", "analytics_1_stage", "events_*"),
+        )
+        assert "moz-fx-data-marketing-prod" not in out
+        assert "`stage-proj`.`analytics_1_stage`.`events_*`" in out
 
 
 class TestNormalizeTableRef:
@@ -1111,3 +1153,70 @@ class TestCollectTargetDependenciesStubDedup:
         ]
         assert len(stub_paths) == 1, "Stub should be created exactly once"
         assert mock_fetch_schema.call_count == 1
+
+
+ENV = "BQETL_GRANT_IMPERSONATION_DATASET_ACCESS"
+
+
+class TestShouldGrantImpersonationAccess:
+    """Humans: env var > target preference > prompt > deny.
+
+    Coding agents: only an explicit target `grant_impersonation_access: true`.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _clean(self, monkeypatch):
+        monkeypatch.delenv(ENV, raising=False)
+        target_module.set_grant_impersonation_access(None)
+        # Default to the human path; agent tests override this.
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: False
+        )
+
+    # --- human path ---
+    @pytest.mark.parametrize(
+        "value,expected",
+        [("1", True), ("true", True), ("yes", True), ("0", False), ("no", False)],
+    )
+    def test_env_var_wins(self, monkeypatch, value, expected):
+        monkeypatch.setenv(ENV, value)
+        target_module.set_grant_impersonation_access(not expected)  # overridden
+        assert _should_grant_impersonation_access("sa@p.iam") is expected
+
+    def test_target_preference_when_no_env(self):
+        target_module.set_grant_impersonation_access(True)
+        assert _should_grant_impersonation_access("sa@p.iam") is True
+        target_module.set_grant_impersonation_access(False)
+        assert _should_grant_impersonation_access("sa@p.iam") is False
+
+    def test_non_interactive_defaults_to_deny(self, monkeypatch):
+        monkeypatch.setattr(target_module.sys.stdin, "isatty", lambda: False)
+        assert _should_grant_impersonation_access("sa@p.iam") is False
+
+    def test_interactive_prompts(self, monkeypatch):
+        monkeypatch.setattr(target_module.sys.stdin, "isatty", lambda: True)
+        monkeypatch.setattr(target_module.click, "confirm", lambda *a, **k: True)
+        assert _should_grant_impersonation_access("sa@p.iam") is True
+
+    # --- coding-agent path: only explicit config true permits ---
+    def test_agent_allowed_only_with_explicit_config(self, monkeypatch):
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: True
+        )
+        target_module.set_grant_impersonation_access(True)
+        assert _should_grant_impersonation_access("sa@p.iam") is True
+
+    def test_agent_denied_without_config(self, monkeypatch):
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: True
+        )
+        target_module.set_grant_impersonation_access(None)
+        assert _should_grant_impersonation_access("sa@p.iam") is False
+
+    def test_agent_ignores_env_var(self, monkeypatch):
+        monkeypatch.setattr(
+            target_module, "is_running_under_coding_agent", lambda: True
+        )
+        monkeypatch.setenv(ENV, "1")  # would grant for a human; ignored for agents
+        target_module.set_grant_impersonation_access(None)
+        assert _should_grant_impersonation_access("sa@p.iam") is False

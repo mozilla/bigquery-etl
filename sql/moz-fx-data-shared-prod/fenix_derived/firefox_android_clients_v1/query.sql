@@ -49,6 +49,28 @@ first_seen AS (
     baseline_clients
   WHERE
     is_new_profile
+  -- A client_id can surface under multiple Fenix apps/channels on its first-seen
+  -- day (e.g. cloned/restored installs), since baseline_clients_daily unions all
+  -- apps. Keep one row per client: earliest first run, preferring the most stable channel.
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_id
+      ORDER BY
+        first_run_datetime ASC NULLS LAST,
+        first_seen_date ASC,
+        submission_date ASC,
+        CASE
+          channel
+          WHEN 'release'
+            THEN 1
+          WHEN 'beta'
+            THEN 2
+          WHEN 'nightly'
+            THEN 3
+          ELSE 4
+        END
+    ) = 1
 ),
 -- Find the most recent activation record per client_id.
 activations AS (

@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 from functools import cache
 from pathlib import Path
@@ -37,7 +38,11 @@ from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..schema import SCHEMA_FILE, Schema
 from ..view import View
 from . import extract_from_query_path
-from .common import get_bqetl_project_root
+from .common import (
+    get_bqetl_project_root,
+    get_unimpersonated_credentials,
+    is_running_under_coding_agent,
+)
 from .common import render as render_template
 
 VIEW_FILE = "view.sql"
@@ -108,6 +113,15 @@ class Target:
     # When True, --target deploys copy and rename SQL tests under tests/sql/
     # to match target paths so pytest can run against staged artifacts.
     rewrite_tests: bool = attr.ib(default=False)
+    # SA to impersonate while this target is active; bqetl sets
+    # CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT automatically. ADC must hold
+    # roles/iam.serviceAccountTokenCreator on it.
+    impersonate_service_account: Optional[str] = attr.ib(default=None)
+    # Whether datasets this target creates while impersonating grant the SA write
+    # access (so it can write results). Makes those datasets readable by everyone
+    # who can impersonate the SA — leave off (None) for restricted data. None ->
+    # prompt interactively / deny non-interactively (see ensure_dataset_exists).
+    grant_impersonation_access: Optional[bool] = attr.ib(default=None)
 
     # raw (unrendered) templates — preserved so that pattern-matching code
     # (e.g. target clean) can parameterize git.branch / git.commit independently.
@@ -284,13 +298,14 @@ def _get_git_context() -> dict:
 
 @cache
 def _get_gcloud_account() -> str:
-    """Return the active GCP account email from credentials, cached after first call.
+    """Return the human operator's GCP account email, cached after first call.
 
-    Returns an empty string if the account cannot be determined.
+    Resolved from un-impersonated credentials so dataset ownership and the
+    `account.username` template are attributed to the human, not an impersonated
+    service account. Returns an empty string if it can't be determined.
     """
     try:
-        client = bigquery.Client()
-        credentials = client._credentials
+        credentials = get_unimpersonated_credentials()
         if not credentials.valid:
             credentials.refresh(google.auth.transport.requests.Request())
         return (
@@ -669,11 +684,13 @@ def _create_target_stub(
     stub_path = Path(sql_dir) / tgt_project / tgt_dataset / tgt_table
     stub_path.mkdir(parents=True, exist_ok=True)
 
-    # Wildcards represent multiple tables; no single schema to fetch.
-    if not is_wildcard:
-        _fetch_stub_schema(
-            project, dataset, name, stub_path / SCHEMA_FILE, id_token, sql_dir
-        )
+    # Fetch a schema so the stub deploys as a real table — otherwise a rewritten
+    # `…events_*` ref matches no table. Wildcards work too: `Schema.for_table`
+    # does a `SELECT *` dry-run that returns the union schema, and if the source
+    # isn't readable a single-field placeholder is written.
+    _fetch_stub_schema(
+        project, dataset, name, stub_path / SCHEMA_FILE, id_token, sql_dir
+    )
 
     (stub_path / MANIFEST_FILENAME).write_text(
         yaml.dump(
@@ -879,11 +896,19 @@ def target_ref_for_source(
         target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
     else:
         target_ds = src_dataset
-    target_table = (
-        sanitize_bq_id(f"{rendered_artifact_prefix}{src_table}")
-        if rendered_artifact_prefix
-        else src_table
-    )
+    if rendered_artifact_prefix:
+        if src_table.endswith("*"):
+            # Preserve the trailing wildcard: sanitizing it to `_` would turn the
+            # ref into a non-existent literal table (and break `_TABLE_SUFFIX`).
+            # Keeping `*` lets the rewritten ref match the stub table
+            # (`…events_wildcard`) as a wildcard.
+            target_table = (
+                sanitize_bq_id(f"{rendered_artifact_prefix}{src_table[:-1]}") + "*"
+            )
+        else:
+            target_table = sanitize_bq_id(f"{rendered_artifact_prefix}{src_table}")
+    else:
+        target_table = src_table
     return target_project, target_ds, target_table
 
 
@@ -918,10 +943,14 @@ def _substitute_3part_ref(
 ) -> str:
     """Replace every occurrence of source 3-part ref with target 3-part ref."""
     src_project, src_dataset, src_table = src
+    # Negative lookahead instead of `\b`: a `\b` after a table name ending in `*`
+    # (a wildcard, e.g. `events_*`) never matches before a backtick, so wildcard
+    # refs would be left un-rewritten. `(?![A-Za-z0-9_])` ends the name correctly
+    # for both normal and `*`-terminated tables.
     pattern = re.compile(
         rf"`?{re.escape(src_project)}`?"
         rf"\.`?{re.escape(src_dataset)}`?"
-        rf"\.`?{re.escape(src_table)}\b`?"
+        rf"\.`?{re.escape(src_table)}(?![A-Za-z0-9_])`?"
     )
     return pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
 
@@ -1215,6 +1244,67 @@ def prepare_target_directory(
     return target_query_file
 
 
+# Set from the CLI group callback to the active target's
+# `grant_impersonation_access`, so `ensure_dataset_exists` can honor it without
+# threading it through every caller.
+_grant_impersonation_access: Optional[bool] = None
+
+
+def set_grant_impersonation_access(value: Optional[bool]) -> None:
+    """Record the target's `grant_impersonation_access` preference."""
+    global _grant_impersonation_access
+    _grant_impersonation_access = value
+
+
+def _should_grant_impersonation_access(service_account: str) -> bool:
+    """Whether to grant the impersonated SA write access to a new dataset.
+
+    Granting lets the SA write results here, but makes the dataset readable by
+    everyone who can impersonate it.
+
+    Coding agents can't be prompted and can trivially set env vars, so they may
+    only widen access via an explicit `grant_impersonation_access: true` on the
+    target — a human's standing config. (NOTE: `bqetl_targets.yaml` is
+    agent-editable, so this is a cooperative guardrail; IAM is the hard boundary
+    — the SA should not be able to grant itself dataset access.)
+
+    For humans, resolved in order: `BQETL_GRANT_IMPERSONATION_DATASET_ACCESS`
+    env var, the target's `grant_impersonation_access`, an interactive prompt,
+    else no.
+    """
+    if is_running_under_coding_agent():
+        if _grant_impersonation_access is True:
+            return True
+        click.echo(
+            f"⚠️  Not granting {service_account} dataset access: coding agents may "
+            "only widen access when the target sets `grant_impersonation_access: "
+            "true`. Datasets will be created without SA write access.",
+            err=True,
+        )
+        return False
+
+    override = os.environ.get("BQETL_GRANT_IMPERSONATION_DATASET_ACCESS")
+    if override is not None:
+        return override.strip().lower() in ("1", "true", "yes")
+    if _grant_impersonation_access is not None:
+        return _grant_impersonation_access
+    if not sys.stdin.isatty():
+        click.echo(
+            f"⚠️  Not granting {service_account} access to the new dataset "
+            "(non-interactive). Set BQETL_GRANT_IMPERSONATION_DATASET_ACCESS=1 (or "
+            "grant_impersonation_access on the target) to grant it — note this "
+            "makes the dataset readable by everyone who can impersonate the SA.",
+            err=True,
+        )
+        return False
+    return click.confirm(
+        f"⚠️  Grant impersonated service account {service_account} write access to "
+        "this dataset? Required for it to write results here, but it makes the "
+        "dataset readable by everyone who can impersonate the service account",
+        default=False,
+    )
+
+
 def ensure_dataset_exists(
     client: bigquery.Client,
     dataset_ref: str,
@@ -1274,6 +1364,19 @@ def ensure_dataset_exists(
                     entity_id=dry_run_account,
                 )
             )
+
+    # When impersonating, the SA is the writer but isn't an owner, so it can't
+    # write into this human-owned dataset. Ask whether to grant it access —
+    # granting makes the dataset readable by everyone who can impersonate the SA.
+    impersonated_sa = os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT")
+    if impersonated_sa and _should_grant_impersonation_access(impersonated_sa):
+        access_entries.append(
+            bigquery.AccessEntry(
+                role="WRITER",
+                entity_type="userByEmail",
+                entity_id=impersonated_sa,
+            )
+        )
 
     if access_entries:
         dataset.access_entries = access_entries

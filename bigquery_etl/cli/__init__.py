@@ -33,7 +33,12 @@ from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
-from ..util.target import get_default_target_name, get_target
+from ..util.common import enable_impersonation, set_resolved_target_project
+from ..util.target import (
+    get_default_target_name,
+    get_target,
+    set_grant_impersonation_access,
+)
 
 
 def cli(prog_name=None):
@@ -87,6 +92,14 @@ def cli(prog_name=None):
         help="Disable the default target, ignoring BQETL_TARGET and default_target in bqetl_targets.yaml.",
     )
     @click.option(
+        "--no-impersonate",
+        "--no_impersonate",
+        is_flag=True,
+        default=False,
+        help="Run with your own credentials instead of impersonating the target's "
+        "service account. Not available to coding agents for write/deploy/backfill.",
+    )
+    @click.option(
         "--run-id",
         "--run_id",
         "run_id",
@@ -96,7 +109,7 @@ def cli(prog_name=None):
         "(e.g. concurrent CI runs). Defaults to $BQETL_RUN_ID if set.",
     )
     @click.pass_context
-    def group(ctx, log_level, target, no_target, run_id):
+    def group(ctx, log_level, target, no_target, no_impersonate, run_id):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
 
@@ -111,16 +124,39 @@ def cli(prog_name=None):
         ctx.obj["target"] = None
         ctx.obj["run_id"] = run_id
 
+        # --no-impersonate opts out for this process, even if the env var was
+        # exported externally. The agent gate refuses write/deploy/backfill
+        # without impersonation.
+        env_var = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+        if no_impersonate:
+            os.environ.pop(env_var, None)
+
         try:
             if not target and not no_target:
                 target = get_default_target_name()
 
+            parsed_target = None
             if target:
                 parsed_target = get_target(target, run_id=run_id)
                 ctx.obj["target"] = parsed_target
+                # Expose the target project to the coding-agent gate.
+                set_resolved_target_project(parsed_target.project_id)
+                # And the target's dataset-access preference for impersonation.
+                set_grant_impersonation_access(parsed_target.grant_impersonation_access)
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
+
+            # Impersonate the target's SA (explicit env var wins): env var for
+            # `bq`/`gcloud` shell-outs, enable_impersonation for Python clients.
+            if not no_impersonate:
+                sa = os.environ.get(env_var) or (
+                    parsed_target.impersonate_service_account if parsed_target else None
+                )
+                if sa:
+                    os.environ[env_var] = sa
+                    enable_impersonation(sa)
+                    click.echo(f"ℹ️  Impersonating service account: {sa}")
         except Exception as e:
             raise click.ClickException(f"Failed to load target '{target}': {e}")
 

@@ -1,10 +1,21 @@
-friendly_name: |-
-  Socorro Crash
+friendly_name: Socorro Crash
 description: |-
-  Crash reports imported via socorro.
-  See https://github.com/mozilla/telemetry-airflow/blob/4050697bd2e283864a9013bd48d439eb66f6d581/dags/socorro_import.py#L105
+  Crash reports imported via Socorro.
+
+  Loaded daily from newline JSON crash reports in GCS
+  (gs://moz-fx-socorro-prod-prod-telemetry/v1/crash_report) by query.py. This replaces the
+  Spark/Dataproc job in telemetry-airflow that wrote parquet loaded by parquet2bigquery.
 owners:
-- srose@mozilla.com
-# Schema is imported externally via the socorro_import Airflow DAG; deeply nested
-# crash fields are not individually documented.
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: benwu
+bigquery:
+  time_partitioning:
+    type: day
+    field: crash_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
 require_column_descriptions: false

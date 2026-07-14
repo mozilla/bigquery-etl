@@ -42,11 +42,7 @@ class EventErrorMonitoring(GleanTable):
         prod_datasets_with_event = [
             s.bq_dataset_family
             for s in get_stable_table_schemas()
-            if s.schema_id
-            in (
-                "moz://mozilla.org/schemas/glean/ping/1",
-                "moz://mozilla.org/schemas/glean/ping/2",
-            )
+            if s.schema_id.startswith("moz://mozilla.org/schemas/glean/ping/")
             and s.bq_table == "events_v1"
         ]
 

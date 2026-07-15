@@ -104,6 +104,7 @@ SELECT
     STRUCT(
       LAX_INT64(event_extra.attempt) AS `attempt`,
       LAX_INT64(event_extra.attemptCount) AS `attemptCount`,
+      LAX_INT64(event_extra.average_chunk_time) AS `average_chunk_time`,
       LAX_INT64(event_extra.average_words_per_request) AS `average_words_per_request`,
       LAX_INT64(event_extra.average_words_per_second) AS `average_words_per_second`,
       LAX_INT64(event_extra.buffering_time) AS `buffering_time`,
@@ -180,6 +181,7 @@ SELECT
       LAX_INT64(event_extra.system_memory_mb) AS `system_memory_mb`,
       LAX_INT64(event_extra.time) AS `time`,
       LAX_INT64(event_extra.time_per_output_token) AS `time_per_output_token`,
+      LAX_INT64(event_extra.time_to_first_chunk) AS `time_to_first_chunk`,
       LAX_INT64(event_extra.time_to_first_token) AS `time_to_first_token`,
       LAX_INT64(event_extra.to_version) AS `to_version`,
       LAX_INT64(event_extra.token_count) AS `token_count`,

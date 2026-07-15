@@ -2417,6 +2417,16 @@ fields:
         that failed to parse and fell back to exact-match behavior.
 
         '
+    - name: media_muted_by_content_attribute_runtime
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How often a media element whose muted state is "default" is muted
+        only by a muted content attribute that was added at runtime, measured at playback
+        when the element would otherwise be audible (has an audio track, non-zero
+        volume, is playing, and is not otherwise muted). Recorded at most once per
+        resource, to measure how often pages rely on this pattern across channels.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -18608,6 +18618,42 @@ fields:
         headers and headers that failed to parse.
 
         '
+    - name: tls_handshake_completed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Type of handshake completed (resumed, false started, etc.)
+    - name: tls_handshake_privacy
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'What combination of privacy features protected the TLS handshake?
+        (TLS 1.3? Revocation privacy? DNS privacy? ECH?)
+
+        '
+    - name: tls_handshake_version
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: TLS version negotiated in handshake
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -47883,6 +47929,24 @@ fields:
         companion of happy_eyeballs_https_rr_features.
 
         '
+    - name: tls_handshake_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: TLS handshake result under various conditions
   - name: text2
     type: RECORD
     mode: NULLABLE

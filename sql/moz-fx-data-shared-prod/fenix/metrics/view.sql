@@ -400,7 +400,8 @@ SELECT
       metrics.counter.glean_migration_metrics_in_sqlite,
       metrics.counter.glean_migration_migrated_metrics,
       metrics.counter.network_no_vary_search_header_received,
-      metrics.counter.network_no_vary_search_parse_error
+      metrics.counter.network_no_vary_search_parse_error,
+      metrics.counter.media_muted_by_content_attribute_runtime
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1172,7 +1173,10 @@ SELECT
       metrics.labeled_counter.networking_http_3_quic_version,
       metrics.labeled_counter.network_no_vary_search_hit_by_rule,
       metrics.labeled_counter.network_no_vary_search_match,
-      metrics.labeled_counter.network_no_vary_search_rule_type
+      metrics.labeled_counter.network_no_vary_search_rule_type,
+      metrics.labeled_counter.tls_handshake_completed,
+      metrics.labeled_counter.tls_handshake_privacy,
+      metrics.labeled_counter.tls_handshake_version
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2210,7 +2214,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_encrypted_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
-      metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
+      metrics.dual_labeled_counter.tls_handshake_result
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -2639,7 +2644,8 @@ SELECT
       metrics.counter.glean_migration_metrics_in_sqlite,
       metrics.counter.glean_migration_migrated_metrics,
       metrics.counter.network_no_vary_search_header_received,
-      metrics.counter.network_no_vary_search_parse_error
+      metrics.counter.network_no_vary_search_parse_error,
+      metrics.counter.media_muted_by_content_attribute_runtime
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3411,7 +3417,10 @@ SELECT
       metrics.labeled_counter.networking_http_3_quic_version,
       metrics.labeled_counter.network_no_vary_search_hit_by_rule,
       metrics.labeled_counter.network_no_vary_search_match,
-      metrics.labeled_counter.network_no_vary_search_rule_type
+      metrics.labeled_counter.network_no_vary_search_rule_type,
+      metrics.labeled_counter.tls_handshake_completed,
+      metrics.labeled_counter.tls_handshake_privacy,
+      metrics.labeled_counter.tls_handshake_version
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4449,7 +4458,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_encrypted_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
-      metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
+      metrics.dual_labeled_counter.tls_handshake_result
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -4898,7 +4908,8 @@ SELECT
       metrics.counter.glean_migration_metrics_in_sqlite,
       metrics.counter.glean_migration_migrated_metrics,
       metrics.counter.network_no_vary_search_header_received,
-      metrics.counter.network_no_vary_search_parse_error
+      metrics.counter.network_no_vary_search_parse_error,
+      metrics.counter.media_muted_by_content_attribute_runtime
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5670,7 +5681,10 @@ SELECT
       metrics.labeled_counter.networking_http_3_quic_version,
       metrics.labeled_counter.network_no_vary_search_hit_by_rule,
       metrics.labeled_counter.network_no_vary_search_match,
-      metrics.labeled_counter.network_no_vary_search_rule_type
+      metrics.labeled_counter.network_no_vary_search_rule_type,
+      metrics.labeled_counter.tls_handshake_completed,
+      metrics.labeled_counter.tls_handshake_privacy,
+      metrics.labeled_counter.tls_handshake_version
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6708,7 +6722,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_encrypted_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
-      metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
+      metrics.dual_labeled_counter.tls_handshake_result
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

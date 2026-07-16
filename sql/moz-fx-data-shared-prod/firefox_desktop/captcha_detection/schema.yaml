@@ -663,6 +663,12 @@ fields:
       description: 'Number of times the hCaptcha was loaded since last ping submission.
 
         '
+    - name: captcha_detection_datadome_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Datadome was loaded since last ping submission.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

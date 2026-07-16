@@ -2910,7 +2910,9 @@ SELECT
       metrics.counter.use_counter_doc_edit_context_canvas,
       metrics.counter.use_counter_page_edit_context_canvas,
       metrics.counter.use_counter_css_doc_css_line_clamp,
-      metrics.counter.use_counter_css_page_css_line_clamp
+      metrics.counter.use_counter_css_page_css_line_clamp,
+      metrics.counter.use_counter_css_doc_css_margin_trim,
+      metrics.counter.use_counter_css_page_css_margin_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5844,7 +5846,9 @@ SELECT
       metrics.counter.use_counter_doc_edit_context_canvas,
       metrics.counter.use_counter_page_edit_context_canvas,
       metrics.counter.use_counter_css_doc_css_line_clamp,
-      metrics.counter.use_counter_css_page_css_line_clamp
+      metrics.counter.use_counter_css_page_css_line_clamp,
+      metrics.counter.use_counter_css_doc_css_margin_trim,
+      metrics.counter.use_counter_css_page_css_margin_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8778,7 +8782,9 @@ SELECT
       metrics.counter.use_counter_doc_edit_context_canvas,
       metrics.counter.use_counter_page_edit_context_canvas,
       metrics.counter.use_counter_css_doc_css_line_clamp,
-      metrics.counter.use_counter_css_page_css_line_clamp
+      metrics.counter.use_counter_css_page_css_line_clamp,
+      metrics.counter.use_counter_css_doc_css_margin_trim,
+      metrics.counter.use_counter_css_page_css_margin_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11712,7 +11718,9 @@ SELECT
       metrics.counter.use_counter_doc_edit_context_canvas,
       metrics.counter.use_counter_page_edit_context_canvas,
       metrics.counter.use_counter_css_doc_css_line_clamp,
-      metrics.counter.use_counter_css_page_css_line_clamp
+      metrics.counter.use_counter_css_page_css_line_clamp,
+      metrics.counter.use_counter_css_doc_css_margin_trim,
+      metrics.counter.use_counter_css_page_css_margin_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14646,7 +14654,9 @@ SELECT
       metrics.counter.use_counter_doc_edit_context_canvas,
       metrics.counter.use_counter_page_edit_context_canvas,
       metrics.counter.use_counter_css_doc_css_line_clamp,
-      metrics.counter.use_counter_css_page_css_line_clamp
+      metrics.counter.use_counter_css_page_css_line_clamp,
+      metrics.counter.use_counter_css_doc_css_margin_trim,
+      metrics.counter.use_counter_css_page_css_margin_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

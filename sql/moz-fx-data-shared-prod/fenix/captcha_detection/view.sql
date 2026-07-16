@@ -71,7 +71,8 @@ SELECT
       metrics.counter.captcha_detection_google_recaptcha_v2_oc,
       metrics.counter.captcha_detection_google_recaptcha_v2_oc_pbm,
       metrics.counter.captcha_detection_hcaptcha_oc,
-      metrics.counter.captcha_detection_hcaptcha_oc_pbm
+      metrics.counter.captcha_detection_hcaptcha_oc_pbm,
+      metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -174,7 +175,8 @@ SELECT
       metrics.counter.captcha_detection_google_recaptcha_v2_oc,
       metrics.counter.captcha_detection_google_recaptcha_v2_oc_pbm,
       metrics.counter.captcha_detection_hcaptcha_oc,
-      metrics.counter.captcha_detection_hcaptcha_oc_pbm
+      metrics.counter.captcha_detection_hcaptcha_oc_pbm,
+      metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -277,7 +279,8 @@ SELECT
       metrics.counter.captcha_detection_google_recaptcha_v2_oc,
       metrics.counter.captcha_detection_google_recaptcha_v2_oc_pbm,
       metrics.counter.captcha_detection_hcaptcha_oc,
-      metrics.counter.captcha_detection_hcaptcha_oc_pbm
+      metrics.counter.captcha_detection_hcaptcha_oc_pbm,
+      metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -380,7 +383,8 @@ SELECT
       metrics.counter.captcha_detection_google_recaptcha_v2_oc,
       metrics.counter.captcha_detection_google_recaptcha_v2_oc_pbm,
       metrics.counter.captcha_detection_hcaptcha_oc,
-      metrics.counter.captcha_detection_hcaptcha_oc_pbm
+      metrics.counter.captcha_detection_hcaptcha_oc_pbm,
+      metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -483,7 +487,8 @@ SELECT
       metrics.counter.captcha_detection_google_recaptcha_v2_oc,
       metrics.counter.captcha_detection_google_recaptcha_v2_oc_pbm,
       metrics.counter.captcha_detection_hcaptcha_oc,
-      metrics.counter.captcha_detection_hcaptcha_oc_pbm
+      metrics.counter.captcha_detection_hcaptcha_oc_pbm,
+      metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,

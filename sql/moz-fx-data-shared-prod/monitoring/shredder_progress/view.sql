@@ -34,6 +34,10 @@ shredder AS (
     -- newest job
     ARRAY_AGG(
       STRUCT(
+        -- a task with no shredder_state row for this run had nothing to shred.
+        -- since runs don't overlap per airflow task and an active run always has
+        -- an in-flight job, such a task is complete once the run is finished.
+        job_created IS NULL AS no_work,
         -- job metadata over 28 days old is not queried
         job_created <= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 28 DAY) AS job_too_old,
         job_created,
@@ -60,7 +64,6 @@ shredder AS (
     sampling_tasks.task_id
 ),
 jobs AS (
-  -- https://cloud.google.com/bigquery/docs/information-schema-jobs
   SELECT
     creation_time,
     start_time,
@@ -72,20 +75,7 @@ jobs AS (
     total_bytes_processed AS bytes_complete,
     total_slot_ms AS slot_ms,
   FROM
-    `moz-fx-data-shredder.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
-  UNION ALL
-  SELECT
-    creation_time,
-    start_time,
-    end_time,
-    state,
-    error_result,
-    job_id,
-    project_id,
-    total_bytes_processed AS bytes_complete,
-    total_slot_ms AS slot_ms,
-  FROM
-    `moz-fx-data-bq-batch-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1`
 ),
 successful_jobs AS (
   SELECT
@@ -103,9 +93,10 @@ progress_by_target AS (
     end_date,
     MIN(IFNULL(start_time, job_created)) AS start_time,
     MAX(end_time) AS end_time,
-    -- assume jobs too old for metadata are complete
-    LOGICAL_AND(job_too_old IS TRUE OR end_time IS NOT NULL) AS complete,
-    COUNTIF(job_too_old IS TRUE OR end_time IS NOT NULL) AS tasks_complete,
+    -- a task is complete if it had nothing to shred, if its job is too old for
+    -- metadata (assumed complete), or if its job finished
+    LOGICAL_AND(no_work OR job_too_old IS TRUE OR end_time IS NOT NULL) AS complete,
+    COUNTIF(no_work OR job_too_old IS TRUE OR end_time IS NOT NULL) AS tasks_complete,
     COUNT(*) AS tasks_total,
     SUM(bytes_complete) AS bytes_complete,
     -- count target_bytes once per table and source_bytes once per task

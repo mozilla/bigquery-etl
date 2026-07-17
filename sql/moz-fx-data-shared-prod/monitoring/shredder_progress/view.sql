@@ -29,8 +29,7 @@ shredder AS (
     END AS airflow_task_id,
     target,
     end_date,
-    -- oldest table size
-    ARRAY_AGG(STRUCT(target_bytes, source_bytes) ORDER BY _PARTITIONTIME LIMIT 1)[OFFSET(0)].*,
+    ARRAY_AGG(STRUCT(target_bytes, source_bytes) ORDER BY target_bytes LIMIT 1)[OFFSET(0)].*,
     -- newest job
     ARRAY_AGG(
       STRUCT(

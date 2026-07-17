@@ -431,6 +431,29 @@ def main():
     )
     log.info(f"Writing {len(result)} rows to {destination} (WRITE_TRUNCATE)")
 
+    expected_columns = [
+        "snapshot_date",
+        "snapshot_at",
+        "layout",
+        "country",
+        "section_position",
+        "position",
+        "tile_format",
+        "impressions",
+        "weight",
+    ]
+    if result.columns.tolist() != expected_columns:
+        raise ValueError(f"Unexpected output columns: {result.columns.tolist()}")
+    if result.empty:
+        raise ValueError("No rows to write")
+    countries = set(result["country"].dropna().unique())
+    if countries != {COUNTRY}:
+        raise ValueError(f"Unexpected countries: {sorted(countries)}")
+
+    # TEMPORARY local test guard: remove before committing.
+    log.info("Temporary check passed; skipping BigQuery load.")
+    return
+
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )

@@ -29,7 +29,11 @@ shredder AS (
     END AS airflow_task_id,
     target,
     end_date,
-    ARRAY_AGG(STRUCT(target_bytes, source_bytes) ORDER BY target_bytes LIMIT 1)[OFFSET(0)].*,
+    -- Initial recorded table size for the run, assuming shredding outpaces ingestion
+    -- this used to order by _PARTITIONTIME to take the oldest recording, but that pseudo column
+    -- can't be referenced in stage deploys. This is usually equivalent but it's still
+    -- close enough even when it's not
+    ARRAY_AGG(STRUCT(target_bytes, source_bytes) ORDER BY target_bytes DESC LIMIT 1)[OFFSET(0)].*,
     -- newest job
     ARRAY_AGG(
       STRUCT(

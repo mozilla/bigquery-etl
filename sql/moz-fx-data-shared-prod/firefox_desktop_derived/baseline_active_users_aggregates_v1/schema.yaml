@@ -35,7 +35,9 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
-  description: |
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: city
 
 - name: locale
   type: STRING

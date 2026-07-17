@@ -1,7 +1,7 @@
 friendly_name: Shredder Progress
 description: |-
-  Shredder stats broken down per airflow task (run time, slot usage, bytes scanned, task count, etc.).
-  Some minor tasks are still grouped into "all", e.g. force-no-dml.
+  Estimated Shredder stats broken down per airflow task. Estimates total run time, slot usage, 
+  bytes scanned, and task count. Some minor tasks are still grouped into "all", e.g. force-no-dml.
 owners:
   - bewu@mozilla.com
 authorized: true

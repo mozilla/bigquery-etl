@@ -291,6 +291,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/mobile_search_clients_daily.template.sql
   # Query too complex
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
+  # Requires project-level permissions for INFORMATION_SCHEMA views
+  - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
   default_projects:  # projects to use for query dry run jobs

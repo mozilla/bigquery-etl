@@ -71,6 +71,7 @@ raw_grouped_totals AS (
 ),
 propensity_weights AS (
   SELECT
+    country,
     position,
     tile_format,
     weight
@@ -78,8 +79,8 @@ propensity_weights AS (
     `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v2`
   WHERE
     layout = 'SECTION_GRID'
-    AND country = 'US'
     AND section_position IS NULL
+    AND snapshot_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 14 DAY)
   QUALIFY
     snapshot_date = MAX(snapshot_date) OVER ()
 ),
@@ -90,9 +91,12 @@ section_events AS (
     rw.corpus_item_id,
     rw.raw_impression_count,
     -- apply propensity scaling to impressions only
+    -- prefer exact-format weights, then fall back to 'any' format weights
     rw.raw_impression_count / COALESCE(
-      wt_exact.weight,
-      wt_any.weight,
+      wt_country_exact.weight,
+      wt_global_exact.weight,
+      wt_country_any.weight,
+      wt_global_any.weight,
       1.0
     ) AS adjusted_impression_count,
     rw.report_count,
@@ -100,13 +104,25 @@ section_events AS (
   FROM
     raw_grouped_totals rw
   LEFT JOIN
-    propensity_weights wt_exact
-    ON SAFE_CAST(wt_exact.position AS INT64) = rw.position
-    AND wt_exact.tile_format = rw.format
+    propensity_weights wt_country_exact
+    ON wt_country_exact.country = rw.normalized_country_code
+    AND SAFE_CAST(wt_country_exact.position AS INT64) = rw.position
+    AND wt_country_exact.tile_format = rw.format
   LEFT JOIN
-    propensity_weights wt_any
-    ON SAFE_CAST(wt_any.position AS INT64) = rw.position
-    AND wt_any.tile_format = 'any'
+    propensity_weights wt_country_any
+    ON wt_country_any.country = rw.normalized_country_code
+    AND SAFE_CAST(wt_country_any.position AS INT64) = rw.position
+    AND wt_country_any.tile_format = 'any'
+  LEFT JOIN
+    propensity_weights wt_global_exact
+    ON wt_global_exact.country IS NULL
+    AND SAFE_CAST(wt_global_exact.position AS INT64) = rw.position
+    AND wt_global_exact.tile_format = rw.format
+  LEFT JOIN
+    propensity_weights wt_global_any
+    ON wt_global_any.country IS NULL
+    AND SAFE_CAST(wt_global_any.position AS INT64) = rw.position
+    AND wt_global_any.tile_format = 'any'
   WHERE
     rw.section_position IS NOT NULL
 ),
@@ -176,7 +192,20 @@ country_aggregates AS (
   WHERE
     -- Gather country (a.k.a. region) specific engagement for all countries that share a feed.
     -- https://mozilla-hub.atlassian.net/wiki/x/JY3LB
-    normalized_country_code IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE')
+    normalized_country_code IN (
+      'US',
+      'CA',
+      'DE',
+      'CH',
+      'AT',
+      'GB',
+      'IE',
+      'BE',
+      'PL',
+      'FR',
+      'ES',
+      'IT'
+    )
 ),
 /* Combine the "global" (no region) with the "regional" breakdown. */
 combined_results AS (

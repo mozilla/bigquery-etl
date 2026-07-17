@@ -1,4 +1,4 @@
-friendly_name: Newtab Merino Extract v4
+friendly_name: Newtab Merino Extract
 description: |-
   Aggregated Newtab events for Merino recommendations using v2 propensity weights.
   See https://mozilla-hub.atlassian.net/browse/MC-1256

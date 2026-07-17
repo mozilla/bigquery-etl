@@ -1,18 +1,23 @@
 import os
 from pathlib import Path
 
+import google.auth
 import pytest
 from click.testing import CliRunner
 
 from bigquery_etl.cli.utils import is_valid_dir
+from bigquery_etl.util import common
 from bigquery_etl.util.common import (
     alter_sql_for_sqlglot,
+    exit_if_running_under_coding_agent,
     extract_last_group_by_from_query,
     get_table_dir,
     project_dirs,
     qualify_table_references_in_file,
     render,
 )
+
+IMPERSONATE_ENV = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
 
 
 class TestUtilCommon:
@@ -551,3 +556,101 @@ class TestUtilCommon:
             full_table_id="project1.dataset1.table1",
             parts=3,
         )
+
+
+class TestCodingAgentGate:
+    """Tests for the coding-agent guardrail (exit_if_running_under_coding_agent).
+
+    Agents may run blocked commands only against an allow-listed non-prod target
+    AND while impersonating a sandbox service account.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _gate_env(self, monkeypatch):
+        # Stable allow-list and clean per-test state.
+        monkeypatch.setattr(
+            common, "get_dev_project_allowlist", lambda: ("moz-fx-data-proto",)
+        )
+        common.set_resolved_target_project(None)
+        monkeypatch.delenv(IMPERSONATE_ENV, raising=False)
+
+    def _set_agent(self, monkeypatch, is_agent):
+        monkeypatch.setattr(common, "is_running_under_coding_agent", lambda: is_agent)
+
+    def test_non_agent_always_allowed(self, monkeypatch):
+        """Non-agents are never gated, even with no target or impersonation."""
+        self._set_agent(monkeypatch, False)
+        common.set_resolved_target_project("moz-fx-data-shared-prod")
+        exit_if_running_under_coding_agent()  # does not raise
+
+    def test_agent_allowlisted_target_and_impersonation_allowed(self, monkeypatch):
+        self._set_agent(monkeypatch, True)
+        common.set_resolved_target_project("moz-fx-data-proto")
+        monkeypatch.setenv(
+            IMPERSONATE_ENV, "sa@moz-fx-data-proto.iam.gserviceaccount.com"
+        )
+        exit_if_running_under_coding_agent()  # does not raise
+
+    def test_agent_no_target_refused(self, monkeypatch, capsys):
+        self._set_agent(monkeypatch, True)
+        monkeypatch.setenv(
+            IMPERSONATE_ENV, "sa@moz-fx-data-proto.iam.gserviceaccount.com"
+        )
+        with pytest.raises(SystemExit) as exc:
+            exit_if_running_under_coding_agent()
+        assert exc.value.code == 1
+        assert "non-prod --target" in capsys.readouterr().err
+
+    def test_agent_prod_target_refused(self, monkeypatch, capsys):
+        self._set_agent(monkeypatch, True)
+        common.set_resolved_target_project("moz-fx-data-shared-prod")
+        monkeypatch.setenv(
+            IMPERSONATE_ENV, "sa@moz-fx-data-proto.iam.gserviceaccount.com"
+        )
+        with pytest.raises(SystemExit) as exc:
+            exit_if_running_under_coding_agent()
+        assert exc.value.code == 1
+        assert "moz-fx-data-shared-prod" in capsys.readouterr().err
+
+    def test_agent_allowlisted_but_no_impersonation_refused(self, monkeypatch, capsys):
+        self._set_agent(monkeypatch, True)
+        common.set_resolved_target_project("moz-fx-data-proto")
+        with pytest.raises(SystemExit) as exc:
+            exit_if_running_under_coding_agent()
+        assert exc.value.code == 1
+        assert "must impersonate" in capsys.readouterr().err
+
+
+class _FakeSourceCreds:
+    # impersonated_credentials.Credentials reads universe_domain at construction;
+    # `valid` short-circuits the pre-refresh so no network call is made.
+    universe_domain = "googleapis.com"
+    valid = True
+
+
+class TestEnableImpersonation:
+    """`enable_impersonation` wraps google.auth.default so Python clients impersonate."""
+
+    def test_wraps_google_auth_default(self, monkeypatch):
+        from google.auth import impersonated_credentials
+
+        monkeypatch.setattr(
+            google.auth, "default", lambda *a, **k: (_FakeSourceCreds(), "proj")
+        )
+        common.enable_impersonation("sa@p.iam.gserviceaccount.com")
+        creds, project = google.auth.default(scopes=["scope-a"])
+        assert isinstance(creds, impersonated_credentials.Credentials)
+        assert creds._target_principal == "sa@p.iam.gserviceaccount.com"
+        assert creds._target_scopes == ["scope-a"]
+        assert project == "proj"
+
+    def test_retarget_does_not_stack(self, monkeypatch):
+        monkeypatch.setattr(
+            google.auth, "default", lambda *a, **k: (_FakeSourceCreds(), "proj")
+        )
+        common.enable_impersonation("first@p.iam.gserviceaccount.com")
+        common.enable_impersonation("second@p.iam.gserviceaccount.com")
+        creds, _ = google.auth.default()
+        assert creds._target_principal == "second@p.iam.gserviceaccount.com"
+        # Source stays the original ADC, not impersonated-of-impersonated.
+        assert isinstance(creds._source_credentials, _FakeSourceCreds)

@@ -127,21 +127,33 @@ The job runs on the **`bqetl_data_governance_metadata`** DAG, weekly (Mondays
 datasets (1% `sample_id` sampling and a 7-day partition filter bound the scan)
 and overwrites that run's `profiled_at` partition.
 
+The scheduled `profiled_at` date is the run's **interval-end** date
+(`data_interval_end`), i.e. the Monday the run executes on — not Airflow's
+default `logical_date` (which is the interval *start*, the prior Monday). The
+source data scanned is then `profiled_at − 7 days`. So the Monday **Jun 15**
+run writes `profiled_at = 2026-06-15` and scans the **Jun 8** source partition.
+
 ## Running with a custom date / datasets
 
 `date` and `source_datasets` are **per-run parameters**.
 
 ### Ad-hoc, in Airflow — "Trigger DAG w/ config" trigger for DAG `bqetl_data_governance_metadata`
-Paste a JSON config (both keys optional):
+Paste a JSON config — **both keys are required for manual runs**:
 
 ```json
 {"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}
 ```
 
 - `date` — profiling date, (format: `YYYY-MM-DD`). Written as the `profiled_at` partition;
-  the source data scanned is `date` − 7 days. [Omit → the run's logical date].
+  the source data scanned is `date` − 7 days. **Required for manual runs** — the task
+  fails fast if a manual ("Trigger DAG w/ config") run omits it. (This guards against the
+  surprising partition date Airflow would otherwise infer from a manual trigger's interval.)
+  Scheduled/backfill runs omit it and derive it from the run's interval-end date
+  (`data_interval_end` — the scheduled run's Monday) automatically.
 - `source_datasets` — comma-separated dataset names (commas only) whose tables are
-  profiled. [Omit → the job's scheduled default (set in `metadata.yaml`)].
+  profiled. **Required for manual runs** — the task fails fast if omitted (forces
+  deliberate scoping of ad-hoc runs). Scheduled/backfill runs omit it and use the
+  job's default set (`telemetry_derived,telemetry`, set in `metadata.yaml`).
 
 ### For permanent job runs:
 Edit the `source_datasets` in
@@ -150,8 +162,8 @@ Edit the `source_datasets` in
 ```yaml
 scheduling:
   arguments: [
-    "--date", "{{ dag_run.conf.get('date', ds) }}",
-    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry,firefox_desktop') }}"
+    "--date", "{{ dag_run.conf.get('date', (data_interval_end | ds) if dag_run.run_type != 'manual' else '') }}",
+    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry,firefox_desktop' if dag_run.run_type != 'manual' else '') }}"
   ]
 ```
 then regenerate the DAG (`./bqetl dag generate bqetl_data_governance_metadata`).

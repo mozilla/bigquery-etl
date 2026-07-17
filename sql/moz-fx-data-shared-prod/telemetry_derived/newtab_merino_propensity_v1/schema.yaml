@@ -2,15 +2,28 @@ fields:
 - mode: NULLABLE
   name: section_position
   type: INTEGER
+  description: The section position within a multi-section new tab layout. Currently always null as the
+    model focuses on non-sectioned grid positions.
 - mode: NULLABLE
   name: position
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: position
 - mode: NULLABLE
   name: tile_format
   type: STRING
+  description: The display format of the tile slot (e.g., 'small-card', 'medium-card', 'large-card'). The
+    value 'any' represents the impression-weighted average weight across all formats for a given position.
 - mode: NULLABLE
   name: impressions
   type: INTEGER
+  description: Total number of impressions observed for this position and tile format combination over the
+    10-day look-back window used to compute the propensity weights.
 - mode: NULLABLE
   name: weight
   type: FLOAT
+  description: Propensity weight for this position and tile format, computed via Alternating Least Squares
+    (ALS) matrix decomposition to separate position-bias effects from item quality. Higher weights correspond
+    to positions with lower inherent click-through bias, normalised so that applying these weights preserves
+    overall observed CTR.

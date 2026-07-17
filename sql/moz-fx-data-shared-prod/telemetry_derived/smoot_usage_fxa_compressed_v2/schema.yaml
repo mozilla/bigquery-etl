@@ -2,40 +2,57 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: usage
   type: STRING
-  description: Usage
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: usage
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
-  description: ID Bucket
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: id_bucket
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
-  description: Attributed
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attributed
 - name: metrics
   type: RECORD
   mode: NULLABLE
-  description: Metrics
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metrics
   fields:
   - name: day_0
     type: RECORD
@@ -45,15 +62,21 @@ fields:
     - name: dau
       type: INTEGER
       mode: NULLABLE
-      description: DAU - Daily Active Users
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: dau
     - name: wau
       type: INTEGER
       mode: NULLABLE
-      description: WAU - Weekly Active Users
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: wau
     - name: mau
       type: INTEGER
       mode: NULLABLE
-      description: MAU - Monthly Active Users
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: mau
     - name: active_days_in_week
       type: INTEGER
       mode: NULLABLE
@@ -66,7 +89,9 @@ fields:
     - name: new_profiles
       type: INTEGER
       mode: NULLABLE
-      description: New Profiles
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: new_profiles
   - name: day_13
     type: RECORD
     mode: NULLABLE
@@ -75,7 +100,9 @@ fields:
     - name: new_profiles
       type: INTEGER
       mode: NULLABLE
-      description: New Profiles
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: new_profiles
     - name: active_in_week_0
       type: INTEGER
       mode: NULLABLE

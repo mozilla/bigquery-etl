@@ -2,27 +2,39 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: app_version
   type: INTEGER
-  description: The major version number of Firefox (e.g., 151) for the clients in this cohort.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Two-letter ISO 3166-1 alpha-2 country code of the client's location, as determined by IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system (e.g., 'Windows', 'Mac', 'Linux') running on the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The Firefox release channel (e.g., 'release', 'beta', 'nightly', 'esr') for the clients in this cohort.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: The browser locale (e.g., 'en-US', 'fr', 'de') of the clients in this cohort.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: profile_creation_month
   type: DATE
@@ -30,11 +42,15 @@ fields:
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
-  description: The normalized name of the client's default search engine (e.g., 'Google', 'DuckDuckGo', 'Bing'). 'Other' is used for unrecognized engines.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: True if Firefox is set as the operating system's default browser on the client; false otherwise.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
@@ -58,7 +74,9 @@ fields:
 - mode: NULLABLE
   name: topsites_enabled
   type: BOOLEAN
-  description: True if the Top Sites (Shortcuts) section is enabled on the New Tab page.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_enabled
 - mode: NULLABLE
   name: sponsored_topsites_enabled
   type: BOOLEAN
@@ -66,11 +84,15 @@ fields:
 - mode: NULLABLE
   name: topic_preferences_set
   type: BOOLEAN
-  description: True if the user has explicitly set topic preferences for the New Tab Pocket feed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topic_preferences_set
 - mode: NULLABLE
   name: client_count
   type: INTEGER
-  description: The total number of distinct clients (client_ids) represented in this aggregation row.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_count
 - mode: NULLABLE
   name: clients_with_newtab_and_search_activity
   type: INTEGER

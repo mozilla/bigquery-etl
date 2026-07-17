@@ -2,91 +2,157 @@ fields:
 - mode: NULLABLE
   name: legacy_telemetry_client_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: legacy_telemetry_client_id
 - mode: NULLABLE
   name: newtab_visit_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_visit_id
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - mode: NULLABLE
   name: country_code
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_code
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: browser_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: browser_version
 - mode: NULLABLE
   name: browser_name
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: browser_name
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine
 - mode: NULLABLE
   name: pocket_is_signed_in
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pocket_is_signed_in
 - mode: NULLABLE
   name: pocket_enabled
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pocket_enabled
 - mode: NULLABLE
   name: pocket_sponsored_stories_enabled
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pocket_sponsored_stories_enabled
 - mode: NULLABLE
   name: topsites_enabled
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_enabled
 - mode: NULLABLE
   name: topsites_sponsored_enabled
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_sponsored_enabled
 - mode: NULLABLE
   name: newtab_homepage_category
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_homepage_category
 - mode: NULLABLE
   name: newtab_newtab_category
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_newtab_category
 - mode: NULLABLE
   name: newtab_search_enabled
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_search_enabled
 - mode: NULLABLE
   name: topsites_rows
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_rows
 - mode: REPEATED
   name: newtab_blocked_sponsors
   type: STRING
+  description: Array of advertiser names whose sponsored topsite tiles have been dismissed by the user.
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: The experiment slug identifying the experiment the client was enrolled in.
   - fields:
     - mode: NULLABLE
       name: branch
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: branch
     - fields:
       - mode: NULLABLE
         name: type
         type: STRING
+        description: The type of the experiment enrollment, identifying the framework or mechanism that enrolled
+          the client (e.g., Nimbus).
       - mode: NULLABLE
         name: enrollment_id
         type: STRING
@@ -99,46 +165,86 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
 - mode: NULLABLE
   name: newtab_visit_started_at
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_visit_started_at
 - mode: NULLABLE
   name: newtab_visit_ended_at
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_visit_ended_at
 - mode: NULLABLE
   name: newtab_open_source
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_open_source
 - mode: NULLABLE
   name: had_non_impression_engagement
   type: BOOLEAN
+  description: True if the user performed any non-impression engagement (such as clicking, searching, or
+    saving) during this new tab visit; false if the visit consisted only of impressions.
 - mode: NULLABLE
   name: had_non_search_engagement
   type: BOOLEAN
+  description: True if the user performed any non-search engagement (such as clicking a tile or Pocket story,
+    or saving) during this new tab visit.
 - fields:
   - mode: NULLABLE
     name: search_engine
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: search_engine
   - mode: NULLABLE
     name: search_access_point
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: search_access_point
   - mode: NULLABLE
     name: searches
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: searches
   - mode: NULLABLE
     name: tagged_search_ad_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: tagged_search_ad_clicks
   - mode: NULLABLE
     name: tagged_search_ad_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: tagged_search_ad_impressions
   - mode: NULLABLE
     name: follow_on_search_ad_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: follow_on_search_ad_clicks
   - mode: NULLABLE
     name: follow_on_search_ad_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: follow_on_search_ad_impressions
   - mode: NULLABLE
     name: tagged_follow_on_search_ad_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: tagged_follow_on_search_ad_clicks
   - mode: NULLABLE
     name: tagged_follow_on_search_ad_impressions
     type: INTEGER
@@ -164,27 +270,51 @@ fields:
   - mode: NULLABLE
     name: topsite_tile_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: topsite_tile_clicks
   - mode: NULLABLE
     name: sponsored_topsite_tile_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_topsite_tile_clicks
   - mode: NULLABLE
     name: organic_topsite_tile_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: organic_topsite_tile_clicks
   - mode: NULLABLE
     name: topsite_tile_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: topsite_tile_impressions
   - mode: NULLABLE
     name: sponsored_topsite_tile_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_topsite_tile_impressions
   - mode: NULLABLE
     name: organic_topsite_tile_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: organic_topsite_tile_impressions
   - mode: NULLABLE
     name: topsite_tile_dismissals
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: topsite_tile_dismissals
   - mode: NULLABLE
     name: sponsored_topsite_tile_dismissals
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_topsite_tile_dismissals
   - mode: NULLABLE
     name: organic_topsite_tile_dismissals
     type: INTEGER
@@ -195,33 +325,63 @@ fields:
   - mode: NULLABLE
     name: pocket_story_position
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: pocket_story_position
   - mode: NULLABLE
     name: pocket_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: pocket_impressions
   - mode: NULLABLE
     name: sponsored_pocket_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_pocket_impressions
   - mode: NULLABLE
     name: organic_pocket_impressions
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: organic_pocket_impressions
   - mode: NULLABLE
     name: pocket_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: pocket_clicks
   - mode: NULLABLE
     name: sponsored_pocket_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_pocket_clicks
   - mode: NULLABLE
     name: organic_pocket_clicks
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: organic_pocket_clicks
   - mode: NULLABLE
     name: pocket_saves
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: pocket_saves
   - mode: NULLABLE
     name: sponsored_pocket_saves
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_pocket_saves
   - mode: NULLABLE
     name: organic_pocket_saves
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: organic_pocket_saves
   - name: pocket_tile_id
     type: STRING
     mode: NULLABLE
@@ -231,9 +391,15 @@ fields:
   - mode: NULLABLE
     name: sponsored_pocket_dismissals
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: sponsored_pocket_dismissals
   - mode: NULLABLE
     name: organic_pocket_dismissals
     type: INTEGER
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: organic_pocket_dismissals
   - mode: NULLABLE
     name: pocket_thumbs_up
     type: INTEGER
@@ -294,103 +460,164 @@ fields:
 - mode: NULLABLE
   name: is_new_profile
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_new_profile
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: activity_segment
 - mode: NULLABLE
   name: newtab_default_ui
   type: STRING
+  description: Indicates whether the user is viewing the default new tab UI configuration ('default') or
+    a non-default variant ('non-default').
 - name: newtab_weather_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: newtab_weather_widget_enabled
 - name: wallpaper_interactions
   type: RECORD
   mode: REPEATED
+  description: Repeated struct containing wallpaper interaction counts during this new tab visit, including
+    clicks, category selections, and highlight interactions.
   fields:
   - name: wallpaper_selected_wallpaper
     type: STRING
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the identifier of the wallpaper the user selected
+      (e.g., 'wcw-b', 'custom', 'eclipse-time-lapse'). Null when no wallpaper selection was recorded.
   - name: wallpaper_clicks
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: wallpaper_clicks
   - name: wallpaper_clicks_had_previous_wallpaper
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of wallpaper clicks made by a user who
+      already had a wallpaper set previously.
   - name: wallpaper_clicks_first_selected_wallpaper
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user clicked a wallpaper
+      for the first time (first-ever wallpaper selection).
   - name: wallpaper_category_clicks
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user clicked a wallpaper
+      category option in the wallpaper picker.
   - name: wallpaper_highlight_dismissals
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user dismissed the wallpaper
+      feature highlight notification.
   - name: wallpaper_highlight_cta_clicks
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user clicked the CTA button
+      on the wallpaper feature highlight.
 - name: weather_interactions
   type: RECORD
   mode: REPEATED
+  description: Repeated struct containing weather widget interaction counts during this new tab visit, including
+    impressions, clicks, display changes, and location selections.
   fields:
   - name: weather_widget_impressions
     type: INTEGER
     mode: NULLABLE
+    description: Within each weather_interactions entry, the number of times the weather widget was visible
+      (viewed) during this new tab visit.
   - name: weather_widget_location_selected
     type: INTEGER
     mode: NULLABLE
+    description: Within each weather_interactions entry, the number of times the user selected a location
+      in the weather widget during this new tab visit.
   - name: weather_widget_clicks
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: weather_widget_clicks
   - name: weather_widget_load_errors
     type: INTEGER
     mode: NULLABLE
+    description: Within each weather_interactions entry, the number of times the weather widget failed to
+      load data during this new tab visit.
   - name: weather_widget_change_display_to_detailed
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: weather_widget_change_display_to_detailed
   - name: weather_widget_change_display_to_simple
     type: INTEGER
     mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: weather_widget_change_display_to_simple
 - name: newtab_selected_topics
   type: STRING
   mode: REPEATED
+  description: Array of topic names the user has selected in the new tab topic-selection modal to personalise
+    their Pocket recommendations.
 - name: topic_selection_interactions
   type: RECORD
   mode: REPEATED
+  description: Repeated struct capturing topic selection modal interaction counts during this new tab visit.
   fields:
   - name: previous_topics
     type: STRING
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the list of topics the user had selected
+      before opening the topic selection modal in this visit.
   - name: topics
     type: STRING
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the list of topics the user selected or saved
+      in the topic selection modal during this visit.
   - name: topic_selection_open
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the topic selection modal
+      was opened during this new tab visit.
   - name: topic_selection_dismiss
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the topic selection modal
+      was dismissed without saving topics during this visit.
   - name: topic_selection_topics_first_saved
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the user saved their
+      first-ever set of selected topics during this visit.
   - name: topic_selection_topics_updated
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the user updated (re-saved)
+      their topic selection during this visit.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id
 - name: newtab_window_inner_height
   type: INTEGER
   mode: NULLABLE
+  description: The inner height of the browser window in pixels at the time the new tab page was opened.
 - name: newtab_window_inner_width
   type: INTEGER
   mode: NULLABLE
+  description: The inner width of the browser window in pixels at the time the new tab page was opened.
 - mode: NULLABLE
   name: topsites_sponsored_tiles_configured
   type: INTEGER
-  description: An integer from client configuration that determines how many tiles
-    the client can see. This telemetry released in Fx123 (2024/02/20), so it should
-    only be considered for clients with Fx123+.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_sponsored_tiles_configured

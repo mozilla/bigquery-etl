@@ -2,45 +2,60 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: days_logged_event_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the days in the past 28 days on which this client logged at least one Telemetry event ping. The rightmost bit
-    represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_logged_event_bits
 - name: days_used_pictureinpicture_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the days in the past 28 days on which this client used the Picture-in-Picture feature at least once. The rightmost
-    bit represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_used_pictureinpicture_bits
 - name: days_viewed_protection_report_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the days in the past 28 days on which this client viewed the Privacy Protections report at least once. The rightmost
-    bit represents the most recent day.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_viewed_protection_report_bits
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - name: n_logged_event
   type: INTEGER
   mode: NULLABLE
-  description: The total number of Telemetry event pings logged by this client on the most recent active day within the 28-day window.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: n_logged_event
 - name: n_created_pictureinpicture
   type: INTEGER
   mode: NULLABLE
-  description: The total number of Picture-in-Picture windows created by this client on the most recent active day within the 28-day window.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: n_created_pictureinpicture
 - name: n_viewed_protection_report
   type: INTEGER
   mode: NULLABLE
-  description: The total number of times this client viewed the Privacy Protections report on the most recent active day within the 28-day window.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: n_viewed_protection_report
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id

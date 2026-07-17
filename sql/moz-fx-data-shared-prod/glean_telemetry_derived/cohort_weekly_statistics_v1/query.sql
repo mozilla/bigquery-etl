@@ -41,6 +41,7 @@ initial_cohort_counts AS (
     play_store_attribution_content,
     play_store_attribution_term,
     play_store_attribution_install_referrer_response,
+    install_source,
     cohort_date_week,
     COUNT(DISTINCT(client_id)) AS nbr_clients_in_cohort
   FROM
@@ -72,6 +73,7 @@ initial_cohort_counts AS (
     play_store_attribution_content,
     play_store_attribution_term,
     play_store_attribution_install_referrer_response,
+    install_source,
     cohort_date_week
 ),
 unique_week_group_combos AS (
@@ -102,6 +104,7 @@ unique_week_group_combos AS (
     i.play_store_attribution_content,
     i.play_store_attribution_term,
     i.play_store_attribution_install_referrer_response,
+    i.install_source,
     i.cohort_date_week,
     i.nbr_clients_in_cohort,
     w.activity_date_week
@@ -138,6 +141,7 @@ weekly_active_agg AS (
     cfs.play_store_attribution_content,
     cfs.play_store_attribution_term,
     cfs.play_store_attribution_install_referrer_response,
+    cfs.install_source,
     cfs.cohort_date_week,
     wac.activity_date_week,
     COUNT(DISTINCT(wac.client_id)) AS nbr_active_clients
@@ -174,6 +178,7 @@ weekly_active_agg AS (
     cfs.play_store_attribution_content,
     cfs.play_store_attribution_term,
     cfs.play_store_attribution_install_referrer_response,
+    cfs.install_source,
     cfs.cohort_date_week,
     wac.activity_date_week
 )
@@ -209,6 +214,7 @@ SELECT
   DATE_DIFF(uwgc.activity_date_week, uwgc.cohort_date_week, WEEK) AS weeks_after_first_seen_week,
   COALESCE(waa.nbr_active_clients, 0) AS nbr_active_clients,
   uwgc.play_store_attribution_install_referrer_response,
+  uwgc.install_source,
 FROM
   unique_week_group_combos uwgc
 LEFT JOIN
@@ -260,6 +266,7 @@ LEFT JOIN
     waa.play_store_attribution_install_referrer_response,
     'NULL'
   )
+  AND COALESCE(uwgc.install_source, 'NULL') = COALESCE(waa.install_source, 'NULL')
   AND uwgc.cohort_date_week = waa.cohort_date_week
   AND uwgc.activity_date_week = waa.activity_date_week
 WHERE

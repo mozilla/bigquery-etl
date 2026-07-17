@@ -75,7 +75,7 @@ def stripe_():
     "import",
     help="""Import Stripe reports into BigQuery.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """,
 )
 @block_coding_agents

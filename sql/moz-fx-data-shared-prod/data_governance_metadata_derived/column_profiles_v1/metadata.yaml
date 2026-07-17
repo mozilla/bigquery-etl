@@ -12,13 +12,14 @@ owners:
 - gkatre@mozilla.com
 scheduling:
   dag_name: bqetl_data_governance_metadata
-  # date and source_datasets are overridable per-run via the Airflow trigger
-  # "Configuration JSON" (dag_run.conf), falling back to the run's logical date
-  # and the default dataset list. source_datasets is comma-separated. Example:
-  #   {"date": "2026-06-01", "source_datasets": "fenix,firefox_desktop"}
+  # Per-run overrides via the Airflow trigger config (dag_run.conf). Scheduled/
+  # backfill runs default --date to the interval-END date (data_interval_end, the
+  # run's Monday; scans interval_end - 7 days) and --source-datasets to the set
+  # below. Manual runs must pass both — the defaults render empty so query.py
+  # rejects them. See README.md for details.
   arguments: [
-    "--date", "{{ dag_run.conf.get('date', ds) }}",
-    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry') }}"
+    "--date", "{{ dag_run.conf.get('date', (data_interval_end | ds) if dag_run.run_type != 'manual' else '') }}",
+    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry' if dag_run.run_type != 'manual' else '') }}"
   ]
 bigquery:
   time_partitioning:

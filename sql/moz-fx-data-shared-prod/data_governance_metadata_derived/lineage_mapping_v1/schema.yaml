@@ -1,0 +1,36 @@
+fields:
+- name: source_project
+  type: STRING
+  mode: REQUIRED
+  description: GCP project of the derived BigQuery table.
+- name: source_dataset
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset of the derived table.
+- name: source_table
+  type: STRING
+  mode: REQUIRED
+  description: Table name (without project or dataset).
+- name: source_ping
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Source telemetry ping resolved via DataHub lineage (e.g. baseline,
+    first-shutdown). For Glean pings, formatted as app.ping (e.g.
+    fenix.baseline) so the probe-definitions key is unique per app. Null when
+    DataHub was queried and no ping node was found in the upstream lineage.
+- name: ping_platform
+  type: STRING
+  mode: NULLABLE
+  description: glean or legacy_telemetry. Null when no ping was found.
+- name: stable_urn
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    DataHub URN of the closest _stable.* BQ table in the lineage chain.
+    Populated for Legacy Telemetry only; used downstream to fetch probe field
+    schemas.
+- name: resolved_at
+  type: DATE
+  mode: REQUIRED
+  description: Run date of the lineage resolution job. This is the table's partition column.

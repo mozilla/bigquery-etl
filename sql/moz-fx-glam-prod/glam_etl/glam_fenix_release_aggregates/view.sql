@@ -5,7 +5,10 @@ CREATE OR REPLACE VIEW
         * EXCEPT (percentiles, non_norm_percentiles),
         IF(
           percentiles IS NOT NULL
-          OR metric_type IN ("boolean", "labeled_boolean"),
+          OR metric_type IN ("boolean", "labeled_boolean")
+          -- labeled_counter summed_histogram rows are label-keyed (categorical),
+          -- not numeric bins, so casting them for percentiles fails; skip them.
+          OR (metric_type = "labeled_counter" AND client_agg_type = "summed_histogram"),
           NULL,
           mozfun.glam.histogram_cast_struct(histogram)
         ) AS struct_histogram,

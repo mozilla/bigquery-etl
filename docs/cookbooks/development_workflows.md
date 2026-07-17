@@ -16,7 +16,84 @@ No deep familiarity with the command line is required. The examples below can be
 ## Prerequisites
 
 - Authenticated to GCP: `gcloud auth application-default login`
-- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or the shared dev project `moz-fx-data-proto`
+- Access to a personal sandbox project (e.g., `my-sandbox-project`) or the shared dev project `moz-fx-data-proto`
+
+## Impersonating the shared sandbox service account
+
+A shared service account, `bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com`, can be
+impersonated to run development work without holding broad production access directly. It lives
+in the shared dev project `moz-fx-data-proto`, is granted write access there and **read-only**
+access to production (so dev queries can still read prod sources), but has **no** production
+write or deploy permissions — so nothing run through it can modify prod.
+
+Members of the `dataplatform/developers` workgroup can impersonate it (ask a data platform admin
+to be granted `roles/iam.serviceAccountTokenCreator` on it if you aren't already in that
+workgroup).
+
+The easiest way to use it is to set `impersonate_service_account` on your target in
+`bqetl_targets.yaml` — `bqetl` then impersonates it automatically for every command run against
+that target, with no manual `export` needed:
+
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  dataset: '{{ account.username }}_{{ git.branch }}'
+  impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+```
+
+Alternatively, point application-default credentials at it directly via the environment (an
+explicit env var takes precedence over the target config):
+
+```bash
+export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT=bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+```
+
+To run a single command with your own credentials instead — e.g. when the sandbox SA lacks access
+you personally have — pass `--no-impersonate`:
+
+```bash
+./bqetl --target dev --no-impersonate query run <dataset>.<table> --write
+```
+
+Either way `bqetl` uses application-default credentials, so no extra flags are needed. This is also
+what makes it safe for coding agents to run, deploy, and backfill: for an agent those commands
+are permitted **only** when scoped to an allow-listed non-prod `--target`
+(`coding_agents.dev_project_allowlist` in `bqetl_project.yaml`) **and** impersonating the sandbox
+service account — so `--no-impersonate` (or a missing SA) disables them for agents. The service
+account's IAM is the backstop that prevents any production writes regardless.
+
+The shared service account is only needed for the shared dev project. If you work in a **personal
+sandbox project** you own, you can skip impersonation and instead grant the needed permissions
+(e.g. `roles/bigquery.user`, `roles/aiplatform.user`) directly to your own account — or to a
+service account in that project — as needed. Run without `impersonate_service_account` set (or
+with `--no-impersonate`) to use your own credentials.
+
+### Writing datasets while impersonating
+
+Datasets `bqetl` creates are owned by you, not the service account — so when impersonating, the SA
+can't write results into a new dataset unless it's also granted access. When this happens `bqetl`
+asks whether to grant the SA write access, with one caveat: **granting makes the dataset readable
+by everyone who can impersonate the SA**. Answer `no` (the default) for anything sensitive and use a
+personal sandbox instead; answer `yes` only for non-sensitive shared dev work.
+
+To decide without a prompt — e.g. in CI or for a human running non-interactively — set it on the
+target (or override per-run with `BQETL_GRANT_IMPERSONATION_DATASET_ACCESS=1`):
+
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  impersonate_service_account: bq-dev-sandbox@moz-fx-data-proto.iam.gserviceaccount.com
+  grant_impersonation_access: true   # SA gets WRITER on datasets it creates
+```
+
+Non-interactive runs default to **not** granting.
+
+**Coding agents** can't give meaningful consent (they can't be prompted and can set env vars
+themselves), so they may widen access **only** via an explicit `grant_impersonation_access: true`
+on the target — the env var and prompt are ignored for them. Without it, an agent creates datasets
+the SA can't write to (writes fail). Note this is a cooperative guardrail, not a security boundary:
+`bqetl_targets.yaml` is local and agent-editable. The hard boundary is the service account's IAM —
+it should not be able to grant itself dataset access.
 
 ## Target-Based Development
 
@@ -25,14 +102,14 @@ Configure a target in `./bqetl_targets.yaml`. When running commands from `privat
 **Per-source-dataset deployment** (one target dataset per source dataset, keeps datasets separate):
 ```yaml
 dev:
-  project_id: dev-sandbox-user
+  project_id: my-sandbox-project
   dataset_prefix: user_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}
 ```
 
 **Single-dataset deployment** (all artifacts land in one dataset, use `artifact_prefix` to avoid name collisions):
 ```yaml
 dev:
-  project_id: dev-sandbox-user
+  project_id: my-sandbox-project
   dataset: anna_dev
   artifact_prefix: "{{ git.branch }}_{{ git.commit }}_"
 ```
@@ -60,7 +137,7 @@ To avoid passing `--target` on every invocation, set a default using one of thes
    default_target: dev
 
    dev:
-     project_id: dev-sandbox-user
+     project_id: my-sandbox-project
      dataset: anna_dev
    ```
 
@@ -73,9 +150,9 @@ Use `--target dev` to run and deploy artifacts to the dev environment:
 
 What happens automatically:
 
-1. Copies to `sql/dev-sandbox-user/user_<branch>_<commit>_moz_fx_data_shared_prod_telemetry_derived/clients_daily_v6/`
+1. Copies to `sql/my-sandbox-project/user_<branch>_<commit>_moz_fx_data_shared_prod_telemetry_derived/clients_daily_v6/`
 2. Rewrites references if `--defer-to-target` is specified (deployed tables → dev, others → prod)
-3. Deploys schema to `dev-sandbox-user.user_<branch>_<commit>_..._telemetry_derived.clients_daily_v6`
+3. Deploys schema to `my-sandbox-project.user_<branch>_<commit>_..._telemetry_derived.clients_daily_v6`
 4. Runs query and populates data
 
 Generated target directories are already covered by `.gitignore`. If your dev project path isn't excluded by the standard patterns, add it to `.git/info/exclude` (a local, untracked gitignore) rather than modifying `.gitignore`.

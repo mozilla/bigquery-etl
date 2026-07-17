@@ -2,12 +2,15 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_country_code
 - name: total_dau
   type: INTEGER
   mode: NULLABLE
@@ -15,7 +18,9 @@ fields:
 - name: nbr_clients_uninstalling
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: nbr_clients_uninstalling
 - name: ratio_uninstalls_to_dau
   type: FLOAT
   mode: NULLABLE

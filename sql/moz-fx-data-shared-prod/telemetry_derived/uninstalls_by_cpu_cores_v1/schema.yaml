@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: nbr_cpu_cores
   type: INTEGER
   mode: NULLABLE
-  description: Count of CPU cores on device
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: nbr_cpu_cores
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling Firefox
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uninstalls_count

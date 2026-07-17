@@ -2,41 +2,74 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: category
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: category
 - mode: NULLABLE
   name: event
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event
 - mode: NULLABLE
   name: first_timestamp
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_timestamp
 - mode: NULLABLE
   name: numeric_index
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: numeric_index
 - mode: NULLABLE
   name: index
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: index
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - fields:
     - mode: NULLABLE
       name: key
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - mode: NULLABLE
       name: value
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
     - mode: NULLABLE
       name: index
       type: INTEGER
     mode: REPEATED
     name: value
     type: RECORD
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
   - mode: NULLABLE
     name: index
     type: INTEGER
   mode: REPEATED
   name: event_properties
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_properties

@@ -16,8 +16,11 @@ from typing import Callable, List, Optional, Set, Tuple
 from uuid import uuid4
 
 import click
+import google.auth
+import google.auth.transport.requests
 import sqlglot
 import yaml
+from google.auth import impersonated_credentials
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
@@ -485,15 +488,129 @@ def is_running_under_coding_agent():
     )
 
 
+# Set from the CLI group callback once the `--target` (or BQETL_TARGET /
+# default_target) has been resolved, so the coding-agent gate can tell whether
+# the current invocation is scoped to a non-prod target.
+_resolved_target_project: Optional[str] = None
+
+
+def get_dev_project_allowlist() -> Tuple[str, ...]:
+    """Non-prod projects coding agents may target, from `bqetl_project.yaml`.
+
+    Strict allow-list; defaults to empty (deny) if unset.
+    """
+    return tuple(
+        ConfigLoader.get("coding_agents", "dev_project_allowlist", fallback=[])
+    )
+
+
+def set_resolved_target_project(project_id: Optional[str]) -> None:
+    """Record the resolved target project for the coding-agent gate."""
+    global _resolved_target_project
+    _resolved_target_project = project_id
+
+
+_CLOUD_PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
+
+
+def enable_impersonation(target_principal: str) -> None:
+    """Impersonate `target_principal` for all google-cloud clients in this process.
+
+    `google.auth.default()` (used by every `bigquery.Client()`) ignores the
+    gcloud `CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` env var, so we wrap it to
+    return impersonated credentials built from the caller's ADC.
+    """
+    current = google.auth.default
+    # Unwrap if already wrapped so re-targeting doesn't stack/recurse.
+    original = getattr(current, "_bqetl_original_default", current)
+
+    def _impersonated_default(scopes=None, request=None, **kwargs):
+        source_credentials, project_id = original()
+        # Refresh the source first: impersonated-credential refresh calls
+        # source._refresh_token(request), which breaks for user ADC (whose
+        # _refresh_token is the OAuth token *string*). Keeping the source valid
+        # skips that branch.
+        if not source_credentials.valid:
+            source_credentials.refresh(google.auth.transport.requests.Request())
+        creds = impersonated_credentials.Credentials(
+            source_credentials=source_credentials,
+            target_principal=target_principal,
+            target_scopes=list(scopes) if scopes else [_CLOUD_PLATFORM_SCOPE],
+        )
+        return creds, project_id
+
+    # setattr/getattr (not typed attribute access) since we're monkeypatching a
+    # third-party function and stashing the original on the wrapper.
+    setattr(_impersonated_default, "_bqetl_original_default", original)
+    setattr(google.auth, "default", _impersonated_default)
+
+
+def get_unimpersonated_credentials():
+    """Return the caller's own ADC, bypassing any active impersonation wrapper.
+
+    Use this to resolve the human operator's identity (e.g. for dataset
+    ownership) so it isn't attributed to an impersonated service account.
+    """
+    default = getattr(
+        google.auth.default, "_bqetl_original_default", google.auth.default
+    )
+    credentials, _ = default()
+    return credentials
+
+
+def is_dev_project(project_id: Optional[str]) -> bool:
+    """Return whether `project_id` is an allow-listed non-prod dev/sandbox project."""
+    if not project_id:
+        return False
+    return project_id in get_dev_project_allowlist()
+
+
 def exit_if_running_under_coding_agent():
-    """Exit if `bqetl` is running under a coding agent."""
-    if is_running_under_coding_agent():
-        click.echo("Coding agents aren't allowed to run this command.", err=True)
+    """Exit if a coding agent runs a blocked command unsafely.
+
+    Coding agents may run otherwise-blocked commands only when both hold:
+    the invocation is scoped to an allow-listed non-prod `--target` (managed in
+    `bqetl_project.yaml`, see `get_dev_project_allowlist`), and a service account
+    is being impersonated (`CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` set).
+
+    IMPORTANT: these checks are advisory guardrails, NOT the write boundary.
+    They only inspect the resolved `--target`, but `deploy` / `query backfill`
+    write to the `--project-id` / `--project_ids` they're invoked with, which
+    can differ from the target (e.g. `--target dev --project-id <prod>`). The
+    actual enforcement is the impersonated SA's IAM: it has no production write
+    access, so writes elsewhere fail regardless of these checks. Don't extend
+    trust to the project allow-list beyond "nudge agents toward a dev target".
+    """
+    if not is_running_under_coding_agent():
+        return
+    if not is_dev_project(_resolved_target_project):
+        target_desc = (
+            f"target project '{_resolved_target_project}'"
+            if _resolved_target_project
+            else "no target"
+        )
+        click.echo(
+            "Coding agents must scope this command to a non-prod --target "
+            f"(one of {', '.join(get_dev_project_allowlist())}); got {target_desc}. "
+            "Set --target / BQETL_TARGET / default_target to a dev project. (Note: "
+            "this checks only --target, not --project-id; the impersonated SA's "
+            "IAM is what actually prevents production writes.)",
+            err=True,
+        )
+        sys.exit(1)
+    if not os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"):
+        click.echo(
+            "Coding agents must impersonate the sandbox service account to run "
+            "this command (its IAM is what prevents production writes). Set "
+            "`impersonate_service_account` on the target (and don't pass "
+            "--no-impersonate).",
+            err=True,
+        )
         sys.exit(1)
 
 
 def block_coding_agents(function: Callable) -> Callable:
-    """Wrap a function so that it exits if `bqetl` is running under a coding agent."""
+    """Wrap a function so coding agents can only run it against a dev target."""
 
     @wraps(function)
     def wrapper(*args, **kwargs):

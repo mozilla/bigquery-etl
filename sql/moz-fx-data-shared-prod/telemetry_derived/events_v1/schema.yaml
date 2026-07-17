@@ -2,115 +2,171 @@ fields:
 - mode: REQUIRED
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: REQUIRED
   name: doc_type
   type: STRING
-  description: Document Type
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: doc_type
 - mode: NULLABLE
   name: document_id
   type: STRING
-  description: Document ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: document_id
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: Client ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: app_name
   type: STRING
-  description: App Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: os
   type: STRING
-  description: Operating System
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: e10s_enabled
   type: BOOLEAN
-  description: E10S Enabled
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: e10s_enabled
 - mode: NULLABLE
   name: e10s_cohort
   type: STRING
-  description: E10S Cohort
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: e10s_cohort
 - mode: NULLABLE
   name: subsession_start_date
   type: STRING
-  description: Subsession Start Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_start_date
 - mode: NULLABLE
   name: subsession_length
   type: INT64
-  description: Subsession Length
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_length
 - mode: NULLABLE
   name: sync_configured
   type: BOOLEAN
-  description: Sync Configured
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_configured
 - mode: NULLABLE
   name: sync_count_desktop
   type: INT64
-  description: Sync Count Desktop
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_count_desktop
 - mode: NULLABLE
   name: sync_count_mobile
   type: INT64
-  description: Sync Count Mobile
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sync_count_mobile
 - mode: NULLABLE
   name: timestamp
   type: INTEGER
-  description: Timestamp
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: timestamp
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: Sample ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - mode: NULLABLE
   name: active_experiment_id
   type: STRING
-  description: Active Experiment ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_experiment_id
 - mode: NULLABLE
   name: active_experiment_branch
   type: STRING
-  description: Active Experiment Branch
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_experiment_branch
 - mode: NULLABLE
   name: event_timestamp
   type: INTEGER
-  description: Event Timestamp
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_timestamp
 - mode: NULLABLE
   name: event_category
   type: STRING
-  description: Event Category
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_category
 - mode: NULLABLE
   name: event_method
   type: STRING
-  description: Event Method
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_method
 - mode: NULLABLE
   name: event_object
   type: STRING
-  description: Event Object
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_object
 - mode: NULLABLE
   name: event_string_value
   type: STRING
-  description: Event String Value
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_string_value
 - mode: NULLABLE
   name: event_map_values
   type: RECORD
-  description: Event Map Values
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_map_values
   fields:
   - mode: REPEATED
     name: key_value
@@ -119,13 +175,21 @@ fields:
     - mode: REQUIRED
       name: key
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - mode: NULLABLE
       name: value
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
 - mode: NULLABLE
   name: experiments
   type: RECORD
-  description: Experiments
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
   fields:
   - mode: REPEATED
     name: key_value
@@ -134,22 +198,36 @@ fields:
     - mode: REQUIRED
       name: key
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - mode: NULLABLE
       name: value
       type: STRING
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
 - mode: NULLABLE
   name: event_process
   type: STRING
-  description: Event Process
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: event_process
 - mode: NULLABLE
   name: subsession_id
   type: STRING
-  description: Subsession ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_id
 - mode: NULLABLE
   name: session_start_time
   type: INTEGER
-  description: Session Start Time
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: session_start_time
 - mode: NULLABLE
   name: session_id
   type: STRING
-  description: Session ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: session_id

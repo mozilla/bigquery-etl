@@ -2,110 +2,156 @@ fields:
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
-  description: Indicates whether the clients in this row have a known install attribution. True if attribution data is present, false otherwise.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attributed
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: The attribution medium from the install attribution, indicating the category of channel that drove the installation
-    (e.g., 'organic', 'referral', 'cpc').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - mode: NULLABLE
   name: attribution_source
   type: STRING
-  description: The attribution source from the install attribution, indicating the referring partner domain or website that drove the installation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: device_model
   type: STRING
-  description: The hardware model identifier of the client's device (e.g., 'iPhone14,5', 'Redmi 7A'). Populated for mobile clients; null for desktop.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: device_model
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
-  description: The calendar year in which the client's profile was first seen by Mozilla's telemetry pipeline.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_year
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: app_name
   type: STRING
-  description: The name of the browser or application (e.g., 'Firefox Desktop', 'Fenix', 'Firefox iOS').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: The operating system version string on the client's device (e.g., '10.0' for Windows, '16' for Android).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Major or first part of the operating system version running at the
-    client. E.g. for version "100.9.11", the major is 100.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version_major
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Minor part of the operating system version running at the client. E.g.
-    for version "100.9.11", the minor is 9.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version_minor
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: dau
   type: INTEGER
-  description: Daily Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - mode: NULLABLE
   name: wau
   type: INTEGER
-  description: Weekly Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: wau
 - mode: NULLABLE
   name: mau
   type: INTEGER
-  description: Monthly Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
-  description: Count of newly created profiles first seen on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profiles
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
-  description: Total count of ad clicks recorded across all clients in this segment on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ad_clicks
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER
-  description: Total count of organic (non-paid) search queries made by clients in this segment on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: organic_search_count
 - mode: NULLABLE
   name: search_count
   type: INTEGER
-  description: Total count of search queries made by clients in this segment on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
-  description: Total count of searches that returned pages containing ads, for clients in this segment on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_with_ads
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
-  description: Total count of URIs visited by clients in this segment on the submission date.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uri_count
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
-  description: Total active browsing hours accumulated by clients in this segment on the submission date.
-- description: Count of distinct, qualified Desktop clients that we received a main
-    ping from on a given day. In mobile DAU = QDAU.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_hours
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: qdau_desktop
   mode: NULLABLE
   name: qdau_desktop
   type: INTEGER

@@ -9,22 +9,12 @@ from typing import Iterable, List, Optional
 
 from google.cloud import bigquery
 
+from .utils import _PRODUCT_TO_APP_NAME
+
 PROJECT_ID = "moz-fx-data-shared-prod"
 DATASET = "telemetry_derived"
 TABLE_NAME = "sampled_metrics_v1"
 EXPECTED_SAMPLE_RATE = 0.1  # For now, we only support 10% sampling.
-
-_PRODUCT_TO_APP_NAME = {
-    "firefox_desktop": "firefox_desktop",
-    # Experimenter doesn't distinguish Fenix variants; all map to appName=fenix.
-    # Variants follow the Play Store app-id history
-    # (see https://github.com/mozilla/telemetry-airflow/blob/2caa0865f017afa0743c94df02666c9af3d66862/dags/glam_fenix.py#L47-L56).
-    "org_mozilla_fenix": "fenix",
-    "org_mozilla_fenix_nightly": "fenix",
-    "org_mozilla_firefox": "fenix",
-    "org_mozilla_firefox_beta": "fenix",
-    "org_mozilla_fennec_aurora": "fenix",
-}
 
 
 def _run_bq_query(query: str):

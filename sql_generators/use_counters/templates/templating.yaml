@@ -1827,6 +1827,7 @@ use_counters:
 - name: use_counter_doc_mediadevices_enumeratedevices
 - name: use_counter_doc_mediadevices_getdisplaymedia
 - name: use_counter_doc_mediadevices_getusermedia
+- name: use_counter_doc_midiaccess_granted
 - name: use_counter_doc_mixed_content_not_upgraded_audio_failure
 - name: use_counter_doc_mixed_content_not_upgraded_audio_success
 - name: use_counter_doc_mixed_content_not_upgraded_image_failure
@@ -2340,6 +2341,7 @@ use_counters:
 - name: use_counter_page_mediadevices_enumeratedevices
 - name: use_counter_page_mediadevices_getdisplaymedia
 - name: use_counter_page_mediadevices_getusermedia
+- name: use_counter_page_midiaccess_granted
 - name: use_counter_page_mixed_content_not_upgraded_audio_failure
 - name: use_counter_page_mixed_content_not_upgraded_audio_success
 - name: use_counter_page_mixed_content_not_upgraded_image_failure

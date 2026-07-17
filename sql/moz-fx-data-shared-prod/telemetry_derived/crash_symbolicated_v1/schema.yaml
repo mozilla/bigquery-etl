@@ -2,69 +2,108 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: Timestamp when the ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_timestamp
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: document_id
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: async_shutdown_timeout
   type: STRING
   mode: NULLABLE
+  description: JSON string present when an async shutdown blocker failed to complete within the allowed
+    time window, describing the blocking operation.
 - name: ipc_channel_error
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ipc_channel_error
 - name: oom_allocation_size
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: oom_allocation_size
 - name: moz_crash_reason
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: moz_crash_reason
 - name: reason
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: reason
 - name: crashing_thread
   type: INTEGER
   mode: NULLABLE
+  description: The zero-based index of the thread that caused the crash within the crash's stack trace.
 - name: threads
   type: RECORD
   mode: REPEATED
+  description: Array of per-thread stack frame information from the symbolicated crash, including function
+    names, file names, and line numbers resolved from debug symbols.
   fields:
   - name: frames
     type: RECORD
     mode: REPEATED
+    description: The list of symbolicated stack frames for a given thread in the crash, ordered from innermost
+      to outermost call.
     fields:
     - name: module_offset
       type: STRING
       mode: NULLABLE
+      description: The hexadecimal offset of the frame's instruction pointer within the containing module,
+        used for symbolication.
     - name: module
       type: STRING
       mode: NULLABLE
+      description: The name of the binary module (DLL, dylib, or shared library) containing this stack frame.
     - name: function
       type: STRING
       mode: NULLABLE
+      description: The symbolicated function name for this stack frame. Null if the frame could not be symbolicated.
     - name: function_offset
       type: STRING
       mode: NULLABLE
+      description: The hexadecimal offset of the instruction pointer within the containing function, indicating
+        how far into the function execution was.
     - name: file
       type: STRING
       mode: NULLABLE
+      description: The source file name corresponding to this stack frame, if available from debug symbols.
     - name: line
       type: INTEGER
       mode: NULLABLE
+      description: The source code line number within the file for this stack frame, if available from debug
+        symbols.
     - name: inlines
       type: RECORD
       mode: REPEATED
+      description: Array of inlined function frames within this stack frame, representing functions inlined
+        by the compiler at this location.
       fields:
       - name: function
         type: STRING
         mode: NULLABLE
+        description: The name of the inlined function at this location within the parent stack frame.
       - name: file
         type: STRING
         mode: NULLABLE
+        description: The source file name of the inlined function.
       - name: line
         type: INTEGER
         mode: NULLABLE
+        description: The source code line number of the inlined function call.

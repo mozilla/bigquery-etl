@@ -1,0 +1,2 @@
+fields: !include-fields
+  table: moz-fx-data-shared-prod.glean_telemetry_derived.cohort_weekly_statistics_v1

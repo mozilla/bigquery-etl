@@ -2,33 +2,45 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: document_id
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - name: subsession_start_date
   type: STRING
   mode: NULLABLE
-  description: The start date and time of the telemetry subsession during which this add-on data was recorded, as reported by the client
-    (timezone-offset string).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: subsession_start_date
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: addon_id
   type: STRING
   mode: NULLABLE
-  description: The unique identifier for the add-on, typically in reverse-DNS or email format (e.g., 'formautofill@mozilla.org').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: addon_id
 - name: blocklisted
   type: BOOLEAN
   mode: NULLABLE
@@ -36,7 +48,9 @@ fields:
 - name: name
   type: STRING
   mode: NULLABLE
-  description: The display name of the add-on, limited to 100 characters (e.g., 'Picture-In-Picture', 'Form Autofill').
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: name
 - name: user_disabled
   type: BOOLEAN
   mode: NULLABLE
@@ -48,7 +62,9 @@ fields:
 - name: version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: version
 - name: scope
   type: INTEGER
   mode: NULLABLE
@@ -56,7 +72,9 @@ fields:
 - name: type
   type: STRING
   mode: NULLABLE
-  description: 'The type of add-on: ''extension'', ''locale'', ''dictionary'', or ''service''.'
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: type
 - name: foreign_install
   type: BOOLEAN
   mode: NULLABLE
@@ -80,7 +98,9 @@ fields:
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the add-on is a Mozilla system add-on shipped with Firefox. True if system, false if user-installed.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_system
 - name: is_web_extension
   type: BOOLEAN
   mode: NULLABLE
@@ -92,5 +112,6 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id

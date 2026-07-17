@@ -1,5 +1,7 @@
 fields:
-- description: Submission Date
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
   mode: NULLABLE
   name: submission_date
   type: DATE
@@ -7,7 +9,9 @@ fields:
   mode: NULLABLE
   name: product_category
   type: STRING
-- description: Daily active users for the product category
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
   mode: NULLABLE
   name: dau
   type: INTEGER

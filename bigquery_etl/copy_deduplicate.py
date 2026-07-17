@@ -381,7 +381,7 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     "copy_deduplicate",
     help="""Copy a day's data from live to stable ping tables, deduplicating on document_id
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """,
 )
 @block_coding_agents

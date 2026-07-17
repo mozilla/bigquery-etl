@@ -2,16 +2,24 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: uninstall_same_day_as_install
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if the uninstall was on the same date as the install
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uninstall_same_day_as_install
 - name: account_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the user's logged in to an FxA account.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: account_enabled
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uninstalls_count

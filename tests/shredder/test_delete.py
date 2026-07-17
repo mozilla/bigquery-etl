@@ -136,6 +136,7 @@ def test_delete_from_partition_with_sampling(mock_delete_from_partition):
             clustering_fields=ANY,
             check_table_existence=True,
             sample_id_range=(i, i),
+            dest_partition_nonempty=False,
             task_id=f"{base_task_id}__sample_{i}_{i}",
         )
 
@@ -174,8 +175,73 @@ def test_delete_from_partition_with_sampling_batch_size(mock_delete_from_partiti
             clustering_fields=ANY,
             check_table_existence=True,
             sample_id_range=(i, i + batch_size - 1),
+            dest_partition_nonempty=False,
             task_id=f"{base_task_id}__sample_{i}_{i + batch_size - 1}",
         )
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_column_removal(mock_delete_from_partition):
+    """
+    With column_removal_backfill, sampling should copy the intermediate tables into the
+    v2 partition and match their clustering to the v2 table, mirroring the non-column
+    removal path (which copies into and clusters by the same table it reads).
+    """
+    base_task_id = "proj.dataset.table_v1"
+
+    # each per-sample delete_from_partition returns a task producing an intermediate table
+    def make_task(**kwargs):
+        return lambda client: Mock(
+            destination=f"proj.tmp.intermediate_{kwargs['sample_id_range'][0]}",
+            total_bytes_processed=1,
+        )
+
+    mock_delete_from_partition.side_effect = make_task
+
+    args = {**COMMON_DELETE_ARGS, "dry_run": False, "column_removal_backfill": True}
+
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **args,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=1,
+        dest_partition_nonempty=True,
+        task_id=base_task_id,
+    )
+
+    mock_client = Mock()
+
+    job_function = wait_for_job.keywords["create_job"]
+    job_function(mock_client)
+
+    # per-sample queries read/write with column removal enabled
+    for i in range(100):
+        mock_delete_from_partition.assert_any_call(
+            **args,
+            partition=shredder_delete.Partition(
+                id="20240101", condition="", is_special=False
+            ),
+            clustering_fields=ANY,
+            check_table_existence=True,
+            sample_id_range=(i, i),
+            dest_partition_nonempty=True,
+            task_id=f"{base_task_id}__sample_{i}_{i}",
+        )
+
+    v2_table_id = shredder_delete.sql_table_id(COMMON_DELETE_ARGS["target"]).replace(
+        "_v1", "_v2"
+    )
+
+    # clustering is read from the base v2 table (its partition may not exist yet)
+    mock_client.get_table.assert_called_once_with(v2_table_id)
+
+    # intermediates are copied into the v2 partition, not v1
+    assert (
+        mock_client.copy_table.call_args.kwargs["destination"]
+        == f"{v2_table_id}$20240101"
+    )
 
 
 @patch("bigquery_etl.shredder.delete.list_partitions")
@@ -458,6 +524,57 @@ def test_delete_from_partition_with_column_removal_true():
     """)
 
     assert mock_client.query.call_args.args[0].startswith(reformat(expected_query))
+    assert (
+        str(mock_client.query.call_args.kwargs["job_config"].destination)
+        == "test_project.firefox.metrics_v2$20260101"
+    )
+
+
+def test_delete_from_partition_column_removal_reads_v2_when_nonempty():
+    """
+    When the v2 partition is already populated, column_removal_backfill should read
+    from v2 with SELECT _target.* instead of reseeding from v1. This keeps deletions
+    from earlier runs from coming back once the requests age out of the source window.
+    """
+    mock_client = Mock()
+
+    delete_func = delete_from_partition(
+        dry_run=True,
+        partition=Partition(condition="", id="20260101"),
+        priority="INTERACTIVE",
+        source_condition="",
+        sources=[
+            DeleteSource(
+                project="test_project",
+                field="client_id",
+                table="firefox.deletion_request_v1",
+            )
+        ],
+        target=DeleteTarget(
+            project="test_project", field="client_id", table="firefox.metrics_v1"
+        ),
+        use_dml=True,
+        column_removal_backfill=True,
+        dest_partition_nonempty=True,
+        task_id="test",
+        states={},
+        state_table=None,
+        start_date=None,
+        end_date=None,
+    )
+
+    delete_func(mock_client)
+
+    assert mock_client.query.call_count == 1
+    # reading from an already-populated v2 partition needs no schema lookup
+    mock_client.get_table.assert_not_called()
+
+    query = mock_client.query.call_args.args[0]
+    assert query.startswith(reformat("""
+            SELECT
+              _target.*,
+            FROM `test_project.firefox.metrics_v2` AS _target
+            """))
     assert (
         str(mock_client.query.call_args.kwargs["job_config"].destination)
         == "test_project.firefox.metrics_v2$20260101"

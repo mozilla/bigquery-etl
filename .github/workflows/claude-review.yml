@@ -12,7 +12,7 @@ on:
     types: [created]
 
 concurrency:
-  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Checkout repository
         if: github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false'
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
           # issue_comment defaults to the default branch, so check out the PR head instead
           ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.ref }}
@@ -97,6 +97,15 @@ jobs:
               -f query='mutation($id: ID!) { minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) { clientMutationId } }' \
               -f id="$id"
           done
+
+      - name: Unset runner tokens before agent step
+        if: github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false'
+        # Prevents a prompt injection in the agent step below from using these to touch the Actions
+        # cache/artifacts API or mint an OIDC token.
+        run: |
+          echo "ACTIONS_RUNTIME_TOKEN=" >> "$GITHUB_ENV"
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN=" >> "$GITHUB_ENV"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL=" >> "$GITHUB_ENV"
 
       - name: Run Claude Code Review
         if: github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false'

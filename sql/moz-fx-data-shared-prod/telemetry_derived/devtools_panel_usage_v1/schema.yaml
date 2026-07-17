@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: tool
   type: STRING
@@ -11,5 +13,6 @@ fields:
 - mode: NULLABLE
   name: dau
   type: INTEGER
-  description: The number of daily active users who opened this DevTools tool at least once on the submission_date, sampled from sample_id = 42 (approximately
-    1% of clients using the DevTools toolbox).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau

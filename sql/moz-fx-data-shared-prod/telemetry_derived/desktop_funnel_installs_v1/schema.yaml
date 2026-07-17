@@ -2,31 +2,45 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: date
 - mode: NULLABLE
   name: country_name
   type: STRING
-  description: Country Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_name
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: build_channel
   type: STRING
-  description: Build Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_channel
 - mode: NULLABLE
   name: build_id
   type: STRING
-  description: Build ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
 - mode: NULLABLE
   name: silent
   type: BOOLEAN
-  description: Silent
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: silent
 - mode: NULLABLE
   name: succeeded
   type: BOOLEAN
-  description: Succeeded
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: succeeded
 - mode: NULLABLE
   name: ua_attribution
   type: STRING

@@ -2,15 +2,26 @@ fields:
 - mode: NULLABLE
   name: region
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: region
 - mode: NULLABLE
   name: average_ctr_top2_items
   type: FLOAT
+  description: Average click-through rate of the top 2 ranked corpus items (by click count) for this region
+    over the past 7 days, used as a prior for Merino's recommendation ranking.
 - mode: NULLABLE
   name: average_ctr_top10_items
   type: FLOAT
+  description: Average click-through rate of the top 10 ranked corpus items (by click count) for this region
+    over the past 7 days, used as a prior for Merino's recommendation ranking.
 - mode: NULLABLE
   name: impressions_per_item
   type: FLOAT
+  description: Average number of impressions per corpus item for this region over the past 7 days, used
+    to estimate typical item exposure in Merino's ranking model.
 - mode: NULLABLE
   name: total_impressions_per_day
   type: FLOAT
+  description: Average total daily impressions across all corpus items for this region over the past 7 days,
+    representing overall new tab content traffic volume.

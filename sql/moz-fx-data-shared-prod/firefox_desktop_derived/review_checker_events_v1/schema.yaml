@@ -25,6 +25,9 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: experiments
   fields:
   - name: key
     type: STRING
@@ -63,6 +66,9 @@ fields:
 - name: os_version
   type: NUMERIC
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: os_version
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

@@ -1,14 +1,30 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring.shredder_progress`
 AS
-WITH shredder AS (
+WITH sampling_tasks AS (
+  SELECT DISTINCT
+    REGEXP_REPLACE(task_id, r"__sample_[0-9_]+$", "") AS task_id,
+    end_date,
+  FROM
+    `moz-fx-data-shredder.shredder_state.shredder_state`
+  WHERE
+    REGEXP_CONTAINS(task_id, r"__sample_[0-9_]+$")
+),
+shredder AS (
   SELECT
     task_id,
     CASE
+      WHEN target LIKE "moz-fx-data-experiments.%"
+        THEN "experiments"
       WHEN target = "moz-fx-data-shared-prod.telemetry_stable.main_v5"
         THEN "telemetry_main_v5"
       WHEN target = "moz-fx-data-shared-prod.telemetry_stable.main_use_counter_v4"
         THEN "telemetry_main_use_counter"
+      WHEN target = "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1"
+        THEN "firefox_desktop_metrics"
+      -- previous groups can also have sampling but they're in their own groups
+      WHEN sampling_tasks.task_id IS NOT NULL
+        THEN "with_sampling"
       ELSE "all"
     END AS airflow_task_id,
     target,
@@ -34,10 +50,14 @@ WITH shredder AS (
   LEFT JOIN
     `moz-fx-data-shredder.shredder_state.shredder_state`
     USING (task_id, end_date)
+  LEFT JOIN
+    sampling_tasks
+    USING (task_id, end_date)
   GROUP BY
     task_id,
     target, -- every task has exactly one target
-    end_date
+    end_date,
+    sampling_tasks.task_id
 ),
 jobs AS (
   -- https://cloud.google.com/bigquery/docs/information-schema-jobs

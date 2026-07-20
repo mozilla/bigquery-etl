@@ -1,0 +1,195 @@
+fields:
+- name: activated
+  description: Indicates whether the client has been considered activated. True means the client has met the activation criteria; false means
+    it has not.
+- name: ad_clicks
+  description: The cumulative number of ad clicks attributed to the client. Null indicates no ad click data is available for this record.
+  type: INT64
+- name: ad_clicks_on_date
+  description: The number of ad clicks recorded for the client on a specific date. Null indicates no ad clicks were observed on that date.
+  type: INT64
+- name: adjust_ad_group
+  description: The Adjust ad group name and identifier associated with the client's install attribution. Empty or null values indicate the install
+    was not attributed to a specific ad group.
+  type: STRING
+- name: adjust_adgroup
+  description: The Adjust ad group name and identifier associated with the client's install attribution, as reported directly from the Adjust
+    SDK. An empty string indicates no ad group attribution was recorded.
+  type: STRING
+- name: adjust_attribution_timestamp
+  description: The timestamp at which Adjust recorded the install attribution event for the client. Null indicates attribution data was not available.
+  type: TIMESTAMP
+- name: adjust_campaign
+  description: The Adjust campaign name and identifier used to attribute the client's install. Empty or null values indicate the install was not
+    attributed to a specific campaign.
+  type: STRING
+- name: adjust_creative
+  description: The Adjust creative name or identifier associated with the client's install attribution. Empty or null values indicate no specific
+    creative was attributed.
+  type: STRING
+- name: adjust_network
+  description: The advertising network through which the client's install was attributed via Adjust, such as 'Organic', 'Google Ads ACI', or 'Unknown'.
+    Null indicates the network could not be determined.
+  type: STRING
+- name: android_sdk_version
+  description: The Android SDK (API) level running on the client's device, represented as a numeric string (e.g., '33' for Android 13). Higher
+    values correspond to newer Android versions.
+  type: STRING
+- name: app_build
+  description: The internal build identifier for the version of the Fenix application installed on the client's device. This is a unique numeric
+    string that identifies the specific build.
+  type: STRING
+- name: app_channel
+  description: The release channel of the Fenix application, such as 'release', 'beta', or 'nightly'. This indicates the maturity and intended
+    audience of the build.
+  type: STRING
+- name: app_display_version
+  description: The human-readable version string of the Fenix application as displayed to users, such as '152.0.5' or a nightly build label. This
+    corresponds to the publicly visible version number.
+  type: STRING
+- name: app_name
+  description: The name of the Fenix-based application, distinguishing variants such as 'Fenix', 'Fenix MozillaOnline', or 'Fenix BrowserStack'.
+    This identifies which application distribution the client is using.
+  type: STRING
+- name: app_version
+  description: The version string of the Fenix application reported by the client, used to identify which release the client is running. Multiple
+    builds may share the same version string.
+- name: architecture
+  description: The CPU architecture of the client's device, such as 'arm64-v8a', 'armeabi-v7a', or 'x86_64'. This identifies the instruction set
+    supported by the device hardware.
+  type: STRING
+- name: category
+  description: The telemetry event category grouping associated with a recorded event or metric, such as 'onboarding' or 'tabs_tray'. This organizes
+    events into logical feature areas within the application.
+  type: STRING
+- name: channel
+  description: The release channel of the application reported at the dataset level, such as 'release', 'beta', or 'nightly'. This reflects the
+    build train the client is subscribed to.
+  type: STRING
+- name: city
+  description: The city derived from the client's IP address at the time of submission. Null indicates the city could not be determined from the
+    available geolocation data.
+  type: STRING
+- name: client_id
+  description: A UUID that uniquely identifies an individual Fenix client installation. This identifier persists across sessions for the same
+    installation and is used to link records to a specific device profile.
+  type: STRING
+- name: consecutive_days_seen
+  description: The number of consecutive days the client has been observed active up to and including the current date. A value of 0 indicates
+    the client was not seen on the immediately preceding day.
+  type: INT64
+- name: country
+  description: The two-letter ISO 3166-1 alpha-2 country code derived from the client's IP address at the time of ping submission. This represents
+    the client's detected geographic location.
+  type: STRING
+- name: daily_users
+  description: The count of unique daily active users associated with a given dimension or segment on a given day. A value of 0 indicates no active
+    users were recorded for that combination.
+  type: INT64
+- name: dau
+  description: The number of distinct clients considered daily active users (DAU) for a given date and dimension. A value of 0 indicates no qualifying
+    active clients were observed.
+  type: INT64
+- name: days_seen_bytes
+  description: A compact binary (BYTES) bitfield representing the days within a rolling window on which the client was observed. Each bit corresponds
+    to a specific day relative to the current date.
+  type: BYTES
+- name: days_seen_session_end_bits
+  description: An integer bitfield where each bit represents a day in a rolling window on which a session end event was recorded for the client.
+    Higher bit positions correspond to more recent days.
+  type: INT64
+- name: days_seen_session_start_bits
+  description: An integer bitfield where each bit represents a day in a rolling window on which a session start event was recorded for the client.
+    A value of 0 indicates no session starts were observed in the window.
+  type: INT64
+- name: days_sent_metrics_ping_bits
+  description: An integer bitfield representing the days within a rolling window on which the client sent a metrics ping. This field is currently
+    fully null, indicating it is not yet populated.
+  type: INT64
+- name: days_since_first_seen
+  description: The number of days elapsed between the client's first seen date and the current record date. Larger values indicate longer-tenured
+    clients.
+  type: INT64
+- name: days_since_seen
+  description: The number of days elapsed since the client was last observed active prior to the current record date. A value of 0 indicates the
+    client was seen on the current date.
+  type: INT64
+- name: device_manufacturer
+  description: The manufacturer of the client's Android device, such as 'samsung' or 'Xiaomi', as reported by the device. Null indicates the manufacturer
+    was not available or reported.
+  type: STRING
+- name: device_model
+  description: The model identifier of the client's Android device as reported by the device hardware, such as 'SM-S918B'. Null indicates the
+    model could not be determined.
+  type: STRING
+- name: device_type
+  description: The type of device on which the application is running. In this dataset, the value is always 'Android', reflecting that Fenix is
+    an Android-only application.
+  type: STRING
+- name: distribution_id
+  description: An identifier representing the distribution partner or channel through which the Fenix application was distributed, such as 'Mozilla',
+    'MozillaOnline', or OEM-specific identifiers. Null indicates an unknown or unset distribution.
+  type: STRING
+- name: durations
+  description: The total session or usage duration in seconds recorded for the client in a given period. A value of 0 indicates the client was
+    active but no measurable duration was recorded.
+  type: INT64
+- name: first_reported_country
+  description: The two-letter ISO 3166-1 alpha-2 country code from the first ping ever submitted by the client. This represents the client's country
+    of origin at initial install or first contact.
+  type: STRING
+- name: first_reported_isp
+  description: The name of the internet service provider detected when the client first submitted a ping. This reflects the ISP associated with
+    the client's initial contact with Mozilla's servers.
+  type: STRING
+- name: first_run_date
+  description: The calendar date on which the Fenix application was first run on the client's device. This is derived from the application's own
+    first-run signal and may differ slightly from first_seen_date.
+- name: first_seen_date
+  description: The calendar date on which the client was first observed in Mozilla's data pipeline. This serves as a proxy for the install date
+    and is used to compute client tenure.
+  type: DATE
+- name: first_seen_year
+  description: The calendar year in which the client was first observed in Mozilla's data pipeline. This is derived from first_seen_date and is
+    useful for cohort-level analysis.
+  type: INT64
+- name: geo_subdivision
+  description: The subdivision code (e.g., state, province, or region) derived from the client's IP address, using ISO 3166-2 subdivision notation
+    where applicable. Null indicates the subdivision could not be determined.
+  type: STRING
+- name: install_source
+  description: The Android package name of the app store or installer that was used to install Fenix on the client's device, such as 'com.android.vending'
+    for the Google Play Store. Null indicates the install source could not be determined.
+  type: STRING
+- name: is_default_browser
+  description: Indicates whether Fenix is set as the default browser on the client's device. True means it is the default; false means it is not;
+    null indicates this information was not reported.
+  type: BOOLEAN
+- name: is_large_device
+  description: Indicates whether the client's device is classified as a large-form-factor device (e.g., a tablet). This field is currently fully
+    null and not yet populated.
+  type: BOOLEAN
+- name: is_mobile
+  description: Indicates whether the client's device is classified as a mobile device. True means the device is mobile; false means it is not,
+    such as a tablet or other non-phone form factor.
+  type: BOOLEAN
+- name: is_new_profile
+  description: Indicates whether the client record corresponds to a newly created profile. True means the profile was created recently; false
+    means it is an existing, returning profile.
+  type: BOOLEAN
+- name: isp
+  description: The name of the internet service provider associated with the client's IP address at the time of ping submission. This is used
+    for network-level demographic analysis.
+  type: STRING
+- name: isp_name
+  description: The name of the internet service provider associated with the client, typically derived from IP geolocation data. This field may
+    differ from 'isp' in source or normalization methodology.
+  type: STRING
+- name: locale
+  description: The language locale code set on the client's device or within the application, such as 'en', 'fr', or 'de'. This reflects the user's
+    preferred language for the application interface.
+  type: STRING
+- name: marketing_notifications_allowed
+  description: Indicates whether the client has allowed marketing notifications. This field is currently fully null and not yet populated in this
+    dataset.
+  type: BOOLEAN

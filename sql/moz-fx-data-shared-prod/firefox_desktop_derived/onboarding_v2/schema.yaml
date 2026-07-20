@@ -165,6 +165,9 @@ fields:
 - name: normalized_os_version
   mode: NULLABLE
   type: STRING
+  description: The operating system version normalized to a consistent format at ingestion
+    (e.g., "10.0" for Windows 10 and 11, "25.5.0" for macOS); use windows_build_number
+    >= 22000 to distinguish Windows 11 from Windows 10.
 - name: release_channel
   mode: NULLABLE
   type: STRING
@@ -177,8 +180,7 @@ fields:
   mode: NULLABLE
   type: STRING
   description: User visible version string (e.g. "1.0.3") for the browser.
-- description: A mirror of the browser sessionId, as defined in
-   https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
+- description: A mirror of the browser sessionId, as defined in https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
   name: browser_session_id
   type: STRING
   mode: NULLABLE
@@ -255,7 +257,8 @@ fields:
     name: msstoresignedin
     type: STRING
     mode: NULLABLE
-  - description: Unique token created at Firefox download time using the Microsoft Store.
+  - description: Unique token created at Firefox download time using the Microsoft
+      Store.
     name: msclkid
     type: STRING
     mode: NULLABLE

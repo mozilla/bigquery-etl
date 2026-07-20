@@ -15,6 +15,8 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: 'The release channel on which the Firefox Desktop build is distributed,
+    normalized to one of: release, beta, nightly, aurora, esr, or Other.'
 - name: n_metrics_ping
   type: INTEGER
   mode: NULLABLE
@@ -24,7 +26,8 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: search_with_ads_count_all
   type: INTEGER
   mode: NULLABLE

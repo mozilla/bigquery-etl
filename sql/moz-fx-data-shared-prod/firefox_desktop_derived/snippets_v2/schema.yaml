@@ -157,6 +157,9 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: The operating system version normalized to a consistent format at ingestion
+    (e.g., "10.0" for Windows 10 and 11, "25.5.0" for macOS); use windows_build_number
+    >= 22000 to distinguish Windows 11 from Windows 10.
 - name: release_channel
   type: STRING
   mode: NULLABLE
@@ -172,6 +175,9 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: An array of Nimbus experiments and rollouts the Firefox Desktop client
+    was enrolled in at the time of the ping, where each element contains the experiment
+    slug (key) and the assigned branch name.
   fields:
   - name: key
     type: STRING

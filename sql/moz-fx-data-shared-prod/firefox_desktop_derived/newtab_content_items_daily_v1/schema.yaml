@@ -6,9 +6,14 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The release channel as reported by the client or distribution, un-normalized
+    and possibly arbitrary (distribution partners may set any string). See normalized_channel
+    for the value normalized to release, beta, nightly, aurora, esr, or Other.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: The full country name in which Firefox Desktop activity took place,
+    derived from IP geolocation at ping ingestion time.
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
@@ -30,15 +35,17 @@ fields:
 - name: matches_selected_topic
   type: STRING
   mode: NULLABLE
-  description: >
-    Returns value based on if a the topic of the pocket recommendation
+  description: 'Returns value based on if a the topic of the pocket recommendation
     matches one of the user-selected topic categories
+
+    '
 - name: received_rank
   type: INTEGER
   mode: NULLABLE
-  description: >
-    The rank or order of the recommendation at the time it was sent to
+  description: 'The rank or order of the recommendation at the time it was sent to
     the client.
+
+    '
 - name: section
   type: STRING
   mode: NULLABLE
@@ -73,3 +80,6 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: "The Firefox Desktop application version reported by the client at\
+    \ ping submission \u2014 stored as the major-version integer (e.g., 152) in some\
+    \ tables and as the full user-visible version string (e.g., \"152.0.3\") in others."

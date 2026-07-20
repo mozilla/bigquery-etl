@@ -37,8 +37,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
-    It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_run_date
   type: DATE
   mode: NULLABLE
@@ -55,7 +55,8 @@ fields:
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
-  description: The optional Android specific SDK version of the software running on this hardware device.
+  description: The optional Android specific SDK version of the software running on
+    this hardware device.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -68,8 +69,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined by
-    the IP geolocation.
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: app_build
   type: STRING
   mode: NULLABLE
@@ -84,8 +85,8 @@ fields:
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
-  description: The manufacturer of the device the application is running on.
-    Not set if the device manufacturer can't be determined (e.g. on Desktop).
+  description: The manufacturer of the device the application is running on. Not set
+    if the device manufacturer can't be determined (e.g. on Desktop).
 - name: device_model
   type: STRING
   mode: NULLABLE
@@ -93,7 +94,8 @@ fields:
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
-  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
+  description: The version of the Glean SDK at the time the ping was collected (e.g.
+    25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -104,18 +106,21 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's IP address.
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: days_active_bits
   type: INTEGER
   mode: NULLABLE
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
-  description: First major country subdivision, typically a state, province, or county based on IP address.
+  description: First major country subdivision, typically a state, province, or county
+    based on IP address.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: install_source
   type: STRING
   mode: NULLABLE
@@ -125,6 +130,9 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
+  description: The Windows build number reported by the operating system (e.g., 19045
+    for Windows 10, 22000+ for Windows 11); only populated on Windows clients and
+    null on all other platforms.
 - name: browser_engagement_uri_count
   type: INTEGER
   mode: NULLABLE
@@ -134,28 +142,48 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+  description: The client UUID from the Firefox legacy (non-Glean) telemetry system,
+    used to join Glean-based Firefox Desktop records with older legacy telemetry datasets;
+    may be null or a known canary value when the legacy client_id was unavailable
+    at ping submission time.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser on the client side.
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
+  description: An identifier indicating the download source through which Firefox
+    Desktop was obtained (e.g., "mozorg", "mozillaci", "fxdotcom", "desktoplauncher");
+    null when no download source attribution is available.
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: The name or identifier of the download-funnel experiment through which
+    the Firefox Desktop installation was attributed (e.g., "download-privacy", "download-as-default");
+    null or "(not set)" when no experiment attribution is present.
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: The name or identifier of the variation cohort within the attributed
+    download-funnel experiment (e.g., "treatment", "control"); null or "(not set)"
+    when no variation attribution is present.
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
+  description: An identifier derived from the user-agent string of the browser used
+    to download the Firefox Desktop installer, indicating which browser the user was
+    switching from (e.g., "chrome", "edge", "firefox", "ie").
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: An array of Nimbus experiments and rollouts the Firefox Desktop client
+    was enrolled in at the time of the ping, where each element contains the experiment
+    slug (key) and the assigned branch name.
   fields:
   - name: key
     type: STRING
@@ -227,12 +255,19 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The operating system name as reported by the client, prior to normalization
+    and sometimes containing raw or malformed values (e.g., "Windows", "Darwin", "Linux",
+    "OpenBSD", "Unknown"). See normalized_os for the value collapsed to Windows, Mac,
+    Linux, or Other.
 - name: os_grouped
   type: STRING
   mode: NULLABLE
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: The operating system version reported by the Firefox Desktop client
+    prior to normalization (e.g., "10.0.26200" for Windows, "25.5.0" for macOS); use
+    windows_build_number >= 22000 to distinguish Windows 11 from Windows 10.
 - name: os_version_build
   type: STRING
   mode: NULLABLE
@@ -245,8 +280,8 @@ fields:
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-  description: Classification of users based on their browsing activity.
-    E.g., infrequent, casual, regular.
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
@@ -254,27 +289,33 @@ fields:
 - name: is_daily_user
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if client is considered a daily user on the submission date.
+  description: Flag indicating if client is considered a daily user on the submission
+    date.
 - name: is_weekly_user
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if client is considered a weekly user on the submission date.
+  description: Flag indicating if client is considered a weekly user on the submission
+    date.
 - name: is_monthly_user
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if client is considered a monthly user on the submission date.
+  description: Flag indicating if client is considered a monthly user on the submission
+    date.
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating the client is counted as a daily active user on this submission date.
+  description: Flag indicating the client is counted as a daily active user on this
+    submission date.
 - name: is_wau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating the client is counted as a weekly active user on this submission date.
+  description: Flag indicating the client is counted as a weekly active user on this
+    submission date.
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating the client is counted as a weekly active user on this submission date.
+  description: Flag indicating the client is counted as a weekly active user on this
+    submission date.
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -284,9 +325,15 @@ fields:
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The marketing medium through which the Firefox Desktop installation
+    was attributed (equivalent to UTM medium), such as "referral", "paidsearch", or
+    "(direct)"; null when attribution data is unavailable.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The referral source through which the Firefox Desktop installation
+    was attributed (equivalent to UTM source), such as "www.google.com" or "www.bing.com";
+    null when attribution source data is unavailable.
 - name: attribution_term
   type: STRING
   mode: NULLABLE
@@ -322,6 +369,7 @@ fields:
 - mode: NULLABLE
   name: policies_is_enterprise
   type: BOOLEAN
-  description: |-
-    Attempt to determine if the user is an enterprise user based on various signals.
-    This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise.
+  description: 'Attempt to determine if the user is an enterprise user based on various
+    signals.
+
+    This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise.'

@@ -39,6 +39,9 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: An array of Nimbus experiments and rollouts the Firefox Desktop client
+    was enrolled in at the time of the ping, where each element contains the experiment
+    slug (key) and the assigned branch name.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING

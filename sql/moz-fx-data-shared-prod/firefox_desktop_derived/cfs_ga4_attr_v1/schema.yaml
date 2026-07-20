@@ -51,6 +51,10 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+  description: The client UUID from the Firefox legacy (non-Glean) telemetry system,
+    used to join Glean-based Firefox Desktop records with older legacy telemetry datasets;
+    may be null or a known canary value when the legacy client_id was unavailable
+    at ping submission time.
 - name: legacy_telemetry_profile_group_id
   type: STRING
   mode: NULLABLE
@@ -66,6 +70,9 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
+  description: The Windows build number reported by the operating system (e.g., 19045
+    for Windows 10, 22000+ for Windows 11); only populated on Windows clients and
+    null on all other platforms.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -95,12 +102,18 @@ fields:
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
+  description: An identifier indicating the download source through which Firefox
+    Desktop was obtained (e.g., "mozorg", "mozillaci", "fxdotcom", "desktoplauncher");
+    null when no download source attribution is available.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
+  description: An identifier derived from the user-agent string of the browser used
+    to download the Firefox Desktop installer, indicating which browser the user was
+    switching from (e.g., "chrome", "edge", "firefox", "ie").
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE

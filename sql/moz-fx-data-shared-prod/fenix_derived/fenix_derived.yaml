@@ -193,3 +193,139 @@ fields:
   description: Indicates whether the client has allowed marketing notifications. This field is currently fully null and not yet populated in this
     dataset.
   type: BOOLEAN
+- name: mau
+  description: Monthly Active Users count representing the number of distinct active users observed over a rolling 28-day window ending on the
+    relevant date. A value of 0 indicates the client was not active during that period.
+  type: INT64
+- name: meta_attribution_app
+  description: The Meta (Facebook) app identifier associated with the install attribution, sourced from Meta's attribution system. This field
+    is null for the vast majority of clients who were not attributed via Meta.
+  type: STRING
+- name: meta_attribution_timestamp
+  description: The timestamp at which the Meta attribution event was recorded. This field is null for clients who have no Meta attribution data.
+  type: TIMESTAMP
+- name: monthly_users
+  description: The count of distinct users active during a given calendar month. Higher values indicate a client was active across multiple tracked
+    units within the month.
+  type: INT64
+- name: n_metrics_ping
+  description: The number of metrics pings submitted by the client within the relevant time period. A value of 1 indicates a single metrics ping
+    was received.
+  type: INT64
+- name: new_profile
+  description: The count of new profiles created, typically representing fresh installations or first-time activations. A null value indicates
+    no new profile was observed for the row's grouping.
+  type: INT64
+- name: normalized_channel
+  description: The release channel of the browser normalized to a standard set of values such as 'release', 'beta', or 'nightly'. This is used
+    to distinguish production users from those on pre-release builds.
+  type: STRING
+- name: normalized_os
+  description: The operating system name, normalized to a standard label. For this dataset, the value is consistently 'Android', reflecting that
+    Fenix is an Android browser.
+  type: STRING
+- name: normalized_os_version
+  description: The version of the operating system, normalized to a standard format (e.g., Android API level or major version number). This field
+    enables segmentation of users by OS version.
+  type: STRING
+- name: notifications_allowed
+  description: A boolean indicating whether the user has granted the application permission to send notifications. A true value means notifications
+    are enabled; false means they are disabled. This field is currently null for all observed rows.
+  type: BOOLEAN
+- name: os
+  description: The name of the operating system on the client device. For this dataset, the value is consistently 'Android', as Fenix is an Android-only
+    application.
+  type: STRING
+- name: os_version
+  description: The version of the operating system running on the client device, typically expressed as a major version number (e.g., Android
+    API level). This field enables analysis of usage across different OS versions.
+  type: STRING
+- name: paid_vs_organic_gclid
+  description: Classifies the install or attribution as either 'Paid' (driven by a paid advertising campaign identified via a Google Click ID)
+    or 'Organic' (not attributed to a paid campaign). Null values indicate attribution could not be determined.
+  type: STRING
+- name: play_store_attribution_campaign
+  description: The UTM campaign name from the Google Play Store install referrer, identifying the marketing campaign that drove the app install.
+    Common values include campaign slugs such as 'download' or 'mozilla-org'; null indicates no campaign attribution was available.
+  type: STRING
+- name: play_store_attribution_content
+  description: The UTM content parameter from the Google Play Store install referrer, often used to distinguish specific ad creatives or referral
+    links within a campaign. Values are frequently URL-encoded strings; null indicates this parameter was not present.
+  type: STRING
+- name: play_store_attribution_install_referrer_response
+  description: The raw install referrer string returned by the Google Play Store at the time of installation, containing UTM parameters and other
+    attribution signals. This field provides the full, unparsed attribution payload and can include gclid, utm_source, utm_medium, and other tracking
+    parameters.
+  type: STRING
+- name: play_store_attribution_medium
+  description: The UTM medium parameter from the Google Play Store install referrer, indicating the marketing channel through which the install
+    was driven (e.g., 'organic', 'preload', 'referral'). Null values indicate the medium parameter was absent from the referrer data.
+  type: STRING
+- name: play_store_attribution_source
+  description: The UTM source parameter from the Google Play Store install referrer, identifying the platform or origin of the install (e.g.,
+    'google-play', 'eea-browser-choice', 'google'). Null values indicate no source attribution was available.
+  type: STRING
+- name: play_store_attribution_term
+  description: The UTM term parameter from the Google Play Store install referrer, typically capturing the search keyword that led to the install.
+    Null values indicate this parameter was not present in the referrer string.
+  type: STRING
+- name: play_store_attribution_timestamp
+  description: The timestamp at which the Google Play Store install referrer attribution data was recorded. Null values indicate the attribution
+    timestamp was not available for the client.
+  type: TIMESTAMP
+- name: predicted_ad_clicks
+  description: A model-generated prediction of the expected number of ad clicks a client will produce over a future time horizon. Higher values
+    indicate a greater predicted likelihood of ad click activity.
+  type: FLOAT64
+- name: sample_id
+  description: A stable integer identifier (0–99) derived from hashing the client ID, used to partition clients into reproducible samples for
+    analysis or experimentation. All rows in a given table may share the same sample_id if the table is pre-filtered to a specific sample.
+  type: INT64
+- name: searches
+  description: The count of search events performed by the client within the relevant time period. Null values indicate no search activity was
+    recorded for the given row.
+  type: INT64
+- name: searches_with_ads
+  description: The count of searches that returned a search results page containing advertisements. Null values indicate no such search events
+    were observed for the given row.
+  type: INT64
+- name: state
+  description: An encoded string representing a client's behavioral and engagement state at a point in time, combining attributes such as days
+    of use, day of week, acquisition type, and activity indicators. This field is used in lifecycle and churn modeling.
+  type: STRING
+- name: state_function
+  description: The name of the function or model version used to compute the client's state value. Values such as 'android_states_with_paid_v1'
+    or 'android_states_v1' identify which state-encoding logic was applied.
+  type: STRING
+- name: submission_date
+  description: The calendar date on which the ping or record was submitted to the Mozilla data pipeline. This field is commonly used as the primary
+    partitioning and filtering dimension.
+  type: DATE
+- name: submission_timestamp
+  description: The precise UTC timestamp at which the ping or record was received by the Mozilla data ingestion pipeline. This provides finer-grained
+    timing information than submission_date.
+  type: TIMESTAMP
+- name: telemetry_sdk_build
+  description: The version string of the Glean telemetry SDK used to collect and submit the ping. This field helps identify which SDK version
+    was in use on the client at the time of data collection.
+  type: STRING
+- name: time_horizon
+  description: The number of days into the future over which predictions or projections are computed for a given client. A value of 729 indicates
+    predictions are made over approximately a two-year horizon.
+  type: INT64
+- name: total_historic_ad_clicks
+  description: The cumulative count of ad clicks recorded for a client over their entire observed history. Null values indicate no historical
+    ad click data was available for the client.
+  type: INT64
+- name: uri_count
+  description: The total number of URIs (page loads) recorded for the client within the relevant time period. Null values indicate no browsing
+    activity was observed; higher values reflect greater browsing engagement.
+  type: INT64
+- name: wau
+  description: Weekly Active Users count representing the number of distinct active users observed over a rolling 7-day window ending on the relevant
+    date. A value of 0 indicates the client was not active during that period.
+  type: INT64
+- name: weekly_users
+  description: The count of distinct users active during a given calendar week. Higher values indicate a client was active across multiple tracked
+    units within the week.
+  type: INT64

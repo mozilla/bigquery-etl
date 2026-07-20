@@ -22,6 +22,7 @@ SELECT
       JSON_VALUE(event_extra.name) AS `name`,
       JSON_VALUE(event_extra.protocol) AS `protocol`,
       JSON_VALUE(event_extra.reason) AS `reason`,
+      JSON_VALUE(event_extra.result) AS `result`,
       JSON_VALUE(event_extra.selection) AS `selection`,
       JSON_VALUE(event_extra.session_id) AS `session_id`,
       JSON_VALUE(event_extra.session_start_time) AS `session_start_time`,

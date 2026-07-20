@@ -1,0 +1,34 @@
+---
+fields:
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+    description: Date this row was first inserted.
+  - name: stable_trace_id
+    type: STRING
+    mode: NULLABLE
+    description: Stable UUID assigned on first occurrence of this trace pattern.
+  - name: trace_signature
+    type: BYTES
+    mode: NULLABLE
+    description: |-
+      Combined SHA256 of all root-to-leaf event signatures in this trace.
+      For single-path traces, this is the last event's chain signature.
+      For multi-path traces, combines all leaf signatures in sorted order.
+      Unique identifier for this trace pattern. MERGE key.
+  - name: hit_count
+    type: INT64
+    mode: NULLABLE
+    description: Total occurrences of this trace pattern.
+  - name: first_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: Date this trace pattern was first observed.
+  - name: latest_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: Date this trace pattern was most recently observed.
+  - name: avg_duration_nano
+    type: FLOAT64
+    mode: NULLABLE
+    description: Average duration of this trace pattern in nanoseconds.

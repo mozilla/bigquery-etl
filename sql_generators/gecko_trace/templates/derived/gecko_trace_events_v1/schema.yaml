@@ -1,0 +1,40 @@
+---
+fields:
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+    description: Date this row was first inserted.
+  - name: stable_event_id
+    type: STRING
+    mode: NULLABLE
+    description: Stable UUID assigned on first occurrence of this event.
+  - name: event_signature
+    type: BYTES
+    mode: NULLABLE
+    description: |-
+      SHA256(source_file || '\x00' || source_line || '\x00' || result).
+      Unique identifier for this event type. MERGE key.
+  - name: source_file
+    type: STRING
+    mode: NULLABLE
+    description: Source file path where the event occurred.
+  - name: source_line
+    type: INT64
+    mode: NULLABLE
+    description: Line number in the source file.
+  - name: result
+    type: STRING
+    mode: NULLABLE
+    description: Event result code or status.
+  - name: hit_count
+    type: INT64
+    mode: NULLABLE
+    description: Total occurrences of this event.
+  - name: first_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: Date this event type was first observed.
+  - name: latest_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: Date this event type was most recently observed.

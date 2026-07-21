@@ -2,6 +2,7 @@ fields:
 - name: activated
   description: Indicates whether the client has been considered activated. True means the client has met the activation criteria; false means
     it has not.
+  type: BOOLEAN
 - name: ad_clicks
   description: The cumulative number of ad clicks attributed to the client. Null indicates no ad click data is available for this record.
   type: INT64
@@ -54,6 +55,7 @@ fields:
 - name: app_version
   description: The version string of the Fenix application reported by the client, used to identify which release the client is running. Multiple
     builds may share the same version string.
+  type: STRING
 - name: architecture
   description: The CPU architecture of the client's device, such as 'arm64-v8a', 'armeabi-v7a', or 'x86_64'. This identifies the instruction set
     supported by the device hardware.
@@ -103,8 +105,8 @@ fields:
     A value of 0 indicates no session starts were observed in the window.
   type: INT64
 - name: days_sent_metrics_ping_bits
-  description: An integer bitfield representing the days within a rolling window on which the client sent a metrics ping. This field is currently
-    fully null, indicating it is not yet populated.
+  description: An integer bitfield representing the days within a rolling window on which the client sent a metrics ping. Each bit corresponds
+    to a specific day relative to the current date.
   type: INT64
 - name: days_since_first_seen
   description: The number of days elapsed between the client's first seen date and the current record date. Larger values indicate longer-tenured
@@ -145,6 +147,7 @@ fields:
 - name: first_run_date
   description: The calendar date on which the Fenix application was first run on the client's device. This is derived from the application's own
     first-run signal and may differ slightly from first_seen_date.
+  type: DATE
 - name: first_seen_date
   description: The calendar date on which the client was first observed in Mozilla's data pipeline. This serves as a proxy for the install date
     and is used to compute client tenure.
@@ -166,8 +169,7 @@ fields:
     null indicates this information was not reported.
   type: BOOLEAN
 - name: is_large_device
-  description: Indicates whether the client's device is classified as a large-form-factor device (e.g., a tablet). This field is currently fully
-    null and not yet populated.
+  description: Indicates whether the client's device is classified as a large-form-factor device (e.g., a tablet).
   type: BOOLEAN
 - name: is_mobile
   description: Indicates whether the client's device is classified as a mobile device. True means the device is mobile; false means it is not,
@@ -190,16 +192,15 @@ fields:
     preferred language for the application interface.
   type: STRING
 - name: marketing_notifications_allowed
-  description: Indicates whether the client has allowed marketing notifications. This field is currently fully null and not yet populated in this
-    dataset.
+  description: Indicates whether the client has allowed marketing notifications.
   type: BOOLEAN
 - name: mau
   description: Monthly Active Users count representing the number of distinct active users observed over a rolling 28-day window ending on the
     relevant date. A value of 0 indicates the client was not active during that period.
   type: INT64
 - name: meta_attribution_app
-  description: The Meta (Facebook) app identifier associated with the install attribution, sourced from Meta's attribution system. This field
-    is null for the vast majority of clients who were not attributed via Meta.
+  description: The Meta (Facebook) app identifier associated with the install attribution, sourced from Meta's attribution system. Null indicates
+    the client was not attributed via Meta.
   type: STRING
 - name: meta_attribution_timestamp
   description: The timestamp at which the Meta attribution event was recorded. This field is null for clients who have no Meta attribution data.
@@ -230,7 +231,7 @@ fields:
   type: STRING
 - name: notifications_allowed
   description: A boolean indicating whether the user has granted the application permission to send notifications. A true value means notifications
-    are enabled; false means they are disabled. This field is currently null for all observed rows.
+    are enabled; false means they are disabled.
   type: BOOLEAN
 - name: os
   description: The name of the operating system on the client device. For this dataset, the value is consistently 'Android', as Fenix is an Android-only

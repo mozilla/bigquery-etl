@@ -1,6 +1,6 @@
 friendly_name: Newtab Merino Extract
 description: |-
-  Aggregated Newtab events for Merino recommendations.
+  Aggregated Newtab events for Merino recommendations using v2 propensity weights.
   See https://mozilla-hub.atlassian.net/browse/MC-1256
 owners:
 - mmiermans@mozilla.com
@@ -25,4 +25,4 @@ references:
   - ..
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1
-  - moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v2

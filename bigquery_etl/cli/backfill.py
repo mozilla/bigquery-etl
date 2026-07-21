@@ -1092,7 +1092,7 @@ def _initiate_backfill(
     try:
         ctx.invoke(
             query_backfill,
-            name=f"{dataset}.{table}",
+            name=f"{project}.{dataset}.{table}",
             project_id=project,
             # convert date objects to datetime
             start_date=datetime.combine(entry.start_date, time.min),

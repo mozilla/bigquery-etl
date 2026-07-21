@@ -16058,6 +16058,12 @@ fields:
       description: 'If there was an error loading the sqlite database, record it.
 
         '
+    - name: custom_icon_current
+      type: STRING
+      mode: NULLABLE
+      description: 'The ID of the current browser icon, recorded once at startup.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

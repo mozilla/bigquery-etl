@@ -558,6 +558,7 @@ SELECT
       JSON_VALUE(event_extra.hours_since) AS `hours_since`,
       JSON_VALUE(event_extra.html_lang_attribute) AS `html_lang_attribute`,
       JSON_VALUE(event_extra.ice_transport_policy) AS `ice_transport_policy`,
+      JSON_VALUE(event_extra.icon_id) AS `icon_id`,
       JSON_VALUE(event_extra.id) AS `id`,
       JSON_VALUE(event_extra.identified_language) AS `identified_language`,
       JSON_VALUE(event_extra.iframe) AS `iframe`,

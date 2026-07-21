@@ -15,7 +15,9 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Two-letter ISO 3166-1 country code derived from IP geolocation of the client.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: country
 - name: adjust_network
   type: STRING
   mode: NULLABLE

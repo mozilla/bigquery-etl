@@ -97,8 +97,7 @@ fields:
     where subdivision cannot be determined.
 - name: is_new_profile
   type: BOOLEAN
-  description: Indicates whether this is the client's first year of activity. True if the client's first_seen_date falls within the current year
-    window.
+  description: Indicates whether the Firefox profile associated with the client was newly created. True means the profile was created recently.
 - name: normalized_os_version
   type: STRING
   description: The normalized user-visible version string of iOS (e.g., '18.5', '26.3.1').
@@ -165,8 +164,7 @@ fields:
     not return at week 4.
 - name: paid_vs_organic_gclid
   type: STRING
-  description: Google Click ID (gclid) used to distinguish paid from organic installs via Google campaign attribution. Null for all clients in
-    this sample.
+  description: Google Click ID (gclid) used to distinguish paid from organic installs via Google campaign attribution.
 - name: days_sent_metrics_ping_bits
   type: INT64
   description: A bit pattern encoding which days in the current period the client sent a metrics ping, used for retention and engagement calculations.
@@ -185,8 +183,7 @@ fields:
   description: Whether the client device is a mobile device; always true for iOS clients in this dataset.
 - name: retained_week_2
   type: BOOLEAN
-  description: Whether the client was retained at week 2 (i.e., sent a ping in the second week after first seen). Null in the current sample,
-    likely populated for older cohorts.
+  description: Whether the client was retained at week 2 (i.e., sent a ping in the second week after first seen).
 - name: adjust_attribution_timestamp
   type: TIMESTAMP
   description: The timestamp at which Adjust attributed the client's installation to a campaign. Null for unattributed clients.

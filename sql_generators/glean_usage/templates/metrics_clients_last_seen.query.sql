@@ -18,9 +18,9 @@ WITH
 )
 SELECT
   DATE(@submission_date) AS submission_date,
-  _current.client_id,
-  _current.sample_id,
-  _current.normalized_channel,
+  COALESCE(_current.client_id, _previous.client_id) AS client_id,
+  COALESCE(_current.sample_id, _previous.sample_id) AS sample_id,
+  COALESCE(_current.normalized_channel, _previous.normalized_channel) AS normalized_channel,
   _current.n_metrics_ping,
   udf.combine_adjacent_days_28_bits(_previous.days_sent_metrics_ping_bits,
     _current.days_sent_metrics_ping_bits) AS days_sent_metrics_ping_bits,
@@ -28,7 +28,7 @@ SELECT
   {% for metric in metrics[app_name] -%}
     {# For counters, we're assuming that they don't represent a "dimension" that we'd
        want to persist on days the client isn't active #}
-    {% if metric.counter %}
+    {% if metrics[app_name][metric].counter %}
     _current.{{metric}} AS {{metric}},
     {% else %}
     COALESCE(_current.{{metric}}, _previous.{{metric}}) AS {{metric}},
@@ -55,4 +55,3 @@ FULL JOIN
     _previous.normalized_channel = _current.normalized_channel
     OR (_previous.normalized_channel IS NULL AND _current.normalized_channel IS NULL)
   )
-WHERE _current.client_id IS NOT NULL

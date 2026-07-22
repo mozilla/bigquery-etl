@@ -39,6 +39,9 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: experiments
 - mode: NULLABLE
   name: normalized_channel
   type: STRING

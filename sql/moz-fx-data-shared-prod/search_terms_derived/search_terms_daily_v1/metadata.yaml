@@ -1,6 +1,16 @@
 friendly_name: Search Terms Daily
 description: |-
   Daily count of terminal search terms collected by Merino.
+
+  Known data gap: partitions from 2026-06-18 through 2026-07-13 are missing or
+  incomplete. The query began failing on 2026-06-18 with a "Resources exceeded"
+  error (Bug 2048966) and was not producing output until the fix landed. Because
+  the source table `merino_log_sanitized_v3` only retains ~14 days of data
+  (oldest available at time of fix: 2026-07-08), the 2026-06-18 through
+  2026-07-07 partitions are permanently unrecoverable (the source rows have aged
+  out). Backfilled partitions from 2026-07-08 through 2026-07-13 are
+  under-reported, since the trailing 7-day threshold window extends past the
+  oldest available source data. Partitions from 2026-07-14 onward are complete.
 owners:
 - ctroy@mozilla.com
 - rburwei@mozilla.com

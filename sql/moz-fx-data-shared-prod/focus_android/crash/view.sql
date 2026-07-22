@@ -64,7 +64,8 @@ SELECT
       metrics.timespan.crash_uptime,
       metrics.timespan.environment_uptime,
       metrics.timespan.crash_last_interaction_duration,
-      metrics.timespan.crash_time_since_last_crash
+      metrics.timespan.crash_time_since_last_crash,
+      metrics.timespan.crash_install_time
     ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
@@ -173,7 +174,8 @@ SELECT
       metrics.timespan.crash_uptime,
       metrics.timespan.environment_uptime,
       metrics.timespan.crash_last_interaction_duration,
-      metrics.timespan.crash_time_since_last_crash
+      metrics.timespan.crash_time_since_last_crash,
+      metrics.timespan.crash_install_time
     ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
@@ -282,7 +284,8 @@ SELECT
       metrics.timespan.crash_uptime,
       metrics.timespan.environment_uptime,
       metrics.timespan.crash_last_interaction_duration,
-      metrics.timespan.crash_time_since_last_crash
+      metrics.timespan.crash_time_since_last_crash,
+      metrics.timespan.crash_install_time
     ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,

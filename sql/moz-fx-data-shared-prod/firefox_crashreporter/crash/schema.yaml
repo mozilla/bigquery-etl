@@ -774,6 +774,18 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: Time in seconds since the last crash occurred.
+    - name: crash_install_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The time when Firefox was installed expressed as seconds since
+        the Epoch
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

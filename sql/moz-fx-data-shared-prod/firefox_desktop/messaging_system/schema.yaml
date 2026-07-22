@@ -321,6 +321,19 @@ fields:
         Can be removed after bug 1600008 is resolved.
 
         '
+    - name: messaging_system_last_window_close_trigger_bypassed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How often a user closes the last browser window a second time
+        while a
+
+        lastWindowClose-triggered message from a previous close attempt on that
+
+        same window is still pending, causing that close to bypass waiting for
+
+        the message (and any action it may still be running) to finish.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

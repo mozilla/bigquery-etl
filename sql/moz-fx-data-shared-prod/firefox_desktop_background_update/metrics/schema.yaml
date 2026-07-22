@@ -8513,6 +8513,22 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: TLS version negotiated in handshake
+    - name: networking_http_3_ecn_ect_received
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'HTTP3: Which ECN codepoints were observed on received (server->browser)
+        packets, recorded once per connection that completed its handshake. Used to
+        measure how many servers mark ECN on the traffic they send us and, among those,
+        the adoption of ECT(1) (L4S) versus ECT(0) (classic ECN).
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -11965,7 +11981,10 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000) received.
+      description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000) received. As of
+        https://bugzilla.mozilla.org/show_bug.cgi?id=2056075, only recorded for connections
+        that observed ECT(0) without ever observing ECT(1), since a CE mark on a connection
+        that saw both cannot be attributed to either type.
 
         '
     - name: networking_http_3_ecn_ce_ect0_ratio_sent
@@ -20254,6 +20273,34 @@ fields:
           mode: NULLABLE
       description: 'HTTP3: The round-trip time variation in milliseconds on the connection''s
         primary path, sampled at connection close.
+
+        '
+    - name: javascript_gc_buffer_alloc_heap_density
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percentage of buffer allocator memory (summed across all zones)
+        that holds live data, as opposed to free space or administrative overhead.
+        Recorded after each major GC. This applies to small and medium allocations
+        only; there is no wasted space for large allocations.
 
         '
   - name: labeled_boolean
@@ -46831,6 +46878,72 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Size of the GC nursery in bytes, labeled by process type.
+
+        '
+    - name: javascript_gc_buffer_alloc_heap_bytes
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Size of retained buffer allocator memory in bytes, labeled by
+        process type. For small and medium allocations only.
+
+        '
+    - name: javascript_gc_mark_stack_max_capacity
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The maximum mark stack capacity (in bytes) reached by any marker
+        during the marking phase of a major GC.
 
         '
   - name: string_list

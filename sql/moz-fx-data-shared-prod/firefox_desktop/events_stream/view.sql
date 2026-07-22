@@ -153,6 +153,7 @@ SELECT
       LAX_BOOL(event_extra.toggle_state) AS `toggle_state`,
       LAX_BOOL(event_extra.toggled_on) AS `toggled_on`,
       LAX_BOOL(event_extra.top_position) AS `top_position`,
+      LAX_BOOL(event_extra.trackers_blocked) AS `trackers_blocked`,
       LAX_BOOL(event_extra.trigger_sampled) AS `trigger_sampled`,
       LAX_BOOL(event_extra.triggered_externally) AS `triggered_externally`,
       LAX_BOOL(event_extra.trr_only) AS `trr_only`,

@@ -758,7 +758,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_pmtud_probes_sent,
       metrics.custom_distribution.networking_http_3_min_rtt,
       metrics.custom_distribution.networking_http_3_rtt,
-      metrics.custom_distribution.networking_http_3_rtt_var
+      metrics.custom_distribution.networking_http_3_rtt_var,
+      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1176,7 +1177,8 @@ SELECT
       metrics.labeled_counter.network_no_vary_search_rule_type,
       metrics.labeled_counter.tls_handshake_completed,
       metrics.labeled_counter.tls_handshake_privacy,
-      metrics.labeled_counter.tls_handshake_version
+      metrics.labeled_counter.tls_handshake_version,
+      metrics.labeled_counter.networking_http_3_ecn_ect_received
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2181,7 +2183,9 @@ SELECT
       metrics.labeled_memory_distribution.memory_resident_fast,
       metrics.labeled_memory_distribution.memory_resident_peak,
       metrics.labeled_memory_distribution.memory_unique,
-      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes
+      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes,
+      metrics.labeled_memory_distribution.javascript_gc_buffer_alloc_heap_bytes,
+      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -3002,7 +3006,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_pmtud_probes_sent,
       metrics.custom_distribution.networking_http_3_min_rtt,
       metrics.custom_distribution.networking_http_3_rtt,
-      metrics.custom_distribution.networking_http_3_rtt_var
+      metrics.custom_distribution.networking_http_3_rtt_var,
+      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3420,7 +3425,8 @@ SELECT
       metrics.labeled_counter.network_no_vary_search_rule_type,
       metrics.labeled_counter.tls_handshake_completed,
       metrics.labeled_counter.tls_handshake_privacy,
-      metrics.labeled_counter.tls_handshake_version
+      metrics.labeled_counter.tls_handshake_version,
+      metrics.labeled_counter.networking_http_3_ecn_ect_received
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4425,7 +4431,9 @@ SELECT
       metrics.labeled_memory_distribution.memory_resident_fast,
       metrics.labeled_memory_distribution.memory_resident_peak,
       metrics.labeled_memory_distribution.memory_unique,
-      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes
+      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes,
+      metrics.labeled_memory_distribution.javascript_gc_buffer_alloc_heap_bytes,
+      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -5266,7 +5274,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_pmtud_probes_sent,
       metrics.custom_distribution.networking_http_3_min_rtt,
       metrics.custom_distribution.networking_http_3_rtt,
-      metrics.custom_distribution.networking_http_3_rtt_var
+      metrics.custom_distribution.networking_http_3_rtt_var,
+      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5684,7 +5693,8 @@ SELECT
       metrics.labeled_counter.network_no_vary_search_rule_type,
       metrics.labeled_counter.tls_handshake_completed,
       metrics.labeled_counter.tls_handshake_privacy,
-      metrics.labeled_counter.tls_handshake_version
+      metrics.labeled_counter.tls_handshake_version,
+      metrics.labeled_counter.networking_http_3_ecn_ect_received
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6689,7 +6699,9 @@ SELECT
       metrics.labeled_memory_distribution.memory_resident_fast,
       metrics.labeled_memory_distribution.memory_resident_peak,
       metrics.labeled_memory_distribution.memory_unique,
-      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes
+      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes,
+      metrics.labeled_memory_distribution.javascript_gc_buffer_alloc_heap_bytes,
+      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,

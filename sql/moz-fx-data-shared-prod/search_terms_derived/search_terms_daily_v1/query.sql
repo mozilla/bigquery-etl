@@ -5,6 +5,7 @@ WITH terminal_queries AS (
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` sanitized
   WHERE
     DATE(`timestamp`) > DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    AND DATE(`timestamp`) <= @submission_date
   GROUP BY
     sanitized.session_id
 ),

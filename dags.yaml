@@ -688,7 +688,6 @@ bqetl_ctxsvc_derived:
     depends_on_past: false
     email:
       - ctroy@mozilla.com
-      - wstuckey@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -709,7 +708,6 @@ bqetl_search_terms_daily:
       - ads-data-team@mozilla.com
       - cbeck@mozilla.com
       - najiang@mozilla.com
-      - wstuckey@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true

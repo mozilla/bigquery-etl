@@ -8,9 +8,7 @@ fields:
 - name: date_to
   type: DATE
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: date_to
+  description: The exclusive end date of the 7-day reporting window (the day after the last included date).
 - name: browser_arch
   type: STRING
   mode: NULLABLE
@@ -38,15 +36,17 @@ fields:
 - name: gfx0_vendor_id
   type: STRING
   mode: NULLABLE
+  description: PCI vendor ID of the primary graphics adapter (e.g., '0x8086' for Intel, '0x10de' for NVIDIA),
+    used to identify GPU manufacturer in hardware aggregation.
 - name: gfx0_device_id
   type: STRING
   mode: NULLABLE
+  description: PCI device ID of the primary graphics adapter, identifying the specific GPU model within
+    the vendor's product line.
 - name: resolution
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: resolution
+  description: The display screen resolution of the client's primary monitor (e.g., '1920x1080').
 - name: cpu_cores
   type: INTEGER
   mode: NULLABLE

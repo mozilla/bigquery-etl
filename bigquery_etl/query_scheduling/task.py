@@ -233,7 +233,7 @@ class Secret:
     deploy_target: str
     key: str
     deploy_type: str = attr.ib("env")
-    secret: str = attr.ib("airflow-gke-secrets")
+    secret: str = attr.ib("airflow-gke-restricted-secrets")
 
     @deploy_type.validator
     def validate_deploy_type(self, attribute, value):

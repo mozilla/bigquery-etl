@@ -15,6 +15,9 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_channel
 - name: n_metrics_ping
   type: INTEGER
   mode: NULLABLE

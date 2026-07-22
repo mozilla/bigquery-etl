@@ -134,13 +134,12 @@ fields:
 - mode: REPEATED
   name: newtab_blocked_sponsors
   type: STRING
+  description: Array of advertiser names whose sponsored topsite tiles have been dismissed by the user.
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
-    description: !include-field-description
-      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-      field: key
+    description: The experiment slug identifying the experiment the client was enrolled in.
   - fields:
     - mode: NULLABLE
       name: branch
@@ -152,9 +151,8 @@ fields:
       - mode: NULLABLE
         name: type
         type: STRING
-        description: !include-field-description
-          file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-          field: type
+        description: The type of the experiment enrollment, identifying the framework or mechanism that enrolled
+          the client (e.g., Nimbus).
       - mode: NULLABLE
         name: enrollment_id
         type: STRING
@@ -191,9 +189,13 @@ fields:
 - mode: NULLABLE
   name: had_non_impression_engagement
   type: BOOLEAN
+  description: True if the user performed any non-impression engagement (such as clicking, searching, or
+    saving) during this new tab visit; false if the visit consisted only of impressions.
 - mode: NULLABLE
   name: had_non_search_engagement
   type: BOOLEAN
+  description: True if the user performed any non-search engagement (such as clicking a tile or Pocket story,
+    or saving) during this new tab visit.
 - fields:
   - mode: NULLABLE
     name: search_engine
@@ -470,6 +472,8 @@ fields:
 - mode: NULLABLE
   name: newtab_default_ui
   type: STRING
+  description: Indicates whether the user is viewing the default new tab UI configuration ('default') or
+    a non-default variant ('non-default').
 - name: newtab_weather_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -479,10 +483,14 @@ fields:
 - name: wallpaper_interactions
   type: RECORD
   mode: REPEATED
+  description: Repeated struct containing wallpaper interaction counts during this new tab visit, including
+    clicks, category selections, and highlight interactions.
   fields:
   - name: wallpaper_selected_wallpaper
     type: STRING
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the identifier of the wallpaper the user selected
+      (e.g., 'wcw-b', 'custom', 'eclipse-time-lapse'). Null when no wallpaper selection was recorded.
   - name: wallpaper_clicks
     type: INTEGER
     mode: NULLABLE
@@ -492,28 +500,44 @@ fields:
   - name: wallpaper_clicks_had_previous_wallpaper
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of wallpaper clicks made by a user who
+      already had a wallpaper set previously.
   - name: wallpaper_clicks_first_selected_wallpaper
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user clicked a wallpaper
+      for the first time (first-ever wallpaper selection).
   - name: wallpaper_category_clicks
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user clicked a wallpaper
+      category option in the wallpaper picker.
   - name: wallpaper_highlight_dismissals
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user dismissed the wallpaper
+      feature highlight notification.
   - name: wallpaper_highlight_cta_clicks
     type: INTEGER
     mode: NULLABLE
+    description: Within each wallpaper_interactions entry, the number of times the user clicked the CTA button
+      on the wallpaper feature highlight.
 - name: weather_interactions
   type: RECORD
   mode: REPEATED
+  description: Repeated struct containing weather widget interaction counts during this new tab visit, including
+    impressions, clicks, display changes, and location selections.
   fields:
   - name: weather_widget_impressions
     type: INTEGER
     mode: NULLABLE
+    description: Within each weather_interactions entry, the number of times the weather widget was visible
+      (viewed) during this new tab visit.
   - name: weather_widget_location_selected
     type: INTEGER
     mode: NULLABLE
+    description: Within each weather_interactions entry, the number of times the user selected a location
+      in the weather widget during this new tab visit.
   - name: weather_widget_clicks
     type: INTEGER
     mode: NULLABLE
@@ -523,6 +547,8 @@ fields:
   - name: weather_widget_load_errors
     type: INTEGER
     mode: NULLABLE
+    description: Within each weather_interactions entry, the number of times the weather widget failed to
+      load data during this new tab visit.
   - name: weather_widget_change_display_to_detailed
     type: INTEGER
     mode: NULLABLE
@@ -538,28 +564,43 @@ fields:
 - name: newtab_selected_topics
   type: STRING
   mode: REPEATED
+  description: Array of topic names the user has selected in the new tab topic-selection modal to personalise
+    their Pocket recommendations.
 - name: topic_selection_interactions
   type: RECORD
   mode: REPEATED
+  description: Repeated struct capturing topic selection modal interaction counts during this new tab visit.
   fields:
   - name: previous_topics
     type: STRING
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the list of topics the user had selected
+      before opening the topic selection modal in this visit.
   - name: topics
     type: STRING
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the list of topics the user selected or saved
+      in the topic selection modal during this visit.
   - name: topic_selection_open
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the topic selection modal
+      was opened during this new tab visit.
   - name: topic_selection_dismiss
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the topic selection modal
+      was dismissed without saving topics during this visit.
   - name: topic_selection_topics_first_saved
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the user saved their
+      first-ever set of selected topics during this visit.
   - name: topic_selection_topics_updated
     type: INTEGER
     mode: NULLABLE
+    description: Within each topic_selection_interactions entry, the number of times the user updated (re-saved)
+      their topic selection during this visit.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
@@ -569,9 +610,11 @@ fields:
 - name: newtab_window_inner_height
   type: INTEGER
   mode: NULLABLE
+  description: The inner height of the browser window in pixels at the time the new tab page was opened.
 - name: newtab_window_inner_width
   type: INTEGER
   mode: NULLABLE
+  description: The inner width of the browser window in pixels at the time the new tab page was opened.
 - mode: NULLABLE
   name: topsites_sponsored_tiles_configured
   type: INTEGER

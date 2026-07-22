@@ -344,6 +344,8 @@ fields:
 - name: topic_selection_selected_topics_first_time_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of clients who selected topics for the first time via the topic selection modal on
+    this submission date.
 - name: sponsored_pocket_dismissals
   type: INTEGER
   mode: NULLABLE

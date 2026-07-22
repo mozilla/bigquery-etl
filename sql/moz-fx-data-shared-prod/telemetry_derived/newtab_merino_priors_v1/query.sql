@@ -15,7 +15,7 @@ target_regions AS (
   SELECT
     region
   FROM
-    UNNEST(['US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES']) AS region
+    UNNEST(['US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES', 'IT']) AS region
 ),
 corpus_items AS (
   SELECT DISTINCT
@@ -231,7 +231,7 @@ SELECT
 FROM
   per_region_final
 WHERE
-  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES')
+  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES', 'IT')
 UNION ALL
 SELECT
   region,

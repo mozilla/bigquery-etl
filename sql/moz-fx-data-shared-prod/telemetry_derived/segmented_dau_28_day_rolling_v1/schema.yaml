@@ -80,3 +80,5 @@ fields:
 - name: ma_28_dau
   type: FLOAT
   mode: NULLABLE
+  description: 28-day rolling average of daily active users for this segment combination, computed by averaging
+    DAU across the prior 28 days.

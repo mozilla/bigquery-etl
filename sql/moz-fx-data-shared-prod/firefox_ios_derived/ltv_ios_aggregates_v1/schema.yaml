@@ -31,6 +31,8 @@ fields:
 - mode: NULLABLE
   name: profile_creation_month
   type: DATE
+  description: The calendar month in which the client profile was first created, truncated to the first
+    day of the month. Used to cohort clients by when they installed the browser.
 - mode: NULLABLE
   name: sponsored_tiles_enabled
   type: BOOLEAN
@@ -42,102 +44,146 @@ fields:
 - mode: NULLABLE
   name: client_count
   type: INTEGER
+  description: The number of distinct clients included in this aggregation row.
 - mode: NULLABLE
   name: clients_with_ad_engagement
   type: INTEGER
+  description: The number of clients in this segment that had at least one ad engagement event (ad click
+    or search with ads) during the reporting period.
 - mode: NULLABLE
   name: clients_with_homepage_ad_engagement
   type: INTEGER
+  description: The number of clients in this segment that engaged with an ad on the Firefox homepage (e.g.,
+    sponsored tile click) during the reporting period.
 - mode: NULLABLE
   name: clients_with_search_ad_engagement
   type: INTEGER
+  description: The number of clients in this segment that engaged with a search ad (ad click from a SERP)
+    during the reporting period.
 - mode: NULLABLE
   name: total_uri_count_avg
   type: FLOAT
+  description: The average number of URIs visited per client in this segment during the reporting period.
 - mode: NULLABLE
   name: total_uri_count_stddev
   type: FLOAT
+  description: The standard deviation of URI counts across clients in this segment during the reporting
+    period, reflecting variability in browsing activity.
 - mode: NULLABLE
   name: organic_avg
   type: FLOAT
+  description: The average number of organic (non-tagged, non-sponsored) search queries per client in this
+    segment.
 - mode: NULLABLE
   name: organic_stddev
   type: FLOAT
+  description: The standard deviation of organic search query counts across clients in this segment.
 - mode: NULLABLE
   name: tagged_sap_avg
   type: FLOAT
+  description: The average number of tagged search access point (SAP) queries per client in this segment,
+    representing searches initiated through a Firefox search entry point that are associated with a partner
+    tag.
 - mode: NULLABLE
   name: tagged_sap_stddev
   type: FLOAT
+  description: The standard deviation of tagged SAP query counts across clients in this segment.
 - mode: NULLABLE
   name: tagged_follow_on_avg
   type: FLOAT
+  description: The average number of tagged follow-on searches per client in this segment, representing
+    subsequent searches that carry the partner tag from an initial SAP search.
 - mode: NULLABLE
   name: tagged_follow_on_stddev
   type: FLOAT
+  description: The standard deviation of tagged follow-on search counts across clients in this segment.
 - mode: NULLABLE
   name: sap_avg
   type: FLOAT
+  description: The average total number of search access point (SAP) queries (tagged and untagged) per client
+    in this segment.
 - mode: NULLABLE
   name: sap_stddev
   type: FLOAT
+  description: The standard deviation of total SAP query counts across clients in this segment.
 - mode: NULLABLE
   name: ad_click_avg
   type: FLOAT
+  description: The average number of ad clicks on search result pages per client in this segment.
 - mode: NULLABLE
   name: ad_click_stddev
   type: FLOAT
+  description: The standard deviation of SERP ad click counts across clients in this segment.
 - mode: NULLABLE
   name: ad_click_organic_avg
   type: FLOAT
+  description: The average number of organic ad clicks (non-tagged SERP ad clicks) per client in this segment.
 - mode: NULLABLE
   name: ad_click_organic_stddev
   type: FLOAT
+  description: The standard deviation of organic ad click counts across clients in this segment.
 - mode: NULLABLE
   name: search_with_ads_avg
   type: FLOAT
+  description: The average number of search result pages that contained ads per client in this segment.
 - mode: NULLABLE
   name: search_with_ads_stddev
   type: FLOAT
+  description: The standard deviation of search-with-ads counts across clients in this segment.
 - mode: NULLABLE
   name: search_with_ads_organic_avg
   type: FLOAT
+  description: The average number of organic search result pages that contained ads per client in this segment.
 - mode: NULLABLE
   name: search_with_ads_organic_stddev
   type: FLOAT
+  description: The standard deviation of organic search-with-ads counts across clients in this segment.
 - mode: NULLABLE
   name: homepage_visits_avg
   type: FLOAT
+  description: The average number of Firefox homepage visits per client in this segment.
 - mode: NULLABLE
   name: homepage_visits_stddev
   type: FLOAT
+  description: The standard deviation of homepage visit counts across clients in this segment.
 - mode: NULLABLE
   name: pocket_story_clicks_avg
   type: FLOAT
+  description: The average number of Pocket story clicks on the Firefox homepage per client in this segment.
 - mode: NULLABLE
   name: pocket_story_clicks_stddev
   type: FLOAT
+  description: The standard deviation of Pocket story click counts across clients in this segment.
 - mode: NULLABLE
   name: pocket_section_impressions_avg
   type: FLOAT
+  description: The average number of times the Pocket section was visible on the homepage per client in
+    this segment.
 - mode: NULLABLE
   name: pocket_section_impressions_stddev
   type: FLOAT
+  description: The standard deviation of Pocket section impression counts across clients in this segment.
 - mode: NULLABLE
   name: sponsored_tile_clicks_avg
   type: FLOAT
+  description: The average number of sponsored top-site tile clicks per client in this segment.
 - mode: NULLABLE
   name: sponsored_tile_clicks_stddev
   type: FLOAT
+  description: The standard deviation of sponsored tile click counts across clients in this segment.
 - mode: NULLABLE
   name: sponsored_tile_impressions_avg
   type: FLOAT
+  description: The average number of sponsored top-site tile impressions per client in this segment.
 - mode: NULLABLE
   name: sponsored_tile_impressions_stddev
   type: FLOAT
+  description: The standard deviation of sponsored tile impression counts across clients in this segment.
 - mode: NULLABLE
   name: organic_tile_clicks_avg
   type: FLOAT
+  description: The average number of organic (non-sponsored) top-site tile clicks per client in this segment.
 - mode: NULLABLE
   name: organic_tile_clicks_stddev
   type: FLOAT
+  description: The standard deviation of organic tile click counts across clients in this segment.

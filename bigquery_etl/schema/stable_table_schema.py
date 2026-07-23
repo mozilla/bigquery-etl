@@ -71,7 +71,11 @@ def prod_schemas_uri():
 
 @cache
 def get_stable_table_schemas() -> List[SchemaFile]:
-    """Fetch last schema metadata per doctype by version."""
+    """Fetch last schema metadata per doctype by version.
+
+    v2 glean tables are intentionally excluded from the returned list.
+    See https://mozilla-hub.atlassian.net/browse/DENG-10877.
+    """
     schemas_uri = prod_schemas_uri()
 
     # create cache file path based on the schemas URI

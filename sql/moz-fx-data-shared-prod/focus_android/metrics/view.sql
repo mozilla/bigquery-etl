@@ -1950,7 +1950,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
-      metrics.dual_labeled_counter.tls_handshake_result
+      metrics.dual_labeled_counter.tls_handshake_result,
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3925,7 +3926,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
-      metrics.dual_labeled_counter.tls_handshake_result
+      metrics.dual_labeled_counter.tls_handshake_result,
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5900,7 +5902,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
-      metrics.dual_labeled_counter.tls_handshake_result
+      metrics.dual_labeled_counter.tls_handshake_result,
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

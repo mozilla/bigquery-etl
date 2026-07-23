@@ -53038,6 +53038,35 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: TLS handshake result under various conditions
+    - name: netwerk_happy_eyeballs_h3_discovery_by_resolver
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: how HTTP/3 (h3) reachability was advertised for
+        a connection (the same crossing of Alt-Svc h3 and HTTPS-record h3 as happy_eyeballs_h3_discovery),
+        split by the resolver type (DoH/TRR vs native) that resolved the connection.
+        Only the HTTPS-record axis (https_rr_only, both) depends on the resolver;
+        Alt-Svc comes from a prior response header and is resolver-independent, so
+        altsvc_only and none serve as control categories. Used to measure how often
+        each resolver yields a first-connection-capable h3 opportunity, and to tell
+        a resolver mechanism apart from site/network selection. The resolver is attributed
+        from whether any of the connection''s DNS records were resolved via TRR. This
+        is the resolver-split companion of happy_eyeballs_h3_discovery.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

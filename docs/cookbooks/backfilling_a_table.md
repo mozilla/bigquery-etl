@@ -4,14 +4,14 @@
 
 ## Changes that do not require a backfill
 
-Some tables rebuild their whole history on every scheduled run, so a change to the query — a new column, a corrected calculation, a reworked filter — takes effect across the entire window on the next run(s) with no managed backfill at all. This is the case when **both** of these hold:
+Some tables rebuild their whole history on every scheduled run, so a query change propagates across the full window on the next scheduled run with no managed backfill. This applies when **both** of these hold (otherwise, use a managed backfill as described below):
 
-- The table's `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset (or `0`; unset is the default when the line is absent, and is treated the same as `0`). In this configuration each run targets the **whole table** with a `WRITE_TRUNCATE`, rather than a single partition. A non-zero offset writes only the single shifted partition, and omitting `date_partition_parameter` entirely defaults it to `submission_date` (a normal one-partition-per-day incremental) — neither rebuilds history.
-- The query's own SQL selects the full or a rolling window on every run (e.g. `WHERE submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)`), so a whole-table truncate rewrites history rather than leaving a single day.
+- `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset or `0` (unset defaults to `0`), so each run `WRITE_TRUNCATE`s the **whole table**, not one partition. (A non-zero offset writes only the shifted partition; omitting `date_partition_parameter` defaults it to `submission_date`, one partition per day. Neither rebuilds history.)
+- The query recomputes the full or a rolling window from its sources every run (e.g. `WHERE submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)`), so the truncate rewrites history instead of leaving a single day.
 
-When both hold, deploy the change and let the scheduled DAG run — the update propagates across history on its own. This is independent of the `incremental` label and of whether the table is partitioned. A managed backfill would only reproduce the same result behind a staging-validation gate, and a multi-date range would just re-truncate the whole table once per date (only the last run survives).
+**Note** A self-referential table that reads its own prior output does not qualify — a `depends_on_past: true` / `is_init()` first-seen table like `telemetry_derived.clients_first_seen_v3` carries earlier values forward, so a logic change reaches only new rows and must be rebuilt with `--reinitialize-table` (see the table below).
 
-Do not assume the rebuild landed as expected — confirm it with a query against production after the runs complete (the newest partition is past the deploy date and the changed values look right across the window). If the table does not meet both conditions above, or you need a validation gate before the data is live, use a managed backfill as described below.
+When both hold, just deploy and let the DAG run (independent of the `incremental` label and of whether the table is partitioned). Validate the change in a dev environment beforehand — once deployed, the scheduled run makes it live with no pre-prod gate — then confirm the rebuild in production (values correct across the window; for a partitioned table, the newest partition is past the deploy date).
 
 ## What can be backfilled with `bqetl backfill`
 

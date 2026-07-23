@@ -27,8 +27,8 @@
   marketing_notifications_allowed: false
   device_manufacturer: Samsung
   isp_name: ISP2
-# Last seen exactly 28 days ago (bit 27). Shifting drops it out of the
-# window, so it must NOT be carried forward (no output row).
+# Last ping at bit 27 (27 days before this row); the one-day shift on the next
+# day pushes it past the 28-day window, so it is dropped (no carry-forward row).
 - submission_date: 2023-01-01
   client_id: client-expired
   sample_id: 1

@@ -112,13 +112,31 @@ successful_jobs AS (
     AND state = "DONE"
     AND error_result IS NULL
 ),
+-- When each run finished copying a task's shredded data into place. A task is shredded
+-- again by every run, all within the query window below, so this is what attributes the
+-- shredding query jobs to a run: a query belongs to the run whose copy finished first
+-- among those that finished at or after it.
+copy_completed AS (
+  SELECT
+    REGEXP_REPLACE(task_id, r"__sample_[0-9_]+$", "") AS task_id,
+    end_date,
+    MAX(job_created) AS copied_at,
+  FROM
+    `moz-fx-data-shredder.shredder_state.shredder_state`
+  GROUP BY
+    task_id,
+    end_date
+),
 -- Sampled tables are shredded by writing survivors to a per-sample temp table in
 -- shredder_tmp and then copying it into place. shredder_state records only the copy
--- job, which reports no bytes or slot_ms, so the query jobs that do the actual work
--- are recovered here. The temp table name encodes the task it belongs to:
+-- job, which reports no bytes or slot_ms, so the query jobs that do the actual work are
+-- recovered here. The temp table name encodes the task:
 -- <dataset>__<table>_<YYYYMMDD>__sample_N_M maps back to
--- moz-fx-data-shared-prod.<dataset>.<table>$<YYYYMMDD>.
-shredder_tmp_jobs AS (
+-- moz-fx-data-shared-prod.<dataset>.<table>$<YYYYMMDD>. The project is hardcoded on
+-- purpose: sampling is only used for the largest tables, which all live in
+-- moz-fx-data-shared-prod, so a sampled table in another project is unlikely enough not
+-- to warrant deriving the project here.
+shredder_query_jobs AS (
   SELECT
     CONCAT(
       "moz-fx-data-shared-prod.",
@@ -130,8 +148,10 @@ shredder_tmp_jobs AS (
         r"$\1"
       )
     ) AS task_id,
-    SUM(total_bytes_processed) AS bytes_complete,
-    SUM(total_slot_ms) AS slot_ms,
+    job_id,
+    creation_time,
+    total_bytes_processed,
+    total_slot_ms,
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1`
   WHERE
@@ -141,8 +161,39 @@ shredder_tmp_jobs AS (
     AND destination_table.project_id = "moz-fx-data-shredder"
     AND destination_table.dataset_id = "shredder_tmp"
     AND REGEXP_CONTAINS(destination_table.table_id, r"__sample_[0-9_]+$")
+),
+shredder_tmp_jobs AS (
+  SELECT
+    task_id,
+    end_date,
+    SUM(total_bytes_processed) AS bytes_complete,
+    SUM(total_slot_ms) AS slot_ms,
+  FROM
+    -- attribute each query job to the run whose copy completed first among those that
+    -- completed at or after it, so a task re-shredded by a later run is not counted
+    -- under this run
+    (
+      SELECT
+        task_id,
+        ARRAY_AGG(end_date ORDER BY copied_at LIMIT 1)[OFFSET(0)] AS end_date,
+        total_bytes_processed,
+        total_slot_ms,
+      FROM
+        shredder_query_jobs
+      JOIN
+        copy_completed
+        USING (task_id)
+      WHERE
+        copied_at >= creation_time
+      GROUP BY
+        task_id,
+        job_id,
+        total_bytes_processed,
+        total_slot_ms
+    )
   GROUP BY
-    task_id
+    task_id,
+    end_date
 ),
 progress_by_target AS (
   SELECT
@@ -182,7 +233,7 @@ progress_by_target AS (
     USING (project_id, job_id)
   LEFT JOIN
     shredder_tmp_jobs AS tmp
-    USING (task_id)
+    USING (task_id, end_date)
   LEFT JOIN
     run_activity
     USING (airflow_task_id, end_date)

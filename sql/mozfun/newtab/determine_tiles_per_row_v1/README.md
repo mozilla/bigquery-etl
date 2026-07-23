@@ -35,7 +35,7 @@ based on the layout type and window width.
 | `1122 ≤ width < 1698` or layout is `OLD_GRID` | 3 |
 | `≥ 1698` and layout is `NEW_GRID` | 4              |
 
-### For layout type: `Nova` (Includes SEction and Grid variants)
+### For layout type: `Nova` (Includes Section and Grid variants)
 
 | `newtab_window_inner_width`        | Tiles per row |
 |-----------------------------------|----------------|

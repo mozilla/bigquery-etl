@@ -65,4 +65,4 @@ SELECT
   assert.equals(2, newtab.determine_tiles_per_row_v1('NOVA_GRID', 1122)),
   assert.equals(3, newtab.determine_tiles_per_row_v1('NOVA_GRID', 1698)),
   assert.equals(4, newtab.determine_tiles_per_row_v1('NOVA_GRID', 2000)),
-  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA_GRID', 3000)),;;
+  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA_GRID', 3000)),;

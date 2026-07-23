@@ -37,9 +37,10 @@ shredder AS (
     -- newest job
     ARRAY_AGG(
       STRUCT(
-        -- a task with no shredder_state row for this run had nothing to shred.
-        -- since runs don't overlap per airflow task and an active run always has
-        -- an in-flight job, such a task is complete once the run is finished.
+        -- a task with no shredder_state row is either something the run had nothing to
+        -- shred for, or a task the run has not reached yet. These are only distinguished
+        -- once the run is finished (see run_activity), so no_work alone does not imply
+        -- complete for a run that is still writing shredder_state rows.
         job_created IS NULL AS no_work,
         -- job metadata over 28 days old is not queried
         job_created <= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 28 DAY) AS job_too_old,
@@ -66,6 +67,27 @@ shredder AS (
     end_date,
     sampling_tasks.task_id
 ),
+-- A run is considered finished once it stops recording new shredder_state jobs. An
+-- in-progress run writes rows continuously (gaps of minutes), while a finished run's
+-- most recent job is hours to days old, so a generous 24 hour threshold separates the
+-- two. This gates the no_work assumption: only a finished run's tasks with no job can
+-- be assumed to have had nothing to shred rather than not being reached yet.
+run_activity AS (
+  SELECT
+    airflow_task_id,
+    end_date,
+    -- default to finished when a run recorded no jobs at all, so a run that genuinely
+    -- had nothing to shred anywhere is not stuck looking incomplete forever
+    IFNULL(
+      MAX(job_created) < TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 24 HOUR),
+      TRUE
+    ) AS run_finished,
+  FROM
+    shredder
+  GROUP BY
+    airflow_task_id,
+    end_date
+),
 jobs AS (
   SELECT
     creation_time,
@@ -90,27 +112,80 @@ successful_jobs AS (
     AND state = "DONE"
     AND error_result IS NULL
 ),
+-- Sampled tables are shredded by writing survivors to a per-sample temp table in
+-- shredder_tmp and then copying it into place. shredder_state records only the copy
+-- job, which reports no bytes or slot_ms, so the query jobs that do the actual work
+-- are recovered here. The temp table name encodes the task it belongs to:
+-- <dataset>__<table>_<YYYYMMDD>__sample_N_M maps back to
+-- moz-fx-data-shared-prod.<dataset>.<table>$<YYYYMMDD>.
+shredder_tmp_jobs AS (
+  SELECT
+    CONCAT(
+      "moz-fx-data-shared-prod.",
+      REGEXP_EXTRACT(destination_table.table_id, r"^(.+?)__"),
+      ".",
+      REGEXP_REPLACE(
+        REGEXP_EXTRACT(destination_table.table_id, r"^.+?__(.+)__sample_[0-9_]+$"),
+        r"_(\d{8})$",
+        r"$\1"
+      )
+    ) AS task_id,
+    SUM(total_bytes_processed) AS bytes_complete,
+    SUM(total_slot_ms) AS slot_ms,
+  FROM
+    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1`
+  WHERE
+    creation_time > TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 28 DAY)
+    AND state = "DONE"
+    AND error_result IS NULL
+    AND destination_table.project_id = "moz-fx-data-shredder"
+    AND destination_table.dataset_id = "shredder_tmp"
+    AND REGEXP_CONTAINS(destination_table.table_id, r"__sample_[0-9_]+$")
+  GROUP BY
+    task_id
+),
 progress_by_target AS (
   SELECT
     airflow_task_id,
     end_date,
-    MIN(IFNULL(start_time, job_created)) AS start_time,
-    MAX(end_time) AS end_time,
-    -- a task is complete if it had nothing to shred, if its job is too old for
-    -- metadata (assumed complete), or if its job finished
-    LOGICAL_AND(no_work OR job_too_old IS TRUE OR end_time IS NOT NULL) AS complete,
-    COUNTIF(no_work OR job_too_old IS TRUE OR end_time IS NOT NULL) AS tasks_complete,
+    MIN(IFNULL(job.start_time, job_created)) AS start_time,
+    MAX(job.end_time) AS end_time,
+    -- a task is complete if it had nothing to shred (only trusted once the run is
+    -- finished, otherwise the task may just not be reached yet), if its job is too old
+    -- for metadata (assumed complete), or if its copy job finished. The copy job is the
+    -- authoritative completion signal; a finished shredding query does not mean the
+    -- copy has run yet.
+    LOGICAL_AND(
+      (no_work AND run_finished)
+      OR job_too_old IS TRUE
+      OR job.end_time IS NOT NULL
+    ) AS complete,
+    COUNTIF(
+      (no_work AND run_finished)
+      OR job_too_old IS TRUE
+      OR job.end_time IS NOT NULL
+    ) AS tasks_complete,
     COUNT(*) AS tasks_total,
-    SUM(bytes_complete) AS bytes_complete,
+    -- copy jobs report no bytes/slot_ms, so fall back to the shredding query jobs
+    -- that wrote the survivors to shredder_tmp for the actual work done
+    SUM(IFNULL(job.bytes_complete, tmp.bytes_complete)) AS bytes_complete,
     -- count target_bytes once per table and source_bytes once per task
     MIN(target_bytes) + SUM(source_bytes) AS bytes_total,
-    SUM(slot_ms) AS slot_ms,
-    NULLIF(SUM(bytes_complete), 0) / SUM(slot_ms) AS bytes_per_slot_ms,
+    SUM(IFNULL(job.slot_ms, tmp.slot_ms)) AS slot_ms,
+    NULLIF(SUM(IFNULL(job.bytes_complete, tmp.bytes_complete)), 0) / SUM(
+      IFNULL(job.slot_ms, tmp.slot_ms)
+    ) AS bytes_per_slot_ms,
   FROM
     shredder
   LEFT JOIN
-    successful_jobs
+    successful_jobs AS job
     USING (project_id, job_id)
+  LEFT JOIN
+    shredder_tmp_jobs AS tmp
+    USING (task_id)
+  LEFT JOIN
+    run_activity
+    USING (airflow_task_id, end_date)
   GROUP BY
     target,
     airflow_task_id,
@@ -186,17 +261,19 @@ SELECT
     ),
     STRUCT(
       NULL AS actual,
-      TIMESTAMP_ADD(
+      -- SAFE guards against overflow when an early run projects an absurd interval;
+      -- such an estimate is meaningless anyway and returns NULL instead of failing
+      SAFE.TIMESTAMP_ADD(
         start_time,
         INTERVAL CAST(
           IFNULL(slot_ms_total / slot_ms_complete, 1) * seconds_complete AS INT64
         ) SECOND
       ) AS estimate_by_slot_ms,
-      TIMESTAMP_ADD(
+      SAFE.TIMESTAMP_ADD(
         start_time,
         INTERVAL CAST(bytes_total / bytes_complete * seconds_complete AS INT64) SECOND
       ) AS estimate_by_bytes,
-      TIMESTAMP_ADD(
+      SAFE.TIMESTAMP_ADD(
         start_time,
         INTERVAL CAST(tasks_total / tasks_complete * seconds_complete AS INT64) SECOND
       ) AS estimate_by_tasks

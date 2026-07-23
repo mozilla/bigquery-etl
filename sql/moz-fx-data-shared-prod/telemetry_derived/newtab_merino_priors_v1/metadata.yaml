@@ -2,7 +2,7 @@ friendly_name: Newtab Merino Priors
 description: |-
   Queries New Tab stats used by Merino to calculate Thompson sampling priors.
   These determine how new items (without engagement data) are ranked on New Tab.
-  German feed experiment rows are emitted with region values suffixed by experiment branch.
+  de_DE experiment rows are emitted with region values suffixed by experiment branch.
 owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com

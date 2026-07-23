@@ -218,7 +218,7 @@ country_aggregates AS (
     corpus_item_id,
     region
 ),
-/* Add experiment-specific German feed rows using the existing region field. */
+/* Add de_DE experiment-specific rows using the existing region field. */
 experiment_region_aggregates AS (
   SELECT
     corpus_item_id,
@@ -230,7 +230,7 @@ experiment_region_aggregates AS (
     aggregated_events
   WHERE
     experiment_branch IS NOT NULL
-    AND normalized_country_code IN ('DE', 'CH', 'AT', 'BE')
+    AND normalized_country_code = 'DE'
   GROUP BY
     corpus_item_id,
     region

@@ -226,7 +226,7 @@ experiment_target_regions AS (
   SELECT
     region
   FROM
-    UNNEST(['DE', 'CH', 'AT', 'BE']) AS region
+    UNNEST(['DE']) AS region
 ),
 experiment_private_pings AS (
   SELECT

@@ -25,5 +25,5 @@ fields:
 - mode: NULLABLE
   name: region
   type: STRING
-  description: The two-letter ISO 3166-1 country code used by Merino regional ranking, or for German
-    feed experiment-specific rows, the country code suffixed with the experiment branch.
+  description: The two-letter ISO 3166-1 country code used by Merino regional ranking, or for de_DE
+    experiment-specific rows, the DE region suffixed with the experiment branch.

@@ -312,25 +312,31 @@ SELECT
     ),
     STRUCT(
       NULL AS actual,
-      -- SAFE guards against overflow when an early run projects an absurd interval;
-      -- such an estimate is meaningless anyway and returns NULL instead of failing
+      -- an early run can project an absurd interval; SAFE_DIVIDE, SAFE_CAST and
+      -- SAFE.TIMESTAMP_ADD each return NULL rather than failing on a zero divisor, an
+      -- out-of-range cast, or a timestamp overflow, since the estimate is meaningless then
       SAFE.TIMESTAMP_ADD(
         start_time,
-        INTERVAL CAST(
-          IFNULL(slot_ms_total / slot_ms_complete, 1) * seconds_complete AS INT64
+        INTERVAL SAFE_CAST(
+          IFNULL(SAFE_DIVIDE(slot_ms_total, slot_ms_complete), 1) * seconds_complete AS INT64
         ) SECOND
       ) AS estimate_by_slot_ms,
       SAFE.TIMESTAMP_ADD(
         start_time,
-        INTERVAL CAST(bytes_total / bytes_complete * seconds_complete AS INT64) SECOND
+        INTERVAL SAFE_CAST(
+          SAFE_DIVIDE(bytes_total, bytes_complete) * seconds_complete AS INT64
+        ) SECOND
       ) AS estimate_by_bytes,
       SAFE.TIMESTAMP_ADD(
         start_time,
-        INTERVAL CAST(tasks_total / tasks_complete * seconds_complete AS INT64) SECOND
+        INTERVAL SAFE_CAST(
+          SAFE_DIVIDE(tasks_total, tasks_complete) * seconds_complete AS INT64
+        ) SECOND
       ) AS estimate_by_tasks
     )
   ) AS completion_time,
-  slot_ms_total,
+  progress.slot_ms_total,
+  progress.slot_ms_total / 1000 / 60 / 60 slot_hours_total,
   bytes_total / POW(2, 50) AS petabytes_total,
   tasks_total,
 FROM

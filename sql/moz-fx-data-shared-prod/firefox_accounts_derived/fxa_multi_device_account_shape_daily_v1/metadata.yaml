@@ -1,0 +1,32 @@
+friendly_name: FxA Multi-Device Account Shape Daily
+description: |-
+  Daily, incremental history of Firefox Account device shape, giving the
+  Ecosystem team a permanent record for the multi-device usage OKR (source
+  fx_accounts ping tables only retain 30 days).
+
+  For each submission_date, accounts active at any point since the most
+  recent Monday are grouped by their week-to-date desktop/mobile client
+  counts (account_uid and client_id are not exposed, only the aggregate
+  counts). Bucketing raw counts into named categories (e.g. "multi-device")
+  is left to downstream views/queries so a bucket redefinition doesn't
+  require a table rebuild.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+  schedule: daily
+  application: fxa
+scheduling:
+  dag_name: bqetl_client_attributes
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - desktop_clients
+    - mobile_clients
+require_column_descriptions: true

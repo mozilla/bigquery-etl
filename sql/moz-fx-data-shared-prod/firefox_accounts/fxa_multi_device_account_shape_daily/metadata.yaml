@@ -1,0 +1,10 @@
+friendly_name: FxA Multi-Device Account Shape Daily
+description: |-
+  Daily, incremental history of Firefox Account device shape (week-to-date
+  desktop/mobile client counts per account), aggregated for the multi-device
+  usage OKR. See firefox_accounts_derived.fxa_multi_device_account_shape_daily_v1
+  for details.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner: lmcfall

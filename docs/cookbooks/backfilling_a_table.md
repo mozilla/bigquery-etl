@@ -2,7 +2,7 @@
 
 **Note** For large sets of data, follow the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills) for backfills.
 
-## Do you need a managed backfill?
+## Changes that do not require a backfill
 
 Some tables rebuild their whole history on every scheduled run, so a change to the query — a new column, a corrected calculation, a reworked filter — takes effect across the entire window on the next run(s) with no managed backfill at all. This is the case when **both** of these hold:
 

@@ -7,7 +7,7 @@ based on the layout type and window width.
 
 | Parameter Name             | Type    | Description                                                                                                                                                                                                                                                                        |
 |---------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `layout_type`             | STRING  | The layout style of the Newtab page. Can be one of `NOVA`, `SECTION_GRID`, `NEW_GRID`, or `OLD_GRID` and is computed using the UDF `determine_grid_layout`.<br/> [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF |
+| `layout_type`             | STRING  | The layout style of the Newtab page. Can be one of `NOVA_SECTION`, `NOVA_GRID`, `SECTION_GRID`, `NEW_GRID`, or `OLD_GRID` and is computed using the UDF `determine_grid_layout`.<br/> [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF |
 | `newtab_window_inner_width` | INTEGER | The width (in pixels) of the Firefox browser window. An attribute of the newtab `opened` event.                                                                                                                                                                                    |
 
 ## 📤 Output
@@ -35,7 +35,7 @@ based on the layout type and window width.
 | `1122 ≤ width < 1698` or layout is `OLD_GRID` | 3 |
 | `≥ 1698` and layout is `NEW_GRID` | 4              |
 
-### For layout type: `Nova`
+### For layout type: `Nova` (Includes SEction and Grid variants)
 
 | `newtab_window_inner_width`        | Tiles per row |
 |-----------------------------------|----------------|

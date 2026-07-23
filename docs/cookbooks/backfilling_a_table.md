@@ -6,7 +6,7 @@
 
 Some tables rebuild their whole history on every scheduled run, so a change to the query — a new column, a corrected calculation, a reworked filter — takes effect across the entire window on the next run(s) with no managed backfill at all. This is the case when **both** of these hold:
 
-- The table's `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is `0` (the default when the line is absent). In this configuration each run targets the **whole table** with a `WRITE_TRUNCATE`, rather than a single partition. A non-zero offset writes only the single shifted partition, and omitting `date_partition_parameter` entirely defaults it to `submission_date` (a normal one-partition-per-day incremental) — neither rebuilds history.
+- The table's `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset (or `0`; unset is the default when the line is absent, and is treated the same as `0`). In this configuration each run targets the **whole table** with a `WRITE_TRUNCATE`, rather than a single partition. A non-zero offset writes only the single shifted partition, and omitting `date_partition_parameter` entirely defaults it to `submission_date` (a normal one-partition-per-day incremental) — neither rebuilds history.
 - The query's own SQL selects the full or a rolling window on every run (e.g. `WHERE submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)`), so a whole-table truncate rewrites history rather than leaving a single day.
 
 When both hold, deploy the change and let the scheduled DAG run — the update propagates across history on its own. This is independent of the `incremental` label and of whether the table is partitioned. A managed backfill would only reproduce the same result behind a staging-validation gate, and a multi-date range would just re-truncate the whole table once per date (only the last run survives).
@@ -40,7 +40,7 @@ The rejections are enforced by [`validate_table_metadata`](https://github.com/mo
 ## Testing a backfill in a dev environment
 
 We can't create tables in `moz-fx-data-shared-prod.backfills_staging_derived`, so running
-the full managed backfill workflow locally is only possible with `--target`, which stages into 
+the full managed backfill workflow locally is only possible with `--target`, which stages into
 a test project. We can write to tables that already exist in
 `moz-fx-data-shared-prod.backfills_staging_derived`, so an active backfill can be
 amended by writing to its existing staging table.
@@ -70,8 +70,8 @@ The `backfill.yaml` entry is still read from the repo as usual; only the BigQuer
 locations are redirected. Without `--target`, behavior is unchanged (production backfill).
 
 `query.py` (python script) backfills do not support `--target`. A python-script backfill's
-destination is baked into the entry's `query_script_args` at create time and is not redirected, 
-so running one under `--target` is rejected to avoid writing to the production staging table. 
+destination is baked into the entry's `query_script_args` at create time and is not redirected,
+so running one under `--target` is rejected to avoid writing to the production staging table.
 This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054.
 
 ## Initiating the backfill:
@@ -90,7 +90,7 @@ This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-1005
     For new tables:
       - Set `shredder_mitigation: false` since there is no data yet to safeguard.
       - Backfill and validate your data.
-      - Set `shredder_mitigation: true` to protect the validated data. 
+      - Set `shredder_mitigation: true` to protect the validated data.
     For existing tables:
       - Bump the version of the query.
       - Make the necessary updates to the new version of the query and schema.
@@ -138,7 +138,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to set the backfill staging table if needed, e.g. `--destination_table=dataset__table_v1_YYYY_MM_DD`.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
-When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour.
 The script must implement support for this argument itself.
 
 Example:
@@ -187,11 +187,11 @@ Requirements and notes:
 - The `start_date`/`end_date` still bound the entry, but a reinitialize
   rebuilds every partition the `is_init()` query produces, not just that range.
 - For tables sharded by `sample_id`, parallelism can be batched with the `@sampling_batch_size`
-  parameter, rather than one job per `sample_id`. BigQuery limits partition modifications to 30000 
-  per table per day. A first_seen table like clients_first_seen can have thousands of partitions, 
-  and each per-sample_id query writes to most/all of them. Batching is required to reduce the 
+  parameter, rather than one job per `sample_id`. BigQuery limits partition modifications to 30000
+  per table per day. A first_seen table like clients_first_seen can have thousands of partitions,
+  and each per-sample_id query writes to most/all of them. Batching is required to reduce the
   number of modifications so partition_modifications = num_batches * num_partitions.
-  - The batch size defaults to 20 (5 jobs over 100 sample IDs), which keeps a ~3,700-partition 
+  - The batch size defaults to 20 (5 jobs over 100 sample IDs), which keeps a ~3,700-partition
     table under the 30,000/day cap with headroom for its daily scheduled DAG run; override it with
   `--reinitialize-sampling-batch-size`
   - To use this, the query must constrain `sample_id` with a range clause so a batch of IDs is

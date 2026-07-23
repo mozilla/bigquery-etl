@@ -6,7 +6,10 @@ SELECT
   COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
   * EXCEPT (event_id),
   STRUCT(
-    STRUCT(LAX_BOOL(event_extra.linking) AS `linking`) AS `boolean`,
+    STRUCT(
+      LAX_BOOL(event_extra.exclude_dau) AS `exclude_dau`,
+      LAX_BOOL(event_extra.linking) AS `linking`
+    ) AS `boolean`,
     STRUCT(
       JSON_VALUE(event_extra.error_code) AS `error_code`,
       JSON_VALUE(event_extra.platform) AS `platform`,

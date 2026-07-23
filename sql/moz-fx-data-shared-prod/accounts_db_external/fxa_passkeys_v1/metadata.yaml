@@ -1,0 +1,22 @@
+friendly_name: passkeys table from production fxa database
+description: |
+  A mirror of the `passkeys` table from the production `fxa` CloudSQL database, excluding columns containing confidential data, updated daily to match the current state of the table.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+- wclouser@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_db_daily
+  owner1: wclouser
+scheduling:
+  dag_name: bqetl_accounts_db_daily
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential/data-viewers
+  - workgroup:fxa/fraud-bot
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         uid,\n         credentialId,\n         publicKey,\n         signCount,\n         transports,\n         aaguid,\n         name,\n         createdAt,\n         lastUsedAt,\n         backupEligible,\n         backupState,\n         prfEnabled\n       FROM\n         fxa.passkeys\n    ')

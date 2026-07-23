@@ -53,6 +53,7 @@ references:
   - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_codes_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_refresh_tokens_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_tokens_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_passkeys_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_password_change_tokens_v1 FOR
     SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_password_forgot_tokens_v1 FOR

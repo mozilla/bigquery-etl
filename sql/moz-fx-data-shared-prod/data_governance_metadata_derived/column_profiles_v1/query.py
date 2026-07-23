@@ -992,9 +992,13 @@ def main() -> None:
             )
             continue
         tables = _discover_base_tables(args.source_project, dataset, table_filter)
-        partition_targets[dataset] = _latest_nonempty_partitions(
-            client, args.source_project, dataset, args.date
-        )
+        # Skip partition discovery in dry-run: partition_targets is only read by
+        # the profiling path (_profile_one), which dry-run never reaches, so the
+        # per-dataset INFORMATION_SCHEMA.PARTITIONS query would be wasted.
+        if not args.dry_run:
+            partition_targets[dataset] = _latest_nonempty_partitions(
+                client, args.source_project, dataset, args.date
+            )
         logger.info(
             "Discovered %d base table(s) to profile in %s.%s",
             len(tables),

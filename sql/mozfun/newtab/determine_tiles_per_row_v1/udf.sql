@@ -7,7 +7,7 @@ RETURNS INTEGER AS (
   CASE
     WHEN newtab_window_inner_width IS NULL
       THEN NULL
-    WHEN layout_type = 'NOVA'
+    WHEN layout_type IN ('NOVA_SECTION', 'NOVA_GRID')
       THEN
         CASE
           WHEN newtab_window_inner_width < 1024
@@ -56,8 +56,13 @@ SELECT
   assert.equals(3, newtab.determine_tiles_per_row_v1('OLD_GRID', 1698)),
   assert.equals(4, newtab.determine_tiles_per_row_v1('NEW_GRID', 1698)),
   assert.equals(4, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1390)),
-  assert.equals(1, newtab.determine_tiles_per_row_v1('NOVA', 723)),
-  assert.equals(2, newtab.determine_tiles_per_row_v1('NOVA', 1122)),
-  assert.equals(3, newtab.determine_tiles_per_row_v1('NOVA', 1698)),
-  assert.equals(4, newtab.determine_tiles_per_row_v1('NOVA', 2000)),
-  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA', 3000)),;
+  assert.equals(1, newtab.determine_tiles_per_row_v1('NOVA_SECTION', 723)),
+  assert.equals(2, newtab.determine_tiles_per_row_v1('NOVA_SECTION', 1122)),
+  assert.equals(3, newtab.determine_tiles_per_row_v1('NOVA_SECTION', 1698)),
+  assert.equals(4, newtab.determine_tiles_per_row_v1('NOVA_SECTION', 2000)),
+  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA_SECTION', 3000)),
+  assert.equals(1, newtab.determine_tiles_per_row_v1('NOVA_GRID', 723)),
+  assert.equals(2, newtab.determine_tiles_per_row_v1('NOVA_GRID', 1122)),
+  assert.equals(3, newtab.determine_tiles_per_row_v1('NOVA_GRID', 1698)),
+  assert.equals(4, newtab.determine_tiles_per_row_v1('NOVA_GRID', 2000)),
+  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA_GRID', 3000)),;

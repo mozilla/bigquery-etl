@@ -1,0 +1,36 @@
+---
+# Seen yesterday, no metrics ping today -> carried forward. profile_group_id
+# and the "last seen date" count columns persist from this row.
+- submission_date: 2023-01-01
+  client_id: d-carryforward
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 2
+  days_sent_metrics_ping_bits: 1
+  profile_group_id: pg-A
+  search_with_ads_count_all: 5
+  search_count_all: 10
+  ad_clicks_count_all: 2
+# Seen yesterday AND today -> updated from today's values.
+- submission_date: 2023-01-01
+  client_id: d-matched
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 1
+  profile_group_id: pg-B
+  search_with_ads_count_all: 9
+  search_count_all: 9
+  ad_clicks_count_all: 9
+# Last ping at bit 27 (27 days before this row); the one-day shift pushes it
+# past the 28-day window, so it is dropped (no carry-forward row).
+- submission_date: 2023-01-01
+  client_id: d-expired
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 134217728
+  profile_group_id: pg-D
+  search_with_ads_count_all: 1
+  search_count_all: 1
+  ad_clicks_count_all: 1

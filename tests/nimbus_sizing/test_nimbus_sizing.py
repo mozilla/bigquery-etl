@@ -112,7 +112,7 @@ class TestBuildQuery:
         assert "clients AS (SELECT * FROM latest_per_client WHERE rn = 1)" in query
 
     def test_contains_sample_id_filter(self):
-        query = build_query(MOCK_EXPERIMENTS, sample_id_max=10)
+        query = build_query(MOCK_EXPERIMENTS)
         assert "sample_id < 10" in query
 
     def test_contains_one_column_per_experiment(self):
@@ -125,14 +125,9 @@ class TestBuildQuery:
         assert "firefox_version >= 120" in query
         assert "locale = 'en-US' AND firefox_version >= 115" in query
 
-    def test_multiplies_by_sample_id_max(self):
-        query = build_query(MOCK_EXPERIMENTS, sample_id_max=10)
+    def test_multiplies_by_10(self):
+        query = build_query(MOCK_EXPERIMENTS)
         assert "* 10" in query
-
-    def test_custom_sample_id_max(self):
-        query = build_query(MOCK_EXPERIMENTS, sample_id_max=5)
-        assert "sample_id < 5" in query
-        assert "* 5" in query
 
 
 class TestBuildResults:

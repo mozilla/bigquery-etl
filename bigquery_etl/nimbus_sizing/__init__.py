@@ -22,6 +22,8 @@ EXPERIMENTER_API_URL = (
 NIMBUS_TARGETING_TABLE = "mozdata.firefox_desktop.nimbus_targeting_context"
 GCS_BUCKET = "mozanalysis"
 GCS_PATH = "population_sizing/drafts_latest.json"
+# 10% sample — multiply counts by 10 to estimate full population
+SAMPLE_ID_MAX = 10
 
 # All columns available in nimbus_targeting_context, aliased for use in CTEs
 _TARGETING_COLUMNS = """
@@ -76,7 +78,7 @@ def _slug_to_col(slug: str) -> str:
     return slug.replace("-", "_").replace(".", "_")[:256]
 
 
-def build_query(experiments: list[dict], sample_id_max: int = 10) -> str:
+def build_query(experiments: list[dict]) -> str:
     """
     Build a single BigQuery query that counts eligible clients per experiment.
 
@@ -97,13 +99,13 @@ WITH latest_per_client AS (
     ) AS rn
   FROM `{NIMBUS_TARGETING_TABLE}`
   WHERE DATE(submission_timestamp) BETWEEN '{window_start}' AND '{window_end}'
-    AND sample_id < {sample_id_max}
+    AND sample_id < {SAMPLE_ID_MAX}
 ),
 clients AS (SELECT * FROM latest_per_client WHERE rn = 1)"""
 
     cols = [
         f"  COUNT(DISTINCT IF(\n    {exp['targetingSql']['sql']},\n"
-        f"    client_id, NULL)) * {sample_id_max} AS `{_slug_to_col(exp['slug'])}`"
+        f"    client_id, NULL)) * {SAMPLE_ID_MAX} AS `{_slug_to_col(exp['slug'])}`"
         for exp in experiments
     ]
 
@@ -181,12 +183,8 @@ def write_to_bigquery(results: dict, project: str, dataset: str, table: str) -> 
 @click.option("--output-table", default="nimbus_draft_sizing")
 @click.option("--gcs-bucket", default=GCS_BUCKET)
 @click.option("--gcs-path", default=GCS_PATH)
-@click.option("--sample-id-max", default=10, type=int)
 @click.option("--dry-run", is_flag=True, help="Print query without running")
-def run(
-    api_url, project, output_dataset, output_table,
-    gcs_bucket, gcs_path, sample_id_max, dry_run,
-):
+def run(api_url, project, output_dataset, output_table, gcs_bucket, gcs_path, dry_run):
     """Run Nimbus pre-launch population sizing ETL."""
     logging.basicConfig(level=logging.INFO)
 
@@ -197,7 +195,7 @@ def run(
         logger.info("No experiments to process")
         return
 
-    query = build_query(experiments, sample_id_max=sample_id_max)
+    query = build_query(experiments)
 
     if dry_run:
         click.echo(query)

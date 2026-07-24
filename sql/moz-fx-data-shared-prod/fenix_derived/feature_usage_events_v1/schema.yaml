@@ -2,15 +2,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date on which the Airflow pipeline processed and loaded this record into the table.
 - name: ping_date
   type: DATE
   mode: NULLABLE
+  description: The date of the client session as derived from the earlier of the ping's parsed start time
+    or end time, attributed in UTC.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The Firefox for Android release channel the client is using, such as release, beta, or nightly.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Two-letter ISO 3166-1 country code reported by the client based on GeoIP lookup at ingestion.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
@@ -22,519 +27,761 @@ fields:
 - name: autofill_password_detected_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a login password field was detected on a web page, signalling
+    that autofill could be triggered for saved logins.
 - name: autofill_password_detected_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who had at least one login password field detected on a page on
+    the ping date.
 - name: autofill_prompt_shown_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the login autofill prompt was displayed to the user.
 - name: autofill_prompt_shown_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the login autofill prompt at least once on the ping
+    date.
 - name: autofill_prompt_dismissed_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user dismissed the login autofill prompt without selecting
+    a credential.
 - name: autofill_prompt_dismissed_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who dismissed the login autofill prompt at least once on the ping
+    date.
 - name: autofilled_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a login credential was successfully autofilled into a web form
+    by the user.
 - name: autofilled_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who autofilled a saved login credential at least once on the ping
+    date.
 - name: management_add_tapped_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the 'Add' button in the logins management screen.
 - name: management_add_tapped_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'Add' in the logins management screen at least once on
+    the ping date.
 - name: management_tapped_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped a specific login entry in the logins management
+    screen.
 - name: management_tapped_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a login entry in the management screen at least once
+    on the ping date.
 - name: form_detected_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a credit card form was detected on a web page.
 - name: form_detected_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users for whom a credit card form was detected at least once on the ping
+    date.
 - name: autofill_prompt_shown_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the credit card autofill prompt was displayed to the user.
 - name: autofill_prompt_shown_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the credit card autofill prompt at least once on
+    the ping date.
 - name: autofill_prompt_expanded_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user expanded the credit card autofill prompt to view available
+    cards.
 - name: autofill_prompt_expanded_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who expanded the credit card autofill prompt at least once on the
+    ping date.
 - name: autofill_prompt_dismissed_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user dismissed the credit card autofill prompt without selecting
+    a card.
 - name: autofill_prompt_dismissed_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who dismissed the credit card autofill prompt at least once on the
+    ping date.
 - name: autofilled_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a saved credit card was successfully autofilled into a web form.
 - name: autofilled_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who autofilled a credit card at least once on the ping date.
 - name: save_prompt_shown_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the prompt to save a new credit card was shown to the user.
 - name: save_prompt_shown_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the credit card save prompt at least once on the
+    ping date.
 - name: save_prompt_create_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user confirmed saving a new credit card from the save prompt.
 - name: save_prompt_create_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who saved a new credit card from the prompt at least once on the
+    ping date.
 - name: save_prompt_update_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user confirmed updating an existing saved credit card from
+    the save prompt.
 - name: save_prompt_update_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who updated a saved credit card from the prompt at least once on
+    the ping date.
 - name: management_add_tapped_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Add' in the credit cards management screen.
 - name: management_add_tapped_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'Add' in the credit cards management screen at least
+    once on the ping date.
 - name: management_tapped_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a saved credit card entry in the management
+    screen.
 - name: management_tapped_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a credit card entry in the management screen at least
+    once on the ping date.
 - name: modified_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a saved credit card was modified by the user.
 - name: modified_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who modified a saved credit card at least once on the ping date.
 - name: form_detected_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where an address form was detected on a web page.
 - name: form_detected_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users for whom an address form was detected at least once on the ping
+    date.
 - name: autofill_prompt_shown_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the address autofill prompt was displayed to the user.
 - name: autofill_prompt_shown_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the address autofill prompt at least once on the
+    ping date.
 - name: autofill_prompt_expanded_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user expanded the address autofill prompt to view available
+    addresses.
 - name: autofill_prompt_expanded_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who expanded the address autofill prompt at least once on the ping
+    date.
 - name: autofill_prompt_dismissed_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user dismissed the address autofill prompt without selecting
+    an address.
 - name: autofill_prompt_dismissed_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who dismissed the address autofill prompt at least once on the ping
+    date.
 - name: autofilled_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a saved address was successfully autofilled into a web form.
 - name: autofilled_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who autofilled a saved address at least once on the ping date.
 - name: management_add_tapped_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Add' in the addresses management screen.
 - name: management_add_tapped_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'Add' in the addresses management screen at least once
+    on the ping date.
 - name: management_tapped_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a saved address entry in the management screen.
 - name: management_tapped_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped an address entry in the management screen at least once
+    on the ping date.
 - name: bookmark_copied
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user copied a bookmark URL to the clipboard.
 - name: bookmark_copied_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who copied a bookmark URL at least once on the ping date.
 - name: bookmark_edited
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user edited an existing bookmark.
 - name: bookmark_edited_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who edited a bookmark at least once on the ping date.
 - name: bookmark_folder_add
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user created a new bookmark folder.
 - name: bookmark_folder_add_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who created a bookmark folder at least once on the ping date.
 - name: bookmark_open
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a bookmarked page.
 - name: bookmark_open_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a bookmark at least once on the ping date.
 - name: bookmark_open_all_in_new_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Open All in New Tabs' for a bookmark folder.
 - name: bookmark_open_all_in_new_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who used 'Open All in New Tabs' for a bookmark folder at least once
+    on the ping date.
 - name: bookmark_open_all_in_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Open All in Private Tabs' for a bookmark folder.
 - name: bookmark_open_all_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who used 'Open All in Private Tabs' for a bookmark folder at least
+    once on the ping date.
 - name: bookmark_open_in_new_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a single bookmark in a new tab.
 - name: bookmark_open_in_new_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a bookmark in a new tab at least once on the ping date.
 - name: bookmark_open_in_new_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where selected bookmarks were opened in multiple new tabs simultaneously.
 - name: bookmark_open_in_new_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened multiple bookmarks in new tabs at least once on the ping
+    date.
 - name: bookmark_open_in_private_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a single bookmark in a private tab.
 - name: bookmark_open_in_private_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a bookmark in a private tab at least once on the ping
+    date.
 - name: bookmark_open_in_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where selected bookmarks were opened in multiple private tabs simultaneously.
 - name: bookmark_open_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened multiple bookmarks in private tabs at least once on the
+    ping date.
 - name: bookmark_removed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user deleted a bookmark.
 - name: bookmark_removed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who removed a bookmark at least once on the ping date.
 - name: bookmark_search_icon_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the search icon in the bookmarks screen.
 - name: bookmark_search_icon_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the bookmark search icon at least once on the ping date.
 - name: bookmark_search_result_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped a search result within the bookmarks search view.
 - name: bookmark_search_result_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a bookmark search result at least once on the ping date.
 - name: bookmark_shared
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user shared a bookmarked page via the system share sheet.
 - name: bookmark_shared_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who shared a bookmark at least once on the ping date.
 - name: history_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the history panel.
 - name: history_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened the history panel at least once on the ping date.
 - name: history_opened_item
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on an individual history entry to navigate to
+    that page.
 - name: history_opened_item_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a history item at least once on the ping date.
 - name: history_opened_items_in_new_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where multiple history items were opened in new tabs simultaneously.
 - name: history_opened_items_in_new_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened history items in new tabs at least once on the ping date.
 - name: history_opened_items_in_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where history items were opened in private tabs. This value is always
+    zero in observed data.
 - name: history_opened_items_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened history items in private tabs on the ping date.
 - name: history_recent_searches_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a recent search entry in the history view.
 - name: history_recent_searches_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a recent search from history at least once on the ping
+    date.
 - name: history_remove_prompt_cancelled
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the history deletion confirmation prompt but
+    then cancelled the removal.
 - name: history_remove_prompt_cancelled_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who cancelled a history removal prompt at least once on the ping
+    date.
 - name: history_remove_prompt_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the confirmation prompt to remove a history item.
 - name: history_remove_prompt_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a history remove prompt at least once on the ping date.
 - name: history_removed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of individual history items removed by the user.
 - name: history_removed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who removed at least one history item on the ping date.
 - name: history_removed_all
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user cleared their entire browsing history.
 - name: history_removed_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who cleared all history at least once on the ping date.
 - name: history_removed_last_hour
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user cleared browsing history from the last hour only.
 - name: history_removed_last_hour_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who cleared history from the last hour at least once on the ping
+    date.
 - name: history_removed_today_and_yesterday
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user cleared browsing history from today and yesterday.
 - name: history_removed_today_and_yesterday_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who cleared today and yesterday's history at least once on the ping
+    date.
 - name: history_search_icon_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the search icon within the history panel.
 - name: history_search_icon_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the history search icon at least once on the ping date.
 - name: history_search_term_group_open_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a tab from within a search term group in the
+    history view.
 - name: history_search_term_group_open_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a tab from a history search term group at least once
+    on the ping date.
 - name: history_search_term_group_remove_all
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user removed an entire search term group from history.
 - name: history_search_term_group_remove_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who removed an entire search term group at least once on the ping
+    date.
 - name: history_search_term_group_remove_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user removed a single tab from a search term group in history.
 - name: history_search_term_group_remove_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who removed a tab from a search term group at least once on the
+    ping date.
 - name: history_search_term_group_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a search term group to expand it in the history
+    view.
 - name: history_search_term_group_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a search term group at least once on the ping date.
 - name: history_shared
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user shared a history item URL via the system share sheet.
 - name: history_shared_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who shared a history item at least once on the ping date.
 - name: sync_failed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of sync failure events across all sync engines for the day.
 - name: sync_failed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who experienced at least one sync failure on the ping date.
 - name: sync_account_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the Firefox Account sync settings panel.
 - name: sync_account_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened the sync account panel at least once on the ping date.
 - name: sync_account_send_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user sent a tab to another synced device.
 - name: sync_account_send_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who sent a tab to another device at least once on the ping date.
 - name: sync_account_sign_in_to_send_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user initiated sign-in specifically to use the Send Tab feature.
 - name: sync_account_sign_in_to_send_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who signed in to use Send Tab at least once on the ping date.
 - name: sync_account_sync_now
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user manually triggered an immediate sync via the Sync Now
+    button.
 - name: sync_account_sync_now_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who manually triggered a sync at least once on the ping date.
 - name: sync_auth_closed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user closed the sync authentication flow.
 - name: sync_auth_closed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who closed the sync auth flow at least once on the ping date.
 - name: sync_auth_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the sync authentication screen.
 - name: sync_auth_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened the sync auth screen at least once on the ping date.
 - name: sync_auth_other_external
   type: INTEGER
   mode: NULLABLE
+  description: Total count of sync auth events triggered by an unclassified external mechanism. This value
+    is always zero in observed data.
 - name: sync_auth_other_external_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who triggered the 'other external' sync auth path on the ping date.
 - name: sync_auth_paired
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user successfully paired a device for sync.
 - name: sync_auth_paired_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who successfully paired a device for sync at least once on the ping
+    date.
 - name: sync_auth_recovered
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a sync auth session was recovered (e.g., after a token expiry).
 - name: sync_auth_recovered_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who had a sync auth recovery event at least once on the ping date.
 - name: sync_auth_scan_pairing
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user initiated QR-code-based device pairing for sync.
 - name: sync_auth_scan_pairing_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who initiated QR pairing for sync at least once on the ping date.
 - name: sync_auth_sign_in
   type: INTEGER
   mode: NULLABLE
+  description: Total count of sign-in events to Firefox Accounts via the sync auth flow.
 - name: sync_auth_sign_in_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who signed into Firefox Accounts at least once on the ping date.
 - name: sync_auth_sign_out
   type: INTEGER
   mode: NULLABLE
+  description: Total count of sign-out events from Firefox Accounts.
 - name: sync_auth_sign_out_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who signed out of Firefox Accounts at least once on the ping date.
 - name: sync_auth_sign_up
   type: INTEGER
   mode: NULLABLE
+  description: Total count of new Firefox Account registration events initiated from the sync auth flow.
 - name: sync_auth_sign_up_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who created a Firefox Account at least once on the ping date.
 - name: sync_auth_use_email
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user chose to authenticate via email in the sync flow. This
+    field is PII-suppressed in profiling.
 - name: sync_auth_use_email_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who used email authentication for sync at least once on the ping
+    date.
 - name: sync_auth_use_email_problem
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where an error occurred during email-based sync authentication.
 - name: sync_auth_use_email_problem_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who encountered an email auth problem at least once on the ping
+    date.
 - name: hp_private_mode_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the private mode icon on the Firefox home page.
 - name: hp_private_mode_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped private mode from the home page at least once on the
+    ping date.
 - name: tab_tray_private_mode_switched
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user switched between normal and private browsing mode via
+    the tab tray.
 - name: tab_tray_private_mode_switched_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who toggled private mode in the tab tray at least once on the ping
+    date.
 - name: app_icon_private_tab_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a new private tab by long-pressing the app icon.
+    This value is always zero in observed data.
 - name: app_icon_private_tab_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a private tab via the app icon long-press on the ping
+    date.
 - name: tab_tray_private_mode_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the 'New Private Tab' button in the tab tray.
 - name: tab_tray_private_mode_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'New Private Tab' in the tab tray at least once on the
+    ping date.
 - name: etp_setting_changed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user changed the Enhanced Tracking Protection (ETP) setting.
 - name: etp_setting_changed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who changed the ETP setting at least once on the ping date.
 - name: etp_settings
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the Enhanced Tracking Protection settings screen.
 - name: etp_settings_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who visited ETP settings at least once on the ping date.
 - name: etp_shield
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the ETP shield icon in the browser toolbar.
 - name: etp_shield_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the ETP shield icon at least once on the ping date.
 - name: etp_tracker_list
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user viewed the list of trackers blocked on a given page.
 - name: etp_tracker_list_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who viewed the blocked tracker list at least once on the ping date.
 - name: default_browser_changed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users whose default browser changed at least once on the ping date.
 - name: default_browser_changed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the system's default browser was changed, which may reflect Firefox
+    for Android being set or unset as the default.
 - name: re_engagement_notif_shown
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a re-engagement push notification was displayed to the user.
 - name: re_engagement_notif_shown_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown a re-engagement notification at least once on the
+    ping date.
 - name: re_engagement_notif_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped a re-engagement push notification to open the
+    browser.
 - name: re_engagement_notif_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a re-engagement notification at least once on the ping
+    date.
 - name: app_menu_customize_homepage
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Customize Homepage' from the browser app menu.
 - name: app_menu_customize_homepage_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened homepage customization from the app menu at least once
+    on the ping date.
 - name: home_page_customize_home_clicked
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the 'Customize' button directly on the Firefox
+    home screen.
 - name: home_page_customize_home_clicked_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the home screen customize button at least once on the
+    ping date.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution identifier for the client's Firefox installation, used to distinguish Mozilla-direct
+    installs from partner-deal distributions such as carrier or OEM bundles.
 - name: top_sites_contile_click
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user clicked on a Contile-sponsored top site tile on the
+    home screen.
 - name: top_sites_contile_click_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who clicked a Contile-sponsored tile at least once on the ping date.
 - name: top_sites_contile_impression
   type: INTEGER
   mode: NULLABLE
+  description: Total count of Contile-sponsored top site tile impression events recorded on the home screen.
 - name: top_sites_contile_impression_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who had at least one Contile tile impression on the ping date.

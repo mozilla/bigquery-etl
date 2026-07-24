@@ -1,0 +1,33 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    Date this row was computed for.
+- name: week_start
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    Monday of the ISO week that submission_date falls in. Counts on this row
+    reflect activity from week_start through submission_date (week-to-date),
+    not the eventual full-week total.
+- name: desktop_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Number of distinct desktop Glean client IDs linked to the account via
+    client_association_uid, seen between week_start and submission_date.
+- name: mobile_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Number of distinct mobile (iOS or Android/Fenix) Glean client IDs linked
+    to the account via client_association_uid, seen between week_start and
+    submission_date.
+- name: active_accounts
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Number of distinct Firefox Accounts with this exact
+    (desktop_clients, mobile_clients) device shape as of submission_date.
+    No account or client identifiers are included in this table.

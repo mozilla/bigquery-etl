@@ -382,7 +382,10 @@ def test_glean_targets_schema_version_and_v1_suffix(mock_requests):
             if dataset_ref.dataset_id == "firefox_desktop_stable":
                 table_ids = [
                     ("metrics_v1", {"schema_id": "glean_ping_2"}),
-                    ("metrics_v2", {"schema_id": "glean_ping_2"}),  # ignored: _v2 suffix
+                    (
+                        "metrics_v2",
+                        {"schema_id": "glean_ping_2"},
+                    ),  # ignored: _v2 suffix
                     ("deletion_request_v1", {"schema_id": "glean_ping_2"}),
                 ]
             elif dataset_ref.dataset_id == "firefox_desktop_derived":

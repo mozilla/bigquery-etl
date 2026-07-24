@@ -1,0 +1,17 @@
+# This task extracts referral_installs_totals_v1 to a CSV in GCS; it does not
+# build a queryable table. The schema is declared so stage-deploy CI can resolve
+# an artifact for the query.py (a .py can't be dry-run), and it documents the
+# exported CSV column contract. Columns mirror referral_installs_totals_v1.
+fields:
+- name: invite_code
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Referral (invite) code, `fxrefer:` prefix stripped (expected 17 chars).
+    First column of the exported CSV.
+- name: total_installs
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Cumulative all-time distinct Firefox first_run installs for this invite
+    code. Second column of the exported CSV.

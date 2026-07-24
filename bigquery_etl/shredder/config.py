@@ -20,8 +20,8 @@ from ..util.bigquery_id import qualified_table_id
 
 MOZDATA = "mozdata"
 SHARED_PROD = "moz-fx-data-shared-prod"
-GLEAN_SCHEMA_ID = "glean_ping_1"
-GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
+GLEAN_SCHEMA_ID_PREFIX = "glean_ping_"
+GLEAN_MIN_SCHEMA_ID_PREFIX = "glean-min_ping_"
 
 
 @dataclass(frozen=True)
@@ -796,7 +796,12 @@ def find_glean_targets(
 
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
 
-    def stable_tables_by_schema(schema_id):
+    def stable_tables_by_schema(schema_id_prefix):
+        """Return _v1 stable tables whose schema id matches the given prefix.
+
+        Matches any schema version (glean_ping_1, glean_ping_2, ...) but
+        only includes _v1 tables; _v2+ tables are ignored.
+        """
         return [
             table
             for tables in pool.map(
@@ -809,10 +814,11 @@ def find_glean_targets(
                 chunksize=1,
             )
             for table in tables
-            if table.labels.get("schema_id") == schema_id
+            if table.labels.get("schema_id", "").startswith(schema_id_prefix)
+            and table.table_id.endswith("_v1")
         ]
 
-    glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID)
+    glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID_PREFIX)
 
     channel_to_app_name = get_glean_app_id_to_app_name_mapping()
 
@@ -894,7 +900,7 @@ def find_glean_targets(
     skipped_tables = manually_added_tables | GLEAN_IGNORE_LIST
 
     # Handle custom deletion requests for usage_reporting pings
-    glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID)
+    glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID_PREFIX)
     usage_reporting_sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     for table in glean_min_stable_tables:
         if table.table_id == "usage_deletion_request_v1":

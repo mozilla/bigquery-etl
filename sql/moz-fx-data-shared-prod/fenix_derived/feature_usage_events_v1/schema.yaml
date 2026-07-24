@@ -2,15 +2,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date on which the Airflow pipeline processed and loaded this record into the table.
 - name: ping_date
   type: DATE
   mode: NULLABLE
+  description: The date of the client session as derived from the earlier of the ping's parsed start time
+    or end time, attributed in UTC.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The Firefox for Android release channel the client is using, such as release, beta, or nightly.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Two-letter ISO 3166-1 country code reported by the client based on GeoIP lookup at ingestion.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
@@ -22,135 +27,208 @@ fields:
 - name: autofill_password_detected_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a login password field was detected on a web page, signalling
+    that autofill could be triggered for saved logins.
 - name: autofill_password_detected_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who had at least one login password field detected on a page on
+    the ping date.
 - name: autofill_prompt_shown_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the login autofill prompt was displayed to the user.
 - name: autofill_prompt_shown_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the login autofill prompt at least once on the ping
+    date.
 - name: autofill_prompt_dismissed_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user dismissed the login autofill prompt without selecting
+    a credential.
 - name: autofill_prompt_dismissed_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who dismissed the login autofill prompt at least once on the ping
+    date.
 - name: autofilled_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a login credential was successfully autofilled into a web form
+    by the user.
 - name: autofilled_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who autofilled a saved login credential at least once on the ping
+    date.
 - name: management_add_tapped_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the 'Add' button in the logins management screen.
 - name: management_add_tapped_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'Add' in the logins management screen at least once on
+    the ping date.
 - name: management_tapped_sum_logins
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped a specific login entry in the logins management
+    screen.
 - name: management_tapped_users_logins
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a login entry in the management screen at least once
+    on the ping date.
 - name: form_detected_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a credit card form was detected on a web page.
 - name: form_detected_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users for whom a credit card form was detected at least once on the ping
+    date.
 - name: autofill_prompt_shown_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the credit card autofill prompt was displayed to the user.
 - name: autofill_prompt_shown_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the credit card autofill prompt at least once on
+    the ping date.
 - name: autofill_prompt_expanded_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user expanded the credit card autofill prompt to view available
+    cards.
 - name: autofill_prompt_expanded_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who expanded the credit card autofill prompt at least once on the
+    ping date.
 - name: autofill_prompt_dismissed_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user dismissed the credit card autofill prompt without selecting
+    a card.
 - name: autofill_prompt_dismissed_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who dismissed the credit card autofill prompt at least once on the
+    ping date.
 - name: autofilled_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a saved credit card was successfully autofilled into a web form.
 - name: autofilled_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who autofilled a credit card at least once on the ping date.
 - name: save_prompt_shown_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the prompt to save a new credit card was shown to the user.
 - name: save_prompt_shown_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the credit card save prompt at least once on the
+    ping date.
 - name: save_prompt_create_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user confirmed saving a new credit card from the save prompt.
 - name: save_prompt_create_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who saved a new credit card from the prompt at least once on the
+    ping date.
 - name: save_prompt_update_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user confirmed updating an existing saved credit card from
+    the save prompt.
 - name: save_prompt_update_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who updated a saved credit card from the prompt at least once on
+    the ping date.
 - name: management_add_tapped_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Add' in the credit cards management screen.
 - name: management_add_tapped_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'Add' in the credit cards management screen at least
+    once on the ping date.
 - name: management_tapped_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a saved credit card entry in the management
+    screen.
 - name: management_tapped_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a credit card entry in the management screen at least
+    once on the ping date.
 - name: modified_sum_cc
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a saved credit card was modified by the user.
 - name: modified_users_cc
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who modified a saved credit card at least once on the ping date.
 - name: form_detected_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where an address form was detected on a web page.
 - name: form_detected_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users for whom an address form was detected at least once on the ping
+    date.
 - name: autofill_prompt_shown_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the address autofill prompt was displayed to the user.
 - name: autofill_prompt_shown_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown the address autofill prompt at least once on the
+    ping date.
 - name: autofill_prompt_expanded_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user expanded the address autofill prompt to view available
+    addresses.
 - name: autofill_prompt_expanded_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who expanded the address autofill prompt at least once on the ping
+    date.
 - name: autofill_prompt_dismissed_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user dismissed the address autofill prompt without selecting
+    an address.
 - name: autofill_prompt_dismissed_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who dismissed the address autofill prompt at least once on the ping
+    date.
 - name: autofilled_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a saved address was successfully autofilled into a web form.
 - name: autofilled_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who autofilled a saved address at least once on the ping date.
 - name: management_add_tapped_sum_address
   type: INTEGER
   mode: NULLABLE
@@ -526,6 +604,8 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution identifier for the client's Firefox installation, used to distinguish Mozilla-direct
+    installs from partner-deal distributions such as carrier or OEM bundles.
 - name: top_sites_contile_click
   type: INTEGER
   mode: NULLABLE

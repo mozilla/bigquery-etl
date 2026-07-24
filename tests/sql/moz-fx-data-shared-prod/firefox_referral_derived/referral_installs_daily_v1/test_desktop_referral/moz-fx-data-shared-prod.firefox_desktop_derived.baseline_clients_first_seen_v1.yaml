@@ -1,0 +1,23 @@
+# c1, c2 first-seen today via tok1/tok2 -> both TESTCODE01 (install_count = 2).
+# c3 first-seen today but its dltoken has no referral -> excluded.
+# c4 carries a referral dltoken but was first seen on a prior day -> excluded by
+# the first_seen_date = @submission_date filter.
+# attribution_ext is a JSON column — represent it as an inline object so it
+# loads as JSON (a quoted string would load as a JSON string scalar and
+# attribution_ext.dltoken would be NULL).
+- client_id: "c1"
+  submission_date: "2026-07-24"
+  first_seen_date: "2026-07-24"
+  attribution_ext: {dltoken: "tok1"}
+- client_id: "c2"
+  submission_date: "2026-07-24"
+  first_seen_date: "2026-07-24"
+  attribution_ext: {dltoken: "tok2"}
+- client_id: "c3"
+  submission_date: "2026-07-24"
+  first_seen_date: "2026-07-24"
+  attribution_ext: {dltoken: "tok3"}
+- client_id: "c4"
+  submission_date: "2026-07-24"
+  first_seen_date: "2026-07-10"
+  attribution_ext: {dltoken: "tok1"}

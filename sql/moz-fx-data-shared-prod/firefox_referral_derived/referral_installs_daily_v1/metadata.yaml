@@ -1,0 +1,31 @@
+friendly_name: Referral Installs Daily
+description: |-
+  Daily count of Firefox first_run installs per referral (invite) code for the
+  Firefox Referral Program (DENG-11237).
+
+  Desktop only for the MVP: the referral code arrives via the GA4 /
+  download-attribution path (utm_content=fxrefer:<code>) and is joined through
+  the download token to baseline_clients_first_seen_v1, following the
+  cfs_ga4_attr_v1 pattern. Each client is first-seen exactly once, so daily rows
+  do not double-count across partitions.
+
+  The desktop source (the GA4 / download-attribution path) is the accepted,
+  validated source. The Fenix (Android) half is blocked pending the Play Store
+  attribution mechanism from Nathan.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: true
+  owner1: phlee
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_firefox_referral
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+require_column_descriptions: true

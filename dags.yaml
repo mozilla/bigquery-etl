@@ -1903,6 +1903,29 @@ bqetl_firefox_installer_aggregates:
     - impact/tier_3
 
 
+bqetl_firefox_referral:
+  default_args:
+    depends_on_past: false
+    email:
+      - phlee@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: phlee@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-07-23'
+  description: |
+    Aggregates Firefox first_run installs by referral (invite) code for the
+    Firefox Referral Program (DENG-11237). Chain: referral_installs_daily_v1 ->
+    referral_installs_totals_v1. The CSV-to-GCS export is a fast-follow, pending
+    the Website team's bucket + IAM.
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+
+
 bqetl_jira_service_desk:
   default_args:
     depends_on_past: false

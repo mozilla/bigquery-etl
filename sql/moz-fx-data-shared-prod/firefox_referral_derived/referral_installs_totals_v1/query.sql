@@ -6,8 +6,8 @@
 -- count per code without double-counting.
 --
 -- Zero-install codes are omitted (HAVING) — the Website team only ingests codes
--- with at least one attributed install. This table is the source for the
--- CSV-to-GCS extract (referral_installs_totals_to_gcs_v1).
+-- with at least one attributed install. This table will be the source for a
+-- fast-follow CSV-to-GCS export (pending the Website team's bucket + IAM).
 SELECT
   invite_code,
   SUM(install_count) AS total_installs,

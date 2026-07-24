@@ -4,8 +4,8 @@ description: |-
   the Firefox Referral Program (DENG-11237).
 
   Full-refresh rollup of referral_installs_daily_v1. Zero-install codes are
-  omitted. This is the source table for the CSV export delivered to the Website
-  team's GCS bucket (referral_installs_totals_to_gcs_v1). Column order
+  omitted. This will be the source table for a fast-follow CSV export to the
+  Website team's GCS bucket (pending the bucket + IAM). Column order
   (invite_code, total_installs) matches the required CSV format.
 owners:
 - phlee@mozilla.com

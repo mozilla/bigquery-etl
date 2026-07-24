@@ -1917,9 +1917,9 @@ bqetl_firefox_referral:
     start_date: '2026-07-23'
   description: |
     Aggregates Firefox first_run installs by referral (invite) code for the
-    Firefox Referral Program (DENG-11237), then exports the cumulative totals to
-    the Website team's GCS bucket as CSV. Chain: referral_installs_daily_v1 ->
-    referral_installs_totals_v1 -> referral_installs_totals_to_gcs_v1.
+    Firefox Referral Program (DENG-11237). Chain: referral_installs_daily_v1 ->
+    referral_installs_totals_v1. The CSV-to-GCS export is a fast-follow, pending
+    the Website team's bucket + IAM.
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
   tags:

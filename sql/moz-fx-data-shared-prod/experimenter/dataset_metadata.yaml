@@ -1,0 +1,10 @@
+friendly_name: Experimenter
+description: |-
+  Tables produced by the Experimenter population sizing ETL.
+dataset_base_acl: derived
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

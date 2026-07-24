@@ -1,0 +1,26 @@
+friendly_name: Nimbus Draft Experiment Population Sizing
+description: |-
+  Per-experiment eligible-client estimates for Nimbus Draft experiments.
+
+  Populated daily by the nimbus_sizing ETL job, which:
+  1. Reads Draft experiments from the Experimenter v8 API
+  2. Executes each experiment's translated SQL WHERE clause against
+     mozdata.firefox_desktop.nimbus_targeting_context (7-day window, 10% sample)
+  3. Writes the estimated eligible and projected enrolled counts here
+
+  Results are also written to GCS (population_sizing/drafts_latest.json)
+  for Experimenter to read and display on the Audience page.
+
+  Only experiments where targetingSql.needsUpdate=True are re-computed daily.
+owners:
+- ykhurana@mozilla.com
+labels:
+  owner1: nimbus
+bigquery:
+  time_partitioning:
+    type: day
+    field: computed_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+  - slug

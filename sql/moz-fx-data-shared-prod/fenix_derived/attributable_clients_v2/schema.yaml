@@ -15,9 +15,13 @@ fields:
 - mode: NULLABLE
   name: activations_count
   type: INTEGER
+  description: The number of times this client has completed the activation criteria (e.g., meaningful post-install
+    action). A value of 0 means the client has not yet activated.
 - mode: NULLABLE
   name: active_day_count
   type: INTEGER
+  description: The number of days in the submission window that this client sent a baseline ping (i.e.,
+    was active). A value of 0 means the client was not active on this day.
 - mode: NULLABLE
   name: searches
   type: INTEGER

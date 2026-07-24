@@ -259,8 +259,7 @@ FROM
 ORDER BY
   impression_count DESC
 LIMIT
-  -- This LIMIT was derived from the 4 MB payload size cap in Merino, the observed average
-  -- record size of ~113 bytes, and recall measurements. At ~20k rows the JSON blob stays
-  -- well below 4 MB while still retaining >99.9% of fresh impressions globally. Smaller
-  -- countries with lower traffic, like BE, still maintain an acceptable recall of about 97%.
-  20000;
+  -- This LIMIT was derived from the 5 MB payload size cap in Merino, the observed average
+  -- record size of ~113 bytes, and recall measurements. At ~25k rows the JSON blob stays
+  -- under 5 MB while preserving more lower-impression rows after adding DE experiment rows.
+  25000;

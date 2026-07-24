@@ -232,153 +232,215 @@ fields:
 - name: management_add_tapped_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Add' in the addresses management screen.
 - name: management_add_tapped_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'Add' in the addresses management screen at least once
+    on the ping date.
 - name: management_tapped_sum_address
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a saved address entry in the management screen.
 - name: management_tapped_users_address
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped an address entry in the management screen at least once
+    on the ping date.
 - name: bookmark_copied
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user copied a bookmark URL to the clipboard.
 - name: bookmark_copied_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who copied a bookmark URL at least once on the ping date.
 - name: bookmark_edited
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user edited an existing bookmark.
 - name: bookmark_edited_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who edited a bookmark at least once on the ping date.
 - name: bookmark_folder_add
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user created a new bookmark folder.
 - name: bookmark_folder_add_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who created a bookmark folder at least once on the ping date.
 - name: bookmark_open
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a bookmarked page.
 - name: bookmark_open_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a bookmark at least once on the ping date.
 - name: bookmark_open_all_in_new_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Open All in New Tabs' for a bookmark folder.
 - name: bookmark_open_all_in_new_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who used 'Open All in New Tabs' for a bookmark folder at least once
+    on the ping date.
 - name: bookmark_open_all_in_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Open All in Private Tabs' for a bookmark folder.
 - name: bookmark_open_all_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who used 'Open All in Private Tabs' for a bookmark folder at least
+    once on the ping date.
 - name: bookmark_open_in_new_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a single bookmark in a new tab.
 - name: bookmark_open_in_new_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a bookmark in a new tab at least once on the ping date.
 - name: bookmark_open_in_new_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where selected bookmarks were opened in multiple new tabs simultaneously.
 - name: bookmark_open_in_new_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened multiple bookmarks in new tabs at least once on the ping
+    date.
 - name: bookmark_open_in_private_tab
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a single bookmark in a private tab.
 - name: bookmark_open_in_private_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a bookmark in a private tab at least once on the ping
+    date.
 - name: bookmark_open_in_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where selected bookmarks were opened in multiple private tabs simultaneously.
 - name: bookmark_open_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened multiple bookmarks in private tabs at least once on the
+    ping date.
 - name: bookmark_removed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user deleted a bookmark.
 - name: bookmark_removed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who removed a bookmark at least once on the ping date.
 - name: bookmark_search_icon_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the search icon in the bookmarks screen.
 - name: bookmark_search_icon_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the bookmark search icon at least once on the ping date.
 - name: bookmark_search_result_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped a search result within the bookmarks search view.
 - name: bookmark_search_result_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a bookmark search result at least once on the ping date.
 - name: bookmark_shared
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user shared a bookmarked page via the system share sheet.
 - name: bookmark_shared_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who shared a bookmark at least once on the ping date.
 - name: history_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the history panel.
 - name: history_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened the history panel at least once on the ping date.
 - name: history_opened_item
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on an individual history entry to navigate to
+    that page.
 - name: history_opened_item_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a history item at least once on the ping date.
 - name: history_opened_items_in_new_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where multiple history items were opened in new tabs simultaneously.
 - name: history_opened_items_in_new_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened history items in new tabs at least once on the ping date.
 - name: history_opened_items_in_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where history items were opened in private tabs. This value is always
+    zero in observed data.
 - name: history_opened_items_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened history items in private tabs on the ping date.
 - name: history_recent_searches_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped on a recent search entry in the history view.
 - name: history_recent_searches_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a recent search from history at least once on the ping
+    date.
 - name: history_remove_prompt_cancelled
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the history deletion confirmation prompt but
+    then cancelled the removal.
 - name: history_remove_prompt_cancelled_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who cancelled a history removal prompt at least once on the ping
+    date.
 - name: history_remove_prompt_opened
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the confirmation prompt to remove a history item.
 - name: history_remove_prompt_opened_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a history remove prompt at least once on the ping date.
 - name: history_removed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of individual history items removed by the user.
 - name: history_removed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who removed at least one history item on the ping date.
 - name: history_removed_all
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user cleared their entire browsing history.
 - name: history_removed_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who cleared all history at least once on the ping date.
 - name: history_removed_last_hour
   type: INTEGER
   mode: NULLABLE

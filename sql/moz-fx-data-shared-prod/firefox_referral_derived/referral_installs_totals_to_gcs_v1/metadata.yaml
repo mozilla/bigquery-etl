@@ -1,0 +1,28 @@
+friendly_name: Referral Installs Totals to GCS
+description: |-
+  Extracts referral_installs_totals_v1 to a CSV file in the Website team's GCS
+  bucket for the Firefox Referral Program (DENG-11237). firefox.com syncs the
+  CSV into the Postgres DB behind the referral hub page.
+
+  CSV format is `invite_code,total_installs` (no header), one file per run named
+  `referral_data-YYYY-MM-DDZHH:MM:SS.csv`. Runs daily.
+
+  BLOCKED on delivery: `--destination-bucket` / `--destination-prefix` below are
+  PLACEHOLDERS pending Steve (Website) providing the bucket path and granting
+  write access to the Airflow service account. Update before deploying.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: false
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_firefox_referral
+  arguments:
+  - --source-project=moz-fx-data-shared-prod
+  - --source-dataset=firefox_referral_derived
+  - --source-table=referral_installs_totals_v1
+  - --destination-bucket=PLACEHOLDER-firefox-referral-bucket
+  - --destination-prefix=referral-exports
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'firefox_referral_derived', 'referral_installs_totals_v1']
+bigquery: null

@@ -1,0 +1,6 @@
+[
+  {"name": "client_id", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "submission_date", "type": "DATE", "mode": "NULLABLE"},
+  {"name": "first_seen_date", "type": "DATE", "mode": "NULLABLE"},
+  {"name": "attribution_ext", "type": "JSON", "mode": "NULLABLE"}
+]

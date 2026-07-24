@@ -1,0 +1,93 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the Firefox for Android client whose Nimbus targeting context
+    was recorded.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date on which the metrics ping containing the Nimbus targeting context was received.
+- name: androidSdkVersion
+  type: INT64
+  mode: NULLABLE
+  description: The Android SDK version (API level) running on the device at the time the targeting context
+    was recorded.
+- name: appVersion
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox for Android app version string at the time the targeting context was recorded.
+- name: daysSinceInstall
+  type: INT64
+  mode: NULLABLE
+  description: The number of days elapsed since the Firefox for Android app was first installed on the device,
+    as reported in the Nimbus targeting context.
+- name: daysSinceUpdate
+  type: INT64
+  mode: NULLABLE
+  description: The number of days elapsed since the last Firefox for Android app update, as reported in
+    the Nimbus targeting context.
+- name: deviceManufacturer
+  type: STRING
+  mode: NULLABLE
+  description: The manufacturer of the Android device, extracted from the Nimbus targeting context (e.g.,
+    'samsung', 'Xiaomi').
+- name: deviceModel
+  type: STRING
+  mode: NULLABLE
+  description: The marketing model name of the Android device, extracted from the Nimbus targeting context.
+- name: eventQuery_daysOpenedInLast28
+  type: INT64
+  mode: NULLABLE
+  description: The number of days in the past 28 days that the app was opened, as captured in the Nimbus
+    targeting context event query. Used for targeting experiments based on engagement level.
+- name: installReferrerResponseUtmCampaign
+  type: STRING
+  mode: NULLABLE
+  description: The UTM campaign parameter extracted from the Google Play Store install referrer response,
+    as used in the Nimbus targeting context.
+- name: installReferrerResponseUtmContent
+  type: STRING
+  mode: NULLABLE
+  description: The UTM content parameter extracted from the Play Store install referrer, as used in the
+    Nimbus targeting context.
+- name: installReferrerResponseUtmMedium
+  type: STRING
+  mode: NULLABLE
+  description: The UTM medium parameter from the Play Store install referrer (e.g., 'organic', 'preload'),
+    as used in the Nimbus targeting context.
+- name: installReferrerResponseUtmSource
+  type: STRING
+  mode: NULLABLE
+  description: The UTM source parameter from the Play Store install referrer (e.g., 'google-play'), as used
+    in the Nimbus targeting context.
+- name: installReferrerResponseUtmTerm
+  type: STRING
+  mode: NULLABLE
+  description: The UTM search term parameter from the Play Store install referrer, as used in the Nimbus
+    targeting context.
+- name: isFirstRun
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether this targeting context snapshot was captured on the first run of the Firefox for
+    Android app after installation. True on first launch, false thereafter.
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: The two-letter ISO 639-1 language code of the device locale at the time of the targeting
+    context snapshot (e.g., 'en', 'de', 'fa').
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: The full BCP 47 locale tag of the app at the time of the targeting context snapshot (e.g.,
+    'en-US', 'fa-IR').
+- name: region
+  type: STRING
+  mode: NULLABLE
+  description: The ISO 3166-1 alpha-2 country code reported in the Nimbus targeting context, typically derived
+    from IP geolocation.
+- name: context
+  type: JSON
+  mode: NULLABLE
+  description: The full raw JSON object of the Nimbus targeting context as recorded in the metrics ping.
+    Contains all fields used by Nimbus for experiment eligibility evaluation.

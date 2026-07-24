@@ -23,105 +23,165 @@ fields:
 - mode: NULLABLE
   name: app_version
   type: INTEGER
+  description: The major version number of the Firefox for Android app used by the client group.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: The default search engine configured by the client, normalized to a canonical name such as
+    'Google', 'DuckDuckGo', or 'Other'.
 - mode: NULLABLE
   name: profile_creation_month
   type: DATE
+  description: The month (truncated to the first of the month) when the client's Firefox profile was first
+    created, used for cohort-based analysis.
 - mode: NULLABLE
   name: sponsored_tiles_enabled
   type: BOOLEAN
+  description: Whether the client had sponsored tiles (Contile) enabled on the new tab page homepage. True
+    if the Contile feature was active.
 - mode: NULLABLE
   name: tiles_enabled
   type: BOOLEAN
+  description: Whether the client had the top-sites tiles section enabled on the new tab page homepage.
 - mode: NULLABLE
   name: pocket_enabled
   type: BOOLEAN
+  description: Whether the client had the Pocket stories section enabled on the new tab page homepage.
 - mode: NULLABLE
   name: pocket_spocs_enabled
   type: BOOLEAN
+  description: Whether the client had Pocket sponsored stories (Spocs) enabled on the new tab page homepage.
 - mode: NULLABLE
   name: client_count
   type: INTEGER
+  description: The count of distinct clients belonging to this dimension group for the submission date.
 - mode: NULLABLE
   name: clients_with_ad_engagement
   type: INTEGER
+  description: The count of clients in this group who had at least one ad engagement (search ad click or
+    sponsored tile click) on the submission date.
 - mode: NULLABLE
   name: clients_with_homepage_ad_engagement
   type: INTEGER
+  description: The count of clients in this group who had at least one sponsored tile click (homepage ad
+    engagement) on the submission date.
 - mode: NULLABLE
   name: clients_with_search_ad_engagement
   type: INTEGER
+  description: The count of clients in this group who had at least one search ad click on the submission
+    date.
 - mode: NULLABLE
   name: total_uri_count_avg
   type: FLOAT
+  description: Average total URI count across clients in this group on the submission date. Null when derived
+    from a source with no URI data.
 - mode: NULLABLE
   name: total_uri_count_stddev
   type: FLOAT
+  description: Standard deviation of total URI count across clients in this group on the submission date.
 - mode: NULLABLE
   name: organic_avg
   type: FLOAT
+  description: Average organic (non-paid, non-tagged) search volume per client in this group on the submission
+    date.
 - mode: NULLABLE
   name: organic_stddev
   type: FLOAT
+  description: Standard deviation of organic search volume across clients in this group on the submission
+    date.
 - mode: NULLABLE
   name: tagged_sap_avg
   type: FLOAT
+  description: Average tagged search access point (SAP) search volume per client in this group on the submission
+    date. Tagged SAP searches are those attributed to Firefox's search engine integration.
 - mode: NULLABLE
   name: tagged_sap_stddev
   type: FLOAT
+  description: Standard deviation of tagged SAP search volume across clients in this group on the submission
+    date.
 - mode: NULLABLE
   name: tagged_follow_on_avg
   type: FLOAT
+  description: Average tagged follow-on search volume per client in this group; these are searches initiated
+    after an initial tagged SAP search.
 - mode: NULLABLE
   name: tagged_follow_on_stddev
   type: FLOAT
+  description: Standard deviation of tagged follow-on search volume across clients in this group on the
+    submission date.
 - mode: NULLABLE
   name: sap_avg
   type: FLOAT
+  description: Average total search access point (SAP) search count per client in this group on the submission
+    date.
 - mode: NULLABLE
   name: sap_stddev
   type: FLOAT
+  description: Standard deviation of total SAP search count across clients in this group on the submission
+    date.
 - mode: NULLABLE
   name: ad_click_avg
   type: FLOAT
+  description: Average number of search ad clicks per client in this group on the submission date.
 - mode: NULLABLE
   name: ad_click_stddev
   type: FLOAT
+  description: Standard deviation of search ad clicks across clients in this group on the submission date.
 - mode: NULLABLE
   name: ad_click_organic_avg
   type: FLOAT
+  description: Average number of ad clicks on organic (non-tagged) search results per client in this group
+    on the submission date.
 - mode: NULLABLE
   name: ad_click_organic_stddev
   type: FLOAT
+  description: Standard deviation of ad clicks on organic search results across clients in this group on
+    the submission date.
 - mode: NULLABLE
   name: search_with_ads_avg
   type: FLOAT
+  description: Average number of searches that returned ads (search with ads) per client in this group on
+    the submission date.
 - mode: NULLABLE
   name: search_with_ads_stddev
   type: FLOAT
+  description: Standard deviation of searches that returned ads across clients in this group on the submission
+    date.
 - mode: NULLABLE
   name: search_with_ads_organic_avg
   type: FLOAT
+  description: Average number of organic searches that returned ads per client in this group on the submission
+    date.
 - mode: NULLABLE
   name: search_with_ads_organic_stddev
   type: FLOAT
+  description: Standard deviation of organic searches that returned ads across clients in this group on
+    the submission date.
 - mode: NULLABLE
   name: homepage_visits_avg
   type: FLOAT
+  description: Average number of times clients in this group visited the Firefox for Android homepage (new
+    tab page) on the submission date.
 - mode: NULLABLE
   name: homepage_visits_stddev
   type: FLOAT
+  description: Standard deviation of homepage visit counts across clients in this group on the submission
+    date.
 - mode: NULLABLE
   name: sponsored_tile_impressions_avg
   type: FLOAT
+  description: Average number of sponsored tile impressions per client in this group on the submission date.
 - mode: NULLABLE
   name: sponsored_tile_impressions_stddev
   type: FLOAT
+  description: Standard deviation of sponsored tile impression counts across clients in this group on the
+    submission date.
 - mode: NULLABLE
   name: sponsored_tile_clicks_avg
   type: FLOAT
+  description: Average number of sponsored tile clicks per client in this group on the submission date.
 - mode: NULLABLE
   name: sponsored_tile_clicks_stddev
   type: FLOAT
+  description: Standard deviation of sponsored tile click counts across clients in this group on the submission
+    date.

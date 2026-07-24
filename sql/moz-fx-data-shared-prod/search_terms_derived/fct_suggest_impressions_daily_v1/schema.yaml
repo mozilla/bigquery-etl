@@ -56,4 +56,4 @@ fields:
 - mode: NULLABLE
   name: version
   type: STRING
-  description: The full version of Firefox installed on the device (i.e. 155)
+  description: Major version of Firefox installed on the device (e.g. "155").

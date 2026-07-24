@@ -276,7 +276,7 @@ experiment_flattened_newtab_events AS (
   WHERE
     event.category IN ('pocket', 'newtab_content')
     AND event.name IN ('impression', 'click')
-    AND dp.region IS NOT NULL
+    AND dp.region = 'DE'
     AND mozfun.map.get_key(event.extra, 'corpus_item_id') IS NOT NULL
 ),
 experiment_base AS (

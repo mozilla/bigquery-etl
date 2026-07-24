@@ -103,7 +103,8 @@ fields:
   mode: NULLABLE
   name: play_store_attribution_install_referrer_response
   type: STRING
-- description:
+- description: The Meta (Facebook) app identifier used for attribution of this install, as reported in the
+    first_session ping. Null when Meta attribution is not available for the client.
   mode: NULLABLE
   name: meta_attribution_app
   type: STRING

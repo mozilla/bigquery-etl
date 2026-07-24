@@ -658,75 +658,111 @@ fields:
 - name: tab_tray_private_mode_switched
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user switched between normal and private browsing mode via
+    the tab tray.
 - name: tab_tray_private_mode_switched_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who toggled private mode in the tab tray at least once on the ping
+    date.
 - name: app_icon_private_tab_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened a new private tab by long-pressing the app icon.
+    This value is always zero in observed data.
 - name: app_icon_private_tab_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened a private tab via the app icon long-press on the ping
+    date.
 - name: tab_tray_private_mode_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the 'New Private Tab' button in the tab tray.
 - name: tab_tray_private_mode_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped 'New Private Tab' in the tab tray at least once on the
+    ping date.
 - name: etp_setting_changed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user changed the Enhanced Tracking Protection (ETP) setting.
 - name: etp_setting_changed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who changed the ETP setting at least once on the ping date.
 - name: etp_settings
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user opened the Enhanced Tracking Protection settings screen.
 - name: etp_settings_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who visited ETP settings at least once on the ping date.
 - name: etp_shield
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the ETP shield icon in the browser toolbar.
 - name: etp_shield_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the ETP shield icon at least once on the ping date.
 - name: etp_tracker_list
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user viewed the list of trackers blocked on a given page.
 - name: etp_tracker_list_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who viewed the blocked tracker list at least once on the ping date.
 - name: default_browser_changed_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users whose default browser changed at least once on the ping date.
 - name: default_browser_changed
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the system's default browser was changed, which may reflect Firefox
+    for Android being set or unset as the default.
 - name: re_engagement_notif_shown
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where a re-engagement push notification was displayed to the user.
 - name: re_engagement_notif_shown_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who were shown a re-engagement notification at least once on the
+    ping date.
 - name: re_engagement_notif_tapped
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped a re-engagement push notification to open the
+    browser.
 - name: re_engagement_notif_tapped_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped a re-engagement notification at least once on the ping
+    date.
 - name: app_menu_customize_homepage
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped 'Customize Homepage' from the browser app menu.
 - name: app_menu_customize_homepage_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who opened homepage customization from the app menu at least once
+    on the ping date.
 - name: home_page_customize_home_clicked
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user tapped the 'Customize' button directly on the Firefox
+    home screen.
 - name: home_page_customize_home_clicked_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who tapped the home screen customize button at least once on the
+    ping date.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -735,12 +771,17 @@ fields:
 - name: top_sites_contile_click
   type: INTEGER
   mode: NULLABLE
+  description: Total count of events where the user clicked on a Contile-sponsored top site tile on the
+    home screen.
 - name: top_sites_contile_click_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who clicked a Contile-sponsored tile at least once on the ping date.
 - name: top_sites_contile_impression
   type: INTEGER
   mode: NULLABLE
+  description: Total count of Contile-sponsored top site tile impression events recorded on the home screen.
 - name: top_sites_contile_impression_users
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct users who had at least one Contile tile impression on the ping date.

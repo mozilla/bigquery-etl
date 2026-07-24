@@ -6,6 +6,8 @@ fields:
 - name: cohort_date
   type: DATE
   mode: NULLABLE
+  description: The date this client was first seen (cohort entry date), used to group clients by when they
+    installed Fenix.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -27,27 +29,44 @@ fields:
 - name: adjust_adgroup
   type: STRING
   mode: NULLABLE
+  description: The Adjust ad group that was used to source this installation, representing the specific
+    ad targeting group within a campaign.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
+  description: The name of the Adjust campaign responsible for this installation.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
+  description: The identifier of the creative material the user interacted with in the Adjust attribution
+    flow.
 - name: is_new_install
   type: BOOLEAN
   mode: NULLABLE
+  description: True if this client represents a new install on the submission date, false if they were previously
+    seen.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+  description: True if this is the first time a profile has been seen for this client, false if the profile
+    was seen before.
 - name: searches
   type: INTEGER
   mode: NULLABLE
+  description: Total number of searches performed by this client on the submission date. Null when no search
+    activity was recorded.
 - name: searches_with_ads
   type: INTEGER
   mode: NULLABLE
+  description: Number of search result pages (SERPs) that contained advertisements, recorded for this client
+    on the submission date. Null when no relevant activity was recorded.
 - name: ad_clicks
   type: INTEGER
   mode: NULLABLE
+  description: Number of ad clicks on search result pages by this client on the submission date. Null when
+    no ad clicks were recorded.
 - name: activated
   type: BOOLEAN
   mode: NULLABLE
+  description: True if this client completed the activation criteria (e.g., performed a meaningful action
+    within their first period), false otherwise.

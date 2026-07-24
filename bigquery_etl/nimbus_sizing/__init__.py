@@ -25,40 +25,6 @@ GCS_PATH = "population_sizing/drafts_latest.json"
 # 10% sample — multiply counts by 10 to estimate full population
 SAMPLE_ID_MAX = 10
 
-# All columns available in nimbus_targeting_context, aliased for use in CTEs
-_TARGETING_COLUMNS = """
-    client_info.client_id,
-    metrics.quantity.nimbus_targeting_context_firefox_version AS firefox_version,
-    metrics.boolean.nimbus_targeting_context_is_default_browser AS is_default_browser,
-    metrics.boolean.nimbus_targeting_context_is_first_startup AS is_first_startup,
-    metrics.boolean.nimbus_targeting_context_is_fx_a_enabled AS is_fx_a_enabled,
-    metrics.boolean.nimbus_targeting_context_is_fx_a_signed_in AS is_fx_a_signed_in,
-    metrics.boolean.nimbus_targeting_context_is_msix AS is_msix,
-    metrics.boolean.nimbus_targeting_context_does_app_need_pin AS does_app_need_pin,
-    metrics.boolean.nimbus_targeting_context_has_active_enterprise_policies
-        AS has_active_enterprise_policies,
-    metrics.boolean.nimbus_targeting_context_has_pinned_tabs AS has_pinned_tabs,
-    metrics.boolean.nimbus_targeting_context_uses_firefox_sync AS uses_firefox_sync,
-    metrics.boolean.nimbus_targeting_context_user_prefers_reduced_motion
-        AS user_prefers_reduced_motion,
-    metrics.quantity.nimbus_targeting_context_profile_age_created AS profile_age_created,
-    metrics.quantity.nimbus_targeting_context_memory_mb AS memory_mb,
-    metrics.quantity.nimbus_targeting_context_addresses_saved AS addresses_saved,
-    metrics.quantity.nimbus_targeting_context_total_bookmarks_count AS total_bookmarks_count,
-    metrics.string.nimbus_targeting_context_locale AS locale,
-    metrics.string.nimbus_targeting_context_region AS region,
-    metrics.string.nimbus_targeting_context_distribution_id AS distribution_id,
-    metrics.object.nimbus_targeting_context_os AS os,
-    metrics.object.nimbus_targeting_context_browser_settings AS browser_settings,
-    metrics.object.nimbus_targeting_context_attribution_data AS attribution_data,
-    metrics.object.nimbus_targeting_context_home_page_settings AS home_page_settings,
-    metrics.object.nimbus_targeting_context_addons_info AS addons_info,
-    metrics.object.nimbus_targeting_context_user_monthly_activity AS user_monthly_activity,
-    metrics.object.nimbus_targeting_environment_pref_values AS pref_values,
-    metrics.object.nimbus_targeting_environment_user_set_prefs AS user_set_prefs,
-    metrics.object.nimbus_targeting_context_primary_resolution AS primary_resolution
-"""
-
 
 def fetch_experiments(api_url: str) -> list[dict]:
     """Fetch Draft experiments that need a sizing update from Experimenter."""
@@ -89,10 +55,13 @@ def build_query(experiments: list[dict]) -> str:
     window_start = today - timedelta(days=7)
     window_end = today - timedelta(days=1)
 
+    # Select the full `metrics` struct so injected SQL can use full column paths
+    # (e.g. metrics.quantity.nimbus_targeting_context_firefox_version)
     cte = f"""\
 WITH latest_per_client AS (
   SELECT
-    {_TARGETING_COLUMNS.strip()},
+    client_info.client_id,
+    metrics,
     ROW_NUMBER() OVER (
       PARTITION BY client_info.client_id
       ORDER BY submission_timestamp DESC

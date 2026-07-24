@@ -9,12 +9,7 @@ fields:
   description: >-
     Estimated number of eligible Firefox Desktop clients based on the
     experiment's targeting expression. Derived from 10% sample × 10.
-- name: enrolled_count
-  type: INTEGER
-  mode: NULLABLE
-  description: >-
-    Projected enrolled client count at the experiment's current
-    population_percent.
+    Experimenter computes projected enrollment from this using population_percent.
 - name: warnings
   type: STRING
   mode: REPEATED

@@ -101,10 +101,8 @@ def build_results(experiments: list[dict], rows: list[dict]) -> dict:
         eligible_count = row.get(col)
         if eligible_count is None:
             continue
-        population_percent = float(exp.get("populationPercent") or 0)
         results[slug] = {
             "eligible_count": int(eligible_count),
-            "enrolled_count": round(eligible_count * population_percent / 100),
             "warnings": exp["targetingSql"].get("warnings", []),
         }
     return results
@@ -131,7 +129,6 @@ def write_to_bigquery(results: dict, project: str, dataset: str, table: str) -> 
         {
             "slug": slug,
             "eligible_count": data["eligible_count"],
-            "enrolled_count": data["enrolled_count"],
             "warnings": data["warnings"],
             "computed_at": computed_at,
         }

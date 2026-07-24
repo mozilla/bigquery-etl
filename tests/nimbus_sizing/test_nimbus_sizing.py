@@ -138,14 +138,12 @@ class TestBuildResults:
         assert results["my-experiment"]["eligible_count"] == 40000
         assert results["another-experiment"]["eligible_count"] == 95000
 
-    def test_computes_enrolled_count(self):
+    def test_does_not_include_enrolled_count(self):
+        # enrolled_count is computed by Experimenter using population_percent
+        # the ETL only outputs eligible_count
         rows = [{"my_experiment": 40000, "another_experiment": 95000}]
         results = build_results(MOCK_EXPERIMENTS, rows)
-
-        # 5% of 40000 = 2000
-        assert results["my-experiment"]["enrolled_count"] == 2000
-        # 10% of 95000 = 9500
-        assert results["another-experiment"]["enrolled_count"] == 9500
+        assert "enrolled_count" not in results["my-experiment"]
 
     def test_includes_warnings(self):
         rows = [{"my_experiment": 40000, "another_experiment": 95000}]

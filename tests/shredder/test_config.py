@@ -360,6 +360,80 @@ def test_glean_targets(mock_requests):
 
 
 @mock.patch("bigquery_etl.cli.utils.requests")
+def test_glean_targets_schema_version_and_v1_suffix(mock_requests):
+    """Match any glean_ping_ schema version but only include _v1 tables.
+
+    metrics_v1 carries the newer glean_ping_2 schema id and should still be
+    picked up. metrics_v2 carries a glean schema id too but must be ignored
+    because it does not have the _v1 suffix.
+    """
+
+    class SchemaVersionClient:
+        def list_datasets(self, project):
+            return [
+                bigquery.DatasetReference(project, name)
+                for name in [
+                    "firefox_desktop_stable",
+                    "firefox_desktop_derived",
+                ]
+            ]
+
+        def list_tables(self, dataset_ref):
+            if dataset_ref.dataset_id == "firefox_desktop_stable":
+                table_ids = [
+                    ("metrics_v1", {"schema_id": "glean_ping_2"}),
+                    ("metrics_v2", {"schema_id": "glean_ping_2"}),  # ignored: _v2 suffix
+                    ("deletion_request_v1", {"schema_id": "glean_ping_2"}),
+                ]
+            elif dataset_ref.dataset_id == "firefox_desktop_derived":
+                table_ids = ["clients_daily_v1"]
+            else:
+                raise Exception(f"unexpected dataset: {dataset_ref}")
+            return [
+                bigquery.table.TableListItem(
+                    {
+                        "tableReference": bigquery.TableReference(
+                            dataset_ref, table_id[0]
+                        ).to_api_repr(),
+                        "labels": table_id[1],
+                    }
+                )
+                for table_id in [
+                    t if isinstance(t, tuple) else (t, {}) for t in table_ids
+                ]
+            ]
+
+        def get_table(self, table_ref):
+            table = bigquery.Table(table_ref)
+            table._properties[table._PROPERTY_TO_API_FIELD["type"]] = "TABLE"
+            if table.dataset_id.endswith("stable"):
+                table.schema = [
+                    bigquery.SchemaField(
+                        "client_info",
+                        "RECORD",
+                        fields=[bigquery.SchemaField("client_id", "STRING")],
+                    )
+                ]
+            else:
+                table.schema = [bigquery.SchemaField("client_id", "STRING")]
+            return table
+
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    with ThreadPool(1) as pool:
+        targets = find_glean_targets(pool, SchemaVersionClient())
+
+    target_tables = {target.table for target in targets}
+
+    # metrics_v1 has the glean_ping_2 schema id and the _v1 suffix, so it's shredded
+    assert "firefox_desktop_stable.metrics_v1" in target_tables
+    # metrics_v2 has a glean schema id but the _v2 suffix, so it's ignored
+    assert "firefox_desktop_stable.metrics_v2" not in target_tables
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
 def test_glean_targets_override(mock_requests):
     """Targets in GLEAN_DERIVED_OVERRIDES should override the target in find_glean_targets."""
 

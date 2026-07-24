@@ -799,8 +799,9 @@ def find_glean_targets(
     def stable_tables_by_schema(schema_id_prefix):
         """Return _v1 stable tables whose schema id matches the given prefix.
 
-        Matches any schema version (glean_ping_1, glean_ping_2, ...) but
-        only includes _v1 tables; _v2+ tables are ignored.
+        Matches any schema version (glean_ping_1, glean_ping_2, ...) but only includes _v1 tables;
+        _v2+ tables are ignored. This is for https://mozilla-hub.atlassian.net/browse/DENG-8494
+        where the _v1 tables are still the user-facing data.
         """
         return [
             table

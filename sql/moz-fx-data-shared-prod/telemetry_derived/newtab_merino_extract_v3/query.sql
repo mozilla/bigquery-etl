@@ -7,7 +7,8 @@ WITH private_pings AS (
       metrics.string.newtab_content_surface_id,
       NULL,
       metrics.string.newtab_content_country
-    ) AS normalized_country_code
+    ) AS normalized_country_code,
+    NULLIF(metrics.string.newtab_content_experiment_branch, '') AS experiment_branch
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
   WHERE
@@ -32,6 +33,7 @@ flattened_newtab_events AS (
     document_id,
     submission_timestamp,
     normalized_country_code,
+    experiment_branch,
     unnested_events.name AS event_name,
     mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id,
     SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'position') AS INT64) AS position,
@@ -53,6 +55,7 @@ flattened_newtab_events AS (
 raw_grouped_totals AS (
   SELECT
     normalized_country_code,
+    experiment_branch,
     corpus_item_id,
     position,
     format,
@@ -64,6 +67,7 @@ raw_grouped_totals AS (
     flattened_newtab_events
   GROUP BY
     normalized_country_code,
+    experiment_branch,
     corpus_item_id,
     position,
     format,
@@ -88,6 +92,7 @@ propensity_weights AS (
 section_events AS (
   SELECT
     rw.normalized_country_code,
+    rw.experiment_branch,
     rw.corpus_item_id,
     rw.raw_impression_count,
     -- apply propensity scaling to impressions only
@@ -130,6 +135,7 @@ section_events AS (
 non_section_events AS (
   SELECT
     normalized_country_code,
+    experiment_branch,
     corpus_item_id,
     raw_impression_count,
     raw_impression_count AS adjusted_impression_count, -- pass through unchanged
@@ -157,6 +163,7 @@ aggregated_events AS (
   SELECT
     fe.corpus_item_id,
     fe.normalized_country_code,
+    fe.experiment_branch,
     SAFE_CAST(SUM(adjusted_impression_count) AS INT64) AS impression_count,
     SUM(click_count) AS click_count,
     SUM(report_count) AS report_count
@@ -164,7 +171,8 @@ aggregated_events AS (
     combined_events fe
   GROUP BY
     1,
-    2
+    2,
+    3
 ),
 /* Aggregate clicks, impressions, and reports across all countries. */
 global_aggregates AS (
@@ -184,9 +192,9 @@ country_aggregates AS (
   SELECT
     corpus_item_id,
     normalized_country_code AS region,
-    impression_count,
-    click_count,
-    report_count
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count,
+    SUM(report_count) AS report_count
   FROM
     aggregated_events
   WHERE
@@ -206,6 +214,26 @@ country_aggregates AS (
       'ES',
       'IT'
     )
+  GROUP BY
+    corpus_item_id,
+    region
+),
+/* Add de_DE experiment-specific rows using the existing region field. */
+experiment_region_aggregates AS (
+  SELECT
+    corpus_item_id,
+    CONCAT(normalized_country_code, '-', experiment_branch) AS region,
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count,
+    SUM(report_count) AS report_count
+  FROM
+    aggregated_events
+  WHERE
+    experiment_branch IS NOT NULL
+    AND normalized_country_code = 'DE'
+  GROUP BY
+    corpus_item_id,
+    region
 ),
 /* Combine the "global" (no region) with the "regional" breakdown. */
 combined_results AS (
@@ -218,6 +246,11 @@ combined_results AS (
     *
   FROM
     country_aggregates
+  UNION ALL
+  SELECT
+    *
+  FROM
+    experiment_region_aggregates
 )
 SELECT
   *
@@ -226,8 +259,7 @@ FROM
 ORDER BY
   impression_count DESC
 LIMIT
-  -- This LIMIT was derived from the 4 MB payload size cap in Merino, the observed average
-  -- record size of ~113 bytes, and recall measurements. At ~20k rows the JSON blob stays
-  -- well below 4 MB while still retaining >99.9% of fresh impressions globally. Smaller
-  -- countries with lower traffic, like BE, still maintain an acceptable recall of about 97%.
-  20000;
+  -- This LIMIT was derived from the 5 MB payload size cap in Merino, the observed average
+  -- record size of ~113 bytes, and recall measurements. At ~25k rows the JSON blob stays
+  -- under 5 MB while preserving more lower-impression rows after adding DE experiment rows.
+  25000;

@@ -25,6 +25,5 @@ fields:
 - mode: NULLABLE
   name: region
   type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: region
+  description: The two-letter ISO 3166-1 country code used by Merino regional ranking, or for de_DE
+    experiment-specific rows, the DE region suffixed with the experiment branch.

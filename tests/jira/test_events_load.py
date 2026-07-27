@@ -2,6 +2,7 @@ import json
 from datetime import date
 from unittest.mock import MagicMock, patch
 
+import pytest
 from google.cloud import bigquery
 
 from bigquery_etl.jira.events import EVENT_SCHEMA, EventsBigQueryAPI, events_on_date
@@ -80,7 +81,7 @@ def test_load_with_partition_uses_the_decorator():
     assert captured["table"] == f"{DEST}$20260727"
 
 
-def test_load_defaults_to_write_truncate_with_the_event_schema():
+def test_load_always_write_truncates_with_the_event_schema():
     _, captured = _run_load(destination=DEST, events=iter([]))
     config = captured["job_config"]
 
@@ -95,12 +96,15 @@ def test_load_defaults_to_write_truncate_with_the_event_schema():
     assert config.clustering_fields == ["project_key", "issue_key"]
 
 
-def test_load_with_write_append_appends():
-    _, captured = _run_load(destination=DEST, events=iter([]), write_append=True)
-    assert (
-        captured["job_config"].write_disposition
-        == bigquery.WriteDisposition.WRITE_APPEND
-    )
+def test_load_has_no_append_mode():
+    """There is no way to leave the target holding a mix of old and new rows.
+
+    Both callers WRITE_TRUNCATE exactly what they fetched - the base table for a
+    seed, one partition for a daily run - so an append mode could only ever produce
+    indistinguishable duplicates.
+    """
+    with pytest.raises(TypeError, match="write_append"):
+        _run_load(destination=DEST, events=iter([]), write_append=True)
 
 
 def test_load_of_zero_events_still_issues_a_truncating_load():

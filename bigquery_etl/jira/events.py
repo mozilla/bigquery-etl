@@ -284,21 +284,20 @@ class EventsBigQueryAPI:
         destination: str,
         events: Iterable[dict],
         date_partition: Optional[str] = None,
-        write_append: bool = False,
     ) -> int:
         """Stream events through a temporary NDJSON file into BigQuery.
 
         Events are written to disk as they are produced so that memory stays
         constant regardless of how many there are. Returns the row count.
+
+        Always WRITE_TRUNCATE, against exactly what the caller fetched: the base
+        table for a seed, one partition for a daily run. There is no append mode,
+        so a load can never leave the target holding a mix of old and new rows.
         """
         job_config = bigquery.LoadJobConfig(
             schema=EVENT_SCHEMA,
             autodetect=False,
-            write_disposition=(
-                bigquery.WriteDisposition.WRITE_APPEND
-                if write_append
-                else bigquery.WriteDisposition.WRITE_TRUNCATE
-            ),
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
             source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
             time_partitioning=bigquery.TimePartitioning(
                 type_=bigquery.TimePartitioningType.DAY, field="event_ts"
@@ -385,39 +384,6 @@ def build_parser(destination: str, base_jira_url: str, jql: str) -> ArgumentPars
             "for the initial load."
         ),
     )
-    parser.add_argument(
-        "--since",
-        dest="since",
-        default=None,
-        help="With --seed, only issues created on or after this date (YYYY-MM-DD).",
-    )
-    parser.add_argument(
-        "--until",
-        dest="until",
-        default=None,
-        help="With --seed, only issues created before this date (YYYY-MM-DD).",
-    )
-    parser.add_argument(
-        "--write-append",
-        dest="write_append",
-        action="store_true",
-        help=(
-            "Append instead of truncating. Use for the second and later chunks of a "
-            "chunked seed; re-running a chunk duplicates rows, so restart from the "
-            "failed chunk onward."
-        ),
-    )
-    parser.add_argument(
-        "--write-truncate",
-        dest="write_truncate",
-        action="store_true",
-        help=(
-            "Truncate the whole table before loading. Required to make the intent "
-            "explicit for the first chunk of a chunked seed; a bounded seed "
-            "(--since/--until) refuses to run without exactly one of "
-            "--write-truncate or --write-append."
-        ),
-    )
     # Deliberately not a flag. Every mode WRITE_TRUNCATEs its whole target -- the
     # base table for --seed, one partition for --date -- so a narrower scope would
     # silently drop everything it did not fetch. There is no value a caller could
@@ -427,14 +393,9 @@ def build_parser(destination: str, base_jira_url: str, jql: str) -> ArgumentPars
     return parser
 
 
-def seed_jql(jql: str, since: Optional[str], until: Optional[str]) -> str:
-    """Build JQL for a seed run, optionally bounded by issue creation date."""
-    clauses = [f"({jql})"]
-    if since:
-        clauses.append(f'created >= "{since}"')
-    if until:
-        clauses.append(f'created < "{until}"')
-    return " AND ".join(clauses)
+def seed_jql(jql: str) -> str:
+    """Build JQL for a seed run: the table's whole scope, unbounded."""
+    return f"({jql})"
 
 
 class JiraEventsBigQueryIntegration:
@@ -446,7 +407,12 @@ class JiraEventsBigQueryIntegration:
 
     @staticmethod
     def _validate(args) -> None:
-        """Reject argument combinations that would silently lose or duplicate data.
+        """Require exactly one mode, and fail on a malformed date before doing work.
+
+        There are only two modes, and each WRITE_TRUNCATEs exactly what it fetched:
+        `--seed` rebuilds the base table from full history, `--date` rebuilds one
+        partition. Neither takes any modifier, so there is no unsafe combination left
+        to guard against - the CLI cannot express one.
 
         `args` must carry every one of these attributes; there is no default for any
         of them, and a missing one is an `AttributeError` at run time. Use
@@ -455,61 +421,22 @@ class JiraEventsBigQueryIntegration:
         - `destination` (str) — fully qualified `project.dataset.table`.
         - `base_jira_url` (str) — Jira instance root.
         - `jql` (str) — the table's scope. Fixed per table by `build_parser`; there
-          is no flag to override it, because every mode WRITE_TRUNCATEs its whole
-          target and a narrower scope would silently drop what it did not fetch.
+          is no flag to override it, because a narrower scope would silently drop
+          what it did not fetch.
         - `date` (str | None) — `YYYY-MM-DD`, the partition to rebuild.
-        - `seed` (bool), `since` (str | None), `until` (str | None).
-        - `write_append` (bool), `write_truncate` (bool).
-
-        `date`, `since`, and `until` are strings, not `date` objects; `date` is parsed
-        here so a malformed value fails before any network or BigQuery call.
+        - `seed` (bool).
         """
-        if args.seed:
-            if args.date:
-                raise ValueError("--seed and --date are mutually exclusive")
-            if args.since or args.until:
-                if args.write_append == args.write_truncate:
-                    raise ValueError(
-                        "a bounded seed (--since/--until) must pass exactly one of "
-                        "--write-append or --write-truncate: it would otherwise default to "
-                        "WRITE_TRUNCATE on the whole table while loading only the bounded "
-                        "subset, discarding history it never fetched"
-                    )
-            elif args.write_append:
-                raise ValueError(
-                    "an unbounded --seed cannot use --write-append: it fetches the "
-                    "table's whole history, so appending it on top of the rows already "
-                    "there duplicates every event, and the duplicates are "
-                    "indistinguishable (same issue_key, event_id and field). Drop "
-                    "--write-append to rebuild with WRITE_TRUNCATE, or bound this chunk "
-                    "with --since/--until"
-                )
-            return
+        if args.seed and args.date:
+            raise ValueError("--seed and --date are mutually exclusive")
 
-        if not args.date:
+        if not args.seed and not args.date:
             raise ValueError("--date is required unless --seed is given")
 
-        seed_only = [
-            name
-            for name, value in (
-                ("--since", args.since),
-                ("--until", args.until),
-                ("--write-append", args.write_append),
-                ("--write-truncate", args.write_truncate),
-            )
-            if value
-        ]
-        if seed_only:
-            raise ValueError(
-                f"cannot combine --date with {', '.join(seed_only)}; those flags "
-                "only apply to --seed and would be silently ignored, because a --date "
-                "run always WRITE_TRUNCATEs exactly the one partition it just fetched"
-            )
-
-        # Parse here so a malformed --date fails before any network or BigQuery
-        # call. No staleness check is needed: `daily_jql` has no upper bound, so
-        # re-running an arbitrarily old date still rebuilds its partition completely.
-        datetime.strptime(args.date, "%Y-%m-%d")
+        if args.date:
+            # Parse here so a malformed --date fails before any network or BigQuery
+            # call. No staleness check is needed: `daily_jql` has no upper bound, so
+            # re-running an arbitrarily old date rebuilds its partition completely.
+            datetime.strptime(args.date, "%Y-%m-%d")
 
     def run(self, args) -> None:
         """Run the Jira events integration with parsed CLI arguments.
@@ -523,18 +450,13 @@ class JiraEventsBigQueryIntegration:
         bq_api = EventsBigQueryAPI()
 
         if args.seed:
-            jql = seed_jql(args.jql, args.since, args.until)
+            jql = seed_jql(args.jql)
             self.logger.info("Seeding with JQL: %s", jql)
 
             api = JiraEventsAPI(client, jql)
             events = api.iter_events(api.get_issues())
 
-            bq_api.load_events(
-                args.destination,
-                events=events,
-                date_partition=None,
-                write_append=args.write_append,
-            )
+            bq_api.load_events(args.destination, events=events, date_partition=None)
         else:
             target_date = datetime.strptime(args.date, "%Y-%m-%d").date()
             jql = daily_jql(args.jql, target_date)
@@ -547,7 +469,6 @@ class JiraEventsBigQueryIntegration:
                 args.destination,
                 events=events,
                 date_partition=target_date.strftime("%Y%m%d"),
-                write_append=False,
             )
 
         self.logger.info("End of Jira Events BigQuery Integration")

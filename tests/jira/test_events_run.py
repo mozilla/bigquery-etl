@@ -21,10 +21,6 @@ def args(**overrides):
         "jql": DEFAULT_JQL,
         "date": "2026-07-27",
         "seed": False,
-        "since": None,
-        "until": None,
-        "write_append": False,
-        "write_truncate": False,
     }
     return Namespace(**{**base, **overrides})
 
@@ -42,20 +38,8 @@ def test_daily_jql_has_a_lower_bound_only():
     assert "updated <" not in daily_jql(DEFAULT_JQL, date(2026, 7, 27))
 
 
-def test_seed_jql_without_bounds_is_the_bare_jql():
-    assert seed_jql(DEFAULT_JQL, None, None) == "(project = SREIN)"
-
-
-def test_seed_jql_with_bounds_filters_on_created():
-    assert seed_jql(DEFAULT_JQL, "2025-05-01", "2025-06-01") == (
-        '(project = SREIN) AND created >= "2025-05-01" AND created < "2025-06-01"'
-    )
-
-
-def test_seed_jql_with_only_since():
-    assert seed_jql(DEFAULT_JQL, "2025-05-01", None) == (
-        '(project = SREIN) AND created >= "2025-05-01"'
-    )
+def test_seed_jql_is_the_whole_scope_unbounded():
+    assert seed_jql(DEFAULT_JQL) == "(project = SREIN)"
 
 
 def _run(namespace):
@@ -88,7 +72,6 @@ def test_daily_run_filters_to_the_target_partition():
 
     kwargs = bq.load_events.call_args.kwargs
     assert kwargs["date_partition"] == "20260727"
-    assert kwargs["write_append"] is False
     loaded = list(kwargs["events"])
     assert [e["event_ts"] for e in loaded] == ["2026-07-27T10:00:00+00:00"]
 
@@ -103,64 +86,14 @@ def test_seed_run_loads_every_event_into_the_base_table():
     assert len(list(kwargs["events"])) == 2, "seed must not filter by date"
 
 
-def test_seed_with_write_append_passes_it_through():
-    api_cls, bq = _run(
-        args(seed=True, date=None, since="2025-06-01", write_append=True)
-    )
-
-    assert api_cls.call_args.args[1] == '(project = SREIN) AND created >= "2025-06-01"'
-    assert bq.load_events.call_args.kwargs["write_append"] is True
-
-
-def test_seed_with_write_truncate_passes_write_append_false():
-    _, bq = _run(args(seed=True, date=None, since="2025-06-01", write_truncate=True))
-    assert bq.load_events.call_args.kwargs["write_append"] is False
-
-
 def test_seed_and_date_together_is_rejected():
     with pytest.raises(ValueError, match="mutually exclusive"):
         JiraEventsBigQueryIntegration().run(args(seed=True))
 
 
-def test_bounded_seed_without_disposition_is_rejected():
-    namespace = args(seed=True, date=None, since="2025-06-01")
-    with pytest.raises(ValueError, match="exactly one of"):
-        JiraEventsBigQueryIntegration().run(namespace)
-
-
-def test_bounded_seed_with_until_only_without_disposition_is_rejected():
-    namespace = args(seed=True, date=None, until="2025-06-01")
-    with pytest.raises(ValueError, match="exactly one of"):
-        JiraEventsBigQueryIntegration().run(namespace)
-
-
-def test_bounded_seed_with_both_dispositions_is_rejected():
-    namespace = args(
-        seed=True,
-        date=None,
-        since="2025-06-01",
-        write_append=True,
-        write_truncate=True,
-    )
-    with pytest.raises(ValueError, match="exactly one of"):
-        JiraEventsBigQueryIntegration().run(namespace)
-
-
 def test_daily_run_requires_a_date():
     with pytest.raises(ValueError, match="--date"):
         JiraEventsBigQueryIntegration().run(args(date=None))
-
-
-def test_unbounded_seed_with_write_append_is_rejected():
-    """An unbounded seed fetches all history; appending it duplicates the table."""
-    namespace = args(seed=True, date=None, write_append=True)
-    with pytest.raises(ValueError, match="unbounded --seed"):
-        JiraEventsBigQueryIntegration().run(namespace)
-
-
-def test_unbounded_seed_with_write_truncate_is_allowed():
-    _, bq = _run(args(seed=True, date=None, write_truncate=True))
-    assert bq.load_events.call_args.kwargs["write_append"] is False
 
 
 def test_an_old_date_is_accepted_and_rebuilds_its_partition_completely():
@@ -177,20 +110,6 @@ def test_an_old_date_is_accepted_and_rebuilds_its_partition_completely():
     # issues touched again in the year since are still selected.
     assert api_cls.call_args.args[1] == '(project = SREIN) AND updated >= "2025-07-26"'
     assert bq.load_events.call_args.kwargs["date_partition"] == "20250727"
-
-
-@pytest.mark.parametrize(
-    "override",
-    [
-        {"since": "2025-06-01"},
-        {"until": "2025-06-01"},
-        {"write_append": True},
-        {"write_truncate": True},
-    ],
-)
-def test_seed_only_arguments_are_rejected_alongside_date(override):
-    with pytest.raises(ValueError, match="only apply to --seed"):
-        JiraEventsBigQueryIntegration().run(args(**override))
 
 
 def test_jql_is_not_an_overridable_flag():
@@ -216,9 +135,5 @@ def test_build_parser_supplies_every_attribute_validate_requires():
         "jql",
         "date",
         "seed",
-        "since",
-        "until",
-        "write_append",
-        "write_truncate",
     }
     assert required <= set(vars(parsed))

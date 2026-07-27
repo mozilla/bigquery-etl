@@ -2,6 +2,30 @@
 
 **Note** For large sets of data, follow the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills) for backfills.
 
+## Overview
+
+A backfill reprocesses historical partitions of a table, for example after a query is fixed or
+upstream data is corrected, so the older data reflects the change. Scheduled runs only produce new
+partitions going forward, so past data has to be rewritten separately.
+
+You start a managed backfill by editing a `backfill.yaml` file in the table's directory and opening
+a pull request. Most of the process is automated, and you wait for Slack notifications between steps.
+The process is:
+
+1. Create an entry in the table's `backfill.yaml` and open a PR (status `Initiate`). See [Initiating the backfill](#initiating-the-backfill).
+2. Once merged, processing starts automatically (in about an hour) and writes the new data to a temporary staging table, not to production.
+3. Validate the staged data yourself to confirm it looks right.
+   - If the staged data is wrong, or you otherwise decide not to proceed, set the status to `Cancelled` instead so nothing is swapped and the staging table expires on its own.
+4. Complete the backfill by opening a second PR that sets the status to `Complete`. On merge, production is backed up and the staged data is swapped in. See [Completing the backfill](#completing-the-backfill).
+5. You are notified when the swap is done.
+
+Watch progress in the `#dataops-alerts` Slack channel (join it and list yourself as a watcher on
+the backfill entry). If you are not sure whether your change even needs a backfill, or your table
+is not a standard day-partitioned table, ask in `#data-help` before starting.
+
+Some changes do not need a managed backfill at all, see the next section. Everything after that
+covers the managed workflow and its special cases.
+
 ## Changes that do not require a backfill
 
 Some tables rebuild their whole history on every scheduled run, so a query change propagates across the full window on the next scheduled run with no managed backfill. This applies when **both** of these hold (otherwise, use a managed backfill as described below):
@@ -399,9 +423,11 @@ on `complete`, those partitions are copied into production individually. Require
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
    - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
 
-2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
+2. If the staging table is wrong, or you otherwise decide not to complete the backfill, set the entry's status to `Cancelled` in a Pull Request rather than `Complete`. Nothing is swapped into production, and the staging table is left to expire on its own (default 30 days). Do not manually delete it. To retry, create a fresh entry once the fix is ready.
 
-3. You will be notified when swapping is complete.
+3. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
+
+4. You will be notified when swapping is complete.
 
 
 **Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.

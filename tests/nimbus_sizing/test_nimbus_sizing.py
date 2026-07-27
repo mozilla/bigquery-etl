@@ -227,18 +227,22 @@ class TestWriteToGCS:
         assert self.RESULTS["my-experiment"] == uploaded["v1"]["my-experiment"]
 
     def test_writes_dated_and_latest_files(self):
-        """Writes dated archive and latest file matching enrollment_funnel pattern."""
+        """Writes dated archive and copies to latest matching enrollment_funnel pattern."""
         mock_blob = MagicMock()
-        mock_blob.exists.return_value = False
         with patch("google.cloud.storage.Client") as mock_client:
             mock_bucket = mock_client.return_value.bucket.return_value
             mock_bucket.blob.return_value = mock_blob
             self._call(mock_client)
 
+        # dated file uploaded via blob().upload_from_string
         blob_paths = [call[0][0] for call in mock_bucket.blob.call_args_list]
-        assert any("2026-07-27" in p for p in blob_paths), "dated file not written"
-        assert any("latest" in p for p in blob_paths), "latest file not written"
-        assert all("v1" in p for p in blob_paths), "v1 not in GCS paths"
+        assert any("2026-07-27" in p and "v1" in p for p in blob_paths)
+
+        # latest file written via copy_blob — third positional arg is dest path
+        copy_calls = mock_bucket.copy_blob.call_args_list
+        assert len(copy_calls) == 1
+        dest_path = copy_calls[0][0][2]
+        assert "latest" in dest_path and "v1" in dest_path
 
     def test_writes_only_current_run_results(self):
         """GCS file is a pure snapshot of this run — Experimenter owns staleness logic."""

@@ -2629,6 +2629,34 @@ fields:
         resource, to measure how often pages rely on this pattern across channels.
 
         '
+    - name: devtools_localmode_mappings_add_permanent_from_notification
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a permanent Local Mappings was added from the
+        file:// URL notification.
+
+        '
+    - name: devtools_localmode_mappings_add_permanent_from_options
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a permanent Local Mappings was added from the
+        Settings panel.
+
+        '
+    - name: devtools_localmode_mappings_add_transient
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a transient Local Mappings was added from the
+        file:// URL notification.
+
+        '
+    - name: layout_global_stylesheet_not_found
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Increments each time one of the GlobalStyleSheetCache stylesheets
+        are not found in the omnijar. See bug 1681745 and bug 2056926.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -11216,6 +11244,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The value of the "nimbus.qa.int-user" pref.
+
+        '
+    - name: devtools_localmode_mappings_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of Local Mode mappings currently used when opening DevTools.
 
         '
   - name: custom_distribution

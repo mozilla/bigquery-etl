@@ -2912,7 +2912,15 @@ SELECT
       metrics.counter.use_counter_css_doc_css_line_clamp,
       metrics.counter.use_counter_css_page_css_line_clamp,
       metrics.counter.use_counter_css_doc_css_margin_trim,
-      metrics.counter.use_counter_css_page_css_margin_trim
+      metrics.counter.use_counter_css_page_css_margin_trim,
+      metrics.counter.use_counter_css_doc_css_font_width,
+      metrics.counter.use_counter_css_page_css_font_width,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_moz_get_all
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5848,7 +5856,15 @@ SELECT
       metrics.counter.use_counter_css_doc_css_line_clamp,
       metrics.counter.use_counter_css_page_css_line_clamp,
       metrics.counter.use_counter_css_doc_css_margin_trim,
-      metrics.counter.use_counter_css_page_css_margin_trim
+      metrics.counter.use_counter_css_page_css_margin_trim,
+      metrics.counter.use_counter_css_doc_css_font_width,
+      metrics.counter.use_counter_css_page_css_font_width,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_moz_get_all
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8784,7 +8800,15 @@ SELECT
       metrics.counter.use_counter_css_doc_css_line_clamp,
       metrics.counter.use_counter_css_page_css_line_clamp,
       metrics.counter.use_counter_css_doc_css_margin_trim,
-      metrics.counter.use_counter_css_page_css_margin_trim
+      metrics.counter.use_counter_css_page_css_margin_trim,
+      metrics.counter.use_counter_css_doc_css_font_width,
+      metrics.counter.use_counter_css_page_css_font_width,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_moz_get_all
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11720,7 +11744,15 @@ SELECT
       metrics.counter.use_counter_css_doc_css_line_clamp,
       metrics.counter.use_counter_css_page_css_line_clamp,
       metrics.counter.use_counter_css_doc_css_margin_trim,
-      metrics.counter.use_counter_css_page_css_margin_trim
+      metrics.counter.use_counter_css_page_css_margin_trim,
+      metrics.counter.use_counter_css_doc_css_font_width,
+      metrics.counter.use_counter_css_page_css_font_width,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_moz_get_all
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14656,7 +14688,15 @@ SELECT
       metrics.counter.use_counter_css_doc_css_line_clamp,
       metrics.counter.use_counter_css_page_css_line_clamp,
       metrics.counter.use_counter_css_doc_css_margin_trim,
-      metrics.counter.use_counter_css_page_css_margin_trim
+      metrics.counter.use_counter_css_page_css_margin_trim,
+      metrics.counter.use_counter_css_doc_css_font_width,
+      metrics.counter.use_counter_css_page_css_font_width,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all,
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_moz_get_all
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

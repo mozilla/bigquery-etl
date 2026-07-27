@@ -348,6 +348,17 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the profile has any pinned tabs in any open window.
+    - name: nimbus_targeting_context_launch_on_login_allowed_by_policy
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether launch on login has not been overridden by enterprise
+        policy, Task Manager, or OS Settings for this Firefox installation.
+
+        '
+    - name: nimbus_targeting_context_launch_on_login_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Is launch on login enabled for this Firefox installation?
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

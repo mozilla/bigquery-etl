@@ -21955,6 +21955,62 @@ fields:
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_css_doc_css_font_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used the CSS property font-width. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_css_page_css_font_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property font-width. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_doc_idbindex_moz_get_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used IDBIndexMozGetAll. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used IDBIndexMozGetAllKeys. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_doc_idbobject_store_moz_get_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used IDBObjectStoreMozGetAll. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_idbindex_moz_get_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used IDBIndexMozGetAll. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_idbindex_moz_get_all_keys
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used IDBIndexMozGetAllKeys. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_idbobject_store_moz_get_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used IDBObjectStoreMozGetAll. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

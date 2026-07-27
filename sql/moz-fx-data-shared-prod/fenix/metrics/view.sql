@@ -401,7 +401,11 @@ SELECT
       metrics.counter.glean_migration_migrated_metrics,
       metrics.counter.network_no_vary_search_header_received,
       metrics.counter.network_no_vary_search_parse_error,
-      metrics.counter.media_muted_by_content_attribute_runtime
+      metrics.counter.media_muted_by_content_attribute_runtime,
+      metrics.counter.devtools_localmode_mappings_add_permanent_from_notification,
+      metrics.counter.devtools_localmode_mappings_add_permanent_from_options,
+      metrics.counter.devtools_localmode_mappings_add_transient,
+      metrics.counter.layout_global_stylesheet_not_found
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1253,7 +1257,8 @@ SELECT
       metrics.quantity.terms_of_use_version,
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
-      metrics.quantity.nimbus_qa_prefs_int_user_value
+      metrics.quantity.nimbus_qa_prefs_int_user_value,
+      metrics.quantity.devtools_localmode_mappings_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -2650,7 +2655,11 @@ SELECT
       metrics.counter.glean_migration_migrated_metrics,
       metrics.counter.network_no_vary_search_header_received,
       metrics.counter.network_no_vary_search_parse_error,
-      metrics.counter.media_muted_by_content_attribute_runtime
+      metrics.counter.media_muted_by_content_attribute_runtime,
+      metrics.counter.devtools_localmode_mappings_add_permanent_from_notification,
+      metrics.counter.devtools_localmode_mappings_add_permanent_from_options,
+      metrics.counter.devtools_localmode_mappings_add_transient,
+      metrics.counter.layout_global_stylesheet_not_found
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3502,7 +3511,8 @@ SELECT
       metrics.quantity.terms_of_use_version,
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
-      metrics.quantity.nimbus_qa_prefs_int_user_value
+      metrics.quantity.nimbus_qa_prefs_int_user_value,
+      metrics.quantity.devtools_localmode_mappings_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -4919,7 +4929,11 @@ SELECT
       metrics.counter.glean_migration_migrated_metrics,
       metrics.counter.network_no_vary_search_header_received,
       metrics.counter.network_no_vary_search_parse_error,
-      metrics.counter.media_muted_by_content_attribute_runtime
+      metrics.counter.media_muted_by_content_attribute_runtime,
+      metrics.counter.devtools_localmode_mappings_add_permanent_from_notification,
+      metrics.counter.devtools_localmode_mappings_add_permanent_from_options,
+      metrics.counter.devtools_localmode_mappings_add_transient,
+      metrics.counter.layout_global_stylesheet_not_found
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5771,7 +5785,8 @@ SELECT
       metrics.quantity.terms_of_use_version,
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
-      metrics.quantity.nimbus_qa_prefs_int_user_value
+      metrics.quantity.nimbus_qa_prefs_int_user_value,
+      metrics.quantity.devtools_localmode_mappings_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,

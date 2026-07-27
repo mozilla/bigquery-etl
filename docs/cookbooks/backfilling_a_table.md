@@ -12,7 +12,7 @@ You start a managed backfill by editing a `backfill.yaml` file in the table's di
 a pull request. Most of the process is automated, and you wait for Slack notifications between steps.
 The process is:
 
-1. Create an entry in the table's `backfill.yaml` and open a PR (status `Initiate`). See [Initiating the backfill](#initiating-the-backfill).
+1. Create an entry in the table's `backfill.yaml` (using `bqetl backfill create`) and open a PR. See [Initiating the backfill](#initiating-the-backfill).
 2. Once merged, processing starts automatically (in about an hour) and writes the new data to a temporary staging table, not to production.
 3. Validate the staged data yourself to confirm it looks right.
    - If the staged data is wrong, or you otherwise decide not to proceed, set the status to `Cancelled` instead so nothing is swapped and the staging table expires on its own.
@@ -23,8 +23,7 @@ Watch progress in the `#dataops-alerts` Slack channel (join it and list yourself
 the backfill entry). If you are not sure whether your change even needs a backfill, or your table
 is not a standard day-partitioned table, ask in `#data-help` before starting.
 
-Some changes do not need a managed backfill at all, see the next section. Everything after that
-covers the managed workflow and its special cases.
+Some changes do not need a managed backfill at all, see [Changes that do not require a backfill](#changes-that-do-not-require-a-backfill).
 
 ## Changes that do not require a backfill
 
@@ -422,12 +421,11 @@ on `complete`, those partitions are copied into production individually. Require
 
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
    - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
+   - If the staging table is wrong, or you otherwise decide not to complete the backfill, set the entry's status to `Cancelled` in a Pull Request rather than `Complete`. Nothing is swapped into production, and the staging table is left to expire on its own (default 30 days). Do not manually delete it. To retry, create a fresh entry once the fix is ready.
 
-2. If the staging table is wrong, or you otherwise decide not to complete the backfill, set the entry's status to `Cancelled` in a Pull Request rather than `Complete`. Nothing is swapped into production, and the staging table is left to expire on its own (default 30 days). Do not manually delete it. To retry, create a fresh entry once the fix is ready.
+2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
 
-3. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
-
-4. You will be notified when swapping is complete.
+3. You will be notified when swapping is complete.
 
 
 **Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.

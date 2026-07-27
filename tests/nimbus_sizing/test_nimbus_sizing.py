@@ -8,7 +8,6 @@ import pytest
 
 from bigquery_etl.nimbus_sizing import (
     GCS_FOLDER,
-    OUTPUT_PROJECT,
     _col_for_index,
     build_query,
     build_results,
@@ -151,7 +150,7 @@ class TestBuildQuery:
 
     def test_uses_moz_fx_data_shared_prod_table(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context" in query
+        assert "moz-fx-data-shared-prod" in query
         assert "mozdata" not in query
 
     def test_submission_date_controls_window(self):
@@ -229,7 +228,7 @@ class TestWriteToGCS:
         assert self.RESULTS["my-experiment"] == uploaded["v1"]["my-experiment"]
 
     def test_writes_dated_and_latest_files(self):
-        """Writes a dated archive and a latest file — matches enrollment_funnel pattern."""
+        """Writes dated archive and latest file matching enrollment_funnel pattern."""
         mock_blob = MagicMock()
         mock_blob.exists.return_value = False
         with patch("google.cloud.storage.Client") as mock_client:

@@ -12,7 +12,8 @@ from datetime import date, datetime, timedelta, timezone
 
 import click
 import requests
-from google.cloud import bigquery, storage
+from google.cloud import bigquery
+from google.cloud import storage  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,8 @@ def fetch_experiments(api_url: str) -> list[dict]:
     payload = resp.json()
     if not isinstance(payload, list):
         raise RuntimeError(
-            f"Unexpected response from {api_url}: expected list, got {type(payload).__name__}"
+            f"Unexpected response from {api_url}: "
+            f"expected list, got {type(payload).__name__}"
         )
     return [
         exp
@@ -56,10 +58,9 @@ def _col_for_index(i: int) -> str:
 def build_query(
     experiments: list[dict], submission_date: date, window_days: int = 7
 ) -> str:
-    """
-    Build a single BigQuery query that counts eligible clients per experiment.
+    """Build a single BigQuery query counting eligible clients per experiment.
 
-    Uses indexed column aliases (exp_0, exp_1, …) to avoid slug→column
+    Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
     collisions. One COUNTIF per experiment in a single table scan.
     clients CTE selects * so injected SQL can reference any ping field.
     """
@@ -92,7 +93,6 @@ clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
 
 def _dry_run_sql(sql: str, project: str) -> bool:
     """Return True if sql is a valid BigQuery expression, False otherwise."""
-    # Wrap in a minimal query so BQ can validate the expression syntax
     probe = (
         f"SELECT COUNTIF({sql}) AS c "
         f"FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
@@ -114,12 +114,10 @@ def run_query(query: str, project: str) -> list[dict]:
     return [dict(row) for row in job.result()]
 
 
-def build_results(
-    experiments: list[dict], rows: list[dict]
-) -> dict:
+def build_results(experiments: list[dict], rows: list[dict]) -> dict:
     """Map flat query result row back to per-experiment result dicts.
 
-    Uses positional index aliases (exp_0, exp_1, …) to avoid slug collisions.
+    Uses positional index aliases (exp_0, exp_1, ...) to avoid slug collisions.
     """
     if not rows:
         return {}
@@ -147,15 +145,15 @@ def write_to_gcs(
     flipped needsUpdate=false are preserved until they disappear from the API.
 
     Writes two files (matching the enrollment_funnel pattern):
-      - nimbus_draft_sizing_v1_{date}.json  — dated archive
-      - nimbus_draft_sizing_v1_latest.json  — consumed by Experimenter
+      - nimbus_draft_sizing_v1_{date}.json  -- dated archive
+      - nimbus_draft_sizing_v1_latest.json  -- consumed by Experimenter
     """
     client = storage.Client()
     bucket = client.bucket(bucket_name)
 
-    # Merge: read existing latest, update with new results, drop gone slugs
+    # Merge: read existing latest, update with new results
     latest_path = f"{folder}/nimbus_draft_sizing_v1_latest.json"
-    existing = {}
+    existing: dict = {}
     blob = bucket.blob(latest_path)
     if blob.exists():
         try:
@@ -188,8 +186,11 @@ def write_to_bigquery(
     Truncates the day partition before writing so retries are idempotent.
     """
     client = bigquery.Client(project=project)
-    computed_at = datetime.combine(submission_date, datetime.min.time()).replace(
-        tzinfo=timezone.utc
+    computed_at = datetime(
+        submission_date.year,
+        submission_date.month,
+        submission_date.day,
+        tzinfo=timezone.utc,
     )
     rows = [
         {
@@ -220,9 +221,18 @@ def write_to_bigquery(
 
 
 @click.command()
-@click.option("--date", "submission_date", required=True, help="Execution date (YYYY-MM-DD)")
+@click.option(
+    "--date",
+    "submission_date",
+    required=True,
+    help="Execution date (YYYY-MM-DD)",
+)
 @click.option("--api-url", default=EXPERIMENTER_API_URL)
-@click.option("--project", default=OUTPUT_PROJECT, help="BQ project for query billing and output")
+@click.option(
+    "--project",
+    default=OUTPUT_PROJECT,
+    help="BQ project for query billing and output",
+)
 @click.option("--output-dataset", default="experimenter")
 @click.option("--output-table", default="nimbus_draft_sizing_v1")
 @click.option("--gcs-bucket", default=GCS_BUCKET)
@@ -249,7 +259,7 @@ def run(
         logger.info("No experiments to process")
         return
 
-    # Dry-run each SQL fragment individually — drop bad ones so one bad
+    # Dry-run each SQL fragment individually -- drop bad ones so one bad
     # translation doesn't block the rest of the experiments
     valid_experiments = []
     for exp in experiments:
@@ -258,7 +268,7 @@ def run(
             valid_experiments.append(exp)
         else:
             logger.warning(
-                "Skipping %s — SQL failed dry-run validation", exp["slug"]
+                "Skipping %s -- SQL failed dry-run validation", exp["slug"]
             )
 
     if not valid_experiments:
@@ -275,7 +285,12 @@ def run(
     results = build_results(valid_experiments, rows)
     logger.info("Got sizing results for %d experiments", len(results))
 
-    write_to_gcs(results, bucket_name=gcs_bucket, folder=gcs_folder, run_date=submission_date)
+    write_to_gcs(
+        results,
+        bucket_name=gcs_bucket,
+        folder=gcs_folder,
+        run_date=submission_date,
+    )
     write_to_bigquery(
         results,
         project=project,

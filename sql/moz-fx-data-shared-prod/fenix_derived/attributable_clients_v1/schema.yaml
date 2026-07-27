@@ -43,8 +43,9 @@ fields:
 - name: is_new_install
   type: BOOLEAN
   mode: NULLABLE
-  description: True if this client represents a new install on the submission date, false if they were previously
-    seen.
+  description: True if the client was first seen on the submission date and reported a `first_session` ping
+    (`metadata.reported_first_session_ping` from `fenix.firefox_android_clients`), distinguishing a genuine
+    new install from a new profile.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
@@ -53,20 +54,23 @@ fields:
 - name: searches
   type: INTEGER
   mode: NULLABLE
-  description: Total number of searches performed by this client on the submission date. Null when no search
-    activity was recorded.
+  description: Total number of searches performed by this client on the submission date. 0 when neither
+    `fenix.baseline` metrics nor `search.mobile_search_clients_daily` reported search data for this client
+    on that day.
 - name: searches_with_ads
   type: INTEGER
   mode: NULLABLE
   description: Number of search result pages (SERPs) that contained advertisements, recorded for this client
-    on the submission date. Null when no relevant activity was recorded.
+    on the submission date. 0 when neither `fenix.baseline` metrics nor `search.mobile_search_clients_daily`
+    reported search data for this client on that day.
 - name: ad_clicks
   type: INTEGER
   mode: NULLABLE
-  description: Number of ad clicks on search result pages by this client on the submission date. Null when
-    no ad clicks were recorded.
+  description: Number of ad clicks on search result pages by this client on the submission date. 0 when
+    neither `fenix.baseline` metrics nor `search.mobile_search_clients_daily` reported search data for this
+    client on that day.
 - name: activated
   type: BOOLEAN
   mode: NULLABLE
-  description: True if this client completed the activation criteria (e.g., performed a meaningful action
-    within their first period), false otherwise.
+  description: True if `fenix.new_profile_activation` reported this client as activated on the submission
+    date; false when there is no activation record.

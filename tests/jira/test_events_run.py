@@ -12,7 +12,6 @@ from bigquery_etl.jira.events import (
 )
 
 DEFAULT_JQL = "project = SREIN"
-TODAY = date(2026, 7, 27)
 
 
 def args(**overrides):
@@ -20,7 +19,6 @@ def args(**overrides):
         "destination": "proj.dataset.srein_events_v1",
         "base_jira_url": "https://jira.example.com",
         "jql": DEFAULT_JQL,
-        "default_jql": DEFAULT_JQL,
         "date": "2026-07-27",
         "seed": False,
         "since": None,
@@ -124,12 +122,6 @@ def test_seed_and_date_together_is_rejected():
         JiraEventsBigQueryIntegration().run(args(seed=True))
 
 
-def test_seed_with_custom_jql_is_rejected():
-    namespace = args(seed=True, date=None, jql="project = SREIN AND labels = urgent")
-    with pytest.raises(ValueError, match="custom --jql"):
-        JiraEventsBigQueryIntegration().run(namespace)
-
-
 def test_bounded_seed_without_disposition_is_rejected():
     namespace = args(seed=True, date=None, since="2025-06-01")
     with pytest.raises(ValueError, match="exactly one of"):
@@ -201,25 +193,19 @@ def test_seed_only_arguments_are_rejected_alongside_date(override):
         JiraEventsBigQueryIntegration().run(args(**override))
 
 
-def test_build_parser_sets_default_jql_so_a_new_table_cannot_forget_it():
-    """The reusable module owns the contract instead of documenting it.
+def test_jql_is_not_an_overridable_flag():
+    """The table's scope is fixed at build_parser, not settable at run time.
 
-    `default_jql` is what the custom-JQL guard compares against. When each table's
-    query.py assigned it by hand after parse_args(), a copied file that dropped that
-    line made every --seed run die with AttributeError - and --seed is the one path
-    neither CI nor a scheduled run exercises.
+    Every mode WRITE_TRUNCATEs its whole target -- the base table for --seed, one
+    partition for --date -- so a narrower scope would silently drop everything it
+    did not fetch. There is no value a caller could pass that is both different from
+    the table's configured scope and safe, so the flag does not exist.
     """
-    parser = build_parser(
-        destination="proj.dataset.tbl",
-        base_jira_url="https://jira.example.com",
-        jql="project = ABC",
-    )
-    parsed = parser.parse_args([])
+    parser = build_parser("d", "u", "project = ABC")
 
-    assert parsed.default_jql == "project = ABC"
-    assert parsed.jql == "project = ABC"
-    assert parsed.destination == "proj.dataset.tbl"
-    assert parsed.base_jira_url == "https://jira.example.com"
+    assert parser.parse_args([]).jql == "project = ABC"
+    with pytest.raises(SystemExit):
+        parser.parse_args(["--jql", "key = ABC-1"])
 
 
 def test_build_parser_supplies_every_attribute_validate_requires():
@@ -228,7 +214,6 @@ def test_build_parser_supplies_every_attribute_validate_requires():
         "destination",
         "base_jira_url",
         "jql",
-        "default_jql",
         "date",
         "seed",
         "since",
@@ -237,25 +222,3 @@ def test_build_parser_supplies_every_attribute_validate_requires():
         "write_truncate",
     }
     assert required <= set(vars(parsed))
-
-
-def test_build_parser_default_jql_survives_an_explicit_jql_override():
-    """The guard needs the *default*, not the override, or it could never fire."""
-    parsed = build_parser("d", "u", "project = ABC").parse_args(
-        ["--jql", "key = ABC-1"]
-    )
-
-    assert parsed.jql == "key = ABC-1"
-    assert parsed.default_jql == "project = ABC"
-
-
-def test_date_run_with_a_custom_jql_is_rejected():
-    """A --date run WRITE_TRUNCATEs the whole partition with whatever the JQL matched.
-
-    `--date 2026-07-27 --jql "key = SREIN-1548"` is a plausible way to debug one
-    issue, and it would replace that partition with only that issue's events. The
-    seed branch already refuses a custom --jql for the same reason.
-    """
-    namespace = args(jql="key = SREIN-1548")
-    with pytest.raises(ValueError, match="custom --jql"):
-        JiraEventsBigQueryIntegration().run(namespace)

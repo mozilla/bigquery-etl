@@ -354,28 +354,19 @@ def daily_jql(jql: str, target_date: date) -> str:
 
 
 def build_parser(destination: str, base_jira_url: str, jql: str) -> ArgumentParser:
-    """Build the CLI for a Jira events table, with this table's defaults baked in.
+    """Build the CLI for a Jira events table, with this table's scope baked in.
 
-    Each table's `query.py` is a handful of lines calling this, rather than its own
-    copy of the flag definitions. That matters for two reasons: the guard semantics
-    stay identical across tables instead of drifting as files are copied, and
-    `default_jql` is set here, where it is consumed, instead of being assigned onto
-    the namespace by hand after `parse_args()`. A copied `query.py` that forgot that
-    assignment used to make every `--seed` run die with `AttributeError`, and
-    `--seed` is the one path neither CI nor a scheduled run exercises.
+    Each table's `query.py` is a handful of lines calling this, rather than carrying
+    its own copy of the flag definitions, so the guard semantics stay identical
+    across tables instead of drifting as files are copied.
+
+    `jql` becomes a fixed namespace value rather than a flag: it is the one setting
+    that cannot be safely overridden at run time, since every mode WRITE_TRUNCATEs
+    its whole target.
     """
     parser = ArgumentParser(description=f"Load Jira change events into {destination}.")
     parser.add_argument("--destination", dest="destination", default=destination)
     parser.add_argument("--base-url", dest="base_jira_url", default=base_jira_url)
-    parser.add_argument(
-        "--jql",
-        dest="jql",
-        default=jql,
-        help=(
-            "Override the table's scope. Refused by every mode that writes: a "
-            "narrower JQL would WRITE_TRUNCATE the target with only what it matched."
-        ),
-    )
     parser.add_argument(
         "--date",
         dest="date",
@@ -427,9 +418,12 @@ def build_parser(destination: str, base_jira_url: str, jql: str) -> ArgumentPars
             "--write-truncate or --write-append."
         ),
     )
-    # Not a flag: the guard needs the table's configured scope to compare against,
-    # so it must survive an explicit --jql override.
-    parser.set_defaults(default_jql=jql)
+    # Deliberately not a flag. Every mode WRITE_TRUNCATEs its whole target -- the
+    # base table for --seed, one partition for --date -- so a narrower scope would
+    # silently drop everything it did not fetch. There is no value a caller could
+    # pass that is both different from this one and safe, so the scope is fixed per
+    # table at the build_parser call instead of being overridable at run time.
+    parser.set_defaults(jql=jql)
     return parser
 
 
@@ -460,10 +454,9 @@ class JiraEventsBigQueryIntegration:
 
         - `destination` (str) — fully qualified `project.dataset.table`.
         - `base_jira_url` (str) — Jira instance root.
-        - `jql` (str) — the scope actually used for this run.
-        - `default_jql` (str) — the table's configured scope, which `build_parser`
-          supplies via `set_defaults` so it survives an explicit `--jql` override.
-          Comparing the two is how a narrowed scope is detected.
+        - `jql` (str) — the table's scope. Fixed per table by `build_parser`; there
+          is no flag to override it, because every mode WRITE_TRUNCATEs its whole
+          target and a narrower scope would silently drop what it did not fetch.
         - `date` (str | None) — `YYYY-MM-DD`, the partition to rebuild.
         - `seed` (bool), `since` (str | None), `until` (str | None).
         - `write_append` (bool), `write_truncate` (bool).
@@ -471,14 +464,6 @@ class JiraEventsBigQueryIntegration:
         `date`, `since`, and `until` are strings, not `date` objects; `date` is parsed
         here so a malformed value fails before any network or BigQuery call.
         """
-        if args.jql != args.default_jql:
-            raise ValueError(
-                "this run refuses a custom --jql: every run WRITE_TRUNCATEs its whole "
-                "target (the base table for --seed, one partition for --date) with "
-                "only the issues the JQL matched, so a narrower scope silently drops "
-                "everything it did not fetch. Bound a seed with --since/--until instead"
-            )
-
         if args.seed:
             if args.date:
                 raise ValueError("--seed and --date are mutually exclusive")

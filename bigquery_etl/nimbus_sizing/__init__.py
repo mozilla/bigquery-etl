@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 EXPERIMENTER_API_URL = (
     "https://experimenter.services.mozilla.com/api/v8/draft-experiments/"
 )
-# Use moz-fx-data-shared-prod directly — mozdata hosts views only (repo convention)
 NIMBUS_TARGETING_TABLE = (
     "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context"
 )

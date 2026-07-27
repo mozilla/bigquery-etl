@@ -17,6 +17,12 @@ target_regions AS (
   FROM
     UNNEST(['US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES', 'IT']) AS region
 ),
+experiment_configs AS (
+  SELECT
+    *
+  FROM
+    UNNEST([STRUCT('DE' AS region, 'publisher-constraint-in-germany' AS experiment_slug)])
+),
 corpus_items AS (
   SELECT DISTINCT
     corpus_item_id
@@ -222,31 +228,42 @@ global_final AS (
   CROSS JOIN
     global_total_impressions_per_day gtipd
 ),
-experiment_target_regions AS (
-  SELECT
-    region
-  FROM
-    UNNEST(['DE']) AS region
-),
 experiment_private_pings AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
-    submission_timestamp,
-    document_id,
-    events,
-    mozfun.newtab.surface_id_country(
-      metrics.string.newtab_content_surface_id,
-      NULL,
-      metrics.string.newtab_content_country
-    ) AS region,
-    NULLIF(metrics.string.newtab_content_experiment_branch, '') AS experiment_branch
+    p.submission_date,
+    p.submission_timestamp,
+    p.document_id,
+    p.events,
+    p.region,
+    ec.experiment_slug,
+    p.experiment_branch
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.newtab_content`
+    (
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
+        submission_timestamp,
+        document_id,
+        events,
+        mozfun.newtab.surface_id_country(
+          metrics.string.newtab_content_surface_id,
+          NULL,
+          metrics.string.newtab_content_country
+        ) AS region,
+        NULLIF(metrics.string.newtab_content_experiment_name, '') AS experiment_slug,
+        NULLIF(metrics.string.newtab_content_experiment_branch, '') AS experiment_branch
+      FROM
+        `moz-fx-data-shared-prod.firefox_desktop.newtab_content`
+      WHERE
+        DATE(submission_timestamp)
+        BETWEEN (SELECT start_date FROM params)
+        AND (SELECT end_date FROM params)
+    ) p
+  JOIN
+    experiment_configs ec
+    ON ec.region = p.region
+    AND ec.experiment_slug = p.experiment_slug
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN (SELECT start_date FROM params)
-    AND (SELECT end_date FROM params)
-    AND NULLIF(metrics.string.newtab_content_experiment_branch, '') IS NOT NULL
+    p.experiment_branch IS NOT NULL
 ),
 experiment_deduplicated_pings AS (
   SELECT
@@ -266,6 +283,7 @@ experiment_flattened_newtab_events AS (
   SELECT
     dp.submission_date,
     dp.region,
+    dp.experiment_slug,
     dp.experiment_branch,
     event.name AS event_name,
     mozfun.map.get_key(event.extra, 'corpus_item_id') AS corpus_item_id
@@ -276,7 +294,6 @@ experiment_flattened_newtab_events AS (
   WHERE
     event.category IN ('pocket', 'newtab_content')
     AND event.name IN ('impression', 'click')
-    AND dp.region = 'DE'
     AND mozfun.map.get_key(event.extra, 'corpus_item_id') IS NOT NULL
 ),
 experiment_base AS (
@@ -284,6 +301,7 @@ experiment_base AS (
     submission_date,
     corpus_item_id,
     region,
+    experiment_slug,
     experiment_branch,
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
     SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count
@@ -293,6 +311,7 @@ experiment_base AS (
     submission_date,
     corpus_item_id,
     region,
+    experiment_slug,
     experiment_branch
 ),
 experiment_filtered_base AS (
@@ -300,6 +319,7 @@ experiment_filtered_base AS (
     b.submission_date,
     b.corpus_item_id,
     b.region,
+    b.experiment_slug,
     b.experiment_branch,
     b.impression_count,
     b.click_count
@@ -309,8 +329,10 @@ experiment_filtered_base AS (
     corpus_items c
     ON b.corpus_item_id = c.corpus_item_id
 ),
-experiment_target_branches AS (
+experiment_target_enrollments AS (
   SELECT DISTINCT
+    region,
+    experiment_slug,
     experiment_branch
   FROM
     experiment_filtered_base
@@ -319,6 +341,7 @@ experiment_aggregated_events AS (
   SELECT
     corpus_item_id,
     region,
+    experiment_slug,
     experiment_branch,
     SUM(impression_count) AS impression_count,
     SUM(click_count) AS click_count
@@ -327,12 +350,14 @@ experiment_aggregated_events AS (
   GROUP BY
     corpus_item_id,
     region,
+    experiment_slug,
     experiment_branch
 ),
 experiment_per_region_ctr AS (
   SELECT
     corpus_item_id,
     region,
+    experiment_slug,
     experiment_branch,
     SAFE_DIVIDE(click_count, impression_count) AS ctr,
     impression_count,
@@ -345,24 +370,34 @@ experiment_per_region_ctr AS (
 experiment_per_region_impressions_per_item AS (
   SELECT
     region,
+    experiment_slug,
     experiment_branch,
     ROUND(AVG(impression_count)) AS impressions_per_item
   FROM
     experiment_aggregated_events
   GROUP BY
     region,
+    experiment_slug,
     experiment_branch
 ),
 experiment_ranked_per_region AS (
   SELECT
     *,
-    ROW_NUMBER() OVER (PARTITION BY region, experiment_branch ORDER BY click_count DESC) AS rank
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        region,
+        experiment_slug,
+        experiment_branch
+      ORDER BY
+        click_count DESC
+    ) AS rank
   FROM
     experiment_per_region_ctr
 ),
 experiment_per_region_stats AS (
   SELECT
     region,
+    experiment_slug,
     experiment_branch,
     AVG(CASE WHEN rank <= 10 THEN ctr END) AS average_ctr_top10_items,
     AVG(CASE WHEN rank <= 2 THEN ctr END) AS average_ctr_top2_items
@@ -370,12 +405,14 @@ experiment_per_region_stats AS (
     experiment_ranked_per_region
   GROUP BY
     region,
+    experiment_slug,
     experiment_branch
 ),
 experiment_daily_region_totals AS (
   SELECT
     submission_date,
     region,
+    experiment_slug,
     experiment_branch,
     SUM(impression_count) AS total_impressions
   FROM
@@ -383,31 +420,33 @@ experiment_daily_region_totals AS (
   GROUP BY
     submission_date,
     region,
+    experiment_slug,
     experiment_branch
 ),
 experiment_per_region_total_impressions_per_day AS (
   SELECT
-    tr.region,
-    tb.experiment_branch,
+    te.region,
+    te.experiment_slug,
+    te.experiment_branch,
     ROUND(AVG(COALESCE(drt.total_impressions, 0))) AS total_impressions_per_day
   FROM
-    experiment_target_regions tr
-  CROSS JOIN
-    experiment_target_branches tb
+    experiment_target_enrollments te
   CROSS JOIN
     date_span ds
   LEFT JOIN
     experiment_daily_region_totals drt
-    ON drt.region = tr.region
-    AND drt.experiment_branch = tb.experiment_branch
+    ON drt.region = te.region
+    AND drt.experiment_slug = te.experiment_slug
+    AND drt.experiment_branch = te.experiment_branch
     AND drt.submission_date = ds.day
   GROUP BY
-    tr.region,
-    tb.experiment_branch
+    te.region,
+    te.experiment_slug,
+    te.experiment_branch
 ),
 experiment_per_region_final AS (
   SELECT
-    CONCAT(s.region, '-', s.experiment_branch) AS region,
+    CONCAT(s.region, '-', s.experiment_slug, '-', s.experiment_branch) AS region,
     s.average_ctr_top10_items,
     s.average_ctr_top2_items,
     i.impressions_per_item,
@@ -416,10 +455,10 @@ experiment_per_region_final AS (
     experiment_per_region_stats s
   JOIN
     experiment_per_region_impressions_per_item i
-    USING (region, experiment_branch)
+    USING (region, experiment_slug, experiment_branch)
   JOIN
     experiment_per_region_total_impressions_per_day d
-    USING (region, experiment_branch)
+    USING (region, experiment_slug, experiment_branch)
 )
 SELECT
   region,

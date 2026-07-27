@@ -1,0 +1,38 @@
+friendly_name: Jira SREIN Ticket Events
+description: |-
+  Change events on Jira tickets in the SREIN (MozCloud Intake) project, pulled
+  from Jira API v3. One row per event: issue creation, status changes, other
+  field changes, and comments.
+
+  Comment bodies are deliberately not stored. The "Last Comment" and "Rank"
+  changelog fields are excluded — "Last Comment" duplicates the comment events
+  and embeds comment text, and "Rank" is backlog-reordering noise.
+
+  Partitions are keyed on event date. The daily task can only maintain recent
+  partitions: JQL `updated` reflects only an issue's most recent update, so
+  re-running an old date silently misses issues touched again since then.
+  Repair means a full rebuild with `python query.py --seed`, run manually.
+owners:
+- wstuckey@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  owner1: wstuckey@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_ts
+    require_partition_filter: false
+  clustering:
+    fields:
+    - project_key
+    - issue_key
+scheduling:
+  dag_name: bqetl_jira_tickets
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: JIRA_USERNAME
+    key: bqetl_jira_service_desk__jira_username
+  - deploy_target: JIRA_TOKEN
+    key: bqetl_jira_service_desk__jira_token

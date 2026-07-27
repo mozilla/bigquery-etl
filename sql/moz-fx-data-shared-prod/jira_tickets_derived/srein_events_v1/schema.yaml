@@ -1,0 +1,68 @@
+fields:
+- name: issue_key
+  type: STRING
+  mode: REQUIRED
+  description: Jira issue key, e.g. SREIN-1548.
+- name: project_key
+  type: STRING
+  mode: NULLABLE
+  description: Jira project key the issue belongs to.
+- name: issue_type
+  type: STRING
+  mode: NULLABLE
+  description: Jira issue type name, e.g. Task or Bug.
+- name: event_id
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    Changelog history id for field changes, comment id for comments, or the
+    literal "created" for the issue creation event.
+- name: event_type
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    One of created, status_change, field_change, commented.
+- name: event_ts
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: When the event happened, normalized to UTC.
+- name: actor_id
+  type: STRING
+  mode: NULLABLE
+  description: Atlassian accountId of the user who caused the event.
+- name: actor_name
+  type: STRING
+  mode: NULLABLE
+  description: Display name of the user who caused the event.
+- name: field
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Changed field name for status_change and field_change events; NULL for
+    created and commented events.
+- name: field_type
+  type: STRING
+  mode: NULLABLE
+  description: Whether the changed field is a built-in ("jira") or "custom" field.
+- name: from_value
+  type: STRING
+  mode: NULLABLE
+  description: Human-readable previous value of the changed field.
+- name: to_value
+  type: STRING
+  mode: NULLABLE
+  description: Human-readable new value of the changed field.
+- name: from_id
+  type: STRING
+  mode: NULLABLE
+  description: Internal Jira id of the previous value, when the field references an entity.
+- name: to_id
+  type: STRING
+  mode: NULLABLE
+  description: Internal Jira id of the new value, when the field references an entity.
+- name: comment_is_public
+  type: BOOL
+  mode: NULLABLE
+  description: >-
+    Whether the comment was visible to all project users. NULL for
+    non-comment events.

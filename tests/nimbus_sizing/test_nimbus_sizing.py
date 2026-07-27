@@ -218,7 +218,6 @@ class TestWriteToGCS:
         """GCS JSON must be {"v1": ...} so future schema changes can add v2
         without breaking consumers — matches enrollment_funnel pattern."""
         mock_blob = MagicMock()
-        mock_blob.exists.return_value = False
         with patch("google.cloud.storage.Client") as mock_client:
             mock_client.return_value.bucket.return_value.blob.return_value = mock_blob
             self._call(mock_client)
@@ -241,17 +240,12 @@ class TestWriteToGCS:
         assert any("latest" in p for p in blob_paths), "latest file not written"
         assert all("v1" in p for p in blob_paths), "v1 not in GCS paths"
 
-    def test_merges_with_existing_latest(self):
-        """New results are merged with existing so valid estimates are preserved."""
-        existing = {"old-experiment": {"eligible_count": 5000, "warnings": []}}
+    def test_writes_only_current_run_results(self):
+        """GCS file is a pure snapshot of this run — Experimenter owns staleness logic."""
         mock_blob = MagicMock()
-        mock_blob.exists.return_value = True
-        mock_blob.download_as_text.return_value = json.dumps({"v1": existing})
         with patch("google.cloud.storage.Client") as mock_client:
             mock_client.return_value.bucket.return_value.blob.return_value = mock_blob
             self._call(mock_client)
 
         uploaded = json.loads(mock_blob.upload_from_string.call_args[0][0])
-        # old experiment preserved, new ones added
-        assert "old-experiment" in uploaded["v1"]
-        assert "my-experiment" in uploaded["v1"]
+        assert set(uploaded["v1"].keys()) == {"my-experiment", "another-experiment"}

@@ -135,8 +135,8 @@ def build_results(experiments: list[dict], rows: list[dict]) -> dict:
 def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) -> None:
     """Write versioned sizing results to GCS for Experimenter to read.
 
-    Merges new results into the existing latest file so experiments that
-    flipped needsUpdate=false are preserved until they disappear from the API.
+    Writes only experiments evaluated in this run. Experimenter stores the
+    computed_at date and decides whether to update its stored estimate.
 
     Writes two files (matching the enrollment_funnel pattern):
       - nimbus_draft_sizing_v1_{date}.json  -- dated archive
@@ -144,19 +144,7 @@ def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) ->
     """
     client = storage.Client()
     bucket = client.bucket(bucket_name)
-
-    # Merge: read existing latest, update with new results
-    latest_path = f"{folder}/nimbus_draft_sizing_v1_latest.json"
-    existing: dict = {}
-    blob = bucket.blob(latest_path)
-    if blob.exists():
-        try:
-            existing = json.loads(blob.download_as_text()).get("v1", {})
-        except Exception:
-            pass  # treat unreadable existing file as empty
-
-    merged = {**existing, **results}
-    json_str = json.dumps({"v1": merged}, indent=2)
+    json_str = json.dumps({"v1": results}, indent=2)
 
     dated_path = f"{folder}/nimbus_draft_sizing_v1_{run_date}.json"
     bucket.blob(dated_path).upload_from_string(
@@ -164,6 +152,7 @@ def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) ->
     )
     logger.info("Wrote sizing results to gs://%s/%s", bucket_name, dated_path)
 
+    latest_path = f"{folder}/nimbus_draft_sizing_v1_latest.json"
     bucket.copy_blob(bucket.blob(dated_path), bucket, latest_path)
     logger.info("Copied to gs://%s/%s", bucket_name, latest_path)
 

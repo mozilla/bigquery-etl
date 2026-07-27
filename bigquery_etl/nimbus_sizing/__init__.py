@@ -1,5 +1,4 @@
-"""
-Nimbus pre-launch population sizing ETL.
+"""Nimbus pre-launch population sizing ETL.
 
 Fetches Draft experiments from the Experimenter v8 API, executes their
 translated BigQuery SQL WHERE clauses against nimbus_targeting_context,
@@ -12,8 +11,7 @@ from datetime import date, datetime, timedelta, timezone
 
 import click
 import requests
-from google.cloud import bigquery
-from google.cloud import storage  # type: ignore
+from google.cloud import bigquery, storage  # type: ignore
 
 logger = logging.getLogger(__name__)
 

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--destination",
         dest="destination",
-        default="moz-fx-data-shared-prod.jira_tickets_derived.srein_events_v1",
+        default="moz-fx-data-shared-prod.jira_events_derived.srein_events_v1",
         required=False,
     )
     parser.add_argument(

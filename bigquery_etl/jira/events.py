@@ -30,6 +30,9 @@ EXCLUDED_CHANGELOG_FIELDS = frozenset({"Last Comment", "Rank"})
 
 SEARCH_FIELDS = ["project", "issuetype", "created", "reporter"]
 
+CHANGELOG_ITEMS_KEY = "values"
+PAGE_SIZE = 100
+
 logger = logging.getLogger(__name__)
 
 
@@ -148,3 +151,84 @@ def comment_event(issue: dict, comment: dict, to_ts: Callable) -> Optional[dict]
         actor=comment.get("author"),
         comment_is_public=_comment_is_public(comment),
     )
+
+
+class JiraEventsAPI:
+    """Read issue change events from the Jira REST API."""
+
+    SEARCH_ENDPOINT = "/rest/api/3/search/jql"
+    CHANGELOG_ENDPOINT = "/rest/api/3/issue/{issue_key}/changelog"
+    COMMENT_ENDPOINT = "/rest/api/3/issue/{issue_key}/comment"
+
+    def __init__(self, client, jql: str) -> None:
+        """Wrap a JiraClient with the JQL selecting issues in scope."""
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.client = client
+        self.jql = jql
+
+    def get_issues(self) -> list[dict]:
+        """Fetch every issue matching the JQL, keeping only fields events need."""
+        issues = []
+
+        for raw in self.client.paginate_token(
+            self.SEARCH_ENDPOINT,
+            {
+                "jql": self.jql,
+                "maxResults": PAGE_SIZE,
+                "fields": ",".join(SEARCH_FIELDS),
+            },
+            "issues",
+        ):
+            fields = raw.get("fields") or {}
+            issues.append(
+                {
+                    "issue_key": raw.get("key"),
+                    "project_key": (fields.get("project") or {}).get("key"),
+                    "issue_type": (fields.get("issuetype") or {}).get("name"),
+                    "created": self.client.to_bq_timestamp(fields.get("created")),
+                    "reporter": fields.get("reporter") or {},
+                }
+            )
+
+        self.logger.info("Found %s issues in scope", len(issues))
+        return issues
+
+    def _fetch_changelog(self, issue_key: str) -> Iterator[dict]:
+        """Yield changelog histories for an issue, failing loudly on an unexpected page shape."""
+        path = self.CHANGELOG_ENDPOINT.format(issue_key=issue_key)
+        page = self.client.get(path, {"maxResults": PAGE_SIZE, "startAt": 0})
+
+        if CHANGELOG_ITEMS_KEY not in page and page.get("total"):
+            raise RuntimeError(
+                f"Changelog response for {issue_key} has no {CHANGELOG_ITEMS_KEY!r} key but reports "
+                f"total={page.get('total')}; keys were {sorted(page)}. The Jira changelog pagination "
+                "shape has changed - update CHANGELOG_ITEMS_KEY."
+            )
+
+        yield from self.client.paginate_start_at(
+            path, {"maxResults": PAGE_SIZE}, CHANGELOG_ITEMS_KEY
+        )
+
+    def iter_events(self, issues: list[dict]) -> Iterator[dict]:
+        """Yield every event for the given issues, one issue at a time."""
+        for index, issue in enumerate(issues, start=1):
+            issue_key = issue["issue_key"]
+
+            if index % 100 == 0:
+                self.logger.info("Fetched events for %s/%s issues", index, len(issues))
+
+            created = created_event(issue)
+            if created:
+                yield created
+
+            for history in self._fetch_changelog(issue_key):
+                yield from changelog_events(issue, history, self.client.to_bq_timestamp)
+
+            for comment in self.client.paginate_start_at(
+                self.COMMENT_ENDPOINT.format(issue_key=issue_key),
+                {"maxResults": PAGE_SIZE},
+                "comments",
+            ):
+                event = comment_event(issue, comment, self.client.to_bq_timestamp)
+                if event:
+                    yield event

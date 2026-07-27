@@ -9,10 +9,11 @@ upstream data is corrected, so the older data reflects the change. Scheduled run
 partitions going forward, so past data has to be rewritten separately.
 
 You start a managed backfill by editing a `backfill.yaml` file in the table's directory and opening
-a pull request. Most of the process is automated, and you wait for Slack notifications between steps.
+a pull request ([example PR](https://github.com/mozilla/bigquery-etl/pull/9244/changes)).
+Most of the process is automated, and you wait for Slack notifications between steps.
 The process is:
 
-1. Create an entry in the table's `backfill.yaml` (using `bqetl backfill create`) and open a PR. See [Initiating the backfill](#initiating-the-backfill).
+1. Create an entry in the table's `backfill.yaml` and open a PR. Run `bqetl backfill create` with no arguments to use the interactive mode, which prompts you through various settings. See [Initiating the backfill](#initiating-the-backfill).
 2. Once merged, processing starts automatically (in about an hour) and writes the new data to a temporary staging table, not to production.
 3. Validate the staged data yourself to confirm it looks right.
    - If the staged data is wrong, or you otherwise decide not to proceed, set the status to `Cancelled` instead so nothing is swapped and the staging table expires on its own.

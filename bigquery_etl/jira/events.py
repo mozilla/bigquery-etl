@@ -3,10 +3,12 @@
 import json
 import logging
 import tempfile
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import Callable, Iterable, Iterator, Optional
 
 from google.cloud import bigquery
+
+from .client import JiraClient
 
 EVENT_SCHEMA = [
     bigquery.SchemaField("issue_key", "STRING", mode="REQUIRED"),
@@ -297,3 +299,87 @@ class EventsBigQueryAPI:
 
         self.logger.info("Loaded %s events to %s", count, table)
         return count
+
+
+def daily_jql(jql: str, target_date: date) -> str:
+    """Build JQL selecting issues touched around target_date.
+
+    The window is widened by a day on each side because JQL date literals are
+    evaluated in the token owner's Jira profile timezone rather than UTC. Events
+    are filtered precisely afterwards by `events_on_date`, so the surplus is
+    discarded and the timezone becomes irrelevant.
+    """
+    lower = target_date - timedelta(days=1)
+    upper = target_date + timedelta(days=2)
+    return f'({jql}) AND updated >= "{lower.isoformat()}" AND updated < "{upper.isoformat()}"'
+
+
+def seed_jql(jql: str, since: Optional[str], until: Optional[str]) -> str:
+    """Build JQL for a seed run, optionally bounded by issue creation date."""
+    clauses = [f"({jql})"]
+    if since:
+        clauses.append(f'created >= "{since}"')
+    if until:
+        clauses.append(f'created < "{until}"')
+    return " AND ".join(clauses)
+
+
+class JiraEventsBigQueryIntegration:
+    """Orchestrate fetching Jira events and loading them to BigQuery."""
+
+    def __init__(self) -> None:
+        """Initialize a logger for integration-level progress messages."""
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+    @staticmethod
+    def _validate(args) -> None:
+        """Reject argument combinations that would silently lose data."""
+        if args.seed:
+            if args.date:
+                raise ValueError("--seed and --date are mutually exclusive")
+            if args.jql != args.default_jql:
+                raise ValueError(
+                    "--seed refuses a custom --jql because its WRITE_TRUNCATE would "
+                    "discard history the seed did not fetch; narrow a seed with "
+                    "--since/--until instead"
+                )
+        elif not args.date:
+            raise ValueError("--date is required unless --seed is given")
+
+    def run(self, args) -> None:
+        """Run the Jira events integration with parsed CLI arguments."""
+        self._validate(args)
+        self.logger.info("Starting Jira Events BigQuery Integration ...")
+
+        client = JiraClient(args.base_jira_url)
+        bq_api = EventsBigQueryAPI()
+
+        if args.seed:
+            jql = seed_jql(args.jql, args.since, args.until)
+            self.logger.info("Seeding with JQL: %s", jql)
+
+            api = JiraEventsAPI(client, jql)
+            events = api.iter_events(api.get_issues())
+
+            bq_api.load_events(
+                args.destination,
+                events=events,
+                date_partition=None,
+                write_append=args.write_append,
+            )
+        else:
+            target_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+            jql = daily_jql(args.jql, target_date)
+            self.logger.info("Loading %s with JQL: %s", target_date, jql)
+
+            api = JiraEventsAPI(client, jql)
+            events = events_on_date(api.iter_events(api.get_issues()), target_date)
+
+            bq_api.load_events(
+                args.destination,
+                events=events,
+                date_partition=target_date.strftime("%Y%m%d"),
+                write_append=False,
+            )
+
+        self.logger.info("End of Jira Events BigQuery Integration")

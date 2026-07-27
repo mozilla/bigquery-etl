@@ -20,6 +20,7 @@ def args(**overrides):
         "since": None,
         "until": None,
         "write_append": False,
+        "write_truncate": False,
     }
     return Namespace(**{**base, **overrides})
 
@@ -92,8 +93,17 @@ def test_seed_run_loads_every_event_into_the_base_table():
 
 
 def test_seed_with_write_append_passes_it_through():
-    _, bq = _run(args(seed=True, date=None, since="2025-06-01", write_append=True))
+    api_cls, bq = _run(
+        args(seed=True, date=None, since="2025-06-01", write_append=True)
+    )
+
+    assert api_cls.call_args.args[1] == '(project = SREIN) AND created >= "2025-06-01"'
     assert bq.load_events.call_args.kwargs["write_append"] is True
+
+
+def test_seed_with_write_truncate_passes_write_append_false():
+    _, bq = _run(args(seed=True, date=None, since="2025-06-01", write_truncate=True))
+    assert bq.load_events.call_args.kwargs["write_append"] is False
 
 
 def test_seed_and_date_together_is_rejected():
@@ -107,11 +117,28 @@ def test_seed_with_custom_jql_is_rejected():
         JiraEventsBigQueryIntegration().run(namespace)
 
 
-def test_seed_with_since_and_default_jql_is_allowed():
-    api_cls, bq = _run(args(seed=True, date=None, since="2025-06-01"))
+def test_bounded_seed_without_disposition_is_rejected():
+    namespace = args(seed=True, date=None, since="2025-06-01")
+    with pytest.raises(ValueError, match="exactly one of"):
+        JiraEventsBigQueryIntegration().run(namespace)
 
-    assert api_cls.call_args.args[1] == '(project = SREIN) AND created >= "2025-06-01"'
-    assert bq.load_events.call_count == 1
+
+def test_bounded_seed_with_until_only_without_disposition_is_rejected():
+    namespace = args(seed=True, date=None, until="2025-06-01")
+    with pytest.raises(ValueError, match="exactly one of"):
+        JiraEventsBigQueryIntegration().run(namespace)
+
+
+def test_bounded_seed_with_both_dispositions_is_rejected():
+    namespace = args(
+        seed=True,
+        date=None,
+        since="2025-06-01",
+        write_append=True,
+        write_truncate=True,
+    )
+    with pytest.raises(ValueError, match="exactly one of"):
+        JiraEventsBigQueryIntegration().run(namespace)
 
 
 def test_daily_run_requires_a_date():

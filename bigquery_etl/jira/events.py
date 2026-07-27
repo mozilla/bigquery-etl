@@ -343,6 +343,14 @@ class JiraEventsBigQueryIntegration:
                     "discard history the seed did not fetch; narrow a seed with "
                     "--since/--until instead"
                 )
+            if args.since or args.until:
+                if args.write_append == args.write_truncate:
+                    raise ValueError(
+                        "a bounded seed (--since/--until) must pass exactly one of "
+                        "--write-append or --write-truncate: it would otherwise default to "
+                        "WRITE_TRUNCATE on the whole table while loading only the bounded "
+                        "subset, discarding history it never fetched"
+                    )
         elif not args.date:
             raise ValueError("--date is required unless --seed is given")
 

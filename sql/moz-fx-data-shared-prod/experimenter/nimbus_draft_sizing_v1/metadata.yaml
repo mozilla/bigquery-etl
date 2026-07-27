@@ -5,7 +5,7 @@ description: |-
   Populated daily by the nimbus_sizing ETL job, which:
   1. Reads Draft experiments from the Experimenter v8 API
   2. Executes each experiment's translated SQL WHERE clause against
-     mozdata.firefox_desktop.nimbus_targeting_context (7-day window, 10% sample)
+     moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context (7-day window, 10% sample)
   3. Writes the estimated eligible and projected enrolled counts here
 
   Results are also written to GCS (population_sizing/drafts_latest.json)
@@ -23,4 +23,5 @@ bigquery:
     require_partition_filter: false
     expiration_days: 90
   clustering:
-  - slug
+    fields:
+    - slug

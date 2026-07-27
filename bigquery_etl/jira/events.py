@@ -455,16 +455,15 @@ class JiraEventsBigQueryIntegration:
         """Reject argument combinations that would silently lose or duplicate data.
 
         `args` must carry every one of these attributes; there is no default for any
-        of them, and a missing one is an `AttributeError` at run time:
+        of them, and a missing one is an `AttributeError` at run time. Use
+        `build_parser` to construct them all — it is the only supported source:
 
         - `destination` (str) — fully qualified `project.dataset.table`.
         - `base_jira_url` (str) — Jira instance root.
-        - `jql` (str) — the scope of the table.
-        - `default_jql` (str) — `query.py`'s built-in `--jql` default, used to detect
-          an explicitly narrowed seed. **This is not an argparse flag.** `query.py`
-          assigns it onto the namespace after `parse_args()`
-          (`args.default_jql = DEFAULT_JQL`). A copied `query.py` that omits that
-          line makes every `--seed` run die with `AttributeError`.
+        - `jql` (str) — the scope actually used for this run.
+        - `default_jql` (str) — the table's configured scope, which `build_parser`
+          supplies via `set_defaults` so it survives an explicit `--jql` override.
+          Comparing the two is how a narrowed scope is detected.
         - `date` (str | None) — `YYYY-MM-DD`, the partition to rebuild.
         - `seed` (bool), `since` (str | None), `until` (str | None).
         - `write_append` (bool), `write_truncate` (bool).
@@ -483,11 +482,6 @@ class JiraEventsBigQueryIntegration:
         if args.seed:
             if args.date:
                 raise ValueError("--seed and --date are mutually exclusive")
-                raise ValueError(
-                    "--seed refuses a custom --jql because its WRITE_TRUNCATE would "
-                    "discard history the seed did not fetch; narrow a seed with "
-                    "--since/--until instead"
-                )
             if args.since or args.until:
                 if args.write_append == args.write_truncate:
                     raise ValueError(

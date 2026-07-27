@@ -58,8 +58,10 @@ fields:
 - mode: NULLABLE
   name: clients_with_ad_engagement
   type: INTEGER
-  description: The count of clients in this group who had at least one ad engagement (search ad click or
-    sponsored tile click) on the submission date.
+  description: The count of clients in this group who had at least one search ad click or sponsored tile
+    click on the submission date. Clients that sent no `topsites_impression` ping that day have a NULL
+    `sponsored_tile_clicks`, which makes the underlying sum NULL, so they are excluded even when they had
+    search ad clicks. This count can therefore be lower than `clients_with_search_ad_engagement`.
 - mode: NULLABLE
   name: clients_with_homepage_ad_engagement
   type: INTEGER
@@ -73,8 +75,8 @@ fields:
 - mode: NULLABLE
   name: total_uri_count_avg
   type: FLOAT
-  description: Average total URI count across clients in this group on the submission date. Null when derived
-    from a source with no URI data.
+  description: Average total URI count across clients in this group on the submission date. Null when no
+    client in the group reported a `total_uri_count`.
 - mode: NULLABLE
   name: total_uri_count_stddev
   type: FLOAT

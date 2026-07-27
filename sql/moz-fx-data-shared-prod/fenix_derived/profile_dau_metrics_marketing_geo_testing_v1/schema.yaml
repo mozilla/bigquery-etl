@@ -80,14 +80,16 @@ fields:
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
-  description: The UTM content parameter from the Google Play Store install referrer response, used for
-    fine-grained sub-campaign tracking. Null when not present in the referrer.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_content
 
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
-  description: The UTM search term from the Google Play Store install referrer, typically a keyword used
-    in paid search campaigns. Null when not present.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: play_store_attribution_term
 
 - name: meta_attribution_app
   type: STRING

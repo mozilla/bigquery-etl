@@ -84,8 +84,7 @@ fields:
 - name: region
   type: STRING
   mode: NULLABLE
-  description: The ISO 3166-1 alpha-2 country code reported in the Nimbus targeting context, typically derived
-    from IP geolocation.
+  description: The ISO 3166-1 alpha-2 country code reported in the Nimbus targeting context.
 - name: context
   type: JSON
   mode: NULLABLE

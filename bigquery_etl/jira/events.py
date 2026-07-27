@@ -1,7 +1,10 @@
 """Fetch Jira ticket change events and load them into BigQuery."""
 
+import json
 import logging
-from typing import Callable, Iterator, Optional
+import tempfile
+from datetime import date
+from typing import Callable, Iterable, Iterator, Optional
 
 from google.cloud import bigquery
 
@@ -232,3 +235,65 @@ class JiraEventsAPI:
                 event = comment_event(issue, comment, self.client.to_bq_timestamp)
                 if event:
                     yield event
+
+
+def events_on_date(events: Iterable[dict], target_date: date) -> Iterator[dict]:
+    """Yield only events whose UTC event date matches target_date."""
+    prefix = target_date.isoformat()
+
+    for event in events:
+        if (event.get("event_ts") or "").startswith(prefix):
+            yield event
+
+
+class EventsBigQueryAPI:
+    """Load Jira event rows into a partitioned BigQuery table."""
+
+    def __init__(self) -> None:
+        """Initialize a logger for load operations."""
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+    def load_events(
+        self,
+        destination: str,
+        events: Iterable[dict],
+        date_partition: Optional[str] = None,
+        write_append: bool = False,
+    ) -> int:
+        """Stream events through a temporary NDJSON file into BigQuery.
+
+        Events are written to disk as they are produced so that memory stays
+        constant regardless of how many there are. Returns the row count.
+        """
+        job_config = bigquery.LoadJobConfig(
+            schema=EVENT_SCHEMA,
+            autodetect=False,
+            write_disposition=(
+                bigquery.WriteDisposition.WRITE_APPEND
+                if write_append
+                else bigquery.WriteDisposition.WRITE_TRUNCATE
+            ),
+            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+            time_partitioning=bigquery.TimePartitioning(
+                type_=bigquery.TimePartitioningType.DAY, field="event_ts"
+            ),
+        )
+
+        table = f"{destination}${date_partition}" if date_partition else destination
+        client = bigquery.Client()
+        count = 0
+
+        with tempfile.NamedTemporaryFile(mode="w+b", suffix=".ndjson") as tmp:
+            for event in events:
+                tmp.write(json.dumps(event).encode("utf-8"))
+                tmp.write(b"\n")
+                count += 1
+
+            tmp.flush()
+            tmp.seek(0)
+
+            job = client.load_table_from_file(tmp, table, job_config=job_config)
+            job.result()
+
+        self.logger.info("Loaded %s events to %s", count, table)
+        return count

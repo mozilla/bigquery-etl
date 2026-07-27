@@ -178,6 +178,31 @@ def test_comment_with_visibility_restriction_is_not_public():
     assert comment_event(ISSUE, comment, TO_TS)["comment_is_public"] is False
 
 
+def test_comment_with_null_visibility_is_public():
+    """A present-but-null `visibility` must not invert the flag for every row."""
+    comment = {
+        "id": "1",
+        "created": "2026-07-27T09:00:00.000-0400",
+        "visibility": None,
+    }
+    assert comment_event(ISSUE, comment, TO_TS)["comment_is_public"] is True
+
+
+def test_comment_with_empty_visibility_object_is_public():
+    comment = {"id": "1", "created": "2026-07-27T09:00:00.000-0400", "visibility": {}}
+    assert comment_event(ISSUE, comment, TO_TS)["comment_is_public"] is True
+
+
+def test_comment_jsd_public_flag_wins_over_null_visibility():
+    comment = {
+        "id": "1",
+        "created": "2026-07-27T09:00:00.000-0400",
+        "jsdPublic": False,
+        "visibility": None,
+    }
+    assert comment_event(ISSUE, comment, TO_TS)["comment_is_public"] is False
+
+
 def test_comment_jsd_public_flag_wins_when_present():
     comment = {"id": "1", "created": "2026-07-27T09:00:00.000-0400", "jsdPublic": False}
     assert comment_event(ISSUE, comment, TO_TS)["comment_is_public"] is False

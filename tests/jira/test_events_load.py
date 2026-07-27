@@ -90,6 +90,9 @@ def test_load_defaults_to_write_truncate_with_the_event_schema():
     assert config.schema == EVENT_SCHEMA
     assert config.time_partitioning.field == "event_ts"
     assert config.time_partitioning.type_ == bigquery.TimePartitioningType.DAY
+    # A seed WRITE_TRUNCATEs the base table, which replaces the table
+    # definition; without this the table loses its declared clustering.
+    assert config.clustering_fields == ["project_key", "issue_key"]
 
 
 def test_load_with_write_append_appends():

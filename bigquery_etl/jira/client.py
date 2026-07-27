@@ -102,19 +102,46 @@ class JiraClient:
 
         raise RuntimeError(f"Exhausted retries for {path}")
 
-    def paginate_start_at(self, path: str, params: dict, key: str) -> Iterator[dict]:
-        """Yield items from a startAt/maxResults/total paginated Jira endpoint."""
+    def paginate_start_at(
+        self,
+        path: str,
+        params: dict,
+        key: str,
+        first_page: Optional[dict] = None,
+    ) -> Iterator[dict]:
+        """Yield items from a startAt/maxResults/total paginated Jira endpoint.
+
+        `first_page` lets a caller that has already fetched `startAt=0` — to
+        validate its shape, say — hand that response in rather than paying for a
+        second identical request.
+
+        A missing `total` raises: every Jira `PageBean*` response carries it, so
+        treating its absence as "this was the last page" would silently drop
+        every item past page 1.
+        """
         start_at = 0
+        page = first_page
 
         while True:
-            page = self.get(path, {**params, "startAt": start_at})
+            if page is None:
+                page = self.get(path, {**params, "startAt": start_at})
+
+            total = page.get("total")
+            if total is None:
+                raise RuntimeError(
+                    f"Paginated response for {path} at startAt={start_at} has no 'total' field; "
+                    f"keys were {sorted(page)}. Jira PageBean responses always carry it, so "
+                    "stopping here could silently drop every remaining page."
+                )
+
             items = page.get(key) or []
             yield from items
 
             start_at += len(items)
-            total = page.get("total")
-            if not items or total is None or start_at >= total:
+            if not items or start_at >= total:
                 return
+
+            page = None
 
     def paginate_token(self, path: str, params: dict, key: str) -> Iterator[dict]:
         """Yield items from a nextPageToken paginated Jira endpoint."""

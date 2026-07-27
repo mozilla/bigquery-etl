@@ -1,12 +1,25 @@
 from argparse import Namespace
-from datetime import date
+from datetime import date, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from bigquery_etl.jira.events import JiraEventsBigQueryIntegration, daily_jql, seed_jql
+from bigquery_etl.jira.events import (
+    STALE_DATE_DAYS,
+    JiraEventsBigQueryIntegration,
+    daily_jql,
+    is_stale_date,
+    seed_jql,
+)
 
 DEFAULT_JQL = "project = SREIN"
+TODAY = date(2026, 7, 27)
+
+
+@pytest.fixture(autouse=True)
+def pinned_today(monkeypatch):
+    """Pin "today" so the staleness guard does not depend on the wall clock."""
+    monkeypatch.setattr("bigquery_etl.jira.events.utc_today", lambda: TODAY)
 
 
 def args(**overrides):
@@ -21,6 +34,7 @@ def args(**overrides):
         "until": None,
         "write_append": False,
         "write_truncate": False,
+        "allow_stale_date": False,
     }
     return Namespace(**{**base, **overrides})
 
@@ -144,3 +158,70 @@ def test_bounded_seed_with_both_dispositions_is_rejected():
 def test_daily_run_requires_a_date():
     with pytest.raises(ValueError, match="--date"):
         JiraEventsBigQueryIntegration().run(args(date=None))
+
+
+def test_unbounded_seed_with_write_append_is_rejected():
+    """An unbounded seed fetches all history; appending it duplicates the table."""
+    namespace = args(seed=True, date=None, write_append=True)
+    with pytest.raises(ValueError, match="unbounded --seed"):
+        JiraEventsBigQueryIntegration().run(namespace)
+
+
+def test_unbounded_seed_with_write_truncate_is_allowed():
+    _, bq = _run(args(seed=True, date=None, write_truncate=True))
+    assert bq.load_events.call_args.kwargs["write_append"] is False
+
+
+@pytest.mark.parametrize(
+    "days_ago,stale",
+    [(0, False), (1, False), (STALE_DATE_DAYS, False), (STALE_DATE_DAYS + 1, True)],
+)
+def test_is_stale_date_threshold(days_ago, stale):
+    assert is_stale_date(TODAY - timedelta(days=days_ago), TODAY) is stale
+
+
+def test_is_stale_date_accepts_a_future_date():
+    assert is_stale_date(TODAY + timedelta(days=1), TODAY) is False
+
+
+def test_stale_date_is_rejected():
+    stale = (TODAY - timedelta(days=STALE_DATE_DAYS + 1)).isoformat()
+    with pytest.raises(ValueError) as excinfo:
+        JiraEventsBigQueryIntegration().run(args(date=stale))
+
+    message = str(excinfo.value)
+    assert "incomplete fetch" in message
+    assert "--seed" in message
+    assert "--allow-stale-date" in message
+
+
+def test_stale_date_is_allowed_with_the_override():
+    stale = (TODAY - timedelta(days=30)).isoformat()
+    _, bq = _run(args(date=stale, allow_stale_date=True))
+    assert bq.load_events.call_args.kwargs["date_partition"] == "20260627"
+
+
+def test_date_at_the_staleness_threshold_is_allowed():
+    boundary = (TODAY - timedelta(days=STALE_DATE_DAYS)).isoformat()
+    _, bq = _run(args(date=boundary))
+    assert bq.load_events.call_args.kwargs["date_partition"] == "20260724"
+
+
+@pytest.mark.parametrize(
+    "override",
+    [
+        {"since": "2025-06-01"},
+        {"until": "2025-06-01"},
+        {"write_append": True},
+        {"write_truncate": True},
+    ],
+)
+def test_seed_only_arguments_are_rejected_alongside_date(override):
+    with pytest.raises(ValueError, match="only apply to --seed"):
+        JiraEventsBigQueryIntegration().run(args(**override))
+
+
+def test_allow_stale_date_is_rejected_alongside_seed():
+    namespace = args(seed=True, date=None, allow_stale_date=True)
+    with pytest.raises(ValueError, match="--allow-stale-date"):
+        JiraEventsBigQueryIntegration().run(namespace)

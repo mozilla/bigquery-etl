@@ -111,6 +111,56 @@ def test_paginate_start_at_stops_on_empty_page(client):
 
 
 @responses.activate
+def test_paginate_start_at_raises_when_total_is_absent(client):
+    responses.get(f"{BASE}/c", json={"maxResults": 2, "values": [{"id": 1}, {"id": 2}]})
+
+    with pytest.raises(RuntimeError, match=r"no 'total' field"):
+        list(client.paginate_start_at("/c", {}, "values"))
+
+
+@responses.activate
+def test_paginate_start_at_names_the_path_when_total_is_absent(client):
+    responses.get(f"{BASE}/c", json={"values": []})
+
+    with pytest.raises(RuntimeError, match="/c"):
+        list(client.paginate_start_at("/c", {}, "values"))
+
+
+@responses.activate
+def test_paginate_start_at_consumes_a_supplied_first_page(client):
+    first_page = {
+        "startAt": 0,
+        "maxResults": 2,
+        "total": 3,
+        "values": [{"id": 1}, {"id": 2}],
+    }
+    responses.get(
+        f"{BASE}/c",
+        json={"startAt": 2, "maxResults": 2, "total": 3, "values": [{"id": 3}]},
+    )
+
+    assert list(
+        client.paginate_start_at("/c", {}, "values", first_page=first_page)
+    ) == [
+        {"id": 1},
+        {"id": 2},
+        {"id": 3},
+    ]
+    assert len(responses.calls) == 1, "the supplied page must not be re-fetched"
+    assert "startAt=2" in responses.calls[0].request.url
+
+
+@responses.activate
+def test_paginate_start_at_with_a_complete_first_page_makes_no_call(client):
+    first_page = {"startAt": 0, "maxResults": 2, "total": 1, "values": [{"id": 1}]}
+
+    assert list(
+        client.paginate_start_at("/c", {}, "values", first_page=first_page)
+    ) == [{"id": 1}]
+    assert len(responses.calls) == 0
+
+
+@responses.activate
 def test_paginate_token_walks_pages(client):
     responses.get(
         f"{BASE}/s", json={"issues": [{"key": "A-1"}], "nextPageToken": "tok"}

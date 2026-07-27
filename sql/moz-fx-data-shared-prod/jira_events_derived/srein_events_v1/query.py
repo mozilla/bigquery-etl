@@ -39,6 +39,18 @@ if __name__ == "__main__":
         help="Load events for this UTC date (YYYY-MM-DD). Required unless --seed.",
     )
     parser.add_argument(
+        "--allow-stale-date",
+        dest="allow_stale_date",
+        action="store_true",
+        help=(
+            "Permit a --date more than 3 days old. Refused by default because "
+            "re-running an old date rebuilds that partition from an incomplete "
+            "fetch: JQL `updated` only reflects an issue's most recent update, so "
+            "issues touched again since are no longer selected and their events are "
+            "dropped. Clearing this task in Airflow is not a repair; --seed is."
+        ),
+    )
+    parser.add_argument(
         "--seed",
         dest="seed",
         action="store_true",

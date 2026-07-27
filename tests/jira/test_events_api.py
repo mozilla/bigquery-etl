@@ -121,6 +121,70 @@ def test_iter_events_propagates_a_failed_issue(api):
         list(api.iter_events(api.get_issues()))
 
 
+def _changelog_calls():
+    return [call for call in responses.calls if "/changelog" in call.request.url]
+
+
+@responses.activate
+def test_changelog_of_a_single_page_issue_is_fetched_exactly_once(api):
+    responses.get(f"{BASE}/rest/api/3/search/jql", json=SEARCH_RESPONSE)
+    responses.get(f"{BASE}/rest/api/3/issue/SREIN-1/changelog", json=CHANGELOG_RESPONSE)
+    responses.get(f"{BASE}/rest/api/3/issue/SREIN-1/comment", json=COMMENT_RESPONSE)
+
+    list(api.iter_events(api.get_issues()))
+
+    assert len(_changelog_calls()) == 1, "the shape guard must not re-fetch startAt=0"
+
+
+@responses.activate
+def test_changelog_pagination_still_walks_every_page(api):
+    responses.get(f"{BASE}/rest/api/3/search/jql", json=SEARCH_RESPONSE)
+    responses.get(
+        f"{BASE}/rest/api/3/issue/SREIN-1/changelog",
+        json={
+            "startAt": 0,
+            "maxResults": 1,
+            "total": 2,
+            "values": [
+                {
+                    "id": "1",
+                    "created": "2026-07-27T09:40:36.912-0400",
+                    "author": {},
+                    "items": [{"field": "labels", "toString": "a"}],
+                }
+            ],
+        },
+    )
+    responses.get(
+        f"{BASE}/rest/api/3/issue/SREIN-1/changelog",
+        json={
+            "startAt": 1,
+            "maxResults": 1,
+            "total": 2,
+            "values": [
+                {
+                    "id": "2",
+                    "created": "2026-07-27T09:41:36.912-0400",
+                    "author": {},
+                    "items": [{"field": "labels", "toString": "b"}],
+                }
+            ],
+        },
+    )
+    responses.get(f"{BASE}/rest/api/3/issue/SREIN-1/comment", json=COMMENT_RESPONSE)
+
+    events = list(api.iter_events(api.get_issues()))
+
+    assert [e["event_id"] for e in events if e["event_type"] == "field_change"] == [
+        "1",
+        "2",
+    ]
+    calls = _changelog_calls()
+    assert len(calls) == 2
+    assert "startAt=0" in calls[0].request.url
+    assert "startAt=1" in calls[1].request.url
+
+
 @responses.activate
 def test_unexpected_changelog_shape_raises(api):
     responses.get(f"{BASE}/rest/api/3/search/jql", json=SEARCH_RESPONSE)

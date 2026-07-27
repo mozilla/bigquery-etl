@@ -91,8 +91,7 @@ clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
 def _dry_run_sql(sql: str, project: str) -> bool:
     """Return True if sql is a valid BigQuery expression, False otherwise."""
     probe = (
-        f"SELECT COUNTIF({sql}) AS c "
-        f"FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
+        f"SELECT COUNTIF({sql}) AS c " f"FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
     )
     try:
         client = bigquery.Client(project=project)
@@ -133,9 +132,7 @@ def build_results(experiments: list[dict], rows: list[dict]) -> dict:
     return results
 
 
-def write_to_gcs(
-    results: dict, bucket_name: str, folder: str, run_date: str
-) -> None:
+def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) -> None:
     """Write versioned sizing results to GCS for Experimenter to read.
 
     Merges new results into the existing latest file so experiments that
@@ -264,9 +261,7 @@ def run(
         if _dry_run_sql(sql, project=project):
             valid_experiments.append(exp)
         else:
-            logger.warning(
-                "Skipping %s -- SQL failed dry-run validation", exp["slug"]
-            )
+            logger.warning("Skipping %s -- SQL failed dry-run validation", exp["slug"])
 
     if not valid_experiments:
         logger.info("No valid experiments after dry-run validation")

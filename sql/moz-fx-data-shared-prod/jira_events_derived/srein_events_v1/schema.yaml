@@ -66,3 +66,11 @@ fields:
   description: >-
     Whether the comment was visible to all project users. NULL for
     non-comment events.
+- name: comment_body
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The comment text, flattened from Atlassian Document Format to plain text:
+    one line per ADF block, formatting marks dropped, mentions rendered as their
+    display text, embedded media omitted. Empty string for a comment with no
+    body; NULL for non-comment events.

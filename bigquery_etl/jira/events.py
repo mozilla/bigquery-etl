@@ -9,6 +9,7 @@ from typing import Callable, Iterable, Iterator, Optional
 
 from google.cloud import bigquery
 
+from .adf import adf_to_text
 from .client import JiraClient
 
 EVENT_SCHEMA = [
@@ -27,21 +28,14 @@ EVENT_SCHEMA = [
     bigquery.SchemaField("from_id", "STRING"),
     bigquery.SchemaField("to_id", "STRING"),
     bigquery.SchemaField("comment_is_public", "BOOL"),
+    bigquery.SchemaField("comment_body", "STRING"),
 ]
 
-# Jira writes a synthetic "Last Comment" changelog entry on every comment, which
-# would both double-count `commented` events and smuggle full comment text into
-# from_value/to_value. "Rank" is backlog-reordering noise.
+# Jira writes a synthetic "Last Comment" changelog entry on every comment, so
+# emitting it would double-count the `commented` events the comment endpoint
+# already gives us - and those carry a comment_id and the body, which this entry
+# does not. "Rank" is backlog-reordering noise.
 EXCLUDED_CHANGELOG_FIELDS = frozenset({"Last Comment", "Rank"})
-
-# Fields whose changelog values are free-form ticket text: keep the event, drop
-# the content. Jira puts the entire old and new description in
-# fromString/toString, so a single edit would otherwise write two complete
-# ticket bodies into from_value/to_value - the same content class the "no comment
-# bodies" decision exists to avoid, and it makes row size unbounded. `summary` is
-# deliberately absent: it is a short bounded title and jira_tickets_derived
-# already stores it as plain text.
-REDACTED_CHANGELOG_FIELDS = frozenset({"Comment", "description"})
 
 SEARCH_FIELDS = ["project", "issuetype", "created", "reporter"]
 
@@ -65,6 +59,7 @@ def _event(
     from_id: Optional[str] = None,
     to_id: Optional[str] = None,
     comment_is_public: Optional[bool] = None,
+    comment_body: Optional[str] = None,
 ) -> dict:
     """Build a row carrying every EVENT_SCHEMA column, defaulting to None."""
     actor = actor or {}
@@ -84,6 +79,7 @@ def _event(
         "from_id": from_id,
         "to_id": to_id,
         "comment_is_public": comment_is_public,
+        "comment_body": comment_body,
     }
 
 
@@ -106,12 +102,7 @@ def created_event(issue: dict) -> Optional[dict]:
 
 
 def changelog_events(issue: dict, history: dict, to_ts: Callable) -> Iterator[dict]:
-    """Yield one event per changelog item.
-
-    Items naming an EXCLUDED_CHANGELOG_FIELDS field are dropped entirely. Items
-    naming a REDACTED_CHANGELOG_FIELDS field are kept, but their from_value and
-    to_value are blanked so free-form ticket text never reaches the table.
-    """
+    """Yield one event per changelog item, dropping EXCLUDED_CHANGELOG_FIELDS."""
     event_ts = to_ts(history.get("created"))
     if not event_ts:
         logger.warning(
@@ -129,8 +120,6 @@ def changelog_events(issue: dict, history: dict, to_ts: Callable) -> Iterator[di
         if field in EXCLUDED_CHANGELOG_FIELDS:
             continue
 
-        redacted = field in REDACTED_CHANGELOG_FIELDS
-
         yield _event(
             issue,
             event_id=str(history.get("id")),
@@ -139,8 +128,8 @@ def changelog_events(issue: dict, history: dict, to_ts: Callable) -> Iterator[di
             actor=author,
             field=field,
             field_type=item.get("fieldtype"),
-            from_value=None if redacted else item.get("fromString"),
-            to_value=None if redacted else item.get("toString"),
+            from_value=item.get("fromString"),
+            to_value=item.get("toString"),
             from_id=item.get("from"),
             to_id=item.get("to"),
         )
@@ -157,7 +146,12 @@ def _comment_is_public(comment: dict) -> bool:
 
 
 def comment_event(issue: dict, comment: dict, to_ts: Callable) -> Optional[dict]:
-    """Build a `commented` event from a comment payload, without its body."""
+    """Build a `commented` event from a comment payload.
+
+    The body is flattened from ADF to plain text. API v3 returns it as an ADF
+    document, and `adf_to_text` reduces it lossily - formatting marks and embedded
+    media do not survive. See `bigquery_etl.jira.adf` for exactly what is dropped.
+    """
     event_ts = to_ts(comment.get("created"))
     if not event_ts:
         logger.warning(
@@ -175,6 +169,7 @@ def comment_event(issue: dict, comment: dict, to_ts: Callable) -> Optional[dict]
         event_ts=event_ts,
         actor=comment.get("author"),
         comment_is_public=_comment_is_public(comment),
+        comment_body=adf_to_text(comment.get("body")),
     )
 
 

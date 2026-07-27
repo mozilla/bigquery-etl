@@ -4,13 +4,18 @@ description: |-
   from Jira API v3. One row per event: issue creation, status changes, other
   field changes, and comments.
 
-  No free-form ticket text is stored. Comment bodies are omitted entirely; the
-  "Last Comment" and "Rank" changelog fields are dropped ("Last Comment"
-  duplicates the comment events and embeds comment text, "Rank" is
-  backlog-reordering noise); and "description" and "Comment" field changes are
-  recorded as events but with `from_value`/`to_value` blanked, since Jira puts
-  the entire old and new ticket body in those. "summary" changes keep their
-  values — a title is short, and `jira_tickets_derived` already stores it.
+  Comment text is stored in `comment_body`, flattened from Atlassian Document
+  Format to plain text — one line per ADF block, formatting marks dropped,
+  mentions rendered as their display text, embedded media omitted. Description
+  edits likewise keep their before/after text in `from_value`/`to_value`. This
+  table carries the same free text as the tickets themselves and is ACL'd to
+  match (`mozilla-confidential/data-viewers`), so a reader of this table could
+  already read the tickets.
+
+  The "Last Comment" and "Rank" changelog fields are dropped: "Last Comment" is
+  a synthetic entry Jira writes on every comment, so keeping it would
+  double-count the comment events (which carry the comment id and body, unlike
+  that entry), and "Rank" is backlog-reordering noise.
 
   Partitions are keyed on event date, and any date can be re-run safely,
   including by clearing the task in Airflow. The daily JQL bounds `updated` only

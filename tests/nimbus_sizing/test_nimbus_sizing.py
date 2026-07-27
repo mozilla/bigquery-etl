@@ -9,6 +9,8 @@ from bigquery_etl.nimbus_sizing import (
     build_query,
     build_results,
     fetch_experiments,
+    write_to_gcs,
+    GCS_FOLDER,
 )
 
 MOCK_EXPERIMENTS = [
@@ -161,3 +163,45 @@ class TestBuildResults:
         results = build_results(MOCK_EXPERIMENTS, rows)
         assert "my-experiment" in results
         assert "another-experiment" not in results
+
+
+class TestWriteToGCS:
+    RESULTS = {
+        "my-experiment": {"eligible_count": 40000, "warnings": []},
+        "another-experiment": {"eligible_count": 95000, "warnings": ["activeRollouts"]},
+    }
+
+    def _call(self, mock_bucket):
+        write_to_gcs(
+            self.RESULTS,
+            bucket_name="mozanalysis",
+            folder=GCS_FOLDER,
+            run_date="2026-07-27",
+        )
+
+    def test_wraps_results_in_v1_key(self):
+        """GCS JSON must be {"v1": ...} so future schema changes can add v2
+        without breaking consumers — matches enrollment_funnel pattern."""
+        import json
+
+        mock_blob = MagicMock()
+        with patch("google.cloud.storage.Client") as mock_client:
+            mock_client.return_value.bucket.return_value.blob.return_value = mock_blob
+            self._call(mock_client)
+
+        uploaded = json.loads(mock_blob.upload_from_string.call_args[0][0])
+        assert "v1" in uploaded
+        assert uploaded["v1"] == self.RESULTS
+
+    def test_writes_dated_and_latest_files(self):
+        """Writes a dated archive and a latest file — matches enrollment_funnel pattern."""
+        mock_blob = MagicMock()
+        with patch("google.cloud.storage.Client") as mock_client:
+            mock_bucket = mock_client.return_value.bucket.return_value
+            mock_bucket.blob.return_value = mock_blob
+            self._call(mock_client)
+
+        blob_paths = [call[0][0] for call in mock_bucket.blob.call_args_list]
+        assert any("2026-07-27" in p for p in blob_paths), "dated file not written"
+        assert any("latest" in p for p in blob_paths), "latest file not written"
+        assert all("v1" in p for p in blob_paths), "v1 not in GCS paths"

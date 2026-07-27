@@ -21,7 +21,7 @@ EXPERIMENTER_API_URL = (
 )
 NIMBUS_TARGETING_TABLE = "mozdata.firefox_desktop.nimbus_targeting_context"
 GCS_BUCKET = "mozanalysis"
-GCS_PATH = "population_sizing/drafts_latest.json"
+GCS_FOLDER = "population_sizing"
 # 10% sample — multiply counts by 10 to estimate full population
 SAMPLE_ID_MAX = 10
 
@@ -108,15 +108,26 @@ def build_results(experiments: list[dict], rows: list[dict]) -> dict:
     return results
 
 
-def write_to_gcs(results: dict, bucket_name: str, path: str) -> None:
-    """Write results JSON to GCS for Experimenter to read."""
+def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) -> None:
+    """Write versioned sizing results to GCS for Experimenter to read.
+
+    Writes two files (matching the enrollment_funnel pattern):
+      - nimbus_draft_sizing_v1_{date}.json  — dated archive
+      - nimbus_draft_sizing_v1_latest.json  — consumed by Experimenter
+    """
     client = storage.Client()
-    blob = client.bucket(bucket_name).blob(path)
-    blob.upload_from_string(
-        json.dumps({"v1": results}, indent=2),
-        content_type="application/json",
+    bucket = client.bucket(bucket_name)
+    json_str = json.dumps({"v1": results}, indent=2)
+
+    dated_path = f"{folder}/nimbus_draft_sizing_v1_{run_date}.json"
+    bucket.blob(dated_path).upload_from_string(
+        json_str, content_type="application/json"
     )
-    logger.info("Wrote sizing results to gs://%s/%s", bucket_name, path)
+    logger.info("Wrote sizing results to gs://%s/%s", bucket_name, dated_path)
+
+    latest_path = f"{folder}/nimbus_draft_sizing_v1_latest.json"
+    bucket.copy_blob(bucket.blob(dated_path), bucket, latest_path)
+    logger.info("Copied to gs://%s/%s", bucket_name, latest_path)
 
 
 def write_to_bigquery(results: dict, project: str, dataset: str, table: str) -> None:
@@ -143,14 +154,15 @@ def write_to_bigquery(results: dict, project: str, dataset: str, table: str) -> 
 
 
 @click.command()
+@click.option("--date", required=True, help="Execution date (YYYY-MM-DD)")
 @click.option("--api-url", default=EXPERIMENTER_API_URL)
 @click.option("--project", default="mozdata")
 @click.option("--output-dataset", default="experimenter")
 @click.option("--output-table", default="nimbus_draft_sizing")
 @click.option("--gcs-bucket", default=GCS_BUCKET)
-@click.option("--gcs-path", default=GCS_PATH)
+@click.option("--gcs-folder", default=GCS_FOLDER)
 @click.option("--dry-run", is_flag=True, help="Print query without running")
-def run(api_url, project, output_dataset, output_table, gcs_bucket, gcs_path, dry_run):
+def run(date, api_url, project, output_dataset, output_table, gcs_bucket, gcs_folder, dry_run):
     """Run Nimbus pre-launch population sizing ETL."""
     logging.basicConfig(level=logging.INFO)
 
@@ -171,7 +183,7 @@ def run(api_url, project, output_dataset, output_table, gcs_bucket, gcs_path, dr
     results = build_results(experiments, rows)
     logger.info("Got sizing results for %d experiments", len(results))
 
-    write_to_gcs(results, bucket_name=gcs_bucket, path=gcs_path)
+    write_to_gcs(results, bucket_name=gcs_bucket, folder=gcs_folder, run_date=date)
     write_to_bigquery(
         results, project=project, dataset=output_dataset, table=output_table
     )

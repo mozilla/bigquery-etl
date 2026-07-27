@@ -2,7 +2,8 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date on which the Airflow pipeline processed and loaded this record into the table.
+  description: The partition date of this row, corresponding to the Airflow run that produced it. Always
+    4 days after `ping_date`, because the query waits for late-arriving metrics pings.
 - name: ping_date
   type: DATE
   mode: NULLABLE
@@ -11,11 +12,15 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The Firefox for Android release channel the client is using, such as release, beta, or nightly.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/fenix_derived/dataset_schema.yaml
+    field: channel
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Two-letter ISO 3166-1 country code reported by the client based on GeoIP lookup at ingestion.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/fenix_derived/dataset_schema.yaml
+    field: country
 - name: adjust_network
   type: STRING
   mode: NULLABLE
@@ -392,8 +397,7 @@ fields:
 - name: history_opened_items_in_private_tabs
   type: INTEGER
   mode: NULLABLE
-  description: Total count of events where history items were opened in private tabs. This value is always
-    zero in observed data.
+  description: Total count of events where history items were opened in private tabs.
 - name: history_opened_items_in_private_tabs_users
   type: INTEGER
   mode: NULLABLE
@@ -572,8 +576,7 @@ fields:
 - name: sync_auth_other_external
   type: INTEGER
   mode: NULLABLE
-  description: Total count of sync auth events triggered by an unclassified external mechanism. This value
-    is always zero in observed data.
+  description: Total count of sync auth events triggered by an unclassified external mechanism.
 - name: sync_auth_other_external_users
   type: INTEGER
   mode: NULLABLE
@@ -630,8 +633,7 @@ fields:
 - name: sync_auth_use_email
   type: INTEGER
   mode: NULLABLE
-  description: Total count of events where the user chose to authenticate via email in the sync flow. This
-    field is PII-suppressed in profiling.
+  description: Total count of events where the user chose to authenticate via email in the sync flow.
 - name: sync_auth_use_email_users
   type: INTEGER
   mode: NULLABLE
@@ -669,7 +671,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Total count of events where the user opened a new private tab by long-pressing the app icon.
-    This value is always zero in observed data.
 - name: app_icon_private_tab_tapped_users
   type: INTEGER
   mode: NULLABLE
@@ -766,8 +767,9 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution identifier for the client's Firefox installation, used to distinguish Mozilla-direct
-    installs from partner-deal distributions such as carrier or OEM bundles.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/fenix_derived/dataset_schema.yaml
+    field: distribution_id
 - name: top_sites_contile_click
   type: INTEGER
   mode: NULLABLE

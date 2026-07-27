@@ -2,6 +2,7 @@ from bigquery_etl.jira.client import JiraClient
 from bigquery_etl.jira.events import (
     EVENT_SCHEMA,
     EXCLUDED_CHANGELOG_FIELDS,
+    REDACTED_CHANGELOG_FIELDS,
     changelog_events,
     comment_event,
     created_event,
@@ -147,6 +148,91 @@ def test_excluded_fields_produce_no_rows():
     }
     events = list(changelog_events(ISSUE, history, TO_TS))
     assert [e["field"] for e in events] == ["labels"]
+
+
+def test_description_changes_keep_the_event_but_drop_the_text():
+    history = {
+        "id": "1",
+        "created": "2026-07-27T09:40:36.912-0400",
+        "author": {},
+        "items": [
+            {
+                "field": "description",
+                "fieldtype": "jira",
+                "fromString": "the entire old ticket body, unbounded in length",
+                "toString": "the entire new ticket body, also unbounded",
+            }
+        ],
+    }
+    (event,) = list(changelog_events(ISSUE, history, TO_TS))
+
+    assert event["event_type"] == "field_change"
+    assert event["field"] == "description"
+    assert event["from_value"] is None
+    assert event["to_value"] is None
+
+
+def test_comment_field_changes_drop_the_text():
+    history = {
+        "id": "1",
+        "created": "2026-07-27T09:40:36.912-0400",
+        "author": {},
+        "items": [
+            {
+                "field": "Comment",
+                "fieldtype": "jira",
+                "fromString": "a whole comment body",
+            }
+        ],
+    }
+    (event,) = list(changelog_events(ISSUE, history, TO_TS))
+
+    assert event["field"] == "Comment"
+    assert event["from_value"] is None
+    assert event["to_value"] is None
+
+
+def test_summary_changes_keep_their_text():
+    """Summary is a short bounded title, and jira_tickets_derived already stores it as plain text."""
+    history = {
+        "id": "1",
+        "created": "2026-07-27T09:40:36.912-0400",
+        "author": {},
+        "items": [
+            {
+                "field": "summary",
+                "fieldtype": "jira",
+                "fromString": "Old title",
+                "toString": "New title",
+            }
+        ],
+    }
+    (event,) = list(changelog_events(ISSUE, history, TO_TS))
+
+    assert event["from_value"] == "Old title"
+    assert event["to_value"] == "New title"
+
+
+def test_no_free_text_field_reaches_a_value_column():
+    """Companion to test_no_comment_body_column_exists: bodies must not arrive via changelog values."""
+    assert REDACTED_CHANGELOG_FIELDS == frozenset({"Comment", "description"})
+
+    history = {
+        "id": "1",
+        "created": "2026-07-27T09:40:36.912-0400",
+        "author": {},
+        "items": [
+            {
+                "field": f,
+                "fieldtype": "jira",
+                "fromString": "SECRET",
+                "toString": "SECRET",
+            }
+            for f in sorted(REDACTED_CHANGELOG_FIELDS)
+        ],
+    }
+    for event in changelog_events(ISSUE, history, TO_TS):
+        assert "SECRET" not in str(event.values())
 
 
 def test_history_without_timestamp_is_dropped():

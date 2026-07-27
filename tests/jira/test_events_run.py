@@ -1,25 +1,18 @@
 from argparse import Namespace
-from datetime import date, timedelta
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from bigquery_etl.jira.events import (
-    STALE_DATE_DAYS,
     JiraEventsBigQueryIntegration,
+    build_parser,
     daily_jql,
-    is_stale_date,
     seed_jql,
 )
 
 DEFAULT_JQL = "project = SREIN"
 TODAY = date(2026, 7, 27)
-
-
-@pytest.fixture(autouse=True)
-def pinned_today(monkeypatch):
-    """Pin "today" so the staleness guard does not depend on the wall clock."""
-    monkeypatch.setattr("bigquery_etl.jira.events.utc_today", lambda: TODAY)
 
 
 def args(**overrides):
@@ -34,15 +27,21 @@ def args(**overrides):
         "until": None,
         "write_append": False,
         "write_truncate": False,
-        "allow_stale_date": False,
     }
     return Namespace(**{**base, **overrides})
 
 
-def test_daily_jql_widens_the_window_by_one_day_each_side():
+def test_daily_jql_has_a_lower_bound_only():
+    """No upper bound: it would be the sole cause of lossy re-runs, and buys nothing.
+
+    The lower bound is widened by a day because JQL date literals are evaluated in
+    the token owner's Jira profile timezone rather than UTC. `events_on_date` then
+    filters precisely, so the surplus is discarded.
+    """
     assert daily_jql(DEFAULT_JQL, date(2026, 7, 27)) == (
-        '(project = SREIN) AND updated >= "2026-07-26" AND updated < "2026-07-29"'
+        '(project = SREIN) AND updated >= "2026-07-26"'
     )
+    assert "updated <" not in daily_jql(DEFAULT_JQL, date(2026, 7, 27))
 
 
 def test_seed_jql_without_bounds_is_the_bare_jql():
@@ -172,39 +171,20 @@ def test_unbounded_seed_with_write_truncate_is_allowed():
     assert bq.load_events.call_args.kwargs["write_append"] is False
 
 
-@pytest.mark.parametrize(
-    "days_ago,stale",
-    [(0, False), (1, False), (STALE_DATE_DAYS, False), (STALE_DATE_DAYS + 1, True)],
-)
-def test_is_stale_date_threshold(days_ago, stale):
-    assert is_stale_date(TODAY - timedelta(days=days_ago), TODAY) is stale
+def test_an_old_date_is_accepted_and_rebuilds_its_partition_completely():
+    """`updated >= D-1` has no upper bound, so re-running an old date is complete.
 
+    Every event this table records bumps the issue's `updated`, so an issue with
+    events on D always satisfies `updated >= D-1` no matter how often it has been
+    touched since. That is what makes clearing an old Airflow task an ordinary
+    repair rather than a silent partial overwrite.
+    """
+    api_cls, bq = _run(args(date="2025-07-27"))
 
-def test_is_stale_date_accepts_a_future_date():
-    assert is_stale_date(TODAY + timedelta(days=1), TODAY) is False
-
-
-def test_stale_date_is_rejected():
-    stale = (TODAY - timedelta(days=STALE_DATE_DAYS + 1)).isoformat()
-    with pytest.raises(ValueError) as excinfo:
-        JiraEventsBigQueryIntegration().run(args(date=stale))
-
-    message = str(excinfo.value)
-    assert "incomplete fetch" in message
-    assert "--seed" in message
-    assert "--allow-stale-date" in message
-
-
-def test_stale_date_is_allowed_with_the_override():
-    stale = (TODAY - timedelta(days=30)).isoformat()
-    _, bq = _run(args(date=stale, allow_stale_date=True))
-    assert bq.load_events.call_args.kwargs["date_partition"] == "20260627"
-
-
-def test_date_at_the_staleness_threshold_is_allowed():
-    boundary = (TODAY - timedelta(days=STALE_DATE_DAYS)).isoformat()
-    _, bq = _run(args(date=boundary))
-    assert bq.load_events.call_args.kwargs["date_partition"] == "20260724"
+    # Lower bound is D-1 (timezone slack); crucially there is no upper bound, so
+    # issues touched again in the year since are still selected.
+    assert api_cls.call_args.args[1] == '(project = SREIN) AND updated >= "2025-07-26"'
+    assert bq.load_events.call_args.kwargs["date_partition"] == "20250727"
 
 
 @pytest.mark.parametrize(
@@ -221,7 +201,61 @@ def test_seed_only_arguments_are_rejected_alongside_date(override):
         JiraEventsBigQueryIntegration().run(args(**override))
 
 
-def test_allow_stale_date_is_rejected_alongside_seed():
-    namespace = args(seed=True, date=None, allow_stale_date=True)
-    with pytest.raises(ValueError, match="--allow-stale-date"):
+def test_build_parser_sets_default_jql_so_a_new_table_cannot_forget_it():
+    """The reusable module owns the contract instead of documenting it.
+
+    `default_jql` is what the custom-JQL guard compares against. When each table's
+    query.py assigned it by hand after parse_args(), a copied file that dropped that
+    line made every --seed run die with AttributeError - and --seed is the one path
+    neither CI nor a scheduled run exercises.
+    """
+    parser = build_parser(
+        destination="proj.dataset.tbl",
+        base_jira_url="https://jira.example.com",
+        jql="project = ABC",
+    )
+    parsed = parser.parse_args([])
+
+    assert parsed.default_jql == "project = ABC"
+    assert parsed.jql == "project = ABC"
+    assert parsed.destination == "proj.dataset.tbl"
+    assert parsed.base_jira_url == "https://jira.example.com"
+
+
+def test_build_parser_supplies_every_attribute_validate_requires():
+    parsed = build_parser("d", "u", "j").parse_args([])
+    required = {
+        "destination",
+        "base_jira_url",
+        "jql",
+        "default_jql",
+        "date",
+        "seed",
+        "since",
+        "until",
+        "write_append",
+        "write_truncate",
+    }
+    assert required <= set(vars(parsed))
+
+
+def test_build_parser_default_jql_survives_an_explicit_jql_override():
+    """The guard needs the *default*, not the override, or it could never fire."""
+    parsed = build_parser("d", "u", "project = ABC").parse_args(
+        ["--jql", "key = ABC-1"]
+    )
+
+    assert parsed.jql == "key = ABC-1"
+    assert parsed.default_jql == "project = ABC"
+
+
+def test_date_run_with_a_custom_jql_is_rejected():
+    """A --date run WRITE_TRUNCATEs the whole partition with whatever the JQL matched.
+
+    `--date 2026-07-27 --jql "key = SREIN-1548"` is a plausible way to debug one
+    issue, and it would replace that partition with only that issue's events. The
+    seed branch already refuses a custom --jql for the same reason.
+    """
+    namespace = args(jql="key = SREIN-1548")
+    with pytest.raises(ValueError, match="custom --jql"):
         JiraEventsBigQueryIntegration().run(namespace)

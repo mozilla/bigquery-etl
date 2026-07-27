@@ -76,6 +76,24 @@ class JiraClient:
                     timeout=REQUEST_TIMEOUT_SECONDS,
                 )
             except requests.RequestException as exc:
+                # Transport-level failures (connection reset, DNS blip, read
+                # timeout) retry on the same schedule as a 5xx. Over the
+                # thousands of calls a seed makes, a dropped connection is at
+                # least as likely as a server error, and failing on the first
+                # one would abort a 15-30 minute run that restarts from zero.
+                if attempt < MAX_ATTEMPTS:
+                    delay = BACKOFF_BASE_SECONDS * (2 ** (attempt - 1))
+                    self.logger.warning(
+                        "Retrying %s after %s in %.1fs (attempt %s/%s)",
+                        path,
+                        exc.__class__.__name__,
+                        delay,
+                        attempt,
+                        MAX_ATTEMPTS,
+                    )
+                    time.sleep(delay)
+                    continue
+
                 raise RuntimeError(f"Failed while requesting {path}") from exc
 
             if 200 <= response.status_code <= 299:

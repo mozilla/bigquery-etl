@@ -1,4 +1,5 @@
 import pytest
+import requests
 import responses
 
 from bigquery_etl.jira.client import MAX_ATTEMPTS, JiraClient
@@ -77,6 +78,29 @@ def test_get_raises_after_exhausting_retries(client, monkeypatch):
         responses.get(f"{BASE}/x", json={}, status=429)
 
     with pytest.raises(RuntimeError, match="status_code=429"):
+        client.get("/x", {})
+    assert len(responses.calls) == MAX_ATTEMPTS
+
+
+@responses.activate
+def test_get_retries_transport_errors(client, monkeypatch):
+    """A dropped connection is at least as likely as a 5xx over a ~3,200-call seed."""
+    slept = []
+    monkeypatch.setattr("bigquery_etl.jira.client.time.sleep", slept.append)
+    responses.get(f"{BASE}/x", body=requests.ConnectionError("connection reset"))
+    responses.get(f"{BASE}/x", json={"ok": True}, status=200)
+
+    assert client.get("/x", {}) == {"ok": True}
+    assert slept == [2.0]
+
+
+@responses.activate
+def test_get_raises_after_exhausting_transport_retries(client, monkeypatch):
+    monkeypatch.setattr("bigquery_etl.jira.client.time.sleep", lambda _: None)
+    for _ in range(MAX_ATTEMPTS):
+        responses.get(f"{BASE}/x", body=requests.ConnectionError("connection reset"))
+
+    with pytest.raises(RuntimeError, match="Failed while requesting /x"):
         client.get("/x", {})
     assert len(responses.calls) == MAX_ATTEMPTS
 

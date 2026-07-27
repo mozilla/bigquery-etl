@@ -4,22 +4,25 @@ description: |-
   from Jira API v3. One row per event: issue creation, status changes, other
   field changes, and comments.
 
-  Comment bodies are deliberately not stored. The "Last Comment" and "Rank"
-  changelog fields are excluded — "Last Comment" duplicates the comment events
-  and embeds comment text, and "Rank" is backlog-reordering noise.
+  No free-form ticket text is stored. Comment bodies are omitted entirely; the
+  "Last Comment" and "Rank" changelog fields are dropped ("Last Comment"
+  duplicates the comment events and embeds comment text, "Rank" is
+  backlog-reordering noise); and "description" and "Comment" field changes are
+  recorded as events but with `from_value`/`to_value` blanked, since Jira puts
+  the entire old and new ticket body in those. "summary" changes keep their
+  values — a title is short, and `jira_tickets_derived` already stores it.
 
-  Partitions are keyed on event date. The daily task can only maintain recent
-  partitions: JQL `updated` reflects only an issue's most recent update, so
-  re-running an old date fetches only the subset of that day's issues that have
-  not been touched since, and would replace the partition with that subset.
-  Dates more than 3 days old are therefore refused unless `--allow-stale-date`
-  is passed, so clearing an old run in Airflow fails loudly rather than
-  silently truncating a good partition.
+  Partitions are keyed on event date, and any date can be re-run safely,
+  including by clearing the task in Airflow. The daily JQL bounds `updated` only
+  from below, and every event this table records bumps an issue's `updated`, so
+  a re-run always selects a superset of the issues with events on that date and
+  rebuilds the partition completely. Re-running a long-past date simply fetches
+  more issues the further back it reaches.
 
-  Repair is a full manual rebuild, run from a checkout of bigquery-etl with
-  JIRA_USERNAME and JIRA_TOKEN in the environment (note that `bqetl query run`
-  does not work here — it only matches `*.sql` files, and a bare
-  `python query.py` imports a stale installed copy of `bigquery_etl`):
+  The initial load is a full manual seed, run from a checkout of bigquery-etl
+  with JIRA_USERNAME and JIRA_TOKEN in the environment (note that
+  `bqetl query run` does not work here — it only matches `*.sql` files, and a
+  bare `python query.py` imports a stale installed copy of `bigquery_etl`):
 
     PYTHONPATH=<repo root> python \
       sql/moz-fx-data-shared-prod/jira_events_derived/srein_events_v1/query.py \

@@ -3,7 +3,8 @@
 import json
 import logging
 import tempfile
-from datetime import date, datetime, timedelta, timezone
+from argparse import ArgumentParser
+from datetime import date, datetime, timedelta
 from typing import Callable, Iterable, Iterator, Optional
 
 from google.cloud import bigquery
@@ -33,14 +34,19 @@ EVENT_SCHEMA = [
 # from_value/to_value. "Rank" is backlog-reordering noise.
 EXCLUDED_CHANGELOG_FIELDS = frozenset({"Last Comment", "Rank"})
 
+# Fields whose changelog values are free-form ticket text: keep the event, drop
+# the content. Jira puts the entire old and new description in
+# fromString/toString, so a single edit would otherwise write two complete
+# ticket bodies into from_value/to_value - the same content class the "no comment
+# bodies" decision exists to avoid, and it makes row size unbounded. `summary` is
+# deliberately absent: it is a short bounded title and jira_tickets_derived
+# already stores it as plain text.
+REDACTED_CHANGELOG_FIELDS = frozenset({"Comment", "description"})
+
 SEARCH_FIELDS = ["project", "issuetype", "created", "reporter"]
 
 CHANGELOG_ITEMS_KEY = "values"
 PAGE_SIZE = 100
-
-# How far back a --date run may reach before it must be confirmed by hand. See
-# `is_stale_date` for why re-running an old date is not a repair.
-STALE_DATE_DAYS = 3
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +106,12 @@ def created_event(issue: dict) -> Optional[dict]:
 
 
 def changelog_events(issue: dict, history: dict, to_ts: Callable) -> Iterator[dict]:
-    """Yield one event per changelog item, excluding denied fields."""
+    """Yield one event per changelog item.
+
+    Items naming an EXCLUDED_CHANGELOG_FIELDS field are dropped entirely. Items
+    naming a REDACTED_CHANGELOG_FIELDS field are kept, but their from_value and
+    to_value are blanked so free-form ticket text never reaches the table.
+    """
     event_ts = to_ts(history.get("created"))
     if not event_ts:
         logger.warning(
@@ -118,6 +129,8 @@ def changelog_events(issue: dict, history: dict, to_ts: Callable) -> Iterator[di
         if field in EXCLUDED_CHANGELOG_FIELDS:
             continue
 
+        redacted = field in REDACTED_CHANGELOG_FIELDS
+
         yield _event(
             issue,
             event_id=str(history.get("id")),
@@ -126,8 +139,8 @@ def changelog_events(issue: dict, history: dict, to_ts: Callable) -> Iterator[di
             actor=author,
             field=field,
             field_type=item.get("fieldtype"),
-            from_value=item.get("fromString"),
-            to_value=item.get("toString"),
+            from_value=None if redacted else item.get("fromString"),
+            to_value=None if redacted else item.get("toString"),
             from_id=item.get("from"),
             to_id=item.get("to"),
         )
@@ -317,33 +330,107 @@ class EventsBigQueryAPI:
 
 
 def daily_jql(jql: str, target_date: date) -> str:
-    """Build JQL selecting issues touched around target_date.
+    """Build JQL selecting every issue that could have an event on target_date.
 
-    The window is widened by a day on each side because JQL date literals are
-    evaluated in the token owner's Jira profile timezone rather than UTC. Events
-    are filtered precisely afterwards by `events_on_date`, so the surplus is
-    discarded and the timezone becomes irrelevant.
+    There is deliberately **no upper bound**. Every event this table records bumps
+    the issue's `updated`: creation sets it, a changelog write is by definition a
+    modification, and commenting updates it too. So any issue with an event on D
+    necessarily has `updated >= D`, which means `updated >= D-1` on its own already
+    selects a superset of the issues with events on D, and `events_on_date` filters
+    precisely from there.
+
+    An `updated < D+2` clause would buy nothing on the scheduled run - at 04:00 on
+    D+1 no issue can have `updated >= D+2` - while being the one thing that makes
+    re-running an old date lossy, because it drops issues touched again since.
+    Without it, re-running D fetches more issues the further back D is, but yields a
+    complete partition, so clearing the task in Airflow is an ordinary repair.
+
+    The lower bound is widened by a day because JQL date literals are evaluated in
+    the token owner's Jira profile timezone rather than UTC; a day of slack covers
+    every offset from UTC-12 to UTC+14.
     """
     lower = target_date - timedelta(days=1)
-    upper = target_date + timedelta(days=2)
-    return f'({jql}) AND updated >= "{lower.isoformat()}" AND updated < "{upper.isoformat()}"'
+    return f'({jql}) AND updated >= "{lower.isoformat()}"'
 
 
-def utc_today() -> date:
-    """Return the current UTC date, isolated in one place so tests can pin it."""
-    return datetime.now(timezone.utc).date()
+def build_parser(destination: str, base_jira_url: str, jql: str) -> ArgumentParser:
+    """Build the CLI for a Jira events table, with this table's defaults baked in.
 
-
-def is_stale_date(target_date: date, today: date) -> bool:
-    """Report whether target_date is too old for the daily task to rebuild faithfully.
-
-    The daily task selects issues by JQL `updated`, which carries only an issue's
-    *most recent* update. Re-running date D therefore fetches only the issues whose
-    last update still falls in D's window, and WRITE_TRUNCATEs partition D with
-    that subset. `STALE_DATE_DAYS` is wide enough to cover ordinary Airflow retries
-    and a weekend, and narrow enough that anything older needs a human decision.
+    Each table's `query.py` is a handful of lines calling this, rather than its own
+    copy of the flag definitions. That matters for two reasons: the guard semantics
+    stay identical across tables instead of drifting as files are copied, and
+    `default_jql` is set here, where it is consumed, instead of being assigned onto
+    the namespace by hand after `parse_args()`. A copied `query.py` that forgot that
+    assignment used to make every `--seed` run die with `AttributeError`, and
+    `--seed` is the one path neither CI nor a scheduled run exercises.
     """
-    return (today - target_date).days > STALE_DATE_DAYS
+    parser = ArgumentParser(description=f"Load Jira change events into {destination}.")
+    parser.add_argument("--destination", dest="destination", default=destination)
+    parser.add_argument("--base-url", dest="base_jira_url", default=base_jira_url)
+    parser.add_argument(
+        "--jql",
+        dest="jql",
+        default=jql,
+        help=(
+            "Override the table's scope. Refused by every mode that writes: a "
+            "narrower JQL would WRITE_TRUNCATE the target with only what it matched."
+        ),
+    )
+    parser.add_argument(
+        "--date",
+        dest="date",
+        default=None,
+        help=(
+            "Rebuild this UTC date's partition (YYYY-MM-DD). Required unless --seed. "
+            "Safe to re-run for any past date, including by clearing the Airflow task."
+        ),
+    )
+    parser.add_argument(
+        "--seed",
+        dest="seed",
+        action="store_true",
+        help=(
+            "Rebuild the whole table from full issue history. Manual use only; needed "
+            "for the initial load."
+        ),
+    )
+    parser.add_argument(
+        "--since",
+        dest="since",
+        default=None,
+        help="With --seed, only issues created on or after this date (YYYY-MM-DD).",
+    )
+    parser.add_argument(
+        "--until",
+        dest="until",
+        default=None,
+        help="With --seed, only issues created before this date (YYYY-MM-DD).",
+    )
+    parser.add_argument(
+        "--write-append",
+        dest="write_append",
+        action="store_true",
+        help=(
+            "Append instead of truncating. Use for the second and later chunks of a "
+            "chunked seed; re-running a chunk duplicates rows, so restart from the "
+            "failed chunk onward."
+        ),
+    )
+    parser.add_argument(
+        "--write-truncate",
+        dest="write_truncate",
+        action="store_true",
+        help=(
+            "Truncate the whole table before loading. Required to make the intent "
+            "explicit for the first chunk of a chunked seed; a bounded seed "
+            "(--since/--until) refuses to run without exactly one of "
+            "--write-truncate or --write-append."
+        ),
+    )
+    # Not a flag: the guard needs the table's configured scope to compare against,
+    # so it must survive an explicit --jql override.
+    parser.set_defaults(default_jql=jql)
+    return parser
 
 
 def seed_jql(jql: str, since: Optional[str], until: Optional[str]) -> str:
@@ -381,20 +468,21 @@ class JiraEventsBigQueryIntegration:
         - `date` (str | None) — `YYYY-MM-DD`, the partition to rebuild.
         - `seed` (bool), `since` (str | None), `until` (str | None).
         - `write_append` (bool), `write_truncate` (bool).
-        - `allow_stale_date` (bool).
 
         `date`, `since`, and `until` are strings, not `date` objects; `date` is parsed
         here so a malformed value fails before any network or BigQuery call.
         """
+        if args.jql != args.default_jql:
+            raise ValueError(
+                "this run refuses a custom --jql: every run WRITE_TRUNCATEs its whole "
+                "target (the base table for --seed, one partition for --date) with "
+                "only the issues the JQL matched, so a narrower scope silently drops "
+                "everything it did not fetch. Bound a seed with --since/--until instead"
+            )
+
         if args.seed:
             if args.date:
                 raise ValueError("--seed and --date are mutually exclusive")
-            if args.allow_stale_date:
-                raise ValueError(
-                    "--allow-stale-date only applies to a --date run and would be "
-                    "silently ignored by --seed, which fetches full history"
-                )
-            if args.jql != args.default_jql:
                 raise ValueError(
                     "--seed refuses a custom --jql because its WRITE_TRUNCATE would "
                     "discard history the seed did not fetch; narrow a seed with "
@@ -439,20 +527,10 @@ class JiraEventsBigQueryIntegration:
                 "run always WRITE_TRUNCATEs exactly the one partition it just fetched"
             )
 
-        target_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-        today = utc_today()
-        if not args.allow_stale_date and is_stale_date(target_date, today):
-            raise ValueError(
-                f"--date={args.date} is more than {STALE_DATE_DAYS} days before today "
-                f"({today.isoformat()}), so this run would rebuild partition "
-                f"{target_date.isoformat()} from an incomplete fetch. JQL `updated` "
-                "carries only an issue's most recent update, so issues touched that day "
-                "and again since are no longer selected, and their events would be "
-                "dropped from the partition. Clearing this task in Airflow is therefore "
-                "not a repair. The correct repair is a full rebuild with --seed. Pass "
-                "--allow-stale-date only if you have accepted that the partition will be "
-                "replaced by a subset of its events."
-            )
+        # Parse here so a malformed --date fails before any network or BigQuery
+        # call. No staleness check is needed: `daily_jql` has no upper bound, so
+        # re-running an arbitrarily old date still rebuilds its partition completely.
+        datetime.strptime(args.date, "%Y-%m-%d")
 
     def run(self, args) -> None:
         """Run the Jira events integration with parsed CLI arguments.

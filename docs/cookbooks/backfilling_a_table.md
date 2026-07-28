@@ -2,6 +2,41 @@
 
 **Note** For large sets of data, follow the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills) for backfills.
 
+## Overview
+
+A backfill reprocesses historical partitions of a table, for example after a query is fixed or
+upstream data is corrected, so the older data reflects the change. Scheduled runs only produce new
+partitions going forward, so past data has to be rewritten separately.
+
+You start a managed backfill by editing a `backfill.yaml` file in the table's directory and opening
+a pull request ([example PR](https://github.com/mozilla/bigquery-etl/pull/9244/changes)).
+Most of the process is automated, and you wait for Slack notifications between steps.
+The process is:
+
+1. Create an entry in the table's `backfill.yaml` and open a PR. Run `bqetl backfill create` with no arguments to use the interactive mode, which prompts you through various settings. See [Initiating the backfill](#initiating-the-backfill).
+2. Once merged, processing starts automatically (in about an hour) and writes the new data to a temporary staging table, not to production.
+3. Validate the staged data yourself to confirm it looks right.
+   - If the staged data is wrong, or you otherwise decide not to proceed, set the status to `Cancelled` instead so nothing is swapped and the staging table expires on its own.
+4. Complete the backfill by opening a second PR that sets the status to `Complete`. On merge, production is backed up and the staged data is swapped in. See [Completing the backfill](#completing-the-backfill).
+5. You are notified when the swap is done.
+
+Watch progress in the `#dataops-alerts` Slack channel (join it and list yourself as a watcher on
+the backfill entry). If you are not sure whether your change even needs a backfill, or your table
+is not a standard day-partitioned table, ask in `#data-help` before starting.
+
+Some changes do not need a managed backfill at all, see [Changes that do not require a backfill](#changes-that-do-not-require-a-backfill).
+
+## Changes that do not require a backfill
+
+Some tables rebuild their whole history on every scheduled run, so a query change propagates across the full window on the next scheduled run with no managed backfill. This applies when **both** of these hold (otherwise, use a managed backfill as described below):
+
+- `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset or `0` (unset defaults to `0`), so each run `WRITE_TRUNCATE`s the **whole table**, not one partition. (A non-zero offset writes only the shifted partition; omitting `date_partition_parameter` defaults it to `submission_date`, one partition per day. Neither rebuilds history.)
+- The query recomputes the full or a rolling window from its sources every run (e.g. `WHERE submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)`), so the truncate rewrites history instead of leaving a single day.
+
+**Note** A self-referential table that reads its own prior output does not qualify — a `depends_on_past: true` / `is_init()` first-seen table like `telemetry_derived.clients_first_seen_v3` carries earlier values forward, so a logic change reaches only new rows and must be rebuilt with `--reinitialize-table` (see the table below).
+
+When both hold, just deploy and let the DAG run (independent of the `incremental` label and of whether the table is partitioned). Validate the change in a dev environment beforehand — once deployed, the scheduled run makes it live with no pre-prod gate — then confirm the rebuild in production (values correct across the window; for a partitioned table, the newest partition is past the deploy date).
+
 ## What can be backfilled with `bqetl backfill`
 
 The managed backfill workflow (`bqetl backfill create` / `initiate`) validates a table's `metadata.yaml` and the backfill entry before it will run. Some table configurations are rejected outright (no override), some are allowed only with an explicit override flag, and some are supported with special handling. The table below summarizes the rules enforced by the backfill code.
@@ -29,7 +64,7 @@ The rejections are enforced by [`validate_table_metadata`](https://github.com/mo
 ## Testing a backfill in a dev environment
 
 We can't create tables in `moz-fx-data-shared-prod.backfills_staging_derived`, so running
-the full managed backfill workflow locally is only possible with `--target`, which stages into 
+the full managed backfill workflow locally is only possible with `--target`, which stages into
 a test project. We can write to tables that already exist in
 `moz-fx-data-shared-prod.backfills_staging_derived`, so an active backfill can be
 amended by writing to its existing staging table.
@@ -59,8 +94,8 @@ The `backfill.yaml` entry is still read from the repo as usual; only the BigQuer
 locations are redirected. Without `--target`, behavior is unchanged (production backfill).
 
 `query.py` (python script) backfills do not support `--target`. A python-script backfill's
-destination is baked into the entry's `query_script_args` at create time and is not redirected, 
-so running one under `--target` is rejected to avoid writing to the production staging table. 
+destination is baked into the entry's `query_script_args` at create time and is not redirected,
+so running one under `--target` is rejected to avoid writing to the production staging table.
 This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054.
 
 ## Initiating the backfill:
@@ -79,7 +114,7 @@ This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-1005
     For new tables:
       - Set `shredder_mitigation: false` since there is no data yet to safeguard.
       - Backfill and validate your data.
-      - Set `shredder_mitigation: true` to protect the validated data. 
+      - Set `shredder_mitigation: true` to protect the validated data.
     For existing tables:
       - Bump the version of the query.
       - Make the necessary updates to the new version of the query and schema.
@@ -127,7 +162,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to set the backfill staging table if needed, e.g. `--destination_table=dataset__table_v1_YYYY_MM_DD`.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
-When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour.
 The script must implement support for this argument itself.
 
 Example:
@@ -176,11 +211,11 @@ Requirements and notes:
 - The `start_date`/`end_date` still bound the entry, but a reinitialize
   rebuilds every partition the `is_init()` query produces, not just that range.
 - For tables sharded by `sample_id`, parallelism can be batched with the `@sampling_batch_size`
-  parameter, rather than one job per `sample_id`. BigQuery limits partition modifications to 30000 
-  per table per day. A first_seen table like clients_first_seen can have thousands of partitions, 
-  and each per-sample_id query writes to most/all of them. Batching is required to reduce the 
+  parameter, rather than one job per `sample_id`. BigQuery limits partition modifications to 30000
+  per table per day. A first_seen table like clients_first_seen can have thousands of partitions,
+  and each per-sample_id query writes to most/all of them. Batching is required to reduce the
   number of modifications so partition_modifications = num_batches * num_partitions.
-  - The batch size defaults to 20 (5 jobs over 100 sample IDs), which keeps a ~3,700-partition 
+  - The batch size defaults to 20 (5 jobs over 100 sample IDs), which keeps a ~3,700-partition
     table under the 30,000/day cap with headroom for its daily scheduled DAG run; override it with
   `--reinitialize-sampling-batch-size`
   - To use this, the query must constrain `sample_id` with a range clause so a batch of IDs is
@@ -387,6 +422,7 @@ on `complete`, those partitions are copied into production individually. Require
 
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
    - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
+   - If the staging table is wrong, or you otherwise decide not to complete the backfill, set the entry's status to `Cancelled` in a Pull Request rather than `Complete`. Nothing is swapped into production, and the staging table is left to expire on its own (default 30 days). Do not manually delete it. To retry, create a fresh entry once the fix is ready.
 
 2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
 

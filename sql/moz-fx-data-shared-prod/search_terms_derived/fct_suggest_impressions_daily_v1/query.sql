@@ -8,6 +8,7 @@ SELECT
   match_type,
   experiments,
   is_clicked,
+  version
 FROM
   `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`
 WHERE

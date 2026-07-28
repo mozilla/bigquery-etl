@@ -18,7 +18,6 @@ from bigquery_etl.nimbus_sizing import (
 MOCK_EXPERIMENTS = [
     {
         "slug": "my-experiment",
-        "populationPercent": "5.0",
         "targetingSql": {
             "sql": "firefox_version >= 120",
             "warnings": [],
@@ -27,7 +26,6 @@ MOCK_EXPERIMENTS = [
     },
     {
         "slug": "another-experiment",
-        "populationPercent": "10.0",
         "targetingSql": {
             "sql": "locale = 'en-US' AND firefox_version >= 115",
             "warnings": ["activeRollouts"],
@@ -42,7 +40,6 @@ MOCK_API_RESPONSE = [
     # needsUpdate=False — excluded
     {
         "slug": "stale-experiment",
-        "populationPercent": "5.0",
         "targetingSql": {
             "sql": "firefox_version >= 100",
             "warnings": [],
@@ -50,15 +47,10 @@ MOCK_API_RESPONSE = [
         },
     },
     # No targetingSql — excluded
-    {
-        "slug": "no-sql-experiment",
-        "populationPercent": "5.0",
-        "targetingSql": None,
-    },
+    {"slug": "no-sql-experiment", "targetingSql": None},
     # targetingSql.sql is None — excluded
     {
         "slug": "untranslatable-experiment",
-        "populationPercent": "5.0",
         "targetingSql": {
             "sql": None,
             "warnings": ["attachedFxAOAuthClients"],

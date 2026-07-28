@@ -1,0 +1,54 @@
+friendly_name: Jira SREIN Ticket Events
+description: "Change events on Jira tickets in the SREIN (MozCloud Intake) project,\
+  \ pulled\nfrom Jira API v3. One row per event: issue creation, status changes, other\n\
+  field changes, and comments.\n\nComment text is stored in `comment_body`, flattened\
+  \ from Atlassian Document\nFormat to plain text \u2014 one line per ADF block, formatting\
+  \ marks dropped,\nmentions rendered as their display text, embedded media omitted.\
+  \ Description\nedits likewise keep their before/after text in `from_value`/`to_value`.\
+  \ This\ntable carries the same free text as the tickets themselves and is ACL'd\
+  \ to\nmatch (`mozilla-confidential/data-viewers`), so a reader of this table could\n\
+  already read the tickets.\n\nThe \"Last Comment\" and \"Rank\" changelog fields\
+  \ are dropped: \"Last Comment\" is\na synthetic entry Jira writes on every comment,\
+  \ so keeping it would\ndouble-count the comment events (which carry the comment\
+  \ id and body, unlike\nthat entry), and \"Rank\" is backlog-reordering noise.\n\n\
+  Partitions are keyed on event date, and any date can be re-run safely,\nincluding\
+  \ by clearing the task in Airflow. The daily JQL bounds `updated` only\nfrom below,\
+  \ and every event this table records bumps an issue's `updated`, so\na re-run always\
+  \ selects a superset of the issues with events on that date and\nrebuilds the partition\
+  \ completely. Re-running a long-past date simply fetches\nmore issues the further\
+  \ back it reaches.\n\nThe initial load is a full manual seed, run from a checkout\
+  \ of bigquery-etl\nwith JIRA_USERNAME and JIRA_TOKEN in the environment (note that\n\
+  `bqetl query run` does not work here \u2014 it only matches `*.sql` files, and a\n\
+  bare `python query.py` imports a stale installed copy of `bigquery_etl`):\n\n  PYTHONPATH=<repo\
+  \ root> python \\\n    sql/moz-fx-data-shared-prod/jira_events_derived/srein_events_v1/query.py\
+  \ \\\n    --seed"
+owners:
+- wstuckey@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  owner1: wstuckey
+  dag: bqetl_jira_tickets
+scheduling:
+  dag_name: bqetl_jira_tickets
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: JIRA_USERNAME
+    key: bqetl_jira_service_desk__jira_username
+  - deploy_target: JIRA_TOKEN
+    key: bqetl_jira_service_desk__jira_token
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_ts
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - project_key
+    - issue_key
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

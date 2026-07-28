@@ -13,7 +13,7 @@ from operator import attrgetter
 from textwrap import dedent
 from typing import Callable, Iterable, Optional, Tuple, Union
 
-from google.api_core.exceptions import NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import CopyJob, QueryJob
 
@@ -481,6 +481,20 @@ def delete_from_partition(
     )
 
 
+def _conform_intermediate_schemas(client, intermediate_tables, target_schema):
+    """Widen each intermediate table's schema to match target_schema.
+
+    Sampled shredding writes intermediates and then copies to the prod partition. If the prod
+    table's schema changes while the intermediate tables are being built, the schemas will diverge
+    and the copy will fail.
+    """
+    for table_id in intermediate_tables:
+        table = client.get_table(table_id)
+        if table.schema != target_schema:
+            table.schema = target_schema
+            client.update_table(table, ["schema"])
+
+
 def delete_from_partition_with_sampling(
     dry_run: bool,
     partition: Partition,
@@ -566,11 +580,34 @@ def delete_from_partition_with_sampling(
             f"{[str(t) for t in intermediate_tables]} to {target_table}"
         )
         if not dry_run:
-            copy_job = client.copy_table(
-                sources=intermediate_tables,
-                destination=target_table,
-                job_config=copy_job_config,
-            )
+
+            def run_copy():
+                job = client.copy_table(
+                    sources=intermediate_tables,
+                    destination=target_table,
+                    job_config=copy_job_config,
+                )
+                job.result()
+                return job
+
+            try:
+                copy_job = run_copy()
+            except BadRequest as e:
+                # If the source table's schema changes mid-sample deletion, the copy will fail.
+                # Conform the schemas if this happens so that the whole sample doesn't need to rerun.
+                # Best-effort based on the error message.
+                if "Incompatible table schemata" not in str(e):
+                    raise
+                logging.warning(
+                    f"Copy to {target_table} failed with incompatible schemas, "
+                    "conforming intermediate table schemas and retrying"
+                )
+                _conform_intermediate_schemas(
+                    client,
+                    intermediate_tables,
+                    client.get_table(destination_table_id).schema,
+                )
+                copy_job = run_copy()
             # simulate query job properties for logging
             copy_job.total_bytes_processed = sum(
                 [r.total_bytes_processed or 0 for r in results]

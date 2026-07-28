@@ -2,6 +2,7 @@ friendly_name: Newtab Merino Priors
 description: |-
   Queries New Tab stats used by Merino to calculate Thompson sampling priors.
   These determine how new items (without engagement data) are ranked on New Tab.
+  Configured experiment rows are emitted with region values suffixed by experiment slug and branch.
 owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com
@@ -26,5 +27,6 @@ references:
   checks.sql:
   - ..
   query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.newtab_content
   - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_combined_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_current_v1

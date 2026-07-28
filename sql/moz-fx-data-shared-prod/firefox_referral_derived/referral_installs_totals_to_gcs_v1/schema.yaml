@@ -1,7 +1,10 @@
 # This task extracts referral_installs_totals_v1 to a CSV in GCS; it does not
-# build a queryable table. The schema is declared so stage-deploy CI can resolve
-# an artifact for the query.py (a .py can't be dry-run), and it documents the
-# exported CSV column contract. Columns mirror referral_installs_totals_v1.
+# build a queryable table. No table is created: metadata.yaml sets
+# scheduling.destination_table to null, which deploy_table honours by skipping
+# table creation in both prod and stage. This schema.yaml is kept only so the
+# --isolated stage deploy can resolve the query.py artifact (a .py can't be
+# dry-run) and to document the exported CSV column contract; columns mirror
+# referral_installs_totals_v1.
 fields:
 - name: invite_code
   type: STRING

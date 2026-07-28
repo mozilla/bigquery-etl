@@ -4,12 +4,12 @@ Supports the Firefox Referral Program (DENG-11237). The Website team syncs the
 CSV into the Postgres DB behind the referral hub page on firefox.com.
 
 Output format matches the Website team's request: `invite_code,total_installs`
-(no header by default), one timestamped file per run named
-`referral_data-YYYY-MM-DDZHH:MM:SS.csv`.
+(no header by default), one file per run date named `referral_data-<date>.csv`.
+The run date (not wall-clock time) is used so an Airflow retry overwrites the
+same object rather than accumulating a second file for the same logical date.
 """
 
 import logging
-from datetime import datetime, timezone
 
 import rich_click as click
 from google.cloud import bigquery
@@ -47,6 +47,12 @@ log = logging.getLogger(__name__)
     "bucket root.",
 )
 @click.option(
+    "--date",
+    required=True,
+    help="Run date (YYYY-MM-DD), used in the output filename. Pass Airflow's "
+    "{{ds}} so retries overwrite the same object instead of accumulating files.",
+)
+@click.option(
     "--include-header/--no-include-header",
     default=False,
     help="Whether to write a CSV header row. Defaults to no header per the "
@@ -58,13 +64,13 @@ def export_referral_totals_to_gcs(
     source_table: str,
     destination_bucket: str,
     destination_prefix: str,
+    date: str,
     include_header: bool,
 ):
-    """Extract the referral totals table to a timestamped CSV file in GCS."""
+    """Extract the referral totals table to a CSV file in GCS, named by run date."""
     client = bigquery.Client(source_project)
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dZ%H:%M:%S")
-    filename = f"referral_data-{timestamp}.csv"
+    filename = f"referral_data-{date}.csv"
     object_path = (
         f"{destination_prefix.rstrip('/')}/{filename}"
         if destination_prefix
@@ -82,9 +88,11 @@ def export_referral_totals_to_gcs(
         destination_uris=[destination_uri],
         job_config=job_config,
     )
-    extract_job.result()  # Waits for the job to complete.
-
-    if extract_job.state != "DONE":
-        raise Exception(f"Export failed with errors: {extract_job.errors}")
+    try:
+        extract_job.result()  # Waits for the job to complete.
+    except Exception as e:
+        raise click.ClickException(
+            f"Export to {destination_uri} failed: {extract_job.errors}"
+        ) from e
 
     log.info(f"Export successful: {destination_uri}")

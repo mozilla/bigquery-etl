@@ -1,17 +1,39 @@
-WITH private_pings AS (
+WITH experiment_configs AS (
   SELECT
-    submission_timestamp,
-    document_id,
-    events,
-    mozfun.newtab.surface_id_country(
-      metrics.string.newtab_content_surface_id,
-      NULL,
-      metrics.string.newtab_content_country
-    ) AS normalized_country_code
+    *
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
-  WHERE
-    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
+    UNNEST([STRUCT('DE' AS region, 'publisher-constraint-in-germany' AS experiment_slug)])
+),
+private_pings AS (
+  SELECT
+    p.submission_timestamp,
+    p.document_id,
+    p.events,
+    p.normalized_country_code,
+    ec.experiment_slug,
+    IF(ec.experiment_slug IS NOT NULL, p.experiment_branch, NULL) AS experiment_branch
+  FROM
+    (
+      SELECT
+        submission_timestamp,
+        document_id,
+        events,
+        mozfun.newtab.surface_id_country(
+          metrics.string.newtab_content_surface_id,
+          NULL,
+          metrics.string.newtab_content_country
+        ) AS normalized_country_code,
+        NULLIF(metrics.string.newtab_content_experiment_name, '') AS experiment_slug,
+        NULLIF(metrics.string.newtab_content_experiment_branch, '') AS experiment_branch
+      FROM
+        `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
+      WHERE
+        submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
+    ) p
+  LEFT JOIN
+    experiment_configs ec
+    ON ec.region = p.normalized_country_code
+    AND ec.experiment_slug = p.experiment_slug
 ),
 deduplicated_pings AS (
   SELECT
@@ -32,6 +54,8 @@ flattened_newtab_events AS (
     document_id,
     submission_timestamp,
     normalized_country_code,
+    experiment_slug,
+    experiment_branch,
     unnested_events.name AS event_name,
     mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id,
     SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'position') AS INT64) AS position,
@@ -53,6 +77,8 @@ flattened_newtab_events AS (
 raw_grouped_totals AS (
   SELECT
     normalized_country_code,
+    experiment_slug,
+    experiment_branch,
     corpus_item_id,
     position,
     format,
@@ -64,6 +90,8 @@ raw_grouped_totals AS (
     flattened_newtab_events
   GROUP BY
     normalized_country_code,
+    experiment_slug,
+    experiment_branch,
     corpus_item_id,
     position,
     format,
@@ -88,6 +116,8 @@ propensity_weights AS (
 section_events AS (
   SELECT
     rw.normalized_country_code,
+    rw.experiment_slug,
+    rw.experiment_branch,
     rw.corpus_item_id,
     rw.raw_impression_count,
     -- apply propensity scaling to impressions only
@@ -130,6 +160,8 @@ section_events AS (
 non_section_events AS (
   SELECT
     normalized_country_code,
+    experiment_slug,
+    experiment_branch,
     corpus_item_id,
     raw_impression_count,
     raw_impression_count AS adjusted_impression_count, -- pass through unchanged
@@ -157,6 +189,8 @@ aggregated_events AS (
   SELECT
     fe.corpus_item_id,
     fe.normalized_country_code,
+    fe.experiment_slug,
+    fe.experiment_branch,
     SAFE_CAST(SUM(adjusted_impression_count) AS INT64) AS impression_count,
     SUM(click_count) AS click_count,
     SUM(report_count) AS report_count
@@ -164,7 +198,9 @@ aggregated_events AS (
     combined_events fe
   GROUP BY
     1,
-    2
+    2,
+    3,
+    4
 ),
 /* Aggregate clicks, impressions, and reports across all countries. */
 global_aggregates AS (
@@ -184,9 +220,9 @@ country_aggregates AS (
   SELECT
     corpus_item_id,
     normalized_country_code AS region,
-    impression_count,
-    click_count,
-    report_count
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count,
+    SUM(report_count) AS report_count
   FROM
     aggregated_events
   WHERE
@@ -206,6 +242,26 @@ country_aggregates AS (
       'ES',
       'IT'
     )
+  GROUP BY
+    corpus_item_id,
+    region
+),
+/* Add configured experiment-specific rows using the existing region field. */
+experiment_region_aggregates AS (
+  SELECT
+    corpus_item_id,
+    CONCAT(normalized_country_code, '-', experiment_slug, '-', experiment_branch) AS region,
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count,
+    SUM(report_count) AS report_count
+  FROM
+    aggregated_events
+  WHERE
+    experiment_slug IS NOT NULL
+    AND experiment_branch IS NOT NULL
+  GROUP BY
+    corpus_item_id,
+    region
 ),
 /* Combine the "global" (no region) with the "regional" breakdown. */
 combined_results AS (
@@ -218,16 +274,42 @@ combined_results AS (
     *
   FROM
     country_aggregates
+  UNION ALL
+  SELECT
+    *
+  FROM
+    experiment_region_aggregates
+),
+removed_items AS (
+  SELECT DISTINCT
+    approved_corpus_item_external_id AS corpus_item_id
+  FROM
+    `moz-fx-data-shared-prod.snowflake_migration_derived.section_items_v1`
+  WHERE
+    event_name = 'section_item_removed'
+    AND source = 'MANUAL'
+    AND DATE(happened_at) > DATE_SUB(CURRENT_DATE(), INTERVAL 60 DAY)
+    AND approved_corpus_item_external_id IS NOT NULL
+),
+filtered_results AS (
+  SELECT
+    cr.*
+  FROM
+    combined_results cr
+  LEFT JOIN
+    removed_items ri
+    USING (corpus_item_id)
+  WHERE
+    NOT (ri.corpus_item_id IS NOT NULL AND cr.impression_count < 600)
 )
 SELECT
   *
 FROM
-  combined_results
+  filtered_results
 ORDER BY
   impression_count DESC
 LIMIT
-  -- This LIMIT was derived from the 4 MB payload size cap in Merino, the observed average
-  -- record size of ~113 bytes, and recall measurements. At ~20k rows the JSON blob stays
-  -- well below 4 MB while still retaining >99.9% of fresh impressions globally. Smaller
-  -- countries with lower traffic, like BE, still maintain an acceptable recall of about 97%.
-  20000;
+  -- This LIMIT was derived from the 5 MB payload size cap in Merino, the observed average
+  -- record size of ~113 bytes, and recall measurements. At ~25k rows the JSON blob stays
+  -- under 5 MB while preserving more lower-impression rows after adding DE experiment rows.
+  25000;

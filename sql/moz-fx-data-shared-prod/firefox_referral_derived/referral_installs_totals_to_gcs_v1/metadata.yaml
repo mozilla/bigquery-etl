@@ -10,9 +10,11 @@ description: |-
   One file per run date named `referral_data-<date>.csv` (date = Airflow {{ds}}),
   so an Airflow retry overwrites the same object. Runs daily.
 
-  This task only extracts to GCS; it does not build a queryable BigQuery table.
-  Like the newtab_merino GCS-export tasks, it ships only metadata.yaml + query.py
-  (no schema.yaml), so deploy skips table creation (missing-schema skip).
+  This task only extracts to GCS; it does not logically build a queryable table.
+  A schema.yaml is shipped alongside because the --isolated stage-deploy CI
+  hard-fails to resolve a query.py artifact without one; a side effect is an
+  empty companion table (see schema.yaml for why destination_table: null can't
+  be used here).
 
   Destination bucket `fx-referral-data-prod` (project moz-fx-springfield-prod) is
   owned by the Website team; the Airflow workload service account

@@ -31,4 +31,4 @@ bigquery:
     expiration_days: 90
   clustering:
     fields:
-    - slug
+      - slug

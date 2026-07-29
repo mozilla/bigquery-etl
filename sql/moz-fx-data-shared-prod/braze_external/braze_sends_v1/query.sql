@@ -2,7 +2,24 @@ WITH mozilla_space_emails AS (
   SELECT
     send.id AS send_id,
     TIMESTAMP_SECONDS(send.time) AS send_time,
-    send.* EXCEPT (id, `time`, send_id),
+    send.user_id,
+    send.dispatch_id,
+    send.external_user_id,
+    send.timezone,
+    send.campaign_id,
+    send.campaign_name,
+    send.message_variation_id,
+    send.message_variation_name,
+    send.email_address,
+    send.canvas_id,
+    send.canvas_name,
+    send.canvas_variation_id,
+    send.canvas_variation_name,
+    send.canvas_step_id,
+    send.canvas_step_name,
+    send.ip_pool,
+    send.message_extras,
+    send.app_group_id,
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_send_v1` AS send
   WHERE
@@ -12,7 +29,24 @@ firefox_space_emails AS (
   SELECT
     send.id AS send_id,
     TIMESTAMP_SECONDS(send.time) AS send_time,
-    send.* EXCEPT (id, `time`, send_id),
+    send.user_id,
+    send.dispatch_id,
+    send.external_user_id,
+    send.timezone,
+    send.campaign_id,
+    send.campaign_name,
+    send.message_variation_id,
+    send.message_variation_name,
+    send.email_address,
+    send.canvas_id,
+    send.canvas_name,
+    send.canvas_variation_id,
+    send.canvas_variation_name,
+    send.canvas_step_id,
+    send.canvas_step_name,
+    send.ip_pool,
+    send.message_extras,
+    send.app_group_id,
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_firefox_send_v1` AS send
   WHERE

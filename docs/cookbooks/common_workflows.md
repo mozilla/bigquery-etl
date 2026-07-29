@@ -270,7 +270,7 @@ deactivate
 
 ## Making a pull request from a fork
 
-Pull requests from forks are handled automatically via environment gates in CI. Fork PRs from Mozilla org members (with [public organization membership](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-membership-in-organizations/publicizing-or-hiding-organization-membership)) use the `dev` environment for the initial build and the `external-fork` environment for integration tests. Fork PRs from external contributors use the `external-fork` environment for all CI jobs. A repository maintainer must approve `external-fork` deployments before those jobs run. No manual workflow trigger is needed.
+Pull requests from forks are gated by the `Fork PR Gate` workflow (`.github/workflows/fork-gate.yml`). Every fork PR pauses for a repository maintainer to approve the `external-fork` environment before any CI runs. Approval is per-SHA: each new push to the fork re-fires the gate. Once approved, `build.yml` runs all jobs in trusted context via `workflow_run`. No manual workflow trigger is needed.
 
 ## Building the Documentation
 

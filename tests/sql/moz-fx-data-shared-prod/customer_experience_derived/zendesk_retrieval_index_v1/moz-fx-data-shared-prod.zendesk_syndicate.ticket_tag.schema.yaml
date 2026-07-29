@@ -1,0 +1,7 @@
+fields:
+- name: ticket_id
+  type: INT64
+  mode: NULLABLE
+- name: tag
+  type: STRING
+  mode: NULLABLE

@@ -1,0 +1,19 @@
+---
+- client_id: client-dup
+  sample_id: 35
+  first_seen_date: 2026-06-21
+  submission_date: 2026-06-21
+  first_run_date: 2026-06-21
+  normalized_channel: release
+  is_new_profile: true
+  device_model: Redmi K20 Pro
+  device_manufacturer: Xiaomi
+- client_id: client-dup
+  sample_id: 35
+  first_seen_date: 2026-06-21
+  submission_date: 2026-06-21
+  first_run_date: 2026-06-21
+  normalized_channel: beta
+  is_new_profile: true
+  device_model: Redmi K20 Pro
+  device_manufacturer: Xiaomi

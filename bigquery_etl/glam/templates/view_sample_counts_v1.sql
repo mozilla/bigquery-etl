@@ -51,7 +51,7 @@ scalars_histogram_data AS (
       sample_mult,
     {% endif %}
     metric,
-    v1.key,
+    histogram_data.key,
     agg_type,
     v1.value
   FROM
@@ -96,7 +96,7 @@ with_combos AS (
 SELECT
   {{ attributes }},
   metric,
-  '' AS key,
+  key,
   agg_type,
   {% if channel == 'release' %}
     CAST(SUM(value) * MAX(sample_mult) AS BIGNUMERIC) AS total_sample

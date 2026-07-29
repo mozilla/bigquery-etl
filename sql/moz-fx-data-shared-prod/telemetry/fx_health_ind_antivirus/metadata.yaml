@@ -3,3 +3,5 @@ description: Aggregate table based on 1% user sample showing antivirus software 
   by OS
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

@@ -1,0 +1,19 @@
+friendly_name: azure_billing_syndicate
+description: Azure billing syndicate views
+dataset_base_acl: syndicate
+user_facing: false
+labels: {}
+syndication:
+  prod:
+    syndicated_project: moz-fx-data-billing-prod-9147
+    syndicated_dataset: azure_billing_raw
+  syndicated_tables:
+    - fxci_daily_actual_load
+    - fxci_daily_actual_lookup
+    - taskcluster_daily_actual_load
+    - taskcluster_daily_actual_lookup
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

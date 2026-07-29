@@ -17,3 +17,6 @@ fields:
 - name: usage_start_date
   type: DATE
   mode: NULLABLE
+- name: cloud_provider
+  type: STRING
+  mode: NULLABLE

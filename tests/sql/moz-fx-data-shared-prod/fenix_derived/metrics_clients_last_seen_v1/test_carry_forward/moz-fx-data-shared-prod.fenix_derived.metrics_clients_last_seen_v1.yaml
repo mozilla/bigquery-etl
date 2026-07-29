@@ -1,0 +1,44 @@
+---
+# Seen yesterday, sends NO metrics ping today -> must be carried forward.
+- submission_date: 2023-01-01
+  client_id: client-carryforward
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 2
+  days_sent_metrics_ping_bits: 1
+  uri_count: 10
+  is_default_browser: true
+  is_large_device: false
+  notifications_allowed: true
+  marketing_notifications_allowed: false
+  device_manufacturer: Google
+  isp_name: ISP1
+# Seen yesterday AND sends a ping today -> updated.
+- submission_date: 2023-01-01
+  client_id: client-matched
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 1
+  uri_count: 5
+  is_default_browser: false
+  is_large_device: false
+  notifications_allowed: false
+  marketing_notifications_allowed: false
+  device_manufacturer: Samsung
+  isp_name: ISP2
+# Last ping at bit 27 (27 days before this row); the one-day shift on the next
+# day pushes it past the 28-day window, so it is dropped (no carry-forward row).
+- submission_date: 2023-01-01
+  client_id: client-expired
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 134217728
+  uri_count: 99
+  is_default_browser: true
+  is_large_device: true
+  notifications_allowed: true
+  marketing_notifications_allowed: true
+  device_manufacturer: OnePlus
+  isp_name: ISP4

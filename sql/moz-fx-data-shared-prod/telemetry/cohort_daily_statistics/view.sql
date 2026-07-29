@@ -41,6 +41,7 @@ SELECT
   play_store_attribution_content,
   play_store_attribution_term,
   play_store_attribution_install_referrer_response,
+  install_source,
   num_clients_in_cohort,
   num_clients_active_on_day
 FROM

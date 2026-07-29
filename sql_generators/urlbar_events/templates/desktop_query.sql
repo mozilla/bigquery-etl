@@ -13,39 +13,48 @@ CREATE TEMP FUNCTION enumerated_array(results ARRAY<STRING>, _groups ARRAY<STRIN
   )
 );
 
-CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING) AS (
+CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING, selected_result STRING) AS (
   CASE
-    WHEN event_name = 'engagement'
-      AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))
+    WHEN
+    -- bounce engagement_type is never outside this set
+    (event_name IN ('engagement', 'bounce')
+      AND (engagement_type IN ('click', 'drop_go', 'enter', 'go_button', 'paste_go'))) OR
+    (event_name = 'disable' AND selected_result IS NOT NULL)
       THEN 'engaged'
-    WHEN event_name = 'abandonment'
+    WHEN
+      (event_name = 'abandonment') OR
+      (event_name = 'disable' AND selected_result IS NULL)
       THEN 'abandoned'
     WHEN event_name = 'engagement'
-      AND (engagement_type NOT IN ("click", "drop_go", "enter", "go_button", "paste_go"))
-      THEN "annoyance"
+      AND (engagement_type NOT IN ('click', 'drop_go', 'enter', 'go_button', 'paste_go'))
+      THEN 'annoyance'
     ELSE NULL
   END
 );
 
-CREATE TEMP FUNCTION get_is_terminal(selected_result STRING, engagement_type STRING) AS (
+CREATE TEMP FUNCTION get_is_terminal(selected_result STRING, engagement_type STRING, event_name STRING) AS (
   --events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
-  COALESCE(
-    NOT (selected_result = 'tab_to_search' AND engagement_type IN ('click', 'enter', 'go_button'))
-    AND NOT (
-      selected_result = 'tip_dismissal_acknowledgement'
-      AND engagement_type IN ('click', 'enter')
-    )
-    AND NOT (
-      engagement_type IN (
-        'dismiss',
-        'inaccurate_location',
-        'not_interested',
-        'not_relevant',
-        'show_less_frequently'
+  CASE
+    WHEN event_name = 'abandonment' THEN TRUE
+    WHEN event_name IN ('bounce', 'disable') THEN FALSE
+    ELSE COALESCE(
+      NOT (selected_result = 'tab_to_search' AND engagement_type IN ('click', 'enter', 'go_button'))
+      AND NOT (
+        selected_result = 'tip_dismissal_acknowledgement'
+        AND engagement_type IN ('click', 'enter')
       )
-    ),
-    TRUE
-  )
+      AND NOT (
+        engagement_type IN (
+          'dismiss',
+          'inaccurate_location',
+          'not_interested',
+          'not_relevant',
+          'show_less_frequently'
+        )
+      ),
+      TRUE
+    )
+  END
 );
 
 WITH events_unnested AS (
@@ -63,38 +72,46 @@ WITH events_unnested AS (
     normalized_channel,
     normalized_country_code,
     `moz-fx-data-shared-prod`.udf.normalize_search_engine(
-      mozfun.map.get_key(extra, "search_engine_default_id")
+      mozfun.map.get_key(extra, 'search_engine_default_id')
     ) AS normalized_engine,
     COALESCE(metrics.boolean.urlbar_pref_suggest_data_collection, FALSE) AS pref_data_collection,
     COALESCE(metrics.boolean.urlbar_pref_suggest_sponsored, FALSE) AS pref_sponsored_suggestions,
     COALESCE((metrics.boolean.urlbar_pref_suggest_nonsponsored OR metrics.boolean.urlbar_pref_suggest_all), FALSE) AS pref_fx_suggestions,
-    mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
-    mozfun.map.get_key(extra, "interaction") AS interaction,
-    SAFE_CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
-    SAFE_CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
+    mozfun.map.get_key(extra, 'engagement_type') AS engagement_type,
+    mozfun.map.get_key(extra, 'interaction') AS interaction,
+    SAFE_CAST(mozfun.map.get_key(extra, 'n_chars') AS int) AS num_chars_typed,
+    SAFE_CAST(mozfun.map.get_key(extra, 'n_results') AS int) AS num_total_results,
   --If 0, then no result was selected.
     NULLIF(
-      SAFE_CAST(mozfun.map.get_key(extra, "selected_position") AS int),
+      SAFE_CAST(mozfun.map.get_key(extra, 'selected_position') AS int),
       0
     ) AS selected_position,
-    mozfun.map.get_key(extra, "selected_result") AS selected_result,
+    NULLIF(mozfun.map.get_key(extra, 'selected_result'), 'none') AS selected_result,
     enumerated_array(
-      SPLIT(mozfun.map.get_key(extra, "results"), ','),
-      SPLIT(mozfun.map.get_key(extra, "groups"), ',')
+      SPLIT(mozfun.map.get_key(extra, 'results'), ','),
+      SPLIT(mozfun.map.get_key(extra, 'groups'), ',')
     ) AS results,
     normalized_os,
     client_info.os_version,
     client_info.app_display_version as app_display_version,
     metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
     metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
-    mozfun.map.get_key(extra, "sap") AS sap
+    mozfun.map.get_key(extra, 'sap') AS sap,
+    mozfun.map.get_key(extra, 'window_mode') AS window_mode
   FROM
     `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events) AS event
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event.category = 'urlbar'
-    AND event.name IN ('engagement', 'abandonment')
+    AND event.name IN ('abandonment', 'bounce', 'disable', 'engagement')
+),
+with_event_action AS (
+  SELECT
+    *,
+    get_event_action(event_name, engagement_type, selected_result) AS event_action
+  FROM
+    events_unnested
 ),
 add_conditionals AS (
   SELECT
@@ -121,20 +138,20 @@ add_conditionals AS (
     selected_result,
     results,
     `mozfun.norm.result_type_to_product_name`(selected_result) AS product_selected_result,
-    get_event_action(event_name, engagement_type) AS event_action,
-    get_is_terminal(selected_result, engagement_type) AS is_terminal,
+    event_action,
+    get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
-      WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
+      WHEN event_action IN ('engaged', 'annoyance')
         THEN selected_result
       ELSE NULL
     END AS engaged_result_type,
     CASE
-      WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
+      WHEN event_action IN ('engaged', 'annoyance')
         THEN `mozfun.norm.result_type_to_product_name`(selected_result)
       ELSE NULL
     END AS product_engaged_result_type,
     CASE
-      WHEN get_event_action(event_name, engagement_type) = 'annoyance'
+      WHEN event_action = 'annoyance'
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,
@@ -144,9 +161,19 @@ add_conditionals AS (
     app_display_version,
     pref_ohttp_available,
     pref_ohttp_enabled,
-    sap
+    sap,
+    window_mode,
+    CASE
+      WHEN event_name IN (
+        'abandonment',
+        'bounce',
+        'disable'
+        )
+        THEN event_name
+      ELSE NULL
+    END AS exit_type
   FROM
-    events_unnested
+    with_event_action
 ),
 final AS (
   SELECT

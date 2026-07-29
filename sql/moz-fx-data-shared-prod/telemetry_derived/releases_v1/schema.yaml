@@ -3,11 +3,15 @@ fields:
   mode: NULLABLE
   name: build_number
   type: INTEGER
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: category
   mode: NULLABLE
   name: category
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: date
   mode: NULLABLE
   name: date
   type: DATE
@@ -19,11 +23,15 @@ fields:
   mode: NULLABLE
   name: is_security_driven
   type: BOOLEAN
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: product
   mode: NULLABLE
   name: product
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: version
   mode: NULLABLE
   name: version
   type: STRING

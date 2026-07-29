@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: installer_type
   type: STRING
   mode: NULLABLE
-  description: Installer Type - Stub or Full
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installer_type
 - name: update_channel
   type: STRING
   mode: NULLABLE
-  description: The channel - for example, release, esr, beta, nightly, etc
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: update_channel
 - name: nbr_install_attempts
   type: INTEGER
   mode: NULLABLE
@@ -18,7 +24,9 @@ fields:
 - name: user_cancelled
   type: FLOAT
   mode: NULLABLE
-  description: Number of install attempts cancelled by the user
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: user_cancelled
 - name: timeout
   type: FLOAT
   mode: NULLABLE

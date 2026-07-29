@@ -1,0 +1,7 @@
+friendly_name: SUMO Self-Service Escalation Rate KPIs
+description: >
+  Daily Self-Service Escalation Rate (SSER) KPIs for SUMO, broken down by product.
+  Combines Zendesk ticket volume, Kitsune forum question volume, and GA4 session
+  data to compute SSER for KB, forums, and overall self-service channels.
+owners:
+  - phlee@mozilla.com

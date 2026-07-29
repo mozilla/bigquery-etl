@@ -1,0 +1,203 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique identifier of the Knowledge Base article (primary key in the
+    Kitsune `wiki_document` table).
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: Title of the Knowledge Base article as displayed on Mozilla Support
+    (SUMO).
+- name: slug
+  type: STRING
+  mode: NULLABLE
+  description: URL-safe slug for the article, used as the last path segment of the
+    SUMO article URL.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale code of the article in Kitsune (e.g., en-US).
+- name: content
+  type: STRING
+  mode: NULLABLE
+  description: HTML body of the Knowledge Base article (the `html` field on the Kitsune
+    wiki document).
+- name: category
+  type: INTEGER
+  mode: NULLABLE
+  description: Numeric category code for the article. Only categories `< 30` (user-facing
+    categories) are included; see https://github.com/mozilla/kitsune/blob/3ddd61a2f32eb486388366874d42f9a860e357d8/kitsune/wiki/config.py#L87
+    for the full code list.
+- name: needs_change
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the article has been flagged as needing a content change or
+    update.
+- name: needs_change_comment
+  type: STRING
+  mode: NULLABLE
+  description: Free-text comment explaining why the article was flagged as needing a change.
+    This comment is normally NULL when the flag `needs_change` is FALSE, but this is not
+    enforced upstream, so stale comments may persist if not removed when the flag is cleared.
+- name: share_link
+  type: STRING
+  mode: NULLABLE
+  description: Short shareable link for the Knowledge Base article.
+- name: display_order
+  type: INTEGER
+  mode: NULLABLE
+  description: Numeric ordering hint used to sort the article within its topic on
+    SUMO.
+- name: current_revision_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Foreign key to the article's currently published revision in the Kitsune
+    `wiki_revision` table.
+- name: latest_localizable_revision_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Foreign key to the latest revision of the article that is eligible
+    for localization.
+- name: parent_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Foreign key to the parent (original, non-translated) article. NULL
+    for original articles. This table only includes original articles (`parent_id
+    IS NULL`).
+- name: products
+  type: STRING
+  mode: NULLABLE
+  description: Raw Mozilla product label (or list of labels) associated with the article,
+    as stored on the Kitsune wiki document. Treated as a single string; Thunderbird-tagged
+    articles are excluded at ingestion.
+- name: topics
+  type: STRING
+  mode: NULLABLE
+  description: Raw Kitsune Knowledge Base topic label (or list of labels) associated
+    with the article.
+- name: is_template
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the article is a SUMO template (a reusable building block referenced
+    by other articles) rather than a user-facing article.
+- name: is_localizable
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the article is eligible to be localized into other locales.
+- name: allow_discussion
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether community discussion is enabled on the article's SUMO page.
+- name: last_updated
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp of the most recent update to the article in Kitsune.
+- name: last_approved_revision_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the most recent approved revision for this article. Mirrors
+    the freshness signal used by `sumo_metrics_derived.freshness_metrics_base_v1`.
+    Powers the `is_stale` flag on the view (TRUE when ≥ 12 months old).
+- name: num_pageviews_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of SUMO pageviews for the article over the most recent 7 days,
+    as of the last run.
+- name: num_pageviews_last_30_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of SUMO pageviews for the article over the most recent 30 days,
+    as of the last run.
+- name: num_pageviews_last_90_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of SUMO pageviews for the article over the most recent 90 days,
+    as of the last run.
+- name: num_pageviews_last_365_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of SUMO pageviews for the article over the most recent 365 days,
+    as of the last run.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Type of the Knowledge Base content record; currently always set to
+    "article".
+- name: article_summary_llm
+  type: STRING
+  mode: NULLABLE
+  description: AI-generated summary of the article, limited to a maximum of 8 words.
+    Produced by the Gemini model.
+- name: article_category_llm
+  type: STRING
+  mode: NULLABLE
+  description: AI-generated classification label for the article, consisting of one
+    to two words. Produced by the Gemini model.
+- name: article_entities_llm
+  type: STRING
+  mode: REPEATED
+  description: Array of up to three AI-extracted normalized entities from the article.
+    Produced by the Gemini model.
+- name: article_topics_llm
+  type: STRING
+  mode: REPEATED
+  description: Array of up to three AI-generated normalized topic labels for the article.
+    Produced by the Gemini model.
+- name: embedding
+  type: FLOAT
+  mode: REPEATED
+  description: Vector embedding of the concatenated title and content. Generated by
+    the Gemini embedding model (gemini-embedding-001).
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  description: Technical metadata about the AI analysis pipeline, including model
+    versions, quality scores, and processing status.
+  fields:
+  - name: input_fields
+    type: STRING
+    mode: REPEATED
+    description: List of source field names used as input for the AI analysis (e.g.,
+      title, content).
+  - name: input_char_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Total character count of the input text provided to the AI model.
+  - name: model_version
+    type: STRING
+    mode: NULLABLE
+    description: Version identifier of the generative AI model used for analysis (e.g.,
+      gemini-2.5-pro).
+  - name: embedding_version
+    type: STRING
+    mode: NULLABLE
+    description: Version identifier of the embedding model used to generate the vector
+      embedding (e.g., gemini-embedding-001).
+  - name: prompt_version
+    type: STRING
+    mode: NULLABLE
+    description: Version identifier of the prompt used for the AI analysis (e.g.,
+      v1).
+  - name: analysis_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: "Ingestion timestamp \u2014 captures the actual wall-clock time when\
+      \ this row's AI analysis was produced (`CURRENT_TIMESTAMP()` at query run)."
+  - name: embedding_succeeded
+    type: BOOLEAN
+    mode: NULLABLE
+    description: "TRUE when `embedding IS NOT NULL`. One of the reprocessing triggers\
+      \ \u2014 rows are re-run when `embedding_succeeded = FALSE`. Other triggers\
+      \ are a `current_revision_id` bump on the upstream article or a change to\
+      \ `model_version` / `embedding_version` / `prompt_version`. LLM-field issues\
+      \ are tracked in `failure_reasons` for visibility but do **not** trigger reruns."
+  - name: failure_reasons
+    type: STRING
+    mode: REPEATED
+    description: Diagnostic tags for any quality check that failed on this row. Empty
+      array when every check passes. Possible tags - `embedding_missing`, `article_summary_llm_missing`,
+      `article_category_llm_missing`, `article_entities_llm_missing`, `article_entities_llm_has_empty_elements`,
+      `article_topics_llm_missing`, `article_topics_llm_has_empty_elements`. Use for
+      triage (`SELECT reason, COUNT(*) FROM ..., UNNEST(metadata.failure_reasons)
+      reason GROUP BY 1`).

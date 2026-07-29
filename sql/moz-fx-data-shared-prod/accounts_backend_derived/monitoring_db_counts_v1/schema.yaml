@@ -2,9 +2,18 @@ fields:
 - name: as_of_date
   type: DATE
   mode: NULLABLE
+  description: >-
+    The date for which row counts are captured across FxA database tables,
+    used as the partition column.
 - name: table_name
   type: STRING
   mode: NULLABLE
+  description: >-
+    The name of the Firefox Accounts database source table being counted,
+    such as accounts, devices, or emails.
 - name: total_rows
   type: INTEGER
   mode: NULLABLE
+  description: >-
+    The total number of rows in the source table as of the snapshot date,
+    or the count of distinct accounts meeting a specific condition.

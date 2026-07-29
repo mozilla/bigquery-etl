@@ -2,11 +2,15 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission date recorded from telemetry.active_users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: App name recorded from telemetry.active_users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - name: logical_dag_date
   type: DATE
   mode: NULLABLE
@@ -18,27 +22,39 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: DAU (daily active users) recorded from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: WAU (weekly active users) recorded from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: wau
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: MAU (monthly active users) recorded from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Daily Users recorded from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: daily_users
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
-  description: Weekly Users recorded from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: weekly_users
 - name: monthly_users
   type: INTEGER
   mode: NULLABLE
-  description: Monthly users recorded from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: monthly_users
 - name: desktop
   type: INTEGER
   mode: NULLABLE
@@ -54,4 +70,6 @@ fields:
 - name: row_count
   type: INTEGER
   mode: NULLABLE
-  description: Row count from telemetry.active_users for this app name & submission date as of run date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: row_count

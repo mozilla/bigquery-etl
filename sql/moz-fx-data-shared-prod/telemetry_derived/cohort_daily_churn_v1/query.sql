@@ -44,6 +44,7 @@ cohorts_in_range AS (
     play_store_attribution_content,
     play_store_attribution_term,
     play_store_attribution_install_referrer_response,
+    install_source,
     row_source,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
@@ -184,7 +185,8 @@ SELECT
         ELSE NULL
       END
     )
-  ) AS num_clients_returned_any_day_between_day_1_and_day_28
+  ) AS num_clients_returned_any_day_between_day_1_and_day_28,
+  install_source
 FROM
   activity_cohort_match
 GROUP BY
@@ -220,4 +222,5 @@ GROUP BY
   play_store_attribution_content,
   play_store_attribution_term,
   play_store_attribution_install_referrer_response,
-  row_source
+  row_source,
+  install_source

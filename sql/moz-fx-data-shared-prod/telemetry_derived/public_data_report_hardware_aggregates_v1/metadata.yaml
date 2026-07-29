@@ -11,6 +11,7 @@ owners:
 labels:
   incremental: true
   owner1: bewu
+  legacy: true
 bigquery:
   time_partitioning:
     type: day

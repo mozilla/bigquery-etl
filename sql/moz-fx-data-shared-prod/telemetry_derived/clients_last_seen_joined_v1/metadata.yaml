@@ -23,6 +23,7 @@ scheduling:
   start_date: '2021-01-19'
   priority: 85
   depends_on_past: true
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day
@@ -34,4 +35,6 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+schema:
+  allow_field_addition: true
 require_column_descriptions: false

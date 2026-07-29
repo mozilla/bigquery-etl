@@ -1,0 +1,34 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the telemetry was submitted / aggregated.
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Canonical app name (Firefox for Desktop / Firefox for Android /
+    Firefox for iOS). Rows for datasets outside these three apps are excluded.
+- name: metric_identifier
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Flat Glean metric identifier. Treat it as opaque: do NOT split it to recover
+    the category/name hierarchy. The two source branches use different,
+    canonical separators by design. Event metrics (event_counts_glean_v2) appear
+    as "category.name" (dot), since event_category/event_name are stored as
+    column values so the "." is preserved. Non-event metrics (column_size_v1)
+    appear underscore-flattened, e.g. "addons_has_enabled_addons" for
+    addons.has_enabled_addons, because the identifier is a BigQuery column name
+    where "." is illegal; recovering the original "." needs a Glean registry
+    lookup (the underscore is not a reliable split point) and is out of scope for
+    this MVP. A given metric normally takes only one separator form, but may be
+    sent on multiple pings and land in multiple datasets; we count every
+    occurrence, since each consumes storage.
+- name: daily_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Logical (uncompressed) bytes of telemetry collected for this metric on this
+    day, summed across channels. Derived from dry-run byte sizes
+    (column_size_v1) and the event size approximation (event_counts_glean_v2).

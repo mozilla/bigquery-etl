@@ -1,6 +1,7 @@
 friendly_name: Newtab Merino Extract
 description: |-
-  Aggregated Newtab events for Merino recommendations.
+  Aggregated Newtab events for Merino recommendations using v2 propensity weights.
+  Configured experiment rows are emitted with region values suffixed by experiment slug and branch.
   See https://mozilla-hub.atlassian.net/browse/MC-1256
 owners:
 - mmiermans@mozilla.com

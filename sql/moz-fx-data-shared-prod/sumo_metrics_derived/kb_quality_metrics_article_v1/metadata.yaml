@@ -1,0 +1,36 @@
+friendly_name: KB Quality Metrics — Article (Daily)
+description: |
+  Daily article-level knowledge base quality metrics for SUMO, combining content
+  freshness and helpfulness vote signals.
+
+  Grain: Day x Article (document_id)
+
+  For each in-scope en-US article and each day in the trailing 1-year window:
+  - days_since_last_revision / fresh_ind: freshness vs. a 365-day window
+  - helpful_votes / total_votes: votes cast that day
+  - running_helpful_votes / running_total_votes: cumulative votes (seeded with
+    pre-window totals)
+
+  Article scope (matching the KB quality dashboard query):
+  - parent_id IS NULL (original, non-translated), is_archived = FALSE
+  - category < 30, html NOT LIKE '%REDIRECT%'
+  - products NOT LIKE '%thunderbird%', locale = 'en-US'
+  - product (via mozfun.customer_experience.normalize_product) != 'Other'
+
+  Recomputed in full each run (relative-date window, no date partition).
+
+  Used by:
+  - kb_quality_metrics_daily_v1 (day-level aggregation + moving averages)
+
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

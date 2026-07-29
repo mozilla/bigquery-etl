@@ -1,0 +1,61 @@
+friendly_name: Knowledge Base Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from the Mozilla Support Knowledge Base (KB),
+  containing embeddings and semantic features to support grounded question answering
+  over support articles.
+
+  Grain: one row per Knowledge Base article (keyed by `id`).
+
+  LLM generated fields:
+  - article_summary_llm
+  - article_category_llm
+  - article_entities_llm
+  - article_topics_llm
+  - embedding based on [title, content]
+
+  See the `customer_experience.knowledge_base_retrieval_index` view for the read-time
+  `is_stale` flag derived from `last_approved_revision_date`.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+
+  Refresh
+  - The whole table is rebuilt on each run by merging the existing and newly processed records.
+  - Rows whose `current_revision_id` is unchanged AND whose prior AI run succeeded AND whose
+    `metadata.model_version`, `metadata.embedding_version` and `metadata.prompt_version` still
+    match the current targets are carried forward, skipping all `AI.GENERATE` / `AI.EMBED` calls.
+    `last_approved_revision_date` is always recomputed from `kitsune_wiki_revision` (not carried
+    forward), so the freshness signal stays current even when the article's revision pointer
+    doesn't change. Articles deleted upstream are dropped naturally.
+  - Only changed/new/failed rows incur Vertex AI cost. Bumping `llm_model`, `embedding_model`
+    or `prompt_version` invalidates the carry-forward cache and forces a clean reprocess of
+    every row.
+  - Each run is a full rebuild that carries forward unchanged rows and reprocesses
+    only what's new/changed/failed. A failed run leaves the destination untouched
+    (atomic BQ write), so the next successful run picks up everything.
+  - Failed DAG runs do not need re-run.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience
+labels:
+  level: gold
+  incremental: false
+  schedule: daily
+  change_controlled: true
+scheduling:
+  dag_name: bqetl_analytics_tables
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery:
+  clustering:
+    fields:
+    - locale
+    - category
+require_column_descriptions: true
+monitoring:
+  enabled: true
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision

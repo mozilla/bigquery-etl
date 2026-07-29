@@ -2,100 +2,150 @@ fields:
 - mode: NULLABLE
   name: metric_date
   type: DATE
-  description: Metric Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metric_date
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
-  description: Attribution Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_campaign
 - mode: NULLABLE
   name: attribution_content
   type: STRING
-  description: Attribution Content
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_content
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING
-  description: Attribution DL Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_dlsource
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: Attribution Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: Attribution UA
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_ua
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description: Attribution Experiment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_experiment
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_variation
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING
-  description: Startup Profile Selection Reason
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: startup_profile_selection_reason
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized OS
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: Normalized OS Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - mode: NULLABLE
   name: is_desktop
   type: BOOLEAN
-  description: Indicates if the client is included in the desktop KPI
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_desktop
 - mode: NULLABLE
   name: ping_sent_metric_date
   type: INT64
-  description: Count of Pings Sent on Metric Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ping_sent_metric_date
 - mode: NULLABLE
   name: ping_sent_week_4
   type: INT64
-  description: Count of Pings Sent on Week 4
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: ping_sent_week_4
 - mode: NULLABLE
   name: active_metric_date
   type: INT64
-  description: Count of Clients Active on Metric Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_metric_date
 - mode: NULLABLE
   name: retained_week_4
   type: INT64
-  description: Count of Clients Retained on Week 4
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: retained_week_4
 - mode: NULLABLE
   name: retained_week_4_new_profiles
   type: INT64
-  description: Count of New Profiles Retained on Week 4
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: retained_week_4_new_profiles
 - mode: NULLABLE
   name: new_profiles_metric_date
   type: INT64
-  description: Count of New Profiles on Metric Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profiles_metric_date
 - mode: NULLABLE
   name: repeat_profiles
   type: INT64
-  description: Count of Repeat Profiles
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: repeat_profiles

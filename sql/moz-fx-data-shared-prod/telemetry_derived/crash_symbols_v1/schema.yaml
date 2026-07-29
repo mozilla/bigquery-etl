@@ -3,7 +3,9 @@ fields:
 - name: submission_date
   type: DATE
   mode: REQUIRED
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: request_timestamp
   type: TIMESTAMP
   mode: REQUIRED

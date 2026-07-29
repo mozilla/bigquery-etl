@@ -1,0 +1,128 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the widget telemetry was recorded, derived from submission_timestamp.
+- name: widget_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the widget that emitted the event.
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: Most-common Firefox Desktop major version observed for the client this day.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country code in which the activity took place, as determined.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: widget_enabled_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct clients who had the widget enabled during the day.
+- name: widget_enabled_clients_with_visit
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Number of distinct clients who had the widget enabled and visited the New Tab
+    page during the day.
+- name: widget_engaged_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Number of distinct clients who actively engaged with the widget during the day,
+    via a user interaction or enable action.
+- name: default_ui_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Number of distinct clients who saw the default New Tab UI (no widget impression)
+    during the day.
+- name: widget_enabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times users enabled the widget during the day.
+- name: widget_disabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times users disabled the widget during the day.
+- name: widget_impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times the widget was viewed on the New Tab page.
+- name: widget_user_event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of user interaction events recorded for the widget.
+- name: all_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of New Tab visits recorded during the day.
+- name: default_ui_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Tab visits that displayed the default UI (no widget impression).
+- name: widget_impression_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Tab visits where the widget was viewed.
+- name: widget_user_event_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Tab visits with at least one user interaction with the widget.
+- name: widget_enabled_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Tab visits where the widget was enabled.
+- name: widget_disabled_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Tab visits where the widget was disabled.
+- name: change_size_or_learn_more_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Number of user interactions that either changed the widget size or clicked
+    the learn more link.
+- name: widget_link_click_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clicks on provider links or learn more links within the widget.
+- name: widget_setting_change_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times users changed a widget setting, such as location or temperature unit.
+- name: widget_utility_action_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of utility interactions on the widget, such as timer or list and task actions.
+- name: widget_optin_accept_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times users accepted an opt-in prompt within the widget.
+- name: widget_user_action_counts
+  type: RECORD
+  mode: REPEATED
+  description: >-
+    Per-widget breakdown of widgets_user_event interactions, with one entry per
+    distinct user_action value. Ordered by action.
+  fields:
+  - name: user_action
+    type: STRING
+    mode: NULLABLE
+    description: The user_action extra value from a widgets_user_event event.
+  - name: action_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of widgets_user_event events with this action on the day.

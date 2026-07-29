@@ -7,13 +7,17 @@ SELECT
   `interval`,
   experiment,
   taxAddress,
+  currency,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(createdAt AS INT)) AS createdAt,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(updatedAt AS INT)) AS updatedAt,
   couponCode,
   stripeCustomerId,
+  stripeSubscriptionId,
+  stripeIntentId,
   amount,
   version,
   eligibilityStatus,
+  SAFE_CAST(isFreeTrial AS BOOL) AS isFreeTrial,
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
@@ -26,13 +30,17 @@ FROM
          `interval`,
          experiment,
          taxAddress,
+         currency,
          createdAt,
          updatedAt,
          couponCode,
          stripeCustomerId,
+         stripeSubscriptionId,
+         stripeIntentId,
          amount,
          version,
-         eligibilityStatus
+         eligibilityStatus,
+         isFreeTrial
        FROM
          fxa.carts
     """

@@ -7,6 +7,19 @@ RETURNS INTEGER AS (
   CASE
     WHEN newtab_window_inner_width IS NULL
       THEN NULL
+    WHEN layout_type = 'NOVA'
+      THEN
+        CASE
+          WHEN newtab_window_inner_width < 1024
+            THEN 1
+          WHEN newtab_window_inner_width < 1366
+            THEN 2
+          WHEN newtab_window_inner_width < 1920
+            THEN 3
+          WHEN newtab_window_inner_width < 2650
+            THEN 4
+          ELSE 6 --largest screen size can hold 6
+        END
     WHEN layout_type = 'SECTION_GRID'
       THEN
         CASE
@@ -42,4 +55,9 @@ SELECT
   assert.equals(3, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1122)),
   assert.equals(3, newtab.determine_tiles_per_row_v1('OLD_GRID', 1698)),
   assert.equals(4, newtab.determine_tiles_per_row_v1('NEW_GRID', 1698)),
-  assert.equals(4, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1390)),;
+  assert.equals(4, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1390)),
+  assert.equals(1, newtab.determine_tiles_per_row_v1('NOVA', 723)),
+  assert.equals(2, newtab.determine_tiles_per_row_v1('NOVA', 1122)),
+  assert.equals(3, newtab.determine_tiles_per_row_v1('NOVA', 1698)),
+  assert.equals(4, newtab.determine_tiles_per_row_v1('NOVA', 2000)),
+  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA', 3000)),;

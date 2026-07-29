@@ -8,6 +8,7 @@ labels:
   incremental: true
   schedule: daily
   table_type: aggregate
+  legacy: true
 scheduling:
   dag_name: bqetl_gud
 bigquery:

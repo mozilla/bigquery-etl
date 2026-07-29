@@ -132,6 +132,7 @@ labels:
   incremental_export: false # non-incremental JSON export writes all data to a single location
 ```
 
+- Queries that only select from legacy telemetry data should be assigned a `legacy: true` label.
 - only labels where value types are eithers integers or strings are published, all other values types are being skipped
 
 ### Dynamic Schemas
@@ -166,6 +167,12 @@ Without this flag, `--skip-existing` will skip schema updates for queries that a
 - Should not refer to views in the `mozdata` project which are duplicates of views in another project
   (commonly `moz-fx-data-shared-prod`). Refer to the original view instead.
 - Views are interpreted as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, so it is possible to use Jinja statements and expressions
+
+## View Metadata
+
+- For each view, a `metadata.yaml` file may be created in the same directory.
+- This file contains a description, owners, and labels (see the query metadata example above).
+- Views that only select from legacy telemetry data should be assigned a `legacy: true` label.
 
 ## UDFs
 

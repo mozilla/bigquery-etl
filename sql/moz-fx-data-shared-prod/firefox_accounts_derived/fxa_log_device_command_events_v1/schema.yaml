@@ -2,12 +2,18 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    field: timestamp
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: type
   type: STRING
   mode: NULLABLE
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: user_id
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: index
   type: STRING
   mode: NULLABLE

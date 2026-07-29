@@ -19,3 +19,4 @@ owners:
   - rzhao@mozilla.com
 labels:
   application: firefox
+  legacy: true

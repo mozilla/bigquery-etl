@@ -1,0 +1,7 @@
+[
+  {"name": "ga_client_id", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "session_date", "type": "DATE", "mode": "NULLABLE"},
+  {"name": "manual_content", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "first_content_from_event_params", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "all_reported_stub_session_ids", "type": "STRING", "mode": "REPEATED"}
+]

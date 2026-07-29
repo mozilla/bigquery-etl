@@ -2,11 +2,15 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - mode: NULLABLE
   name: installer_type
   type: STRING
-  description: Installer Type - The first install type associated with the client ID; for example, msix, full, or stub
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: installer_type
 - mode: NULLABLE
   name: nbr_rows
   type: INTEGER
@@ -14,7 +18,9 @@ fields:
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
-  description: Number of new profiles first seen on this date with this installer type
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profiles
 - mode: NULLABLE
   name: sum_active_days_bit_count_for_new_profiles
   type: INTEGER

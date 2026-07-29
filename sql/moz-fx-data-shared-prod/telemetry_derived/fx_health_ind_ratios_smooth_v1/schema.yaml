@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: total_default
   type: INTEGER
   mode: NULLABLE
@@ -18,7 +20,9 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: Number of Windows 10 clients with days since seen = 0
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - name: share_new_default
   type: FLOAT
   mode: NULLABLE

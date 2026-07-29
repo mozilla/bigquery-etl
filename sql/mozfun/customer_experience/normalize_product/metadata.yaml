@@ -1,0 +1,7 @@
+friendly_name: Normalize Product
+description: >
+  Maps a raw product identifier (GA4 page path, Zendesk custom_product, or
+  Kitsune product slug) to the canonical CX product name. Replaces the
+  static lookup table `moz-fx-data-shared-prod.static.cx_product_mappings_v1`.
+  Returns 'Other' for unknown inputs (NULL for NULL input) so downstream
+  consumers do not need a COALESCE fallback. See README for the rule list.

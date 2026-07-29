@@ -7,6 +7,7 @@ SELECT
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(createdAt AS INT)) AS createdAt,
   TO_HEX(tokenVerificationId) AS tokenVerificationId,
   ipAddr,
+  SAFE.PARSE_JSON(additionalInfo) AS additionalInfo,
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
@@ -18,7 +19,8 @@ FROM
          ipAddrHmac,
          createdAt,
          tokenVerificationId,
-         ipAddr
+         ipAddr,
+         additionalInfo
        FROM
          fxa.securityEvents
     """

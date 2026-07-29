@@ -39,7 +39,14 @@ CREATE OR REPLACE VIEW
               source STRING,
               extra ARRAY<STRUCT<key STRING, value STRING>>,
               name STRING,
-              `timestamp` INTEGER
+              `timestamp` INTEGER,
+              session STRUCT<
+                event_seq INT64,
+                session_id STRING,
+                session_sample_rate FLOAT64,
+                session_seq INT64,
+                session_start_time STRING
+              >
             >
           >
       ) AS events,
@@ -126,7 +133,8 @@ CREATE OR REPLACE VIEW
             STRUCT<
               event_threshold INT64,
               metrics_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
-              pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>
+              pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
+              session_sample_rate FLOAT64
             >
         ) AS server_knobs_config,
         ping_info.parsed_start_time AS parsed_start_time,

@@ -2,21 +2,35 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: usage
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: usage
 - fields:
   - fields:
     - mode: NULLABLE
       name: dau
       type: INTEGER
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: dau
     - mode: NULLABLE
       name: wau
       type: INTEGER
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: wau
     - mode: NULLABLE
       name: mau
       type: INTEGER
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: mau
     - mode: NULLABLE
       name: active_days_in_week
       type: INTEGER
@@ -34,6 +48,9 @@ fields:
     - mode: NULLABLE
       name: new_profiles
       type: INTEGER
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: new_profiles
     - mode: NULLABLE
       name: active_in_week_0
       type: INTEGER
@@ -58,36 +75,60 @@ fields:
   mode: NULLABLE
   name: metrics
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: metrics
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: id_bucket
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_name
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attributed

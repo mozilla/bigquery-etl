@@ -1,0 +1,34 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: timestamp
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: timestamp
+- name: fields
+  type: RECORD
+  mode: NULLABLE
+  description: Nested record holding the per-record IP-privacy field entries loaded from the source
+    parquet, including the client identifier, IP-derived geolocation, and the IP address value used for IP
+    privacy analysis.
+  fields:
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+    description: Unique identifier for the Firefox client associated with this IP privacy telemetry record.
+  - name: geo_country
+    type: STRING
+    mode: NULLABLE
+    description: ISO 3166-1 alpha-2 country code derived from the client's IP address at ingestion time, used
+      to validate IP-based geolocation for privacy analysis.
+  - name: ip
+    type: STRING
+    mode: NULLABLE
+    description: The IP address value associated with this telemetry record, captured for IP privacy
+      analysis.

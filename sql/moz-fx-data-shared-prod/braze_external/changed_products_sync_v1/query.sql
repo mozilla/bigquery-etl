@@ -11,19 +11,12 @@ WITH max_update AS (
 -- Counts the number of subscriptions per product
 products_with_counts AS (
   SELECT
-    products.external_id,
-    products_array.*,
-    COUNT(*) OVER (
-      PARTITION BY
-        products.external_id,
-        products_array.product_name
-    ) AS subscription_count
+    products.*,
+    COUNT(*) OVER (PARTITION BY products.external_id, products.product_name) AS subscription_count
   FROM
-    `moz-fx-data-shared-prod.braze_derived.products_v1` AS products
-  CROSS JOIN
-    UNNEST(products.products) AS products_array
+    `moz-fx-data-shared-prod.braze_derived.products_v2` AS products
   WHERE
-    products_array.subscription_updated_at > (SELECT latest_subscription_updated_at FROM max_update)
+    products.subscription_updated_at > (SELECT latest_subscription_updated_at FROM max_update)
 )
 -- Construct the JSON payload in Braze required format
 SELECT

@@ -8,6 +8,7 @@ nothing are unaffected, which is what keeps the pre-existing tables working.
 
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Optional, Sequence
 
 from google.cloud import bigquery
@@ -41,6 +42,8 @@ REQUEST_FIELDS = [
 VALUE_KEYS = ("name", "displayName", "value")
 
 VALID_MODES = ("NULLABLE", "REPEATED")
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -87,6 +90,55 @@ def extract_value(raw: Any) -> Any:
         return None
 
     return raw
+
+
+def parse_datetime(raw: Any) -> Optional[str]:
+    """Normalize a zone-less Jira datetime string to a BigQuery DATETIME literal.
+
+    Some Jira custom fields are plain text holding a wall-clock time with no
+    timezone and often no seconds, e.g. the IIM incident timing fields, which
+    arrive as `"2026-07-25 09:49"`. `JiraClient.to_bq_timestamp` cannot help:
+    it only parses ISO-with-offset, so those values would silently become NULL.
+
+    Output is canonical `YYYY-MM-DD HH:MM:SS`, which BigQuery accepts without
+    relying on whether it tolerates a missing seconds component. Because the
+    source is free text, an unparseable value becomes None rather than failing
+    the load job for the entire table.
+
+    DATETIME rather than TIMESTAMP is deliberate: the source carries no offset,
+    so there is no zone to convert from and a TIMESTAMP would imply one.
+    """
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+
+    value = raw.strip().replace("T", " ")
+
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+        try:
+            return datetime.strptime(value, fmt).strftime("%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            continue
+
+    logger.warning("Unparseable datetime value %r; storing NULL", raw)
+    return None
+
+
+def parse_date(raw: Any) -> Optional[str]:
+    """Normalize a Jira date string to a BigQuery DATE literal, or None.
+
+    Accepts a bare `YYYY-MM-DD` and also a full datetime, keeping the date part,
+    so a field that changes type in Jira does not start returning NULLs.
+    """
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+
+    value = raw.strip().replace("T", " ").split(" ")[0]
+
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").strftime("%Y-%m-%d")
+    except ValueError:
+        logger.warning("Unparseable date value %r; storing NULL", raw)
+        return None
 
 
 def build_schema(extra_fields: Sequence[JiraField] = ()) -> list[bigquery.SchemaField]:
@@ -180,6 +232,10 @@ class JiraAPI:
 
             if field.bq_type == "TIMESTAMP":
                 value: Any = self.client.to_bq_timestamp(raw)
+            elif field.bq_type == "DATETIME":
+                value = parse_datetime(extract_value(raw))
+            elif field.bq_type == "DATE":
+                value = parse_date(extract_value(raw))
             else:
                 value = extract_value(raw)
 

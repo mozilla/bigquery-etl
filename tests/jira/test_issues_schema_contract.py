@@ -24,10 +24,10 @@ DATASET = (
 
 # Tables whose query.py declares no extra fields: their schema.yaml must equal
 # the base schema exactly.
-BASE_ONLY_TABLES = ["ffxp_epic_issues_v1", "iim_incident_issues_v1"]
+BASE_ONLY_TABLES = ["ffxp_epic_issues_v1"]
 
 # Tables that declare EXTRA_FIELDS in query.py.
-EXTRA_FIELD_TABLES = ["srein_issues_v1"]
+EXTRA_FIELD_TABLES = ["srein_issues_v1", "iim_incident_issues_v1"]
 
 
 def yaml_schema(table: str) -> list[tuple]:

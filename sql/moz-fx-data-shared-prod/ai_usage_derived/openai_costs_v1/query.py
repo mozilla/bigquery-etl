@@ -5,10 +5,27 @@ import os
 import sys
 from argparse import ArgumentParser
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 
 import google.auth
 import requests
 from google.cloud import bigquery
+
+logger = logging.getLogger(__name__)
+
+
+def _to_numeric(value) -> str:
+    """Coerce an API amount to a NUMERIC-compatible string.
+
+    The costs API may return the amount as either a number or a string.
+    """
+    if value is None or value == "":
+        return "0"
+    try:
+        return format(round(Decimal(str(value)), 9), "f")
+    except (InvalidOperation, ValueError):
+        logger.warning(f"Could not parse amount value {value!r}, defaulting to 0")
+        return "0"
 
 
 class BigQueryAPI:
@@ -39,9 +56,7 @@ class BigQueryAPI:
                     "project_id": result.get("project_id"),
                     "line_item": result.get("line_item"),
                     "organization_id": result.get("organization_id"),
-                    "amount_value": round(
-                        result.get("amount", {}).get("value") or 0, 9
-                    ),
+                    "amount_value": _to_numeric(result.get("amount", {}).get("value")),
                     "currency": result.get("amount", {}).get("currency"),
                 }
                 records.append(record)

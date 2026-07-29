@@ -439,7 +439,7 @@ unioned_pings AS (
         metrics.object.crash_quota_manager_shutdown_timeout,
         metrics.object.crash_stack_traces,
         metrics.object.crash_java_exception,
-        CAST(NULL AS JSON) AS `meta_annotations`,
+        metrics.object.meta_annotations,
         metrics.object.crash_breadcrumbs
       ) AS `object`,
       STRUCT(
@@ -627,7 +627,7 @@ unioned_pings AS (
         metrics.object.crash_quota_manager_shutdown_timeout,
         metrics.object.crash_stack_traces,
         metrics.object.crash_java_exception,
-        CAST(NULL AS JSON) AS `meta_annotations`,
+        metrics.object.meta_annotations,
         metrics.object.crash_breadcrumbs
       ) AS `object`,
       STRUCT(
@@ -815,7 +815,7 @@ unioned_pings AS (
         metrics.object.crash_quota_manager_shutdown_timeout,
         metrics.object.crash_stack_traces,
         metrics.object.crash_java_exception,
-        CAST(NULL AS JSON) AS `meta_annotations`,
+        metrics.object.meta_annotations,
         metrics.object.crash_breadcrumbs
       ) AS `object`,
       STRUCT(

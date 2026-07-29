@@ -31,7 +31,6 @@ from ..copy_deduplicate import copy_deduplicate
 from ..dependency import dependency
 from ..docs import docs_
 from ..glam.cli import glam
-from ..nimbus_sizing import run as nimbus_sizing
 from ..stripe import stripe_
 from ..subplat.apple import apple
 from ..util.common import enable_impersonation, set_resolved_target_project
@@ -54,7 +53,6 @@ def cli(prog_name=None):
         "format": format,
         "routine": routine,
         "mozfun": mozfun,
-        "nimbus_sizing": nimbus_sizing,
         "stripe": stripe_,
         "glam": glam,
         "view": view,

@@ -8,7 +8,7 @@ fields:
   mode: NULLABLE
   description: >-
     Estimated number of eligible Firefox Desktop clients based on the
-    experiment's targeting expression. Derived from 10% sample × 10.
+    experiment's targeting expression. Derived from 10% sample x10.
     Experimenter computes projected enrollment from this using population_percent.
 - name: warnings
   type: STRING

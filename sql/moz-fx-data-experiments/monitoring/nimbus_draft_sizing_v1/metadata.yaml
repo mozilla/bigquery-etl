@@ -1,0 +1,34 @@
+---
+friendly_name: Nimbus Draft Experiment Population Sizing
+description: |-
+  Per-experiment eligible-client estimates for Nimbus Draft experiments on Desktop.
+
+  Populated daily by fetching experiments from the Experimenter v8 API where
+  targetingSql.needsUpdate=true, running each experiment's translated SQL WHERE
+  clause against mozdata.firefox_desktop.nimbus_targeting_context (7-day window,
+  10% sample x10), and writing results to GCS for Experimenter to display on
+  the Audience page.
+
+  Results are also written to GCS at:
+    gs://mozanalysis/population_sizing/nimbus_draft_sizing_v1_{date}.json
+    gs://mozanalysis/population_sizing/nimbus_draft_sizing_v1_latest.json
+
+  Does not create BigQuery artifacts when there are no experiments to process.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  owner1: nimbus
+scheduling:
+  dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'firefox_desktop', 'nimbus_targeting_context']
+bigquery:
+  time_partitioning:
+    type: day
+    field: computed_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - slug

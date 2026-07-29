@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Nimbus pre-launch population sizing ETL.
 
 Fetches Draft experiments from the Experimenter v8 API, executes their
@@ -7,12 +9,13 @@ and writes per-experiment eligible-client estimates to GCS and BigQuery.
 
 import json
 import logging
+from argparse import ArgumentParser
 from datetime import date, datetime, timedelta, timezone
 
-import click
 import requests
 from google.cloud import bigquery, storage  # type: ignore
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 EXPERIMENTER_API_URL = (
@@ -21,14 +24,27 @@ EXPERIMENTER_API_URL = (
 NIMBUS_TARGETING_TABLE = (
     "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context"
 )
-OUTPUT_PROJECT = "moz-fx-data-shared-prod"
 GCS_BUCKET = "mozanalysis"
 GCS_FOLDER = "population_sizing"
 # 10% sample — multiply counts by 10 to estimate full population
 SAMPLE_ID_MAX = 10
 
+parser = ArgumentParser(description=__doc__)
+parser.add_argument("--date", required=True, help="Execution date (YYYY-MM-DD)")
+parser.add_argument("--project", default="moz-fx-data-experiments")
+parser.add_argument("--output-dataset", default="monitoring")
+parser.add_argument("--output-table", default="nimbus_draft_sizing_v1")
+parser.add_argument("--api-url", default=EXPERIMENTER_API_URL)
+parser.add_argument("--gcs-bucket", default=GCS_BUCKET)
+parser.add_argument("--gcs-folder", default=GCS_FOLDER)
+parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help="Print query without running",
+)
 
-def fetch_experiments(api_url: str) -> list[dict]:
+
+def fetch_experiments(api_url: str) -> list:
     """Fetch Draft experiments that need a sizing update from Experimenter."""
     resp = requests.get(api_url, timeout=30)
     resp.raise_for_status()
@@ -52,9 +68,7 @@ def _col_for_index(i: int) -> str:
     return f"exp_{i}"
 
 
-def build_query(
-    experiments: list[dict], submission_date: date, window_days: int = 7
-) -> str:
+def build_query(experiments: list, submission_date: date, window_days: int = 7) -> str:
     """Build a single BigQuery query counting eligible clients per experiment.
 
     Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
@@ -91,7 +105,7 @@ clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
 def _dry_run_sql(sql: str, project: str) -> bool:
     """Return True if sql is a valid BigQuery expression, False otherwise."""
     probe = (
-        f"SELECT COUNTIF({sql}) AS c " f"FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
+        f"SELECT COUNTIF({sql}) AS c FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
     )
     try:
         client = bigquery.Client(project=project)
@@ -103,14 +117,14 @@ def _dry_run_sql(sql: str, project: str) -> bool:
         return False
 
 
-def run_query(query: str, project: str) -> list[dict]:
+def run_query(query: str, project: str) -> list:
     """Execute the BigQuery query and return rows as dicts."""
     client = bigquery.Client(project=project)
     job = client.query(query)
     return [dict(row) for row in job.result()]
 
 
-def build_results(experiments: list[dict], rows: list[dict]) -> dict:
+def build_results(experiments: list, rows: list) -> dict:
     """Map flat query result row back to per-experiment result dicts.
 
     Uses positional index aliases (exp_0, exp_1, ...) to avoid slug collisions.
@@ -203,39 +217,12 @@ def write_to_bigquery(
     logger.info("Wrote %d rows to %s", len(rows), table_ref)
 
 
-@click.command()
-@click.option(
-    "--date",
-    "submission_date",
-    required=True,
-    help="Execution date (YYYY-MM-DD)",
-)
-@click.option("--api-url", default=EXPERIMENTER_API_URL)
-@click.option(
-    "--project",
-    default=OUTPUT_PROJECT,
-    help="BQ project for query billing and output",
-)
-@click.option("--output-dataset", default="experimenter")
-@click.option("--output-table", default="nimbus_draft_sizing_v1")
-@click.option("--gcs-bucket", default=GCS_BUCKET)
-@click.option("--gcs-folder", default=GCS_FOLDER)
-@click.option("--dry-run", is_flag=True, help="Print query without running")
-def run(
-    submission_date,
-    api_url,
-    project,
-    output_dataset,
-    output_table,
-    gcs_bucket,
-    gcs_folder,
-    dry_run,
-):
+def main():
     """Run Nimbus pre-launch population sizing ETL."""
-    logging.basicConfig(level=logging.INFO)
-    run_date = date.fromisoformat(submission_date)
+    args = parser.parse_args()
+    run_date = date.fromisoformat(args.date)
 
-    experiments = fetch_experiments(api_url)
+    experiments = fetch_experiments(args.api_url)
     logger.info("Found %d experiments needing sizing update", len(experiments))
 
     if not experiments:
@@ -247,10 +234,12 @@ def run(
     valid_experiments = []
     for exp in experiments:
         sql = exp["targetingSql"]["sql"]
-        if _dry_run_sql(sql, project=project):
+        if _dry_run_sql(sql, project=args.project):
             valid_experiments.append(exp)
         else:
-            logger.warning("Skipping %s -- SQL failed dry-run validation", exp["slug"])
+            logger.warning(
+                "Skipping %s -- SQL failed dry-run validation", exp["slug"]
+            )
 
     if not valid_experiments:
         logger.info("No valid experiments after dry-run validation")
@@ -258,25 +247,29 @@ def run(
 
     query = build_query(valid_experiments, submission_date=run_date)
 
-    if dry_run:
-        click.echo(query)
+    if args.dry_run:
+        print(query)
         return
 
-    rows = run_query(query, project=project)
+    rows = run_query(query, project=args.project)
     results = build_results(valid_experiments, rows)
     logger.info("Got sizing results for %d experiments", len(results))
 
     write_to_gcs(
         results,
-        bucket_name=gcs_bucket,
-        folder=gcs_folder,
-        run_date=submission_date,
+        bucket_name=args.gcs_bucket,
+        folder=args.gcs_folder,
+        run_date=args.date,
     )
     write_to_bigquery(
         results,
-        project=project,
-        dataset=output_dataset,
-        table=output_table,
+        project=args.project,
+        dataset=args.output_dataset,
+        table=args.output_table,
         submission_date=run_date,
     )
     logger.info("Nimbus sizing ETL complete")
+
+
+if __name__ == "__main__":
+    main()

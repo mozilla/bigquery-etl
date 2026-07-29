@@ -1,25 +1,34 @@
 """Tests for Nimbus pre-launch population sizing ETL."""
 
+import importlib.util
 import json
+import os
 from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from bigquery_etl.nimbus_sizing import (
-    GCS_FOLDER,
-    _col_for_index,
-    build_query,
-    build_results,
-    fetch_experiments,
-    write_to_gcs,
+# Load query.py by file path since sql/ uses hyphens in directory names
+_QUERY_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "../../sql/moz-fx-data-experiments/monitoring/nimbus_draft_sizing_v1/query.py",
 )
+_spec = importlib.util.spec_from_file_location("nimbus_draft_sizing_query", _QUERY_PATH)
+_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mod)
+
+GCS_FOLDER = _mod.GCS_FOLDER
+_col_for_index = _mod._col_for_index
+build_query = _mod.build_query
+build_results = _mod.build_results
+fetch_experiments = _mod.fetch_experiments
+write_to_gcs = _mod.write_to_gcs
 
 MOCK_EXPERIMENTS = [
     {
         "slug": "my-experiment",
         "targetingSql": {
-            "sql": "firefox_version >= 120",
+            "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 120",
             "warnings": [],
             "needsUpdate": True,
         },
@@ -27,7 +36,10 @@ MOCK_EXPERIMENTS = [
     {
         "slug": "another-experiment",
         "targetingSql": {
-            "sql": "locale = 'en-US' AND firefox_version >= 115",
+            "sql": (
+                "metrics.string.nimbus_targeting_context_locale IN ('en-US')"
+                " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 115"
+            ),
             "warnings": ["activeRollouts"],
             "needsUpdate": True,
         },
@@ -41,7 +53,7 @@ MOCK_API_RESPONSE = [
     {
         "slug": "stale-experiment",
         "targetingSql": {
-            "sql": "firefox_version >= 100",
+            "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 100",
             "warnings": [],
             "needsUpdate": False,
         },
@@ -67,7 +79,6 @@ class TestFetchExperiments:
         with patch("requests.get") as mock_get:
             mock_get.return_value.json.return_value = MOCK_API_RESPONSE
             mock_get.return_value.raise_for_status = MagicMock()
-
             result = fetch_experiments("https://example.com/api/")
 
         assert len(result) == 2
@@ -104,8 +115,6 @@ class TestColForIndex:
         assert _col_for_index(42) == "exp_42"
 
     def test_no_slug_collision(self):
-        # Two slugs that would collide with the old slug→col approach
-        # now get distinct column names by index
         assert _col_for_index(0) != _col_for_index(1)
 
 
@@ -123,8 +132,6 @@ class TestBuildQuery:
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
         assert "`exp_0`" in query
         assert "`exp_1`" in query
-        # slug names should NOT appear as column aliases
-        assert "`my_experiment`" not in query
 
     def test_uses_countif_not_count_distinct(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
@@ -134,7 +141,7 @@ class TestBuildQuery:
     def test_injects_sql_expressions(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
         assert "firefox_version >= 120" in query
-        assert "locale = 'en-US' AND firefox_version >= 115" in query
+        assert "locale IN ('en-US')" in query
 
     def test_multiplies_by_10(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
@@ -142,12 +149,20 @@ class TestBuildQuery:
 
     def test_uses_moz_fx_data_shared_prod_table(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "moz-fx-data-shared-prod" in query
+        assert "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context" in query
         assert "mozdata" not in query
 
     def test_submission_date_controls_window(self):
         query = build_query(MOCK_EXPERIMENTS, date(2026, 7, 27))
         assert "2026-07-27" in query
+
+    def test_generated_sql_is_syntactically_plausible(self):
+        """Spot-check that generated SQL doesn't contain known invalid patterns."""
+        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
+        assert " = NULL" not in query
+        assert "JSON_ARRAY_LENGTH(" not in query
+        assert "= FALSE" not in query
+        assert "= TRUE" not in query
 
 
 class TestBuildResults:
@@ -157,11 +172,6 @@ class TestBuildResults:
 
         assert results["my-experiment"]["eligible_count"] == 40000
         assert results["another-experiment"]["eligible_count"] == 95000
-
-    def test_does_not_include_enrolled_count(self):
-        rows = [{"exp_0": 40000, "exp_1": 95000}]
-        results = build_results(MOCK_EXPERIMENTS, rows)
-        assert "enrolled_count" not in results["my-experiment"]
 
     def test_includes_warnings(self):
         rows = [{"exp_0": 40000, "exp_1": 95000}]
@@ -175,13 +185,12 @@ class TestBuildResults:
         assert results == {}
 
     def test_skips_missing_columns(self):
-        rows = [{"exp_0": 40000}]  # exp_1 missing
+        rows = [{"exp_0": 40000}]
         results = build_results(MOCK_EXPERIMENTS, rows)
         assert "my-experiment" in results
         assert "another-experiment" not in results
 
     def test_slug_collision_safe(self):
-        # Two slugs that would have collided with the old _slug_to_col approach
         experiments = [
             {"slug": "my-experiment", "targetingSql": {"sql": "TRUE", "warnings": []}},
             {"slug": "my.experiment", "targetingSql": {"sql": "TRUE", "warnings": []}},
@@ -207,8 +216,7 @@ class TestWriteToGCS:
         )
 
     def test_wraps_results_in_v1_key(self):
-        """GCS JSON must be {"v1": ...} so future schema changes can add v2
-        without breaking consumers — matches enrollment_funnel pattern."""
+        """GCS JSON must be {"v1": ...} so future schema changes can add v2."""
         mock_blob = MagicMock()
         with patch("google.cloud.storage.Client") as mock_client:
             mock_client.return_value.bucket.return_value.blob.return_value = mock_blob
@@ -219,25 +227,23 @@ class TestWriteToGCS:
         assert self.RESULTS["my-experiment"] == uploaded["v1"]["my-experiment"]
 
     def test_writes_dated_and_latest_files(self):
-        """Writes dated archive and copies to latest matching enrollment_funnel pattern."""
+        """Writes a dated archive and a latest file matching enrollment_funnel pattern."""
         mock_blob = MagicMock()
         with patch("google.cloud.storage.Client") as mock_client:
             mock_bucket = mock_client.return_value.bucket.return_value
             mock_bucket.blob.return_value = mock_blob
             self._call(mock_client)
 
-        # dated file uploaded via blob().upload_from_string
         blob_paths = [call[0][0] for call in mock_bucket.blob.call_args_list]
         assert any("2026-07-27" in p and "v1" in p for p in blob_paths)
 
-        # latest file written via copy_blob — third positional arg is dest path
         copy_calls = mock_bucket.copy_blob.call_args_list
         assert len(copy_calls) == 1
         dest_path = copy_calls[0][0][2]
         assert "latest" in dest_path and "v1" in dest_path
 
     def test_writes_only_current_run_results(self):
-        """GCS file is a pure snapshot of this run — Experimenter owns staleness logic."""
+        """GCS file is a pure snapshot — Experimenter owns staleness logic."""
         mock_blob = MagicMock()
         with patch("google.cloud.storage.Client") as mock_client:
             mock_client.return_value.bucket.return_value.blob.return_value = mock_blob

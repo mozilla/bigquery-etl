@@ -164,6 +164,48 @@ class TestBuildQuery:
         assert "= FALSE" not in query
         assert "= TRUE" not in query
 
+    def test_full_query_matches_expected(self):
+        """Assert the complete generated SQL for a known input."""
+        experiments = [
+            {
+                "slug": "release-channel-experiment",
+                "targetingSql": {
+                    "sql": (
+                        "JSON_VALUE(metrics.object.nimbus_targeting_context_browser_settings,"
+                        " '$.update.channel') = 'release'"
+                        " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 120"
+                    ),
+                    "warnings": [],
+                    "needsUpdate": True,
+                },
+            },
+        ]
+        query = build_query(experiments, date(2026, 7, 27))
+        _sql = (
+            "JSON_VALUE(metrics.object.nimbus_targeting_context_browser_settings,"
+            " '$.update.channel') = 'release'"
+            " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 120"
+        )
+        expected = "\n".join([
+            "WITH latest_per_client AS (",
+            "  SELECT",
+            "    *,",
+            "    ROW_NUMBER() OVER (",
+            "      PARTITION BY client_info.client_id",
+            "      ORDER BY submission_timestamp DESC",
+            "    ) AS rn",
+            "  FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context`",
+            "  WHERE DATE(submission_timestamp) BETWEEN '2026-07-21' AND '2026-07-27'",
+            "    AND sample_id < 10",
+            "    AND client_info.client_id IS NOT NULL",
+            "),",
+            "clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)",
+            "SELECT",
+            f"  COUNTIF(\n    {_sql}\n  ) * 10 AS `exp_0`",
+            "FROM clients",
+        ])
+        assert query == expected
+
 
 class TestBuildResults:
     def test_maps_row_to_experiments(self):

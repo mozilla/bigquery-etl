@@ -14,8 +14,9 @@ _QUERY_PATH = os.path.join(
     "../../sql/moz-fx-data-experiments/monitoring/nimbus_draft_sizing_v1/query.py",
 )
 _spec = importlib.util.spec_from_file_location("nimbus_draft_sizing_query", _QUERY_PATH)
+assert _spec is not None and _spec.loader is not None
 _mod = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_mod)
+_spec.loader.exec_module(_mod)  # type: ignore[union-attr]
 
 GCS_FOLDER = _mod.GCS_FOLDER
 _col_for_index = _mod._col_for_index
@@ -149,7 +150,9 @@ class TestBuildQuery:
 
     def test_uses_moz_fx_data_shared_prod_table(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context" in query
+        assert (
+            "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context" in query
+        )
         assert "mozdata" not in query
 
     def test_submission_date_controls_window(self):
@@ -186,24 +189,26 @@ class TestBuildQuery:
             " '$.update.channel') = 'release'"
             " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 120"
         )
-        expected = "\n".join([
-            "WITH latest_per_client AS (",
-            "  SELECT",
-            "    *,",
-            "    ROW_NUMBER() OVER (",
-            "      PARTITION BY client_info.client_id",
-            "      ORDER BY submission_timestamp DESC",
-            "    ) AS rn",
-            "  FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context`",
-            "  WHERE DATE(submission_timestamp) BETWEEN '2026-07-21' AND '2026-07-27'",
-            "    AND sample_id < 10",
-            "    AND client_info.client_id IS NOT NULL",
-            "),",
-            "clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)",
-            "SELECT",
-            f"  COUNTIF(\n    {_sql}\n  ) * 10 AS `exp_0`",
-            "FROM clients",
-        ])
+        expected = "\n".join(
+            [
+                "WITH latest_per_client AS (",
+                "  SELECT",
+                "    *,",
+                "    ROW_NUMBER() OVER (",
+                "      PARTITION BY client_info.client_id",
+                "      ORDER BY submission_timestamp DESC",
+                "    ) AS rn",
+                "  FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context`",
+                "  WHERE DATE(submission_timestamp) BETWEEN '2026-07-21' AND '2026-07-27'",
+                "    AND sample_id < 10",
+                "    AND client_info.client_id IS NOT NULL",
+                "),",
+                "clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)",
+                "SELECT",
+                f"  COUNTIF(\n    {_sql}\n  ) * 10 AS `exp_0`",
+                "FROM clients",
+            ]
+        )
         assert query == expected
 
 

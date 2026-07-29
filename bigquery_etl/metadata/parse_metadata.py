@@ -193,6 +193,25 @@ class MonitoringMetadata:
 
 
 @attr.s(auto_attribs=True)
+class ExternalSharingMetadata:
+    """Metadata to configure sharing of table with external partners."""
+
+    exchange: str
+    data_review: str  # link to bug
+    subscribers: List[str] = attr.ib()
+
+    @subscribers.validator
+    def validate_subscribers(self, attribute, value):
+        """Check that each subscriber is a group: or workgroup: identity."""
+        for subscriber in value:
+            if not re.fullmatch(r"(group|workgroup):.+", subscriber):
+                raise ValueError(
+                    f"Invalid external_sharing subscriber {subscriber!r}: "
+                    "must be prefixed with 'group:' or 'workgroup:'."
+                )
+
+
+@attr.s(auto_attribs=True)
 class Metadata:
     """
     Representation of a table or view Metadata configuration.
@@ -215,6 +234,7 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: Optional[bool] = attr.ib(None)
+    external_sharing: Optional[ExternalSharingMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):

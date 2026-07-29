@@ -57,6 +57,8 @@ def publish_metadata(client, project, dataset, table, metadata):
             # TODO: in the future we can consider updating the table expiration date based on deletion_date
         if metadata.monitoring and metadata.monitoring.enabled:
             table.labels["monitoring"] = "true"
+        if metadata.external_sharing:
+            table.labels["externally_shared"] = "true"
 
         client.update_table(table, ["friendly_name", "description", "labels"])
         print("Published metadata for: {}.{}.{}".format(project, dataset, table))

@@ -453,6 +453,41 @@ def validate_exclusion_list_expiration_days(metadata, path):
     return is_valid
 
 
+def validate_external_sharing(metadata, path):
+    """Check external_sharing config has the authorized label and a _shared dataset."""
+    if not metadata.external_sharing:
+        return True
+
+    is_valid = True
+
+    if metadata.labels.get("authorized") is not True:
+        click.echo(
+            click.style(
+                f"ERROR: {path} configures external_sharing but is missing the "
+                "'authorized: true' label.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    # path looks like .../sql/project/dataset/table/metadata.yaml
+    dataset_name = Path(path).parent.parent.name
+    if not (
+        dataset_name.endswith("_shared") or dataset_name.endswith("_shared_derived")
+    ):
+        click.echo(
+            click.style(
+                f"ERROR: {path} configures external_sharing but dataset "
+                f"'{dataset_name}' is not suffixed with '_shared' or "
+                "'_shared_derived'.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    return is_valid
+
+
 def validate_workgroup_access(metadata, path):
     """Check if there are any specifications of table-level access that are redundant with dataset access."""
     is_valid = True
@@ -699,6 +734,9 @@ def validate(target):
                         failed = True
 
                     if not validate_query_parameters(metadata, path):
+                        failed = True
+
+                    if not validate_external_sharing(metadata, path):
                         failed = True
 
                     # todo more validation

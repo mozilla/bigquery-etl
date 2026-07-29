@@ -4,6 +4,7 @@ import pytest
 
 from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
+    ExternalSharingMetadata,
     Metadata,
     PartitionType,
 )
@@ -26,6 +27,26 @@ class TestParseMetadata(object):
     def test_invalid_owners(self):
         with pytest.raises(ValueError):
             Metadata("Test metadata", "test description", ["testexample.org"])
+
+    def test_valid_external_sharing_subscribers(self):
+        metadata = ExternalSharingMetadata(
+            exchange="test_exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=["group:partner@example.org", "workgroup:mozilla/partner"],
+        )
+
+        assert metadata.subscribers == [
+            "group:partner@example.org",
+            "workgroup:mozilla/partner",
+        ]
+
+    def test_invalid_external_sharing_subscribers(self):
+        with pytest.raises(ValueError):
+            ExternalSharingMetadata(
+                exchange="test_exchange",
+                data_review="https://bugzilla.mozilla.org/1",
+                subscribers=["partner@example.org"],
+            )
 
     def test_invalid_label(self):
         with pytest.raises(ValueError):

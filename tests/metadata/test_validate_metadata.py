@@ -1,9 +1,14 @@
 from datetime import date
 
-from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
+from bigquery_etl.metadata.parse_metadata import (
+    DatasetMetadata,
+    ExternalSharingMetadata,
+    Metadata,
+)
 from bigquery_etl.metadata.validate_metadata import (
     validate_dataset_classification,
     validate_deprecation,
+    validate_external_sharing,
     validate_public_data,
 )
 
@@ -40,6 +45,57 @@ class TestValidateMetadata(object):
         )
         assert (
             validate_public_data(metadata_invalid_public, "test/path/metadata.yaml")
+            is False
+        )
+
+    def test_validate_external_sharing(self):
+        external_sharing = ExternalSharingMetadata(
+            exchange="test_exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=["workgroup:mozilla/partner"],
+        )
+
+        # no external_sharing configured -> always valid
+        metadata_none = Metadata("test", "test", ["test@example.org"], {})
+        assert validate_external_sharing(
+            metadata_none, "sql/project/some_dataset/table/metadata.yaml"
+        )
+
+        # valid: authorized label set and dataset suffixed with _shared_derived
+        metadata_valid = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {"authorized": True},
+            external_sharing=external_sharing,
+        )
+        assert validate_external_sharing(
+            metadata_valid, "sql/project/foo_shared_derived/table/metadata.yaml"
+        )
+        assert validate_external_sharing(
+            metadata_valid, "sql/project/foo_shared/table/metadata.yaml"
+        )
+
+        # invalid: missing authorized label
+        metadata_no_label = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            external_sharing=external_sharing,
+        )
+        assert (
+            validate_external_sharing(
+                metadata_no_label, "sql/project/foo_shared/table/metadata.yaml"
+            )
+            is False
+        )
+
+        # invalid: dataset not suffixed with _shared/_shared_derived
+        assert (
+            validate_external_sharing(
+                metadata_valid, "sql/project/foo_derived/table/metadata.yaml"
+            )
             is False
         )
 

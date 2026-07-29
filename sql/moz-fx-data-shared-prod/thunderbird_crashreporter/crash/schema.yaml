@@ -458,6 +458,10 @@ fields:
       description: Stack traces extracted from the crash minidump, if available. A
         serialized JSON object (with a structure matching the associated Glean object
         description).
+    - name: meta_annotations
+      type: JSON
+      mode: NULLABLE
+      description: The source crash annotations for this ping.
   - name: quantity
     type: RECORD
     mode: NULLABLE

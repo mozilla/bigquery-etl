@@ -20768,6 +20768,41 @@ fields:
         only; there is no wasted space for large allocations.
 
         '
+    - name: netwerk_happy_eyeballs_dns_answer_spread
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: time in milliseconds between the first positive
+        DNS answer and the last positive DNS answer received before the first connection
+        attempt of a single algorithm run, across the A, AAAA and HTTPS queries (a
+        positive answer is one that carried at least one address or service info).
+        Answers arriving after racing begins are excluded, since the resolution delay
+        no longer applies to them. This is the window during which additional, possibly
+        preferred-family, addresses keep arriving after the first usable answer. Used
+        to tune the resolution delay (network.http.happy_eyeballs_resolution_delay):
+        the delay should cover most of this spread so the preferred address family
+        is usually available before the connection phase begins. A run with a single
+        positive answer records 0.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

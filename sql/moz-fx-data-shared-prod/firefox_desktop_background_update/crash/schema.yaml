@@ -675,6 +675,10 @@ fields:
       mode: NULLABLE
       description: JSON structured Java stack trace, only present on Firefox for Android
         if we encounter an uncaught Java exception.
+    - name: meta_annotations
+      type: JSON
+      mode: NULLABLE
+      description: The source crash annotations for this ping.
   - name: quantity
     type: RECORD
     mode: NULLABLE

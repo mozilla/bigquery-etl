@@ -763,7 +763,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_min_rtt,
       metrics.custom_distribution.networking_http_3_rtt,
       metrics.custom_distribution.networking_http_3_rtt_var,
-      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density
+      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
+      metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3017,7 +3018,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_min_rtt,
       metrics.custom_distribution.networking_http_3_rtt,
       metrics.custom_distribution.networking_http_3_rtt_var,
-      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density
+      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
+      metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5291,7 +5293,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_min_rtt,
       metrics.custom_distribution.networking_http_3_rtt,
       metrics.custom_distribution.networking_http_3_rtt_var,
-      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density
+      metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
+      metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

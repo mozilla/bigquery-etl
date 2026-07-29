@@ -75,7 +75,8 @@ SELECT
       metrics.object.crash_breadcrumbs,
       metrics.object.crash_java_exception,
       metrics.object.crash_quota_manager_shutdown_timeout,
-      metrics.object.crash_stack_traces
+      metrics.object.crash_stack_traces,
+      metrics.object.meta_annotations
     ) AS `object`,
     STRUCT(
       metrics.quantity.crash_event_loop_nesting_level,
@@ -188,7 +189,8 @@ SELECT
       metrics.object.crash_breadcrumbs,
       metrics.object.crash_java_exception,
       metrics.object.crash_quota_manager_shutdown_timeout,
-      metrics.object.crash_stack_traces
+      metrics.object.crash_stack_traces,
+      metrics.object.meta_annotations
     ) AS `object`,
     STRUCT(
       metrics.quantity.crash_event_loop_nesting_level,
@@ -301,7 +303,8 @@ SELECT
       metrics.object.crash_breadcrumbs,
       metrics.object.crash_java_exception,
       metrics.object.crash_quota_manager_shutdown_timeout,
-      metrics.object.crash_stack_traces
+      metrics.object.crash_stack_traces,
+      metrics.object.meta_annotations
     ) AS `object`,
     STRUCT(
       metrics.quantity.crash_event_loop_nesting_level,
@@ -414,7 +417,8 @@ SELECT
       metrics.object.crash_breadcrumbs,
       metrics.object.crash_java_exception,
       metrics.object.crash_quota_manager_shutdown_timeout,
-      metrics.object.crash_stack_traces
+      metrics.object.crash_stack_traces,
+      metrics.object.meta_annotations
     ) AS `object`,
     STRUCT(
       metrics.quantity.crash_event_loop_nesting_level,
@@ -527,7 +531,8 @@ SELECT
       metrics.object.crash_breadcrumbs,
       metrics.object.crash_java_exception,
       metrics.object.crash_quota_manager_shutdown_timeout,
-      metrics.object.crash_stack_traces
+      metrics.object.crash_stack_traces,
+      metrics.object.meta_annotations
     ) AS `object`,
     STRUCT(
       metrics.quantity.crash_event_loop_nesting_level,

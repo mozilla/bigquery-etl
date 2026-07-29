@@ -233,3 +233,136 @@ def test_jira_field_defaults():
 def test_build_schema_returns_bigquery_schema_fields():
     schema = build_schema([JiraField("priority", "priority")])
     assert all(isinstance(f, bigquery.SchemaField) for f in schema)
+
+
+# --- DATETIME / DATE typed extras -------------------------------------------
+#
+# The IIM incident timing fields are free-text in Jira and arrive as
+# "2026-07-25 09:49": no `T`, no seconds, no timezone offset. to_bq_timestamp
+# only parses ISO-with-offset, so routing them through TIMESTAMP would silently
+# yield NULL for every row. They are normalized to a canonical DATETIME instead,
+# and a value that will not parse becomes NULL rather than failing the load job
+# for the whole table.
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("2026-07-25 09:49", "2026-07-25 09:49:00"),
+        ("2026-07-25 09:49:12", "2026-07-25 09:49:12"),
+        ("2026-07-25T09:49", "2026-07-25 09:49:00"),
+        ("2026-07-25T09:49:12", "2026-07-25 09:49:12"),
+        ("  2026-07-25 09:49  ", "2026-07-25 09:49:00"),
+        # Free-text field, so anything can turn up. None beats a failed load.
+        ("not a datetime", None),
+        ("2026-13-45 99:99", None),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_parse_datetime(raw, expected):
+    from bigquery_etl.jira.issues import parse_datetime
+
+    assert parse_datetime(raw) == expected
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("2026-07-25", "2026-07-25"),
+        ("  2026-07-25 ", "2026-07-25"),
+        # A datetime in a date field keeps only the date part.
+        ("2026-07-25 09:49", "2026-07-25"),
+        ("nope", None),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_parse_date(raw, expected):
+    from bigquery_etl.jira.issues import parse_date
+
+    assert parse_date(raw) == expected
+
+
+@responses.activate
+def test_datetime_typed_extra_field_is_normalized():
+    """Captured from IIM-308: customfield_18692 holds '2026-07-25 09:49'."""
+    issue = {
+        "key": "IIM-308",
+        "fields": {**ISSUE["fields"], "customfield_18692": "2026-07-25 09:49"},
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = IIM",
+        extra_fields=[
+            JiraField("time_declared", "customfield_18692", bq_type="DATETIME")
+        ],
+    ).get_issues()
+
+    assert out["time_declared"] == "2026-07-25 09:49:00"
+
+
+@responses.activate
+def test_datetime_typed_extra_field_would_be_null_as_timestamp():
+    """Pins the reason DATETIME exists: TIMESTAMP silently drops this format."""
+    issue = {
+        "key": "IIM-308",
+        "fields": {**ISSUE["fields"], "customfield_18692": "2026-07-25 09:49"},
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = IIM",
+        extra_fields=[JiraField("as_ts", "customfield_18692", bq_type="TIMESTAMP")],
+    ).get_issues()
+
+    assert out["as_ts"] is None
+
+
+@responses.activate
+def test_date_typed_extra_field_is_normalized():
+    issue = {
+        "key": "IIM-308",
+        "fields": {**ISSUE["fields"], "customfield_15087": "2026-07-25"},
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = IIM",
+        extra_fields=[JiraField("declare_date", "customfield_15087", bq_type="DATE")],
+    ).get_issues()
+
+    assert out["declare_date"] == "2026-07-25"
+
+
+@responses.activate
+def test_option_valued_extra_fields_use_their_value_key():
+    """Severity and Detection Method are select fields: {'value': 'S3', 'id': ...}."""
+    issue = {
+        "key": "IIM-308",
+        "fields": {
+            **ISSUE["fields"],
+            "customfield_10319": {"value": "S3", "id": "10866"},
+            "customfield_12881": {"value": "Manual", "id": "14790"},
+            "customfield_18555": "phabricator",
+        },
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = IIM",
+        extra_fields=[
+            JiraField("severity", "customfield_10319"),
+            JiraField("detection_method", "customfield_12881"),
+            JiraField("affected_entities", "customfield_18555"),
+        ],
+    ).get_issues()
+
+    assert out["severity"] == "S3"
+    assert out["detection_method"] == "Manual"
+    assert out["affected_entities"] == "phabricator"

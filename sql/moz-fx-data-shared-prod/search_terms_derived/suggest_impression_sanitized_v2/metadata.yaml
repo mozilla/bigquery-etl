@@ -9,7 +9,7 @@ description: |-
 
   Fulfills https://mozilla-hub.atlassian.net/browse/ROAD-85
 owners:
-  - ctroy@mozilla.com
+  - najiang@mozilla.com
 labels:
   incremental: true
 bigquery:

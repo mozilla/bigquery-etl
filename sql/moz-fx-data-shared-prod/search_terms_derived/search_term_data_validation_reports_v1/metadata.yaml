@@ -6,7 +6,7 @@ description: |-
   Used for determining whether our recorded search term sources or
   distributions are changing, to trigger manual model monitoring.
 owners:
-  - ctroy@mozilla.com
+  - najiang@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

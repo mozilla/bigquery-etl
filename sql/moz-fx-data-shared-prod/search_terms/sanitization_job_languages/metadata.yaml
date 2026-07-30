@@ -6,7 +6,7 @@ description: |-
   We use this + other metrics to assess
   whether the constituency using our search features is changing.
 owners:
-  - ctroy@mozilla.com
+  - najiang@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

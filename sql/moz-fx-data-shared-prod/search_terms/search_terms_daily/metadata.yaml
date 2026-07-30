@@ -2,8 +2,7 @@ friendly_name: Search Terms Daily
 description: |-
   Daily count of terminal search terms collected by Merino.
 owners:
-  - ctroy@mozilla.com
-  - rburwei@mozilla.com
+  - najiang@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

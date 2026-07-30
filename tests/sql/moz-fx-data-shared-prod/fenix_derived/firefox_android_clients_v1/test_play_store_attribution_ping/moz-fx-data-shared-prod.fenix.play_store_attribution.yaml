@@ -26,3 +26,33 @@
       play_store_attribution_campaign: 'ping-campaign'
       play_store_attribution_medium: ''
       play_store_attribution_term: 'ping-term'
+# An empty ping arrives before the one carrying the real values: the install referrer had
+# not been fetched yet. The recorded ping datetimes must be the seq=1 ping's, not seq=0's.
+- client_info:
+    client_id: client-4
+  submission_timestamp: '2026-07-01 03:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      play_store_attribution_campaign: ''
+      play_store_attribution_content: ''
+      play_store_attribution_medium: ''
+      play_store_attribution_source: ''
+      play_store_attribution_term: ''
+    text2:
+      play_store_attribution_install_referrer_response: ''
+- client_info:
+    client_id: client-4
+  submission_timestamp: '2026-07-01 09:00:00'
+  ping_info:
+    seq: 1
+  metrics:
+    string:
+      play_store_attribution_campaign: 'late-campaign'
+      play_store_attribution_content: 'late-content'
+      play_store_attribution_medium: 'late-medium'
+      play_store_attribution_source: 'late-source'
+      play_store_attribution_term: 'late-term'
+    text2:
+      play_store_attribution_install_referrer_response: 'late-referrer'

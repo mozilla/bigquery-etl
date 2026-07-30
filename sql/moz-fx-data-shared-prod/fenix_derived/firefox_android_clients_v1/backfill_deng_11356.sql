@@ -14,42 +14,95 @@
 WITH play_store_attribution_ping AS (
   SELECT
     client_info.client_id AS client_id,
-    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_campaign, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_campaign, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_campaign, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_campaign,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_content, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_content, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_content, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_content,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_medium, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_medium, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_medium, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_medium,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_source, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_source, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_source, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_source,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_term, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_term, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_term, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_term,
     ARRAY_AGG(
-      NULLIF(metrics.text2.play_store_attribution_install_referrer_response, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.text2.play_store_attribution_install_referrer_response, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.text2.play_store_attribution_install_referrer_response, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_install_referrer_response,
   FROM
     `moz-fx-data-shared-prod.fenix.play_store_attribution`
@@ -63,27 +116,27 @@ WITH play_store_attribution_ping AS (
 SELECT
   clients.* REPLACE (
     COALESCE(
-      play_store.play_store_attribution_campaign,
+      play_store.play_store_attribution_campaign.value,
       clients.play_store_attribution_campaign
     ) AS play_store_attribution_campaign,
     COALESCE(
-      play_store.play_store_attribution_content,
+      play_store.play_store_attribution_content.value,
       clients.play_store_attribution_content
     ) AS play_store_attribution_content,
     COALESCE(
-      play_store.play_store_attribution_medium,
+      play_store.play_store_attribution_medium.value,
       clients.play_store_attribution_medium
     ) AS play_store_attribution_medium,
     COALESCE(
-      play_store.play_store_attribution_source,
+      play_store.play_store_attribution_source.value,
       clients.play_store_attribution_source
     ) AS play_store_attribution_source,
     COALESCE(
-      play_store.play_store_attribution_term,
+      play_store.play_store_attribution_term.value,
       clients.play_store_attribution_term
     ) AS play_store_attribution_term,
     COALESCE(
-      play_store.play_store_attribution_install_referrer_response,
+      play_store.play_store_attribution_install_referrer_response.value,
       clients.play_store_attribution_install_referrer_response
     ) AS play_store_attribution_install_referrer_response,
     STRUCT(
@@ -98,33 +151,33 @@ SELECT
       clients.metadata.adjust_network__source_ping_datetime AS adjust_network__source_ping_datetime,
       clients.metadata.install_source__source_ping_datetime AS install_source__source_ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_campaign IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_campaign.value IS NOT NULL
+          THEN play_store.play_store_attribution_campaign.ping_datetime
         ELSE clients.metadata.play_store_attribution_campaign__ping_datetime
       END AS play_store_attribution_campaign__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_content IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_content.value IS NOT NULL
+          THEN play_store.play_store_attribution_content.ping_datetime
         ELSE clients.metadata.play_store_attribution_content__ping_datetime
       END AS play_store_attribution_content__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_medium IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_medium.value IS NOT NULL
+          THEN play_store.play_store_attribution_medium.ping_datetime
         ELSE clients.metadata.play_store_attribution_medium__ping_datetime
       END AS play_store_attribution_medium__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_source IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_source.value IS NOT NULL
+          THEN play_store.play_store_attribution_source.ping_datetime
         ELSE clients.metadata.play_store_attribution_source__ping_datetime
       END AS play_store_attribution_source__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_term IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_term.value IS NOT NULL
+          THEN play_store.play_store_attribution_term.ping_datetime
         ELSE clients.metadata.play_store_attribution_term__ping_datetime
       END AS play_store_attribution_term__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_install_referrer_response IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_install_referrer_response.value IS NOT NULL
+          THEN play_store.play_store_attribution_install_referrer_response.ping_datetime
         ELSE clients.metadata.play_store_attribution_install_referrer_response__ping_datetime
       END AS play_store_attribution_install_referrer_response__ping_datetime,
       clients.metadata.meta_attribution_app__ping_datetime AS meta_attribution_app__ping_datetime

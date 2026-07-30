@@ -20,3 +20,10 @@
   first_run_date: 2026-07-01
   normalized_channel: release
   is_new_profile: true
+- client_id: client-4
+  sample_id: 40
+  first_seen_date: 2026-07-01
+  submission_date: 2026-07-01
+  first_run_date: 2026-07-01
+  normalized_channel: release
+  is_new_profile: true

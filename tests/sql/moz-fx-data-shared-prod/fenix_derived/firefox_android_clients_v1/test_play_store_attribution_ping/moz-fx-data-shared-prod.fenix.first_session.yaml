@@ -48,3 +48,14 @@
       play_store_attribution_term: 'first-session-term'
     text2:
       play_store_attribution_install_referrer_response: 'first-session-referrer'
+# Sends two dedicated pings; see the play_store_attribution fixture.
+- client_info:
+    client_id: client-4
+    first_run_date: '2026-07-01+08:00'
+  sample_id: 40
+  submission_timestamp: '2026-07-01 01:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      first_session_network: 'Organic'

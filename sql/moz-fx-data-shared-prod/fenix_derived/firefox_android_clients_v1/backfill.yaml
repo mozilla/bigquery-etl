@@ -7,6 +7,11 @@
   watchers:
   - phlee@mozilla.com
   status: Initiate
+  # IMPORTANT for whoever runs `backfill complete`: pause the
+  # bqetl_analytics_tables.firefox_android_clients task first. `complete` copies the staging
+  # partitions into production one at a time, while the scheduled task overwrites the whole table
+  # on every run (date_partition_parameter is null). A run that reads _previous before the copy
+  # loop finishes and writes after it would silently revert partitions already copied.
   # firefox_android_clients_v1 is depends_on_past with a null date_partition_parameter, so the
   # day-by-day path via query.sql is rejected. This is a targeted per-partition sidefill of the six
   # play_store_attribution_* fields rather than a full --reinitialize-table rebuild back to 2020.

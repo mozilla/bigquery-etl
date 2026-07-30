@@ -90,3 +90,33 @@
     play_store_attribution_source__ping_datetime: '2026-07-01T01:00:00'
     play_store_attribution_term__ping_datetime: '2026-07-01T01:00:00'
     play_store_attribution_install_referrer_response__ping_datetime: '2026-07-01T01:00:00'
+# The seq=0 ping reported nothing, so every value and every datetime comes from seq=1.
+- client_id: client-4
+  sample_id: 40
+  first_seen_date: 2026-07-01
+  submission_date: 2026-07-01
+  first_run_date: 2026-07-01
+  channel: release
+  adjust_network: Organic
+  last_reported_date: 2026-07-01
+  last_reported_channel: release
+  play_store_attribution_campaign: 'late-campaign'
+  play_store_attribution_content: 'late-content'
+  play_store_attribution_medium: 'late-medium'
+  play_store_attribution_source: 'late-source'
+  play_store_attribution_term: 'late-term'
+  play_store_attribution_install_referrer_response: 'late-referrer'
+  metadata:
+    reported_first_session_ping: true
+    reported_metrics_ping: false
+    reported_baseline_ping: true
+    min_first_session_ping_submission_date: 2026-07-01
+    min_first_session_ping_run_date: 2026-07-01
+    adjust_network__source_ping: first_session
+    adjust_network__source_ping_datetime: '2026-07-01T01:00:00'
+    play_store_attribution_campaign__ping_datetime: '2026-07-01T09:00:00'
+    play_store_attribution_content__ping_datetime: '2026-07-01T09:00:00'
+    play_store_attribution_medium__ping_datetime: '2026-07-01T09:00:00'
+    play_store_attribution_source__ping_datetime: '2026-07-01T09:00:00'
+    play_store_attribution_term__ping_datetime: '2026-07-01T09:00:00'
+    play_store_attribution_install_referrer_response__ping_datetime: '2026-07-01T09:00:00'

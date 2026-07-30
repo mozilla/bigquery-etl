@@ -203,57 +203,111 @@ first_session_ping AS (
 -- Play Store attribution stopped arriving via the `first_session` ping on 2026-04-07 and moved
 -- to this dedicated ping; the cutover is handled the same way in the shared
 -- `sql_generators/mobile_kpi_support_metrics/templates/attribution_clients.query.sql` template.
+-- Each field carries the submission timestamp of the ping that supplied it, so a client sending an
+-- empty ping before the one with the real install referrer still records the right datetime.
 play_store_attribution_ping AS (
   SELECT
     client_info.client_id AS client_id,
-    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_campaign, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_campaign, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_campaign, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_campaign,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_content, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_content, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_content, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_content,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_medium, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_medium, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_medium, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_medium,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_source, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_source, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_source, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_source,
     ARRAY_AGG(
-      NULLIF(metrics.string.play_store_attribution_term, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.string.play_store_attribution_term, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.string.play_store_attribution_term, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_term,
     ARRAY_AGG(
-      NULLIF(metrics.text2.play_store_attribution_install_referrer_response, "") IGNORE NULLS
+      IF(
+        NULLIF(metrics.text2.play_store_attribution_install_referrer_response, "") IS NULL,
+        NULL,
+        STRUCT(
+          NULLIF(metrics.text2.play_store_attribution_install_referrer_response, "") AS value,
+          DATETIME(submission_timestamp) AS ping_datetime
+        )
+      ) IGNORE NULLS
       ORDER BY
         ping_info.seq ASC,
         submission_timestamp ASC
+      LIMIT
+        1
     )[SAFE_OFFSET(0)] AS play_store_attribution_install_referrer_response,
   FROM
     `moz-fx-data-shared-prod.fenix.play_store_attribution`
   WHERE
-    {% if is_init() %}
-      DATE(submission_timestamp) >= "2020-08-01"
-    {% else %}
+    {% if not is_init() %}
       DATE(submission_timestamp) = @submission_date
+      AND
     {% endif %}
     -- Only read this ping from one day before the cutover onwards, to ensure consistency
     -- with the `first_session` ping values used before then.
-    AND DATE(submission_timestamp) >= "2026-04-06"
+    DATE(submission_timestamp) >= "2026-04-06"
     AND client_info.client_id IS NOT NULL
   GROUP BY
     client_id
@@ -371,27 +425,27 @@ _current AS (
     -- The dedicated play_store_attribution ping is preferred over the first_session ping, which
     -- stopped carrying these values on 2026-04-07.
     COALESCE(
-      play_store.play_store_attribution_campaign,
+      play_store.play_store_attribution_campaign.value,
       first_session.play_store_attribution_campaign
     ) AS play_store_attribution_campaign,
     COALESCE(
-      play_store.play_store_attribution_content,
+      play_store.play_store_attribution_content.value,
       first_session.play_store_attribution_content
     ) AS play_store_attribution_content,
     COALESCE(
-      play_store.play_store_attribution_medium,
+      play_store.play_store_attribution_medium.value,
       first_session.play_store_attribution_medium
     ) AS play_store_attribution_medium,
     COALESCE(
-      play_store.play_store_attribution_source,
+      play_store.play_store_attribution_source.value,
       first_session.play_store_attribution_source
     ) AS play_store_attribution_source,
     COALESCE(
-      play_store.play_store_attribution_term,
+      play_store.play_store_attribution_term.value,
       first_session.play_store_attribution_term
     ) AS play_store_attribution_term,
     COALESCE(
-      play_store.play_store_attribution_install_referrer_response,
+      play_store.play_store_attribution_install_referrer_response.value,
       first_session.play_store_attribution_install_referrer_response
     ) AS play_store_attribution_install_referrer_response,
     baseline.distribution_id,
@@ -471,41 +525,42 @@ _current AS (
           THEN metrics.min_submission_datetime
         ELSE NULL
       END AS install_source__source_ping_datetime,
-      -- These follow the same ping preference as the values above, so the recorded datetime
-      -- always belongs to the ping the value was actually taken from.
+      -- These follow the same ping preference as the values above. A value from the dedicated ping
+      -- carries that ping's own timestamp; the first_session fallback can only report the earliest
+      -- first_session ping for the client, as that CTE aggregates each field independently.
       CASE
-        WHEN play_store.play_store_attribution_campaign IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_campaign.value IS NOT NULL
+          THEN play_store.play_store_attribution_campaign.ping_datetime
         WHEN first_session.play_store_attribution_campaign IS NOT NULL
           THEN first_session.min_submission_datetime
       END AS play_store_attribution_campaign__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_content IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_content.value IS NOT NULL
+          THEN play_store.play_store_attribution_content.ping_datetime
         WHEN first_session.play_store_attribution_content IS NOT NULL
           THEN first_session.min_submission_datetime
       END AS play_store_attribution_content__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_medium IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_medium.value IS NOT NULL
+          THEN play_store.play_store_attribution_medium.ping_datetime
         WHEN first_session.play_store_attribution_medium IS NOT NULL
           THEN first_session.min_submission_datetime
       END AS play_store_attribution_medium__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_source IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_source.value IS NOT NULL
+          THEN play_store.play_store_attribution_source.ping_datetime
         WHEN first_session.play_store_attribution_source IS NOT NULL
           THEN first_session.min_submission_datetime
       END AS play_store_attribution_source__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_term IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_term.value IS NOT NULL
+          THEN play_store.play_store_attribution_term.ping_datetime
         WHEN first_session.play_store_attribution_term IS NOT NULL
           THEN first_session.min_submission_datetime
       END AS play_store_attribution_term__ping_datetime,
       CASE
-        WHEN play_store.play_store_attribution_install_referrer_response IS NOT NULL
-          THEN play_store.min_submission_datetime
+        WHEN play_store.play_store_attribution_install_referrer_response.value IS NOT NULL
+          THEN play_store.play_store_attribution_install_referrer_response.ping_datetime
         WHEN first_session.play_store_attribution_install_referrer_response IS NOT NULL
           THEN first_session.min_submission_datetime
       END AS play_store_attribution_install_referrer_response__ping_datetime,

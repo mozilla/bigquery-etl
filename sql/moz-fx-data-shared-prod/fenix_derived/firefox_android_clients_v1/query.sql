@@ -247,7 +247,7 @@ play_store_attribution_ping AS (
     `moz-fx-data-shared-prod.fenix.play_store_attribution`
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= "2026-04-06"
+      DATE(submission_timestamp) >= "2020-08-01"
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}

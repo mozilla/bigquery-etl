@@ -1,0 +1,24 @@
+2026-07-30:
+  start_date: 2026-04-06
+  end_date: 2026-07-29
+  reason:
+    DENG-11356, populate play_store_attribution_* fields for clients first seen since the
+    2026-04-06 ping cutover, from the dedicated play_store_attribution ping.
+  watchers:
+  - phlee@mozilla.com
+  status: Initiate
+  # IMPORTANT for whoever runs `backfill complete`: pause the
+  # bqetl_analytics_tables.firefox_android_clients task first. `complete` copies the staging
+  # partitions into production one at a time, while the scheduled task overwrites the whole table
+  # on every run (date_partition_parameter is null). A run that reads _previous before the copy
+  # loop finishes and writes after it would silently revert partitions already copied.
+  # firefox_android_clients_v1 is depends_on_past with a null date_partition_parameter, so the
+  # day-by-day path via query.sql is rejected. This is a targeted per-partition sidefill of the six
+  # play_store_attribution_* fields rather than a full --reinitialize-table rebuild back to 2020.
+  custom_query_path: sql/moz-fx-data-shared-prod/fenix_derived/firefox_android_clients_v1/backfill_deng_11356.sql
+  override_depends_on_past_null_partition: true
+  # end_date is the latest available first_seen_date partition, which is before the entry date.
+  override_depends_on_past_end_date: true
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

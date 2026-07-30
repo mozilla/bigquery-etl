@@ -117,6 +117,7 @@ SELECT
       JSON_VALUE(event_extra.onboarding_variant) AS `onboarding_variant`,
       JSON_VALUE(event_extra.option) AS `option`,
       JSON_VALUE(event_extra.origin) AS `origin`,
+      JSON_VALUE(event_extra.outcome) AS `outcome`,
       JSON_VALUE(event_extra.part_id) AS `part_id`,
       JSON_VALUE(event_extra.period) AS `period`,
       JSON_VALUE(event_extra.position) AS `position`,

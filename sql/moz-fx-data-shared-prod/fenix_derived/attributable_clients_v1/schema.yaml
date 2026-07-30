@@ -7,12 +7,15 @@ fields:
   type: DATE
   mode: NULLABLE
   description: The date this client was first seen (cohort entry date), used to group clients by when they
-    installed Fenix.
+    were first seen.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
   description: A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
+    Computed by the ingestion pipeline as `CRC32(client_id) % 100`, where the source
+    `client_id` is `client_info.client_id` for Glean pings and the top-level `clientId`
+    for legacy telemetry pings.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -29,17 +32,33 @@ fields:
 - name: adjust_adgroup
   type: STRING
   mode: NULLABLE
-  description: The Adjust ad group that was used to source this installation, representing the specific
-    ad targeting group within a campaign.
+  description: !include-field-description
+    table: moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1
+    field: adjust_ad_group
+    append: Adjust campaign structure parameters (`campaign`, `adgroup`, `creative`)
+      are set on the Adjust link URL by marketing, analogous to UTM parameters on a
+      web URL, so values are not telemetry-derived and their format is campaign-specific.
+      Only populated for clients whose `adjust_network` is known.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: The name of the Adjust campaign responsible for this installation.
+  description: !include-field-description
+    table: moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1
+    field: adjust_campaign
+    append: Adjust campaign structure parameters (`campaign`, `adgroup`, `creative`)
+      are set on the Adjust link URL by marketing, analogous to UTM parameters on a
+      web URL, so values are not telemetry-derived and their format is campaign-specific.
+      Only populated for clients whose `adjust_network` is known.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: The identifier of the creative material the user interacted with in the Adjust attribution
-    flow.
+  description: !include-field-description
+    table: moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1
+    field: adjust_creative
+    append: Adjust campaign structure parameters (`campaign`, `adgroup`, `creative`)
+      are set on the Adjust link URL by marketing, analogous to UTM parameters on a
+      web URL, so values are not telemetry-derived and their format is campaign-specific.
+      Only populated for clients whose `adjust_network` is known.
 - name: is_new_install
   type: BOOLEAN
   mode: NULLABLE

@@ -4,7 +4,11 @@ description: |-
   `fenix.firefox_android_clients`.
 
   Contains a list of Firefox Android clients along with their first attributes
-  retrieved from baseline, first_session and metrics pings.
+  retrieved from baseline, first_session, play_store_attribution and metrics pings.
+
+  Play Store install attribution comes from the first_session ping for clients first
+  seen before 2026-04-06, and from the dedicated play_store_attribution ping from
+  that date onwards.
 
   This includes information such as their initial geo, OS, ISP, and attribution info.
 
@@ -59,4 +63,5 @@ references:
   - moz-fx-data-shared-prod.fenix.first_session
   - moz-fx-data-shared-prod.fenix.metrics
   - moz-fx-data-shared-prod.fenix.new_profile_activation
+  - moz-fx-data-shared-prod.fenix.play_store_attribution
   - moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1

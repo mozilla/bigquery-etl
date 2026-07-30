@@ -2649,6 +2649,28 @@ fields:
         are not found in the omnijar. See bug 1681745 and bug 2056926.
 
         '
+    - name: media_audio_session_api_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Incremented once per document that accesses `navigator.audioSession`
+        (recorded in the content process, so it counts accessing documents).
+
+        '
+    - name: media_audio_session_inactivated_by_arbitration
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times audio-session arbitration inactivates one or more
+        active sessions because another session takes over. Counted once per arbitration
+        pass that displaces a session, not once per displaced session.
+
+        '
+    - name: media_audio_session_selected_changed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the selected audio session changed for a top-level
+        browsing context.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -8801,6 +8823,79 @@ fields:
         packets, recorded once per connection that completed its handshake. Used to
         measure how many servers mark ECN on the traffic they send us and, among those,
         the adoption of ECT(1) (L4S) versus ECT(0) (classic ECN).
+
+        '
+    - name: media_audio_focus_interrupt_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of audio-session interruptions, by cause.
+
+        '
+    - name: media_audio_focus_platform_focus_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Android only: the effective audio-session type Firefox forwards
+        to the embedder to shape the platform audio-focus request, by value. This
+        is the type actually used on the platform, including the source-derived fallback
+        (e.g. ambient for Web Audio, transient for Web Speech) when no page set a
+        type explicitly.
+
+        '
+    - name: media_audio_focus_resume_decision
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'When an interruption ends, the number of times each suspended
+        audible source (media element, Web Audio, or Web Speech) was dispatched its
+        resume signal. Sources the interruption never suspended, or that the page
+        took over during the interruption, are not counted.
+
+        '
+    - name: media_audio_session_effective_auto_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The concrete type an `auto`-typed selected session resolves to
+        under the audio-session type priority ranking.
+
+        '
+    - name: media_audio_session_type_set
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of explicit `audioSession.type` assignments, by value.
 
         '
   - name: memory_distribution

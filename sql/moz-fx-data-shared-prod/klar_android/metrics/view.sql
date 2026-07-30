@@ -306,7 +306,10 @@ SELECT
       metrics.counter.devtools_localmode_mappings_add_permanent_from_notification,
       metrics.counter.devtools_localmode_mappings_add_permanent_from_options,
       metrics.counter.devtools_localmode_mappings_add_transient,
-      metrics.counter.layout_global_stylesheet_not_found
+      metrics.counter.layout_global_stylesheet_not_found,
+      metrics.counter.media_audio_session_api_used,
+      metrics.counter.media_audio_session_inactivated_by_arbitration,
+      metrics.counter.media_audio_session_selected_changed
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -721,7 +724,12 @@ SELECT
       metrics.labeled_counter.tls_handshake_completed,
       metrics.labeled_counter.tls_handshake_privacy,
       metrics.labeled_counter.tls_handshake_version,
-      metrics.labeled_counter.networking_http_3_ecn_ect_received
+      metrics.labeled_counter.networking_http_3_ecn_ect_received,
+      metrics.labeled_counter.media_audio_focus_interrupt_count,
+      metrics.labeled_counter.media_audio_focus_platform_focus_type,
+      metrics.labeled_counter.media_audio_focus_resume_decision,
+      metrics.labeled_counter.media_audio_session_effective_auto_type,
+      metrics.labeled_counter.media_audio_session_type_set
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

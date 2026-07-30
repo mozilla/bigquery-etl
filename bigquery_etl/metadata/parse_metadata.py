@@ -202,12 +202,12 @@ class ExternalSharingMetadata:
 
     @subscribers.validator
     def validate_subscribers(self, attribute, value):
-        """Check that each subscriber is a group: or workgroup: identity."""
+        """Check that each subscriber is a group: identity."""
         for subscriber in value:
-            if not re.fullmatch(r"(group|workgroup):.+", subscriber):
+            if not re.fullmatch(r"group:.+", subscriber):
                 raise ValueError(
                     f"Invalid external_sharing subscriber {subscriber!r}: "
-                    "must be prefixed with 'group:' or 'workgroup:'."
+                    "must be prefixed with 'group:'."
                 )
 
 
@@ -313,6 +313,7 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = None
+        external_sharing = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -400,6 +401,12 @@ class Metadata:
                         "require_column_descriptions"
                     ]
 
+                if "external_sharing" in metadata:
+                    converter = cattrs.BaseConverter()
+                    external_sharing = converter.structure(
+                        metadata["external_sharing"], ExternalSharingMetadata
+                    )
+
                 return cls(
                     friendly_name,
                     description,
@@ -415,6 +422,7 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
+                    external_sharing,
                 )
             except yaml.YAMLError as e:
                 raise e

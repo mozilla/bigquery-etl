@@ -32,21 +32,23 @@ class TestParseMetadata(object):
         metadata = ExternalSharingMetadata(
             exchange="test_exchange",
             data_review="https://bugzilla.mozilla.org/1",
-            subscribers=["group:partner@example.org", "workgroup:mozilla/partner"],
+            subscribers=["group:partner@example.org", "group:other@example.org"],
         )
 
         assert metadata.subscribers == [
             "group:partner@example.org",
-            "workgroup:mozilla/partner",
+            "group:other@example.org",
         ]
 
     def test_invalid_external_sharing_subscribers(self):
-        with pytest.raises(ValueError):
-            ExternalSharingMetadata(
-                exchange="test_exchange",
-                data_review="https://bugzilla.mozilla.org/1",
-                subscribers=["partner@example.org"],
-            )
+        # non-group: identities (including workgroup:) are rejected
+        for bad in (["partner@example.org"], ["workgroup:mozilla/partner"]):
+            with pytest.raises(ValueError):
+                ExternalSharingMetadata(
+                    exchange="test_exchange",
+                    data_review="https://bugzilla.mozilla.org/1",
+                    subscribers=bad,
+                )
 
     def test_invalid_label(self):
         with pytest.raises(ValueError):

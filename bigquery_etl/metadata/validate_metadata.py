@@ -471,15 +471,14 @@ def validate_external_sharing(metadata, path):
         is_valid = False
 
     # path looks like .../sql/project/dataset/table/metadata.yaml
+    # Only `_shared` datasets may be shared: they are published to the
+    # user-facing project (mozdata) and the sharing listing points there.
     dataset_name = Path(path).parent.parent.name
-    if not (
-        dataset_name.endswith("_shared") or dataset_name.endswith("_shared_derived")
-    ):
+    if not dataset_name.endswith("_shared"):
         click.echo(
             click.style(
                 f"ERROR: {path} configures external_sharing but dataset "
-                f"'{dataset_name}' is not suffixed with '_shared' or "
-                "'_shared_derived'.",
+                f"'{dataset_name}' is not suffixed with '_shared'.",
                 fg="red",
             )
         )

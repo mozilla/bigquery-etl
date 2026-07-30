@@ -52,7 +52,7 @@ class TestValidateMetadata(object):
         external_sharing = ExternalSharingMetadata(
             exchange="test_exchange",
             data_review="https://bugzilla.mozilla.org/1",
-            subscribers=["workgroup:mozilla/partner"],
+            subscribers=["group:partner@example.org"],
         )
 
         # no external_sharing configured -> always valid
@@ -61,16 +61,13 @@ class TestValidateMetadata(object):
             metadata_none, "sql/project/some_dataset/table/metadata.yaml"
         )
 
-        # valid: authorized label set and dataset suffixed with _shared_derived
+        # valid: authorized label set and dataset suffixed with _shared
         metadata_valid = Metadata(
             "test",
             "test",
             ["test@example.org"],
             {"authorized": True},
             external_sharing=external_sharing,
-        )
-        assert validate_external_sharing(
-            metadata_valid, "sql/project/foo_shared_derived/table/metadata.yaml"
         )
         assert validate_external_sharing(
             metadata_valid, "sql/project/foo_shared/table/metadata.yaml"
@@ -91,7 +88,14 @@ class TestValidateMetadata(object):
             is False
         )
 
-        # invalid: dataset not suffixed with _shared/_shared_derived
+        # invalid: dataset not suffixed with _shared (e.g. the _shared_derived
+        # source dataset is not itself shareable)
+        assert (
+            validate_external_sharing(
+                metadata_valid, "sql/project/foo_shared_derived/table/metadata.yaml"
+            )
+            is False
+        )
         assert (
             validate_external_sharing(
                 metadata_valid, "sql/project/foo_derived/table/metadata.yaml"

@@ -1,0 +1,7 @@
+2026-07-30:
+  start_date: 2025-11-01
+  end_date: 2026-07-29
+  reason: 'Bug 2057822'
+  watchers:
+  - efilho@mozilla.com
+  status: Initiate

@@ -296,28 +296,13 @@ def _collect_views(
     views = [View.from_file(f, id_token=id_token) for f in view_files]
     if user_facing_only:
         views = [v for v in views if v.is_user_facing]
+    # `v.labels` (not `v.metadata.labels`) so views in an externally-shared
+    # `_shared` dataset, which are authorized via dataset_metadata.yaml, are
+    # classified as authorized too. labels with boolean true are translated to "".
     if skip_authorized:
-        views = [
-            v
-            for v in views
-            if not (
-                v.metadata
-                and v.metadata.labels
-                # labels with boolean true are translated to ""
-                and v.metadata.labels.get("authorized") == ""
-            )
-        ]
+        views = [v for v in views if v.labels.get("authorized") != ""]
     if authorized_only:
-        views = [
-            v
-            for v in views
-            if (
-                v.metadata
-                and v.metadata.labels
-                # labels with boolean true are translated to ""
-                and v.metadata.labels.get("authorized") == ""
-            )
-        ]
+        views = [v for v in views if v.labels.get("authorized") == ""]
     return views
 
 

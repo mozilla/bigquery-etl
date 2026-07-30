@@ -453,38 +453,27 @@ def validate_exclusion_list_expiration_days(metadata, path):
     return is_valid
 
 
-def validate_external_sharing(metadata, path):
-    """Check external_sharing config has the authorized label and a _shared dataset."""
-    if not metadata.external_sharing:
+def validate_external_sharing(dataset_name, dataset_metadata):
+    """Check external_sharing is only configured on `_shared` datasets.
+
+    Subscriber identities are validated at parse time (must be `group:`). Only
+    `_shared` datasets may be shared: they are published to the user-facing
+    project (mozdata) and the BigQuery Sharing listing points there.
+    """
+    if not dataset_metadata.external_sharing:
         return True
 
-    is_valid = True
-
-    if metadata.labels.get("authorized") is not True:
-        click.echo(
-            click.style(
-                f"ERROR: {path} configures external_sharing but is missing the "
-                "'authorized: true' label.",
-                fg="red",
-            )
-        )
-        is_valid = False
-
-    # path looks like .../sql/project/dataset/table/metadata.yaml
-    # Only `_shared` datasets may be shared: they are published to the
-    # user-facing project (mozdata) and the sharing listing points there.
-    dataset_name = Path(path).parent.parent.name
     if not dataset_name.endswith("_shared"):
         click.echo(
             click.style(
-                f"ERROR: {path} configures external_sharing but dataset "
-                f"'{dataset_name}' is not suffixed with '_shared'.",
+                f"ERROR: dataset '{dataset_name}' configures external_sharing but "
+                "is not suffixed with '_shared'.",
                 fg="red",
             )
         )
-        is_valid = False
+        return False
 
-    return is_valid
+    return True
 
 
 def validate_workgroup_access(metadata, path):
@@ -735,9 +724,6 @@ def validate(target):
                     if not validate_query_parameters(metadata, path):
                         failed = True
 
-                    if not validate_external_sharing(metadata, path):
-                        failed = True
-
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
     else:
@@ -763,6 +749,9 @@ def validate_datasets(target):
                     if not validate_dataset_classification(
                         dataset_name, dataset_metadata
                     ):
+                        failed = True
+
+                    if not validate_external_sharing(dataset_name, dataset_metadata):
                         failed = True
     else:
         raise ValueError(f"Invalid target: {target}, target must be a directory.")

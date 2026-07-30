@@ -1,20 +1,56 @@
 """bigquery-etl CLI sharing command."""
 
-from typing import Optional
+import os
+from fnmatch import fnmatchcase
+from glob import glob
+from pathlib import Path
+from typing import List, Optional
 
 import click
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import DatasetMetadata
 from bigquery_etl.sharing import (
     analytics_hub_client,
     bigquery_client,
-    publish_table_sharing,
+    publish_dataset_sharing,
 )
 
-from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
-from ..util import extract_from_query_path
+from ..cli.utils import project_id_option, sql_dir_option
 from ..util.common import block_coding_agents
+
+DATASET_METADATA_FILE = "dataset_metadata.yaml"
+
+
+def _dataset_metadata_files(name, sql_dir, project_id) -> List[Path]:
+    """Return dataset_metadata.yaml paths matching `name`.
+
+    `name` may be a directory, a file, or a dataset name glob (matched against
+    `<dataset>` or `<project>.<dataset>`; `*` matches all).
+    """
+    if os.path.isfile(name):
+        return [Path(name)]
+    if os.path.isdir(name):
+        return sorted(
+            Path(p) for p in glob(f"{name}/**/{DATASET_METADATA_FILE}", recursive=True)
+        )
+
+    base = Path(sql_dir)
+    if project_id:
+        base = base / project_id
+
+    matches = []
+    for p in glob(f"{base}/**/{DATASET_METADATA_FILE}", recursive=True):
+        path = Path(p)
+        dataset = path.parent.name
+        project = path.parent.parent.name
+        if (
+            name in ("*", "*.*")
+            or fnmatchcase(dataset, name)
+            or fnmatchcase(f"{project}.{dataset}", name)
+        ):
+            matches.append(path)
+    return sorted(set(matches))
 
 
 @click.group(help="""Commands for managing external data sharing.""")
@@ -26,19 +62,17 @@ def sharing(ctx):
 
 @sharing.command(help="""
     Deploy BigQuery Sharing data exchanges and subscriber grants for the
-    `_shared` views that declare an `external_sharing` block in their metadata.
+    `_shared` datasets that declare an `external_sharing` block in their
+    `dataset_metadata.yaml`.
 
     Sharing is set up on the user-facing project (mozdata) copies of these
-    views, so the command must run after the `_shared` views have been
+    datasets, so the command must run after the `_shared` views have been
     published there.
-
-    The command is idempotent: exchanges, listings and subscriber grants are
-    reconciled, so it is safe to run on a schedule (e.g. from Airflow).
 
     Examples:
 
     \b
-    # Deploy sharing for all configured views
+    # Deploy sharing for all configured datasets
     ./bqetl sharing deploy '*'
 
     \b
@@ -53,7 +87,7 @@ def sharing(ctx):
     "--user-facing-project",
     "--user_facing_project",
     default=None,
-    help="Project hosting the shared views and BigQuery Sharing exchanges. "
+    help="Project hosting the shared datasets and BigQuery Sharing exchanges. "
     "Defaults to `default.user_facing_project` in bqetl_project.yaml (mozdata). "
     "Override to deploy against a sandbox project for testing.",
 )
@@ -75,15 +109,13 @@ def deploy(
     dry_run: bool,
 ) -> None:
     """Deploy external sharing configuration to BigQuery Sharing."""
-    metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
-    )
+    metadata_files = _dataset_metadata_files(name, sql_dir, project_id)
 
     if len(metadata_files) == 0:
-        click.echo(f"No metadata files matching {name}")
+        click.echo(f"No dataset metadata files matching {name}")
         return
 
-    # `_shared` views are published to the user-facing project (mozdata); the
+    # `_shared` datasets are published to the user-facing project (mozdata); the
     # sharing exchange, listing and location all reference that copy, not the
     # shared-prod source the metadata lives under.
     if user_facing_project is None:
@@ -94,26 +126,22 @@ def deploy(
     client = analytics_hub_client()
     bq_client = bigquery_client(user_facing_project)
     deployed = 0
-    for metadata_file in sorted(set(metadata_files)):
-        try:
-            metadata = Metadata.from_file(metadata_file)
-        except FileNotFoundError:
-            continue
+    for metadata_file in metadata_files:
+        metadata = DatasetMetadata.from_file(metadata_file)
 
         if not metadata.external_sharing:
             continue
 
-        _, dataset, table = extract_from_query_path(metadata_file)
+        dataset = metadata_file.parent.name
 
-        publish_table_sharing(
+        publish_dataset_sharing(
             client,
             bq_client,
             metadata,
             project=user_facing_project,
             dataset=dataset,
-            table=table,
             dry_run=dry_run,
         )
         deployed += 1
 
-    click.echo(f"Deployed external sharing for {deployed} table(s).")
+    click.echo(f"Deployed external sharing for {deployed} dataset(s).")

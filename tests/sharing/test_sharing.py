@@ -10,7 +10,7 @@ from bigquery_etl.sharing import (
     ensure_data_exchange,
     ensure_listing,
     grant_subscribers,
-    publish_table_sharing,
+    publish_dataset_sharing,
 )
 
 
@@ -42,9 +42,9 @@ class FakeAnalyticsHubClient:
             raise NotFound(name)
         return self.exchanges[name]
 
-    def create_data_exchange(self, parent, data_exchange_id, data_exchange):
-        name = f"{parent}/dataExchanges/{data_exchange_id}"
-        self.exchanges[name] = data_exchange
+    def create_data_exchange(self, request):
+        name = f"{request.parent}/dataExchanges/{request.data_exchange_id}"
+        self.exchanges[name] = request.data_exchange
         self.created_exchanges.append(name)
         return SimpleNamespace(name=name)
 
@@ -53,9 +53,9 @@ class FakeAnalyticsHubClient:
             raise NotFound(name)
         return self.listings[name]
 
-    def create_listing(self, parent, listing_id, listing):
-        name = f"{parent}/listings/{listing_id}"
-        self.listings[name] = listing
+    def create_listing(self, request):
+        name = f"{request.parent}/listings/{request.listing_id}"
+        self.listings[name] = request.listing
         self.created_listings.append(name)
         return SimpleNamespace(name=name)
 
@@ -81,11 +81,12 @@ class FakeBigQueryClient:
         return SimpleNamespace(location=self.location)
 
 
-def _metadata(subscribers=None, exchange="partner_exchange"):
+def _metadata(subscribers=None, exchange="partner_exchange", display_name=None):
     external_sharing = SimpleNamespace(
         exchange=exchange,
         data_review="https://bugzilla.mozilla.org/1",
         subscribers=subscribers or ["group:partner@example.org"],
+        display_name=display_name,
     )
     return SimpleNamespace(external_sharing=external_sharing)
 
@@ -116,23 +117,21 @@ class TestEnsureListing:
     def test_creates_when_missing(self):
         client = FakeAnalyticsHubClient()
         exchange = "projects/proj/locations/US/dataExchanges/exch"
-        name = ensure_listing(client, exchange, "ds_tbl", "proj", "ds", "tbl", "ds.tbl")
-        assert name == f"{exchange}/listings/ds_tbl"
+        name = ensure_listing(client, exchange, "ds", "proj", "ds", "ds")
+        assert name == f"{exchange}/listings/ds"
         assert client.created_listings == [name]
 
     def test_dry_run_does_not_create(self):
         client = FakeAnalyticsHubClient()
         exchange = "projects/proj/locations/US/dataExchanges/exch"
-        ensure_listing(
-            client, exchange, "ds_tbl", "proj", "ds", "tbl", "ds.tbl", dry_run=True
-        )
+        ensure_listing(client, exchange, "ds", "proj", "ds", "ds", dry_run=True)
         assert client.created_listings == []
 
 
 class TestGrantSubscribers:
     def _listing(self, client):
         exchange = "projects/proj/locations/US/dataExchanges/exch"
-        return ensure_listing(client, exchange, "ds_tbl", "proj", "ds", "tbl", "ds.tbl")
+        return ensure_listing(client, exchange, "ds", "proj", "ds", "ds")
 
     def test_grants_new_members(self):
         client = FakeAnalyticsHubClient()
@@ -177,13 +176,13 @@ class TestGrantSubscribers:
         assert client.set_policy_calls == []
 
 
-class TestPublishTableSharing:
+class TestPublishDatasetSharing:
     def test_full_reconcile(self):
         client = FakeAnalyticsHubClient()
         bq_client = FakeBigQueryClient()
         metadata = _metadata(subscribers=["group:partner@example.org"])
-        publish_table_sharing(
-            client, bq_client, metadata, "proj", "my_shared", "tbl_v1"
+        publish_dataset_sharing(
+            client, bq_client, metadata, "proj", "my_shared"
         )
         assert len(client.created_exchanges) == 1
         assert len(client.created_listings) == 1
@@ -196,14 +195,14 @@ class TestPublishTableSharing:
         client = FakeAnalyticsHubClient()
         bq_client = FakeBigQueryClient()
         metadata = _metadata(subscribers=["group:partner@example.org"])
-        publish_table_sharing(
-            client, bq_client, metadata, "proj", "my_shared", "tbl_v1"
+        publish_dataset_sharing(
+            client, bq_client, metadata, "proj", "my_shared"
         )
         client.created_exchanges.clear()
         client.created_listings.clear()
         client.set_policy_calls.clear()
-        publish_table_sharing(
-            client, bq_client, metadata, "proj", "my_shared", "tbl_v1"
+        publish_dataset_sharing(
+            client, bq_client, metadata, "proj", "my_shared"
         )
         assert client.created_exchanges == []
         assert client.created_listings == []
@@ -213,13 +212,12 @@ class TestPublishTableSharing:
         client = FakeAnalyticsHubClient()
         bq_client = FakeBigQueryClient()
         metadata = _metadata()
-        publish_table_sharing(
+        publish_dataset_sharing(
             client,
             bq_client,
             metadata,
             "proj",
             "my_shared",
-            "tbl_v1",
             dry_run=True,
         )
         assert client.created_exchanges == []
@@ -230,7 +228,27 @@ class TestPublishTableSharing:
         client = FakeAnalyticsHubClient()
         bq_client = FakeBigQueryClient(location="EU")
         metadata = _metadata()
-        publish_table_sharing(
-            client, bq_client, metadata, "proj", "my_shared", "tbl_v1"
+        publish_dataset_sharing(
+            client, bq_client, metadata, "proj", "my_shared"
         )
         assert "/locations/EU/" in client.created_exchanges[0]
+
+    def test_default_listing_display_name(self):
+        client = FakeAnalyticsHubClient()
+        bq_client = FakeBigQueryClient()
+        metadata = _metadata()
+        publish_dataset_sharing(
+            client, bq_client, metadata, "proj", "my_shared"
+        )
+        listing = client.listings[client.created_listings[0]]
+        assert listing.display_name == "Mozilla - My Shared"
+
+    def test_configurable_listing_display_name(self):
+        client = FakeAnalyticsHubClient()
+        bq_client = FakeBigQueryClient()
+        metadata = _metadata(display_name="Partner Feed")
+        publish_dataset_sharing(
+            client, bq_client, metadata, "proj", "my_shared"
+        )
+        listing = client.listings[client.created_listings[0]]
+        assert listing.display_name == "Partner Feed"

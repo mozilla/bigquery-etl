@@ -199,6 +199,10 @@ class ExternalSharingMetadata:
     exchange: str
     data_review: str  # link to bug
     subscribers: List[str] = attr.ib()
+    # Listing display name shown in the BigQuery Sharing console. Defaults to
+    # `Mozilla - <dataset>` when unset. Allowed characters: letters, numbers,
+    # underscores, dashes, ampersands and spaces.
+    display_name: Optional[str] = attr.ib(None)
 
     @subscribers.validator
     def validate_subscribers(self, attribute, value):
@@ -234,7 +238,6 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: Optional[bool] = attr.ib(None)
-    external_sharing: Optional[ExternalSharingMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -313,7 +316,6 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = None
-        external_sharing = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -401,12 +403,6 @@ class Metadata:
                         "require_column_descriptions"
                     ]
 
-                if "external_sharing" in metadata:
-                    converter = cattrs.BaseConverter()
-                    external_sharing = converter.structure(
-                        metadata["external_sharing"], ExternalSharingMetadata
-                    )
-
                 return cls(
                     friendly_name,
                     description,
@@ -422,7 +418,6 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
-                    external_sharing,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -517,6 +512,13 @@ class Metadata:
             )
 
 
+def _structure_external_sharing(value):
+    """Structure a raw dict into ExternalSharingMetadata for attrs conversion."""
+    if value is None or isinstance(value, ExternalSharingMetadata):
+        return value
+    return cattrs.BaseConverter().structure(value, ExternalSharingMetadata)
+
+
 @attr.s(auto_attribs=True)
 class DatasetMetadata:
     """
@@ -535,6 +537,11 @@ class DatasetMetadata:
     default_table_expiration_ms: Optional[str] = attr.ib(None)
     workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     syndication: Optional[Dict] = attr.ib(None)
+    # External partner sharing via BigQuery Sharing. Deployed by
+    # `bqetl sharing deploy`; only valid on `_shared` datasets.
+    external_sharing: Optional[ExternalSharingMetadata] = attr.ib(
+        None, converter=_structure_external_sharing
+    )
 
     def __attrs_post_init__(self):
         """Do additional updates after attrs is done initializing."""

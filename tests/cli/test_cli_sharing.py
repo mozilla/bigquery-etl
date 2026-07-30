@@ -11,11 +11,9 @@ from tests.sharing.test_sharing import FakeAnalyticsHubClient, FakeBigQueryClien
 
 METADATA = """
 friendly_name: Test
-description: Test table
-owners:
-  - test@example.org
-labels:
-  authorized: true
+description: Test dataset
+dataset_base_acl: view
+user_facing: true
 external_sharing:
   exchange: partner_exchange
   data_review: https://bugzilla.mozilla.org/1
@@ -25,9 +23,9 @@ external_sharing:
 
 METADATA_NO_SHARING = """
 friendly_name: Test
-description: Test table
-owners:
-  - test@example.org
+description: Test dataset
+dataset_base_acl: view
+user_facing: true
 """
 
 
@@ -44,16 +42,16 @@ def not_coding_agent(monkeypatch):
     )
 
 
-def _write_table(sql_dir: Path, dataset: str, table: str, metadata: str):
-    table_dir = sql_dir / "moz-fx-data-shared-prod" / dataset / table
-    table_dir.mkdir(parents=True)
-    (table_dir / "metadata.yaml").write_text(metadata)
+def _write_dataset(sql_dir: Path, dataset: str, metadata: str):
+    dataset_dir = sql_dir / "moz-fx-data-shared-prod" / dataset
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "dataset_metadata.yaml").write_text(metadata)
 
 
 class TestSharingDeploy:
     def test_deploy_configured_view(self, runner, tmp_path):
         sql_dir = tmp_path / "sql"
-        _write_table(sql_dir, "my_shared", "my_view", METADATA)
+        _write_dataset(sql_dir, "my_shared", METADATA)
 
         fake = FakeAnalyticsHubClient()
         with (
@@ -77,7 +75,7 @@ class TestSharingDeploy:
 
     def test_user_facing_project_override(self, runner, tmp_path):
         sql_dir = tmp_path / "sql"
-        _write_table(sql_dir, "my_shared", "my_view", METADATA)
+        _write_dataset(sql_dir, "my_shared", METADATA)
 
         fake = FakeAnalyticsHubClient()
         with (
@@ -102,9 +100,9 @@ class TestSharingDeploy:
         # Exchange/listing created in the overridden project, not mozdata.
         assert "projects/moz-fx-data-sandbox/" in fake.created_exchanges[0]
 
-    def test_skips_tables_without_sharing(self, runner, tmp_path):
+    def test_skips_datasets_without_sharing(self, runner, tmp_path):
         sql_dir = tmp_path / "sql"
-        _write_table(sql_dir, "my_derived", "tbl_v1", METADATA_NO_SHARING)
+        _write_dataset(sql_dir, "my_derived", METADATA_NO_SHARING)
 
         fake = FakeAnalyticsHubClient()
         with (
@@ -120,14 +118,14 @@ class TestSharingDeploy:
             )
 
         assert result.exit_code == 0, result.output
-        # No configured tables -> nothing deployed.
+        # No configured datasets -> nothing deployed.
         assert fake.created_exchanges == []
         assert fake.created_listings == []
-        assert "0 table(s)" in result.output
+        assert "0 dataset(s)" in result.output
 
     def test_dry_run_makes_no_changes(self, runner, tmp_path):
         sql_dir = tmp_path / "sql"
-        _write_table(sql_dir, "my_shared", "my_view", METADATA)
+        _write_dataset(sql_dir, "my_shared", METADATA)
 
         fake = FakeAnalyticsHubClient()
         with (

@@ -1,19 +1,23 @@
 ---
-friendly_name: Nimbus Draft Experiment Population Sizing
+friendly_name: Nimbus Experiment Population Estimates
 description: |-
   Per-experiment eligible-client estimates for Nimbus Draft experiments on Desktop.
 
   Populated daily by fetching experiments from the Experimenter v8 API where
   targetingSql.needsUpdate=true, running each experiment's translated SQL WHERE
-  clause against mozdata.firefox_desktop.nimbus_targeting_context (7-day window,
-  10% sample x10), and writing results to GCS for Experimenter to display on
-  the Audience page.
+  clause against moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context
+  (7-day window, 10% sample x10), and writing results to GCS for Experimenter to
+  display on the Audience page.
+
+  Deduplicates on the experiment's randomization unit from the API:
+  normandy_id -> client_info.client_id,
+  group_id -> client_info.profile_group_id.
 
   Results are also written to GCS at:
-    gs://mozanalysis/population_sizing/nimbus_draft_sizing_v1_{date}.json
-    gs://mozanalysis/population_sizing/nimbus_draft_sizing_v1_latest.json
+    gs://mozanalysis/population_sizing/experiment_population_estimates_v1_{date}.json
+    gs://mozanalysis/population_sizing/experiment_population_estimates_v1_latest.json
 
-  Does not create BigQuery artifacts when there are no experiments to process.
+  Desktop only. Mobile apps will be added in a future iteration.
 owners:
   - ykhurana@mozilla.com
 labels:

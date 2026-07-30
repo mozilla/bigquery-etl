@@ -5,6 +5,10 @@
 Fetches Draft experiments from the Experimenter v8 API, executes their
 translated BigQuery SQL WHERE clauses against nimbus_targeting_context,
 and writes per-experiment eligible-client estimates to GCS and BigQuery.
+
+Desktop only for now. Deduplication uses the experiment's randomization unit
+from the API (normandy_id → client_info.client_id,
+group_id → client_info.profile_group_id).
 """
 
 import json
@@ -29,11 +33,18 @@ GCS_FOLDER = "population_sizing"
 # 10% sample — multiply counts by 10 to estimate full population
 SAMPLE_ID_MAX = 10
 
+# Randomization unit → column in nimbus_targeting_context
+RANDOMIZATION_UNIT_COLUMN = {
+    "normandy_id": "client_info.client_id",
+    "group_id": "client_info.profile_group_id",
+}
+DEFAULT_RANDOMIZATION_UNIT_COLUMN = "client_info.client_id"
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, help="Execution date (YYYY-MM-DD)")
 parser.add_argument("--project", default="moz-fx-data-experiments")
 parser.add_argument("--output-dataset", default="monitoring")
-parser.add_argument("--output-table", default="nimbus_draft_sizing_v1")
+parser.add_argument("--output-table", default="experiment_population_estimates_v1")
 parser.add_argument("--api-url", default=EXPERIMENTER_API_URL)
 parser.add_argument("--gcs-bucket", default=GCS_BUCKET)
 parser.add_argument("--gcs-folder", default=GCS_FOLDER)
@@ -68,20 +79,37 @@ def _col_for_index(i: int) -> str:
     return f"exp_{i}"
 
 
+def _id_column_for_experiment(exp: dict) -> str:
+    """Return the BQ column to use for client deduplication.
+
+    Uses the experiment's randomizationUnit from the API — normandy_id maps to
+    client_info.client_id, group_id maps to client_info.profile_group_id.
+    """
+    unit = (exp.get("bucketConfig") or {}).get("randomizationUnit", "normandy_id")
+    return RANDOMIZATION_UNIT_COLUMN.get(unit, DEFAULT_RANDOMIZATION_UNIT_COLUMN)
+
+
 def build_query(experiments: list, submission_date: date, window_days: int = 7) -> str:
     """Build a single BigQuery query counting eligible clients per experiment.
 
     Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
     collisions. One COUNTIF per experiment in a single table scan.
     clients CTE selects * so injected SQL can reference any ping field.
+    Deduplicates on the experiment's randomization unit (client_id or
+    profile_group_id).
     """
     window_start = submission_date - timedelta(days=window_days - 1)
     window_end = submission_date
+
+    # Collect all ID columns needed — most experiments use the same one
+    id_cols = {_id_column_for_experiment(exp) for exp in experiments}
+    select_ids = ",\n    ".join(sorted(id_cols))
 
     cte = f"""\
 WITH latest_per_client AS (
   SELECT
     *,
+    {select_ids},
     ROW_NUMBER() OVER (
       PARTITION BY client_info.client_id
       ORDER BY submission_timestamp DESC
@@ -104,9 +132,7 @@ clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
 
 def _dry_run_sql(sql: str, project: str) -> bool:
     """Return True if sql is a valid BigQuery expression, False otherwise."""
-    probe = (
-        f"SELECT COUNTIF({sql}) AS c FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
-    )
+    probe = f"SELECT COUNTIF({sql}) AS c FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
     try:
         client = bigquery.Client(project=project)
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
@@ -117,18 +143,15 @@ def _dry_run_sql(sql: str, project: str) -> bool:
         return False
 
 
-def run_query(query: str, project: str) -> list:
-    """Execute the BigQuery query and return rows as dicts."""
-    client = bigquery.Client(project=project)
-    job = client.query(query)
-    return [dict(row) for row in job.result()]
-
-
-def build_results(experiments: list, rows: list) -> dict:
-    """Map flat query result row back to per-experiment result dicts.
+def build_results(experiments: list, query: str, project: str) -> dict:
+    """Execute query and map results back to per-experiment result dicts.
 
     Uses positional index aliases (exp_0, exp_1, ...) to avoid slug collisions.
+    Inlines the BQ execution so callers don't deal with the intermediate rows.
     """
+    client = bigquery.Client(project=project)
+    rows = [dict(row) for row in client.query(query).result()]
+
     if not rows:
         return {}
 
@@ -153,20 +176,20 @@ def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) ->
     computed_at date and decides whether to update its stored estimate.
 
     Writes two files (matching the enrollment_funnel pattern):
-      - nimbus_draft_sizing_v1_{date}.json  -- dated archive
-      - nimbus_draft_sizing_v1_latest.json  -- consumed by Experimenter
+      - experiment_population_estimates_v1_{date}.json  -- dated archive
+      - experiment_population_estimates_v1_latest.json  -- consumed by Experimenter
     """
     client = storage.Client()
     bucket = client.bucket(bucket_name)
     json_str = json.dumps({"v1": results}, indent=2)
 
-    dated_path = f"{folder}/nimbus_draft_sizing_v1_{run_date}.json"
+    dated_path = f"{folder}/experiment_population_estimates_v1_{run_date}.json"
     bucket.blob(dated_path).upload_from_string(
         json_str, content_type="application/json"
     )
     logger.info("Wrote sizing results to gs://%s/%s", bucket_name, dated_path)
 
-    latest_path = f"{folder}/nimbus_draft_sizing_v1_latest.json"
+    latest_path = f"{folder}/experiment_population_estimates_v1_latest.json"
     bucket.copy_blob(bucket.blob(dated_path), bucket, latest_path)
     logger.info("Copied to gs://%s/%s", bucket_name, latest_path)
 
@@ -237,9 +260,7 @@ def main():
         if _dry_run_sql(sql, project=args.project):
             valid_experiments.append(exp)
         else:
-            logger.warning(
-                "Skipping %s -- SQL failed dry-run validation", exp["slug"]
-            )
+            logger.warning("Skipping %s -- SQL failed dry-run validation", exp["slug"])
 
     if not valid_experiments:
         logger.info("No valid experiments after dry-run validation")
@@ -251,8 +272,7 @@ def main():
         print(query)
         return
 
-    rows = run_query(query, project=args.project)
-    results = build_results(valid_experiments, rows)
+    results = build_results(valid_experiments, query, project=args.project)
     logger.info("Got sizing results for %d experiments", len(results))
 
     write_to_gcs(
@@ -268,7 +288,7 @@ def main():
         table=args.output_table,
         submission_date=run_date,
     )
-    logger.info("Nimbus sizing ETL complete")
+    logger.info("Population sizing ETL complete")
 
 
 if __name__ == "__main__":

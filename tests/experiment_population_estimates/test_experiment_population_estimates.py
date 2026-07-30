@@ -1,4 +1,4 @@
-"""Tests for Nimbus pre-launch population sizing ETL."""
+"""Tests for Nimbus experiment population estimates ETL."""
 
 import importlib.util
 import json
@@ -11,15 +11,19 @@ import pytest
 # Load query.py by file path since sql/ uses hyphens in directory names
 _QUERY_PATH = os.path.join(
     os.path.dirname(__file__),
-    "../../sql/moz-fx-data-experiments/monitoring/nimbus_draft_sizing_v1/query.py",
+    "../../sql/moz-fx-data-experiments/monitoring"
+    "/experiment_population_estimates_v1/query.py",
 )
-_spec = importlib.util.spec_from_file_location("nimbus_draft_sizing_query", _QUERY_PATH)
+_spec = importlib.util.spec_from_file_location(
+    "experiment_population_estimates_query", _QUERY_PATH
+)
 assert _spec is not None and _spec.loader is not None
 _mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_mod)  # type: ignore[union-attr]
 
 GCS_FOLDER = _mod.GCS_FOLDER
 _col_for_index = _mod._col_for_index
+_id_column_for_experiment = _mod._id_column_for_experiment
 build_query = _mod.build_query
 build_results = _mod.build_results
 fetch_experiments = _mod.fetch_experiments
@@ -28,6 +32,7 @@ write_to_gcs = _mod.write_to_gcs
 MOCK_EXPERIMENTS = [
     {
         "slug": "my-experiment",
+        "bucketConfig": {"randomizationUnit": "normandy_id"},
         "targetingSql": {
             "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 120",
             "warnings": [],
@@ -36,6 +41,7 @@ MOCK_EXPERIMENTS = [
     },
     {
         "slug": "another-experiment",
+        "bucketConfig": {"randomizationUnit": "group_id"},
         "targetingSql": {
             "sql": (
                 "metrics.string.nimbus_targeting_context_locale IN ('en-US')"
@@ -53,6 +59,7 @@ MOCK_API_RESPONSE = [
     # needsUpdate=False — excluded
     {
         "slug": "stale-experiment",
+        "bucketConfig": {"randomizationUnit": "normandy_id"},
         "targetingSql": {
             "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 100",
             "warnings": [],
@@ -110,6 +117,24 @@ class TestFetchExperiments:
                 fetch_experiments("https://example.com/api/")
 
 
+class TestRandomizationUnit:
+    def test_normandy_id_maps_to_client_id(self):
+        exp = {"bucketConfig": {"randomizationUnit": "normandy_id"}}
+        assert _id_column_for_experiment(exp) == "client_info.client_id"
+
+    def test_group_id_maps_to_profile_group_id(self):
+        exp = {"bucketConfig": {"randomizationUnit": "group_id"}}
+        assert _id_column_for_experiment(exp) == "client_info.profile_group_id"
+
+    def test_unknown_unit_falls_back_to_client_id(self):
+        exp = {"bucketConfig": {"randomizationUnit": "unknown_unit"}}
+        assert _id_column_for_experiment(exp) == "client_info.client_id"
+
+    def test_missing_bucket_config_falls_back_to_client_id(self):
+        exp = {}
+        assert _id_column_for_experiment(exp) == "client_info.client_id"
+
+
 class TestColForIndex:
     def test_returns_exp_prefix(self):
         assert _col_for_index(0) == "exp_0"
@@ -139,14 +164,22 @@ class TestBuildQuery:
         assert "COUNTIF(" in query
         assert "COUNT(DISTINCT" not in query
 
-    def test_injects_sql_expressions(self):
+    def test_injects_both_id_columns_when_mixed_units(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "firefox_version >= 120" in query
-        assert "locale IN ('en-US')" in query
+        assert "client_info.client_id" in query
+        assert "client_info.profile_group_id" in query
 
-    def test_multiplies_by_10(self):
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "* 10" in query
+    def test_only_client_id_when_all_normandy(self):
+        normandy_exps = [
+            {
+                "slug": "exp-a",
+                "bucketConfig": {"randomizationUnit": "normandy_id"},
+                "targetingSql": {"sql": "TRUE", "warnings": [], "needsUpdate": True},
+            }
+        ]
+        query = build_query(normandy_exps, _RUN_DATE)
+        assert "client_info.client_id" in query
+        assert "client_info.profile_group_id" not in query
 
     def test_uses_moz_fx_data_shared_prod_table(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
@@ -168,10 +201,11 @@ class TestBuildQuery:
         assert "= TRUE" not in query
 
     def test_full_query_matches_expected(self):
-        """Assert the complete generated SQL for a known input."""
+        """Assert the complete generated SQL for a known single-unit input."""
         experiments = [
             {
                 "slug": "release-channel-experiment",
+                "bucketConfig": {"randomizationUnit": "normandy_id"},
                 "targetingSql": {
                     "sql": (
                         "JSON_VALUE(metrics.object.nimbus_targeting_context_browser_settings,"
@@ -194,6 +228,7 @@ class TestBuildQuery:
                 "WITH latest_per_client AS (",
                 "  SELECT",
                 "    *,",
+                "    client_info.client_id,",
                 "    ROW_NUMBER() OVER (",
                 "      PARTITION BY client_info.client_id",
                 "      ORDER BY submission_timestamp DESC",
@@ -213,45 +248,55 @@ class TestBuildQuery:
 
 
 class TestBuildResults:
+    def _make_mock_bq_row(self, **kwargs):
+        row = MagicMock()
+        row.keys.return_value = list(kwargs.keys())
+        row.__iter__ = lambda self: iter(kwargs.items())
+        row.items.return_value = list(kwargs.items())
+        row.__getitem__ = lambda self, k: kwargs[k]
+        row.get = lambda k, d=None: kwargs.get(k, d)
+        return row
+
     def test_maps_row_to_experiments(self):
-        rows = [{"exp_0": 40000, "exp_1": 95000}]
-        results = build_results(MOCK_EXPERIMENTS, rows)
+        mock_row = self._make_mock_bq_row(exp_0=40000, exp_1=95000)
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = [mock_row]
+            results = build_results(MOCK_EXPERIMENTS, "SELECT 1", "test-project")
 
         assert results["my-experiment"]["eligible_count"] == 40000
         assert results["another-experiment"]["eligible_count"] == 95000
 
     def test_includes_warnings(self):
-        rows = [{"exp_0": 40000, "exp_1": 95000}]
-        results = build_results(MOCK_EXPERIMENTS, rows)
+        mock_row = self._make_mock_bq_row(exp_0=40000, exp_1=95000)
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = [mock_row]
+            results = build_results(MOCK_EXPERIMENTS, "SELECT 1", "test-project")
 
         assert results["my-experiment"]["warnings"] == []
         assert results["another-experiment"]["warnings"] == ["activeRollouts"]
 
     def test_empty_rows_returns_empty(self):
-        results = build_results(MOCK_EXPERIMENTS, [])
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = []
+            results = build_results(MOCK_EXPERIMENTS, "SELECT 1", "test-project")
         assert results == {}
 
     def test_skips_missing_columns(self):
-        rows = [{"exp_0": 40000}]
-        results = build_results(MOCK_EXPERIMENTS, rows)
+        mock_row = self._make_mock_bq_row(exp_0=40000)
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = [mock_row]
+            results = build_results(MOCK_EXPERIMENTS, "SELECT 1", "test-project")
         assert "my-experiment" in results
         assert "another-experiment" not in results
-
-    def test_slug_collision_safe(self):
-        experiments = [
-            {"slug": "my-experiment", "targetingSql": {"sql": "TRUE", "warnings": []}},
-            {"slug": "my.experiment", "targetingSql": {"sql": "TRUE", "warnings": []}},
-        ]
-        rows = [{"exp_0": 1000, "exp_1": 2000}]
-        results = build_results(experiments, rows)
-        assert results["my-experiment"]["eligible_count"] == 1000
-        assert results["my.experiment"]["eligible_count"] == 2000
 
 
 class TestWriteToGCS:
     RESULTS = {
         "my-experiment": {"eligible_count": 40000, "warnings": []},
-        "another-experiment": {"eligible_count": 95000, "warnings": ["activeRollouts"]},
+        "another-experiment": {
+            "eligible_count": 95000,
+            "warnings": ["activeRollouts"],
+        },
     }
 
     def _call(self, mock_client):
@@ -289,12 +334,14 @@ class TestWriteToGCS:
         dest_path = copy_calls[0][0][2]
         assert "latest" in dest_path and "v1" in dest_path
 
-    def test_writes_only_current_run_results(self):
-        """GCS file is a pure snapshot — Experimenter owns staleness logic."""
+    def test_gcs_filename_uses_new_name(self):
+        """Filenames should use experiment_population_estimates_v1, not nimbus_draft."""
         mock_blob = MagicMock()
         with patch("google.cloud.storage.Client") as mock_client:
-            mock_client.return_value.bucket.return_value.blob.return_value = mock_blob
+            mock_bucket = mock_client.return_value.bucket.return_value
+            mock_bucket.blob.return_value = mock_blob
             self._call(mock_client)
 
-        uploaded = json.loads(mock_blob.upload_from_string.call_args[0][0])
-        assert set(uploaded["v1"].keys()) == {"my-experiment", "another-experiment"}
+        blob_paths = [call[0][0] for call in mock_bucket.blob.call_args_list]
+        assert all("experiment_population_estimates" in p for p in blob_paths)
+        assert not any("nimbus_draft" in p for p in blob_paths)

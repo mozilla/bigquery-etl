@@ -1,0 +1,6 @@
+[
+  {"name": "dl_token", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "ga_client_id", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "stub_session_id", "type": "STRING", "mode": "NULLABLE"},
+  {"name": "first_seen_date", "type": "DATE", "mode": "NULLABLE"}
+]

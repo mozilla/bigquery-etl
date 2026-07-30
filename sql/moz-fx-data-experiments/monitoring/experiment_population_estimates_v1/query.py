@@ -6,9 +6,9 @@ Fetches Draft experiments from the Experimenter v8 API, executes their
 translated BigQuery SQL WHERE clauses against nimbus_targeting_context,
 and writes per-experiment eligible-client estimates to GCS and BigQuery.
 
-Desktop only for now. Deduplication uses the experiment's randomization unit
-from the API (normandy_id → client_info.client_id,
-group_id → client_info.profile_group_id).
+Desktop only for now. Deduplicates on client_info.client_id.
+profile_group_id support requires a separate ticket to add that field to
+nimbus_targeting_context first.
 """
 
 import json
@@ -33,12 +33,6 @@ GCS_FOLDER = "population_sizing"
 # 10% sample — multiply counts by 10 to estimate full population
 SAMPLE_ID_MAX = 10
 
-# Randomization unit → column in nimbus_targeting_context
-RANDOMIZATION_UNIT_COLUMN = {
-    "normandy_id": "client_info.client_id",
-    "group_id": "client_info.profile_group_id",
-}
-DEFAULT_RANDOMIZATION_UNIT_COLUMN = "client_info.client_id"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, help="Execution date (YYYY-MM-DD)")
@@ -79,37 +73,23 @@ def _col_for_index(i: int) -> str:
     return f"exp_{i}"
 
 
-def _id_column_for_experiment(exp: dict) -> str:
-    """Return the BQ column to use for client deduplication.
-
-    Uses the experiment's randomizationUnit from the API — normandy_id maps to
-    client_info.client_id, group_id maps to client_info.profile_group_id.
-    """
-    unit = (exp.get("bucketConfig") or {}).get("randomizationUnit", "normandy_id")
-    return RANDOMIZATION_UNIT_COLUMN.get(unit, DEFAULT_RANDOMIZATION_UNIT_COLUMN)
-
-
 def build_query(experiments: list, submission_date: date, window_days: int = 7) -> str:
     """Build a single BigQuery query counting eligible clients per experiment.
 
     Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
     collisions. One COUNTIF per experiment in a single table scan.
     clients CTE selects * so injected SQL can reference any ping field.
-    Deduplicates on the experiment's randomization unit (client_id or
-    profile_group_id).
+    Deduplicates on client_info.client_id. profile_group_id is not yet available
+    in nimbus_targeting_context — follow-up work needed to add it and then use
+    the experiment's randomizationUnit from the API to pick the right column.
     """
     window_start = submission_date - timedelta(days=window_days - 1)
     window_end = submission_date
-
-    # Collect all ID columns needed — most experiments use the same one
-    id_cols = {_id_column_for_experiment(exp) for exp in experiments}
-    select_ids = ",\n    ".join(sorted(id_cols))
 
     cte = f"""\
 WITH latest_per_client AS (
   SELECT
     *,
-    {select_ids},
     ROW_NUMBER() OVER (
       PARTITION BY client_info.client_id
       ORDER BY submission_timestamp DESC

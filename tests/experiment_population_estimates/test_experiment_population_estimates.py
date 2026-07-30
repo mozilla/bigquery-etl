@@ -23,7 +23,6 @@ _spec.loader.exec_module(_mod)  # type: ignore[union-attr]
 
 GCS_FOLDER = _mod.GCS_FOLDER
 _col_for_index = _mod._col_for_index
-_id_column_for_experiment = _mod._id_column_for_experiment
 build_query = _mod.build_query
 build_results = _mod.build_results
 fetch_experiments = _mod.fetch_experiments
@@ -32,7 +31,6 @@ write_to_gcs = _mod.write_to_gcs
 MOCK_EXPERIMENTS = [
     {
         "slug": "my-experiment",
-        "bucketConfig": {"randomizationUnit": "normandy_id"},
         "targetingSql": {
             "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 120",
             "warnings": [],
@@ -41,7 +39,6 @@ MOCK_EXPERIMENTS = [
     },
     {
         "slug": "another-experiment",
-        "bucketConfig": {"randomizationUnit": "group_id"},
         "targetingSql": {
             "sql": (
                 "metrics.string.nimbus_targeting_context_locale IN ('en-US')"
@@ -59,7 +56,6 @@ MOCK_API_RESPONSE = [
     # needsUpdate=False — excluded
     {
         "slug": "stale-experiment",
-        "bucketConfig": {"randomizationUnit": "normandy_id"},
         "targetingSql": {
             "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 100",
             "warnings": [],
@@ -117,24 +113,6 @@ class TestFetchExperiments:
                 fetch_experiments("https://example.com/api/")
 
 
-class TestRandomizationUnit:
-    def test_normandy_id_maps_to_client_id(self):
-        exp = {"bucketConfig": {"randomizationUnit": "normandy_id"}}
-        assert _id_column_for_experiment(exp) == "client_info.client_id"
-
-    def test_group_id_maps_to_profile_group_id(self):
-        exp = {"bucketConfig": {"randomizationUnit": "group_id"}}
-        assert _id_column_for_experiment(exp) == "client_info.profile_group_id"
-
-    def test_unknown_unit_falls_back_to_client_id(self):
-        exp = {"bucketConfig": {"randomizationUnit": "unknown_unit"}}
-        assert _id_column_for_experiment(exp) == "client_info.client_id"
-
-    def test_missing_bucket_config_falls_back_to_client_id(self):
-        exp = {}
-        assert _id_column_for_experiment(exp) == "client_info.client_id"
-
-
 class TestColForIndex:
     def test_returns_exp_prefix(self):
         assert _col_for_index(0) == "exp_0"
@@ -164,22 +142,11 @@ class TestBuildQuery:
         assert "COUNTIF(" in query
         assert "COUNT(DISTINCT" not in query
 
-    def test_injects_both_id_columns_when_mixed_units(self):
+    def test_always_uses_client_id(self):
+        """profile_group_id not yet in nimbus_targeting_context — always client_id."""
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
         assert "client_info.client_id" in query
-        assert "client_info.profile_group_id" in query
-
-    def test_only_client_id_when_all_normandy(self):
-        normandy_exps = [
-            {
-                "slug": "exp-a",
-                "bucketConfig": {"randomizationUnit": "normandy_id"},
-                "targetingSql": {"sql": "TRUE", "warnings": [], "needsUpdate": True},
-            }
-        ]
-        query = build_query(normandy_exps, _RUN_DATE)
-        assert "client_info.client_id" in query
-        assert "client_info.profile_group_id" not in query
+        assert "profile_group_id" not in query
 
     def test_uses_moz_fx_data_shared_prod_table(self):
         query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
@@ -201,11 +168,10 @@ class TestBuildQuery:
         assert "= TRUE" not in query
 
     def test_full_query_matches_expected(self):
-        """Assert the complete generated SQL for a known single-unit input."""
+        """Assert the complete generated SQL for a known input."""
         experiments = [
             {
                 "slug": "release-channel-experiment",
-                "bucketConfig": {"randomizationUnit": "normandy_id"},
                 "targetingSql": {
                     "sql": (
                         "JSON_VALUE(metrics.object.nimbus_targeting_context_browser_settings,"
@@ -228,7 +194,6 @@ class TestBuildQuery:
                 "WITH latest_per_client AS (",
                 "  SELECT",
                 "    *,",
-                "    client_info.client_id,",
                 "    ROW_NUMBER() OVER (",
                 "      PARTITION BY client_info.client_id",
                 "      ORDER BY submission_timestamp DESC",

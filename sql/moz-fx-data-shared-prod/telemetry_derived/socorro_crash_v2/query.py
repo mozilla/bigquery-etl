@@ -150,7 +150,7 @@ def main(
             # Dry run the transform against the real temp table without writing
             validate_result = client.query(
                 query,
-                job_config=bigquery.QueryJobConfig(dry_run=True, use_query_cache=False),
+                job_config=bigquery.QueryJobConfig(dry_run=True),
             )
             print(
                 f"Transform validates; would scan "

@@ -35,10 +35,17 @@ separate `parquet2bigquery` GKE pod then loaded that parquet into this table.
 Moving the job here removes the Spark cluster, the intermediate parquet, and the
 separate load job. The load is a single BigQuery load plus one transform query.
 
+Output was compared against the old table for 2026-07-28 and 2026-07-29 and is
+byte-for-byte identical for every record Spark parsed successfully. The one
+significant difference was that Spark inferred integer fields (notably `memory_measures.*`)
+as 32-bit, so reports with a value above 2^31-1 overflowed and were dropped to
+all-NULL rows (about 2% of daily volume). The  new job loads with an explicit INT64
+schema and keeps those records.
+
 ### Schema
 
 `schema.yaml` is a copy of the current production table schema, so the
-migrated job targets the existing table shape without redefining it.  The schemas is based on
+migrated job targets the existing table shape without redefining it.  The schema is based on
 Schema is based on https://github.com/mozilla-services/socorro/blob/main/socorro/schemas/telemetry_socorro_crash.json.
 
 Differences from the upstream schema:
@@ -57,4 +64,4 @@ Differences from the upstream schema:
     - `json_dump.threads` (and the nested `frames` inside each thread)
     - `memory_report.reports`
 
-The upstream schema is unlikely to change so it's static instead of dynamically built.
+The upstream schema is unlikely to change, so it's static instead of dynamically built.

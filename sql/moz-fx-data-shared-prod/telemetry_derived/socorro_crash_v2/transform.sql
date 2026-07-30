@@ -5,50 +5,183 @@
 --
 -- {source_table} and {crash_date} are filled in by query.py.
 --
--- Every scalar column is carried through by name via the * EXCEPT below; only
--- the seven wrapped arrays and crash_date are rewritten explicitly.
+-- BigQuery matches STRUCT/RECORD fields by position, not name, so the output
+-- must list every column in the exact order schema.yaml (and the destination
+-- table) declares them. That rules out `* EXCEPT (...)` followed by appending
+-- the rewrapped fields, which would move them to the end and make BigQuery see
+-- reordered columns as schema changes. Columns are therefore listed explicitly
+-- in schema.yaml order; only the seven wrapped arrays and crash_date differ
+-- from a plain passthrough.
 SELECT
   DATE("{crash_date}") AS crash_date,
-  * EXCEPT (additional_minidumps, addons, json_dump, memory_report),
-  STRUCT(
-    ARRAY(SELECT AS STRUCT element FROM UNNEST(additional_minidumps) AS element) AS list
+  abort_message,
+  accessibility,
+  adapter_device_id,
+  adapter_driver_version,
+  adapter_subsys_id,
+  adapter_vendor_id,
+  IF(
+    additional_minidumps IS NULL,
+    NULL,
+    STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(additional_minidumps) AS element) AS list)
   ) AS additional_minidumps,
-  STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(addons) AS element) AS list) AS addons,
-  (
-    SELECT AS STRUCT
-      json_dump.* EXCEPT (crashing_thread, modules, threads),
-      STRUCT(
-        json_dump.crashing_thread.* EXCEPT (frames),
-        STRUCT(
-          ARRAY(
+  IF(
+    addons IS NULL,
+    NULL,
+    STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(addons) AS element) AS list)
+  ) AS addons,
+  addons_checked,
+  address,
+  android_board,
+  android_brand,
+  android_cpu_abi,
+  android_cpu_abi2,
+  android_device,
+  android_hardware,
+  android_manufacturer,
+  android_model,
+  android_version,
+  app_init_dlls,
+  app_notes,
+  available_physical_memory,
+  available_virtual_memory,
+  bios_manufacturer,
+  build_id,
+  classifications,
+  contains_memory_report,
+  cpu_arch,
+  cpu_info,
+  cpu_microcode_version,
+  crash_id,
+  `date`,
+  dom_ipc_enabled,
+  e10s_cohort,
+  flash_version,
+  gmp_plugin,
+  graphics_critical_error,
+  graphics_startup_test,
+  hang_type,
+  install_age,
+  ipc_channel_error,
+  ipc_fatal_error_msg,
+  ipc_fatal_error_protocol,
+  ipc_message_name,
+  ipc_system_error,
+  is_garbage_collecting,
+  java_stack_trace,
+  jit_category,
+  IF(
+    json_dump IS NULL,
+    NULL,
+    (
+      SELECT AS STRUCT
+        json_dump.crash_info,
+        IF(
+          json_dump.crashing_thread IS NULL,
+          NULL,
+          (
             SELECT AS STRUCT
-              element
-            FROM
-              UNNEST(json_dump.crashing_thread.frames) AS element
-          ) AS list
-        ) AS frames
-      ) AS crashing_thread,
-      STRUCT(
-        ARRAY(SELECT AS STRUCT element FROM UNNEST(json_dump.modules) AS element) AS list
-      ) AS modules,
-      STRUCT(
-        ARRAY(
-          SELECT AS STRUCT
-            thread.* EXCEPT (frames),
-            STRUCT(
-              ARRAY(SELECT AS STRUCT element FROM UNNEST(thread.frames) AS element) AS list
-            ) AS frames
-          FROM
-            UNNEST(json_dump.threads) AS thread
-        ) AS list
-      ) AS threads
+              IF(
+                json_dump.crashing_thread.frames IS NULL,
+                NULL,
+                STRUCT(
+                  ARRAY(
+                    SELECT AS STRUCT
+                      element
+                    FROM
+                      UNNEST(json_dump.crashing_thread.frames) AS element
+                  ) AS list
+                )
+              ) AS frames,
+              json_dump.crashing_thread.threads_index,
+              json_dump.crashing_thread.total_frames
+          )
+        ) AS crashing_thread,
+        json_dump.largest_free_vm_block,
+        json_dump.main_module,
+        IF(
+          json_dump.modules IS NULL,
+          NULL,
+          STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(json_dump.modules) AS element) AS list)
+        ) AS modules,
+        json_dump.pid,
+        json_dump.status,
+        json_dump.system_info,
+        json_dump.thread_count,
+        IF(
+          json_dump.threads IS NULL,
+          NULL,
+          STRUCT(
+            ARRAY(
+              SELECT AS STRUCT
+                STRUCT(
+                  thread.frame_count,
+                  IF(
+                    thread.frames IS NULL,
+                    NULL,
+                    STRUCT(
+                      ARRAY(SELECT AS STRUCT element FROM UNNEST(thread.frames) AS element) AS list
+                    )
+                  ) AS frames
+                ) AS element
+              FROM
+                UNNEST(json_dump.threads) AS thread
+            ) AS list
+          )
+        ) AS threads,
+        json_dump.tiny_block_size,
+        json_dump.write_combine_size
+    )
   ) AS json_dump,
-  (
-    SELECT AS STRUCT
-      memory_report.* EXCEPT (reports),
-      STRUCT(
-        ARRAY(SELECT AS STRUCT element FROM UNNEST(memory_report.reports) AS element) AS list
-      ) AS reports
-  ) AS memory_report
+  last_crash,
+  memory_measures,
+  IF(
+    memory_report IS NULL,
+    NULL,
+    (
+      SELECT AS STRUCT
+        memory_report.hasMozMallocUsableSize,
+        IF(
+          memory_report.reports IS NULL,
+          NULL,
+          STRUCT(
+            ARRAY(SELECT AS STRUCT element FROM UNNEST(memory_report.reports) AS element) AS list
+          )
+        ) AS reports,
+        memory_report.version
+    )
+  ) AS memory_report,
+  moz_crash_reason,
+  oom_allocation_size,
+  platform,
+  platform_pretty_version,
+  platform_version,
+  plugin_filename,
+  plugin_name,
+  plugin_version,
+  process_type,
+  processor_notes,
+  product,
+  productid,
+  proto_signature,
+  reason,
+  release_channel,
+  safe_mode,
+  shutdown_progress,
+  signature,
+  startup_crash,
+  submitted_from_infobar,
+  theme,
+  topmost_filenames,
+  total_physical_memory,
+  total_virtual_memory,
+  uptime,
+  user_comments,
+  useragent_locale,
+  uuid,
+  version,
+  winsock_lsp,
+  minidump_sha256_hash,
+  dom_fission_enabled
 FROM
   `{source_table}`

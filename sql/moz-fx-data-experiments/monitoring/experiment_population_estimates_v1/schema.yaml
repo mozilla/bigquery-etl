@@ -1,0 +1,23 @@
+fields:
+- name: slug
+  type: STRING
+  mode: REQUIRED
+  description: Experiment slug from Experimenter.
+- name: eligible_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Estimated number of eligible Firefox Desktop clients based on the
+    experiment's targeting expression. Derived from 10% sample x10.
+    Experimenter computes projected enrollment from this using population_percent.
+- name: warnings
+  type: STRING
+  mode: REPEATED
+  description: >-
+    Targeting attributes that could not be translated to SQL and were
+    excluded from the estimate. Owners should check these to understand
+    if the estimate may be lower than the true eligible population.
+- name: computed_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: When this sizing estimate was computed.

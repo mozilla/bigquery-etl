@@ -1,0 +1,28 @@
+---
+# All six fields arrive on the dedicated ping.
+- client_info:
+    client_id: client-1
+  submission_timestamp: '2026-07-01 06:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      play_store_attribution_campaign: 'ping-campaign'
+      play_store_attribution_content: 'ping-content'
+      play_store_attribution_medium: 'ping-medium'
+      play_store_attribution_source: 'ping-source'
+      play_store_attribution_term: 'ping-term'
+    text2:
+      play_store_attribution_install_referrer_response: 'ping-referrer'
+# Only term and campaign arrive here; empty strings must not win over the
+# first_session values for the other fields.
+- client_info:
+    client_id: client-2
+  submission_timestamp: '2026-07-01 06:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      play_store_attribution_campaign: 'ping-campaign'
+      play_store_attribution_medium: ''
+      play_store_attribution_term: 'ping-term'

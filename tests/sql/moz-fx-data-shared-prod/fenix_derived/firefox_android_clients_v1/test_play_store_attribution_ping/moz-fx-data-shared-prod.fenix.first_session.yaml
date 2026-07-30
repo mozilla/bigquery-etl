@@ -1,0 +1,50 @@
+---
+# No Play Store attribution in the first_session ping, as is the case after the
+# 2026-04-07 cutover.
+- client_info:
+    client_id: client-1
+    first_run_date: '2026-07-01+08:00'
+  sample_id: 10
+  submission_timestamp: '2026-07-01 01:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      first_session_network: 'Organic'
+# Play Store attribution still present in the first_session ping; the dedicated ping
+# supplies only term and campaign, so the remaining fields fall back to these values.
+- client_info:
+    client_id: client-2
+    first_run_date: '2026-07-01+08:00'
+  sample_id: 20
+  submission_timestamp: '2026-07-01 01:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      first_session_network: 'Organic'
+      play_store_attribution_campaign: 'first-session-campaign'
+      play_store_attribution_content: 'first-session-content'
+      play_store_attribution_medium: 'first-session-medium'
+      play_store_attribution_source: 'first-session-source'
+      play_store_attribution_term: 'first-session-term'
+    text2:
+      play_store_attribution_install_referrer_response: 'first-session-referrer'
+# No dedicated ping at all, so the pre-cutover first_session values must survive.
+- client_info:
+    client_id: client-3
+    first_run_date: '2026-07-01+08:00'
+  sample_id: 30
+  submission_timestamp: '2026-07-01 01:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      first_session_network: 'Organic'
+      play_store_attribution_campaign: 'first-session-campaign'
+      play_store_attribution_content: 'first-session-content'
+      play_store_attribution_medium: 'first-session-medium'
+      play_store_attribution_source: 'first-session-source'
+      play_store_attribution_term: 'first-session-term'
+    text2:
+      play_store_attribution_install_referrer_response: 'first-session-referrer'

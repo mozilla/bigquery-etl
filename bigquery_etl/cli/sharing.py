@@ -50,6 +50,14 @@ def sharing(ctx):
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.option(
+    "--user-facing-project",
+    "--user_facing_project",
+    default=None,
+    help="Project hosting the shared views and BigQuery Sharing exchanges. "
+    "Defaults to `default.user_facing_project` in bqetl_project.yaml (mozdata). "
+    "Override to deploy against a sandbox project for testing.",
+)
+@click.option(
     "--dry-run",
     "--dry_run",
     "--dryrun",
@@ -63,6 +71,7 @@ def deploy(
     name: str,
     sql_dir: Optional[str],
     project_id: Optional[str],
+    user_facing_project: Optional[str],
     dry_run: bool,
 ) -> None:
     """Deploy external sharing configuration to BigQuery Sharing."""
@@ -77,9 +86,10 @@ def deploy(
     # `_shared` views are published to the user-facing project (mozdata); the
     # sharing exchange, listing and location all reference that copy, not the
     # shared-prod source the metadata lives under.
-    user_facing_project = ConfigLoader.get(
-        "default", "user_facing_project", fallback="mozdata"
-    )
+    if user_facing_project is None:
+        user_facing_project = ConfigLoader.get(
+            "default", "user_facing_project", fallback="mozdata"
+        )
 
     client = analytics_hub_client()
     bq_client = bigquery_client(user_facing_project)

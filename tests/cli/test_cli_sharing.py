@@ -75,6 +75,33 @@ class TestSharingDeploy:
         # Sharing is set up on the user-facing project (mozdata), not shared-prod.
         assert "projects/mozdata/" in fake.created_exchanges[0]
 
+    def test_user_facing_project_override(self, runner, tmp_path):
+        sql_dir = tmp_path / "sql"
+        _write_table(sql_dir, "my_shared", "my_view", METADATA)
+
+        fake = FakeAnalyticsHubClient()
+        with (
+            patch("bigquery_etl.cli.sharing.analytics_hub_client", return_value=fake),
+            patch(
+                "bigquery_etl.cli.sharing.bigquery_client",
+                return_value=FakeBigQueryClient(),
+            ),
+        ):
+            result = runner.invoke(
+                deploy,
+                [
+                    str(sql_dir),
+                    "--sql-dir",
+                    str(sql_dir),
+                    "--user-facing-project",
+                    "moz-fx-data-sandbox",
+                ],
+            )
+
+        assert result.exit_code == 0, result.output
+        # Exchange/listing created in the overridden project, not mozdata.
+        assert "projects/moz-fx-data-sandbox/" in fake.created_exchanges[0]
+
     def test_skips_tables_without_sharing(self, runner, tmp_path):
         sql_dir = tmp_path / "sql"
         _write_table(sql_dir, "my_derived", "tbl_v1", METADATA_NO_SHARING)

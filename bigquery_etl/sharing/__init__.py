@@ -8,8 +8,11 @@ are all set up on that copy.
 BigQuery Sharing was formerly named Analytics Hub, so the Google client
 library and IAM roles are still named `analyticshub`.
 
-All operations are get-or-create / reconcile so the command is safe to re-run
-(e.g. on every scheduled Airflow run).
+Deploys are safe to re-run: exchanges and listings are created if missing and
+subscriber grants are reconciled to the configured groups on every run. Note
+that exchange/listing display names and descriptions are only set at creation
+time — editing them later in `dataset_metadata.yaml` is not propagated (the
+resource would need to be recreated).
 """
 
 import re
@@ -181,15 +184,18 @@ def ensure_listing(
 
 
 def grant_subscribers(client, resource_name, subscribers, dry_run=False):
-    """Grant `roles/analyticshub.subscriber` on the resource to each subscriber.
+    """Reconcile `roles/analyticshub.subscriber` members on the resource.
 
-    Merges the new members into the existing IAM policy so previously granted
-    (or manually added) principals are preserved.
+    The listing is bqetl-managed, so the subscriber binding is set to exactly
+    the configured `group:` members: groups added to config are granted and
+    groups removed from config are revoked (so external access is fully driven
+    by metadata). The binding is removed when no subscribers remain; other role
+    bindings on the resource are left untouched.
     """
     from google.iam.v1 import iam_policy_pb2
 
     # Subscribers are `group:<email>` IAM members (validated in parse_metadata).
-    members = sorted(set(subscribers))
+    members = set(subscribers)
 
     try:
         policy = client.get_iam_policy(
@@ -201,7 +207,7 @@ def grant_subscribers(client, resource_name, subscribers, dry_run=False):
         if dry_run:
             click.echo(
                 f"Dry run; would grant {SUBSCRIBER_ROLE} on {resource_name} to "
-                f"{', '.join(members)}"
+                f"{', '.join(sorted(members))}"
             )
             return
         raise
@@ -211,33 +217,42 @@ def grant_subscribers(client, resource_name, subscribers, dry_run=False):
         None,
     )
     existing = set(binding.members) if binding else set()
-    to_add = [m for m in members if m not in existing]
+    to_add = members - existing
+    to_remove = existing - members
 
-    if not to_add:
+    if not to_add and not to_remove:
         click.echo(f"Subscribers already up to date on {resource_name}")
         return
 
+    changes = []
+    if to_add:
+        changes.append(f"grant {', '.join(sorted(to_add))}")
+    if to_remove:
+        changes.append(f"revoke {', '.join(sorted(to_remove))}")
+    summary = "; ".join(changes)
+
     if dry_run:
-        click.echo(
-            f"Dry run; would grant {SUBSCRIBER_ROLE} on {resource_name} to "
-            f"{', '.join(to_add)}"
-        )
+        click.echo(f"Dry run; would {summary} on {resource_name}")
         return
 
-    if binding is None:
-        # `add()` returns the message stored in the repeated field; appending a
-        # locally-constructed Binding would store a copy and drop the members.
-        binding = policy.bindings.add()
-        binding.role = SUBSCRIBER_ROLE
-    for member in to_add:
-        binding.members.append(member)
+    if members:
+        if binding is None:
+            # `add()` returns the message stored in the repeated field; appending
+            # a locally-constructed Binding would store a copy and drop members.
+            binding = policy.bindings.add()
+            binding.role = SUBSCRIBER_ROLE
+        del binding.members[:]
+        binding.members.extend(sorted(members))
+    elif binding is not None:
+        # All subscribers removed from config; drop the empty binding.
+        policy.bindings.remove(binding)
 
     client.set_iam_policy(
         request=iam_policy_pb2.SetIamPolicyRequest(
             resource=resource_name, policy=policy
         )
     )
-    click.echo(f"Granted {SUBSCRIBER_ROLE} on {resource_name} to {', '.join(to_add)}")
+    click.echo(f"Reconciled {SUBSCRIBER_ROLE} on {resource_name}: {summary}")
 
 
 def publish_dataset_sharing(
@@ -264,7 +279,8 @@ def publish_dataset_sharing(
         project_id=project,
         location=location,
         exchange_id=exchange_id,
-        display_name=_display_name(sharing.exchange),
+        # `exchange` is the author-provided display name; use it verbatim.
+        display_name=sharing.exchange,
         description=metadata.description,
         dry_run=dry_run,
     )

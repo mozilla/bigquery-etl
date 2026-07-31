@@ -8,6 +8,7 @@ from google.iam.v1 import policy_pb2
 from bigquery_etl.sharing import (
     MANAGED_DESCRIPTION,
     MANAGED_MARKER,
+    SUBSCRIBER_ROLE,
     clean_sharing,
     ensure_listing,
     grant_subscribers,
@@ -140,13 +141,24 @@ class TestGrantSubscribers:
         exchange = "projects/proj/locations/US/dataExchanges/exch"
         return ensure_listing(client, exchange, "ds", "proj", "ds", "ds")
 
-    def test_merges_with_existing_members(self):
+    def test_reconciles_members(self):
+        # Set to the configured set: new groups granted, removed groups revoked.
+        client = FakeAnalyticsHubClient()
+        listing = self._listing(client)
+        grant_subscribers(
+            client, listing, ["group:a@example.org", "group:b@example.org"]
+        )
+        grant_subscribers(client, listing, ["group:a@example.org"])
+        members = client.policies[listing].bindings[0].members
+        assert set(members) == {"group:a@example.org"}
+
+    def test_revoking_all_removes_binding(self):
         client = FakeAnalyticsHubClient()
         listing = self._listing(client)
         grant_subscribers(client, listing, ["group:a@example.org"])
-        grant_subscribers(client, listing, ["group:b@example.org"])
-        members = client.policies[listing].bindings[0].members
-        assert set(members) == {"group:a@example.org", "group:b@example.org"}
+        grant_subscribers(client, listing, [])
+        bindings = client.policies[listing].bindings
+        assert all(b.role != SUBSCRIBER_ROLE for b in bindings)
 
     def test_dry_run_before_listing_exists(self):
         client = FakeAnalyticsHubClient()

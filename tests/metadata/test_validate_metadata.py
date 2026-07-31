@@ -64,14 +64,18 @@ class TestValidateMetadata(object):
                 external_sharing=external_sharing,
             )
 
-        def _dataset_dir(name, authorized_view=True):
+        def _dataset_dir(name, authorized_view=True, view_metadata=True):
             dataset_dir = tmp_path / name
             view_dir = dataset_dir / "my_view"
             view_dir.mkdir(parents=True)
-            metadata = "friendly_name: v\ndescription: v\nowners:\n  - t@example.org\n"
-            if authorized_view:
-                metadata += "labels:\n  authorized: true\n"
-            (view_dir / "metadata.yaml").write_text(metadata)
+            (view_dir / "view.sql").write_text("SELECT 1\n")
+            if view_metadata:
+                metadata = (
+                    "friendly_name: v\ndescription: v\nowners:\n  - t@example.org\n"
+                )
+                if authorized_view:
+                    metadata += "labels:\n  authorized: true\n"
+                (view_dir / "metadata.yaml").write_text(metadata)
             return str(dataset_dir)
 
         # no external_sharing configured -> always valid
@@ -92,6 +96,16 @@ class TestValidateMetadata(object):
                 "bar_shared",
                 _dataset_metadata(external_sharing),
                 _dataset_dir("bar_shared", authorized_view=False),
+            )
+            is False
+        )
+
+        # invalid: a view.sql with no metadata.yaml at all
+        assert (
+            validate_external_sharing(
+                "baz_shared",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("baz_shared", view_metadata=False),
             )
             is False
         )

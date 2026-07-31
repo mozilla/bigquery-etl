@@ -56,4 +56,5 @@ Reference docs (`docs/reference/`) - read the relevant one when a change touches
 - `airflow_tags.md` - Airflow tags for filtering DAGs in the UI and conveying failure impact during triage.
 - `bigconfig.md` - Bigeye `bigConfig` for declaring which tables to monitor and what data-quality monitors/alerts apply.
 - `public_data.md` - marking datasets as public and how public data is exposed.
+- `external_sharing.md` - sharing a `_shared` dataset with external partners via BigQuery Sharing (`external_sharing` in `dataset_metadata.yaml`, `bqetl sharing deploy`/`clean`).
 - `stage-deploys-continuous-integration.md` - how CI deploys schema/view/UDF changes to the stage environment for validation.

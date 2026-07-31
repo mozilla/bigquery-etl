@@ -29,6 +29,19 @@ dataset_base_acl: view
 user_facing: true
 """
 
+METADATA_EXCHANGE_ID = """
+friendly_name: Test
+description: Test dataset
+dataset_base_acl: view
+user_facing: true
+external_sharing:
+  exchange: Partner Exchange
+  exchange_id: custom_exchange_id
+  data_review: https://bugzilla.mozilla.org/1
+  subscribers:
+    - group:partner@example.org
+"""
+
 
 @pytest.fixture
 def runner():
@@ -146,10 +159,45 @@ class TestSharingDeploy:
         manual = "projects/mozdata/locations/US/dataExchanges/manual_exchange"
         fake.exchanges[manual] = SimpleNamespace(description="hand made")
 
-        with patch("bigquery_etl.cli.sharing.analytics_hub_client", return_value=fake):
+        with (
+            patch("bigquery_etl.cli.sharing.analytics_hub_client", return_value=fake),
+            patch(
+                "bigquery_etl.cli.sharing.bigquery_client",
+                return_value=FakeBigQueryClient(),
+            ),
+        ):
             result = runner.invoke(clean, ["--sql-dir", str(sql_dir)])
 
         assert result.exit_code == 0, result.output
         assert fake.deleted_listings == [f"{base}/listings/gone_shared"]
         # partner_exchange still has the desired listing -> kept; manual kept.
+        assert fake.deleted_exchanges == []
+
+    def test_clean_respects_exchange_id_override(self, runner, tmp_path):
+        """clean must key desired on exchange_id (matching deploy), so live
+        resources for a dataset with exchange_id set aren't seen as orphans."""
+        from types import SimpleNamespace
+
+        sql_dir = tmp_path / "sql"
+        _write_dataset(sql_dir, "keep_shared", METADATA_EXCHANGE_ID)
+
+        fake = FakeAnalyticsHubClient()
+        base = "projects/mozdata/locations/US/dataExchanges/custom_exchange_id"
+        fake.exchanges[base] = SimpleNamespace(description=MANAGED_DESCRIPTION)
+        fake.listings[f"{base}/listings/keep_shared"] = SimpleNamespace(
+            description=MANAGED_DESCRIPTION
+        )
+
+        with (
+            patch("bigquery_etl.cli.sharing.analytics_hub_client", return_value=fake),
+            patch(
+                "bigquery_etl.cli.sharing.bigquery_client",
+                return_value=FakeBigQueryClient(),
+            ),
+        ):
+            result = runner.invoke(clean, ["--sql-dir", str(sql_dir)])
+
+        assert result.exit_code == 0, result.output
+        # Nothing deleted: the exchange_id-keyed desired set matches the resource.
+        assert fake.deleted_listings == []
         assert fake.deleted_exchanges == []

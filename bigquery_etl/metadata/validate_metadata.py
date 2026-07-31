@@ -478,14 +478,22 @@ def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
         )
         is_valid = False
 
-    for view_metadata_file in sorted(Path(dataset_path).glob(f"*/{METADATA_FILE}")):
-        metadata = Metadata.from_file(view_metadata_file)
-        # labels with boolean true are translated to "" by Metadata.from_file
-        if metadata.labels.get("authorized") != "":
+    # Iterate views (not just those with a metadata file): metadata.yaml is
+    # optional for views, so globbing metadata files would skip view.sql-only
+    # views and let them publish as non-authorized.
+    for view_file in sorted(Path(dataset_path).glob("*/view.sql")):
+        view_metadata_file = view_file.parent / METADATA_FILE
+        authorized = False
+        if view_metadata_file.exists():
+            metadata = Metadata.from_file(view_metadata_file)
+            # labels with boolean true are translated to "" by Metadata.from_file
+            authorized = metadata.labels.get("authorized") == ""
+        if not authorized:
             click.echo(
                 click.style(
-                    f"ERROR: {view_metadata_file} is in shared dataset "
-                    f"'{dataset_name}' and must set 'labels: {{authorized: true}}'.",
+                    f"ERROR: view '{view_file.parent.name}' in shared dataset "
+                    f"'{dataset_name}' must set 'labels: {{authorized: true}}' in "
+                    "metadata.yaml.",
                     fg="red",
                 )
             )

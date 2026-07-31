@@ -8,6 +8,7 @@ description: |-
   the telemetry-airflow repository directly.
 owners:
   - najiang@mozilla.com
+  - csadilek@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

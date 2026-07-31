@@ -8,6 +8,7 @@ workgroup_access:
       - workgroup:search-terms/aggregated
 owners:
   - najiang@mozilla.com
+  - csadilek@mozilla.com
 bigquery:
   time_partitioning:
     type: day

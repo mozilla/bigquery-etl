@@ -2,6 +2,7 @@
 friendly_name: Sanitation Job Metadata
 owners:
   - najiang@mozilla.com
+  - csadilek@mozilla.com
 labels:
   incremental: true
 description: |-

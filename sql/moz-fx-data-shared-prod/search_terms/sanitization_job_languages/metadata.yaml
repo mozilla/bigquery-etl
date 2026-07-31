@@ -7,6 +7,7 @@ description: |-
   whether the constituency using our search features is changing.
 owners:
   - najiang@mozilla.com
+  - csadilek@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

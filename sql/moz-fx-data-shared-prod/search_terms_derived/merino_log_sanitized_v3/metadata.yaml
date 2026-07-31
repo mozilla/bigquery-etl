@@ -1,6 +1,7 @@
 friendly_name: Sanitized Firefox Search Terms Straight from Search Requests
 owners:
   - najiang@mozilla.com
+  - csadilek@mozilla.com
 labels:
   incremental: true
 description: |-

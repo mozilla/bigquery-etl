@@ -13,6 +13,7 @@ description: |-
   oldest available source data. Partitions from 2026-07-14 onward are complete.
 owners:
   - najiang@mozilla.com
+  - csadilek@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

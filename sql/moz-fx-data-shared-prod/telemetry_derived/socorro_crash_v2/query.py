@@ -111,11 +111,11 @@ def main(
 
     client = bigquery.Client(project)
 
-    if dry_run:
-        # Build the load schema locally
-        schema = load_source_schema()
-        print(f"Load schema built: {len(schema)} top-level fields")
+    # Build the load schema locally
+    schema = load_source_schema()
+    print(f"Load schema built: {len(schema)} top-level fields")
 
+    if dry_run:
         # Confirm the date folder actually holds objects before loading
         storage_client = storage.Client(project)
         blobs = storage_client.list_blobs(
@@ -124,26 +124,24 @@ def main(
         if next(iter(blobs), None) is None:
             raise click.ClickException(f"No source objects found under {source_uri}")
         print(f"Source objects present under {source_uri}")
-    else:
-        schema = load_source_schema()
-
-    # Load the raw JSON into a temp table using the natural (unwrapped) schema.
-    tmp_table = f"tmp.socorro_crash_{uuid.uuid4().hex[:8]}"
-    load_result = client.load_table_from_uri(
-        source_uri,
-        tmp_table,
-        location="US",
-        job_config=bigquery.LoadJobConfig(
-            schema=schema,
-            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            # Ignore fields present in the JSON but absent from the schema.
-            ignore_unknown_values=True,
-        ),
-    ).result()
-    print(f"Loaded {load_result.output_rows} rows into {tmp_table}")
 
     try:
+        # Load the raw JSON into a temp table using the natural (unwrapped) schema.
+        tmp_table = f"tmp.socorro_crash_{uuid.uuid4().hex[:8]}"
+        load_result = client.load_table_from_uri(
+            source_uri,
+            tmp_table,
+            location="US",
+            job_config=bigquery.LoadJobConfig(
+                schema=schema,
+                source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                # Ignore fields present in the JSON but absent from the schema.
+                ignore_unknown_values=True,
+            ),
+        ).result()
+        print(f"Loaded {load_result.output_rows} rows into {tmp_table}")
+
         query = transform.format(source_table=tmp_table, crash_date=date.isoformat())
 
         if dry_run:

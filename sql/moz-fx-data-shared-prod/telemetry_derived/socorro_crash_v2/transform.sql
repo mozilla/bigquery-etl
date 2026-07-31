@@ -20,16 +20,10 @@ SELECT
   adapter_driver_version,
   adapter_subsys_id,
   adapter_vendor_id,
-  IF(
-    additional_minidumps IS NULL,
-    NULL,
-    STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(additional_minidumps) AS element) AS list)
+  STRUCT(
+    ARRAY(SELECT AS STRUCT element FROM UNNEST(additional_minidumps) AS element) AS list
   ) AS additional_minidumps,
-  IF(
-    addons IS NULL,
-    NULL,
-    STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(addons) AS element) AS list)
-  ) AS addons,
+  STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(addons) AS element) AS list) AS addons,
   addons_checked,
   address,
   android_board,
@@ -81,17 +75,13 @@ SELECT
           NULL,
           (
             SELECT AS STRUCT
-              IF(
-                json_dump.crashing_thread.frames IS NULL,
-                NULL,
-                STRUCT(
-                  ARRAY(
-                    SELECT AS STRUCT
-                      element
-                    FROM
-                      UNNEST(json_dump.crashing_thread.frames) AS element
-                  ) AS list
-                )
+              STRUCT(
+                ARRAY(
+                  SELECT AS STRUCT
+                    element
+                  FROM
+                    UNNEST(json_dump.crashing_thread.frames) AS element
+                ) AS list
               ) AS frames,
               json_dump.crashing_thread.threads_index,
               json_dump.crashing_thread.total_frames
@@ -99,35 +89,25 @@ SELECT
         ) AS crashing_thread,
         json_dump.largest_free_vm_block,
         json_dump.main_module,
-        IF(
-          json_dump.modules IS NULL,
-          NULL,
-          STRUCT(ARRAY(SELECT AS STRUCT element FROM UNNEST(json_dump.modules) AS element) AS list)
+        STRUCT(
+          ARRAY(SELECT AS STRUCT element FROM UNNEST(json_dump.modules) AS element) AS list
         ) AS modules,
         json_dump.pid,
         json_dump.status,
         json_dump.system_info,
         json_dump.thread_count,
-        IF(
-          json_dump.threads IS NULL,
-          NULL,
-          STRUCT(
-            ARRAY(
-              SELECT AS STRUCT
+        STRUCT(
+          ARRAY(
+            SELECT AS STRUCT
+              STRUCT(
+                thread.frame_count,
                 STRUCT(
-                  thread.frame_count,
-                  IF(
-                    thread.frames IS NULL,
-                    NULL,
-                    STRUCT(
-                      ARRAY(SELECT AS STRUCT element FROM UNNEST(thread.frames) AS element) AS list
-                    )
-                  ) AS frames
-                ) AS element
-              FROM
-                UNNEST(json_dump.threads) AS thread
-            ) AS list
-          )
+                  ARRAY(SELECT AS STRUCT element FROM UNNEST(thread.frames) AS element) AS list
+                ) AS frames
+              ) AS element
+            FROM
+              UNNEST(json_dump.threads) AS thread
+          ) AS list
         ) AS threads,
         json_dump.tiny_block_size,
         json_dump.write_combine_size
@@ -141,12 +121,8 @@ SELECT
     (
       SELECT AS STRUCT
         memory_report.hasMozMallocUsableSize,
-        IF(
-          memory_report.reports IS NULL,
-          NULL,
-          STRUCT(
-            ARRAY(SELECT AS STRUCT element FROM UNNEST(memory_report.reports) AS element) AS list
-          )
+        STRUCT(
+          ARRAY(SELECT AS STRUCT element FROM UNNEST(memory_report.reports) AS element) AS list
         ) AS reports,
         memory_report.version
     )

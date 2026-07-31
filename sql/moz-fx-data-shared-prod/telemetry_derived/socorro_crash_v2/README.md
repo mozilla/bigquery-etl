@@ -18,12 +18,14 @@ that used to do this (`https://github.com/mozilla/telemetry-airflow/blob/main/jo
 ## Usage
 
 ```sh
-python3 query.py --date 2026-01-01
+python3 query.py --date 2026-01-01 --project mozdata --destination-dataset tmp --dry-run
 ```
 
 Options: `--date` (required), `--project`, `--source-bucket`, `--source-prefix`,
-`--destination-dataset`, `--destination-table`, `--dry-run`. `--dry-run` prints
-the planned load (source URI, destination partition) without touching BigQuery.
+`--destination-dataset`, `--destination-table`, `--dry-run`. `--dry-run` pulls files from GCS, loads
+into a temporary table, and then prints the planned load (source URI, destination partition) without
+writing to the production table. Requires read access to the GCS bucket and write access to the
+specified temp table.
 
 ## Migration notes
 
@@ -39,14 +41,14 @@ Output was compared against the old table for 2026-07-28 and 2026-07-29 and is
 byte-for-byte identical for every record Spark parsed successfully. The one
 significant difference was that Spark inferred integer fields (notably `memory_measures.*`)
 as 32-bit, so reports with a value above 2^31-1 overflowed and were dropped to
-all-NULL rows (about 2% of daily volume). The  new job loads with an explicit INT64
+all-NULL rows (about 2% of daily volume). The new job loads with an explicit INT64
 schema and keeps those records.
 
 ### Schema
 
 `schema.yaml` is a copy of the current production table schema, so the
 migrated job targets the existing table shape without redefining it.  The schema is based on
-Schema is based on https://github.com/mozilla-services/socorro/blob/main/socorro/schemas/telemetry_socorro_crash.json.
+https://github.com/mozilla-services/socorro/blob/main/socorro/schemas/telemetry_socorro_crash.json.
 
 Differences from the upstream schema:
   - `crash_date` (DATE) is the partition column. It is not present in

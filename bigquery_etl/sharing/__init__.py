@@ -114,7 +114,12 @@ def ensure_data_exchange(
         return exchange_name
 
     data_exchange = analyticshub.DataExchange(
-        display_name=display_name, description=_managed_description(description)
+        display_name=display_name,
+        description=_managed_description(description),
+        # Private exchange (not publicly discoverable); log the identities that
+        # query linked datasets.
+        discovery_type=analyticshub.DiscoveryType.DISCOVERY_TYPE_PRIVATE,
+        log_linked_dataset_query_user_email=True,
     )
     created = client.create_data_exchange(
         request=analyticshub.CreateDataExchangeRequest(
@@ -246,7 +251,9 @@ def publish_dataset_sharing(
     co-located with the data.
     """
     sharing = metadata.external_sharing
-    exchange_id = _sanitize_id(sharing.exchange)
+    # `exchange_id` overrides the exchange resource ID; otherwise derive it from
+    # the human-facing `exchange` name.
+    exchange_id = _sanitize_id(sharing.exchange_id or sharing.exchange)
     listing_id = _sanitize_id(dataset)
     location = dataset_location(bq_client, project, dataset)
 

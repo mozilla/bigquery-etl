@@ -122,12 +122,14 @@ def _metadata(
     exchange="partner_exchange",
     display_name=None,
     description="Test dataset description",
+    exchange_id=None,
 ):
     external_sharing = SimpleNamespace(
         exchange=exchange,
         data_review="https://bugzilla.mozilla.org/1",
         subscribers=subscribers or ["group:partner@example.org"],
         display_name=display_name,
+        exchange_id=exchange_id,
     )
     return SimpleNamespace(external_sharing=external_sharing, description=description)
 
@@ -291,6 +293,27 @@ class TestPublishDatasetSharing:
         assert exchange.description.startswith("Partner-shared analytics dataset")
         # still carries the managed marker so `clean` recognizes it
         assert MANAGED_MARKER in exchange.description
+
+    def test_exchange_id_override(self):
+        client = FakeAnalyticsHubClient()
+        bq_client = FakeBigQueryClient()
+        metadata = _metadata(
+            exchange="Partner Exchange", exchange_id="custom_exchange_id"
+        )
+        publish_dataset_sharing(client, bq_client, metadata, "proj", "my_shared")
+        assert client.created_exchanges[0].endswith("/dataExchanges/custom_exchange_id")
+
+    def test_exchange_is_private_and_logs_queries(self):
+        from google.cloud import bigquery_analyticshub_v1 as analyticshub
+
+        client = FakeAnalyticsHubClient()
+        bq_client = FakeBigQueryClient()
+        publish_dataset_sharing(client, bq_client, _metadata(), "proj", "my_shared")
+        exchange = client.exchanges[client.created_exchanges[0]]
+        assert (
+            exchange.discovery_type == analyticshub.DiscoveryType.DISCOVERY_TYPE_PRIVATE
+        )
+        assert exchange.log_linked_dataset_query_user_email is True
 
 
 PARENT = "projects/p/locations/US"

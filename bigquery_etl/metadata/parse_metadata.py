@@ -203,6 +203,9 @@ class ExternalSharingMetadata:
     # `Mozilla - <dataset>` when unset. Allowed characters: letters, numbers,
     # underscores, dashes, ampersands and spaces.
     display_name: Optional[str] = attr.ib(None)
+    # Data exchange resource ID. Defaults to a sanitized `exchange` when unset.
+    # Set explicitly to target an existing exchange with a specific ID.
+    exchange_id: Optional[str] = attr.ib(None)
 
     @subscribers.validator
     def validate_subscribers(self, attribute, value):

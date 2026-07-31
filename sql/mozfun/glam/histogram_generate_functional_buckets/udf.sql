@@ -10,19 +10,27 @@ RETURNS ARRAY<FLOAT64> AS (
       -- Generate all bucket indexes
       -- https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs
       SELECT
+        -- Glean precomputes this exponent once and raises it to the bucket index; the
+        -- rounding of this intermediate value is what makes the bucket minimums match.
+        -- Must not be "simplified" to POW(log_base, idx / buckets_per_magnitude).
+        -- See https://github.com/mozilla/glam/issues/3537 for more details.
+        POW(log_base, 1 / buckets_per_magnitude) AS exponent,
         GENERATE_ARRAY(0, CEIL(LOG(range_max + 1, log_base) * buckets_per_magnitude)) AS indexes
     ),
-    buckets AS (
-      -- The evaluation order below is deliberate and must not be "simplified" to
-      -- POW(log_base, idx / buckets_per_magnitude).
-      -- See https://github.com/mozilla/glam/issues/3537 for more details.
+    all_buckets AS (
       SELECT
-        FLOOR(POW(POW(log_base, 1 / buckets_per_magnitude), idx)) AS bucket
+        FLOOR(POW(exponent, idx)) AS bucket
       FROM
         bucket_indexes,
         UNNEST(indexes) AS idx
+    ),
+    buckets AS (
+      SELECT
+        bucket
+      FROM
+        all_buckets
       WHERE
-        FLOOR(POW(POW(log_base, 1 / buckets_per_magnitude), idx)) <= range_max
+        bucket <= range_max
     )
     SELECT
       ARRAY_CONCAT([0.0], ARRAY_AGG(DISTINCT(bucket) ORDER BY bucket))
@@ -63,9 +71,10 @@ SELECT
         expect = actual
     )
   ),
-  -- Bucket minimums at powers of two must match Glean, which truncates them to
-  -- 2^n - 1. Emitting 2^n instead makes downstream bucket fills drop every
-  -- sample that lands on a power-of-two bucket minimum.
+  -- At buckets_per_magnitude = 16 every power-of-two bucket minimum evaluates to just
+  -- under 2^n, so Glean reports 2^n - 1 and emitting 2^n makes downstream fills drop
+  -- those samples. Specific to this magnitude: at 8 they are exact for every value
+  -- Glean can record, hence the 16, 32, 64 ... expected by the (2, 8, 305) case above.
   assert.array_equals(
     [31, 1023, 32767, 65535, 268435455],
     ARRAY(

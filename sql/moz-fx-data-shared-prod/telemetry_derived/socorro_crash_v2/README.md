@@ -18,7 +18,7 @@ that used to do this (`https://github.com/mozilla/telemetry-airflow/blob/main/jo
 ## Usage
 
 ```sh
-python3 query.py --date 2026-01-01 --project mozdata --destination-dataset tmp --dry-run
+python3 query.py --date 2026-01-01 --project mozdata --dry-run
 ```
 
 Options: `--date` (required), `--project`, `--source-bucket`, `--source-prefix`,
@@ -38,7 +38,7 @@ Moving the job here removes the Spark cluster, the intermediate parquet, and the
 separate load job. The load is a single BigQuery load plus one transform query.
 
 Output was compared against the old table for 2026-07-28 and 2026-07-29 and is
-byte-for-byte identical for every record Spark parsed successfully. The one
+identical for every record Spark parsed successfully. The one
 significant difference was that Spark inferred integer fields (notably `memory_measures.*`)
 as 32-bit, so reports with a value above 2^31-1 overflowed and were dropped to
 all-NULL rows (about 2% of daily volume). The new job loads with an explicit INT64

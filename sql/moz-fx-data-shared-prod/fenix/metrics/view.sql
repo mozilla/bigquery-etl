@@ -1191,7 +1191,12 @@ SELECT
       metrics.labeled_counter.media_audio_focus_platform_focus_type,
       metrics.labeled_counter.media_audio_focus_resume_decision,
       metrics.labeled_counter.media_audio_session_effective_auto_type,
-      metrics.labeled_counter.media_audio_session_type_set
+      metrics.labeled_counter.media_audio_session_type_set,
+      metrics.labeled_counter.tls_auth_algorithm,
+      metrics.labeled_counter.tls_auth_ecdsa_curve,
+      metrics.labeled_counter.tls_kea_ecdhe_curve,
+      metrics.labeled_counter.tls_npn_type,
+      metrics.labeled_counter.tls_reasons_for_not_false_starting
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2234,7 +2239,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
       metrics.dual_labeled_counter.tls_handshake_result,
-      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver,
+      metrics.dual_labeled_counter.tls_key_exchange_algorithm
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3454,7 +3460,12 @@ SELECT
       metrics.labeled_counter.media_audio_focus_platform_focus_type,
       metrics.labeled_counter.media_audio_focus_resume_decision,
       metrics.labeled_counter.media_audio_session_effective_auto_type,
-      metrics.labeled_counter.media_audio_session_type_set
+      metrics.labeled_counter.media_audio_session_type_set,
+      metrics.labeled_counter.tls_auth_algorithm,
+      metrics.labeled_counter.tls_auth_ecdsa_curve,
+      metrics.labeled_counter.tls_kea_ecdhe_curve,
+      metrics.labeled_counter.tls_npn_type,
+      metrics.labeled_counter.tls_reasons_for_not_false_starting
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4497,7 +4508,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
       metrics.dual_labeled_counter.tls_handshake_result,
-      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver,
+      metrics.dual_labeled_counter.tls_key_exchange_algorithm
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5737,7 +5749,12 @@ SELECT
       metrics.labeled_counter.media_audio_focus_platform_focus_type,
       metrics.labeled_counter.media_audio_focus_resume_decision,
       metrics.labeled_counter.media_audio_session_effective_auto_type,
-      metrics.labeled_counter.media_audio_session_type_set
+      metrics.labeled_counter.media_audio_session_type_set,
+      metrics.labeled_counter.tls_auth_algorithm,
+      metrics.labeled_counter.tls_auth_ecdsa_curve,
+      metrics.labeled_counter.tls_kea_ecdhe_curve,
+      metrics.labeled_counter.tls_npn_type,
+      metrics.labeled_counter.tls_reasons_for_not_false_starting
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6780,7 +6797,8 @@ SELECT
       metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
       metrics.dual_labeled_counter.tls_handshake_result,
-      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver
+      metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver,
+      metrics.dual_labeled_counter.tls_key_exchange_algorithm
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

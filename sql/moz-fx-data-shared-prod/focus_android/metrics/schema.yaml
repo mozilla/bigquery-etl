@@ -8906,6 +8906,67 @@ fields:
       description: 'Number of explicit `audioSession.type` assignments, by value.
 
         '
+    - name: tls_auth_algorithm
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Algorithm used to authenticate the full TLS handshake. See SSLAuthType
+        in sslt.h.
+
+        '
+    - name: tls_auth_ecdsa_curve
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: ECDSA signature curve for TLS_*_ECDSA_* in full TLS handshake
+    - name: tls_kea_ecdhe_curve
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: ECDHE KEA (TLS_ECDHE_*) curve in full TLS handshake
+    - name: tls_npn_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: NPN (next protocol negotiation) results
+    - name: tls_reasons_for_not_false_starting
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Collection of reasons we did not false start when libssl would
+        have let us.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -48321,6 +48382,24 @@ fields:
         is the resolver-split companion of happy_eyeballs_h3_discovery.
 
         '
+    - name: tls_key_exchange_algorithm
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: Key Exchange Algorithm for TLS handshake
   - name: text2
     type: RECORD
     mode: NULLABLE

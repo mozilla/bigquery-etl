@@ -11,8 +11,10 @@ import click
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata
 from bigquery_etl.sharing import (
+    _sanitize_id,
     analytics_hub_client,
     bigquery_client,
+    clean_sharing,
     publish_dataset_sharing,
 )
 
@@ -145,3 +147,85 @@ def deploy(
         deployed += 1
 
     click.echo(f"Deployed external sharing for {deployed} dataset(s).")
+
+
+def _desired_listings(metadata_files):
+    """Build `exchange_id -> set(listing_id)` for configured `_shared` datasets."""
+    desired: dict = {}
+    for metadata_file in metadata_files:
+        metadata = DatasetMetadata.from_file(metadata_file)
+        if not metadata.external_sharing:
+            continue
+        exchange_id = _sanitize_id(metadata.external_sharing.exchange)
+        listing_id = _sanitize_id(metadata_file.parent.name)
+        desired.setdefault(exchange_id, set()).add(listing_id)
+    return desired
+
+
+@sharing.command(help="""
+    Delete BigQuery Sharing exchanges and listings that are no longer backed by
+    an `external_sharing` block in a `_shared` dataset's `dataset_metadata.yaml`.
+
+    Only resources created by `bqetl sharing deploy` are removed (identified by
+    a managed marker in their description); manually-created exchanges and
+    listings are left untouched.
+
+    Reconciles a single `--location` against the whole repo config (exchanges
+    are per-location); pass the location where the orphaned exchanges live.
+
+    Examples:
+
+    \b
+    # Remove orphaned managed sharing resources in the US
+    ./bqetl sharing clean
+    """)
+@block_coding_agents
+@project_id_option("moz-fx-data-shared-prod")
+@sql_dir_option
+@click.option(
+    "--user-facing-project",
+    "--user_facing_project",
+    default=None,
+    help="Project hosting the shared datasets and BigQuery Sharing exchanges. "
+    "Defaults to `default.user_facing_project` in bqetl_project.yaml (mozdata).",
+)
+@click.option(
+    "--location",
+    default="US",
+    help="BigQuery Sharing location to reconcile (exchanges are per-location).",
+)
+@click.option(
+    "--dry-run",
+    "--dry_run",
+    "--dryrun",
+    is_flag=True,
+    default=False,
+    help="Show the resources that would be deleted without deleting them.",
+)
+@click.pass_context
+def clean(
+    ctx,
+    sql_dir: Optional[str],
+    project_id: Optional[str],
+    user_facing_project: Optional[str],
+    location: str,
+    dry_run: bool,
+) -> None:
+    """Delete managed sharing resources no longer backed by config."""
+    # Desired set is built from ALL configs so still-configured datasets are
+    # never treated as orphaned.
+    desired = _desired_listings(_dataset_metadata_files("*", sql_dir, project_id))
+
+    if user_facing_project is None:
+        user_facing_project = ConfigLoader.get(
+            "default", "user_facing_project", fallback="mozdata"
+        )
+
+    client = analytics_hub_client()
+    clean_sharing(
+        client,
+        project=user_facing_project,
+        location=location,
+        desired=desired,
+        dry_run=dry_run,
+    )

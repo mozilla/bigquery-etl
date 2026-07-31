@@ -6,7 +6,8 @@ from unittest.mock import patch
 import pytest
 from click.testing import CliRunner
 
-from bigquery_etl.cli.sharing import deploy
+from bigquery_etl.cli.sharing import clean, deploy
+from bigquery_etl.sharing import MANAGED_DESCRIPTION
 from tests.sharing.test_sharing import FakeAnalyticsHubClient, FakeBigQueryClient
 
 METADATA = """
@@ -144,3 +145,33 @@ class TestSharingDeploy:
         assert fake.created_exchanges == []
         assert fake.created_listings == []
         assert fake.set_policy_calls == []
+
+    def test_clean_removes_orphans_keeps_configured(self, runner, tmp_path):
+        from types import SimpleNamespace
+
+        sql_dir = tmp_path / "sql"
+        # One configured `_shared` dataset -> desired listing.
+        _write_dataset(sql_dir, "keep_shared", METADATA)
+
+        fake = FakeAnalyticsHubClient()
+        base = "projects/mozdata/locations/US/dataExchanges/partner_exchange"
+        # Configured (desired) listing + an orphaned managed listing, both under
+        # a managed exchange.
+        fake.exchanges[base] = SimpleNamespace(description=MANAGED_DESCRIPTION)
+        fake.listings[f"{base}/listings/keep_shared"] = SimpleNamespace(
+            description=MANAGED_DESCRIPTION
+        )
+        fake.listings[f"{base}/listings/gone_shared"] = SimpleNamespace(
+            description=MANAGED_DESCRIPTION
+        )
+        # A manually-created exchange that must never be touched.
+        manual = "projects/mozdata/locations/US/dataExchanges/manual_exchange"
+        fake.exchanges[manual] = SimpleNamespace(description="hand made")
+
+        with patch("bigquery_etl.cli.sharing.analytics_hub_client", return_value=fake):
+            result = runner.invoke(clean, ["--sql-dir", str(sql_dir)])
+
+        assert result.exit_code == 0, result.output
+        assert fake.deleted_listings == [f"{base}/listings/gone_shared"]
+        # partner_exchange still has the desired listing -> kept; manual kept.
+        assert fake.deleted_exchanges == []

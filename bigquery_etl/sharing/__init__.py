@@ -21,6 +21,32 @@ from google.cloud import bigquery
 # Role that lets a principal subscribe to (i.e. link) a BigQuery Sharing listing.
 SUBSCRIBER_ROLE = "roles/analyticshub.subscriber"
 
+# Exchanges and listings don't support labels, so bqetl-managed resources are
+# tagged with this marker in their description. `sharing clean` only deletes
+# resources carrying the marker, so manually-created exchanges/listings are
+# never removed.
+MANAGED_MARKER = "[managed-by-bqetl]"
+_DEFAULT_MANAGED_TEXT = "Managed by bigquery-etl (bqetl sharing). Do not edit manually."
+
+
+def _managed_description(text=None):
+    """Return a resource description carrying the bqetl-managed marker.
+
+    Uses the provided text (e.g. the dataset description) when given, falling
+    back to a generic message, and always appends the marker so `sharing clean`
+    can recognize bqetl-managed resources.
+    """
+    base = (text or "").strip() or _DEFAULT_MANAGED_TEXT
+    return f"{base} {MANAGED_MARKER}"
+
+
+MANAGED_DESCRIPTION = _managed_description()
+
+
+def _is_managed(resource):
+    """Return whether a data exchange or listing was created by bqetl."""
+    return MANAGED_MARKER in (resource.description or "")
+
 
 def analytics_hub_client():
     """Return a BigQuery Sharing client."""
@@ -63,7 +89,13 @@ def _display_name(value):
 
 
 def ensure_data_exchange(
-    client, project_id, location, exchange_id, display_name, dry_run=False
+    client,
+    project_id,
+    location,
+    exchange_id,
+    display_name,
+    description=None,
+    dry_run=False,
 ):
     """Ensure the data exchange exists and return its resource name."""
     from google.cloud import bigquery_analyticshub_v1 as analyticshub
@@ -82,7 +114,9 @@ def ensure_data_exchange(
         click.echo(f"Dry run; would create data exchange {exchange_name}")
         return exchange_name
 
-    data_exchange = analyticshub.DataExchange(display_name=display_name)
+    data_exchange = analyticshub.DataExchange(
+        display_name=display_name, description=_managed_description(description)
+    )
     created = client.create_data_exchange(
         request=analyticshub.CreateDataExchangeRequest(
             parent=parent,
@@ -128,6 +162,7 @@ def ensure_listing(
     bigquery_dataset = analyticshub.Listing.BigQueryDatasetSource(dataset=dataset_ref)
     listing = analyticshub.Listing(
         display_name=display_name,
+        description=MANAGED_DESCRIPTION,
         bigquery_dataset=bigquery_dataset,
     )
     created = client.create_listing(
@@ -224,6 +259,7 @@ def publish_dataset_sharing(
         location=location,
         exchange_id=exchange_id,
         display_name=_display_name(sharing.exchange),
+        description=metadata.description,
         dry_run=dry_run,
     )
     listing_name = ensure_listing(
@@ -236,3 +272,56 @@ def publish_dataset_sharing(
         dry_run=dry_run,
     )
     grant_subscribers(client, listing_name, sharing.subscribers, dry_run=dry_run)
+
+
+def clean_sharing(client, project, location, desired, dry_run=False):
+    """Delete bqetl-managed exchanges/listings no longer backed by config.
+
+    Any managed listing not in `desired` is deleted, and any managed exchange
+    left with no listings and no desired listings is deleted. Resources without
+    the managed marker (manually created) are always left untouched.
+    """
+    parent = client.common_location_path(project, location)
+
+    exchanges = list(client.list_data_exchanges(parent=parent))
+    click.echo(f"Scanning {len(exchanges)} data exchange(s) in {project} ({location})")
+
+    deleted_listings = 0
+    deleted_exchanges = 0
+    for exchange in exchanges:
+        exchange_id = client.parse_data_exchange_path(exchange.name)["data_exchange"]
+        desired_listings = desired.get(exchange_id, set())
+
+        remaining = 0
+        for listing in client.list_listings(parent=exchange.name):
+            listing_id = client.parse_listing_path(listing.name)["listing"]
+
+            if listing_id in desired_listings:
+                remaining += 1
+                continue
+            if not _is_managed(listing):
+                # Manually-created listing; leave it (and keep its exchange).
+                remaining += 1
+                continue
+
+            if dry_run:
+                click.echo(f"Dry run; would delete listing {listing.name}")
+            else:
+                client.delete_listing(name=listing.name)
+                click.echo(f"Deleted listing {listing.name}")
+            deleted_listings += 1
+
+        # Remove the exchange only if it is managed, now empty, and no config
+        # still references it.
+        if remaining == 0 and exchange_id not in desired and _is_managed(exchange):
+            if dry_run:
+                click.echo(f"Dry run; would delete data exchange {exchange.name}")
+            else:
+                client.delete_data_exchange(name=exchange.name)
+                click.echo(f"Deleted data exchange {exchange.name}")
+            deleted_exchanges += 1
+
+    verb = "Would delete" if dry_run else "Deleted"
+    click.echo(
+        f"{verb} {deleted_listings} listing(s) and {deleted_exchanges} exchange(s)."
+    )

@@ -8,9 +8,7 @@ from google.iam.v1 import policy_pb2
 from bigquery_etl.sharing import (
     MANAGED_DESCRIPTION,
     MANAGED_MARKER,
-    SUBSCRIBER_ROLE,
     clean_sharing,
-    ensure_data_exchange,
     ensure_listing,
     grant_subscribers,
     publish_dataset_sharing,
@@ -134,64 +132,13 @@ def _metadata(
     return SimpleNamespace(external_sharing=external_sharing, description=description)
 
 
-class TestEnsureDataExchange:
-    def test_creates_when_missing(self):
-        client = FakeAnalyticsHubClient()
-        name = ensure_data_exchange(
-            client, "proj", "US", "exch", "Exchange", dry_run=False
-        )
-        assert name.endswith("/dataExchanges/exch")
-        assert client.created_exchanges == [name]
-
-    def test_idempotent_when_present(self):
-        client = FakeAnalyticsHubClient()
-        ensure_data_exchange(client, "proj", "US", "exch", "Exchange")
-        client.created_exchanges.clear()
-        ensure_data_exchange(client, "proj", "US", "exch", "Exchange")
-        assert client.created_exchanges == []
-
-    def test_dry_run_does_not_create(self):
-        client = FakeAnalyticsHubClient()
-        ensure_data_exchange(client, "proj", "US", "exch", "Exchange", dry_run=True)
-        assert client.created_exchanges == []
-
-
-class TestEnsureListing:
-    def test_creates_when_missing(self):
-        client = FakeAnalyticsHubClient()
-        exchange = "projects/proj/locations/US/dataExchanges/exch"
-        name = ensure_listing(client, exchange, "ds", "proj", "ds", "ds")
-        assert name == f"{exchange}/listings/ds"
-        assert client.created_listings == [name]
-
-    def test_dry_run_does_not_create(self):
-        client = FakeAnalyticsHubClient()
-        exchange = "projects/proj/locations/US/dataExchanges/exch"
-        ensure_listing(client, exchange, "ds", "proj", "ds", "ds", dry_run=True)
-        assert client.created_listings == []
-
-
 class TestGrantSubscribers:
+    # ensure_data_exchange / ensure_listing create + idempotency + dry-run are
+    # covered end-to-end by TestPublishDatasetSharing; these cover grant paths
+    # that publish (which always grants the same member) does not.
     def _listing(self, client):
         exchange = "projects/proj/locations/US/dataExchanges/exch"
         return ensure_listing(client, exchange, "ds", "proj", "ds", "ds")
-
-    def test_grants_new_members(self):
-        client = FakeAnalyticsHubClient()
-        listing = self._listing(client)
-        grant_subscribers(client, listing, ["group:a@example.org"])
-        policy = client.policies[listing]
-        binding = policy.bindings[0]
-        assert binding.role == SUBSCRIBER_ROLE
-        assert "group:a@example.org" in binding.members
-
-    def test_idempotent_when_already_granted(self):
-        client = FakeAnalyticsHubClient()
-        listing = self._listing(client)
-        grant_subscribers(client, listing, ["group:a@example.org"])
-        client.set_policy_calls.clear()
-        grant_subscribers(client, listing, ["group:a@example.org"])
-        assert client.set_policy_calls == []
 
     def test_merges_with_existing_members(self):
         client = FakeAnalyticsHubClient()
@@ -200,12 +147,6 @@ class TestGrantSubscribers:
         grant_subscribers(client, listing, ["group:b@example.org"])
         members = client.policies[listing].bindings[0].members
         assert set(members) == {"group:a@example.org", "group:b@example.org"}
-
-    def test_dry_run_does_not_set_policy(self):
-        client = FakeAnalyticsHubClient()
-        listing = self._listing(client)
-        grant_subscribers(client, listing, ["group:a@example.org"], dry_run=True)
-        assert client.set_policy_calls == []
 
     def test_dry_run_before_listing_exists(self):
         client = FakeAnalyticsHubClient()

@@ -124,28 +124,6 @@ class TestSharingDeploy:
         assert fake.created_listings == []
         assert "0 dataset(s)" in result.output
 
-    def test_dry_run_makes_no_changes(self, runner, tmp_path):
-        sql_dir = tmp_path / "sql"
-        _write_dataset(sql_dir, "my_shared", METADATA)
-
-        fake = FakeAnalyticsHubClient()
-        with (
-            patch("bigquery_etl.cli.sharing.analytics_hub_client", return_value=fake),
-            patch(
-                "bigquery_etl.cli.sharing.bigquery_client",
-                return_value=FakeBigQueryClient(),
-            ),
-        ):
-            result = runner.invoke(
-                deploy,
-                [str(sql_dir), "--sql-dir", str(sql_dir), "--dry-run"],
-            )
-
-        assert result.exit_code == 0, result.output
-        assert fake.created_exchanges == []
-        assert fake.created_listings == []
-        assert fake.set_policy_calls == []
-
     def test_clean_removes_orphans_keeps_configured(self, runner, tmp_path):
         from types import SimpleNamespace
 

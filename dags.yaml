@@ -2804,3 +2804,19 @@ bqetl_data_governance_metadata:
     depends_on_past: false
   tags:
     - impact/tier_3
+
+bqetl_socorro_import:
+  schedule_interval: 0 4 * * *
+  description: |
+    Daily import of Socorro crash reports from GCS newline JSON into
+    telemetry_derived.socorro_crash_v2. Replaces the Spark/Dataproc job in
+    telemetry-airflow that wrote parquet loaded by parquet2bigquery.
+  default_args:
+    owner: bewu@mozilla.com
+    start_date: "2026-07-01"
+    email: ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+    depends_on_past: false
+  tags:
+    - impact/tier_2

@@ -10,6 +10,13 @@ owners:
 labels:
   incremental: true
   owner1: benwu
+scheduling:
+  dag_name: bqetl_socorro_import
+  arguments: ["--date", "{{ ds }}"]
+  external_downstream_tasks:
+  - task_id: wait_for_socorro_import
+    dag_name: crash_symbolication
+    execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day

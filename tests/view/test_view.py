@@ -105,14 +105,14 @@ class TestView:
         (dataset_dir / "dataset_metadata.yaml").write_text(dataset_metadata)
         return View.from_file(view_dir / "view.sql")
 
-    def test_shared_dataset_view_is_authorized_and_labeled(self, tmp_path):
+    def test_shared_dataset_view_is_labeled(self, tmp_path):
         view = self._shared_view(tmp_path, external_sharing=True)
-        assert view.labels["authorized"] == ""
         assert view.labels["externally_shared"] == "true"
+        # `authorized` is author-set on the view, not derived here.
+        assert "authorized" not in view.labels
 
     def test_non_shared_dataset_view_not_labeled(self, tmp_path):
         view = self._shared_view(tmp_path, external_sharing=False)
-        assert "authorized" not in view.labels
         assert "externally_shared" not in view.labels
 
     def test_view_valid(self, runner):
@@ -325,54 +325,6 @@ class TestView:
                 authorized_only=False,
             )
             assert len(views) == 2
-
-    @patch("bigquery_etl.cli.view.get_id_token")
-    def test_collect_views_authorized_via_dataset_sharing(
-        self, mock_get_id_token, runner
-    ):
-        """A view is authorized when its `_shared` dataset configures sharing,
-        even without an `authorized` label on the view itself."""
-        mock_get_id_token.return_value = None
-
-        with runner.isolated_filesystem():
-            dataset_dir = Path("sql/moz-fx-data-shared-prod/test_shared")
-            view_dir = dataset_dir / "shared_view"
-            view_dir.mkdir(parents=True)
-            (view_dir / "view.sql").write_text(
-                "CREATE OR REPLACE VIEW "
-                "`moz-fx-data-shared-prod.test_shared.shared_view` AS SELECT 1"
-            )
-            (dataset_dir / "dataset_metadata.yaml").write_text(
-                "friendly_name: Test Shared\n"
-                "description: test\n"
-                "dataset_base_acl: view\n"
-                "user_facing: true\n"
-                "external_sharing:\n"
-                "  exchange: partner_exchange\n"
-                "  data_review: https://bugzilla.mozilla.org/1\n"
-                "  subscribers:\n"
-                "    - group:partner@example.org\n"
-            )
-
-            authorized = _collect_views(
-                name=None,
-                sql_dir="sql",
-                project_id="moz-fx-data-shared-prod",
-                user_facing_only=False,
-                skip_authorized=False,
-                authorized_only=True,
-            )
-            assert [v.name for v in authorized] == ["shared_view"]
-
-            skipped = _collect_views(
-                name=None,
-                sql_dir="sql",
-                project_id="moz-fx-data-shared-prod",
-                user_facing_only=False,
-                skip_authorized=True,
-                authorized_only=False,
-            )
-            assert skipped == []
 
     def test_publish_authorized_only_mutually_exclusive(self, runner):
         """Test that --authorized-only and --skip-authorized are mutually exclusive."""

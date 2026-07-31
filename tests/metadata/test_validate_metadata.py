@@ -48,7 +48,7 @@ class TestValidateMetadata(object):
             is False
         )
 
-    def test_validate_external_sharing(self):
+    def test_validate_external_sharing(self, tmp_path):
         external_sharing = ExternalSharingMetadata(
             exchange="test_exchange",
             data_review="https://bugzilla.mozilla.org/1",
@@ -64,25 +64,52 @@ class TestValidateMetadata(object):
                 external_sharing=external_sharing,
             )
 
-        # no external_sharing configured -> always valid
-        assert validate_external_sharing("some_dataset", _dataset_metadata())
+        def _dataset_dir(name, authorized_view=True):
+            dataset_dir = tmp_path / name
+            view_dir = dataset_dir / "my_view"
+            view_dir.mkdir(parents=True)
+            metadata = "friendly_name: v\ndescription: v\nowners:\n  - t@example.org\n"
+            if authorized_view:
+                metadata += "labels:\n  authorized: true\n"
+            (view_dir / "metadata.yaml").write_text(metadata)
+            return str(dataset_dir)
 
-        # valid: dataset suffixed with _shared
+        # no external_sharing configured -> always valid
         assert validate_external_sharing(
-            "foo_shared", _dataset_metadata(external_sharing)
+            "some_dataset", _dataset_metadata(), _dataset_dir("some_dataset")
         )
 
-        # invalid: dataset not suffixed with _shared (e.g. the _shared_derived
-        # source dataset is not itself shareable)
+        # valid: `_shared` dataset with an authorized view
+        assert validate_external_sharing(
+            "foo_shared",
+            _dataset_metadata(external_sharing),
+            _dataset_dir("foo_shared"),
+        )
+
+        # invalid: `_shared` dataset with a view missing the authorized label
         assert (
             validate_external_sharing(
-                "foo_shared_derived", _dataset_metadata(external_sharing)
+                "bar_shared",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("bar_shared", authorized_view=False),
+            )
+            is False
+        )
+
+        # invalid: dataset not suffixed with _shared
+        assert (
+            validate_external_sharing(
+                "foo_shared_derived",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("foo_shared_derived"),
             )
             is False
         )
         assert (
             validate_external_sharing(
-                "foo_derived", _dataset_metadata(external_sharing)
+                "foo_derived",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("foo_derived"),
             )
             is False
         )

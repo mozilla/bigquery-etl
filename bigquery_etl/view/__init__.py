@@ -100,14 +100,13 @@ class View:
     def labels(self):
         """Return the view labels.
 
-        Views in a `_shared` dataset configured for external sharing are
-        published as authorized views (so the BigQuery Sharing listing can read
-        them) and tagged as externally shared.
+        Views in a `_shared` dataset configured for external sharing are tagged
+        as externally shared. (These views must set `labels: {authorized: true}`
+        themselves; that is enforced by metadata validation.)
         """
         if not hasattr(self, "_labels"):
             labels = self.metadata.labels.copy() if self.metadata else {}
             if self.dataset_metadata and self.dataset_metadata.external_sharing:
-                labels["authorized"] = ""
                 labels["externally_shared"] = "true"
             self._labels = labels
         return self._labels

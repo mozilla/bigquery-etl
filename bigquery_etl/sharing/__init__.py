@@ -57,7 +57,6 @@ def analytics_hub_client():
 
 def bigquery_client(project):
     """Return a BigQuery client, used to look up dataset locations."""
-
     return bigquery.Client(project=project)
 
 

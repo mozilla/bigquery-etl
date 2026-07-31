@@ -13,13 +13,16 @@ RETURNS ARRAY<FLOAT64> AS (
         GENERATE_ARRAY(0, CEIL(LOG(range_max + 1, log_base) * buckets_per_magnitude)) AS indexes
     ),
     buckets AS (
+      -- The evaluation order below is deliberate and must not be "simplified" to
+      -- POW(log_base, idx / buckets_per_magnitude).
+      -- See https://github.com/mozilla/glam/issues/3537 for more details.
       SELECT
-        FLOOR(POW(log_base, (idx) / buckets_per_magnitude)) AS bucket
+        FLOOR(POW(POW(log_base, 1 / buckets_per_magnitude), idx)) AS bucket
       FROM
         bucket_indexes,
         UNNEST(indexes) AS idx
       WHERE
-        FLOOR(POW(log_base, (idx) / buckets_per_magnitude)) <= range_max
+        FLOOR(POW(POW(log_base, 1 / buckets_per_magnitude), idx)) <= range_max
     )
     SELECT
       ARRAY_CONCAT([0.0], ARRAY_AGG(DISTINCT(bucket) ORDER BY bucket))
@@ -58,5 +61,21 @@ SELECT
         UNNEST(glam.histogram_generate_functional_buckets(2, 16, 774282 + 1)) actual
       WHERE
         expect = actual
+    )
+  ),
+  -- Bucket minimums at powers of two must match Glean, which truncates them to
+  -- 2^n - 1. Emitting 2^n instead makes downstream bucket fills drop every
+  -- sample that lands on a power-of-two bucket minimum.
+  assert.array_equals(
+    [31, 1023, 32767, 65535, 268435455],
+    ARRAY(
+      SELECT
+        bucket
+      FROM
+        UNNEST(glam.histogram_generate_functional_buckets(2, 16, 536870911)) AS bucket
+      WHERE
+        bucket IN (31, 32, 1023, 1024, 32767, 32768, 65535, 65536, 268435455, 268435456)
+      ORDER BY
+        bucket
     )
   )

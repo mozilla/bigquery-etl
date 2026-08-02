@@ -1,5 +1,10 @@
-friendly_name: Unified Metrics
+friendly_name: Unified Metrics (Deprecated)
 description: |-
+  This table has been deprecated and is no longer used for our KPI calculations.
+  Instead please refer to active_users and active_users_aggregates queries.
+
+  ---
+
   Unified view on common browser metrics across all products.
 
   Note. From Q4/2022 the app name includes the suffix ` Glean`
@@ -31,3 +36,4 @@ bigquery:
     - sample_id
     - normalized_app_name
 require_column_descriptions: false
+deprecated: true

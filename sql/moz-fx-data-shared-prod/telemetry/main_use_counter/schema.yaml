@@ -12254,6 +12254,78 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page attaches an EditContext to a canvas element
+    - name: use_counter2_speculationrulesdocumentsource_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with a document source
+    - name: use_counter2_speculationrulesdocumentsource_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with a document source
+    - name: use_counter2_speculationruleseagernessconservative_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with "conservative" eagerness
+    - name: use_counter2_speculationruleseagernessconservative_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with "conservative" eagerness
+    - name: use_counter2_speculationruleseagernesseager_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with "eager" eagerness
+    - name: use_counter2_speculationruleseagernesseager_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with "eager" eagerness
+    - name: use_counter2_speculationruleseagernessimmediate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with "immediate" eagerness
+    - name: use_counter2_speculationruleseagernessimmediate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with "immediate" eagerness
+    - name: use_counter2_speculationruleseagernessmoderate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with "moderate" eagerness
+    - name: use_counter2_speculationruleseagernessmoderate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with "moderate" eagerness
+    - name: use_counter2_speculationruleslistsource_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with a list source
+    - name: use_counter2_speculationruleslistsource_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with a list source
+    - name: use_counter2_speculationrulesprefetch_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a prefetch speculation rule
+    - name: use_counter2_speculationrulesprefetch_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a prefetch speculation rule
+    - name: use_counter2_speculationrulesscripttag_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a <script type="speculationrules"> element
+    - name: use_counter2_speculationrulesscripttag_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a <script type="speculationrules"> element
+    - name: use_counter2_speculationrulestag_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule with a non-null tag
+    - name: use_counter2_speculationrulestag_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule with a non-null tag
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24367,6 +24439,80 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page attaches an EditContext to a canvas element
+        - name: use_counter2_speculationrulesdocumentsource_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with a document source
+        - name: use_counter2_speculationrulesdocumentsource_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with a document source
+        - name: use_counter2_speculationruleseagernessconservative_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with "conservative"
+            eagerness
+        - name: use_counter2_speculationruleseagernessconservative_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with "conservative" eagerness
+        - name: use_counter2_speculationruleseagernesseager_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with "eager" eagerness
+        - name: use_counter2_speculationruleseagernesseager_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with "eager" eagerness
+        - name: use_counter2_speculationruleseagernessimmediate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with "immediate"
+            eagerness
+        - name: use_counter2_speculationruleseagernessimmediate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with "immediate" eagerness
+        - name: use_counter2_speculationruleseagernessmoderate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with "moderate" eagerness
+        - name: use_counter2_speculationruleseagernessmoderate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with "moderate" eagerness
+        - name: use_counter2_speculationruleslistsource_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with a list source
+        - name: use_counter2_speculationruleslistsource_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with a list source
+        - name: use_counter2_speculationrulesprefetch_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a prefetch speculation rule
+        - name: use_counter2_speculationrulesprefetch_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a prefetch speculation rule
+        - name: use_counter2_speculationrulesscripttag_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a <script type="speculationrules"> element
+        - name: use_counter2_speculationrulesscripttag_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a <script type="speculationrules"> element
+        - name: use_counter2_speculationrulestag_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule with a non-null tag
+        - name: use_counter2_speculationrulestag_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule with a non-null tag
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

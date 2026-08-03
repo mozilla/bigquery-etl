@@ -77,7 +77,8 @@ SELECT
       metrics.boolean.extensions_allow_execute_script_in_moz_extension,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
-      metrics.boolean.network_apple_fast_datapath_used
+      metrics.boolean.network_apple_fast_datapath_used,
+      metrics.boolean.pkcs11_fips_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -734,7 +735,8 @@ SELECT
       metrics.labeled_counter.tls_auth_ecdsa_curve,
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
-      metrics.labeled_counter.tls_reasons_for_not_false_starting
+      metrics.labeled_counter.tls_reasons_for_not_false_starting,
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

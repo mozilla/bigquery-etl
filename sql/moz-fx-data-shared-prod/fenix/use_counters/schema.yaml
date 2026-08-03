@@ -22011,6 +22011,148 @@ fields:
         to calculate the rate.
 
         '
+    - name: use_counter_doc_speculation_rules_document_source
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with a document source.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_eagerness_conservative
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with "conservative"
+        eagerness. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_eagerness_eager
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with "eager" eagerness.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_eagerness_immediate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with "immediate" eagerness.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_eagerness_moderate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with "moderate" eagerness.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_list_source
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with a list source.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_prefetch
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a prefetch speculation rule. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_script_tag
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a <script type="speculationrules"> element.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_tag
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule with a non-null tag.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_speculation_rules_document_source
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with a document source.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_eagerness_conservative
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with "conservative" eagerness.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_eagerness_eager
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with "eager" eagerness.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_eagerness_immediate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with "immediate" eagerness.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_eagerness_moderate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with "moderate" eagerness.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_list_source
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with a list source. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_speculation_rules_prefetch
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a prefetch speculation rule. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_script_tag
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a <script type="speculationrules"> element.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_tag
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule with a non-null tag. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -132,7 +132,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.browser_global_ai_control_is_blocking,
       metrics.boolean.network_apple_fast_datapath_used,
-      metrics.boolean.preferences_google_lens_enabled
+      metrics.boolean.preferences_google_lens_enabled,
+      metrics.boolean.pkcs11_fips_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1196,7 +1197,8 @@ SELECT
       metrics.labeled_counter.tls_auth_ecdsa_curve,
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
-      metrics.labeled_counter.tls_reasons_for_not_false_starting
+      metrics.labeled_counter.tls_reasons_for_not_false_starting,
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2401,7 +2403,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.browser_global_ai_control_is_blocking,
       metrics.boolean.network_apple_fast_datapath_used,
-      metrics.boolean.preferences_google_lens_enabled
+      metrics.boolean.preferences_google_lens_enabled,
+      metrics.boolean.pkcs11_fips_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3465,7 +3468,8 @@ SELECT
       metrics.labeled_counter.tls_auth_ecdsa_curve,
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
-      metrics.labeled_counter.tls_reasons_for_not_false_starting
+      metrics.labeled_counter.tls_reasons_for_not_false_starting,
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4690,7 +4694,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.browser_global_ai_control_is_blocking,
       metrics.boolean.network_apple_fast_datapath_used,
-      metrics.boolean.preferences_google_lens_enabled
+      metrics.boolean.preferences_google_lens_enabled,
+      metrics.boolean.pkcs11_fips_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5754,7 +5759,8 @@ SELECT
       metrics.labeled_counter.tls_auth_ecdsa_curve,
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
-      metrics.labeled_counter.tls_reasons_for_not_false_starting
+      metrics.labeled_counter.tls_reasons_for_not_false_starting,
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

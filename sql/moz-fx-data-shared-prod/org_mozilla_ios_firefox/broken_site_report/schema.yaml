@@ -408,7 +408,12 @@ fields:
     - name: broken_site_report_tab_info_antitracking_etp_category
       type: STRING
       mode: NULLABLE
-      description: 'The user''s tracking-protection strength setting ("basic" or "strict").
+      description: 'The user''s tracking-protection strength in the cross-platform
+        ETP vocabulary:
+
+        "standard" (iOS calls this basic) or "strict". iOS has no "custom" equivalent.
+
+        `block_list` reports the same setting in iOS''s own basic/strict wording.
 
         '
   - name: string_list

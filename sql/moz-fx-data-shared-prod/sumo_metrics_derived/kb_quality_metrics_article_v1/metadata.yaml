@@ -5,15 +5,14 @@ description: |
 
   Grain: Day x Article (document_id)
 
-  Covers all available history: the date spine starts at the earliest signal in
-  the sources (first approved revision or first vote) and runs through yesterday.
-  An article's first row is the date of its first approved revision.
+  Covers 2024-01-01 through yesterday. An article's first row is the later of
+  2024-01-01 and the date of its first approved revision.
 
   For each in-scope en-US article and each day in that range:
   - days_since_last_revision / fresh_ind: freshness vs. a 365-day window
   - helpful_votes / total_votes: votes cast that day
-  - running_helpful_votes / running_total_votes: cumulative votes over all
-    history
+  - running_helpful_votes / running_total_votes: all-time cumulative votes
+    (in-window votes on top of a pre-2024 seed)
 
   Article scope (matching the KB quality dashboard query):
   - parent_id IS NULL (original, non-translated), is_archived = FALSE
@@ -23,15 +22,14 @@ description: |
 
   Recomputed in full each run (no date partition parameter).
 
-  Caveat — helpfulness has a later start than freshness: the source table
-  metrics_kb_votes_details only holds votes from 2023-01-01 onward, so on
-  earlier event_dates helpful_votes / total_votes are NULL and the running
-  totals are 0. Freshness columns go back to the first approved revision of the
-  oldest in-scope article (2009-07-17 as of 2026-08). Downstream
-  helpful_percentage_14_ma is therefore NULL before 2023.
+  The 2024-01-01 start is a deliberate floor, not a data limit. Freshness could
+  extend back to 2009 and votes (metrics_kb_votes_details) to 2023-01-01, but
+  the window is capped to keep the table small enough that it needs no
+  partitioning. Pre-2024 votes are not lost — they are folded into the running
+  totals via the seed.
 
   Caveat — survivorship bias: the article population is a *current* snapshot
-  (is_archived = FALSE, today's category/products/product mapping). Historical
+  (is_archived = FALSE, today's category/products/product mapping). Earlier
   event_dates therefore only include articles that still exist and are
   unarchived today, so article counts trend upward over time partly for this
   reason. fresh_ind itself is a valid point-in-time measure (computed against
@@ -48,11 +46,6 @@ labels:
   application: sumo
   type: base_metrics
   schedule: daily
-bigquery:
-  time_partitioning:
-    type: day
-    field: event_date
-    require_partition_filter: false
 scheduling:
   dag_name: bqetl_sumo_metrics
   date_partition_parameter: null

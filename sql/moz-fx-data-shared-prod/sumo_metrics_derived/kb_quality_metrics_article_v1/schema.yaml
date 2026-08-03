@@ -2,7 +2,7 @@ fields:
 - name: event_date
   type: DATE
   mode: NULLABLE
-  description: Observation date (point-in-time snapshot; covers all available history)
+  description: Observation date (point-in-time snapshot; 2024-01-01 onward)
 - name: document_id
   type: INTEGER
   mode: NULLABLE
@@ -56,8 +56,8 @@ fields:
 - name: running_helpful_votes
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative helpful votes through `event_date` across all history
+  description: All-time cumulative helpful votes through `event_date` (seeded with pre-2024 totals)
 - name: running_total_votes
   type: INTEGER
   mode: NULLABLE
-  description: Cumulative total votes through `event_date` across all history
+  description: All-time cumulative total votes through `event_date` (seeded with pre-2024 totals)

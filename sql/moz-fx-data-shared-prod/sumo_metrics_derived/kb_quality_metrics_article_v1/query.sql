@@ -7,11 +7,11 @@
 --   html NOT LIKE '%REDIRECT%' -- exclude decommissioned redirect articles
 --   products NOT LIKE '%thunderbird%' -- Thunderbird support handled separately
 --
--- Full recompute over all available history each run (no date partition parameter).
--- The date spine starts at the earliest signal in the sources (first approved
--- revision or first vote); days before an article's own first approved revision
+-- Full recompute each run over a fixed window starting 2024-01-01 (no date
+-- partition parameter). Days before an article's own first approved revision
 -- produce no row, because `daily_freshness_per_article` requires
--- reviewed_date <= event_date.
+-- reviewed_date <= event_date. Votes cast before the window start are folded
+-- into `historical_helpfulness` so the running totals stay all-time cumulative.
 WITH articles AS (
   SELECT
     *
@@ -41,27 +41,28 @@ daily_votes AS (
     url,
     locale
 ),
--- Earliest date with any signal: first approved revision or first vote.
--- MIN ignores NULLs, so this survives either source being empty.
+-- First event_date in the table. Single source of truth for the spine start and
+-- the pre-window vote seed below.
 window_start AS (
   SELECT
-    MIN(d) AS start_date
-  FROM
-    UNNEST(
-      [
-        (SELECT MIN(vote_date) FROM daily_votes),
-        (
-          SELECT
-            MIN(DATE(reviewed))
-          FROM
-            `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision`
-          WHERE
-            is_approved
-        )
-      ]
-    ) AS d
+    DATE '2024-01-01' AS start_date
 ),
--- Daily date spine x each article, covering all history.
+-- Vote totals accrued before the window start, used to seed running totals so
+-- they remain all-time cumulative. Derived from `daily_votes` to avoid a second
+-- scan of the source table.
+historical_helpfulness AS (
+  SELECT
+    document_id,
+    SUM(helpful_votes) AS historical_helpful_votes,
+    SUM(total_votes) AS historical_total_votes
+  FROM
+    daily_votes
+  WHERE
+    vote_date < (SELECT start_date FROM window_start)
+  GROUP BY
+    document_id
+),
+-- Daily date spine x each article, from the window start through yesterday.
 dates AS (
   SELECT
     document_id,
@@ -125,8 +126,8 @@ daily_freshness_per_article AS (
     )
 ),
 -- For each day, the daily and running cumulative helpfulness votes per article.
--- The spine starts at or before the first vote, so the running totals are
--- cumulative over all history without needing a pre-window seed.
+-- Running totals are all-time: in-window votes accumulate on top of the
+-- pre-window seed.
 daily_helpfulness_per_article AS (
   SELECT
     dates.event_date,
@@ -135,13 +136,13 @@ daily_helpfulness_per_article AS (
     help.locale,
     help.helpful_votes,
     help.total_votes,
-    SUM(COALESCE(help.helpful_votes, 0)) OVER (
+    COALESCE(hh.historical_helpful_votes, 0) + SUM(COALESCE(help.helpful_votes, 0)) OVER (
       PARTITION BY
         dates.document_id
       ORDER BY
         dates.event_date
     ) AS running_helpful_votes,
-    SUM(COALESCE(help.total_votes, 0)) OVER (
+    COALESCE(hh.historical_total_votes, 0) + SUM(COALESCE(help.total_votes, 0)) OVER (
       PARTITION BY
         dates.document_id
       ORDER BY
@@ -153,6 +154,9 @@ daily_helpfulness_per_article AS (
     daily_votes help
     ON dates.event_date = help.vote_date
     AND dates.document_id = help.document_id
+  LEFT JOIN
+    historical_helpfulness hh
+    ON dates.document_id = hh.document_id
 ),
 -- Article-level daily metrics with product mapping applied.
 main AS (

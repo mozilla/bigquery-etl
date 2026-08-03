@@ -81,7 +81,9 @@ def get_slow_start_rates_by_app_and_date(
     response = requests.post(
         api_url, headers=headers, json=request_payload, timeout=timeout_seconds
     )
-    return response
+
+    response.raise_for_status()
+    return response.json()
 
 
 def main():
@@ -132,15 +134,13 @@ def main():
     for app in APP_NAMES:
         print("Pulling data for: ", app)
 
-        api_call_result = get_slow_start_rates_by_app_and_date(
+        # Get the data from the result
+        result_json = get_slow_start_rates_by_app_and_date(
             access_token=access_credentials,
             app_name=app,
             request_payload=payload_for_api_call,
             timeout_seconds=TIMEOUT_IN_SECONDS,
         )
-
-        # Get the data from the result
-        result_json = api_call_result.json()
 
         # Code only set to handle 1 page, error out if more than 1 so it can be fixed
         if "nextPageToken" in result_json:

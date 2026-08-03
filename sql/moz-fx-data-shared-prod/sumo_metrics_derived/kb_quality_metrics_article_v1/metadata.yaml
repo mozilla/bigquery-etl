@@ -5,11 +5,15 @@ description: |
 
   Grain: Day x Article (document_id)
 
-  For each in-scope en-US article and each day in the trailing 1-year window:
+  Covers all available history: the date spine starts at the earliest signal in
+  the sources (first approved revision or first vote) and runs through yesterday.
+  An article's first row is the date of its first approved revision.
+
+  For each in-scope en-US article and each day in that range:
   - days_since_last_revision / fresh_ind: freshness vs. a 365-day window
   - helpful_votes / total_votes: votes cast that day
-  - running_helpful_votes / running_total_votes: cumulative votes (seeded with
-    pre-window totals)
+  - running_helpful_votes / running_total_votes: cumulative votes over all
+    history
 
   Article scope (matching the KB quality dashboard query):
   - parent_id IS NULL (original, non-translated), is_archived = FALSE
@@ -17,7 +21,14 @@ description: |
   - products NOT LIKE '%thunderbird%', locale = 'en-US'
   - product (via mozfun.customer_experience.normalize_product) != 'Other'
 
-  Recomputed in full each run (relative-date window, no date partition).
+  Recomputed in full each run (no date partition parameter).
+
+  Caveat — survivorship bias: the article population is a *current* snapshot
+  (is_archived = FALSE, today's category/products/product mapping). Historical
+  event_dates therefore only include articles that still exist and are
+  unarchived today, so article counts trend upward over time partly for this
+  reason. fresh_ind itself is a valid point-in-time measure (computed against
+  each event_date, not today); only the population is biased.
 
   Used by:
   - kb_quality_metrics_daily_v1 (day-level aggregation + moving averages)
@@ -30,6 +41,11 @@ labels:
   application: sumo
   type: base_metrics
   schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: false
 scheduling:
   dag_name: bqetl_sumo_metrics
   date_partition_parameter: null

@@ -7,7 +7,11 @@
 --   html NOT LIKE '%REDIRECT%' -- exclude decommissioned redirect articles
 --   products NOT LIKE '%thunderbird%' -- Thunderbird support handled separately
 --
--- Full recompute over a trailing 1-year window each run (no date partition).
+-- Full recompute over all available history each run (no date partition parameter).
+-- The date spine starts at the earliest signal in the sources (first approved
+-- revision or first vote); days before an article's own first approved revision
+-- produce no row, because `daily_freshness_per_article` requires
+-- reviewed_date <= event_date.
 WITH articles AS (
   SELECT
     *
@@ -20,7 +24,44 @@ WITH articles AS (
     AND html NOT LIKE '%REDIRECT%'
     AND products NOT LIKE '%thunderbird%'
 ),
--- Daily date spine x each article, covering the trailing year.
+-- All-time daily vote totals per article (no date bound).
+daily_votes AS (
+  SELECT
+    DATE(vote_created_date) AS vote_date,
+    document_id,
+    url,
+    locale,
+    SUM(CAST(helpful AS INT64)) AS helpful_votes,
+    COUNT(*) AS total_votes
+  FROM
+    `moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details`
+  GROUP BY
+    vote_date,
+    document_id,
+    url,
+    locale
+),
+-- Earliest date with any signal: first approved revision or first vote.
+-- MIN ignores NULLs, so this survives either source being empty.
+window_start AS (
+  SELECT
+    MIN(d) AS start_date
+  FROM
+    UNNEST(
+      [
+        (SELECT MIN(vote_date) FROM daily_votes),
+        (
+          SELECT
+            MIN(DATE(reviewed))
+          FROM
+            `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision`
+          WHERE
+            is_approved
+        )
+      ]
+    ) AS d
+),
+-- Daily date spine x each article, covering all history.
 dates AS (
   SELECT
     document_id,
@@ -30,7 +71,7 @@ dates AS (
   CROSS JOIN
     UNNEST(
       GENERATE_DATE_ARRAY(
-        DATE(CURRENT_DATE - INTERVAL 1 YEAR),
+        (SELECT start_date FROM window_start),
         DATE(CURRENT_DATE - INTERVAL 1 DAY),
         INTERVAL 1 DAY
       )
@@ -83,20 +124,9 @@ daily_freshness_per_article AS (
         r.locale
     )
 ),
--- Vote totals accrued before the trailing-year window, used to seed running totals.
-historical_helpfulness AS (
-  SELECT
-    document_id,
-    SUM(CAST(helpful AS INT64)) AS historical_helpful_votes,
-    COUNT(*) AS historical_total_votes
-  FROM
-    `moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details`
-  WHERE
-    DATE(vote_created_date) < DATE(CURRENT_DATE - INTERVAL 1 YEAR)
-  GROUP BY
-    document_id
-),
 -- For each day, the daily and running cumulative helpfulness votes per article.
+-- The spine starts at or before the first vote, so the running totals are
+-- cumulative over all history without needing a pre-window seed.
 daily_helpfulness_per_article AS (
   SELECT
     dates.event_date,
@@ -105,13 +135,13 @@ daily_helpfulness_per_article AS (
     help.locale,
     help.helpful_votes,
     help.total_votes,
-    COALESCE(hh.historical_helpful_votes, 0) + SUM(COALESCE(help.helpful_votes, 0)) OVER (
+    SUM(COALESCE(help.helpful_votes, 0)) OVER (
       PARTITION BY
         dates.document_id
       ORDER BY
         dates.event_date
     ) AS running_helpful_votes,
-    COALESCE(hh.historical_total_votes, 0) + SUM(COALESCE(help.total_votes, 0)) OVER (
+    SUM(COALESCE(help.total_votes, 0)) OVER (
       PARTITION BY
         dates.document_id
       ORDER BY
@@ -120,29 +150,9 @@ daily_helpfulness_per_article AS (
   FROM
     dates
   LEFT JOIN
-    (
-      SELECT
-        DATE(vote_created_date) AS vote_created_date,
-        document_id,
-        url,
-        locale,
-        SUM(CAST(helpful AS INT64)) AS helpful_votes,
-        COUNT(*) AS total_votes
-      FROM
-        `moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details`
-      WHERE
-        DATE(vote_created_date) >= DATE(CURRENT_DATE - INTERVAL 1 YEAR)
-      GROUP BY
-        vote_created_date,
-        document_id,
-        url,
-        locale
-    ) help
-    ON dates.event_date = help.vote_created_date
+    daily_votes help
+    ON dates.event_date = help.vote_date
     AND dates.document_id = help.document_id
-  LEFT JOIN
-    historical_helpfulness hh
-    ON dates.document_id = hh.document_id
 ),
 -- Article-level daily metrics with product mapping applied.
 main AS (

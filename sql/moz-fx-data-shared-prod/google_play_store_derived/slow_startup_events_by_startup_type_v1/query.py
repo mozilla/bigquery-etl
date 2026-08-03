@@ -146,19 +146,19 @@ def main():
         if "nextPageToken" in result_json:
             raise NotImplementedError("Parsing for next page is not implemented yet.")
 
+        rows = result_json.get("rows")
+
+        if not rows:
+            print(
+                f"WARNING: No data found for app: `{app}` and date: `{data_pull_date_string}`"
+            )
+            continue
+
         # Initialize as none until we find them for each app
         pct_users_w_slow_start_during_cold_start = None
         pct_users_w_slow_start_during_warm_start = None
         pct_users_w_slow_start_during_hot_start = None
         distinct_users = None
-
-        rows = result_json.get("rows")
-
-        if rows is None:
-            print(
-                f"WARNING: No data found for app: `{app}` and date: `{data_pull_date_string}`"
-            )
-            continue
 
         for row in rows:
             startup_type = row["dimensions"][0]["stringValue"]

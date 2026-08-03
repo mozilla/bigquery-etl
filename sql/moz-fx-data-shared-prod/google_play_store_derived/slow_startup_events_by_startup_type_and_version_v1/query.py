@@ -148,7 +148,7 @@ def main():
 
         rows = result_json.get("rows")
 
-        if rows is None:
+        if not rows:
             print(
                 f"WARNING: No data found for app: `{app}` and date: `{data_pull_date_string}`"
             )

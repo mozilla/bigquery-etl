@@ -3,7 +3,7 @@
 -- Business minutes computed against "Mozilla Support Hours" with holiday subtraction,
 -- mirroring the calculation Zendesk surfaces in its UI.
 --
--- Rebuilt over a rolling 13-month window so late-arriving updates
+-- Rebuilt in full over a fixed window starting 2024-01-01 so late-arriving updates
 -- (full_resolution status flips, CSAT survey responses, reopens) flow through.
 WITH tickets_in_window AS (
   SELECT
@@ -19,7 +19,7 @@ WITH tickets_in_window AS (
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket` AS t
   WHERE
     DATE(t.created_at)
-    BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 13 MONTH)
+    BETWEEN DATE '2024-01-01'
     AND CURRENT_DATE()
     AND t.status != 'deleted'
 ),

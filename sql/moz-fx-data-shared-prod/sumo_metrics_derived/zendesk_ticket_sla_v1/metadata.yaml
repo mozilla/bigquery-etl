@@ -2,7 +2,8 @@ friendly_name: Zendesk Ticket SLA (Per-Ticket)
 description: |
   Ticket-level SLA snapshot for SUMO Zendesk support tickets.
 
-  Grain: One row per ticket (rolling 13-month window keyed on ticket_created_date).
+  Grain: One row per ticket, for tickets created 2024-01-01 onward
+  (keyed on ticket_created_date).
 
   Single source of truth for:
   - First Reply Time (TTFR) — calendar and business minutes
@@ -17,8 +18,15 @@ description: |
 
   Late-arriving updates: full_resolution_at, rating_category, and reopen_count can
   change weeks after a ticket is created (status flips, late survey responses).
-  This table is rebuilt non-incrementally over a rolling 13-month window so those
-  changes flow through without manual partition rewrites.
+  This table is rebuilt non-incrementally over the full 2024-01-01-onward window so
+  those changes flow through without manual partition rewrites.
+
+  Caveat — CSAT starts later than the window: ticket_csat_survey only holds
+  surveys for tickets created 2025-06-17 onward, so survey_responded is FALSE and
+  rating_category is NULL for every earlier ticket. That is missing source data,
+  not a 0% response rate — CSAT rates must not be trended across the window
+  start. TTFR / FRT / FCR / reopen metrics are unaffected: ticket_comment and
+  ticket_field_history go back to 2019 along with ticket.
 
   Filter dimensions:
   - product (mapped via mozfun.customer_experience.normalize_product)

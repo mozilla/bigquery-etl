@@ -34,7 +34,7 @@ DEST_PROJECT = "mozdata-nonprod"
 TAXONOMY_PATH = Path(__file__).parent / "taxonomy.json"
 DEFAULT_OUTPUT_PATH = Path(__file__).parent / "classifications.csv"
 
-MODEL = "gemini-3.1-flash-lite-preview"
+MODEL = "gemini-3.5-flash-lite"
 TABLES = [
     "ads_backend_stable.interaction_v1",
     "ads_derived.ad_metrics_v1",

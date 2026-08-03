@@ -47,7 +47,7 @@ script/metadata/classify_dataset.sh ads_derived
 script/metadata/classify_dataset.sh firefox_desktop_stable newtab_v1 quick_suggest_v1
 
 # pick models (default: a single Gemini run)
-MODELS="claude-sonnet-4-6 gemini-3.1-flash-lite-preview" \
+MODELS="claude-sonnet-4-6 gemini-3.5-flash-lite" \
     script/metadata/classify_dataset.sh ads_derived
 ```
 

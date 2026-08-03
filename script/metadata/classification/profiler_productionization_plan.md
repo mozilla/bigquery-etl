@@ -113,7 +113,7 @@ table:
 
 ```bash
 # whole dataset
-MODELS="claude-sonnet-4-6 gemini-3.1-flash-lite-preview" \
+MODELS="claude-sonnet-4-6 gemini-3.5-flash-lite" \
   script/metadata/classify_dataset.sh ads_derived
 
 # or a table subset within the dataset

@@ -19,7 +19,7 @@
 # For Gemini models: `gcloud auth application-default login` (Vertex AI)
 #
 # Optional env vars (defaults shown):
-#   MODELS=gemini-3.1-flash-lite-preview     space-separated model list
+#   MODELS=gemini-3.5-flash-lite     space-separated model list
 #   SOURCE_PROJECT=moz-fx-data-shared-prod   source data (read); stays prod
 #   CLASSIFICATION_PROJECT=mozdata-nonprod   output project (e.g. akomar-sandbox-438914)
 #   CLASSIFICATION_DATASET=analysis          output dataset (created if missing)

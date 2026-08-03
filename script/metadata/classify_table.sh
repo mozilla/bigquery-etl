@@ -25,11 +25,11 @@
 # Override the model list via $MODELS (space-separated). Default is a single
 # Gemini run. To also classify with Claude (and enable a model comparison
 # afterwards), set:
-#   MODELS="claude-sonnet-4-6 gemini-3.1-flash-lite-preview"
+#   MODELS="claude-sonnet-4-6 gemini-3.5-flash-lite"
 
 set -euo pipefail
 
-MODELS="${MODELS:-gemini-3.1-flash-lite-preview}"
+MODELS="${MODELS:-gemini-3.5-flash-lite}"
 
 # Set REFRESH=1 to re-fetch probes and re-classify, replacing cached rows (use
 # after changing fetch/classify logic; otherwise cached rows are reused). Passed

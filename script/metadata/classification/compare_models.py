@@ -35,7 +35,7 @@ def parse_args():
     )
     parser.add_argument(
         "--right",
-        help="Model name for the right-hand column (full name, e.g. gemini-3.1-flash-lite-preview).",
+        help="Model name for the right-hand column (full name, e.g. gemini-3.5-flash-lite).",
     )
     parser.add_argument(
         "--show-agreements",

@@ -49,7 +49,7 @@ MAPPING_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_table_pings_v1"
 PROBE_TABLE = f"{_ANALYSIS}.akomar_metadata_phase2_ping_probes_v1"
 DEST_TABLE = f"{_ANALYSIS}.akomar_field_classifications_v1"
 DEST_PROJECT = ANALYSIS_PROJECT
-DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 GEMINI_VERTEX_PROJECT = "mozdata"
 GEMINI_VERTEX_LOCATION = "global"
 TAXONOMY_PATH = Path(__file__).parent / "classification" / "taxonomy.json"
@@ -62,7 +62,7 @@ def is_claude_model(name):
 
 
 def is_gemini_model(name):
-    """Vertex-hosted Gemini model name (e.g. gemini-3.1-flash-lite-preview)."""
+    """Vertex-hosted Gemini model name (e.g. gemini-3.5-flash-lite)."""
     return name.startswith("gemini-")
 
 
@@ -113,7 +113,7 @@ DEST_SCHEMA = [
         "model",
         "STRING",
         mode="NULLABLE",
-        description="Full LLM model name that produced the row, e.g. claude-sonnet-4-6 or gemini-3.1-flash-lite-preview.",
+        description="Full LLM model name that produced the row, e.g. claude-sonnet-4-6 or gemini-3.5-flash-lite.",
     ),
     bigquery.SchemaField("classified_at", "TIMESTAMP", mode="REQUIRED"),
 ]
@@ -250,7 +250,11 @@ def build_classification_prompt(
         " timestamp, boolean, or generic surrogate key on an identifier-bearing"
         " table is not itself that identifier. Identifier leaves (e.g. *.fxid,"
         " *.client_id, user.unique_id) apply only when the column value IS that"
-        " identifier; otherwise prefer the parent category (e.g. user.account). If"
+        " identifier; otherwise prefer the parent category (e.g. user.account)."
+        " Concretely, a column literally named `id` is the table's own row key, not"
+        " the Firefox Account identifier: use user.account.fxid only for uid/userId,"
+        " and when a table has both `id` and `uid`/`userId`, classify `id` as"
+        " user.unique_id. If"
         " multiple labels apply, list the extras in secondary_labels. Use the Glean"
         " data_sensitivity signal to disambiguate when present (e.g. highly_sensitive"
         " strongly implies user.behavior, user.content, user.location.precise,"
@@ -271,22 +275,42 @@ def _strip_json_fences(text):
 
 
 def call_claude(claude_client, model, prompt):
-    """Call Claude and parse the JSON response."""
+    """Call Claude; return (parsed JSON, token usage) for cost tracking."""
     response = claude_client.messages.create(
         model=model,
-        max_tokens=512,
+        max_tokens=1024,
         messages=[{"role": "user", "content": prompt}],
     )
-    return json.loads(_strip_json_fences(response.content[0].text))
+    u = response.usage
+    usage = {
+        "input": getattr(u, "input_tokens", 0) or 0,
+        "output": getattr(u, "output_tokens", 0) or 0,
+    }
+    # Models with thinking on by default (e.g. Opus 5) emit a ThinkingBlock first;
+    # take the first text block rather than content[0].
+    text = next(
+        (b.text for b in response.content if getattr(b, "type", None) == "text"), None
+    )
+    if text is None:
+        raise ValueError("no text block in Claude response")
+    return json.loads(_strip_json_fences(text)), usage
 
 
 def call_gemini(gemini_client, model, prompt):
-    """Call Gemini via Vertex and parse the JSON response."""
+    """Call Gemini via Vertex; return (parsed JSON, token usage) for cost tracking."""
     response = gemini_client.models.generate_content(
         model=model,
         contents=prompt,
     )
-    return json.loads(_strip_json_fences(response.text))
+    u = getattr(response, "usage_metadata", None)
+    usage = {
+        "input": getattr(u, "prompt_token_count", 0) or 0,
+        # candidates_token_count excludes thinking tokens; add them so cost is
+        # right for thinking-enabled Gemini models.
+        "output": (getattr(u, "candidates_token_count", 0) or 0)
+        + (getattr(u, "thoughts_token_count", 0) or 0),
+    }
+    return json.loads(_strip_json_fences(response.text)), usage
 
 
 # HTTP-ish status codes / phrases that signal a transient upstream failure a
@@ -314,9 +338,10 @@ def _is_transient(exc):
 def invoke_with_retry(invoke_llm, prompt, *, retries=4, base_delay=2.0):
     """Call the model, retrying transient failures with exponential backoff.
 
-    Non-transient errors (bad JSON, auth, quota exhaustion) re-raise immediately
-    so the caller's per-column skip still applies; only flaky 5xx/timeout errors
-    are retried.
+    Retries flaky 5xx/timeout and rate-limit (429) errors; non-transient errors
+    (bad JSON, auth) re-raise immediately so the caller's per-column skip applies.
+    A hard-quota 429 is indistinguishable from a rate-limit 429 here, so it is
+    retried (backing off) before failing.
     """
     for attempt in range(retries + 1):
         try:
@@ -833,6 +858,12 @@ def main():
 
     now = datetime.now(timezone.utc).isoformat()
 
+    # Run-level token totals for cost tracking (logged as a TOKENS summary line
+    # at the end; the A/B harness parses it to compute per-model spend).
+    total_input_tokens = 0
+    total_output_tokens = 0
+    total_llm_calls = 0
+
     for (proj, ds, tbl), columns in phase1.items():
         ping_info = ping_mapping.get((proj, ds, tbl), {})
         source_ping = ping_info.get("source_ping")
@@ -940,10 +971,13 @@ def main():
             )
 
             try:
-                result = invoke_with_retry(invoke_llm, prompt)
+                result, usage = invoke_with_retry(invoke_llm, prompt)
             except Exception as e:
                 logging.error(f"{args.model} call failed for {col_name}: {e}")
                 continue
+            total_input_tokens += usage["input"]
+            total_output_tokens += usage["output"]
+            total_llm_calls += 1
 
             matched_probe = (
                 matching_probes[0]["probe_name"] if matching_probes else None
@@ -974,6 +1008,12 @@ def main():
         if records:
             save_to_bq(bq_client, records)
             logging.info(f"  Done {ds}.{tbl} ({len(records)} columns)")
+
+    # Machine-parseable cost line (consumed by the model A/B harness).
+    logging.info(
+        f"TOKENS model={args.model} llm_calls={total_llm_calls} "
+        f"input_tokens={total_input_tokens} output_tokens={total_output_tokens}"
+    )
 
 
 if __name__ == "__main__":

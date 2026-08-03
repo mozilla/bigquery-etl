@@ -1,0 +1,21 @@
+fields:
+  - name: submission_date
+    type: DATE
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: normalized_channel
+    type: STRING
+    mode: NULLABLE
+  - name: error_type
+    type: STRING
+  - name: metric
+    type: STRING
+  - name: counts
+    type: INTEGER
+  - name: affected_clients
+    type: INTEGER
+  - name: fraction_clients_affected
+    type: FLOAT
+  - name: total_clients
+    type: INTEGER

@@ -23,6 +23,13 @@ description: |
 
   Recomputed in full each run (no date partition parameter).
 
+  Caveat — helpfulness has a later start than freshness: the source table
+  metrics_kb_votes_details only holds votes from 2023-01-01 onward, so on
+  earlier event_dates helpful_votes / total_votes are NULL and the running
+  totals are 0. Freshness columns go back to the first approved revision of the
+  oldest in-scope article (2009-07-17 as of 2026-08). Downstream
+  helpful_percentage_14_ma is therefore NULL before 2023.
+
   Caveat — survivorship bias: the article population is a *current* snapshot
   (is_archived = FALSE, today's category/products/product mapping). Historical
   event_dates therefore only include articles that still exist and are

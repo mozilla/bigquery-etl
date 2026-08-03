@@ -1,13 +1,15 @@
-# Load libraries
-from datetime import datetime, timedelta
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
-import requests
-from argparse import ArgumentParser
-from google.cloud import bigquery
-import pandas as pd
-import os
+"""Job to import slow_startup_events_by_startup_type_version_and_device_v1 from Google Play Store into BQ."""
+
 import json
+import os
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
+
+import pandas as pd
+import requests
+from google.auth.transport.requests import Request
+from google.cloud import bigquery
+from google.oauth2 import service_account
 
 # Set variables
 TARGET_PROJECT = "moz-fx-data-shared-prod"
@@ -27,7 +29,7 @@ APP_NAMES = [
 
 
 def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
-    """Input: datetime.date, Output: JSON for request payload that pulls data for that same day"""
+    """Input: datetime.date, Output: JSON for request payload that pulls data for that same day."""
     # Get the date to pull data for, as year, month day
     date_to_pull_data_for_yr = date_to_pull_data_for.year
     date_to_pull_data_for_month = date_to_pull_data_for.month
@@ -71,12 +73,15 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
 def get_slow_start_rates_by_app_and_date(
     access_token, app_name, request_payload, timeout_seconds
 ):
-    """Call the API URL using the given credentials and the given timeout limit
+    """
+    Call the API URL using the given credentials and the given timeout limit.
+
     Inputs:
     * Access Token
     * Timeout Seconds (int)
     Outputs:
-    * API call response"""
+    * API call response
+    """
     api_url = f"https://playdeveloperreporting.googleapis.com/v1beta1/apps/{app_name}/slowStartRateMetricSet:query"
     headers = {"Authorization": f"Bearer {access_token}", "Accept": "application/json"}
     response = requests.post(
@@ -86,7 +91,7 @@ def get_slow_start_rates_by_app_and_date(
 
 
 def main():
-    """Call the API, save data to GCS, write data to BQ"""
+    """Call the API, save data to GCS, write data to BQ."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
@@ -151,8 +156,16 @@ def main():
         if "nextPageToken" in result_json:
             raise NotImplementedError("Parsing for next page is not implemented yet.")
 
+        rows = result_json.get("rows")
+
+        if rows is None:
+            print(
+                f"WARNING: No data found for app: `{app}` and date: `{data_pull_date_string}`"
+            )
+            continue
+
         # Loop through each row
-        for row in result_json["rows"]:
+        for row in rows:
 
             # Initialize each dimension and metric as empty until found in this row
             startup_type = None

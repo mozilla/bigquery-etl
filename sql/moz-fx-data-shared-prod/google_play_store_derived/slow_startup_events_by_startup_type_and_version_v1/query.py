@@ -103,7 +103,7 @@ def main():
     data_pull_date_string = data_pull_date.strftime("%Y-%m-%d")
 
     print(
-        f"Pull date: `{data_pull_date}`, data_pull_date_string: `data_pull_date_string`"
+        f"Pull date: `{data_pull_date}`, data_pull_date_string: `{data_pull_date_string}`"
     )
 
     # Get credentials

@@ -15,6 +15,9 @@ THIS_DIR = os.path.dirname(__file__)
 DEFAULT_SCHEMA = os.path.join(THIS_DIR, "schema.yaml")
 TRANSFORM_SQL = os.path.join(THIS_DIR, "transform.sql")
 
+# Top-level INT64 fields loaded as STRING that get SAFE_CAST in transform.sql to handle overflow
+LOOSE_INT_FIELDS = {"install_age", "last_crash", "uptime"}
+
 
 def load_source_schema():
     """Build the schema to load the raw JSON with.
@@ -27,10 +30,17 @@ def load_source_schema():
     # include tags in schema.yaml are resolved
     fields = Schema.from_schema_file(Path(DEFAULT_SCHEMA)).schema["fields"]
     return [
-        bigquery.SchemaField.from_api_repr(_unwrap(field))
+        bigquery.SchemaField.from_api_repr(_loosen(_unwrap(field)))
         for field in fields
         if field["name"] != "crash_date"
     ]
+
+
+def _loosen(field):
+    """Keep a LOOSE_INT_FIELDS field to STRING so the load doesn't reject it."""
+    if field["name"] in LOOSE_INT_FIELDS:
+        return {**field, "type": "STRING"}
+    return field
 
 
 def _unwrap(field):

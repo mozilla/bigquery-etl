@@ -67,3 +67,17 @@ Differences from the upstream schema:
     - `memory_report.reports`
 
 The upstream schema is unlikely to change, so it's static instead of dynamically built.
+
+### Fields loaded as STRING
+
+`install_age`, `last_crash`, and `uptime` (`LOOSE_INT_FIELDS` in `query.py`) are
+`INT64` on the table but load as STRING and are `SAFE_CAST` back in
+`transform.sql`. Crash reports occasionally carry an `install_age` that wrapped
+in unsigned 64-bit arithmetic, e.g. `-18446744071923804046`, which does not fit
+in `INT64`; since `max_bad_records` is 0, one such report would otherwise fail
+the whole day's load. The cast only nulls that value and keeps the record.
+
+This means a fully populated row can now have a NULL `install_age`, which
+previously only happened on the all-NULL rows Spark produced.
+
+Only works on top-level columns, not fields nested in structs.

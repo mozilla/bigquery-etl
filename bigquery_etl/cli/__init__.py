@@ -22,7 +22,6 @@ from ..cli.metadata import metadata
 from ..cli.monitoring import monitoring
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
-from ..cli.sharing import sharing
 from ..cli.stage import stage
 from ..cli.static import static_
 from ..cli.target import target
@@ -67,7 +66,6 @@ def cli(prog_name=None):
         "check": check,
         "metadata": metadata,
         "monitoring": monitoring,
-        "sharing": sharing,
         "target": target,
     }
 

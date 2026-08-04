@@ -80,41 +80,6 @@ class TestView:
         with pytest.raises(ValueError):
             View(path="test", name="test", dataset="test", project="test")
 
-    def _shared_view(self, tmp_path, external_sharing: bool):
-        dataset_dir = tmp_path / "moz-fx-data-shared-prod" / "test_shared"
-        view_dir = dataset_dir / "my_view"
-        view_dir.mkdir(parents=True)
-        (view_dir / "view.sql").write_text(
-            "CREATE OR REPLACE VIEW "
-            "`moz-fx-data-shared-prod.test_shared.my_view` AS SELECT 1\n"
-        )
-        dataset_metadata = (
-            "friendly_name: Test Shared\n"
-            "description: test\n"
-            "dataset_base_acl: view\n"
-            "user_facing: true\n"
-        )
-        if external_sharing:
-            dataset_metadata += (
-                "external_sharing:\n"
-                "  exchange: partner_exchange\n"
-                "  data_review: https://bugzilla.mozilla.org/1\n"
-                "  subscribers:\n"
-                "    - group:partner@example.org\n"
-            )
-        (dataset_dir / "dataset_metadata.yaml").write_text(dataset_metadata)
-        return View.from_file(view_dir / "view.sql")
-
-    def test_shared_dataset_view_is_labeled(self, tmp_path):
-        view = self._shared_view(tmp_path, external_sharing=True)
-        assert view.labels["externally_shared"] == "true"
-        # `authorized` is author-set on the view, not derived here.
-        assert "authorized" not in view.labels
-
-    def test_non_shared_dataset_view_not_labeled(self, tmp_path):
-        view = self._shared_view(tmp_path, external_sharing=False)
-        assert "externally_shared" not in view.labels
-
     def test_view_valid(self, runner):
         with runner.isolated_filesystem():
             view = View.create("moz-fx-data-test-project", "test", "view", "sql")

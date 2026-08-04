@@ -88,27 +88,14 @@ class View:
             return None
         return Metadata.from_file(path)
 
-    @cached_property
-    def dataset_metadata(self):
-        """Return the metadata of the dataset this view belongs to."""
-        path = Path(self.path).parent.parent / DATASET_METADATA_FILE
-        if not path.exists():
-            return None
-        return DatasetMetadata.from_file(path)
-
     @property
     def labels(self):
-        """Return the view labels.
-
-        Views in a `_shared` dataset configured for external sharing are tagged
-        as externally shared. (These views must set `labels: {authorized: true}`
-        themselves; that is enforced by metadata validation.)
-        """
+        """Return the view labels."""
         if not hasattr(self, "_labels"):
-            labels = self.metadata.labels.copy() if self.metadata else {}
-            if self.dataset_metadata and self.dataset_metadata.external_sharing:
-                labels["externally_shared"] = "true"
-            self._labels = labels
+            if self.metadata:
+                self._labels = self.metadata.labels.copy()
+            else:
+                self._labels = {}
         return self._labels
 
     @classmethod

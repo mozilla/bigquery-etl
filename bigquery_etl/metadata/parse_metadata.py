@@ -540,8 +540,8 @@ class DatasetMetadata:
     default_table_expiration_ms: Optional[str] = attr.ib(None)
     workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     syndication: Optional[Dict] = attr.ib(None)
-    # External partner sharing via BigQuery Sharing. Deployed by
-    # `bqetl sharing deploy`; only valid on `_shared` datasets.
+    # External partner sharing via BigQuery Sharing; only valid on `_shared`
+    # datasets. Provisioned from this config by Terraform in cloudops-infra.
     external_sharing: Optional[ExternalSharingMetadata] = attr.ib(
         None, converter=_structure_external_sharing
     )

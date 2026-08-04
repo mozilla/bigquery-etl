@@ -10,6 +10,11 @@ per configured dataset, and the configured groups are granted the
 `roles/analyticshub.subscriber` role on the listing so they can subscribe to
 (link) the shared dataset in their own project.
 
+The `external_sharing` block declares the desired sharing config in
+bigquery-etl; the exchange, listing and subscriber grants are **provisioned by
+Terraform in `cloudops-infra`** (alongside the `mozdata` dataset the listing
+points at). bigquery-etl owns the metadata schema and its validation only.
+
 ## Configuration
 
 ```yaml
@@ -17,15 +22,13 @@ per configured dataset, and the configured groups are granted the
 external_sharing:
   exchange: Partner Exchange            # data exchange display name
   exchange_id: partner_exchange         # optional: explicit exchange resource ID
-                                        # (defaults to a sanitized `exchange`)
   display_name: Mozilla - Partner Data  # optional listing display name
-                                        # (defaults to "Mozilla - <dataset>")
   data_review: https://bugzilla.mozilla.org/show_bug.cgi?id=<bug>
   subscribers:
     - group:some-managed-group@mozilla.com
 ```
 
-### Constraints (enforced by `bqetl metadata validate`)
+## Constraints (enforced by `bqetl metadata validate`)
 
 - **`_shared` datasets only.** `external_sharing` may only be set on a dataset
   whose name ends with `_shared`. These datasets are published to the
@@ -38,40 +41,3 @@ external_sharing:
 - **Authorized views.** Every view in a `_shared` dataset must set
   `labels: {authorized: true}` in its `metadata.yaml`, so the shared listing can
   read through it.
-
-## Deploying
-
-`external_sharing` is applied by the `bqetl sharing` commands (run from the
-`bqetl_artifact_deployment` Airflow DAG after `_shared` views are published to
-`mozdata`):
-
-```sh
-# Create/reconcile exchanges, listings and subscriber grants
-./bqetl sharing deploy '*'
-
-# Remove exchanges/listings no longer backed by config
-./bqetl sharing clean
-```
-
-Notes:
-
-- **Location** is derived from the shared dataset's BigQuery location; the
-  exchange is created co-located with the data. `sharing clean` derives the
-  locations to reconcile from the configured datasets, so none needs to be
-  passed.
-- **Subscriber grants are reconciled** to exactly the configured groups on every
-  `deploy`: adding a group grants access, removing one revokes it.
-- **Exchange/listing display names and descriptions are set at creation only.**
-  Editing them later is not propagated; recreate the resource to change them.
-- **`clean` only removes bqetl-managed resources** (tagged with a marker in the
-  description). Manually-created exchanges/listings are left untouched.
-- Exchanges are created as private (`DISCOVERY_TYPE_PRIVATE`) with
-  linked-dataset query logging enabled.
-
-## Testing against a sandbox
-
-Use `--user-facing-project` to target a non-prod project instead of `mozdata`:
-
-```sh
-./bqetl sharing deploy <dataset> --user-facing-project moz-fx-data-<sandbox> --dry-run
-```

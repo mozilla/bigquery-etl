@@ -37,7 +37,7 @@ def load_source_schema():
 
 
 def _loosen(field):
-    """Keep a LOOSE_INT_FIELDS field to STRING so the load doesn't reject it."""
+    """Load a LOOSE_INT_FIELDS field as STRING so the load doesn't reject it."""
     if field["name"] in LOOSE_INT_FIELDS:
         return {**field, "type": "STRING"}
     return field
@@ -135,9 +135,10 @@ def main(
             raise click.ClickException(f"No source objects found under {source_uri}")
         print(f"Source objects present under {source_uri}")
 
+    tmp_table = f"tmp.socorro_crash_{uuid.uuid4().hex[:8]}"
+
     try:
         # Load the raw JSON into a temp table using the natural (unwrapped) schema.
-        tmp_table = f"tmp.socorro_crash_{uuid.uuid4().hex[:8]}"
         load_result = client.load_table_from_uri(
             source_uri,
             tmp_table,
@@ -165,18 +166,21 @@ def main(
                 f"{validate_result.total_bytes_processed} bytes. "
                 f"Skipping write to {partition}."
             )
-            return
-
-        # Transform into the destination shape and write the partition.
-        query_result = client.query(
-            query,
-            job_config=bigquery.QueryJobConfig(
-                destination=partition,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            ),
-        ).result()
-        print(f"Wrote {query_result.total_rows} rows into {partition}")
-    finally:
+        else:
+            # Transform into the destination shape and write the partition.
+            query_result = client.query(
+                query,
+                job_config=bigquery.QueryJobConfig(
+                    destination=partition,
+                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                ),
+            ).result()
+            print(f"Wrote {query_result.total_rows} rows into {partition}")
+    except Exception:
+        # Keep the temp table so a failed transform can be debugged against the data it ran on
+        print(f"Failed; not cleaning up {tmp_table}")
+        raise
+    else:
         client.delete_table(tmp_table, not_found_ok=True)
 
 

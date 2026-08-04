@@ -34,6 +34,7 @@ monitoring:
   - 463
   - 508
   - 509
+  - 661
   # Per-workspace BigQuery warehouse IDs. Required for tables whose
   # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
   # single workspace, so an API call to one workspace's warehouse ID won't

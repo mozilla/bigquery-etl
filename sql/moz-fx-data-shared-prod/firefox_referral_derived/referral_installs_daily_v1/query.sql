@@ -46,6 +46,7 @@ ga4 AS (
   SELECT
     ga_client_id,
     stub_session_id,
+    session_date,
     COALESCE(manual_content, first_content_from_event_params) AS content,
   FROM
     `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined`
@@ -62,7 +63,12 @@ referred_clients AS (
   -- once, after the (future) UNION, so a code seen on both platforms yields a
   -- single combined row rather than one row per platform.
   --
-  -- DESKTOP:
+  -- DESKTOP: the ga4 CTE can fan out — the same (ga_client_id, stub_session_id)
+  -- pair appears on multiple session rows across the 30-day look-back — so
+  -- QUALIFY collapses each client to a single (invite_code, client_id) row,
+  -- matching the cfs_ga4_attr_v1 dedupe. Without it, a client whose fanned-out
+  -- sessions carry different fxrefer: codes would be counted under each code,
+  -- inflating the cross-code total that referral_installs_totals_v1 sums.
   SELECT
     REGEXP_REPLACE(ga4.content, r'^fxrefer:', '') AS invite_code,
     cfs.client_id,
@@ -79,6 +85,8 @@ referred_clients AS (
     cfs.submission_date = @submission_date -- required partition filter
     AND cfs.first_seen_date = @submission_date -- clients first seen today
     AND ga4.content LIKE 'fxrefer:%' -- referred clients only
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY cfs.client_id ORDER BY ga4.session_date DESC, ga4.content) = 1
   -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
   --   UNION ALL
   --   SELECT

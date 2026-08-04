@@ -49,6 +49,7 @@ nav:
       - Scheduling: reference/scheduling.md
       - Schema includes: reference/schema_includes.md
       - Public data: reference/public_data.md
+      - External sharing: reference/external_sharing.md
       - Airflow Tags: reference/airflow_tags.md
       - Data Checks: reference/data_checks.md
       - bigConfig: reference/bigconfig.md

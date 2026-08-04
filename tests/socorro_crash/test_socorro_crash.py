@@ -13,17 +13,23 @@ import pytest
 
 from bigquery_etl.schema import Schema
 
-QUERY_PY = (
-    Path(__file__).parents[5]
+QUERY_DIR = (
+    Path(__file__).resolve().parents[2]
     / "sql"
     / "moz-fx-data-shared-prod"
     / "telemetry_derived"
     / "socorro_crash_v2"
-    / "query.py"
 )
+QUERY_PY = QUERY_DIR / "query.py"
+
+# In CI the sql/ directory may be replaced with generated SQL,
+# which removes Python query files. Skip in that case.
+if not QUERY_PY.exists():
+    pytest.skip("query.py not available (sql/ replaced in CI)", allow_module_level=True)
 
 
 def load_query_module():
+    # Load the module dynamically since the path contains hyphens
     spec = importlib.util.spec_from_file_location("socorro_crash_query", QUERY_PY)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -178,7 +184,7 @@ class TestLoadSourceSchema:
     def test_matches_schema_yaml_minus_crash_date(self, query):
         # Read via Schema, not yaml.safe_load: schema.yaml uses !include-field-description
         # and the other include tags, which the plain YAML loader cannot construct.
-        schema_yaml = QUERY_PY.parent / "schema.yaml"
+        schema_yaml = QUERY_DIR / "schema.yaml"
         table_fields = Schema.from_schema_file(schema_yaml).schema["fields"]
         expected = {f["name"] for f in table_fields} - {"crash_date"}
         loaded = {f.name for f in query.load_source_schema()}
@@ -214,6 +220,6 @@ class TestLoosen:
     def test_transform_safe_casts_every_loose_field(self, query):
         # A field loaded as STRING must be cast back to INT64 in the transform,
         # otherwise the write fails on a type mismatch with the table.
-        transform = (QUERY_PY.parent / "transform.sql").read_text()
+        transform = (QUERY_DIR / "transform.sql").read_text()
         for name in query.LOOSE_INT_FIELDS:
             assert f"SAFE_CAST({name} AS INT64) AS {name}" in transform, name

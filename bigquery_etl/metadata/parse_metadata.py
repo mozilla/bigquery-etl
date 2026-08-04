@@ -200,12 +200,23 @@ class ExternalSharingMetadata:
     data_review: str  # link to bug
     subscribers: List[str] = attr.ib()
     # Listing display name shown in the BigQuery Sharing console. Defaults to
-    # `Mozilla - <dataset>` when unset. Allowed characters: letters, numbers,
-    # underscores, dashes, ampersands and spaces.
+    # `Mozilla - <dataset>` when unset.
     display_name: Optional[str] = attr.ib(None)
+    # Listing description. Defaults to the dataset description when unset.
+    listing_description: Optional[str] = attr.ib(None)
+    # Listing resource ID. Defaults to the dataset name when unset. Set
+    # explicitly to adopt an existing listing with a specific ID.
+    listing_id: Optional[str] = attr.ib(None)
     # Data exchange resource ID. Defaults to a sanitized `exchange` when unset.
-    # Set explicitly to target an existing exchange with a specific ID.
+    # Set explicitly to adopt an existing exchange with a specific ID.
     exchange_id: Optional[str] = attr.ib(None)
+    # Data exchange display name. Defaults to a title-cased `exchange` when unset.
+    exchange_display_name: Optional[str] = attr.ib(None)
+    # Data exchange description. Has a generated default when unset.
+    exchange_description: Optional[str] = attr.ib(None)
+    # Enable restricted export on the listing (blocks exporting/copying shared
+    # query results). Defaults to false.
+    restrict_export: Optional[bool] = attr.ib(None)
 
     @subscribers.validator
     def validate_subscribers(self, attribute, value):

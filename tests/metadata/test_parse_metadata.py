@@ -50,6 +50,46 @@ class TestParseMetadata(object):
                     subscribers=bad,
                 )
 
+    def test_external_sharing_all_fields_round_trip(self, tmp_path):
+        # Guards against schema drift from the cloudops-infra sharing module:
+        # every supported key must map to a field (cattrs silently drops unknown
+        # keys, so a missing field would be a silent no-op).
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_sharing:\n"
+            "  exchange: Partner Exchange\n"
+            "  exchange_id: partner_exchange\n"
+            "  exchange_display_name: Mozilla - Partner\n"
+            "  exchange_description: Data for partner\n"
+            "  listing_id: partner_listing\n"
+            "  display_name: Mozilla - Partner Data\n"
+            "  listing_description: Custom listing description\n"
+            "  restrict_export: true\n"
+            "  data_review: https://bugzilla.mozilla.org/1\n"
+            "  subscribers:\n"
+            "    - group:partner@example.org\n"
+        )
+
+        sharing = DatasetMetadata.from_file(
+            tmp_path / "dataset_metadata.yaml"
+        ).external_sharing
+
+        assert sharing == ExternalSharingMetadata(
+            exchange="Partner Exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=["group:partner@example.org"],
+            display_name="Mozilla - Partner Data",
+            listing_description="Custom listing description",
+            listing_id="partner_listing",
+            exchange_id="partner_exchange",
+            exchange_display_name="Mozilla - Partner",
+            exchange_description="Data for partner",
+            restrict_export=True,
+        )
+
     def test_invalid_label(self):
         with pytest.raises(ValueError):
             Metadata(

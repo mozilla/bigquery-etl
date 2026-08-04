@@ -690,7 +690,6 @@ google-api-core[grpc]==2.29.0 \
     --hash=sha256:d30bc60980daa36e314b5d5a3e5958b0200cb44ca8fa1be2b614e932b75a3ea9
     # via
     #   google-cloud-bigquery
-    #   google-cloud-bigquery-analyticshub
     #   google-cloud-bigquery-storage
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
@@ -705,7 +704,6 @@ google-auth[requests]==2.49.1 \
     #   google-api-core
     #   google-auth-oauthlib
     #   google-cloud-bigquery
-    #   google-cloud-bigquery-analyticshub
     #   google-cloud-bigquery-storage
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
@@ -719,10 +717,6 @@ google-auth-oauthlib==0.8.0 \
 google-cloud-bigquery==3.40.0 \
     --hash=sha256:0469bcf9e3dad3cab65b67cce98180c8c0aacf3253d47f0f8e976f299b49b5ab \
     --hash=sha256:b3ccb11caf0029f15b29569518f667553fe08f6f1459b959020c83fbbd8f2e68
-    # via -r requirements.in
-google-cloud-bigquery-analyticshub==0.9.0 \
-    --hash=sha256:ba88c4a45d083a71c4d3d1d0dc0f39708d83e1af942f99b89dde28b6d6c8ac70 \
-    --hash=sha256:c848cbe3f139e93cfe1aea2e58e459f7e90e4303e8288c415df2f3f776a0fac9
     # via -r requirements.in
 google-cloud-bigquery-storage[fastavro]==2.36.0 \
     --hash=sha256:1769e568070db672302771d2aec18341de10712aa9c4a8c549f417503e0149f0 \
@@ -921,9 +915,7 @@ greenlet==3.5.1 \
 grpc-google-iam-v1==0.14.3 \
     --hash=sha256:7a7f697e017a067206a3dfef44e4c634a34d3dee135fe7d7a4613fe3e59217e6 \
     --hash=sha256:879ac4ef33136c5491a6300e27575a9ec760f6cdf9a2518798c1b8977a5dc389
-    # via
-    #   google-cloud-bigquery-analyticshub
-    #   google-cloud-storage-control
+    # via google-cloud-storage-control
 grpcio==1.83.0 \
     --hash=sha256:009667eaf3dcd5224c713589cdc98e7ca4ed0ff0b61132c6b276e930eb83a2df \
     --hash=sha256:10b3fa0475eb572c9a81a6fe37fa16a9c500c0c91cfc148cac15692b7e3c2867 \
@@ -978,7 +970,6 @@ grpcio==1.83.0 \
     --hash=sha256:fba099b716e73512d61b97f71ea3c31a72abb36904036e316bf4dd148ca8dcc8
     # via
     #   google-api-core
-    #   google-cloud-bigquery-analyticshub
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage-control
@@ -1786,7 +1777,6 @@ proto-plus==1.24.0 \
     --hash=sha256:402576830425e5f6ce4c2a6702400ac79897dab0b4343821aa5188b0fab81a12
     # via
     #   google-api-core
-    #   google-cloud-bigquery-analyticshub
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage-control
@@ -1805,7 +1795,6 @@ protobuf==4.25.8 \
     # via
     #   betterproto
     #   google-api-core
-    #   google-cloud-bigquery-analyticshub
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage-control

@@ -20,13 +20,26 @@ points at). bigquery-etl owns the metadata schema and its validation only.
 ```yaml
 # sql/moz-fx-data-shared-prod/<dataset>_shared/dataset_metadata.yaml
 external_sharing:
-  exchange: Partner Exchange            # data exchange display name
-  exchange_id: partner_exchange         # optional: explicit exchange resource ID
-  display_name: Mozilla - Partner Data  # optional listing display name
+  exchange: Partner Exchange            # data exchange (used for display + ID)
   data_review: https://bugzilla.mozilla.org/show_bug.cgi?id=<bug>
   subscribers:
     - group:some-managed-group@mozilla.com
+
+  # all optional:
+  exchange_id: partner_exchange              # explicit exchange resource ID
+  exchange_display_name: Mozilla - Partner   # exchange display name
+  exchange_description: Data shared with …   # exchange description
+  listing_id: partner_listing                # explicit listing resource ID
+  display_name: Mozilla - Partner Data       # listing display name
+                                             # (default: "Mozilla - <dataset>")
+  listing_description: …                      # listing description
+                                             # (default: dataset description)
+  restrict_export: true                      # block export/copy of shared results
 ```
+
+The optional `*_id` / `*_display_name` / `*_description` fields exist mainly to
+**adopt exchanges/listings that were created by hand** (matching their existing
+IDs/names) so provisioning doesn't create duplicates.
 
 ## Constraints (enforced by `bqetl metadata validate`)
 

@@ -43,6 +43,7 @@ monitoring:
     463: 1939
     508: 2014
     509: 1977
+    661: 2846
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:

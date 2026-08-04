@@ -15,7 +15,8 @@ THIS_DIR = os.path.dirname(__file__)
 DEFAULT_SCHEMA = os.path.join(THIS_DIR, "schema.yaml")
 TRANSFORM_SQL = os.path.join(THIS_DIR, "transform.sql")
 
-# Top-level INT64 fields loaded as STRING that get SAFE_CAST in transform.sql to handle overflow
+# Top-level INT64 fields loaded as STRING that get SAFE_CAST in transform.sql to handle overflow.
+# Does not work on nested fields
 LOOSE_INT_FIELDS = {"install_age", "last_crash", "uptime"}
 
 

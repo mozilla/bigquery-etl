@@ -16,9 +16,9 @@ labels:
 
 scheduling:
   dag_name: bqetl_gecko_trace
-  task_group: {{ app_id }}
+  task_group: org_mozilla_fenix_nightly
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters: ["submission_date:DATE:"]
 
 bigquery:
   clustering:

@@ -1,157 +1,71 @@
 # Gecko Trace SQL Generator
 
-This generator creates BigQuery tables and views for processing Gecko trace
-telemetry data from Firefox applications.
+This generator creates BigQuery tables and views for Gecko trace data from Firefox applications.
 
-## Overview
+## Pipeline
 
-The generator creates a complete data pipeline for analyzing Gecko traces:
+The pipeline has three derived tables and three aggregate views.
 
-1. **Derived Tables** (`{dataset}_derived`): Process raw telemetry into
-   structured span and trace data
-2. **Aggregate Views** (`gecko_trace_aggregates`): Unified views combining data
-   across all Firefox applications
+### Derived tables
 
-## Generated Tables
+For each Firefox application, the generator creates these tables:
 
-### Derived Tables (per Firefox application)
+1. **gecko_trace_events_v1** — One row per (event_signature, submission_date).
+   The event signature is a SHA256 hash of (source_file, source_line, result).
+   Each row has a stable UUID that does not change after the first insert.
 
-For each Firefox application (`firefox_desktop`, `org_mozilla_fenix_nightly`,
-`org_mozilla_firefox_beta`), the generator creates:
+2. **gecko_trace_traces_v1** — One row per (trace_signature, submission_date).
+   The trace signature is a SHA256 hash of all event signatures in root-to-leaf order.
+   The generator uses a recursive CTE to walk the span tree.
+   Each row has a stable UUID that does not change after the first insert.
 
-#### `gecko_trace_spans_v1`
+3. **gecko_trace_trace_events_v1** — One row per (stable_trace_id, stable_event_id).
+   This table links traces to their events.
 
-- **Purpose**: Individual spans extracted from raw traces
-- **Schema**: Flattened span data with trace/parent relationships, timing,
-  events, and metadata
-- **Source**: Raw telemetry `traces` table
+All three tables use MERGE scripts. A re-run of the same day overwrites the daily counts. It does not add to them.
 
-#### `gecko_trace_traces_v1`
+### Aggregate views
 
-- **Purpose**: Complete traces with hierarchical span structures
-- **Schema**: Aggregated traces with `root_span` JSON tree and calculated
-  `signature` hash
-- **Dependencies**: Uses `mozfun.gecko_trace.build_root_span()` and
-  `mozfun.gecko_trace.calculate_signature()`
-- **Source**: `gecko_trace_spans_v1` table
+The `gecko_trace_aggregates` dataset has these views:
 
+- **events** — Sums daily hit counts across all dates and applications. Shows first and latest seen dates.
+- **traces** — Sums daily hit counts across all dates and applications. Shows first and latest seen dates and weighted average duration.
+- **trace_events** — Sums daily hit counts for each trace-event link.
 
-### Aggregate Views
+## Applications
 
-Located in `moz-fx-data-shared-prod.gecko_trace_aggregates`:
+The generator creates tables for these Firefox applications:
 
-#### `spans`
+- `firefox_desktop`
+- `org_mozilla_fenix_nightly`
+- `org_mozilla_firefox_beta`
 
-- Unified view of all span data across Firefox applications
-- UNION ALL of all `gecko_trace_spans_v1` tables
-
-#### `traces`
-
-- Unified view of all trace data across Firefox applications
-- UNION ALL of all `gecko_trace_traces_v1` tables
-
-#### `signatures`
-
-- View of signature statistics aggregated from trace data
-- Aggregates trace data by signature, computing average duration and hit counts
-- Built on top of the `traces` view (not a separate derived table)
+To add an application, add it to the `APPLICATIONS` list in `__init__.py`.
 
 ## Usage
 
 ```bash
-# Generate all tables and views with default settings
 ./bqetl generate gecko_trace
-
-# Specify custom output directory and target project
-./bqetl generate gecko_trace \
-    --output-dir /path/to/output \
-    --target-project my-project-id
 ```
 
-### Options
+Use `--output-dir` to set the output directory. Use `--target-project` to set the BigQuery project.
 
-- `--output-dir`: Directory where generated SQL files are written (default:
-  `sql`)
-- `--target-project`: BigQuery project ID for generated queries (default:
-  `moz-fx-data-shared-prod`)
-
-## Generated File Structure
+## File structure
 
 ```
-<output-dir>/
-├── <target-project>/
-│   ├── <per-app-id>_derived/
-│   │   ├── gecko_trace_spans_v1/
-│   │   │   ├── query.sql
-│   │   │   ├── metadata.yaml
-│   │   │   └── schema.yaml
-│   │   └── gecko_trace_traces_v1/
-│   └── gecko_trace_aggregates/
-│       ├── dataset_metadata.yaml
-│       ├── spans/
-│       │   ├── view.sql
-│       │   ├── metadata.yaml
-│       │   └── schema.yaml
-│       ├── traces/
-│       └── signatures/
+templates/
+  derived/
+    _shared/
+      trace_chain_ctes.sql        # Shared CTEs for span tree walk
+    gecko_trace_events_v1/
+      script.sql, metadata.yaml, schema.yaml, backfill.yaml
+    gecko_trace_traces_v1/
+      script.sql, metadata.yaml, schema.yaml, backfill.yaml
+    gecko_trace_trace_events_v1/
+      script.sql, metadata.yaml, schema.yaml, backfill.yaml
+  aggregates/
+    dataset_metadata.yaml
+    events/      view.sql, metadata.yaml
+    traces/      view.sql, metadata.yaml
+    trace_events/  view.sql, metadata.yaml
 ```
-
-## Data Flow
-
-```
-Raw Telemetry (gecko_trace ping table)
-    ↓
-gecko_trace_spans_v1 (individual spans)
-    ↓
-gecko_trace_traces_v1 (complete traces with root_span + signature)
-    ↓
-gecko_trace_aggregates.* (unified views across applications, including
-                           on-demand aggregation for signatures)
-```
-
-## Example Queries
-
-### Analyze trace signatures across applications
-
-```sql
-SELECT
-  application,
-  signature,
-  average_duration_nano / 1000000 as avg_duration_ms,
-  hits
-FROM `moz-fx-data-shared-prod.gecko_trace_aggregates.signatures`
-WHERE hits > 100
-ORDER BY average_duration_nano DESC
-```
-
-### Examine span hierarchy for a specific trace
-
-```sql
-SELECT
-  JSON_EXTRACT_SCALAR(root_span, '$.name') as root_name,
-  JSON_EXTRACT_ARRAY(root_span, '$.childSpans') as children,
-  duration_nano / 1000000 as duration_ms
-FROM `moz-fx-data-shared-prod.gecko_trace_aggregates.traces`
-WHERE trace_id = 'your-trace-id-here'
-```
-
-## Configuration
-
-The generator processes data for these Firefox applications:
-
-- `firefox_desktop` - Firefox Desktop
-- `org_mozilla_fenix_nightly` - Firefox for Android (Nightly)
-- `org_mozilla_firefox_beta` - Firefox for Android (Beta)
-
-To add additional applications, update the `APPLICATIONS ` list in
-`__init__.py`.
-
-## Templates
-
-The generator uses Jinja2 templates located in `templates/`:
-
-- `{database}_derived/` - Templates for derived tables (per application)
-- `moz-fx-data-shared-prod/gecko_trace_aggregates/` - Templates for aggregate
-  views
-
-All templates include proper metadata, schemas, and documentation.

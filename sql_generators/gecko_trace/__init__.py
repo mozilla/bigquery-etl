@@ -22,7 +22,10 @@ APPLICATIONS = (
 
 def generate_derived(output_dir, target_project):
     """Generate derived table SQL queries and metadata for gecko trace data."""
-    env = Environment(loader=FileSystemLoader(TEMPLATES / "derived"))
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATES / "derived"),
+        keep_trailing_newline=True,
+    )
 
     for app_id in APPLICATIONS:
         for template_name in env.list_templates("*.sql"):
@@ -32,10 +35,11 @@ def generate_derived(output_dir, target_project):
 
             query_template = env.get_template(template_name)
             table_name = template_name.split("/")[0]
+            sql_filename = Path(template_name).name
             write_sql(
                 output_dir / target_project,
                 f"{app_id}_derived.{table_name}",
-                "query.sql",
+                sql_filename,
                 query_template.render(
                     target_project=target_project,
                     app_id=app_id,
@@ -71,7 +75,10 @@ def generate_derived(output_dir, target_project):
 
 def generate_aggregates(output_dir, target_project):
     """Generate aggregate view SQL queries for gecko trace data."""
-    env = Environment(loader=FileSystemLoader(TEMPLATES / "aggregates"))
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATES / "aggregates"),
+        keep_trailing_newline=True,
+    )
 
     for template_name in env.list_templates("*.sql"):
         view_template = env.get_template(template_name)
@@ -86,6 +93,16 @@ def generate_aggregates(output_dir, target_project):
                 ping_name=PING_NAME,
             ),
         )
+
+        template_dir = TEMPLATES / "aggregates" / view
+        output_view_dir = (
+            output_dir / target_project / "gecko_trace_aggregates" / view
+        )
+        if (template_dir / "metadata.yaml").exists():
+            shutil.copyfile(
+                template_dir / "metadata.yaml",
+                output_view_dir / "metadata.yaml",
+            )
 
     # Copy dataset_metadata.yaml file
     dataset_output_dir = output_dir / target_project / "gecko_trace_aggregates"

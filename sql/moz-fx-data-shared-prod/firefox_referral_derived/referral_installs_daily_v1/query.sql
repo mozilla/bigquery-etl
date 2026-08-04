@@ -1,8 +1,9 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- The invite code arrives as `fxrefer:<code>` (17 chars after the prefix is
--- stripped, per the Website team 2026-07-24). The prefix strip is
--- length-agnostic, so a length change needs no code change here.
+-- The invite code arrives as `fxrefer:<code>`; after the prefix is stripped it
+-- is expected to be 17 chars (Website team, 2026-07-24). That length is
+-- documentation only — it is NOT enforced by any check here or in bigconfig.yml.
+-- The prefix strip is length-agnostic, so a length change needs no code change.
 --
 -- DESKTOP source = GA4 / download-attribution path (cross-platform: Windows + Mac).
 --   Do NOT use `telemetry.install` — it is the Windows-only installer ping and

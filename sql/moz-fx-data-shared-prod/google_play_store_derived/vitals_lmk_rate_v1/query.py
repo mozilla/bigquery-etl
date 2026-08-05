@@ -155,11 +155,10 @@ def fetch_data(
 
     try:
         response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        error_message = f"Request to: {response.url} failed with the following error: {response.json()}"
-        print(error_message)
-
-        raise requests.exceptions.HTTPError(error_message) from None
+    except requests.exceptions.HTTPError as err:
+        raise requests.exceptions.HTTPError(
+            f"Request to: {response.url} failed with status {response.status_code}: {response.text}"
+        ) from err
 
     return response.json()
 

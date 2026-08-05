@@ -17,6 +17,8 @@ syndication:
     - kitsune_wiki_revision
     - kitsune_wiki_document_plus
     - metrics_kb_votes_details
+    - metrics_thunderbird_answers
+    - metrics_thunderbird_questions
   administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer

@@ -101,7 +101,7 @@ bqetl_google_play_store:
   description: Schedules daily level google play store export data
   schedule_interval: 10 18 * * *
   tags:
-    - impact/tier_2
+    - impact/tier_3
 
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *

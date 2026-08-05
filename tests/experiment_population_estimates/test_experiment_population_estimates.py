@@ -328,15 +328,14 @@ class TestWriteToBigQuery:
             table="experiment_population_estimates_v1",
             submission_date=_RUN_DATE,
         )
-        return mock_client.return_value.load_table_from_json.call_args
 
     def test_computed_at_is_execution_timestamp_not_midnight(self):
         """computed_at must reflect actual execution time, not submission date midnight."""
         with patch("google.cloud.bigquery.Client") as mock_client:
             mock_client.return_value.load_table_from_json.return_value.result.return_value = None
-            call_args = self._call(mock_client)
+            self._call(mock_client)
 
-        rows = call_args[0][0]
+        rows = mock_client.return_value.load_table_from_json.call_args[0][0]
         for row in rows:
             computed_at_str = row["computed_at"]
             assert "T" in computed_at_str, "computed_at must be an ISO timestamp"
@@ -348,13 +347,13 @@ class TestWriteToBigQuery:
         """Partition decorator must be derived from computed_at, not submission_date."""
         with patch("google.cloud.bigquery.Client") as mock_client:
             mock_client.return_value.load_table_from_json.return_value.result.return_value = None
-            call_args = self._call(mock_client)
+            self._call(mock_client)
 
+        call_args = mock_client.return_value.load_table_from_json.call_args
         rows = call_args[0][0]
         table_ref = call_args[0][1]
         decorator = table_ref.split("$")[1]
 
-        # The partition decorator date must match computed_at's date, not submission_date.
         computed_at_date = rows[0]["computed_at"][:10].replace("-", "")
         assert decorator == computed_at_date, (
             f"Partition decorator {decorator} must match computed_at date {computed_at_date}, "

@@ -48,6 +48,7 @@ class AttributionPings(Enum):
     first_session = "first_session"
     baseline = "baseline"
     play_store_attribution = "play_store_attribution"
+    adjust_attribution = "adjust_attribution"
 
 
 @dataclass
@@ -75,7 +76,11 @@ class AttributionFields:
     )
     adjust = AttributionFieldGroup(
         name="adjust",
-        source_pings=[AttributionPings.metrics, AttributionPings.first_session],
+        source_pings=[
+            AttributionPings.metrics,
+            AttributionPings.first_session,
+            AttributionPings.adjust_attribution,
+        ],
         fields=[
             {
                 "name": "adjust_ad_group",

@@ -2344,15 +2344,13 @@ bqetl_ech_adoption_rate:
       - efilho@mozilla.com
     email_on_failure: true
     email_on_retry: true
-    end_date: '2025-10-31'
     owner: efilho@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2025-04-28'
   description: |
     Tracks ECH adoption across countries and ISPs over time.
-    To be disabled after 2025-10-31.
-    bug 1957082
+    bugs 1957082, 2057822
   repo: bigquery-etl
   schedule_interval: daily
   tags:
@@ -2806,3 +2804,18 @@ bqetl_data_governance_metadata:
     depends_on_past: false
   tags:
     - impact/tier_3
+
+bqetl_socorro_import:
+  schedule_interval: 0 4 * * *
+  description: |
+    Daily import of Socorro crash reports from GCS newline JSON into
+    telemetry_derived.socorro_crash_v2.
+  default_args:
+    owner: bewu@mozilla.com
+    start_date: "2026-08-01"
+    email: ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+    depends_on_past: false
+  tags:
+    - impact/tier_2

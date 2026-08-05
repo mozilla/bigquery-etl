@@ -5,11 +5,14 @@ description: |
 
   Grain: Day x Article (document_id)
 
-  For each in-scope en-US article and each day in the trailing 1-year window:
+  Covers 2024-01-01 through yesterday. An article's first row is the later of
+  2024-01-01 and the date of its first approved revision.
+
+  For each in-scope en-US article and each day in that range:
   - days_since_last_revision / fresh_ind: freshness vs. a 365-day window
   - helpful_votes / total_votes: votes cast that day
-  - running_helpful_votes / running_total_votes: cumulative votes (seeded with
-    pre-window totals)
+  - running_helpful_votes / running_total_votes: all-time cumulative votes
+    (in-window votes on top of a pre-2024 seed)
 
   Article scope (matching the KB quality dashboard query):
   - parent_id IS NULL (original, non-translated), is_archived = FALSE
@@ -17,7 +20,20 @@ description: |
   - products NOT LIKE '%thunderbird%', locale = 'en-US'
   - product (via mozfun.customer_experience.normalize_product) != 'Other'
 
-  Recomputed in full each run (relative-date window, no date partition).
+  Recomputed in full each run (no date partition parameter).
+
+  The 2024-01-01 start is a deliberate floor, not a data limit. Freshness could
+  extend back to 2009 and votes (metrics_kb_votes_details) to 2023-01-01, but
+  the window is capped to keep the table small enough that it needs no
+  partitioning. Pre-2024 votes are not lost — they are folded into the running
+  totals via the seed.
+
+  Caveat — survivorship bias: the article population is a *current* snapshot
+  (is_archived = FALSE, today's category/products/product mapping). Earlier
+  event_dates therefore only include articles that still exist and are
+  unarchived today, so article counts trend upward over time partly for this
+  reason. fresh_ind itself is a valid point-in-time measure (computed against
+  each event_date, not today); only the population is biased.
 
   Used by:
   - kb_quality_metrics_daily_v1 (day-level aggregation + moving averages)

@@ -4,7 +4,7 @@
   reason: 'Bug 2057822'
   watchers:
   - efilho@mozilla.com
-  status: Initiate
+  status: Complete
 
 2025-11-03:
   start_date: 2025-01-01

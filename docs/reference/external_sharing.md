@@ -1,8 +1,10 @@
-# External Data Sharing (BigQuery Sharing)
+# BigQuery Sharing
 
 Share a dataset with external partners through [BigQuery Sharing](https://cloud.google.com/bigquery/docs/analytics-hub-introduction)
 (formerly Analytics Hub) by adding an `external_sharing` block to a dataset's
-`dataset_metadata.yaml`.
+`dataset_metadata.yaml`. This is distinct from
+[public data](public_data.md) sharing, which exposes data publicly rather than
+to specific partners.
 
 Sharing is configured at the **dataset level** because a BigQuery Sharing
 listing shares a whole dataset. One data exchange and one listing are created

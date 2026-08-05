@@ -43,6 +43,7 @@ SELECT
       LAX_BOOL(event_extra.experiments_empty) AS `experiments_empty`,
       LAX_BOOL(event_extra.experiments_success) AS `experiments_success`,
       LAX_BOOL(event_extra.filled) AS `filled`,
+      LAX_BOOL(event_extra.first_visit) AS `first_visit`,
       LAX_BOOL(event_extra.firstTime) AS `firstTime`,
       LAX_BOOL(event_extra.firstTimeToggle) AS `firstTimeToggle`,
       LAX_BOOL(event_extra.force_sync) AS `force_sync`,

@@ -20370,8 +20370,8 @@ fields:
         run. 0: "incomplete" 1: "pass" 2: "opt-out" 3: "manually-disabled" 4: "manually-enabled"
         5: "enterprise-disabled" 6: "enterprise- present" 7: "enterprise-enabled"
         8: "vpn" 9: "proxy" 10: "nrpt" 11: "parental" 12: "modifiedRoots" 13: "thirdPartyRoots"
-        14: "google" 15: "youtube" 16: "zscaler" 17: "canary" 18: "ignored" This metric
-        was generated to correspond to the Legacy Telemetry scalar networking.doh_heuristics_result.
+        14: "google" 15: "youtube" 16: "zscaler" 17: "canary" 18: "ignored" 19: "privateDns"
+        This metric was generated to correspond to the Legacy Telemetry scalar networking.doh_heuristics_result.
 
         '
     - name: gfx_target_frame_rate

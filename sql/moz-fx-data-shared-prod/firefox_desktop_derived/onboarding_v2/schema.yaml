@@ -165,6 +165,9 @@ fields:
 - name: normalized_os_version
   mode: NULLABLE
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_os_version
 - name: release_channel
   mode: NULLABLE
   type: STRING

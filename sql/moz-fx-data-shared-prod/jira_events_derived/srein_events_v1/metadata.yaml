@@ -1,0 +1,58 @@
+friendly_name: Jira SREIN Ticket Events
+description: |-
+  Change events on Jira tickets in the SREIN (MozCloud Intake) project, pulled
+  from Jira API v3. One row per event: issue creation, status changes, other
+  field changes, and comments.
+
+  Comment text is stored in `comment_body`, flattened from Atlassian Document
+  Format to plain text — one line per ADF block, formatting marks dropped,
+  mentions rendered as their display text, embedded media omitted. Description
+  edits likewise keep their before/after text in `from_value`/`to_value`. This
+  table carries the same free text as the tickets themselves and is ACL'd to
+  match (`mozilla-confidential/data-viewers`), so a reader of this table could
+  already read the tickets.
+
+  The "Last Comment" and "Rank" changelog fields are dropped: "Last Comment" is
+  a synthetic entry Jira writes on every comment, so keeping it would
+  double-count the comment events (which carry the comment id and body, unlike
+  that entry), and "Rank" is backlog-reordering noise.
+
+  Partitions are keyed on event date, and any date can be re-run safely,
+  including by clearing the task in Airflow. The daily JQL bounds `updated` only
+  from below, and every event this table records bumps an issue's `updated`, so
+  a re-run always selects a superset of the issues with events on that date and
+  rebuilds the partition completely. Re-running a long-past date simply fetches
+  more issues the further back it reaches.
+
+  The initial load is a full manual seed, run from a checkout of bigquery-etl
+  with JIRA_USERNAME and JIRA_TOKEN in the environment (note that
+  `bqetl query run` does not work here — it only matches `*.sql` files, and a
+  bare `python query.py` imports a stale installed copy of `bigquery_etl`):
+
+    PYTHONPATH=<repo root> python \
+      sql/moz-fx-data-shared-prod/jira_events_derived/srein_events_v1/query.py \
+      --seed
+owners:
+- wstuckey@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  owner1: wstuckey@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_ts
+    require_partition_filter: false
+  clustering:
+    fields:
+    - project_key
+    - issue_key
+scheduling:
+  dag_name: bqetl_jira_tickets
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: JIRA_USERNAME
+    key: bqetl_jira_service_desk__jira_username
+  - deploy_target: JIRA_TOKEN
+    key: bqetl_jira_service_desk__jira_token

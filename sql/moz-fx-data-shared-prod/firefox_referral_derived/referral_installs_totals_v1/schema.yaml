@@ -1,0 +1,13 @@
+fields:
+- name: invite_code
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Referral (invite) code, with the `fxrefer:` prefix stripped (expected 17
+    chars). Delivered as the first CSV column consumed by firefox.com.
+- name: total_installs
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Cumulative all-time distinct Firefox first_run installs attributed to this
+    invite code. Always > 0 (zero-install codes are omitted).

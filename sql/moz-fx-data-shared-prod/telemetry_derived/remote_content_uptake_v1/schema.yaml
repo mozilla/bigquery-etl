@@ -1,0 +1,138 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: The identifier of the Remote Settings collection being tracked (e.g., 'main/whats-new-panel').
+- name: min_timestamp
+  type: FLOAT64
+  mode: NULLABLE
+  description: Minimum Unix timestamp (in seconds) of the Remote Settings update events included in this
+    aggregation row.
+- name: max_timestamp
+  type: FLOAT64
+  mode: NULLABLE
+  description: Maximum Unix timestamp (in seconds) of the Remote Settings update events included in this
+    aggregation row.
+- name: up_to_date
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that already had the latest version of this Remote Settings collection and
+    did not need to download an update.
+- name: success
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that successfully downloaded and applied an update for this Remote Settings
+    collection.
+- name: backoff
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that were in a backoff state and skipped the update check for this Remote
+    Settings collection.
+- name: pref_disabled
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients for which Remote Settings sync was disabled via preference for this collection.
+- name: parse_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a parsing error when reading the Remote Settings collection
+    data.
+- name: content_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a content integrity error when processing this Remote Settings
+    collection.
+- name: sign_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a signature validation error when verifying this Remote
+    Settings collection.
+- name: sign_retry_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a signature error even after retrying verification for
+    this Remote Settings collection.
+- name: conflict_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a data conflict error when applying updates to this Remote
+    Settings collection.
+- name: sync_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a general synchronisation error for this Remote Settings
+    collection.
+- name: apply_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered an error when applying the downloaded Remote Settings update
+    to local storage.
+- name: server_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that received an HTTP server error (5xx) when fetching this Remote Settings
+    collection.
+- name: certificate_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a TLS/certificate validation error when fetching this Remote
+    Settings collection.
+- name: download_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a download error (non-network, non-certificate) when fetching
+    this Remote Settings collection.
+- name: timeout_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that timed out while attempting to fetch or apply this Remote Settings collection.
+- name: network_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered a network error when trying to fetch this Remote Settings
+    collection.
+- name: offline_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that were offline and could not attempt to fetch this Remote Settings collection.
+- name: cleanup_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered an error during cleanup of obsolete data for this Remote
+    Settings collection.
+- name: unknown_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered an unclassified or unknown error when processing this Remote
+    Settings collection.
+- name: custom_1_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered custom error type 1, specific to this Remote Settings collection's
+    implementation.
+- name: custom_2_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered custom error type 2, specific to this Remote Settings collection's
+    implementation.
+- name: custom_3_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered custom error type 3, specific to this Remote Settings collection's
+    implementation.
+- name: custom_4_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered custom error type 4, specific to this Remote Settings collection's
+    implementation.
+- name: custom_5_error
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that encountered custom error type 5, specific to this Remote Settings collection's
+    implementation.

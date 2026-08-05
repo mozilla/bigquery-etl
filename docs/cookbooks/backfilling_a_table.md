@@ -2,33 +2,69 @@
 
 **Note** For large sets of data, follow the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills) for backfills.
 
+## Overview
+
+A backfill reprocesses historical partitions of a table, for example after a query is fixed or
+upstream data is corrected, so the older data reflects the change. Scheduled runs only produce new
+partitions going forward, so past data has to be rewritten separately.
+
+You start a managed backfill by editing a `backfill.yaml` file in the table's directory and opening
+a pull request ([example PR](https://github.com/mozilla/bigquery-etl/pull/9244/changes)).
+Most of the process is automated, and you wait for Slack notifications between steps.
+The process is:
+
+1. Create an entry in the table's `backfill.yaml` and open a PR. Run `bqetl backfill create` with no arguments to use the interactive mode, which prompts you through various settings. See [Initiating the backfill](#initiating-the-backfill).
+2. Once merged, processing starts automatically (in about an hour) and writes the new data to a temporary staging table, not to production.
+3. Validate the staged data yourself to confirm it looks right.
+   - If the staged data is wrong, or you otherwise decide not to proceed, set the status to `Cancelled` instead so nothing is swapped and the staging table expires on its own.
+4. Complete the backfill by opening a second PR that sets the status to `Complete`. On merge, production is backed up and the staged data is swapped in. See [Completing the backfill](#completing-the-backfill).
+5. You are notified when the swap is done.
+
+Watch progress in the `#dataops-alerts` Slack channel (join it and list yourself as a watcher on
+the backfill entry). If you are not sure whether your change even needs a backfill, or your table
+is not a standard day-partitioned table, ask in `#data-help` before starting.
+
+Some changes do not need a managed backfill at all, see [Changes that do not require a backfill](#changes-that-do-not-require-a-backfill).
+
+## Changes that do not require a backfill
+
+Some tables rebuild their whole history on every scheduled run, so a query change propagates across the full window on the next scheduled run with no managed backfill. This applies when **both** of these hold (otherwise, use a managed backfill as described below):
+
+- `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset or `0` (unset defaults to `0`), so each run `WRITE_TRUNCATE`s the **whole table**, not one partition. (A non-zero offset writes only the shifted partition; omitting `date_partition_parameter` defaults it to `submission_date`, one partition per day. Neither rebuilds history.)
+- The query recomputes the full or a rolling window from its sources every run (e.g. `WHERE submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)`), so the truncate rewrites history instead of leaving a single day.
+
+**Note** A self-referential table that reads its own prior output does not qualify — a `depends_on_past: true` / `is_init()` first-seen table like `telemetry_derived.clients_first_seen_v3` carries earlier values forward, so a logic change reaches only new rows and must be rebuilt with `--reinitialize-table` (see the table below).
+
+When both hold, just deploy and let the DAG run (independent of the `incremental` label and of whether the table is partitioned). Validate the change in a dev environment beforehand — once deployed, the scheduled run makes it live with no pre-prod gate — then confirm the rebuild in production (values correct across the window; for a partitioned table, the newest partition is past the deploy date).
+
 ## What can be backfilled with `bqetl backfill`
 
 The managed backfill workflow (`bqetl backfill create` / `initiate`) validates a table's `metadata.yaml` and the backfill entry before it will run. Some table configurations are rejected outright (no override), some are allowed only with an explicit override flag, and some are supported with special handling. The table below summarizes the rules enforced by the backfill code.
 
-| Table / backfill configuration                                                                     | Allowed?                            | Example                                                                                                                                                                                                                        | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-|----------------------------------------------------------------------------------------------------|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Standard incremental table, day-partitioned, with a `date_partition_parameter` set                 | ✅ Yes                               | [`addons_derived.amo_stats_dau_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/addons_derived/amo_stats_dau_v1)                                                                             | The common case. `time_partitioning.type: day` with a non-null `date_partition_parameter` (defaults to `submission_date`). Each partition is processed independently.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Month partitioning (`time_partitioning.type: month`)                                               | ✅ Yes                               | [`subscription_platform_derived.monthly_active_logical_subscriptions_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/subscription_platform_derived/monthly_active_logical_subscriptions_v1) | Monthly partitioning is supported (`bigquery.time_partitioning.type: month`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| Unpartitioned table (no `time_partitioning`)                                                       | ✅ Yes                               | [`messaging_system.cfr_users_daily`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/messaging_system/cfr_users_daily)                                                                           | The partitioning check only restricts the type when partitioning is set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Generated SQL (table produced by a `sql_generators/` template)                                     | ✅ Yes                               | [`org_mozilla_firefox_derived.baseline_clients_daily_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1)                                 | Backfills act on the materialized files under `sql/<project>/<dataset>/<table>/`, which are generated into the deployed `sql/` tree (from the `generated-sql` branch) when running the backfill, even though they aren't committed on `main`. In this example only the [`backfill.yaml`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml) is committed; the SQL is generated by [`sql_generators/glean_usage/baseline_clients_daily.py`](https://github.com/mozilla/bigquery-etl/tree/main/sql_generators/glean_usage/baseline_clients_daily.py). |
-| `depends_on_past: true` **with** a non-null `date_partition_parameter`                             | ✅ Yes (special handling)            | [`firefox_accounts_derived.fxa_users_services_devices_first_seen_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_devices_first_seen_v1)         | The query is rewritten to read from the staging table, and the prior partition is seeded into staging first. The entry's `end_date` must be on or after the `entry_date` (override by setting `override_depends_on_past_end_date: true` on the entry).                                                                                                                                                                                                                                                                                                                                                                                              |
-| `query.py` (Python script) table                                                                   | ✅ Yes (with extra config)           | [`monitoring_derived.stable_and_derived_table_sizes_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1)                                   | Requires `query_script_entrypoint` and `query_script_date_arg` on the entry. The staging table and dry run are not auto-configured; see [Backfilling with a Python script](#backfilling-with-a-python-script).                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `shredder_mitigation: true` label on the table                                                     | ✅ Yes (field required)              | [`telemetry_derived.desktop_retention_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/desktop_retention_v1)                                                               | The entry must have `shredder_mitigation: true`; otherwise `initiate` stops. The metadata label and the entry's `shredder_mitigation` value must match.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| Workgroup-restricted (access-controlled) dataset                                                   | ✅ Yes                               |                                                                                                                                                                                                                                | The staging and backup tables will mirror the prod table's IAM policy and its dataset access.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **`depends_on_past: true` with a null `date_partition_parameter`**                                 | ✅ Yes (special handling) | [`telemetry_derived.clients_first_seen_v3`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3)                                                             | A whole-table refresh that depends on its own prior state can't be backfilled one partition at a time, so the normal day-by-day path is rejected by `validate_depends_on_past`. Instead, pass `--reinitialize-table` to rebuild the whole table from its `is_init()` query (the same logic `bqetl query initialize` uses), run in parallel per `sample_id` into staging and swapped in as a full-table replace on complete. Requires the table's `query.sql` to use the `is_init()` pattern. For a targeted single-column fill, an alternative is a per-partition `custom_query_path` backfill with `override_depends_on_past_null_partition: true`. See [Reinitializing a whole table](#reinitializing-a-whole-table) and [Per-partition custom-query backfill](#per-partition-custom-query-backfill-null-date_partition_parameter).                                                                                     |
-| Start date older than the retention limit (smaller of 775 days or the partition `expiration_days`) | ⚠️ Override required                |                                                                                                                                                                                                                                | Rejected unless `override_retention_limit: true` is set on the entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `depends_on_past: true` with `end_date` before the `entry_date`                                    | ⚠️ Override required                |                                                                                                                                                                                                                                | Rejected unless `override_depends_on_past_end_date: true` is set on the entry; a past end date can cause data inconsistencies.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Entry date older than 28 days (`MAX_BACKFILL_ENTRY_AGE_DAYS`)                                      | ❌ No                                |                                                                                                                                                                                                                                | An `Initiate`-status entry this old will not run (staging tables expire). Create a fresh entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| More than one `Initiate`-status entry in a single `backfill.yaml`                                  | ❌ No                                |                                                                                                                                                                                                                                | Only one in-flight backfill per table is allowed at a time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Partitioning type other than day or month (e.g. hour, year, or integer range)                      | ❌ No (no override)                  |                                                                                                                                                                                                                                | Rejected by `validate_partitioning_type`; only day and month partitioning are supported.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Table / backfill configuration                                                                     | Allowed?                  | Example                                                                                                                                                                                                                        | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|----------------------------------------------------------------------------------------------------|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Standard incremental table, day-partitioned, with a `date_partition_parameter` set                 | ✅ Yes                     | [`addons_derived.amo_stats_dau_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/addons_derived/amo_stats_dau_v1)                                                                             | The common case. `time_partitioning.type: day` with a non-null `date_partition_parameter` (defaults to `submission_date`). Each partition is processed independently.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Custom query in place of `query.sql` (`custom_query_path`)                                         | ✅ Yes                     | [`monitoring_derived.event_monitoring_aggregates_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/monitoring_derived/event_monitoring_aggregates_v1/backfill.yaml)                           | Set `custom_query_path` on the entry to run a hand-written query per partition instead of the table's `query.sql`. Used for a "sidefill" (adding or fixing a column by reading the existing table) and other cheaper-than-full recomputes. See [Backfilling with a custom query](#backfilling-with-a-custom-query-sidefills).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Month partitioning (`time_partitioning.type: month`)                                               | ✅ Yes                     | [`subscription_platform_derived.monthly_active_logical_subscriptions_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/subscription_platform_derived/monthly_active_logical_subscriptions_v1) | Monthly partitioning is supported (`bigquery.time_partitioning.type: month`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Unpartitioned table (no `time_partitioning`)                                                       | ✅ Yes                     | [`messaging_system.cfr_users_daily`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/messaging_system/cfr_users_daily)                                                                           | The partitioning check only restricts the type when partitioning is set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Generated SQL (table produced by a `sql_generators/` template)                                     | ✅ Yes                     | [`org_mozilla_firefox_derived.baseline_clients_daily_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1)                                 | Backfills act on the materialized files under `sql/<project>/<dataset>/<table>/`, which are generated into the deployed `sql/` tree (from the `generated-sql` branch) when running the backfill, even though they aren't committed on `main`. In this example only the [`backfill.yaml`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml) is committed; the SQL is generated by [`sql_generators/glean_usage/baseline_clients_daily.py`](https://github.com/mozilla/bigquery-etl/tree/main/sql_generators/glean_usage/baseline_clients_daily.py).                                                                                                                                                                                   |
+| `depends_on_past: true` **with** a non-null `date_partition_parameter`                             | ✅ Yes (special handling)  | [`firefox_accounts_derived.fxa_users_services_devices_first_seen_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_devices_first_seen_v1)         | The query is rewritten to read from the staging table, and the prior partition is seeded into staging first. The entry's `end_date` must be on or after the `entry_date` (override by setting `override_depends_on_past_end_date: true` on the entry).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `query.py` (Python script) table                                                                   | ✅ Yes (with extra config) | [`monitoring_derived.stable_and_derived_table_sizes_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1)                                   | Requires `query_script_entrypoint` and `query_script_date_arg` on the entry. The staging table and dry run are not auto-configured; see [Backfilling with a Python script](#backfilling-with-a-python-script).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `shredder_mitigation: true` label on the table                                                     | ✅ Yes (field required)    | [`telemetry_derived.desktop_retention_v1`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/desktop_retention_v1)                                                               | The entry must have `shredder_mitigation: true`; otherwise `initiate` stops. The metadata label and the entry's `shredder_mitigation` value must match.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Workgroup-restricted (access-controlled) dataset                                                   | ✅ Yes                     |                                                                                                                                                                                                                                | The staging and backup tables will mirror the prod table's IAM policy and its dataset access.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `depends_on_past: true` with a null `date_partition_parameter`                                     | ✅ Yes (special handling)  | [`telemetry_derived.clients_first_seen_v3`](https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3)                                                             | A whole-table refresh that depends on its own prior state can't be backfilled one partition at a time, so the normal day-by-day path is rejected by `validate_depends_on_past`. Instead, pass `--reinitialize-table` to rebuild the whole table from its `is_init()` query (the same logic `bqetl query initialize` uses), run in parallel per `sample_id` into staging and swapped in as a full-table replace on complete. Requires the table's `query.sql` to use the `is_init()` pattern. For a targeted single-column fill, an alternative is a per-partition `custom_query_path` backfill with `override_depends_on_past_null_partition: true`. See [Reinitializing a whole table](#reinitializing-a-whole-table) and [Per-partition custom-query backfill](#per-partition-custom-query-backfill-null-date_partition_parameter). |
+| Start date older than the retention limit (smaller of 775 days or the partition `expiration_days`) | ⚠️ Override required      |                                                                                                                                                                                                                                | Rejected unless `override_retention_limit: true` is set on the entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `depends_on_past: true` with `end_date` before the `entry_date`                                    | ⚠️ Override required      |                                                                                                                                                                                                                                | Rejected unless `override_depends_on_past_end_date: true` is set on the entry; a past end date can cause data inconsistencies.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Entry date older than 28 days (`MAX_BACKFILL_ENTRY_AGE_DAYS`)                                      | ❌ No                      |                                                                                                                                                                                                                                | An `Initiate`-status entry this old will not run (staging tables expire). Create a fresh entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| More than one `Initiate`-status entry in a single `backfill.yaml`                                  | ❌ No                      |                                                                                                                                                                                                                                | Only one in-flight backfill per table is allowed at a time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Partitioning type other than day or month (e.g. hour, year, or integer range)                      | ❌ No (no override)        |                                                                                                                                                                                                                                | Rejected by `validate_partitioning_type`; only day and month partitioning are supported.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 The rejections are enforced by [`validate_table_metadata`](https://github.com/mozilla/bigquery-etl/tree/main/bigquery_etl/backfill/utils.py) in `bigquery_etl/backfill/utils.py`; the date/retention/duplicate checks live in [`bigquery_etl/backfill/validate.py`](https://github.com/mozilla/bigquery-etl/tree/main/bigquery_etl/backfill/validate.py).
 
 ## Testing a backfill in a dev environment
 
 We can't create tables in `moz-fx-data-shared-prod.backfills_staging_derived`, so running
-the full managed backfill workflow locally is only possible with `--target`, which stages into 
+the full managed backfill workflow locally is only possible with `--target`, which stages into
 a test project. We can write to tables that already exist in
 `moz-fx-data-shared-prod.backfills_staging_derived`, so an active backfill can be
 amended by writing to its existing staging table.
@@ -58,8 +94,8 @@ The `backfill.yaml` entry is still read from the repo as usual; only the BigQuer
 locations are redirected. Without `--target`, behavior is unchanged (production backfill).
 
 `query.py` (python script) backfills do not support `--target`. A python-script backfill's
-destination is baked into the entry's `query_script_args` at create time and is not redirected, 
-so running one under `--target` is rejected to avoid writing to the production staging table. 
+destination is baked into the entry's `query_script_args` at create time and is not redirected,
+so running one under `--target` is rejected to avoid writing to the production staging table.
 This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054.
 
 ## Initiating the backfill:
@@ -78,7 +114,7 @@ This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-1005
     For new tables:
       - Set `shredder_mitigation: false` since there is no data yet to safeguard.
       - Backfill and validate your data.
-      - Set `shredder_mitigation: true` to protect the validated data. 
+      - Set `shredder_mitigation: true` to protect the validated data.
     For existing tables:
       - Bump the version of the query.
       - Make the necessary updates to the new version of the query and schema.
@@ -126,7 +162,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to set the backfill staging table if needed, e.g. `--destination_table=dataset__table_v1_YYYY_MM_DD`.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
-When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour.
 The script must implement support for this argument itself.
 
 Example:
@@ -175,11 +211,11 @@ Requirements and notes:
 - The `start_date`/`end_date` still bound the entry, but a reinitialize
   rebuilds every partition the `is_init()` query produces, not just that range.
 - For tables sharded by `sample_id`, parallelism can be batched with the `@sampling_batch_size`
-  parameter, rather than one job per `sample_id`. BigQuery limits partition modifications to 30000 
-  per table per day. A first_seen table like clients_first_seen can have thousands of partitions, 
-  and each per-sample_id query writes to most/all of them. Batching is required to reduce the 
+  parameter, rather than one job per `sample_id`. BigQuery limits partition modifications to 30000
+  per table per day. A first_seen table like clients_first_seen can have thousands of partitions,
+  and each per-sample_id query writes to most/all of them. Batching is required to reduce the
   number of modifications so partition_modifications = num_batches * num_partitions.
-  - The batch size defaults to 20 (5 jobs over 100 sample IDs), which keeps a ~3,700-partition 
+  - The batch size defaults to 20 (5 jobs over 100 sample IDs), which keeps a ~3,700-partition
     table under the 30,000/day cap with headroom for its daily scheduled DAG run; override it with
   `--reinitialize-sampling-batch-size`
   - To use this, the query must constrain `sample_id` with a range clause so a batch of IDs is
@@ -189,6 +225,164 @@ Requirements and notes:
   AND sample_id >= @sample_id
   AND sample_id < @sample_id + @sampling_batch_size
   ```
+
+## Backfilling with a custom query (sidefills)
+
+A backfill entry can set a `custom_query_path` pointing at a `.sql` file that runs in place of the
+table's `query.sql`. The backfill runs it once per partition in the entry's date range, writing
+each result into the staging table, exactly like a normal backfill.
+
+Use this to reduce the cost of a backfill, or to do something other than a full re-run of
+`query.sql`. Some use cases, in rough order of complexity:
+
+1. **Sidefill**: add or fix a column by reading the existing partition and joining the value in.
+2. **Recompute from the existing partitions or a cheaper source**: recompute at the needed grain,
+   but from a smaller input than the original query used.
+3. **Materialize the expensive input once, then sidefill against it**: precompute a
+   repeatedly rescanned input into a helper table and read that instead.
+
+Which one you need depends on how the new or corrected column relates to the table's
+grain and on where the query's cost comes from.
+
+### 1. Sidefill: add or fix a passthrough column
+
+A sidefill works when the new value can be reconstructed from what the existing table already
+stores plus a smaller query against the upstream source, and adding it does not change the table's
+aggregation grain. It `SELECT *`s the existing partition and joins the new column in. For a table
+that's cheap to `SELECT *` from but expensive to build from source, this is cheaper than a full
+re-run.
+
+The query typically looks like a `SELECT *` from the existing table, joined to a small query
+that supplies the new column, filtered to the partition being backfilled:
+
+```sql
+SELECT
+  base.*,
+  new_col.value AS new_column
+FROM
+  `moz-fx-data-shared-prod.<dataset>.<table>` AS base
+LEFT JOIN
+  (
+    SELECT id, value
+    FROM `moz-fx-data-shared-prod.<dataset>.<source_for_new_column>`
+    WHERE submission_date = @submission_date
+  ) AS new_col
+USING (id)
+WHERE
+  base.submission_date = @submission_date
+```
+
+### 2. Recompute from the existing partitions or a cheaper source
+
+If the new column changes the aggregation grain, a sidefill does not work directly: when the
+`GROUP BY` keys change, existing aggregated rows are either split into finer-grained ones or
+combined.
+
+If the new column coarsens the grain (fewer keys), the recompute is a straight re-aggregation
+of the existing partition, which is cheaper than reading the source again:
+
+```sql
+SELECT
+  submission_date,
+  country,
+  SUM(event_count) AS event_count  -- drop the finer key and re-sum
+FROM
+  `moz-fx-data-shared-prod.<dataset>.<table>`
+WHERE
+  submission_date = @submission_date
+GROUP BY
+  submission_date, country
+```
+
+Splitting into a finer grain instead requires understanding the correlations between the existing
+and new columns, so new rows can be computed and unioned with the existing partitions. This is
+often complex or not possible.
+
+The [`event_monitoring_aggregates_v1` backfill](https://github.com/mozilla/bigquery-etl/commit/969845cfdca1c34a00de6b9091b022215120f61f)
+is an example where a custom query is used to compute additional rows that are unioned with
+the existing data.
+
+### 3. Materialize the expensive input once, then sidefill against it
+
+When the costly input is rescanned near-identically for every partition (e.g. a rolling window
+that barely changes day to day), the waste is the repeated scan, not the per-partition work.
+Build that input into a one-time helper table spanning the whole backfill range, then point the
+per-partition custom query at the helper instead of the original source. This trades many
+repeated scans for one, and each per-partition query becomes a cheap sidefill against the helper.
+
+For example, suppose the table stores a 28-day rolling event count per `country`, and each
+partition rescans 28 days of a large `events_v1` table. First, materialize the per-day counts
+once, spanning the whole backfill range plus the 27 days of lookback the first partition needs:
+
+```sql
+CREATE OR REPLACE TABLE `moz-fx-data-shared-prod.analysis.rolling_helper_deng12345` AS
+SELECT
+  submission_date,
+  country,
+  COUNT(*) AS daily_events
+FROM
+  `moz-fx-data-shared-prod.<dataset>.events_v1`
+WHERE
+  submission_date BETWEEN DATE "2024-12-05" AND DATE "2026-01-01"
+GROUP BY
+  submission_date, country
+```
+
+Then the per-partition custom query reads only the small helper for its 28-day window
+instead of the source events:
+
+```sql
+SELECT
+  @submission_date AS submission_date,
+  country,
+  SUM(daily_events) AS rolling_28d_events
+FROM
+  `moz-fx-data-shared-prod.analysis.rolling_helper_deng12345`
+WHERE
+  submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY) AND @submission_date
+GROUP BY
+  country
+```
+
+Drop the helper table once the backfill is validated and completed.
+
+### Configuring a custom query
+
+Create the entry with `--custom-query-path` (repo-root-relative), keeping the custom
+query file next to the table's `query.sql`:
+
+```bash
+bqetl backfill create moz-fx-data-shared-prod.<dataset>.<table> \
+    --start-date 2025-01-01 \
+    --end-date 2026-01-01 \
+    --watcher nobody@mozilla.com \
+    --reason "Add new_column (DENG-12345)" \
+    --custom-query-path sql/moz-fx-data-shared-prod/<dataset>/<table>/backfill_deng12345.sql
+```
+
+This produces an entry with a `custom_query_path` field:
+
+```yaml
+2026-01-01:
+  start_date: 2025-01-01
+  end_date: 2026-01-01
+  reason: https://mozilla-hub.atlassian.net/browse/DENG-12345
+  watchers:
+  - nobody@mozilla.com
+  status: Initiate
+  custom_query_path: sql/moz-fx-data-shared-prod/<dataset>/<table>/backfill_deng12345.sql
+```
+
+Requirements and notes:
+
+- The custom query must use the base query's date parameter (e.g. `@submission_date`) and
+  filter to that partition, since the backfill runs it once per date in the range.
+- The output schema must be compatible with the table's `schema.yaml`. On `validate` with
+  `--dry-run-custom-query`, the query is dry run and its schema is checked against `schema.yaml`.
+- For `depends_on_past` tables, references to the production table inside the custom
+  query are rewritten to read from the staging table instead.
+- A `.py` custom query is also supported (syntax checked on validate); it needs
+  `query_script_entrypoint` and `query_script_date_arg`, like a Python-script table.
 
 ## Per-partition custom-query backfill (null `date_partition_parameter`):
 
@@ -228,6 +422,7 @@ on `complete`, those partitions are copied into production individually. Require
 
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
    - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
+   - If the staging table is wrong, or you otherwise decide not to complete the backfill, set the entry's status to `Cancelled` in a Pull Request rather than `Complete`. Nothing is swapped into production, and the staging table is left to expire on its own (default 30 days). Do not manually delete it. To retry, create a fresh entry once the fix is ready.
 
 2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
 

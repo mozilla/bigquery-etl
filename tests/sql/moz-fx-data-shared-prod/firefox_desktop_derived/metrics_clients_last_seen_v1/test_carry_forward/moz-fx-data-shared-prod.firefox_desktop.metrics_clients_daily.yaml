@@ -1,0 +1,21 @@
+---
+- submission_date: 2023-01-02
+  client_id: d-matched
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 2
+  days_sent_metrics_ping_bits: 1
+  profile_group_id: pg-B
+  search_with_ads_count_all: 7
+  search_count_all: 15
+  ad_clicks_count_all: 3
+- submission_date: 2023-01-02
+  client_id: d-new
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 1
+  profile_group_id: pg-C
+  search_with_ads_count_all: 1
+  search_count_all: 2
+  ad_clicks_count_all: 0

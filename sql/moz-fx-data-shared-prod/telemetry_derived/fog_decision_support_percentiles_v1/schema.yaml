@@ -8,6 +8,8 @@ fields:
 - mode: NULLABLE
   name: ping
   type: STRING
+  description: The name of the ping the percentiles were computed from (one of 'metrics', 'baseline', or
+    'main').
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -23,12 +25,20 @@ fields:
 - mode: REPEATED
   name: percentiles
   type: INTEGER
+  description: An array of approximate quantile boundaries of the metric value, computed with APPROX_QUANTILES
+    into 20 buckets (21 values spanning the 0th to 100th percentile in 5-point increments).
 - mode: NULLABLE
   name: mean
   type: FLOAT
+  description: The arithmetic mean of the metric value across the metric's observations for the given channel
+    and metric_name.
 - mode: NULLABLE
   name: std_dev
   type: FLOAT
+  description: The standard deviation of the metric value across the metric's observations for the given
+    channel and metric_name.
 - mode: NULLABLE
   name: median
   type: INTEGER
+  description: The median (50th percentile, via PERCENTILE_DISC) of the metric value across the metric's
+    observations for the given channel and metric_name.

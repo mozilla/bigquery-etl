@@ -96,6 +96,13 @@ def add_job_metadata(client: bigquery.Client, job: dict) -> Optional[dict]:
 
     if job["deleted_row_count"] is None:
         table = f'{job["project_id"]}.{job["dataset_id"]}.{job["table_id"]}'
+        job_id = job["job_id"]
+        start_time = datetime.datetime.fromtimestamp(
+            job["start_time_millis"] / 1000, tz=datetime.timezone.utc
+        ).isoformat()
+        end_time = datetime.datetime.fromtimestamp(
+            job["end_time_millis"] / 1000, tz=datetime.timezone.utc
+        ).isoformat()
         try:
             is_glean_v2 = (
                 re.fullmatch(r"[a-z0-9_]+_v2\$[0-9]{8}", job["table_id"])
@@ -115,12 +122,27 @@ def add_job_metadata(client: bigquery.Client, job: dict) -> Optional[dict]:
             after = client.get_table(f'{table}@{job["end_time_millis"]}').num_rows
         except exceptions.NotFound:
             print(
-                f"Could not get table {table}, table may have been deleted since the job ran."
+                f"Could not get a snapshot of table {table} for shredder job {job_id}, "
+                f"table may have been deleted since the job ran. "
+                f"Snapshot timestamps: start={start_time}, end={end_time}."
             )
             return None
+        except Exception as e:
+            print(
+                f"Error computing deleted_row_count for table {table} "
+                f"(shredder job {job_id}): {type(e).__name__}: {e}"
+            )
+            raise
         job["deleted_row_count"] = count = before - after
         if count < 0:
-            raise ValueError(f"deleted_row_count must be >= 0, but got: {count}")
+            raise ValueError(
+                f"deleted_row_count must be >= 0, but got {count} for table {table} "
+                f"(shredder job {job_id}, is_glean_v2={bool(is_glean_v2)}): "
+                f"before={before} rows at start_time {start_time}, "
+                f"after={after} rows at end_time {end_time}. "
+                f"This usually means rows were added to the partition between the "
+                f"snapshot timestamps rather than deleted."
+            )
     # Use v1 table name in the output table for continuity
     if is_glean_v2:
         job["table_id"] = job["table_id"].replace("_v2$", "_v1$")

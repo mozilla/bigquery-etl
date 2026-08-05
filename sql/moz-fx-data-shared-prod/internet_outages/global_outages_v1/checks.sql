@@ -13,6 +13,12 @@
 
   "avg_tls_handshake_time"
   "count_dns_failure"
+
+  Same reason, see bug 2054553: `avg_dns_failure_time` is LEFT JOINed
+  from the `dns_failure_time` CTE, which filters `key > 0` and requires
+  more than 50 rows per group, so it is NULL for sparse city/hour cells.
+
+  "avg_dns_failure_time"
 */
 {{ not_null(columns=[
   "datetime",
@@ -26,7 +32,6 @@
   "proportion_channel_open",
   "avg_dns_success_time",
   "missing_dns_success",
-  "avg_dns_failure_time",
   "missing_dns_failure",
   "ssl_error_prop",
 

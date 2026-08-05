@@ -26,6 +26,7 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
+    - country
     - layout
     - position
     - tile_format

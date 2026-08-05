@@ -21,6 +21,7 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:00:00+00:00
   version: "94"
+
   experiments:
     - slug: suggest-exp
       branch: control
@@ -46,6 +47,7 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:07:00+00:00
   version: "94"
+
   experiments:
     - slug: suggest-exp
       branch: control
@@ -71,6 +73,7 @@
   submission_timestamp: "2021-01-01T13:01:00+00:00"
   timestamp: "2021-01-01T13:01:00+00:00"
   version: "134"
+  match_type: "firefox-suggest"
   experiments:
     - slug: glean-exp
       branch: treatment
@@ -96,6 +99,7 @@
   submission_timestamp: "2021-01-01T13:02:00+00:00"
   timestamp: "2021-01-01T13:02:00+00:00"
   version: "134"
+  match_type: "best-match"
   experiments:
     - slug: glean-exp
       branch: treatment
@@ -123,6 +127,7 @@
   submission_timestamp: "2021-01-01T13:06:00+00:00"
   timestamp: "2021-01-01T12:05:00+00:00"
   version: "94"
+
   experiments:
     - slug: overlap-exp
       branch: legacy-wins
@@ -140,6 +145,7 @@
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
   version: "134"
+  match_type: "firefox-suggest"
   experiments:
     - slug: glean-exp
       branch: treatment
@@ -166,6 +172,7 @@
   submission_timestamp: "2021-01-01T13:20:30+00:00"
   timestamp: "2021-01-01T13:21:00+00:00"
   version: "94"
+
   experiments:
     - slug: suggest-exp
       branch: control
@@ -192,6 +199,7 @@
   submission_timestamp: "2021-01-01T13:31:00+00:00"
   timestamp: "2021-01-01T13:33:00+00:00"
   version: "134"
+  match_type: "best-match"
   experiments:
     - slug: glean-dup-exp
       branch: wins
@@ -219,6 +227,7 @@
   telemetry_query: "best shoes"
   timestamp: "2021-01-01T13:40:00+00:00"
   version: "94"
+
   experiments:
     - slug: suggest-exp
       branch: control

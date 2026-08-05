@@ -70,6 +70,9 @@ fields:
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_dlsource
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
@@ -85,6 +88,9 @@ fields:
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_ua
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
@@ -166,6 +172,9 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: windows_build_number
 - name: windows_version
   type: STRING
   mode: NULLABLE

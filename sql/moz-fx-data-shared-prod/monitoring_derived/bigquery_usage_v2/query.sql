@@ -30,7 +30,8 @@ WITH jobs_by_org AS (
     query_info_resource_warning AS resource_warning,
     bi_engine_mode,
     acceleration_mode,
-    bi_engine_reasons
+    bi_engine_reasons,
+    labels,
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS jobs
   LEFT JOIN
@@ -51,7 +52,6 @@ jobs_by_project AS (
       user_email,
       REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
       REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
-      labels,
       UPPER(
         LTRIM(REGEXP_REPLACE(query, r'\s+', ' '))
       ) LIKE 'CALL BQ.REFRESH_MATERIALIZED_VIEW%' AS is_materialized_view_refresh,
@@ -90,7 +90,7 @@ SELECT DISTINCT
   jo.error_message,
   jo.resource_warning,
   @submission_date AS submission_date,
-  jp.labels,
+  jo.labels,
   jp.is_materialized_view_refresh,
   jo.bi_engine_mode,
   jo.acceleration_mode,

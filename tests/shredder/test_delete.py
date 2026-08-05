@@ -2,7 +2,8 @@ import datetime
 from functools import partial
 from unittest.mock import ANY, Mock, patch
 
-from google.api_core.exceptions import NotFound
+import pytest
+from google.api_core.exceptions import BadRequest, NotFound
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema
@@ -136,6 +137,7 @@ def test_delete_from_partition_with_sampling(mock_delete_from_partition):
             clustering_fields=ANY,
             check_table_existence=True,
             sample_id_range=(i, i),
+            dest_partition_nonempty=False,
             task_id=f"{base_task_id}__sample_{i}_{i}",
         )
 
@@ -174,8 +176,206 @@ def test_delete_from_partition_with_sampling_batch_size(mock_delete_from_partiti
             clustering_fields=ANY,
             check_table_existence=True,
             sample_id_range=(i, i + batch_size - 1),
+            dest_partition_nonempty=False,
             task_id=f"{base_task_id}__sample_{i}_{i + batch_size - 1}",
         )
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_column_removal(mock_delete_from_partition):
+    """
+    With column_removal_backfill, sampling should copy the intermediate tables into the
+    v2 partition and match their clustering to the v2 table, mirroring the non-column
+    removal path (which copies into and clusters by the same table it reads).
+    """
+    base_task_id = "proj.dataset.table_v1"
+
+    # each per-sample delete_from_partition returns a task producing an intermediate table
+    def make_task(**kwargs):
+        return lambda client: Mock(
+            destination=f"proj.tmp.intermediate_{kwargs['sample_id_range'][0]}",
+            total_bytes_processed=1,
+        )
+
+    mock_delete_from_partition.side_effect = make_task
+
+    args = {**COMMON_DELETE_ARGS, "dry_run": False, "column_removal_backfill": True}
+
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **args,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=1,
+        dest_partition_nonempty=True,
+        task_id=base_task_id,
+    )
+
+    mock_client = Mock()
+
+    job_function = wait_for_job.keywords["create_job"]
+    job_function(mock_client)
+
+    # per-sample queries read/write with column removal enabled
+    for i in range(100):
+        mock_delete_from_partition.assert_any_call(
+            **args,
+            partition=shredder_delete.Partition(
+                id="20240101", condition="", is_special=False
+            ),
+            clustering_fields=ANY,
+            check_table_existence=True,
+            sample_id_range=(i, i),
+            dest_partition_nonempty=True,
+            task_id=f"{base_task_id}__sample_{i}_{i}",
+        )
+
+    v2_table_id = shredder_delete.sql_table_id(COMMON_DELETE_ARGS["target"]).replace(
+        "_v1", "_v2"
+    )
+
+    # clustering is read from the base v2 table (its partition may not exist yet)
+    mock_client.get_table.assert_called_once_with(v2_table_id)
+
+    # intermediates are copied into the v2 partition, not v1
+    assert (
+        mock_client.copy_table.call_args.kwargs["destination"]
+        == f"{v2_table_id}$20240101"
+    )
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_copy_succeeds(mock_delete_from_partition):
+    """
+    When the copy succeeds, intermediate table schemas are left untouched (no schema
+    conforming, i.e. no get_table/update_table calls for reconciliation).
+    """
+    mock_delete_from_partition.side_effect = lambda **kwargs: lambda client: Mock(
+        destination=f"proj.tmp.intermediate_{kwargs['sample_id_range'][0]}",
+        total_bytes_processed=1,
+    )
+
+    args = {**COMMON_DELETE_ARGS, "dry_run": False}
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **args,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=1,
+        task_id="proj.dataset.table_v1",
+    )
+
+    mock_client = Mock()
+    # get_table (for clustering) returns a normal table; copy succeeds
+    mock_client.get_table.return_value = Mock(clustering_fields=None)
+
+    wait_for_job.keywords["create_job"](mock_client)
+
+    # single copy attempt, and no schema reconciliation
+    assert mock_client.copy_table.call_count == 1
+    assert mock_client.update_table.call_count == 0
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_conforms_on_copy_failure(
+    mock_delete_from_partition,
+):
+    """
+    If the copy fails with a schema mismatch, the intermediate tables are conformed
+    to the destination table's schema and the copy is retried, without requerying.
+    """
+    mock_delete_from_partition.side_effect = lambda **kwargs: lambda client: Mock(
+        destination=f"proj.tmp.intermediate_{kwargs['sample_id_range'][0]}",
+        total_bytes_processed=1,
+    )
+
+    args = {**COMMON_DELETE_ARGS, "dry_run": False}
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **args,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=1,
+        task_id="proj.dataset.table_v1",
+    )
+
+    # destination table schema is the superset the intermediates get conformed to
+    destination_schema = Schema(
+        {"fields": [{"name": "client_id", "type": "STRING", "mode": "NULLABLE"}]}
+    ).to_bigquery_schema()
+
+    mock_client = Mock()
+
+    # every intermediate table read during conforming has a schema different from
+    # the destination, so each gets an update
+    destination_table_id = shredder_delete.sql_table_id(COMMON_DELETE_ARGS["target"])
+
+    def get_table(table_id):
+        if table_id == destination_table_id:
+            return Mock(schema=destination_schema, clustering_fields=None)
+        return Mock(schema=[])  # intermediate table, differs from destination
+
+    mock_client.get_table.side_effect = get_table
+
+    # first copy fails with a schema mismatch, second succeeds
+    first_copy = Mock()
+    first_copy.result.side_effect = BadRequest("Incompatible table schemata")
+    second_copy = Mock()
+    mock_client.copy_table.side_effect = [first_copy, second_copy]
+
+    result = wait_for_job.keywords["create_job"](mock_client)
+
+    # copy was retried after conforming
+    assert mock_client.copy_table.call_count == 2
+    # all 100 intermediate tables were conformed to the destination schema
+    assert mock_client.update_table.call_count == 100
+    for call in mock_client.update_table.call_args_list:
+        table_arg, fields_arg = call.args
+        assert table_arg.schema == destination_schema
+        assert fields_arg == ["schema"]
+    # the retried (successful) copy job is returned
+    assert result is second_copy
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_reraises_other_bad_request(
+    mock_delete_from_partition,
+):
+    """
+    A copy failure that isn't a schema mismatch is re-raised without conforming
+    schemas or retrying, so unrelated errors aren't masked by a misleading retry.
+    """
+    mock_delete_from_partition.side_effect = lambda **kwargs: lambda client: Mock(
+        destination=f"proj.tmp.intermediate_{kwargs['sample_id_range'][0]}",
+        total_bytes_processed=1,
+    )
+
+    args = {**COMMON_DELETE_ARGS, "dry_run": False}
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **args,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=1,
+        task_id="proj.dataset.table_v1",
+    )
+
+    mock_client = Mock()
+    mock_client.get_table.return_value = Mock(clustering_fields=None)
+    failed_copy = Mock()
+    failed_copy.result.side_effect = BadRequest("Cannot read a table without a schema")
+    mock_client.copy_table.return_value = failed_copy
+
+    with pytest.raises(BadRequest):
+        wait_for_job.keywords["create_job"](mock_client)
+
+    # no conforming, no retry
+    assert mock_client.copy_table.call_count == 1
+    assert mock_client.update_table.call_count == 0
 
 
 @patch("bigquery_etl.shredder.delete.list_partitions")
@@ -458,6 +658,57 @@ def test_delete_from_partition_with_column_removal_true():
     """)
 
     assert mock_client.query.call_args.args[0].startswith(reformat(expected_query))
+    assert (
+        str(mock_client.query.call_args.kwargs["job_config"].destination)
+        == "test_project.firefox.metrics_v2$20260101"
+    )
+
+
+def test_delete_from_partition_column_removal_reads_v2_when_nonempty():
+    """
+    When the v2 partition is already populated, column_removal_backfill should read
+    from v2 with SELECT _target.* instead of reseeding from v1. This keeps deletions
+    from earlier runs from coming back once the requests age out of the source window.
+    """
+    mock_client = Mock()
+
+    delete_func = delete_from_partition(
+        dry_run=True,
+        partition=Partition(condition="", id="20260101"),
+        priority="INTERACTIVE",
+        source_condition="",
+        sources=[
+            DeleteSource(
+                project="test_project",
+                field="client_id",
+                table="firefox.deletion_request_v1",
+            )
+        ],
+        target=DeleteTarget(
+            project="test_project", field="client_id", table="firefox.metrics_v1"
+        ),
+        use_dml=True,
+        column_removal_backfill=True,
+        dest_partition_nonempty=True,
+        task_id="test",
+        states={},
+        state_table=None,
+        start_date=None,
+        end_date=None,
+    )
+
+    delete_func(mock_client)
+
+    assert mock_client.query.call_count == 1
+    # reading from an already-populated v2 partition needs no schema lookup
+    mock_client.get_table.assert_not_called()
+
+    query = mock_client.query.call_args.args[0]
+    assert query.startswith(reformat("""
+            SELECT
+              _target.*,
+            FROM `test_project.firefox.metrics_v2` AS _target
+            """))
     assert (
         str(mock_client.query.call_args.kwargs["job_config"].destination)
         == "test_project.firefox.metrics_v2$20260101"

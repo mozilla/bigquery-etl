@@ -65,6 +65,7 @@ def create_query(job_date: date, project: str):
           bi_engine_statistics.bi_engine_mode AS bi_engine_mode,
           bi_engine_statistics.acceleration_mode AS acceleration_mode,
           bi_engine_statistics.bi_engine_reasons AS bi_engine_reasons,
+          labels,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE

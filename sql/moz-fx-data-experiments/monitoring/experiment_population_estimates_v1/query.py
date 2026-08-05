@@ -186,12 +186,7 @@ def write_to_bigquery(
     Truncates the day partition before writing so retries are idempotent.
     """
     client = bigquery.Client(project=project)
-    computed_at = datetime(
-        submission_date.year,
-        submission_date.month,
-        submission_date.day,
-        tzinfo=timezone.utc,
-    )
+    computed_at = datetime.now(timezone.utc)
     rows = [
         {
             "slug": slug,
@@ -204,7 +199,8 @@ def write_to_bigquery(
     if not rows:
         return
 
-    partition_decorator = submission_date.strftime("%Y%m%d")
+    # Partition decorator must match computed_at's date so BQ accepts the rows.
+    partition_decorator = computed_at.strftime("%Y%m%d")
     table_ref = f"{project}.{dataset}.{table}${partition_decorator}"
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,

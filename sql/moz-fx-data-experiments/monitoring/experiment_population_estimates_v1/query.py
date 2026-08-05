@@ -186,12 +186,7 @@ def write_to_bigquery(
     Truncates the day partition before writing so retries are idempotent.
     """
     client = bigquery.Client(project=project)
-    computed_at = datetime(
-        submission_date.year,
-        submission_date.month,
-        submission_date.day,
-        tzinfo=timezone.utc,
-    )
+    computed_at = datetime.now(timezone.utc)
     rows = [
         {
             "slug": slug,

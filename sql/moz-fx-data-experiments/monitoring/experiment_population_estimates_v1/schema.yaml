@@ -3,10 +3,6 @@ fields:
   type: STRING
   mode: REQUIRED
   description: Experiment slug from Experimenter.
-- name: submission_date
-  type: DATE
-  mode: REQUIRED
-  description: The DAG execution date (--date argument). Used for partitioning.
 - name: eligible_count
   type: INTEGER
   mode: NULLABLE

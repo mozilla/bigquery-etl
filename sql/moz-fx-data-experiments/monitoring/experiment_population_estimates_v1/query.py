@@ -190,7 +190,6 @@ def write_to_bigquery(
     rows = [
         {
             "slug": slug,
-            "submission_date": submission_date.isoformat(),
             "eligible_count": data["eligible_count"],
             "warnings": data["warnings"],
             "computed_at": computed_at.isoformat(),
@@ -200,13 +199,13 @@ def write_to_bigquery(
     if not rows:
         return
 
-    partition_decorator = submission_date.strftime("%Y%m%d")
+    # Partition decorator must match computed_at's date so BQ accepts the rows.
+    partition_decorator = computed_at.strftime("%Y%m%d")
     table_ref = f"{project}.{dataset}.{table}${partition_decorator}"
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         schema=[
             bigquery.SchemaField("slug", "STRING", mode="REQUIRED"),
-            bigquery.SchemaField("submission_date", "DATE", mode="REQUIRED"),
             bigquery.SchemaField("eligible_count", "INTEGER"),
             bigquery.SchemaField("warnings", "STRING", mode="REPEATED"),
             bigquery.SchemaField("computed_at", "TIMESTAMP", mode="REQUIRED"),

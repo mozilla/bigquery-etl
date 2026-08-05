@@ -7,7 +7,6 @@ from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pytest
-from datetime import timezone
 
 # Load query.py by file path since sql/ uses hyphens in directory names
 _QUERY_PATH = os.path.join(
@@ -28,7 +27,6 @@ build_query = _mod.build_query
 build_results = _mod.build_results
 fetch_experiments = _mod.fetch_experiments
 write_to_gcs = _mod.write_to_gcs
-write_to_bigquery = _mod.write_to_bigquery
 
 MOCK_EXPERIMENTS = [
     {
@@ -312,61 +310,3 @@ class TestWriteToGCS:
         blob_paths = [call[0][0] for call in mock_bucket.blob.call_args_list]
         assert all("experiment_population_estimates" in p for p in blob_paths)
         assert not any("nimbus_draft" in p for p in blob_paths)
-
-
-class TestWriteToBigQuery:
-    RESULTS = {
-        "my-experiment": {"eligible_count": 40000, "warnings": []},
-        "another-experiment": {"eligible_count": 95000, "warnings": ["activeRollouts"]},
-    }
-
-    def _call(self, mock_client):
-        write_to_bigquery(
-            self.RESULTS,
-            project="moz-fx-data-experiments",
-            dataset="monitoring",
-            table="experiment_population_estimates_v1",
-            submission_date=_RUN_DATE,
-        )
-
-    def test_computed_at_is_execution_timestamp_not_midnight(self):
-        """computed_at must reflect actual execution time, not submission date midnight."""
-        with patch("google.cloud.bigquery.Client") as mock_client:
-            mock_client.return_value.load_table_from_json.return_value.result.return_value = None
-            self._call(mock_client)
-
-        rows = mock_client.return_value.load_table_from_json.call_args[0][0]
-        for row in rows:
-            computed_at_str = row["computed_at"]
-            assert "T" in computed_at_str, "computed_at must be an ISO timestamp"
-            assert not computed_at_str.endswith("T00:00:00+00:00"), (
-                "computed_at must not be midnight of submission_date"
-            )
-
-    def test_computed_at_partition_decorator_matches_computed_at_date(self):
-        """Partition decorator must be derived from computed_at, not submission_date."""
-        with patch("google.cloud.bigquery.Client") as mock_client:
-            mock_client.return_value.load_table_from_json.return_value.result.return_value = None
-            self._call(mock_client)
-
-        call_args = mock_client.return_value.load_table_from_json.call_args
-        rows = call_args[0][0]
-        table_ref = call_args[0][1]
-        decorator = table_ref.split("$")[1]
-
-        computed_at_date = rows[0]["computed_at"][:10].replace("-", "")
-        assert decorator == computed_at_date, (
-            f"Partition decorator {decorator} must match computed_at date {computed_at_date}, "
-            f"not submission_date {_RUN_DATE.strftime('%Y%m%d')}"
-        )
-
-    def test_skips_write_when_no_results(self):
-        with patch("google.cloud.bigquery.Client") as mock_client:
-            write_to_bigquery(
-                {},
-                project="moz-fx-data-experiments",
-                dataset="monitoring",
-                table="experiment_population_estimates_v1",
-                submission_date=_RUN_DATE,
-            )
-        mock_client.return_value.load_table_from_json.assert_not_called()

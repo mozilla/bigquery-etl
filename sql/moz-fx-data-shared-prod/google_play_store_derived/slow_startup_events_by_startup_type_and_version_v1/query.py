@@ -1,13 +1,15 @@
-# Load libraries
-from datetime import datetime, timedelta
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
-import requests
-from argparse import ArgumentParser
-from google.cloud import bigquery
-import pandas as pd
-import os
+"""Job to import slow_startup_events_by_startup_type_and_version_v1 from Google Play Store into BQ."""
+
 import json
+import os
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
+
+import pandas as pd
+import requests
+from google.auth.transport.requests import Request
+from google.cloud import bigquery
+from google.oauth2 import service_account
 
 # Set variables
 TARGET_PROJECT = "moz-fx-data-shared-prod"
@@ -28,7 +30,7 @@ PAGE_SIZE_LIMIT = 5000
 
 
 def create_request_payload_using_logical_dag_date(date_to_pull_data_for, pg_size_limit):
-    """Input: datetime.date, Output: JSON for request payload that pulls data for that same day"""
+    """Input: datetime.date, Output: JSON for request payload that pulls data for that same day."""
     # Get the date to pull data for, as year, month day
     date_to_pull_data_for_yr = date_to_pull_data_for.year
     date_to_pull_data_for_month = date_to_pull_data_for.month
@@ -66,40 +68,43 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for, pg_size
 def get_slow_start_rates_by_app_and_date_and_version(
     access_token, app_name, request_payload, timeout_seconds
 ):
-    """Call the API URL using the given credentials and the given timeout limit
+    """
+    Call the API URL using the given credentials and the given timeout limit.
+
     Inputs:
     * Access Token
     * Timeout Seconds (int)
     Outputs:
-    * API call response"""
+    * API call response
+    """
     api_url = f"https://playdeveloperreporting.googleapis.com/v1beta1/apps/{app_name}/slowStartRateMetricSet:query"
     headers = {"Authorization": f"Bearer {access_token}", "Accept": "application/json"}
     response = requests.post(
         api_url, headers=headers, json=request_payload, timeout=timeout_seconds
     )
-    return response
+
+    response.raise_for_status()
+    return response.json()
 
 
 def main():
-    """Call the API, save data to GCS, write data to BQ"""
+    """Call the API, save data to GCS, write data to BQ."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
 
     # Get the DAG logical run date
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-    print("logical_dag_date")
-    print(logical_dag_date)
     logical_dag_date_string = logical_dag_date.strftime("%Y-%m-%d")
     print("logical_dag_date_string: ", logical_dag_date_string)
 
     # Get 2 days prior - we always will pull data for the previous day
     data_pull_date = logical_dag_date - timedelta(days=1)
     data_pull_date_string = data_pull_date.strftime("%Y-%m-%d")
-    print("data_pull_date")
-    print(data_pull_date)
-    print("data_pull_date_string")
-    print(data_pull_date_string)
+
+    print(
+        f"Pull date: `{data_pull_date}`, data_pull_date_string: `{data_pull_date_string}`"
+    )
 
     # Get credentials
     service_account_info = json.loads(os.getenv("GOOGLE_PLAY_STORE_SRVC_ACCT_INFO"))
@@ -129,23 +134,28 @@ def main():
     for app in APP_NAMES:
         print("Pulling data for: ", app)
 
-        api_call_result = get_slow_start_rates_by_app_and_date_and_version(
+        # Get the data from the result
+        result_json = get_slow_start_rates_by_app_and_date_and_version(
             access_token=access_credentials,
             app_name=app,
             request_payload=payload_for_api_call,
             timeout_seconds=TIMEOUT_IN_SECONDS,
         )
 
-        # Get the data from the result
-        result_json = api_call_result.json()
-
         # Code only set to handle 1 page, error out if more than 1 so it can be fixed
         if "nextPageToken" in result_json:
             raise NotImplementedError("Parsing for next page is not implemented yet.")
 
-        # Loop through each row
-        for row in result_json["rows"]:
+        rows = result_json.get("rows")
 
+        if not rows:
+            print(
+                f"WARNING: No data found for app: `{app}` and date: `{data_pull_date_string}`"
+            )
+            continue
+
+        # Loop through each row
+        for row in rows:
             # Initialize as none until we find them for each app
             version_code = None
             startup_type = None

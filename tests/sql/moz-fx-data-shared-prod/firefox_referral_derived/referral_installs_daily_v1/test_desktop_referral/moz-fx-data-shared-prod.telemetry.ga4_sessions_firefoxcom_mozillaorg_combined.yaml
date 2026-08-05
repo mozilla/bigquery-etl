@@ -1,0 +1,20 @@
+# ga1: code in manual_content. ga2: code in first_content_from_event_params.
+# ga3: an organic session with no referral code -> should not contribute.
+- ga_client_id: "ga1"
+  session_date: "2026-07-20"
+  manual_content: "fxrefer:TESTCODE01"
+  first_content_from_event_params: null
+  all_reported_stub_session_ids:
+  - "s1"
+- ga_client_id: "ga2"
+  session_date: "2026-07-21"
+  manual_content: null
+  first_content_from_event_params: "fxrefer:TESTCODE01"
+  all_reported_stub_session_ids:
+  - "s2"
+- ga_client_id: "ga3"
+  session_date: "2026-07-21"
+  manual_content: "(not set)"
+  first_content_from_event_params: null
+  all_reported_stub_session_ids:
+  - "s3"

@@ -53,3 +53,7 @@ fields:
   name: is_clicked
   type: BOOLEAN
   description: Whether the suggest result was clicked by the user.
+- mode: NULLABLE
+  name: version
+  type: STRING
+  description: Major version of Firefox installed on the device (e.g. "155").

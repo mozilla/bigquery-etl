@@ -1,3 +1,11 @@
+2026-07-30:
+  start_date: 2025-11-03
+  end_date: 2026-07-29
+  reason: 'Bug 2057822'
+  watchers:
+  - efilho@mozilla.com
+  status: Complete
+
 2025-11-03:
   start_date: 2025-01-01
   end_date: 2025-11-02

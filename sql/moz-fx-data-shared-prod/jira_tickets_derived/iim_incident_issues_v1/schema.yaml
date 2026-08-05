@@ -20,3 +20,65 @@ fields:
 - name: resolved
   type: TIMESTAMP
   mode: NULLABLE
+- name: updated
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the issue was last modified, normalized to UTC.
+- name: affected_entities
+  type: STRING
+  mode: NULLABLE
+  description: Free-text list of services or systems the incident affected, e.g. phabricator.
+- name: severity
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Incident severity as shown on the incident form, e.g. S3. Sourced from
+    customfield_10319, not the similarly named Severity Level or Requested
+    Severity Level fields.
+- name: detection_method
+  type: STRING
+  mode: NULLABLE
+  description: How the incident was found, e.g. Automation or Manual.
+- name: declare_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the incident was declared.
+- name: impact_start
+  type: DATETIME
+  mode: NULLABLE
+  description: >-
+    When customer impact began. Wall-clock with no timezone, as recorded in the
+    incident report; see the note on the timing fields below.
+- name: time_declared
+  type: DATETIME
+  mode: NULLABLE
+  description: >-
+    When the incident was declared. One of the free-text timing fields: recorded
+    as a zone-less wall-clock value in the incident report and synced to Jira, so
+    it is stored as DATETIME rather than TIMESTAMP. Values are normalized to
+    YYYY-MM-DD HH:MM:SS, and anything unparseable is NULL rather than failing the
+    load. These are backfilled from the report, so they can predate the ticket.
+- name: time_detected
+  type: DATETIME
+  mode: NULLABLE
+  description: When the incident was detected. See time_declared for the timing-field caveats.
+- name: time_alerted
+  type: DATETIME
+  mode: NULLABLE
+  description: When an alert fired. See time_declared for the timing-field caveats.
+- name: time_acknowledged
+  type: DATETIME
+  mode: NULLABLE
+  description: When a responder acknowledged. See time_declared for the timing-field caveats.
+- name: time_responded
+  type: DATETIME
+  mode: NULLABLE
+  description: When response began. See time_declared for the timing-field caveats.
+- name: time_mitigated
+  type: DATETIME
+  mode: NULLABLE
+  description: When impact was mitigated. See time_declared for the timing-field caveats.
+- name: time_resolved
+  type: DATETIME
+  mode: NULLABLE
+  description: When the incident was resolved. See time_declared for the timing-field caveats.

@@ -190,6 +190,7 @@ def write_to_bigquery(
     rows = [
         {
             "slug": slug,
+            "submission_date": submission_date.isoformat(),
             "eligible_count": data["eligible_count"],
             "warnings": data["warnings"],
             "computed_at": computed_at.isoformat(),
@@ -205,6 +206,7 @@ def write_to_bigquery(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         schema=[
             bigquery.SchemaField("slug", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("submission_date", "DATE", mode="REQUIRED"),
             bigquery.SchemaField("eligible_count", "INTEGER"),
             bigquery.SchemaField("warnings", "STRING", mode="REPEATED"),
             bigquery.SchemaField("computed_at", "TIMESTAMP", mode="REQUIRED"),

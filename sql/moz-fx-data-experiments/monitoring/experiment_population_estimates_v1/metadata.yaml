@@ -30,7 +30,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: computed_at
+    field: submission_date
     require_partition_filter: false
     expiration_days: 90
   clustering:

@@ -35,8 +35,7 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
     date_to_pull_data_for_month = date_to_pull_data_for.month
     date_to_pull_data_for_day = date_to_pull_data_for.day
 
-    # Add 1 day to date to pull data for
-    end_date = date_to_pull_data_for + timedelta(days=1)
+    end_date = date_to_pull_data_for
 
     day_after_date_to_pull_data_for_yr = end_date.year
     day_after_date_to_pull_data_for_month = end_date.month

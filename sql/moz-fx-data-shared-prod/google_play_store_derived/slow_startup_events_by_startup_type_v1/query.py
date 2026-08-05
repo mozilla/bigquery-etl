@@ -11,7 +11,6 @@ from google.auth.transport.requests import Request
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
-# Set variables
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
@@ -82,7 +81,14 @@ def get_slow_start_rates_by_app_and_date(
         api_url, headers=headers, json=request_payload, timeout=timeout_seconds
     )
 
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        error_message = f"Request to: {response.url} failed with the following error: {response.json()}"
+        print(error_message)
+
+        raise requests.exceptions.HTTPError(error_message) from None
+
     return response.json()
 
 

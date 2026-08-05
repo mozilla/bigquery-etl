@@ -339,6 +339,67 @@ metrics_ping AS (
     normalized_channel
 )
 {% endif %}
+{% if 'adjust_attribution' in product_attribution_group_pings and app_name == 'fenix' %}
+, adjust_attribution_ping_base AS (
+  SELECT
+    client_info.client_id AS client_id,
+    sample_id,
+    normalized_channel,
+    submission_timestamp,
+    ping_info.seq AS ping_seq,
+    {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
+      {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
+        NULLIF(metrics.string.{{ field.name.replace('adjust_', 'adjust_attribution_').replace('_ad_group', '_adgroup') }}, "") AS {{ field.name }},
+      {% endfor %}
+    {% endfor %}
+  FROM
+    `moz-fx-data-shared-prod.{{ dataset }}.adjust_attribution`
+  WHERE
+    DATE(submission_timestamp)
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
+      AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    AND client_info.client_id IS NOT NULL
+),
+adjust_attribution_ping AS (
+  SELECT
+    client_id,
+    sample_id,
+    normalized_channel,
+    ARRAY_AGG(
+      IF(
+        {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
+        {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
+          {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
+        {% endfor %}
+        {% endfor %}
+        STRUCT(
+          {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
+          {% for field in attribution_group.fields %}
+            {% if field.name.endswith("_timestamp") %}
+              submission_timestamp AS {{ field.name }}
+            {% else %}
+              {{ field.name }}
+            {% endif %}
+            {% if not loop.last %},{% endif %}
+          {% endfor %}
+          {% endfor %}
+        ),
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC, submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS adjust_info,
+  FROM
+    adjust_attribution_ping_base
+  GROUP BY
+    client_id,
+    sample_id,
+    normalized_channel
+)
+{% endif %}
+
 SELECT
   @submission_date AS submission_date,
   client_id,
@@ -348,7 +409,7 @@ SELECT
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   {% endif %}
   {% if 'adjust' in product_attribution_group_names %}
-  COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
+  COALESCE({% if app_name == 'fenix' %}adjust_attribution_ping.adjust_info, {% endif %}first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
   {% endif %}
   {% if 'play_store' in product_attribution_group_names %}
   COALESCE(play_store_attribution_ping.play_store_info, first_session_ping.play_store_info) AS play_store_info,
@@ -372,4 +433,7 @@ FROM
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}LEFT JOIN
   metrics_ping USING(client_id, sample_id, normalized_channel)
+{% endif %}
+{% if 'adjust_attribution' in product_attribution_group_pings and app_name == 'fenix' %}LEFT JOIN
+  adjust_attribution_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}

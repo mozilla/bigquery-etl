@@ -19,8 +19,8 @@ labels:
 scheduling:
   dag_name: bqetl_google_play_store
   arguments:
-  - --date={{macros.ds_add(ds, -1)}}
-  date_partition_offset: -1
+  - --date={{macros.ds_add(ds, -7)}}
+  date_partition_offset: -7
   secrets:
   - deploy_target: GOOGLE_PLAY_STORE_SRVC_ACCT_INFO
     key: bqetl_google_play_store_developer_reporting_api_data_boxwood

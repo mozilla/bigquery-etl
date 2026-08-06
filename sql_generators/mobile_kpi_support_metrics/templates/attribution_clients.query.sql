@@ -339,7 +339,7 @@ metrics_ping AS (
     normalized_channel
 )
 {% endif %}
-{% if 'adjust_attribution' in product_attribution_group_pings and app_name == 'fenix' %}
+{% if 'adjust_attribution' in product_attribution_group_pings %}
 , adjust_attribution_ping_base AS (
   SELECT
     client_info.client_id AS client_id,
@@ -408,8 +408,11 @@ SELECT
   {% if 'install_source' in product_attribution_group_names %}
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   {% endif %}
-  {% if 'adjust' in product_attribution_group_names %}
-  COALESCE({% if app_name == 'fenix' %}adjust_attribution_ping.adjust_info, {% endif %}first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
+  {% if 'adjust_attribution' in product_attribution_group_names or 'adjust' in product_attribution_group_names %}
+    COALESCE(
+    {% if 'adjust_attribution' in product_attribution_group_names %}adjust_attribution_ping.adjust_info, {% endif %}
+    {% if 'adjust' in product_attribution_group_names %}first_session_ping.adjust_info, metrics_ping.adjust_info{% endif %}
+    ) AS adjust_info,
   {% endif %}
   {% if 'play_store' in product_attribution_group_names %}
   COALESCE(play_store_attribution_ping.play_store_info, first_session_ping.play_store_info) AS play_store_info,
@@ -434,6 +437,6 @@ FROM
 {% if 'metrics' in product_attribution_group_pings %}LEFT JOIN
   metrics_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}
-{% if 'adjust_attribution' in product_attribution_group_pings and app_name == 'fenix' %}LEFT JOIN
+{% if 'adjust_attribution' in product_attribution_group_pings %}LEFT JOIN
   adjust_attribution_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}

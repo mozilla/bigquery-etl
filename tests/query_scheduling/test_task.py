@@ -47,6 +47,74 @@ class TestTask:
         assert task.public_json
         assert task.arguments == ["--append_table"]
 
+    def test_description_markdown(self):
+        from bigquery_etl.metadata.parse_metadata import WorkgroupAccessMetadata
+
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            friendly_name="Incremental Query",
+            description="Daily incremental aggregate.",
+            owners=["test@example.org", "test2@example.org"],
+            labels={"incremental": "", "schedule": "daily"},
+            scheduling={"dag_name": "bqetl_test_dag"},
+        )
+        metadata.workgroup_access = [
+            WorkgroupAccessMetadata(
+                role="roles/bigquery.dataViewer",
+                members=["workgroup:mozilla-confidential"],
+            )
+        ]
+
+        task = Task.of_query(query_file, metadata)
+
+        # metadata fields are captured on the task
+        assert task.friendly_name == "Incremental Query"
+        assert task.description == "Daily incremental aggregate."
+        assert task.owners == ["test@example.org", "test2@example.org"]
+        assert task.labels == {"incremental": "", "schedule": "daily"}
+        assert task.workgroups == ["workgroup:mozilla-confidential"]
+
+        markdown = task.description_markdown
+        assert "### Incremental Query" in markdown
+        assert "Daily incremental aggregate." in markdown
+        assert "**Owners:** test@example.org, test2@example.org" in markdown
+        # bool-style labels render as key only, key/value labels as "key: value"
+        assert "**Labels:** incremental, schedule: daily" in markdown
+        assert "**Workgroup access:** workgroup:mozilla-confidential" in markdown
+
+    def test_source_url(self):
+        query_file = "sql/moz-fx-data-shared-prod/telemetry_derived/foo_v1/query.sql"
+
+        public_task = Task(
+            dag_name="bqetl_test_dag", query_file=query_file, owner="test@example.org"
+        )
+        assert public_task.is_private is False
+        assert public_task.source_url == (
+            "https://github.com/mozilla/bigquery-etl/blob/generated-sql/"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/foo_v1/query.sql"
+        )
+
+        private_task = Task(
+            dag_name="private_bqetl_test_dag",
+            query_file=query_file,
+            owner="test@example.org",
+        )
+        assert private_task.is_private is True
+        assert private_task.source_url == (
+            "https://github.com/mozilla/private-bigquery-etl/blob/"
+            "private-generated-sql/"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/foo_v1/query.sql"
+        )
+
     def test_of_multipart_query(self):
         query_file = (
             TEST_DIR

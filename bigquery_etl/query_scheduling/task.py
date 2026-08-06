@@ -363,6 +363,12 @@ class Task:
     startup_timeout_seconds: Optional[int] = attr.ib(None)
     secrets: Optional[List[Secret]] = attr.ib(None)
     monitoring_enabled: Optional[bool] = attr.ib(False)
+    # metadata surfaced in the Airflow task description (doc_md)
+    friendly_name: Optional[str] = attr.ib(None)
+    description: Optional[str] = attr.ib(None)
+    owners: List[str] = attr.ib([])
+    labels: Dict = attr.ib({})
+    workgroups: List[str] = attr.ib([])
 
     @property
     def task_key(self):
@@ -469,6 +475,64 @@ class Task:
                 f" but is {self.query_file}"
             )
 
+    @property
+    def is_private(self):
+        """Return whether the task is scheduled in a private DAG."""
+        return self.dag_name.startswith("private_")
+
+    @property
+    def source_file_path(self):
+        """Return the repository-relative path to the task's source file."""
+        parts = Path(self.query_file).parts
+        if "sql" in parts:
+            index = parts.index("sql")
+            return "/".join(parts[index:])
+        return None
+
+    @property
+    def source_url(self):
+        """Return a link to the source file on the generated-sql branch."""
+        path = self.source_file_path
+        if path is None:
+            return None
+        if self.is_private:
+            repo, branch = "private-bigquery-etl", "private-generated-sql"
+        else:
+            repo, branch = "bigquery-etl", "generated-sql"
+        return f"https://github.com/mozilla/{repo}/blob/{branch}/{path}"
+
+    @property
+    def description_markdown(self):
+        """Return a markdown task description derived from the table metadata.
+
+        Rendered into the Airflow task's `doc_md`.
+        """
+        heading = self.friendly_name or (
+            f"{self.dataset}.{self.destination_table or self.table}"
+        )
+        lines = [f"### {heading}"]
+
+        if self.description:
+            lines += ["", self.description.strip()]
+
+        if self.owners:
+            lines += ["", f"**Owners:** {', '.join(self.owners)}"]
+
+        if self.labels:
+            rendered = ", ".join(
+                key if value == "" else f"{key}: {value}"
+                for key, value in sorted(self.labels.items())
+            )
+            lines += ["", f"**Labels:** {rendered}"]
+
+        if self.workgroups:
+            lines += ["", f"**Workgroup access:** {', '.join(sorted(self.workgroups))}"]
+
+        if self.source_url:
+            lines += ["", f"[View source]({self.source_url})"]
+
+        return "\n".join(lines)
+
     @classmethod
     def of_query(cls, query_file, metadata=None, dag_collection=None):
         """
@@ -498,6 +562,17 @@ class Task:
 
         # Airflow only allows to set one owner, so we just take the first
         task_config["owner"] = metadata.owners[0]
+
+        # Metadata surfaced in the Airflow task description (doc_md)
+        task_config["friendly_name"] = metadata.friendly_name
+        task_config["description"] = metadata.description
+        task_config["owners"] = list(metadata.owners)
+        task_config["labels"] = metadata.labels
+        task_config["workgroups"] = [
+            member
+            for workgroup in (metadata.workgroup_access or [])
+            for member in workgroup.members
+        ]
 
         # Get default email from default_args if available
         default_email = []

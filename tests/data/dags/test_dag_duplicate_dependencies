@@ -1,4 +1,3 @@
-
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
@@ -67,6 +66,7 @@ with DAG(
         dataset_id="test",
         project_id="moz-fx-data-test-project",
         owner="test@example.com",
+        doc_md="### test\n\ntest\n\n**Owners:** test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com"],
         date_partition_parameter=None,
         depends_on_past=True,
@@ -79,6 +79,7 @@ with DAG(
         dataset_id="test",
         project_id="moz-fx-data-test-project",
         owner="test@example.com",
+        doc_md="### test\n\ntest\n\n**Owners:** test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com"],
         date_partition_parameter=None,
         depends_on_past=True,

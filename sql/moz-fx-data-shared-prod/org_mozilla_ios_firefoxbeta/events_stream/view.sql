@@ -35,6 +35,7 @@ SELECT
       LAX_INT64(event_extra.average_tabs_in_all_groups) AS `average_tabs_in_all_groups`,
       LAX_INT64(event_extra.consecutive_crash) AS `consecutive_crash`,
       LAX_INT64(event_extra.count) AS `count`,
+      LAX_INT64(event_extra.figures) AS `figures`,
       LAX_INT64(event_extra.from_version) AS `from_version`,
       LAX_INT64(event_extra.groups_two_tabs_only) AS `groups_two_tabs_only`,
       LAX_INT64(event_extra.groups_with_more_than_two_tab) AS `groups_with_more_than_two_tab`,

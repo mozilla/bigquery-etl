@@ -442,6 +442,7 @@ SELECT
       JSON_VALUE(event_extra.chat_id) AS `chat_id`,
       JSON_VALUE(event_extra.chat_version) AS `chat_version`,
       JSON_VALUE(event_extra.choice) AS `choice`,
+      JSON_VALUE(event_extra.click_type) AS `click_type`,
       JSON_VALUE(event_extra.codecs) AS `codecs`,
       JSON_VALUE(event_extra.cold) AS `cold`,
       JSON_VALUE(event_extra.collection) AS `collection`,

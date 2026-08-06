@@ -38,6 +38,10 @@ _MAX_PROFILABLE_COLUMNS = 500
 # otherwise dominate the accumulated rows and OOM the pod (DENG-11334).
 _TOP_VALUES_K = 50
 _MAX_VALUE_CHARS = 256
+# Flush accumulated profile rows to BigQuery once the in-memory buffer reaches
+# this many rows, so peak memory stays bounded regardless of how many tables a
+# run profiles (DENG-11439).
+_LOAD_BATCH_ROWS = 50_000
 _TIER3_COLUMNS = {"metrics"}
 
 # Profile each table's most recent non-empty partition within the last
@@ -843,11 +847,17 @@ def save_profiles(
     destination_project: str,
     destination_dataset: str,
     destination_table: str,
+    write_disposition: str = bigquery.job.WriteDisposition.WRITE_TRUNCATE,
 ) -> None:
-    """Overwrite the run's date partition with all profiled column rows."""
+    """Load a batch of profiled column rows into the run's date partition.
+
+    The first flush of a run truncates the partition (WRITE_TRUNCATE), clearing any
+    prior run for that date; subsequent flushes append (WRITE_APPEND). Callers drive
+    the disposition via main()'s incremental flush (DENG-11439).
+    """
     job_config = bigquery.LoadJobConfig()
     job_config.schema = _COLUMN_PROFILES_SCHEMA
-    job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_TRUNCATE
+    job_config.write_disposition = write_disposition
     job_config.time_partitioning = bigquery.TimePartitioning(
         type_=bigquery.TimePartitioningType.DAY, field="profiled_at"
     )
@@ -1051,9 +1061,39 @@ def main() -> None:
         )
 
     rows: list[dict[str, Any]] = []
+    rows_written = 0
     profiled = 0
     hard_failures = 0
     total_gb_scanned = 0.0
+    flushed = False  # has the first (truncating) flush of this run happened?
+
+    def _flush() -> None:
+        """Load the buffered rows into the run's partition, then clear the buffer.
+
+        The first flush truncates the date partition (clearing any prior run for
+        that date); later flushes append. Keeps peak memory bounded to about
+        _LOAD_BATCH_ROWS rows rather than the whole run's output (DENG-11439).
+        """
+        nonlocal rows_written, flushed
+        if not rows:
+            return
+        save_profiles(
+            client,
+            rows,
+            args.date,
+            args.destination_project,
+            args.destination_dataset,
+            args.destination_table,
+            write_disposition=(
+                bigquery.job.WriteDisposition.WRITE_APPEND
+                if flushed
+                else bigquery.job.WriteDisposition.WRITE_TRUNCATE
+            ),
+        )
+        flushed = True
+        rows_written += len(rows)
+        rows.clear()
+
     with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
         futures = {executor.submit(_profile_one, item): item for item in work}
         for future in as_completed(futures):
@@ -1082,6 +1122,8 @@ def main() -> None:
             table_rows = build_rows(profile, args.date)
             logger.info("%s.%s → %d column rows", dataset, table_name, len(table_rows))
             rows.extend(table_rows)
+            if len(rows) >= _LOAD_BATCH_ROWS:
+                _flush()
 
     # A dataset-wide outage (permissions/quota) would otherwise log warnings and
     # exit 0, hiding the failure from triage. Fail loudly when nothing profiled
@@ -1092,7 +1134,9 @@ def main() -> None:
             f"({hard_failures} hard failure(s), 0 tables profiled) — failing the task."
         )
 
-    if not rows:
+    # Nothing profiled (or every profiled table produced no rows) and nothing was
+    # flushed → leave the existing partition untouched, matching prior behavior.
+    if not flushed and not rows:
         logger.warning(
             "No rows to write for %s on %s (%d table(s) profiled, %.2f GB scanned); "
             "partition left unchanged.",
@@ -1103,18 +1147,11 @@ def main() -> None:
         )
         return
 
-    save_profiles(
-        client,
-        rows,
-        args.date,
-        args.destination_project,
-        args.destination_dataset,
-        args.destination_table,
-    )
+    _flush()  # final partial batch (and small runs that never hit the threshold)
     logger.info(
         "Wrote %d rows from %d table(s) across %d dataset(s) to %s.%s.%s$%s "
         "(%.2f GB scanned)",
-        len(rows),
+        rows_written,
         profiled,
         len(args.source_datasets),
         args.destination_project,

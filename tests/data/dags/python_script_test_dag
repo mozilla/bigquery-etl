@@ -55,7 +55,7 @@ with DAG(
         table_id="moz-fx-data-test-project.test.python_script_query_v1",
         warehouse_id="1939",
         owner="test@example.com",
-        doc_md="### test\n\ntest\n\n**Owners:** test@example.com",
+        doc_md="### test (Bigeye monitoring)\n\ntest\n\n**Owners:** test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
         depends_on_past=False,
         execution_timeout=datetime.timedelta(hours=1),

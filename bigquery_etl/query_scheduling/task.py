@@ -369,6 +369,9 @@ class Task:
     owners: List[str] = attr.ib([])
     labels: Dict = attr.ib({})
     workgroups: List[str] = attr.ib([])
+    # repository the query lives in, used to build the source link; set from
+    # `Dag.repo` in `of_query` so it stays consistent with the DAG-level link.
+    repo: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -476,11 +479,6 @@ class Task:
             )
 
     @property
-    def is_private(self):
-        """Return whether the task is scheduled in a private DAG."""
-        return self.dag_name.startswith("private_")
-
-    @property
     def source_file_path(self):
         """Return the repository-relative path to the task's source file."""
         parts = Path(self.query_file).parts
@@ -491,15 +489,35 @@ class Task:
 
     @property
     def source_url(self):
-        """Return a link to the source file on the generated-sql branch."""
+        """Return a link to the source file on the generated-sql branch.
+
+        The repository is taken from `Dag.repo` (via `of_query`) rather than
+        inferred from the DAG name, so private queries published from
+        `private-bigquery-etl` always link there even when the DAG is named
+        `bqetl_*`. This mirrors the DAG-level source link in `airflow_dag.j2`.
+        """
         path = self.source_file_path
-        if path is None:
+        if path is None or self.repo is None:
             return None
-        if self.is_private:
-            repo, branch = "private-bigquery-etl", "private-generated-sql"
+        if self.repo == "private-bigquery-etl":
+            branch = "private-generated-sql"
         else:
-            repo, branch = "bigquery-etl", "generated-sql"
-        return f"https://github.com/mozilla/{repo}/blob/{branch}/{path}"
+            branch = "generated-sql"
+        return f"https://github.com/mozilla/{self.repo}/blob/{branch}/{path}"
+
+    @property
+    def display_labels(self):
+        """Return the authored labels, dropping keys synthesized by metadata parsing.
+
+        `Metadata.from_file` injects a `dag` label and one `owner<N>` label per
+        owner; those just restate the DAG and the `**Owners:**` line, so they
+        are filtered out of the task description.
+        """
+        return {
+            key: value
+            for key, value in self.labels.items()
+            if key != "dag" and not re.fullmatch(r"owner\d+", key)
+        }
 
     @property
     def description_markdown(self):
@@ -510,6 +528,10 @@ class Task:
         heading = self.friendly_name or (
             f"{self.dataset}.{self.destination_table or self.table}"
         )
+        if self.is_dq_check:
+            heading += " (data checks)"
+        elif self.is_bigeye_check:
+            heading += " (Bigeye monitoring)"
         lines = [f"### {heading}"]
 
         if self.description:
@@ -518,10 +540,11 @@ class Task:
         if self.owners:
             lines += ["", f"**Owners:** {', '.join(self.owners)}"]
 
-        if self.labels:
+        labels = self.display_labels
+        if labels:
             rendered = ", ".join(
-                key if value == "" else f"{key}: {value}"
-                for key, value in sorted(self.labels.items())
+                key if value == "" else f"{key}: {self._format_label_value(value)}"
+                for key, value in sorted(labels.items())
             )
             lines += ["", f"**Labels:** {rendered}"]
 
@@ -532,6 +555,13 @@ class Task:
             lines += ["", f"[View source]({self.source_url})"]
 
         return "\n".join(lines)
+
+    @staticmethod
+    def _format_label_value(value):
+        """Render a label value, flattening list-valued labels (e.g. review_bugs)."""
+        if isinstance(value, (list, tuple)):
+            return ", ".join(str(item) for item in value)
+        return str(value)
 
     @classmethod
     def of_query(cls, query_file, metadata=None, dag_collection=None):
@@ -581,6 +611,8 @@ class Task:
             dag = dag_collection.dag_by_name(dag_name)
             if dag is not None:
                 default_email = dag.default_args.email
+                # Authoritative repo for the source link (see `source_url`).
+                task_config["repo"] = dag.repo
         email = task_config.get("email", default_email)
         # Remove non-valid emails from owners e.g. Github identities and add to
         # Airflow email list.

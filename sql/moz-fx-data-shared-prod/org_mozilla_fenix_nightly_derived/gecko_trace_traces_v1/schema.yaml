@@ -1,0 +1,24 @@
+---
+fields:
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+    description: Date of the data in this row.
+  - name: stable_trace_id
+    type: STRING
+    mode: NULLABLE
+    description: Stable UUID for this trace pattern. Set on first insert.
+  - name: trace_signature
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Base64-encoded SHA256 hash of all root-to-leaf event signatures.
+      This is the MERGE key and the cluster key.
+  - name: hit_count
+    type: INT64
+    mode: NULLABLE
+    description: Number of times this trace pattern occurred on submission_date.
+  - name: avg_duration_nano
+    type: FLOAT64
+    mode: NULLABLE
+    description: Average duration of this trace pattern in nanoseconds on submission_date.

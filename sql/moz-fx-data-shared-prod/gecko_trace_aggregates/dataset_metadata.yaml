@@ -1,0 +1,14 @@
+---
+friendly_name: Gecko Trace
+description: |-
+  Views of events, traces, and trace-event links from the Gecko engine across all Firefox applications.
+
+  These views combine data from Firefox Desktop, Firefox for Android Nightly, and Firefox for Android Beta.
+  Use them for cross-application analysis.
+labels: {}
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

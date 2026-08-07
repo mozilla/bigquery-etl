@@ -1,0 +1,9 @@
+---
+friendly_name: Gecko Trace Event Links
+description: |-
+  Links between traces and events across all Firefox applications.
+
+  This view sums daily hit counts for each (trace, event) pair.
+
+owners:
+  - jjalkanen@mozilla.com

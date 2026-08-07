@@ -21,10 +21,10 @@ so this script depends only on ``google.cloud.bigquery`` + ``requests``.
 
 Behavioral parity with the agent's probe_fetcher:
 
-* ``fetch_legacy_probes`` is byte-equivalent to the agent's helper (same
-  GraphQL, same response mapping). ``fetch_glean_probes`` matches it for probe
-  name, description, and type, and adds the sensitivity fields above, which the
-  column classification pipeline needs.
+* ``fetch_legacy_probes`` matches the agent's helper on the GraphQL query and on
+  the probe name, description, and type mapping, and adds the sensitivity fields
+  below as empty. ``fetch_glean_probes`` matches on the same three and populates
+  them, which the column classification pipeline needs.
 * The 500-probe cap (``_MAX_UNFILTERED_PROBES``) and column-name fuzzy
   filtering from ``fetch_probe_definitions`` are intentionally **not**
   replicated. Those exist to keep LLM context small at agent read time; the
@@ -106,18 +106,22 @@ def _datahub_graphql(query: str, variables: dict, token: str) -> dict:
     return body["data"]
 
 
-def _get_json(url: str, description: str) -> Any:
-    """GET and parse JSON, returning None on 404, transport error, or bad body."""
+def _get_json(url: str, description: str, missing_ok: bool = False) -> Any:
+    """GET and parse JSON, returning None for a 404 when ``missing_ok``.
+
+    Every other failure raises. A timeout or 5xx is indistinguishable from an
+    empty result once it has been turned into one, and the run would go on to
+    write a partition whose fields are silently missing.
+    """
     try:
         response = requests.get(url, timeout=30)
-        if response.status_code == 404:
+        if missing_ok and response.status_code == 404:
             logger.warning(f"{description} not found: {url}")
             return None
         response.raise_for_status()
         return response.json()
     except (requests.RequestException, ValueError) as e:
-        logger.warning(f"Failed to fetch {description}: {e}")
-        return None
+        raise RuntimeError(f"Could not fetch {description} from {url}") from e
 
 
 _CATALOG_CACHE: dict[str, Any] = {}
@@ -128,7 +132,7 @@ def _fetch_catalog(url: str, description: str) -> list[dict[str, Any]]:
     if url not in _CATALOG_CACHE:
         data = _get_json(url, description)
         if not data:
-            raise RuntimeError(f"Could not fetch {description} from {url}")
+            raise RuntimeError(f"{description} is empty: {url}")
         _CATALOG_CACHE[url] = data
     return _CATALOG_CACHE[url]
 
@@ -137,11 +141,13 @@ def _fetch_catalog(url: str, description: str) -> list[dict[str, Any]]:
 def _fetch_metrics_map(slug: str) -> dict[str, dict[str, Any]]:
     """Fetch one probe-info metrics file, mapping metric name to latest history.
 
-    Yields an empty map for a missing slug or unreadable body, since one absent
-    metrics file is a data gap rather than an outage. Cached per slug so a shared
-    library is fetched once; treat the result as read-only.
+    A 404 yields an empty map, since a repository without a metrics file is a
+    data gap rather than an outage. Cached per slug so a shared library is
+    fetched once; treat the result as read-only.
     """
-    metrics = _get_json(_PROBE_INFO_URL.format(app=slug), f"probe-info {slug}")
+    metrics = _get_json(
+        _PROBE_INFO_URL.format(app=slug), f"probe-info {slug}", missing_ok=True
+    )
     if not metrics:
         return {}
 
@@ -157,7 +163,8 @@ def _repository_slugs(app: str) -> tuple[str, ...]:
     """Map a Glean Dictionary app name to its probe-info repository names.
 
     app-listings maps one ``app_name`` to a ``v1_name`` per channel and per
-    platform: ``mozilla_vpn`` has four, one each for desktop, Android and iOS.
+    platform: ``mozilla_vpn`` has one each for desktop, Android and iOS, plus the
+    iOS network extension.
     Metrics can be unique to one of them, so read all of them, as
     ``glean_usage`` does for its per-app artifacts. Release entries come first so
     their definitions win, treating an absent ``app_channel`` as release.

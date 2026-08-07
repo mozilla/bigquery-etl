@@ -294,22 +294,53 @@ def _run_deduplication_query(
     return live_table, stable_table, query_job
 
 
-def _conform_temp_schemas(client, temp_tables, target_schema):
-    """Widen each temporary table's schema to match target_schema.
+def _field_paths(schema: List[bigquery.SchemaField], prefix: str = "") -> set:
+    """Return the set of dot-separated field paths in a schema, including nested fields."""
+    paths = set()
+    for field in schema:
+        path = f"{prefix}{field.name}"
+        paths.add(path)
+        if field.fields:
+            paths |= _field_paths(field.fields, f"{path}.")
+    return paths
+
+
+def _check_no_stable_schema_widening(client, temp_tables, stable_table):
+    """Raise if copying the temporary tables would add fields to the stable table.
+
+    Copying into a destination will add new columns if the source is wider than the destination.
+    We don't want that because schemas are handled by ops deploys, so fail if that happens.
+    """
+    stable_paths = _field_paths(client.get_table(stable_table).schema)
+    extra_paths = set()
+    for table_id in temp_tables:
+        extra_paths |= _field_paths(client.get_table(table_id).schema) - stable_paths
+    if extra_paths:
+        raise ValueError(
+            f"copying to {stable_table} would add fields missing from its schema: "
+            f"{', '.join(sorted(extra_paths))}; the stable table's schema update has not "
+            "landed yet, so rerun once it has"
+        )
+
+
+def _conform_temp_schemas(client, temp_tables, live_table):
+    """Set each temporary table's schema to the live table's schema.
 
     Sliced deduplication writes temporary tables and then copies them to the stable partition.
     If the live table's schema changes while the slices are being built, the schemas will
     diverge and the copy will fail.
     """
+    live_schema = client.get_table(live_table).schema
     for table_id in temp_tables:
         table = client.get_table(table_id)
-        if table.schema != target_schema:
-            table.schema = target_schema
+        if table.schema != live_schema:
+            table.schema = live_schema
             client.update_table(table, ["schema"])
 
 
 def _copy_join_parts(
     client: bigquery.Client,
+    live_table: str,
     stable_table: str,
     query_jobs: List[bigquery.QueryJob],
     write_to_v2: bool = False,
@@ -337,19 +368,18 @@ def _copy_join_parts(
         )
         if len(query_jobs) > 1:
             table_id, partition_id = stable_table.split("$", 1)
-            sources = [
-                f"{sql_table_id(job.destination)}${partition_id}" for job in query_jobs
-            ]
+            temp_tables = [job.destination for job in query_jobs]
+            sources = [f"{sql_table_id(t)}${partition_id}" for t in temp_tables]
             job_config = bigquery.CopyJobConfig(
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
             )
 
             def run_copy():
+                _check_no_stable_schema_widening(client, temp_tables, table_id)
                 copy_job = client.copy_table(
                     sources, stable_table, job_config=job_config
                 )
                 copy_job.result()
-                return copy_job
 
             try:
                 run_copy()
@@ -362,11 +392,7 @@ def _copy_join_parts(
                     f"Copy to {stable_table} failed with incompatible schemas, "
                     "conforming temporary table schemas and retrying"
                 )
-                _conform_temp_schemas(
-                    client,
-                    [job.destination for job in query_jobs],
-                    client.get_table(table_id).schema,
-                )
+                _conform_temp_schemas(client, temp_tables, live_table)
                 run_copy()
             logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
             for job in query_jobs:
@@ -587,6 +613,7 @@ def copy_deduplicate(
         copy_jobs = [
             (
                 _copy_join_parts,
+                live_table,
                 stable_table,
                 [query_job for _, _, query_job in group],
                 # remove project and partition id, replace live

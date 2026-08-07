@@ -1,0 +1,25 @@
+---
+friendly_name: Gecko Trace Platform Counts
+description: |-
+  Counts of trace patterns per platform and build.
+
+  Each row has one trace signature with one (build, OS, architecture)
+  combination and the count for one day.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: firefox_desktop
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:"]
+
+bigquery:
+  clustering:
+    fields:
+      - trace_signature

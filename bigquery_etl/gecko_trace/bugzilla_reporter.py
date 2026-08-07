@@ -2,7 +2,6 @@
 
 import datetime
 import logging
-import os
 from itertools import groupby
 
 import bugzilla
@@ -41,6 +40,20 @@ BQ_NEW_TRACES_QUERY = """
   ORDER BY t.stable_trace_id, te.event_position
 """
 
+BQ_PLATFORM_QUERY = """
+  SELECT
+    app_build,
+    normalized_os,
+    normalized_os_version,
+    architecture,
+    SUM(hit_count) AS hit_count
+  FROM `{project}.{app_id}_derived.gecko_trace_platform_counts_v1`
+  WHERE stable_trace_id = @stable_trace_id
+  GROUP BY app_build, normalized_os, normalized_os_version, architecture
+  ORDER BY hit_count DESC
+  LIMIT 10
+"""
+
 BQ_RECORD_BUG_QUERY = """
   INSERT INTO `{table}`
     (submission_date, stable_trace_id, app_id, bug_id, filed_date)
@@ -77,6 +90,41 @@ class BugzillaReporter:
             lines.append(f"  {url}  result={event.result}")
         return "\n".join(lines)
 
+    def _format_platforms(self, platforms):
+        """Build a plain-text list of affected platforms."""
+        if not platforms:
+            return "  (no platform data available)"
+        lines = []
+        for p in platforms:
+            lines.append(
+                f"  {p.normalized_os} {p.normalized_os_version} / "
+                f"{p.architecture} (build {p.app_build}) "
+                f"-- {p.hit_count} hits"
+            )
+        return "\n".join(lines)
+
+    def _get_platforms(self, app_id, stable_trace_id):
+        """Get platform counts for a trace."""
+        query = BQ_PLATFORM_QUERY.format(
+            project=self.project, app_id=app_id
+        )
+        job_config = bigquery.QueryJobConfig(
+            query_parameters=[
+                bigquery.ScalarQueryParameter(
+                    "stable_trace_id", "STRING", stable_trace_id
+                ),
+            ]
+        )
+        try:
+            return list(
+                self.bq_client.query(query, job_config=job_config).result()
+            )
+        except Exception:
+            self.logger.exception(
+                "Failed to get platform data for %s", trace_signature
+            )
+            return []
+
     def _record_bug(self, stable_trace_id, app_id, bug_id, reference_date):
         """Record the bug in the mapping table."""
         table = f"{self.project}.{app_id}_derived.gecko_trace_bug_reports_v1"
@@ -102,7 +150,7 @@ class BugzillaReporter:
             "Recorded bug %d for trace %s in %s", bug_id, stable_trace_id, app_id
         )
 
-    def _file_bug(self, stable_trace_id, app_id, events):
+    def _file_bug(self, stable_trace_id, app_id, events, platforms):
         """File one Bugzilla bug and return the bug ID, or None on failure."""
         bug = bugzilla.DotDict()
         bug.product = PRODUCT
@@ -113,6 +161,7 @@ class BugzillaReporter:
         bug.description = (
             f"A new trace pattern was detected in {app_id}.\n"
             f"Trace ID: {stable_trace_id}\n\n"
+            f"Platforms affected:\n{self._format_platforms(platforms)}\n\n"
             f"Events in execution order:\n{self._format_events(events)}"
         )
         bug["type"] = "defect"
@@ -165,7 +214,11 @@ class BugzillaReporter:
                     "Trace %s has %d events", stable_trace_id, len(events)
                 )
 
-                bug_id = self._file_bug(stable_trace_id, app_id, events)
+                platforms = self._get_platforms(app_id, stable_trace_id)
+
+                bug_id = self._file_bug(
+                    stable_trace_id, app_id, events, platforms
+                )
                 if bug_id is None:
                     failed += 1
                     continue

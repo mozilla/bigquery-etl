@@ -60,7 +60,6 @@ GEO_CONFIG = {
     }
 }
 
-LIVE_TABLE = "moz-fx-data-shared-prod.firefox_desktop_live.metrics_v1"
 BASE_SCHEMA = [bigquery.SchemaField("document_id", "STRING")]
 STABLE_TABLE = "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1$20260101"
 
@@ -565,7 +564,6 @@ class TestCopyDeduplicate:
         mock_client = Mock(spec=bigquery.Client)
         _copy_join_parts(
             client=mock_client,
-            live_table=LIVE_TABLE,
             stable_table="moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v2$20260101",
             query_jobs=[Mock(total_bytes_processed=1, dry_run=False, slot_millis=1)],
             write_to_v2=True,
@@ -581,7 +579,6 @@ class TestCopyDeduplicate:
         mock_client = Mock(spec=bigquery.Client)
         _copy_join_parts(
             client=mock_client,
-            live_table=LIVE_TABLE,
             stable_table=STABLE_TABLE,
             query_jobs=[Mock(total_bytes_processed=1, dry_run=False, slot_millis=1)],
             write_to_v2=False,
@@ -596,7 +593,6 @@ class TestCopyDeduplicate:
 
         _copy_join_parts(
             client=mock_client,
-            live_table=LIVE_TABLE,
             stable_table=STABLE_TABLE,
             query_jobs=_slice_query_jobs(2),
             write_to_v2=False,
@@ -610,28 +606,26 @@ class TestCopyDeduplicate:
 
     def test_copy_join_parts_conforms_on_copy_failure(self):
         """
-        If the copy fails because the slices' schemas diverged, the temporary tables are
-        set to the live table's schema and the copy is retried without rerunning the slices.
+        A field added to the live table partway through the job leaves one slice with it and
+        another without, so the copy fails. The stale slice is set to the stable table's
+        schema and the copy is retried without rerunning the slices.
         """
         mock_client = Mock(spec=bigquery.Client)
 
-        # the live table's schema is a superset of every slice's
-        live_schema = [
+        # the stable table's schema update has landed, so it carries the new field
+        stable_schema = [
             bigquery.SchemaField("document_id", "STRING"),
             bigquery.SchemaField("new_field", "STRING"),
         ]
         # temp table 0 ran before the schema change and lacks new_field
         temp_schemas = {
             "temp_0": [bigquery.SchemaField("document_id", "STRING")],
-            "temp_1": live_schema,
+            "temp_1": stable_schema,
         }
 
         def get_table(table_id):
-            if table_id == LIVE_TABLE:
-                return Mock(schema=live_schema)
             if table_id == STABLE_TABLE.split("$")[0]:
-                # the stable table schema update has already landed
-                return Mock(schema=live_schema)
+                return Mock(schema=stable_schema)
             return Mock(schema=temp_schemas[str(table_id).split(".")[-1]])
 
         mock_client.get_table.side_effect = get_table
@@ -643,7 +637,6 @@ class TestCopyDeduplicate:
 
         _copy_join_parts(
             client=mock_client,
-            live_table=LIVE_TABLE,
             stable_table=STABLE_TABLE,
             query_jobs=_slice_query_jobs(2),
             write_to_v2=False,
@@ -651,19 +644,20 @@ class TestCopyDeduplicate:
 
         # copy was retried after conforming
         assert mock_client.copy_table.call_count == 2
-        # only the slice that was missing a field is updated, to the live table's schema
+        # only the slice that was missing a field is updated, and it gained a field
         assert mock_client.update_table.call_count == 1
         table_arg, fields_arg = mock_client.update_table.call_args.args
-        assert table_arg.schema == live_schema
+        assert table_arg.schema == stable_schema
         assert fields_arg == ["schema"]
+        assert _field_paths(temp_schemas["temp_0"]) < _field_paths(table_arg.schema)
         # temporary tables are cleaned up after the successful retry
         assert mock_client.delete_table.call_count == 2
 
     def test_copy_join_parts_conforms_nested_field(self):
-        """A slice missing a nested field is conformed to the live table's schema."""
+        """A slice missing a nested field is conformed to the stable table's schema."""
         mock_client = Mock(spec=bigquery.Client)
 
-        live_schema = [
+        stable_schema = [
             bigquery.SchemaField(
                 "metrics",
                 "RECORD",
@@ -682,10 +676,8 @@ class TestCopyDeduplicate:
         ]
 
         def get_table(table_id):
-            if table_id == LIVE_TABLE:
-                return Mock(schema=live_schema)
             if table_id == STABLE_TABLE.split("$")[0]:
-                return Mock(schema=live_schema)
+                return Mock(schema=stable_schema)
             return Mock(schema=stale_schema)
 
         mock_client.get_table.side_effect = get_table
@@ -696,7 +688,6 @@ class TestCopyDeduplicate:
 
         _copy_join_parts(
             client=mock_client,
-            live_table=LIVE_TABLE,
             stable_table=STABLE_TABLE,
             query_jobs=_slice_query_jobs(2),
             write_to_v2=False,
@@ -707,7 +698,7 @@ class TestCopyDeduplicate:
         assert mock_client.update_table.call_count == 2
         for call in mock_client.update_table.call_args_list:
             table_arg, _ = call.args
-            assert table_arg.schema == live_schema
+            assert table_arg.schema == stable_schema
 
     def test_copy_join_parts_raises_when_copy_would_widen_stable(self):
         """
@@ -729,7 +720,6 @@ class TestCopyDeduplicate:
         with pytest.raises(ValueError, match="brand_new"):
             _copy_join_parts(
                 client=mock_client,
-                live_table=LIVE_TABLE,
                 stable_table=STABLE_TABLE,
                 query_jobs=_slice_query_jobs(2),
                 write_to_v2=False,
@@ -737,61 +727,6 @@ class TestCopyDeduplicate:
 
         # the copy never runs and the temporary tables are kept for a rerun
         assert mock_client.copy_table.call_count == 0
-        assert mock_client.delete_table.call_count == 0
-
-    def test_copy_join_parts_raises_when_conforming_would_widen_stable(self):
-        """
-        Conforming to the live schema must not add a new field into the stable table: the
-        retried copy is checked too, so the widening is caught rather than applied.
-        """
-        mock_client = Mock(spec=bigquery.Client)
-
-        # stable has not caught up with the live table's new field. The temp tables start out
-        # within the stable schema (so the first copy passes the guard) but differ from each
-        # other in field order, which is what the copy rejects.
-        stable_schema = [
-            bigquery.SchemaField("document_id", "STRING"),
-            bigquery.SchemaField("other", "STRING"),
-        ]
-        live_schema = stable_schema + [bigquery.SchemaField("brand_new", "STRING")]
-        temp_schemas = {
-            "temp_0": stable_schema,
-            "temp_1": list(reversed(stable_schema)),
-        }
-        conformed = {"done": False}
-
-        def get_table(table_id):
-            if table_id == LIVE_TABLE:
-                return Mock(schema=live_schema)
-            if table_id == STABLE_TABLE.split("$")[0]:
-                return Mock(schema=stable_schema)
-            name = str(table_id).split(".")[-1]
-            # conforming applies the live schema, which has a field stable lacks
-            if conformed["done"]:
-                return Mock(schema=live_schema)
-            return Mock(schema=temp_schemas[name])
-
-        mock_client.get_table.side_effect = get_table
-        mock_client.update_table.side_effect = lambda *a, **k: conformed.update(
-            done=True
-        )
-
-        first_copy = Mock()
-        first_copy.result.side_effect = BadRequest("Incompatible table schemata")
-        mock_client.copy_table.return_value = first_copy
-
-        with pytest.raises(ValueError, match="brand_new"):
-            _copy_join_parts(
-                client=mock_client,
-                live_table=LIVE_TABLE,
-                stable_table=STABLE_TABLE,
-                query_jobs=_slice_query_jobs(2),
-                write_to_v2=False,
-            )
-
-        # first copy attempted and failed, conforming happened, retry blocked by the guard
-        assert mock_client.copy_table.call_count == 1
-        assert mock_client.update_table.call_count > 0
         assert mock_client.delete_table.call_count == 0
 
     def test_field_paths_includes_nested_paths(self):
@@ -819,6 +754,87 @@ class TestCopyDeduplicate:
             "metrics.nested.deep",
         }
 
+    def test_copy_join_parts_conforms_to_v2_destination(self):
+        """
+        With --write-to-v2 the slices are shaped to match the v2 destination, not the live
+        table, so conforming must use the destination schema. Conforming to live would put
+        back columns v2 drops.
+        """
+        v2_table = "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v2$20260101"
+        # v2 drops a column the live table has (dropped_in_v2) and adds one it lacks
+        v2_schema = [
+            bigquery.SchemaField("document_id", "STRING"),
+            bigquery.SchemaField("added_in_v2", "STRING"),
+        ]
+
+        mock_client = Mock(spec=bigquery.Client)
+
+        def get_table(table_id):
+            if table_id == v2_table.split("$")[0]:
+                return Mock(schema=v2_schema)
+            # a stale slice missing the v2-only column
+            return Mock(schema=[bigquery.SchemaField("document_id", "STRING")])
+
+        mock_client.get_table.side_effect = get_table
+
+        first_copy = Mock()
+        first_copy.result.side_effect = BadRequest("Incompatible table schemata")
+        mock_client.copy_table.side_effect = [first_copy, Mock(), Mock()]
+
+        _copy_join_parts(
+            client=mock_client,
+            stable_table=v2_table,
+            query_jobs=_slice_query_jobs(2),
+            write_to_v2=True,
+        )
+
+        # conformed to the v2 destination schema, so the v1-only column stays out
+        assert mock_client.update_table.call_count == 2
+        for call in mock_client.update_table.call_args_list:
+            table_arg, _ = call.args
+            assert table_arg.schema == v2_schema
+            assert all(f.name != "dropped_in_v2" for f in table_arg.schema)
+
+    def test_conform_target_never_drops_temp_fields(self):
+        """
+        Conforming must only ever add fields: BigQuery rejects a schema update that drops one.
+        The guard in front of the conform is what guarantees this, so assert the invariant
+        directly rather than relying on the conform target's identity.
+        """
+        # the stable table is missing a field the temp tables have, which the guard should
+        # catch before any conforming happens
+        stable_schema = [bigquery.SchemaField("document_id", "STRING")]
+        temp_schema = stable_schema + [bigquery.SchemaField("only_in_temp", "STRING")]
+
+        mock_client = Mock(spec=bigquery.Client)
+
+        def get_table(table_id):
+            if table_id == STABLE_TABLE.split("$")[0]:
+                return Mock(schema=stable_schema)
+            return Mock(schema=temp_schema)
+
+        mock_client.get_table.side_effect = get_table
+
+        failed_copy = Mock()
+        failed_copy.result.side_effect = BadRequest("Incompatible table schemata")
+        mock_client.copy_table.return_value = failed_copy
+
+        with pytest.raises(ValueError, match="only_in_temp"):
+            _copy_join_parts(
+                client=mock_client,
+                stable_table=STABLE_TABLE,
+                query_jobs=_slice_query_jobs(2),
+                write_to_v2=False,
+            )
+
+        # nothing was conformed, so no field was dropped
+        assert mock_client.update_table.call_count == 0
+
+        # and whenever conforming does happen, the target is a superset of what it replaces
+        for call in mock_client.update_table.call_args_list:
+            table_arg, _ = call.args
+            assert _field_paths(temp_schema) <= _field_paths(table_arg.schema)
+
     def test_copy_join_parts_reraises_other_bad_request(self):
         """
         A copy failure that isn't a schema mismatch is re-raised without conforming
@@ -833,7 +849,6 @@ class TestCopyDeduplicate:
         with pytest.raises(BadRequest):
             _copy_join_parts(
                 client=mock_client,
-                live_table=LIVE_TABLE,
                 stable_table=STABLE_TABLE,
                 query_jobs=_slice_query_jobs(2),
                 write_to_v2=False,

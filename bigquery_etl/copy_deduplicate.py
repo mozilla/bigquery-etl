@@ -305,7 +305,11 @@ def _field_paths(schema: List[bigquery.SchemaField], prefix: str = "") -> set:
     return paths
 
 
-def _check_no_stable_schema_widening(client, temp_tables, stable_table):
+def _check_no_stable_schema_widening(
+    client: bigquery.Client,
+    temp_tables: List[bigquery.TableReference],
+    stable_table: str,
+):
     """Raise if copying the temporary tables would add fields to the stable table.
 
     Copying into a destination will add new columns if the source is wider than the destination.
@@ -323,24 +327,27 @@ def _check_no_stable_schema_widening(client, temp_tables, stable_table):
         )
 
 
-def _conform_temp_schemas(client, temp_tables, live_table):
-    """Set each temporary table's schema to the live table's schema.
+def _conform_temp_schemas(
+    client: bigquery.Client,
+    temp_tables: List[bigquery.TableReference],
+    stable_table: str,
+):
+    """Set each temporary table's schema to the stable table's schema.
 
     Sliced deduplication writes temporary tables and then copies them to the stable partition.
     If the live table's schema changes while the slices are being built, the schemas will
     diverge and the copy will fail.
     """
-    live_schema = client.get_table(live_table).schema
+    stable_schema = client.get_table(stable_table).schema
     for table_id in temp_tables:
         table = client.get_table(table_id)
-        if table.schema != live_schema:
-            table.schema = live_schema
+        if table.schema != stable_schema:
+            table.schema = stable_schema
             client.update_table(table, ["schema"])
 
 
 def _copy_join_parts(
     client: bigquery.Client,
-    live_table: str,
     stable_table: str,
     query_jobs: List[bigquery.QueryJob],
     write_to_v2: bool = False,
@@ -392,7 +399,7 @@ def _copy_join_parts(
                     f"Copy to {stable_table} failed with incompatible schemas, "
                     "conforming temporary table schemas and retrying"
                 )
-                _conform_temp_schemas(client, temp_tables, live_table)
+                _conform_temp_schemas(client, temp_tables, table_id)
                 run_copy()
             logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
             for job in query_jobs:
@@ -613,7 +620,6 @@ def copy_deduplicate(
         copy_jobs = [
             (
                 _copy_join_parts,
-                live_table,
                 stable_table,
                 [query_job for _, _, query_job in group],
                 # remove project and partition id, replace live

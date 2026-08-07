@@ -18,7 +18,6 @@ PROBES_TABLE = "classification_probe_definitions_v1"
 DESTINATION_TABLE = "column_classifications_v1"
 
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
-DEFAULT_VERTEX_PROJECT = "mozdata"
 DEFAULT_VERTEX_LOCATION = "global"
 
 TAXONOMY_PATH = Path(__file__).parent / "taxonomy_v1.json"
@@ -50,8 +49,15 @@ class ClassificationConfig:
     project: str = DEFAULT_PROJECT
     dataset: str = DEFAULT_DATASET
     model: str = DEFAULT_MODEL
-    vertex_project: str = DEFAULT_VERTEX_PROJECT
     vertex_location: str = DEFAULT_VERTEX_LOCATION
+    # None means follow `project`. Set one of these only to call Vertex or DLP in
+    # a project other than the one holding the tables, which is what a sandbox
+    # run needs: neither API is enabled in the sandbox projects.
+    vertex_project: str | None = None
+    dlp_project: str | None = None
+    # Overrides the credentials' own quota project. Leave unset in production so
+    # DLP quota follows the request's parent project.
+    dlp_quota_project: str | None = None
 
     def __post_init__(self) -> None:
         """Reject a missing run id, a non-Vertex model, or an unusable table path."""

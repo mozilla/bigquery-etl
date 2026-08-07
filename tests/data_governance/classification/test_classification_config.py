@@ -39,6 +39,13 @@ class TestClassificationConfig:
             )
         )
 
+    def test_service_projects_follow_project_by_default(self):
+        config = ClassificationConfig(run_id="run-1")
+
+        assert config.vertex_project is None
+        assert config.dlp_project is None
+        assert config.dlp_quota_project is None
+
     def test_non_gemini_model_rejected(self):
         with pytest.raises(ValueError):
             ClassificationConfig(run_id="run-1", model="claude-sonnet-4-6")

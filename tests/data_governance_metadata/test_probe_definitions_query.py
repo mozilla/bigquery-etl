@@ -185,9 +185,10 @@ class TestGleanFieldMerge:
         assert probes[0]["send_in_pings"] == ["baseline", "metrics"]
         assert probes[0]["data_sensitivity"] == []
 
-    def test_unreadable_metrics_file_leaves_sensitivity_empty(self):
-        # One repository's metrics file is a data gap, not an outage, so it does
-        # not propagate. An unreachable catalog does; see TestCatalogFailure.
+    def test_unreachable_metrics_file_raises(self):
+        # A 404 is a data gap and yields empty fields, but an outage must not be
+        # turned into one: the partition would be written with the whole app's
+        # sensitivity silently missing.
         with patch.object(
             query_mod.requests,
             "get",
@@ -199,10 +200,10 @@ class TestGleanFieldMerge:
                 },
             ),
         ):
-            probes = query_mod.fetch_glean_probes("fenix.baseline")
-
-        assert probes[0]["data_sensitivity"] == []
-        assert probes[0]["tags"] == ["Search"]
+            with pytest.raises(
+                RuntimeError, match="probe-info firefox-android-release"
+            ):
+                query_mod.fetch_glean_probes("fenix.baseline")
 
 
 class TestLibraryMetrics:

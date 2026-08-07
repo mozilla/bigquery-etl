@@ -1,0 +1,38 @@
+friendly_name: Referral Installs Totals to GCS
+description: |-
+  Extracts referral_installs_totals_v1 to a CSV file in the Website team's GCS
+  bucket for the Firefox Referral Program (DENG-11237). firefox.com syncs the
+  CSV into the Postgres DB behind the referral hub page.
+
+  CSV column contract (no header row), written to the bucket root:
+    invite_code   STRING   referral (invite) code, fxrefer: prefix stripped
+    total_installs INTEGER cumulative all-time distinct first_run installs
+  One file per run date named `referral_data-<date>.csv` (date = Airflow {{ds}}),
+  so an Airflow retry overwrites the same object. Runs daily.
+
+  This task only extracts to GCS; it does not logically build a queryable table.
+  A schema.yaml is shipped alongside because the --isolated stage-deploy CI
+  hard-fails to resolve a query.py artifact without one; a side effect is an
+  empty companion table (see schema.yaml for why destination_table: null can't
+  be used here).
+
+  Destination bucket `fx-referral-data-prod` (project moz-fx-springfield-prod) is
+  owned by the Website team; the Airflow workload service account
+  (default-workloads@moz-fx-data-airflow-gke-prod.iam.gserviceaccount.com) was
+  granted write access via mozilla/webservices-infra#11912.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: false
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_firefox_referral
+  arguments:
+  - --source-project=moz-fx-data-shared-prod
+  - --source-dataset=firefox_referral_derived
+  - --source-table=referral_installs_totals_v1
+  - --destination-bucket=fx-referral-data-prod
+  - --date={{ds}}
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'firefox_referral_derived', 'referral_installs_totals_v1']
+bigquery: null

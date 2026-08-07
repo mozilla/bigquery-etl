@@ -78,9 +78,14 @@ FROM
   `{target}`
 """
 
-VIEW_METADATA_TEMPLATE = """\
+VIEW_METADATA_HEADER = """\
 # Generated via ./bqetl generate stable_views
 ---
+"""
+
+VIEW_METADATA_TEMPLATE = (
+    VIEW_METADATA_HEADER
+    + """\
 friendly_name: Historical Pings for `{document_namespace}/{document_type}`
 description: |-
   A historical view of pings sent for the
@@ -93,6 +98,7 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 """
+)
 
 
 def write_dataset_metadata_if_not_exists(
@@ -190,7 +196,10 @@ def write_view_if_not_exists(
     full_view_id = f"{target_project}.{schema.user_facing_view}"
     replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
     key_value_metrics_removed = False
-    if schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+    if schema.schema_id in (
+        "moz://mozilla.org/schemas/glean/ping/1",
+        "moz://mozilla.org/schemas/glean/ping/2",
+    ):
         replacements += ["mozfun.norm.glean_ping_info(ping_info) AS ping_info"]
         if schema.bq_table == "baseline_v1":
             client_info_field = (
@@ -339,7 +348,10 @@ def write_view_if_not_exists(
             trailing_newline=True,
         )
     # If it's a glean stable view, include the app version parsing columns
-    elif schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+    elif schema.schema_id in (
+        "moz://mozilla.org/schemas/glean/ping/1",
+        "moz://mozilla.org/schemas/glean/ping/2",
+    ):
         full_sql = reformat(
             VIEW_QUERY_TEMPLATE.format(
                 target=full_source_id,
@@ -368,18 +380,31 @@ def write_view_if_not_exists(
         document_namespace=schema.document_namespace,
         document_type=schema.document_type,
     )
+    labels = {}
+    # Add a `legacy` label to stable views that select from legacy telemetry ping tables.
+    if schema.bq_dataset_family == "telemetry":
+        labels["legacy"] = True
+
     metadata_file = target_dir / "metadata.yaml"
     should_write_metadata = False
-    # append metadata if existing metadata doesn't have name and description
     if metadata_file.exists():
+        # Combine the generated and checked-in metadata, preferring the checked-in fields
         with metadata_file.open() as f:
-            existing_metadata = yaml.load(f, Loader=yaml.FullLoader)
-            if (
-                "friendly_name" not in existing_metadata
-                and "description" not in existing_metadata
-            ):
-                should_write_metadata = True
-                metadata_content = metadata_content + yaml.dump(existing_metadata)
+            existing_metadata = yaml.safe_load(f) or {}
+        template_metadata = yaml.safe_load(metadata_content) or {}
+        merged = {**template_metadata, **existing_metadata}
+        if labels:
+            merged["labels"] = {
+                **(merged.get("labels") or {}),
+                **labels,
+            }
+        if merged != existing_metadata:
+            should_write_metadata = True
+            metadata_content = VIEW_METADATA_HEADER + yaml.dump(
+                merged, sort_keys=False
+            )
+    elif labels:
+        metadata_content += yaml.dump({"labels": labels})
 
     if not metadata_file.exists() or should_write_metadata:
         with metadata_file.open("w") as f:

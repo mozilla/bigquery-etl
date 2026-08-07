@@ -55,6 +55,7 @@ with DAG(
         table_id="moz-fx-data-test-project.test.python_script_query_v1",
         warehouse_id="1939",
         owner="test@example.com",
+        doc_md="### test (Bigeye monitoring)\n\ntest\n\n**Owners:** test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
         depends_on_past=False,
         execution_timeout=datetime.timedelta(hours=1),
@@ -69,9 +70,10 @@ with DAG(
             "sql/moz-fx-data-test-project/test/python_script_query_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest",
         owner="test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
+        doc_md="### test\n\ntest\n\n**Owners:** test@example.com",
         task_group=task_group_test_group,
     )
 

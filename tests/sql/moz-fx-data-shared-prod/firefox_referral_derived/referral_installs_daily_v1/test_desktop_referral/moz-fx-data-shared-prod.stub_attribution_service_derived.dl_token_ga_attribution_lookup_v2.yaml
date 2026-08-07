@@ -1,0 +1,14 @@
+# tok1 and tok2 both resolve to sessions carrying fxrefer:TESTCODE01 (2 installs).
+# tok3 has no matching fxrefer session -> excluded.
+- dl_token: "tok1"
+  ga_client_id: "ga1"
+  stub_session_id: "s1"
+  first_seen_date: "2026-07-20"
+- dl_token: "tok2"
+  ga_client_id: "ga2"
+  stub_session_id: "s2"
+  first_seen_date: "2026-07-21"
+- dl_token: "tok3"
+  ga_client_id: "ga3"
+  stub_session_id: "s3"
+  first_seen_date: "2026-07-21"

@@ -1,0 +1,12 @@
+friendly_name: Developer Experience Survey
+description: |-
+  Responses from the Developer Experience (DevEx) survey, connected to a Google Sheet.
+  https://docs.google.com/spreadsheets/d/14Nv4thjHM95K9UYIn1CgjbpdZEIlIHbpdaoteFDDeZY/edit
+owners:
+- mcastelluccio@mozilla.com
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/14Nv4thjHM95K9UYIn1CgjbpdZEIlIHbpdaoteFDDeZY/edit
+  options:
+    skip_leading_rows: 1

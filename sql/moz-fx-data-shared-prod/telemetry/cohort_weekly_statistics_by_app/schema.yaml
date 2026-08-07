@@ -1,0 +1,41 @@
+fields:
+- mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_app_name
+- mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: install_source
+- mode: NULLABLE
+  name: cohort_date_week
+  type: DATE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: cohort_date_week
+- mode: NULLABLE
+  name: nbr_clients_in_cohort
+  type: INTEGER
+  description: Number of Clients in Cohort
+- mode: NULLABLE
+  name: activity_date_week
+  type: DATE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: activity_date_week
+- mode: NULLABLE
+  name: weeks_after_first_seen_week
+  type: INTEGER
+  description: Number of weeks between the cohort week and the activity week
+- mode: NULLABLE
+  name: nbr_active_clients
+  type: INTEGER
+  description: Number of Clients Active in the Activity Week
+- mode: NULLABLE
+  name: pct_retained
+  type: FLOAT
+  description: Fraction of the cohort active in the activity week

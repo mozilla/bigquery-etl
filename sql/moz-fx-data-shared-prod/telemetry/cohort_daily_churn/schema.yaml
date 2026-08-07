@@ -1,0 +1,2 @@
+fields: !include-fields
+  table: moz-fx-data-shared-prod.telemetry_derived.cohort_daily_churn_v1

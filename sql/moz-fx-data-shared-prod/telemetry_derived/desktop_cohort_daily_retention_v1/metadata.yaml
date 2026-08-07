@@ -18,6 +18,7 @@ labels:
   table_type: aggregate
   dag: bqetl_analytics_aggregations
   owner1: mhirose
+  legacy: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
   date_partition_parameter: submission_date

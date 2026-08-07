@@ -1,0 +1,16 @@
+# rows 1 and 3: sess1/amazon (seq=2) + sess2/amazon → same partial "fire fox", 1 click (row 3)
+- submission_date: "2024-01-15"
+  country: US
+  form_factor: desktop
+  advertiser: amazon
+  partial: fire fox
+  impression_count: 2
+  click_count: 1
+# row 7: sess1/yelp → separate advertiser, not deduped against amazon
+- submission_date: "2024-01-15"
+  country: US
+  form_factor: desktop
+  advertiser: yelp
+  partial: pizza
+  impression_count: 1
+  click_count: 1

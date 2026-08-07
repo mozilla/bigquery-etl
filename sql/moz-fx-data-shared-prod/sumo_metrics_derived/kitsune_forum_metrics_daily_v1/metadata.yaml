@@ -1,0 +1,52 @@
+friendly_name: Kitsune Forum Metrics Daily
+description: |
+  Daily Kitsune support forum question and reply metrics, broken down by product
+  and locale.
+
+  Grain: Created Date x First Reply Date x Product x Locale (UTC timezone)
+
+  Supports three Tier 1 KPIs:
+    reply_rate       = SUM(questions_replied) / SUM(questions_created)
+    avg_ttfr_hrs     = AVG(avg_ttfr_hrs) weighted by questions_replied
+    helpfulness_rate = SUM(total_helpful_votes)
+                     / (SUM(total_helpful_votes) + SUM(total_unhelpful_votes))
+
+  The main date column is `created_date`. `first_reply_date` is exposed as an
+  additional column (NULL for unreplied questions), so reports can aggregate
+  questions_created / TTFR by `created_date` and questions_replied by
+  `first_reply_date` from the same table.
+
+  Product mapping (matching kitsune_forum_posts.sql):
+    firefox            → Firefox desktop
+    mobile             → Firefox for Android
+    ios                → Firefox for iOS
+    firefox-enterprise → Firefox for Enterprise
+  Non-Firefox products are excluded.
+
+  Exclusions (matching kitsune_forum_posts.sql source logic):
+  - Spam questions and locked questions
+  - Non-Firefox products
+  - Self-replies (OP answering their own question) for TTFR and reply rate
+    only; OP self-answers ARE included in helpful/unhelpful vote totals
+  - Spam answers
+  - Answers from deactivated users (kitsune_auth_user.is_active = FALSE)
+
+  Note: total_helpful_votes and total_unhelpful_votes are cumulative vote totals
+  on a question's answers as of ETL run time — not votes cast on @submission_date.
+  Helpfulness rate is most meaningful when aggregated over a rolling window.
+
+  Replaces the reply rate, TTFR, and helpfulness CTEs in:
+  - kitsune_forum_posts.sql (dashboard queries)
+
+owners:
+  - plee@mozilla.com
+  - mozilla/customer_insights
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

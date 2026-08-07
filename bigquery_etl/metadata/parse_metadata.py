@@ -193,6 +193,59 @@ class MonitoringMetadata:
 
 
 @attr.s(auto_attribs=True)
+class ExternalSharingMetadata:
+    """Metadata to configure sharing of a dataset with external partners."""
+
+    exchange: str
+    data_review: str  # link to bug
+    subscribers: List[str] = attr.ib()
+    # Listing display name shown in the BigQuery Sharing console. Defaults to
+    # `Mozilla - <dataset>` when unset.
+    display_name: Optional[str] = attr.ib(None)
+    # Listing description. Defaults to the dataset description when unset.
+    listing_description: Optional[str] = attr.ib(None)
+    # Listing resource ID. Defaults to the dataset name when unset. Set
+    # explicitly to adopt an existing listing with a specific ID.
+    listing_id: Optional[str] = attr.ib(None)
+    # Data exchange resource ID. Defaults to a sanitized `exchange` when unset.
+    # Set explicitly to adopt an existing exchange with a specific ID.
+    exchange_id: Optional[str] = attr.ib(None)
+    # Data exchange display name. Defaults to a title-cased `exchange` when unset.
+    exchange_display_name: Optional[str] = attr.ib(None)
+    # Data exchange description. Has a generated default when unset.
+    exchange_description: Optional[str] = attr.ib(None)
+    # Enable restricted export on the listing (blocks exporting/copying shared
+    # query results). Defaults to false.
+    restrict_export: Optional[bool] = attr.ib(None)
+
+    @subscribers.validator
+    def validate_subscribers(self, attribute, value):
+        """Check that each subscriber is a group: email identity."""
+        for subscriber in value:
+            if not subscriber.startswith("group:") or not is_email(
+                subscriber[len("group:") :]
+            ):
+                raise ValueError(
+                    f"Invalid external_sharing subscriber {subscriber!r}: "
+                    "must be a 'group:<email>' identity."
+                )
+
+    @listing_id.validator
+    @exchange_id.validator
+    def validate_resource_id(self, attribute, value):
+        """Check resource IDs contain only letters, numbers and underscores.
+
+        BigQuery Sharing restricts exchange/listing IDs to this set; validating
+        here fails fast instead of at `terraform apply` in cloudops-infra.
+        """
+        if value is not None and not re.fullmatch(r"[A-Za-z0-9_]+", value):
+            raise ValueError(
+                f"Invalid external_sharing {attribute.name} {value!r}: must "
+                "contain only letters, numbers and underscores."
+            )
+
+
+@attr.s(auto_attribs=True)
 class Metadata:
     """
     Representation of a table or view Metadata configuration.
@@ -489,6 +542,26 @@ class Metadata:
             )
 
 
+def _structure_external_sharing(value):
+    """Structure a raw dict into ExternalSharingMetadata for attrs conversion.
+
+    Rejects unrecognized keys so a typo (e.g. `restrict_exports`) is a hard
+    error rather than silently dropped and then missing from the resources
+    Terraform provisions.
+    """
+    if value is None or isinstance(value, ExternalSharingMetadata):
+        return value
+    if isinstance(value, dict):
+        unknown = set(value) - {
+            field.name for field in attr.fields(ExternalSharingMetadata)
+        }
+        if unknown:
+            raise ValueError(
+                "Unknown external_sharing key(s): " + ", ".join(sorted(unknown))
+            )
+    return cattrs.BaseConverter().structure(value, ExternalSharingMetadata)
+
+
 @attr.s(auto_attribs=True)
 class DatasetMetadata:
     """
@@ -507,6 +580,11 @@ class DatasetMetadata:
     default_table_expiration_ms: Optional[str] = attr.ib(None)
     workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     syndication: Optional[Dict] = attr.ib(None)
+    # External partner sharing via BigQuery Sharing; only valid on `_shared`
+    # datasets. Provisioned from this config by Terraform in cloudops-infra.
+    external_sharing: Optional[ExternalSharingMetadata] = attr.ib(
+        None, converter=_structure_external_sharing
+    )
 
     def __attrs_post_init__(self):
         """Do additional updates after attrs is done initializing."""

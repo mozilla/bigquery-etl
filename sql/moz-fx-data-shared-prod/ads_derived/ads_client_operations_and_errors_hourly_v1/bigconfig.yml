@@ -3,7 +3,7 @@ tag_deployments:
   - collection:
       name: Ads Client
       notification_channels:
-        - slack: '#ads-client-notifications'
+        - slack: '#ads-client-owners'
     deployments:
       - column_selectors:
           - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.*

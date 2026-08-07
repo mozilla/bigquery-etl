@@ -1,0 +1,18 @@
+fields:
+- mode: NULLABLE
+  name: UPDATED_AT
+  type: TIMESTAMP
+  description: Timestamp when this row was written by the ETL. Used as the daily
+    partitioning field and by Cloud Data Ingestion for incremental syncing.
+- mode: NULLABLE
+  name: ALIAS_NAME
+  type: STRING
+  description: The user's FxA account ID (uid, hexadecimal).
+- mode: NULLABLE
+  name: ALIAS_LABEL
+  type: STRING
+  description: The Braze alias label.
+- mode: NULLABLE
+  name: PAYLOAD
+  type: JSON
+  description: Data passed to Braze to instantiate or update the user.

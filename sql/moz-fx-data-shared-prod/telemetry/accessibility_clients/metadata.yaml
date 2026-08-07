@@ -4,3 +4,5 @@ description: >
   partitioned by day.
 owners:
   - yzenevich@mozilla.com
+labels:
+  legacy: true

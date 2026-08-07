@@ -10,6 +10,7 @@ labels:
   dag: bqetl_firefox_desktop_ad_click_history
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day
@@ -22,4 +23,6 @@ bigquery:
     - sample_id
     - first_seen_date
     - first_reported_country
+schema:
+  allow_field_addition: true
 require_column_descriptions: true

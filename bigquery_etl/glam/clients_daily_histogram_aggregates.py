@@ -3,7 +3,7 @@
 import argparse
 import sys
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from jinja2 import Environment, PackageLoader
 
@@ -11,7 +11,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .client_side_sampled_metrics import get as get_sampled_metrics
-from .utils import get_schema, ping_type_from_table
+from .utils import get_schema, is_static_labeled_counter, ping_type_from_table
 
 ATTRIBUTES = ",".join(
     [
@@ -26,6 +26,11 @@ ATTRIBUTES = ",".join(
     ]
 )
 
+# Population the sampling rollout targets; drives the lookup and query routing.
+CLIENT_SAMPLED_CHANNEL = "release"
+CLIENT_SAMPLED_OS = "Windows"
+CLIENT_SAMPLED_MAX_SAMPLE_ID = 99  # sample_id buckets are 0-99
+
 
 def render_main(**kwargs):
     """Create a SQL query for the clients_daily_histogram_aggregates dataset."""
@@ -36,6 +41,7 @@ def render_main(**kwargs):
 
 def get_distribution_metrics(
     schema: Dict,
+    product: Optional[str] = None,
 ) -> tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all distribution-like metrics in a Glean table.
 
@@ -48,12 +54,21 @@ def get_distribution_metrics(
         "custom_distribution",
         "labeled_timing_distribution",
         "labeled_custom_distribution",
+        "labeled_memory_distribution",
+        # Static labeled_counters are categorical histograms (Glean's replacement
+        # for Legacy Telemetry's histogram-categorical) and are processed here.
+        "labeled_counter",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
-    # Metrics that are already sampled
-    sampled_metrics = get_sampled_metrics(metric_type_set)
+    # Metrics sampled on the rollout's target population.
+    sampled_metrics = get_sampled_metrics(
+        metric_type_set,
+        product=product,
+        channel=CLIENT_SAMPLED_CHANNEL,
+        os=CLIENT_SAMPLED_OS,
+    )
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
@@ -66,6 +81,12 @@ def get_distribution_metrics(
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
+                # Only static labeled_counters (predefined `labels`) are
+                # categorical histograms; dynamic ones stay in the scalar pipeline.
+                if metric_type == "labeled_counter" and not is_static_labeled_counter(
+                    product, field["name"]
+                ):
+                    continue
                 if field["name"] in sampled_metrics.get(metric_type, []):
                     found_sampled_metrics[metric_type].append(field["name"])
                 elif field["name"] not in excluded_metrics:
@@ -87,7 +108,15 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
     labeled = []
     unlabeled = []
     for name, metric_type, value_path in sorted(items):
-        if metric_type.startswith("labeled"):
+        if metric_type == "labeled_counter":
+            # A static labeled_counter's key/value array IS the categorical
+            # histogram (label -> count), so feed it in directly (no `.values`)
+            # as an unlabeled histogram. get_distribution_metrics filters out
+            # dynamic labeled_counters (no predefined `labels`).
+            unlabeled.append(
+                f"""('', "{name}", "{metric_type}", metrics.{metric_type}.{name})"""
+            )
+        elif metric_type.startswith("labeled"):
             labeled.append(f"""
                 (
                     "{name}",
@@ -143,7 +172,9 @@ def main():
     )
 
     schema = get_schema(args.source_table)
-    distributions, client_sampled_distributions = get_distribution_metrics(schema)
+    distributions, client_sampled_distributions = get_distribution_metrics(
+        schema, product=args.product
+    )
     metrics_sql = get_metrics_sql(distributions)
     client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
     if args.product == "firefox_desktop":
@@ -163,9 +194,9 @@ def main():
             ping_type=ping_type_from_table(args.source_table),
             client_sampled_histograms=client_sampled_metrics_sql["unlabeled"],
             client_sampled_labeled_histograms=client_sampled_metrics_sql["labeled"],
-            client_sampled_channel="release",
-            client_sampled_os="Windows",
-            client_sampled_max_sample_id=100,
+            client_sampled_channel=CLIENT_SAMPLED_CHANNEL,
+            client_sampled_os=CLIENT_SAMPLED_OS,
+            client_sampled_max_sample_id=CLIENT_SAMPLED_MAX_SAMPLE_ID,
         )
     )
 

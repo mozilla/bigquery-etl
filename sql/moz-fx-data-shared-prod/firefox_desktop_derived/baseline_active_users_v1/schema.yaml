@@ -125,6 +125,9 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: windows_build_number
 - name: browser_engagement_uri_count
   type: INTEGER
   mode: NULLABLE
@@ -134,6 +137,9 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: legacy_telemetry_client_id
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
@@ -144,18 +150,33 @@ fields:
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_dlsource
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_experiment
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_variation
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_ua
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: experiments
   fields:
   - name: key
     type: STRING
@@ -227,12 +248,18 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: os
 - name: os_grouped
   type: STRING
   mode: NULLABLE
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: os_version
 - name: os_version_build
   type: STRING
   mode: NULLABLE
@@ -284,9 +311,15 @@ fields:
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_medium
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: attribution_source
 - name: attribution_term
   type: STRING
   mode: NULLABLE

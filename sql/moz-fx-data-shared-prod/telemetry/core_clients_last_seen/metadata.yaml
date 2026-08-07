@@ -5,3 +5,5 @@ description: 'Captures history of activity of each client sending core pings in 
   '
 owners:
 - ascholtz@mozilla.com
+labels:
+  legacy: true

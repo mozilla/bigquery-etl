@@ -3,3 +3,5 @@ description: Uninstalls by OS install year split by if the uninstall was on date
   installation or not
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

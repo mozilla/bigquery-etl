@@ -8,6 +8,7 @@ labels:
   incremental: true
   owner1: kik
   dag: bqetl_fx_health_ind_dashboard
+  legacy: true
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:

@@ -2,217 +2,337 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: app_version
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: normalized_os
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: profile_creation_month
   type: DATE
+  description: The first calendar day of the month in which the client profiles were created, used to group clients by profile age cohort.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
+  description: True if the client's search access point (SAP) is one that generates ad revenue for Mozilla.
 - mode: NULLABLE
   name: has_adblocker_addon
   type: BOOLEAN
+  description: True if the client has at least one ad-blocking extension installed.
 - mode: NULLABLE
   name: policies_is_enterprise
   type: BOOLEAN
+  description: True if the client is identified as an enterprise user based on policy signals.
 - mode: NULLABLE
   name: stories_enabled
   type: BOOLEAN
+  description: True if the Pocket stories (Recommended by Pocket) section is enabled on the New Tab page.
 - mode: NULLABLE
   name: sponsored_stories_enabled
   type: BOOLEAN
+  description: True if sponsored Pocket stories are enabled on the New Tab page.
 - mode: NULLABLE
   name: topsites_enabled
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_enabled
 - mode: NULLABLE
   name: sponsored_topsites_enabled
   type: BOOLEAN
+  description: True if sponsored Top Sites tiles are enabled on the New Tab page.
 - mode: NULLABLE
   name: topic_preferences_set
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topic_preferences_set
 - mode: NULLABLE
   name: client_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_count
 - mode: NULLABLE
   name: clients_with_newtab_and_search_activity
   type: INTEGER
+  description: Count of clients that had both New Tab page activity and search activity on this submission date.
 - mode: NULLABLE
   name: clients_with_ad_engagement
   type: INTEGER
+  description: Count of clients that clicked on at least one ad (search ad, sponsored topsite tile, or sponsored Pocket story) on this submission date.
 - mode: NULLABLE
   name: clients_with_search_ad_engagement
   type: INTEGER
+  description: Count of clients that clicked on at least one ad on a Search Engine Result Page (SERP) on this submission date.
 - mode: NULLABLE
   name: clients_with_newtab_ad_engagement
   type: INTEGER
+  description: Count of clients that clicked on at least one sponsored New Tab tile or sponsored Pocket story on this submission date.
 - mode: NULLABLE
   name: subsession_hours_sum_total
   type: FLOAT
+  description: Total sum of active subsession hours across all clients in this cohort for the submission date.
 - mode: REPEATED
   name: subsession_hours_sum_histogram
   type: FLOAT
+  description: Histogram of per-client subsession hours sums across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sessions_started_on_this_day_total
   type: INTEGER
+  description: Total number of browser sessions started across all clients in this cohort on the submission date.
 - mode: REPEATED
   name: sessions_started_on_this_day_histogram
   type: INTEGER
+  description: Histogram of per-client session counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: active_addons_count_mean_histogram
   type: FLOAT
+  description: Histogram of mean active add-on counts per client across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: max_concurrent_tab_count_max_histogram
   type: INTEGER
+  description: Histogram of maximum concurrent tab counts per client across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: active_hours_sum_histogram
   type: FLOAT
+  description: Histogram of per-client active hours sums across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: total_uri_count_histogram
   type: INTEGER
+  description: Histogram of total URI counts per client across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_sum
   type: INTEGER
+  description: Total count of organic (non-tagged) search access point visits across all clients in this cohort.
 - mode: REPEATED
   name: organic_histogram
   type: INTEGER
+  description: Histogram of per-client organic search access point counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: tagged_sap_sum
   type: INTEGER
+  description: Total count of tagged search access point (SAP) searches that include a partner code, across all clients in this cohort.
 - mode: REPEATED
   name: tagged_sap_histogram
   type: INTEGER
+  description: Histogram of per-client tagged SAP search counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: tagged_follow_on_sum
   type: INTEGER
+  description: Total count of follow-on searches (searches that follow a tagged SAP search) across all clients in this cohort.
 - mode: REPEATED
   name: tagged_follow_on_histogram
   type: INTEGER
+  description: Histogram of per-client tagged follow-on search counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sap_sum
   type: INTEGER
+  description: Total count of all search access point (SAP) searches, including both tagged and untagged, across all clients in this cohort.
 - mode: REPEATED
   name: sap_histogram
   type: INTEGER
+  description: Histogram of per-client SAP search counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: ad_click_sum
   type: INTEGER
+  description: Total count of ad clicks on Search Engine Result Pages across all clients in this cohort.
 - mode: REPEATED
   name: ad_click_histogram
   type: INTEGER
+  description: Histogram of per-client SERP ad click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: ad_click_organic_sum
   type: INTEGER
+  description: Total count of ad clicks originating from organic (untagged) searches across all clients in this cohort.
 - mode: REPEATED
   name: ad_click_organic_histogram
   type: INTEGER
+  description: Histogram of per-client organic ad click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: search_with_ads_sum
   type: INTEGER
+  description: Total count of Search Engine Result Pages (SERPs) containing ads that were loaded by clients in this cohort.
 - mode: REPEATED
   name: search_with_ads_histogram
   type: INTEGER
+  description: Histogram of per-client SERP with ads counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: newtab_visit_count_sum
   type: INTEGER
+  description: Total count of New Tab page visits across all clients in this cohort on the submission date.
 - mode: REPEATED
   name: newtab_visit_count_histogram
   type: INTEGER
+  description: Histogram of per-client New Tab visit counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: visits_with_non_search_engagement_sum
   type: INTEGER
+  description: Total count of New Tab visits where the user engaged with content (non-search) across all clients in this cohort.
 - mode: REPEATED
   name: visits_with_non_search_engagement_histogram
   type: INTEGER
+  description: Histogram of per-client non-search-engagement New Tab visit counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_topsite_tile_clicks_sum
   type: INTEGER
+  description: Total count of clicks on organic (non-sponsored) Top Sites tiles across all clients in this cohort.
 - mode: REPEATED
   name: organic_topsite_tile_clicks_histogram
   type: INTEGER
+  description: Histogram of per-client organic topsite tile click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_topsite_tile_clicks_sum
   type: INTEGER
+  description: Total count of clicks on sponsored Top Sites tiles across all clients in this cohort.
 - mode: REPEATED
   name: sponsored_topsite_tile_clicks_histogram
   type: INTEGER
+  description: Histogram of per-client sponsored topsite tile click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_topsite_tile_impressions_sum
   type: INTEGER
+  description: Total count of impressions of organic (non-sponsored) Top Sites tiles across all clients in this cohort.
 - mode: REPEATED
   name: organic_topsite_tile_impressions_histogram
   type: INTEGER
+  description: Histogram of per-client organic topsite tile impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_topsite_tile_impressions_sum
   type: INTEGER
+  description: Total count of impressions of sponsored Top Sites tiles across all clients in this cohort.
 - mode: REPEATED
   name: sponsored_topsite_tile_impressions_histogram
   type: INTEGER
+  description: Histogram of per-client sponsored topsite tile impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_topsite_tile_dismissals_sum
   type: INTEGER
+  description: Total count of dismissals of organic (non-sponsored) Top Sites tiles across all clients in this cohort.
 - mode: REPEATED
   name: organic_topsite_tile_dismissals_histogram
   type: INTEGER
+  description: Histogram of per-client organic topsite tile dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_topsite_tile_dismissals_sum
   type: INTEGER
+  description: Total count of dismissals of sponsored Top Sites tiles across all clients in this cohort.
 - mode: REPEATED
   name: sponsored_topsite_tile_dismissals_histogram
   type: INTEGER
+  description: Histogram of per-client sponsored topsite tile dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_stories_impressions_sum
   type: INTEGER
+  description: Total count of impressions of organic (non-sponsored) Pocket story tiles across all clients in this cohort.
 - mode: REPEATED
   name: organic_stories_impressions_histogram
   type: INTEGER
+  description: Histogram of per-client organic Pocket story impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_stories_impressions_sum
   type: INTEGER
+  description: Total count of impressions of sponsored Pocket story tiles across all clients in this cohort.
 - mode: REPEATED
   name: sponsored_stories_impressions_histogram
   type: INTEGER
+  description: Histogram of per-client sponsored Pocket story impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_stories_clicks_sum
   type: INTEGER
+  description: Total count of clicks on organic (non-sponsored) Pocket story tiles across all clients in this cohort.
 - mode: REPEATED
   name: organic_stories_clicks_histogram
   type: INTEGER
+  description: Histogram of per-client organic Pocket story click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_stories_clicks_sum
   type: INTEGER
+  description: Total count of clicks on sponsored Pocket story tiles across all clients in this cohort.
 - mode: REPEATED
   name: sponsored_stories_clicks_histogram
   type: INTEGER
+  description: Histogram of per-client sponsored Pocket story click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_stories_dismissals_sum
   type: INTEGER
+  description: Total count of dismissals of organic (non-sponsored) Pocket story tiles across all clients in this cohort.
 - mode: REPEATED
   name: organic_stories_dismissals_histogram
   type: INTEGER
+  description: Histogram of per-client organic Pocket story dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_stories_dismissals_sum
   type: INTEGER
+  description: Total count of dismissals of sponsored Pocket story tiles across all clients in this cohort.
 - mode: REPEATED
   name: sponsored_stories_dismissals_histogram
   type: INTEGER
+  description: Histogram of per-client sponsored Pocket story dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).

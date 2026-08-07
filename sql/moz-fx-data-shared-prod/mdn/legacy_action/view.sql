@@ -65,7 +65,18 @@ CREATE OR REPLACE VIEW
             )
           ] AS extra,
           'clicked' AS name,
-          0 AS `timestamp`
+          0 AS `timestamp`,
+          CAST(
+            NULL
+            AS
+              STRUCT<
+                event_seq INT64,
+                session_id STRING,
+                session_sample_rate FLOAT64,
+                session_seq INT64,
+                session_start_time STRING
+              >
+          ) AS session
         )
       ] AS events,
       metadata,
@@ -151,7 +162,8 @@ CREATE OR REPLACE VIEW
             STRUCT<
               event_threshold INT64,
               metrics_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
-              pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>
+              pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
+              session_sample_rate FLOAT64
             >
         ) AS server_knobs_config,
         ping_info.parsed_start_time AS parsed_start_time,

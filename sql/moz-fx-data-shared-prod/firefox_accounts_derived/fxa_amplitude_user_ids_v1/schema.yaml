@@ -2,3 +2,6 @@ fields:
 - mode: NULLABLE
   name: user_id
   type: STRING
+  description: !include-field-description
+    field: user_id
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml

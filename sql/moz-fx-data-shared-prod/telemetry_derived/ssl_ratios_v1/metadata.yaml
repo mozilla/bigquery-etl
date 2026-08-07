@@ -12,6 +12,7 @@ labels:
   review_bugs:
     - 1414839
   incremental_export: false
+  legacy: true
 scheduling:
   dag_name: bqetl_ssl_ratios
 monitoring:

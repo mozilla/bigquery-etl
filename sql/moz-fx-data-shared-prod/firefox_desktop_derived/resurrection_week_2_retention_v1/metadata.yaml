@@ -19,6 +19,7 @@ labels:
   shredder_mitigation: false
   owner1: rbaffourawuah@mozilla.com
   owner2: mhirose@mozilla.com
+  legacy: true
 scheduling:
   dag_name: bqetl_desktop_retention_model
 bigquery:

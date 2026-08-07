@@ -325,6 +325,21 @@ def test_format_response_nonnumeric_answer_id():
     assert not res["survey_data"][1].get("answer_id")
 
 
+def test_format_response_integer_date_started():
+    base = {
+        "submission_date": SUBMISSION_DATE,
+        "id": "1",
+        "status": "Complete",
+        "date_started": 0,
+        "language": "English",
+        "session_id": "1538059336_5bacec4869caa2.27680217",
+        "response_time": 10,
+        "survey_data": {},
+    }
+    res = format_responses(base, SUBMISSION_DATE, False)
+    assert res["date_started"] is None
+
+
 def test_construct_data():
     given = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE, False)
     assert given == EXAMPLE_RESPONSE_FORMATTED

@@ -1,0 +1,28 @@
+---
+- submission_date: 2023-01-02
+  client_id: client-matched
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 3
+  days_sent_metrics_ping_bits: 1
+  uri_count: 7
+  is_default_browser: true
+  is_large_device: true
+  notifications_allowed: true
+  marketing_notifications_allowed: true
+  device_manufacturer: Samsung
+  isp_name: ISP2
+# Brand-new client, first metrics ping today.
+- submission_date: 2023-01-02
+  client_id: client-new
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 1
+  uri_count: 3
+  is_default_browser: true
+  is_large_device: false
+  notifications_allowed: false
+  marketing_notifications_allowed: false
+  device_manufacturer: Xiaomi
+  isp_name: ISP3

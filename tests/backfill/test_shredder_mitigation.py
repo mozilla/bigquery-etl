@@ -122,12 +122,14 @@ class TestClassifyColumns:
 
         expected_metrics = [
             Column(
+                # In previous schema, compared to previous table.
                 name="metric_float",
                 data_type=DataTypeGroup.FLOAT,
                 column_type=ColumnType.METRIC,
-                status=ColumnStatus.COMMON,
+                status=ColumnStatus.ADDED,
             ),
             Column(
+                # In previous schema, compared to previous table.
                 name="metric_numeric",
                 data_type=DataTypeGroup.NUMERIC,
                 column_type=ColumnType.METRIC,
@@ -305,16 +307,18 @@ class TestClassifyColumns:
 
         expected_metrics = [
             Column(
+                # In previous schema, compared to previous table.
                 name="metric_float",
                 data_type=DataTypeGroup.FLOAT,
                 column_type=ColumnType.METRIC,
                 status=ColumnStatus.COMMON,
             ),
             Column(
+                # Not in previous schema, from the new query.
                 name="metric_numeric",
                 data_type=DataTypeGroup.NUMERIC,
                 column_type=ColumnType.METRIC,
-                status=ColumnStatus.COMMON,
+                status=ColumnStatus.ADDED,
             ),
         ]
 
@@ -1036,7 +1040,7 @@ class TestGenerateQueryWithShredderMitigation:
                             previous_agg.submission_date,
                             previous_agg.column_1,
                             CAST(NULL AS STRING) AS column_2,
-                            COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0) AS metric_1
+                            previous_agg.metric_1 - COALESCE(new_agg.metric_1, 0) AS metric_1
                           FROM
                             previous_agg
                           LEFT JOIN
@@ -1154,6 +1158,316 @@ class TestGenerateQueryWithShredderMitigation:
                 assert os.path.isfile(
                     expected[0] / f"{SHREDDER_MITIGATION_QUERY_NAME}.sql"
                 )
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_query_excludes_new_metric_from_comparison(
+        self, mock_classify_columns, mock_client, runner
+    ):
+        """A metric new in this version must not be compared against the previous table.
+
+        metric_1 existed previously (COMMON) -> aggregated and diffed (previous - new).
+        metric_2 is new (ADDED) -> never summed/diffed against the previous table; it is
+        emitted as a typed zero in the add-back rows and carried from the new query.
+        """
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+                {"name": "metric_2", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+            with open(self.path / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2, metric_1, metric_2 FROM upstream_1"
+                    " GROUP BY column_1, column_2"
+                )
+            with open(self.path_previous / "query.sql", "w") as f:
+                f.write("SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1")
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
+            for path in (self.path, self.path_previous):
+                with open(Path(path) / "metadata.yaml", "w") as f:
+                    f.write(
+                        "bigquery:\n  time_partitioning:\n    type: day\n    "
+                        "field: submission_date\n    require_partition_filter: true\n"
+                        "labels:\n    shredder_mitigation: true"
+                    )
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [
+                    Column(
+                        "column_2",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.ADDED,
+                    )
+                ],
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    ),
+                    Column(
+                        "metric_2",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.ADDED,
+                    ),
+                ],
+                [],
+            )
+
+            with patch.object(
+                Subset,
+                "get_query_path_results",
+                return_value=[
+                    {
+                        "column_1": "ABC",
+                        "column_2": "DEF",
+                        "metric_1": 10,
+                        "metric_2": 5,
+                    }
+                ],
+            ):
+                result = generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
+                    backfill_date=PREVIOUS_DATE,
+                )
+
+            # Normalize whitespace so assertions are robust to the formatter.
+            sql = " ".join(result[1].split())
+
+            # The common metric is aggregated and diffed.
+            assert "SUM(metric_1) AS metric_1" in sql
+            assert (
+                "previous_agg.metric_1 - "
+                "COALESCE(new_agg.metric_1, 0) AS metric_1" in sql
+            )
+            assert (
+                "COALESCE(previous_agg.metric_1, 0) > "
+                "COALESCE(new_agg.metric_1, 0)" in sql
+            )
+
+            # The new metric is never aggregated or compared against the previous table,
+            # and is emitted as a typed zero in the shredded (add-back) rows.
+            assert "SUM(metric_2)" not in sql
+            assert "previous_agg.metric_2" not in sql
+            assert "CAST(0 AS INTEGER) AS metric_2" in sql
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_query_preserves_previous_null_for_integer_metric(
+        self, mock_classify_columns, mock_client, runner
+    ):
+        """A whole-number metric must not coalesce the previous value to 0.
+
+        The add-back subtraction is `previous - COALESCE(new, 0)`, so a previous NULL
+        stays NULL (rather than becoming 0) and the backfilled total matches the previous
+        version's NULL. This mirrors the FLOAT branch, which never coalesces previous.
+        """
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+            with open(self.path / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2, metric_1 FROM upstream_1"
+                    " GROUP BY column_1, column_2"
+                )
+            with open(self.path_previous / "query.sql", "w") as f:
+                f.write("SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1")
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
+            for path in (self.path, self.path_previous):
+                with open(Path(path) / "metadata.yaml", "w") as f:
+                    f.write(
+                        "bigquery:\n  time_partitioning:\n    type: day\n    "
+                        "field: submission_date\n    require_partition_filter: true\n"
+                        "labels:\n    shredder_mitigation: true"
+                    )
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [
+                    Column(
+                        "column_2",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.ADDED,
+                    )
+                ],
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],
+            )
+
+            with patch.object(
+                Subset,
+                "get_query_path_results",
+                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10}],
+            ):
+                result = generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
+                    backfill_date=PREVIOUS_DATE,
+                )
+
+            sql = " ".join(result[1].split())
+
+            # Add-back keeps the previous value as-is (previous NULL -> NULL).
+            assert (
+                "previous_agg.metric_1 - COALESCE(new_agg.metric_1, 0) AS metric_1"
+                in sql
+            )
+            # The previous value is never coalesced to 0 in the subtraction.
+            assert "COALESCE(previous_agg.metric_1, 0) -" not in sql
+            # The inclusion comparison still coalesces (that part is unchanged).
+            assert (
+                "COALESCE(previous_agg.metric_1, 0) > COALESCE(new_agg.metric_1, 0)"
+                in sql
+            )
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_query_allows_no_added_dimensions(
+        self, mock_classify_columns, mock_client, runner
+    ):
+        """A backfill with no added dimensions is allowed (keep-data-stable case).
+
+        When the new version adds no dimensions, the previous and new queries share the
+        same dimensions; the query must still generate (no 'added dimension required'
+        error) and simply restore the common metric(s).
+        """
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+            for query_path in (self.path, self.path_previous):
+                with open(query_path / "query.sql", "w") as f:
+                    f.write(
+                        "SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1"
+                    )
+                with open(query_path / "schema.yaml", "w") as f:
+                    f.write(yaml.safe_dump(existing_schema))
+                with open(Path(query_path) / "metadata.yaml", "w") as f:
+                    f.write(
+                        "bigquery:\n  time_partitioning:\n    type: day\n    "
+                        "field: submission_date\n    require_partition_filter: true\n"
+                        "labels:\n    shredder_mitigation: true"
+                    )
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],  # no added dimensions
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],
+            )
+
+            with patch.object(
+                Subset,
+                "get_query_path_results",
+                return_value=[{"column_1": "ABC", "metric_1": 10}],
+            ):
+                # Must not raise the "added dimension required" error.
+                result = generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
+                    backfill_date=PREVIOUS_DATE,
+                )
+
+            sql = " ".join(result[1].split())
+
+            # Generation succeeded (no "added dimension required" error) and the common
+            # metric is still restored.
+            assert (
+                "previous_agg.metric_1 - COALESCE(new_agg.metric_1, 0) AS metric_1"
+                in sql
+            )
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
@@ -1778,7 +2092,7 @@ class TestGenerateQueryWithShredderMitigation:
                                     "previous_agg.column_1",
                                     "previous_agg.column_2",
                                     "CAST(NULL AS STRING) AS column_3",
-                                    "COALESCE(previous_agg.metric_1, 0) - "
+                                    "previous_agg.metric_1 - "
                                     "COALESCE(new_agg.metric_1, 0) AS metric_1",
                                 ],
                                 from_clause="previous_agg LEFT JOIN new_agg ON "
@@ -1994,7 +2308,7 @@ class TestGenerateQueryWithShredderMitigation:
                             previous_agg.submission_date,
                             previous_agg.column_1,
                             CAST(NULL AS STRING) AS column_2,
-                            COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0) AS metric_1
+                            previous_agg.metric_1 - COALESCE(new_agg.metric_1, 0) AS metric_1
                           FROM
                             previous_agg
                           LEFT JOIN

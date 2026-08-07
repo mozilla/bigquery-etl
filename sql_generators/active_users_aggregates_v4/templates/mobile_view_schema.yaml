@@ -127,9 +127,12 @@ fields:
 - name: app_version_patch_revision
   type: NUMERIC
   mode: NULLABLE
+  description: The patch revision for the installed version of the browser.
 - name: app_version_is_major_release
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag to indicate whether the browser version is a major release.
 - name: os_grouped
   type: STRING
   mode: NULLABLE
+  description: Grouping of operating system into families (Windows, Linux, Mac, iOS, Android, other).

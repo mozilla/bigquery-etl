@@ -127,10 +127,15 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play Store Attribution Term - Available for Mobile Only
-- name: row_source
+- name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
-  description: Row Source - Indicates if Desktop or Mobile
+  description: Play Store Attribution Install Referrer Response
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
+    the install source could not be determined.
 - mode: NULLABLE
   name: num_clients_in_cohort
   type: INTEGER
@@ -139,7 +144,3 @@ fields:
   name: num_clients_active_on_day
   type: INTEGER
   description: Number of Clients Active on Day
-- name: play_store_attribution_install_referrer_response
-  type: STRING
-  mode: NULLABLE
-  description: Play Store Attribution Install Referrer Response

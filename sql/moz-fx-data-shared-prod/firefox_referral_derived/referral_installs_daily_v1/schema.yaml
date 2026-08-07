@@ -1,0 +1,21 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    Partition date; the day clients were first seen and their referred installs
+    counted.
+- name: invite_code
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Referral (invite) code, with the `fxrefer:` prefix stripped. Expected to be
+    17 chars (confirmed by the Website team 2026-07-24). Derived from a referral
+    id generated within Firefox; not associated with FxA or any real-world
+    identity.
+- name: install_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Distinct Firefox first_run installs attributed to this invite code on
+    submission_date.

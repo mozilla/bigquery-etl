@@ -35,9 +35,15 @@ fields:
 - name: days_seen_session_start_bits
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: days_seen_session_start_bits
 - name: days_seen_session_end_bits
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: days_seen_session_end_bits
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -49,6 +55,9 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: normalized_os_version
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
@@ -60,6 +69,8 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
+  description: The city-level geolocation of the client derived from IP address. Null when city-level resolution
+    is unavailable.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -68,9 +79,15 @@ fields:
 - name: app_build
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: app_build
 - name: app_channel
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: app_channel
 - name: app_display_version
   type: STRING
   mode: NULLABLE
@@ -94,13 +111,21 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: first_seen_date
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: is_new_profile
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's IP address.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: isp
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -108,3 +133,6 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_derived.yaml
+    field: geo_subdivision

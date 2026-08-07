@@ -5,7 +5,7 @@
   watchers:
   - mhirose@mozilla.com
   - bbaird_@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
   ignore_date_partition_offset: false

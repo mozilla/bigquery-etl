@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: UPDATED_AT
+  type: TIMESTAMP
+  description: The day and time this table was last updated.
+- mode: NULLABLE
+  name: ALIAS_NAME
+  type: STRING
+  description: The value that syncs to this alias record (fxa_id).
+- mode: NULLABLE
+  name: ALIAS_LABEL
+  type: STRING
+  description: The name of the label (fxa_id) in Braze.
+- mode: NULLABLE
+  name: PAYLOAD
+  type: JSON
+  description: A combination of all fields from products_v2, packaged as a payload to sync to Braze.

@@ -3,3 +3,5 @@ description: Aggregate table used in Firefox Health dashboard, contains number o
   new profiles by OS
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

@@ -118,7 +118,7 @@ def monitoring(ctx):
 
     Requires BigConfig API key to be set via BIGEYE_API_KEY env variable.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """)
 @block_coding_agents
 @click.argument("name")
@@ -284,7 +284,7 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
 @monitoring.command(help="""
     Deploy custom SQL rules.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """)
 @block_coding_agents
 @click.argument("name")
@@ -646,7 +646,7 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
 @monitoring.command(help="""
     Set partition column for view or table in Bigeye.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """)
 @block_coding_agents
 @click.argument("name")
@@ -750,7 +750,7 @@ def set_partition_column(
 @monitoring.command(help="""
     Delete deployed monitors. Use --custom-sql and/or --metrics flags to select which types of monitors to delete.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
     """)
 @block_coding_agents
 @click.argument("name")
@@ -844,7 +844,7 @@ def delete(
     help="""
     Runs Bigeye monitors.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Example:
 

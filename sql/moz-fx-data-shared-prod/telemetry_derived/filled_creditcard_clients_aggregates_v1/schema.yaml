@@ -2,16 +2,24 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date of Airflow job
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country code of the clients.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: clients
   type: INTEGER
   mode: NULLABLE
-  description: The number of clients that have autofilled their credit card information.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: clients
 - name: fill_counts
   type: INTEGER
   mode: NULLABLE
-  description: The fill count of clients that have autofilled their credit card information.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: fill_counts

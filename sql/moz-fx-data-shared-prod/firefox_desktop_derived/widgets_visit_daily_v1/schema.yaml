@@ -1,0 +1,190 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Day the event was received in the newtab ping
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique ID for the client installation.
+- name: newtab_visit_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique identifier for the newtab visit
+- name: widget_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the widget that emits the event (e.g., lists, focus_timer, weather).
+- name: widget_size
+  type: STRING
+  mode: NULLABLE
+  description: Size of widget (e.g., mini, small, medium).
+- name: impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Count of widgets_impression events for this widget and size within the visit
+    Note that if the widget changes size it is possible for it to generate events without having associated impressions.
+    Toggling enabled and disabled can also produce multiple impressions in a single visit.
+- name: user_event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of widgets_user_event events for this widget and size within the visit
+- name: change_size_or_learn_more_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of widgets_user_event events whose user_action is 'change_size' or 'learn_more'
+- name: enabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of widgets_enabled events where the widget was enabled (enabled extra = TRUE)
+- name: disabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of widgets_enabled events where the widget was disabled (enabled extra = FALSE)
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Earliest submission_timestamp of the newtab pings contributing to this visit
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: Firefox Desktop major version
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating system of the host system
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS version
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: Windows OS build number, used to distinguish Windows 10 (<22000) from Windows 11 (>=22000)
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Firefox Desktop deployment channel (e.g. release, beta)
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: language or country based preferences of the host system
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country where the newtab event is reported
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Hashed version of client_id (0-99). Useful for distribution analysis
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy telemetry client_id. Enables joining to legacy telemetry main-ping data
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Identifies profile associated with client.
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county
+- name: homepage_category
+  type: STRING
+  mode: NULLABLE
+  description: User's chosen homepage/new window appearance
+- name: newtab_category
+  type: STRING
+  mode: NULLABLE
+  description: User's chosen newtab appearance
+- name: organic_content_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled stories in the browser.
+- name: sponsored_content_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled sponsored stories in the browser.
+- name: sponsored_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled sponsored topsites in the browser.
+- name: organic_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled topsites in the browser.
+- name: newtab_search_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled search in the browser.
+- name: newtab_weather_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the weather widget is enabled
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: Engine_id of the default search engine
+- name: default_private_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: Engine_id of the default private search engine
+- name: topsite_rows
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of topsite tile rows configured to be shown on the newtab page
+- name: topsite_sponsored_tiles_configured
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of topsite tiles configured to be shown on newtab
+- name: newtab_blocked_sponsors
+  type: STRING
+  mode: REPEATED
+  description: Array of advertiser names that have been dismissed by the user
+- name: newtab_content_surface_id
+  type: STRING
+  mode: NULLABLE
+  description: Scheduled surface identifier based on locale and region, with fallback to computed value from country and locale
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  description: Array of experiments to associate with each visit
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+- name: is_default_ui
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the newtab open was a default ui
+- name: user_action_counts
+  type: RECORD
+  mode: REPEATED
+  description: Per-user_action counts of widgets_user_event events for this widget within the visit. Will be null in the abscence of interactions
+  fields:
+  - name: user_action
+    type: STRING
+    mode: NULLABLE
+    description: Specific action taken by the widget (e.g., list_copy, list_create, timer_set, timer_play, timer_pause, change_location, detect_location).
+  - name: count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of widgets_user_event events with this user_action

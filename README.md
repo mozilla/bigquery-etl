@@ -48,6 +48,20 @@ cp .vscode/launch.json.default .vscode/launch.json
 And you should now be set up to start working in the repo. The easiest way to do this for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).
 
 
+#### Upgrading Dependencies in venv from requirements.txt
+
+Sometimes a new dependency is added to bigquery-etl, or there is an important update made that should be installed locally for `bqetl` commands to continue working. `bootstrap` will only setup from scratch, so use `update` instead to update dependencies in-place.
+
+0. Prerequisites
+  - already followed the steps above for *Installing bqetl*
+  - `requirements.txt` has the up-to-date dependencies list to install
+
+1. Update dependencies
+```bash
+./bqetl update
+```
+
+
 ## Releasing a new version of `bqetl`
 
 To push a new version of `bqetl` to [PyPI](https://pypi.org/project/mozilla-bigquery-etl/), update the `version` in [`pyproject.toml`](pyproject.toml). The version numbers follow the [CalVer](https://calver.org/) scheme, with the _Micro_ version numbers starting at 1. For example, for the first package version getting published in March 2024, the version would be `2024.3.1`.

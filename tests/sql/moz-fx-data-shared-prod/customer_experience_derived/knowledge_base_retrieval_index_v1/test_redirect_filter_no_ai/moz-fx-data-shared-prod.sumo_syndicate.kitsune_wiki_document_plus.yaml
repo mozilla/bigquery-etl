@@ -1,0 +1,24 @@
+- id: 1
+  title: "Redirect article"
+  slug: "redirect-article"
+  is_template: false
+  is_localizable: true
+  locale: "en-US"
+  html: "<p>REDIRECT [[Some Other Article]]</p>"
+  category: 10
+  allow_discussion: true
+  needs_change: false
+  needs_change_comment: null
+  share_link: null
+  display_order: 1
+  current_revision_id: 100
+  latest_localizable_revision_id: 100
+  parent_id: null
+  products: "firefox"
+  topics: "general"
+  last_updated: "2026-05-01T00:00:00+00:00"
+  num_pageviews_last_7_days: 0
+  num_pageviews_last_30_days: 0
+  num_pageviews_last_90_days: 0
+  num_pageviews_last_365_days: 0
+  is_archived: false

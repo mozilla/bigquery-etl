@@ -233,7 +233,7 @@ class Secret:
     deploy_target: str
     key: str
     deploy_type: str = attr.ib("env")
-    secret: str = attr.ib("airflow-gke-secrets")
+    secret: str = attr.ib("airflow-gke-restricted-secrets")
 
     @deploy_type.validator
     def validate_deploy_type(self, attribute, value):
@@ -363,6 +363,15 @@ class Task:
     startup_timeout_seconds: Optional[int] = attr.ib(None)
     secrets: Optional[List[Secret]] = attr.ib(None)
     monitoring_enabled: Optional[bool] = attr.ib(False)
+    # metadata surfaced in the Airflow task description (doc_md)
+    friendly_name: Optional[str] = attr.ib(None)
+    description: Optional[str] = attr.ib(None)
+    owners: List[str] = attr.ib([])
+    labels: Dict = attr.ib({})
+    workgroups: List[str] = attr.ib([])
+    # repository the query lives in, used to build the source link; set from
+    # `Dag.repo` in `of_query` so it stays consistent with the DAG-level link.
+    repo: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -469,6 +478,91 @@ class Task:
                 f" but is {self.query_file}"
             )
 
+    @property
+    def source_file_path(self):
+        """Return the repository-relative path to the task's source file."""
+        parts = Path(self.query_file).parts
+        if "sql" in parts:
+            index = parts.index("sql")
+            return "/".join(parts[index:])
+        return None
+
+    @property
+    def source_url(self):
+        """Return a link to the source file on the generated-sql branch.
+
+        The repository is taken from `Dag.repo` (via `of_query`) rather than
+        inferred from the DAG name, so private queries published from
+        `private-bigquery-etl` always link there even when the DAG is named
+        `bqetl_*`. This mirrors the DAG-level source link in `airflow_dag.j2`.
+        """
+        path = self.source_file_path
+        if path is None or self.repo is None:
+            return None
+        if self.repo == "private-bigquery-etl":
+            branch = "private-generated-sql"
+        else:
+            branch = "generated-sql"
+        return f"https://github.com/mozilla/{self.repo}/blob/{branch}/{path}"
+
+    @property
+    def display_labels(self):
+        """Return the authored labels, dropping keys synthesized by metadata parsing.
+
+        `Metadata.from_file` injects a `dag` label and one `owner<N>` label per
+        owner; those just restate the DAG and the `**Owners:**` line, so they
+        are filtered out of the task description.
+        """
+        return {
+            key: value
+            for key, value in self.labels.items()
+            if key != "dag" and not re.fullmatch(r"owner\d+", key)
+        }
+
+    @property
+    def description_markdown(self):
+        """Return a markdown task description derived from the table metadata.
+
+        Rendered into the Airflow task's `doc_md`.
+        """
+        heading = self.friendly_name or (
+            f"{self.dataset}.{self.destination_table or self.table}"
+        )
+        if self.is_dq_check:
+            heading += " (data checks)"
+        elif self.is_bigeye_check:
+            heading += " (Bigeye monitoring)"
+        lines = [f"### {heading}"]
+
+        if self.description:
+            lines += ["", self.description.strip()]
+
+        if self.owners:
+            lines += ["", f"**Owners:** {', '.join(self.owners)}"]
+
+        labels = self.display_labels
+        if labels:
+            rendered = ", ".join(
+                key if value == "" else f"{key}: {self._format_label_value(value)}"
+                for key, value in sorted(labels.items())
+            )
+            lines += ["", f"**Labels:** {rendered}"]
+
+        if self.workgroups:
+            lines += ["", f"**Workgroup access:** {', '.join(sorted(self.workgroups))}"]
+
+        if self.source_url:
+            lines += ["", f"[View source]({self.source_url})"]
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_label_value(value):
+        """Render a label value, flattening list-valued labels (e.g. review_bugs)."""
+        if isinstance(value, (list, tuple)):
+            return ", ".join(str(item) for item in value)
+        return str(value)
+
     @classmethod
     def of_query(cls, query_file, metadata=None, dag_collection=None):
         """
@@ -499,6 +593,17 @@ class Task:
         # Airflow only allows to set one owner, so we just take the first
         task_config["owner"] = metadata.owners[0]
 
+        # Metadata surfaced in the Airflow task description (doc_md)
+        task_config["friendly_name"] = metadata.friendly_name
+        task_config["description"] = metadata.description
+        task_config["owners"] = list(metadata.owners)
+        task_config["labels"] = metadata.labels
+        task_config["workgroups"] = [
+            member
+            for workgroup in (metadata.workgroup_access or [])
+            for member in workgroup.members
+        ]
+
         # Get default email from default_args if available
         default_email = []
         dag = None
@@ -506,6 +611,8 @@ class Task:
             dag = dag_collection.dag_by_name(dag_name)
             if dag is not None:
                 default_email = dag.default_args.email
+                # Authoritative repo for the source link (see `source_url`).
+                task_config["repo"] = dag.repo
         email = task_config.get("email", default_email)
         # Remove non-valid emails from owners e.g. Github identities and add to
         # Airflow email list.

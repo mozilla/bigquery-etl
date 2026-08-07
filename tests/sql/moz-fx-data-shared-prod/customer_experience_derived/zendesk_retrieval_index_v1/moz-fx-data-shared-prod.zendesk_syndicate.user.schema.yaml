@@ -1,0 +1,7 @@
+fields:
+- name: id
+  type: INT64
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE

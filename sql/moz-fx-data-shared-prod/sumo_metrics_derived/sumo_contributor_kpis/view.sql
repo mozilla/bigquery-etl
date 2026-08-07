@@ -1,0 +1,21 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_contributor_kpis`
+AS
+SELECT
+  iso_week,
+  weekly_contributor_count,
+  weekly_contributor_count_4w_ma,
+  lagged_weekly_contributor_count_4w_ma,
+  new_contributors,
+  new_contributors_4w_ma,
+  lagged_new_contributors_4w_ma,
+  top_contributor_percentage,
+  top_contributor_percentage_4w_ma,
+  lagged_top_contributor_percentage_4w_ma,
+  retention_rate,
+  retention_rate_4w_ma,
+  retention_rate_top,
+  retention_rate_regular,
+  lagged_retention_rate_4w_ma
+FROM
+  `moz-fx-data-shared-prod.sumo_metrics_derived.kitsune_contributor_metrics_weekly_v1`

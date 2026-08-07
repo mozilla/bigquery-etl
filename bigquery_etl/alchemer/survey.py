@@ -102,7 +102,10 @@ def format_responses(survey_response: dict, date: str, include_url_variables) ->
     )
 
     _fields = {f: survey_response[f] for f in fields}
-    _fields["date_started"] = make_date_iso_compliant(_fields["date_started"])
+    if isinstance(_fields["date_started"], str):
+        _fields["date_started"] = make_date_iso_compliant(_fields["date_started"])
+    else:
+        _fields["date_started"] = None
 
     response = {
         "submission_date": date,  # this is used as the partitioning field

@@ -1,0 +1,27 @@
+friendly_name: Bugzilla Tickets Base (Daily)
+description: |
+  Daily metrics for SUMO Bugzilla tickets in the 'Knowledge Base Content' component.
+
+  Grain: Daily
+
+  Tracks:
+  - Bugs created on the date
+  - Bugs resolved on the date (first RESOLVED transition, accounting for later REOPEN→RESOLVED cycles)
+
+  Source: moz-fx-data-shared-prod.bugzilla_metrics.bugs (daily snapshots)
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: true
+  application: sumo
+  type: base_metrics
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false

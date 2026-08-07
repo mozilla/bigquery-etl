@@ -1,0 +1,20 @@
+---
+friendly_name: Experiment Enrollment Funnel
+description: |-
+  Exports a current-state enrollment funnel snapshot for each live recipe to GCS
+  for use by Experimenter visualization and alerting. Covers firefox_desktop,
+  firefox_ios, and fenix. For each client-recipe pair, uses the client's most
+  recent evaluation. Groups by (app_name, slug, branch, status, reason, conflict_slug)
+  with an estimated client count (1% sample scaled by 100). Does not create any BigQuery artifacts.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-experiments', 'monitoring', 'experimenter_experiments_v1']
+    - ['moz-fx-data-shared-prod', 'firefox_desktop', 'nimbus_targeting_context']
+    - ['moz-fx-data-shared-prod', 'org_mozilla_ios_firefox', 'nimbus_targeting_context']
+    - ['moz-fx-data-shared-prod', 'fenix', 'nimbus_targeting_context']

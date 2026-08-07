@@ -137,7 +137,8 @@ SELECT
   ga4.ad_crosschannel_campaign_id AS ga4_ad_crosschannel_campaign_id,
   ga4.ad_crosschannel_source_platform AS ga4_ad_crosschannel_source_platform,
   ga4.ad_crosschannel_primary_channel_group AS ga4_ad_crosschannel_primary_channel_group,
-  ga4.ad_crosschannel_default_channel_group AS ga4_ad_crosschannel_default_channel_group
+  ga4.ad_crosschannel_default_channel_group AS ga4_ad_crosschannel_default_channel_group,
+  cfs.attribution_msstoresignedin
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` cfs
 LEFT JOIN

@@ -1,0 +1,30 @@
+friendly_name: Braze Changed FxA Services Sync
+description: |-
+  FxA services that users have newly authorized, as a Braze Cloud Data Ingestion
+  payload. Scoped to services that map to a Braze subscription group (today just
+  'smartwindow'); the upstream braze_derived.fxa_services_v1 keeps all authorized
+  services for reference, and this table is the subset actually pushed to Braze. To
+  onboard another service, add it to the service_subscription_groups mapping in the
+  query (and to the matching mapping in changed_fxa_services_events_sync_v1).
+
+  Note on email: the mapped service's emails are transactional communications, sent
+  to people who have authorized and use that service. The subscription state
+  ('subscribed') and group are simply how Braze routes those transactional sends.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner: sherrera
+bigquery:
+  time_partitioning:
+    type: day
+    field: updated_at
+    require_partition_filter: false
+    expiration_days: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
+require_column_descriptions: true

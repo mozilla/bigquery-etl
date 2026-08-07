@@ -146,6 +146,36 @@ class TestDeploy:
         client.create_table.assert_called_once()
 
     @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.deploy.DryRun")
+    def test_isolated_bypasses_dryrun_skip(self, mock_dryrun, mock_client, query_path):
+        # Skip-listed query under --isolated: deploy proceeds from the
+        # checked-in schema.yaml instead of bailing, so downstream views
+        # have a target to reference.
+        mock_dryrun.skipped_files.return_value = {str(query_path / "query.sql")}
+        client = mock_client.return_value
+        client.get_table.side_effect = NotFound("table not found")
+
+        deploy.deploy_table(
+            artifact_file=query_path / "query.sql",
+            isolated=True,
+        )
+
+        client.create_table.assert_called_once()
+        # The dryrun-based mismatch check must not run when the query is
+        # skip-listed (rewritten refs in the isolated tree won't resolve).
+        mock_dryrun.assert_not_called()
+
+    @patch("bigquery_etl.deploy.DryRun")
+    def test_dryrun_skip_without_isolated_still_skips_deploy(
+        self, mock_dryrun, query_path
+    ):
+        # Non-isolated behavior is unchanged: skip-listed queries bail.
+        mock_dryrun.skipped_files.return_value = {str(query_path / "query.sql")}
+
+        with pytest.raises(deploy.SkippedDeployException, match="Dry run skipped"):
+            deploy.deploy_table(artifact_file=query_path / "query.sql")
+
+    @patch("google.cloud.bigquery.Client")
     def test_deploy_metadata(self, mock_client, tmp_path):
         query_path = (
             tmp_path / "sql" / "moz-fx-data-shared-prod" / "test" / "test_query_v1"

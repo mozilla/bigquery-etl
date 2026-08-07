@@ -1,0 +1,65 @@
+fields:
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the log record was created.
+- name: experiment
+  type: STRING
+  mode: NULLABLE
+  description: Nimbus experiment (or rollout) slug the log record pertains to, if any.
+- name: message
+  type: STRING
+  mode: NULLABLE
+  description: The log message.
+- name: log_level
+  type: STRING
+  mode: NULLABLE
+  description: Python logging level of the record (e.g. WARNING, ERROR).
+- name: exception
+  type: STRING
+  mode: NULLABLE
+  description: String representation of the exception info attached to the record, if any.
+- name: filename
+  type: STRING
+  mode: NULLABLE
+  description: Source file the log call was made from.
+- name: func_name
+  type: STRING
+  mode: NULLABLE
+  description: Function the log call was made from.
+- name: exception_type
+  type: STRING
+  mode: NULLABLE
+  description: Class name of the attached exception, if any.
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: Metric slug the log record pertains to, if any.
+- name: statistic
+  type: STRING
+  mode: NULLABLE
+  description: Statistic slug the log record pertains to, if any.
+- name: analysis_basis
+  type: STRING
+  mode: NULLABLE
+  description: Analysis basis (e.g. enrollments, exposures) the log record pertains to, if any.
+- name: segment
+  type: STRING
+  mode: NULLABLE
+  description: Segment slug the log record pertains to, if any.
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Component that produced the log record (e.g. jetstream, jetstream-preview, sizing).
+- name: analysis_period
+  type: STRING
+  mode: NULLABLE
+  description: Analysis period (e.g. day, week, overall) the log record pertains to, if any.
+- name: error_category
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Classification of what kind of problem this log record represents:
+    library_warning, graceful_degradation, expected_skip, resource_limit,
+    data_quality, configuration, jetstream_failure, informational, or
+    unclassified. See view.sql for the classification rules.

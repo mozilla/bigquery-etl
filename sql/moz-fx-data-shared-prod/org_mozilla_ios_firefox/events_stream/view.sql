@@ -15,6 +15,8 @@ SELECT
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.etp_enabled) AS `etp_enabled`,
       LAX_BOOL(event_extra.granted) AS `granted`,
+      LAX_BOOL(event_extra.has_blocked_trackers_list) AS `has_blocked_trackers_list`,
+      LAX_BOOL(event_extra.has_screenshot) AS `has_screenshot`,
       LAX_BOOL(event_extra.has_share_message) AS `has_share_message`,
       LAX_BOOL(event_extra.is_at_bottom) AS `is_at_bottom`,
       LAX_BOOL(event_extra.is_enabled) AS `is_enabled`,

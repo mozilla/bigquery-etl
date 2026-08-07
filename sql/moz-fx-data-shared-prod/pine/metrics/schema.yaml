@@ -985,6 +985,15 @@ fields:
         support and forces FIPS mode on when the host is in FIPS mode.
 
         '
+    - name: nova_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the Nova redesign is enabled, i.e. the value of the `browser.nova.enabled`
+        preference. Recorded at startup and again on each daily idle, so that changes
+        made mid-session are picked up. Once Nova is enabled by default this gives
+        us a signal for how many people turn it back off.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -18305,9 +18314,6 @@ fields:
         mode: NULLABLE
       description: 'Whether a probable font fingerprinting attempt was detected
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        FONT_FINGERPRINTING_PER_TAB.
-
         '
     - name: contentblocking_query_stripping_count
       type: RECORD
@@ -24295,7 +24301,8 @@ fields:
     - name: system_os_windows_build_number
       type: INTEGER
       mode: NULLABLE
-      description: 'The Windows build number, according to WindowsVersionInfo.
+      description: 'The Windows build number, according to ''CurrentBuild'' in the
+        Windows registry.
 
         Windows only.
 

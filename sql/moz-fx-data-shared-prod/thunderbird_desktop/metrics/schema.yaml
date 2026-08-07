@@ -15966,9 +15966,6 @@ fields:
         mode: NULLABLE
       description: 'Whether a probable font fingerprinting attempt was detected
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        FONT_FINGERPRINTING_PER_TAB.
-
         '
     - name: contentblocking_query_stripping_count
       type: RECORD
@@ -21455,7 +21452,8 @@ fields:
     - name: system_os_windows_build_number
       type: INTEGER
       mode: NULLABLE
-      description: 'The Windows build number, according to WindowsVersionInfo.
+      description: 'The Windows build number, according to ''CurrentBuild'' in the
+        Windows registry.
 
         Windows only.
 

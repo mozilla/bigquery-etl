@@ -1296,6 +1296,15 @@ fields:
         support and forces FIPS mode on when the host is in FIPS mode.
 
         '
+    - name: nova_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the Nova redesign is enabled, i.e. the value of the `browser.nova.enabled`
+        preference. Recorded at startup and again on each daily idle, so that changes
+        made mid-session are picked up. Once Nova is enabled by default this gives
+        us a signal for how many people turn it back off.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -9485,9 +9494,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Whether a probable font fingerprinting attempt was detected
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        FONT_FINGERPRINTING_PER_TAB.
 
         '
     - name: contentblocking_query_stripping_count
@@ -38109,7 +38115,8 @@ fields:
     - name: system_os_windows_build_number
       type: INTEGER
       mode: NULLABLE
-      description: 'The Windows build number, according to WindowsVersionInfo.
+      description: 'The Windows build number, according to ''CurrentBuild'' in the
+        Windows registry.
 
         Windows only.
 
@@ -50014,6 +50021,28 @@ fields:
         one observer failure. Denominator is incremented on every call; numerator
         is incremented when hadFailures is true or the promise rejects. This currently
         does not keep track of regular PBM teardown (last PBM window exited).
+
+        '
+    - name: urlbar_searchmode_url_like_query
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A rate recording the fraction of search-mode engagements whose
+        typed string parses as a URL (per nsIURIFixup, the same check the heuristic
+        providers use to decide whether a string should navigate). The denominator
+        is search-mode engagements whose heuristic result is a search result (i.e.
+        cases where changing the behavior to navigate instead of search could actually
+        take effect); the numerator is those whose query is URL-like. Local search
+        modes (bookmarks, history, tabs, actions) have no heuristic result and are
+        therefore excluded. Used to evaluate whether the address bar should navigate
+        to such strings instead of searching them while in search mode (bug 1930861).
+        Temporary decision-making probe.
 
         '
   - name: string_list

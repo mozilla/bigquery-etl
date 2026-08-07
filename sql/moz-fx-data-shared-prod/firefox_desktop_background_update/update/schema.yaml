@@ -636,7 +636,8 @@ fields:
     - name: system_os_windows_build_number
       type: INTEGER
       mode: NULLABLE
-      description: 'The Windows build number, according to WindowsVersionInfo.
+      description: 'The Windows build number, according to ''CurrentBuild'' in the
+        Windows registry.
 
         Windows only.
 

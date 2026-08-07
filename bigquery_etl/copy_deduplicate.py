@@ -294,6 +294,20 @@ def _run_deduplication_query(
     return live_table, stable_table, query_job
 
 
+def _conform_temp_schemas(client, temp_tables, target_schema):
+    """Widen each temporary table's schema to match target_schema.
+
+    Sliced deduplication writes temporary tables and then copies them to the stable partition.
+    If the live table's schema changes while the slices are being built, the schemas will
+    diverge and the copy will fail.
+    """
+    for table_id in temp_tables:
+        table = client.get_table(table_id)
+        if table.schema != target_schema:
+            table.schema = target_schema
+            client.update_table(table, ["schema"])
+
+
 def _copy_join_parts(
     client: bigquery.Client,
     stable_table: str,
@@ -322,15 +336,38 @@ def _copy_join_parts(
             f" slot hours to populate {stable_table}"
         )
         if len(query_jobs) > 1:
-            partition_id = stable_table.split("$", 1)[1]
+            table_id, partition_id = stable_table.split("$", 1)
             sources = [
                 f"{sql_table_id(job.destination)}${partition_id}" for job in query_jobs
             ]
             job_config = bigquery.CopyJobConfig(
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
             )
-            copy_job = client.copy_table(sources, stable_table, job_config=job_config)
-            copy_job.result()
+
+            def run_copy():
+                copy_job = client.copy_table(
+                    sources, stable_table, job_config=job_config
+                )
+                copy_job.result()
+                return copy_job
+
+            try:
+                run_copy()
+            except BadRequest as e:
+                # Conform schemas if they diverge so that the whole day doesn't need to rerun.
+                # Best-effort based on the error message.
+                if "Incompatible table schemata" not in str(e):
+                    raise
+                logging.warning(
+                    f"Copy to {stable_table} failed with incompatible schemas, "
+                    "conforming temporary table schemas and retrying"
+                )
+                _conform_temp_schemas(
+                    client,
+                    [job.destination for job in query_jobs],
+                    client.get_table(table_id).schema,
+                )
+                run_copy()
             logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
             for job in query_jobs:
                 client.delete_table(job.destination)

@@ -5,6 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from click.testing import CliRunner
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.cli.query import (  # noqa: F401  # keeps circular import from exploding
@@ -57,6 +58,23 @@ GEO_CONFIG = {
         "skip_tables": ["newtab"],
     }
 }
+
+STABLE_TABLE = "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1$20260101"
+
+
+def _slice_query_jobs(slices):
+    """Build query jobs for sliced mode, each writing to its own temporary table."""
+    return [
+        Mock(
+            total_bytes_processed=1,
+            dry_run=False,
+            slot_millis=1,
+            destination=bigquery.TableReference.from_string(
+                f"moz-fx-data-shared-prod.tmp.temp_{i}"
+            ),
+        )
+        for i in range(slices)
+    ]
 
 
 class TestCopyDeduplicate:
@@ -565,3 +583,85 @@ class TestCopyDeduplicate:
         )
 
         assert mock_client.copy_table.call_count == 0
+
+    def test_copy_join_parts_sliced_copy_succeeds(self):
+        """When the copy succeeds, temporary table schemas are left untouched."""
+        mock_client = Mock(spec=bigquery.Client)
+        mock_client.get_table.return_value = Mock(clustering_fields=None)
+
+        _copy_join_parts(
+            client=mock_client,
+            stable_table=STABLE_TABLE,
+            query_jobs=_slice_query_jobs(2),
+            write_to_v2=False,
+        )
+
+        # single copy attempt, and no schema reconciliation
+        assert mock_client.copy_table.call_count == 1
+        assert mock_client.update_table.call_count == 0
+        # temporary tables are still cleaned up
+        assert mock_client.delete_table.call_count == 2
+
+    def test_copy_join_parts_conforms_on_copy_failure(self):
+        """
+        If the copy fails with a schema mismatch, the temporary tables are conformed to
+        the stable table's schema and the copy is retried, without rerunning the slices.
+        """
+        mock_client = Mock(spec=bigquery.Client)
+
+        # stable table schema is the superset the temporary tables get conformed to
+        stable_schema = [bigquery.SchemaField("document_id", "STRING")]
+
+        def get_table(table_id):
+            if table_id == STABLE_TABLE.split("$")[0]:
+                return Mock(schema=stable_schema)
+            return Mock(schema=[])  # temporary table, differs from stable
+
+        mock_client.get_table.side_effect = get_table
+
+        # first copy fails with a schema mismatch, second succeeds
+        first_copy = Mock()
+        first_copy.result.side_effect = BadRequest("Incompatible table schemata")
+        mock_client.copy_table.side_effect = [first_copy, Mock()]
+
+        _copy_join_parts(
+            client=mock_client,
+            stable_table=STABLE_TABLE,
+            query_jobs=_slice_query_jobs(3),
+            write_to_v2=False,
+        )
+
+        # copy was retried after conforming
+        assert mock_client.copy_table.call_count == 2
+        # all 3 temporary tables were conformed to the stable table schema
+        assert mock_client.update_table.call_count == 3
+        for call in mock_client.update_table.call_args_list:
+            table_arg, fields_arg = call.args
+            assert table_arg.schema == stable_schema
+            assert fields_arg == ["schema"]
+        # temporary tables are cleaned up after the successful retry
+        assert mock_client.delete_table.call_count == 3
+
+    def test_copy_join_parts_reraises_other_bad_request(self):
+        """
+        A copy failure that isn't a schema mismatch is re-raised without conforming
+        schemas or retrying, so unrelated errors aren't masked by a misleading retry.
+        """
+        mock_client = Mock(spec=bigquery.Client)
+        mock_client.get_table.return_value = Mock(clustering_fields=None)
+        failed_copy = Mock()
+        failed_copy.result.side_effect = BadRequest("Quota exceeded")
+        mock_client.copy_table.return_value = failed_copy
+
+        with pytest.raises(BadRequest):
+            _copy_join_parts(
+                client=mock_client,
+                stable_table=STABLE_TABLE,
+                query_jobs=_slice_query_jobs(2),
+                write_to_v2=False,
+            )
+
+        # no conforming, retry, or deletion of temporary tables
+        assert mock_client.copy_table.call_count == 1
+        assert mock_client.update_table.call_count == 0
+        assert mock_client.delete_table.call_count == 0

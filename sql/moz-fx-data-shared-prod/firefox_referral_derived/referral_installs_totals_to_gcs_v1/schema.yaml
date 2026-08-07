@@ -1,0 +1,27 @@
+# This task extracts referral_installs_totals_v1 to a CSV in GCS; it does not
+# logically build a queryable table. This schema.yaml is required so the
+# --isolated stage-deploy CI can resolve the query.py artifact: without it, the
+# resolver ladder hard-fails (a .py can't be dry-run, and SELECT */get_table on
+# the not-yet-existent table are denied), which fails the deploy rather than
+# skipping it.
+#
+# Tradeoff: because a schema resolves, deploy also creates an (empty, unused)
+# companion table `firefox_referral_derived.referral_installs_totals_to_gcs_v1`.
+# The clean way to suppress that is scheduling.destination_table: null, but that
+# is incompatible with a query.py task — Task.of_python_script sets
+# query_file_path after construction, so the __attrs_post_init__ check
+# ("One of destination_table or query_file_path must be specified") fails DAG
+# generation. Columns mirror referral_installs_totals_v1 and document the CSV.
+fields:
+- name: invite_code
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Referral (invite) code, `fxrefer:` prefix stripped (expected 17 chars).
+    First column of the exported CSV.
+- name: total_installs
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Cumulative all-time distinct Firefox first_run installs for this invite
+    code. Second column of the exported CSV.

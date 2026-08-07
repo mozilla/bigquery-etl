@@ -2927,3 +2927,24 @@ bqetl_gecko_trace:
   schedule_interval: 0 9 * * *
   tags:
     - impact/tier_3
+
+bqetl_gecko_trace_weekly:
+  catchup: false
+  schedule_interval: 0 6 * * 1
+  description: |
+    Weekly gecko trace reporting jobs.
+    Files Bugzilla bugs for new trace patterns.
+  default_args:
+    depends_on_past: false
+    owner: jjalkanen@mozilla.com
+    email:
+      - jjalkanen@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    retries: 2
+    retry_delay: 30m
+    start_date: "2026-06-12"
+  repo: bigquery-etl
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

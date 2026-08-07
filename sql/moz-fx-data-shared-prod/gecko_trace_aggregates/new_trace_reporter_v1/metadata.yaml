@@ -1,0 +1,24 @@
+---
+friendly_name: Gecko Trace Bugzilla Reporter
+description: |-
+  Weekly job that files Bugzilla bugs for new gecko trace patterns.
+
+  The reporter finds traces first seen in the last 7 days. It files one
+  Bugzilla bug per new trace and records the mapping to avoid duplicates.
+
+  The BUGZILLA_API_KEY environment variable must be set. In Airflow, add
+  this as a secret environment variable on the task. See the Airflow
+  admin guide for how to set secret env vars from GCP Secret Manager.
+
+  TODO: Wire up BUGZILLA_API_KEY as an Airflow secret env var before
+  the first production run.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  schedule: weekly
+
+scheduling:
+  dag_name: bqetl_gecko_trace_weekly
+  task_group: reporter

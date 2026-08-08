@@ -2,11 +2,14 @@ CREATE OR REPLACE FUNCTION addons.is_adblocker(addon_id STRING)
 RETURNS BOOLEAN AS (
   addon_id IS NOT NULL
   AND addon_id IN (
+    -- Consult this query for addons: https://sql.telemetry.mozilla.org/queries/94351/source
     'uBlock0@raymondhill.net', -- 'uBlock_Origin'
     '{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}', -- 'AdBlock_Plus'
     'jid1-NIfFY2CA8fy1tg@jetpack', -- 'Adblock'
     'firefox@ghostery.com', -- 'Ghostery'
-    'adblockultimate@adblockultimate.net' -- 'AdBlock_Ultimate'
+    'adblockultimate@adblockultimate.net', -- 'AdBlock_Ultimate'
+    'jid1-ZAdIEUB7XOzOJw@jetpack', -- 'DuckDuckGo Privacy Essentials'
+    'jid1-MnnxcxisBPnSXQ@jetpack' -- 'Privacy Badger
   )
 );
 

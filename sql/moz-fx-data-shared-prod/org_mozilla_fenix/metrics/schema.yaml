@@ -18694,11 +18694,11 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Result of XHR request fetching the country-code. 0=SUCCESS, 1=SUCCESS_WITHOUT_DATA,
-        2=XHRTIMEOUT, 3=ERROR (rest reserved for finer-grained error codes later)
+      description: 'Result of XHR request fetching the country-code.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram SEARCH_SERVICE_COUNTRY_FETCH_RESULT.
+        - `0 = SUCCESS` - `1 = SUCCESS_WITHOUT_DATA` - `2 = XHRTIMEOUT` - `3 = ERROR`
+
+        Other codes are reserved for finer-grained error codes later.
 
         '
     - name: screenwakelock_release_battery_level_discharging
@@ -39318,10 +39318,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time (ms) it takes to fetch the country code
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SEARCH_SERVICE_COUNTRY_FETCH_TIME_MS.
+      description: 'Time (ms) it takes to fetch the country code.
 
         '
     - name: screenwakelock_held_duration

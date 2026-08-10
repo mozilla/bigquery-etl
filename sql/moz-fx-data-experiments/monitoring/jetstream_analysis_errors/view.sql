@@ -1,10 +1,13 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-experiments.monitoring.jetstream_analysis_errors_v1`
+  `moz-fx-data-experiments.monitoring.jetstream_analysis_errors`
 AS
--- Classifies every jetstream log row into a category describing what kind of
--- problem it represents, so that analysis success/failure can be attributed
--- correctly instead of relying on raw `log_level`/`exception_type`, which
--- conflate genuine jetstream defects with expected skips and benign fallbacks.
+-- Classifies every log row in `monitoring.logs` into a category describing
+-- what kind of problem it represents, so that analysis success/failure can be
+-- attributed correctly instead of relying on raw `log_level`/`exception_type`,
+-- which conflate genuine jetstream defects with expected skips and benign
+-- fallbacks. Covers all `source` values in `monitoring.logs` (jetstream,
+-- jetstream-preview, sizing) -- the classification rules are jetstream-
+-- specific, but nothing here filters by source.
 --
 -- Attribution rule: a failure is `jetstream_failure` if jetstream named or
 -- created the thing that couldn't be found/computed (its own scratch tables,
@@ -14,9 +17,6 @@ AS
 -- Categories, from most to least specific:
 --   library_warning     -- mozanalysis-internal WARNINGs with no experiment
 --                           attribution (metrics.py/functions.py/segments.py)
---   valid_degradation   -- any other WARNING: jetstream detected missing
---                           data/config and fell back to a degraded but valid
---                           computation (e.g. covariate adjustment unavailable)
 --   skipped             -- experiment intentionally not analyzed this run
 --                           (ValidationException family + unsupported app)
 --   resources           -- jetstream couldn't run at this scale: BigQuery
@@ -27,10 +27,14 @@ AS
 --   configuration       -- config named a segment/column/app that jetstream
 --                           could not resolve, or the config itself failed to
 --                           load
---   jetstream_failure   -- everything else at ERROR level: jetstream failed
---                           to compute something it should have been able to
---   informational       -- non-WARNING/ERROR rows (e.g. jetstream-preview,
---                           which logs at INFO)
+--   valid_degradation   -- any other WARNING: jetstream detected missing
+--                           data/config and fell back to a degraded but valid
+--                           computation (e.g. covariate adjustment unavailable)
+--   jetstream_failure   -- ERROR/CRITICAL rows not otherwise classified above:
+--                           jetstream failed to compute something it should
+--                           have been able to
+--   informational       -- DEBUG/INFO rows (e.g. jetstream-preview, which
+--                           logs at INFO)
 --   uncategorized       -- doesn't match any rule above; nonzero counts here
 --                           indicate a mismatch between the expected logs
 --                           and what jetstream is producing, which likely
@@ -40,9 +44,8 @@ SELECT
   CASE
     WHEN log_level = 'WARNING'
       AND filename IN ('metrics.py', 'functions.py', 'segments.py')
+      AND experiment IS NULL
       THEN 'library_warning'
-    WHEN log_level = 'WARNING'
-      THEN 'valid_degradation'
     WHEN exception_type IN (
         -- jetstream.errors.ValidationException subclasses: the experiment is
         -- intentionally not analyzed this run, not a failure to compute.
@@ -78,9 +81,11 @@ SELECT
       OR message LIKE '%Unrecognized name%'
       OR (filename = 'cli.py' AND func_name = '_experiments_to_configs')
       THEN 'configuration'
-    WHEN log_level = 'ERROR'
+    WHEN log_level = 'WARNING'
+      THEN 'valid_degradation'
+    WHEN log_level IN ('ERROR', 'CRITICAL')
       THEN 'jetstream_failure'
-    WHEN log_level NOT IN ('WARNING', 'ERROR')
+    WHEN log_level IN ('DEBUG', 'INFO')
       THEN 'informational'
     ELSE 'uncategorized'
   END AS error_category

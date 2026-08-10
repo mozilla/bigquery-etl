@@ -9,6 +9,11 @@ from typing import Any
 
 TOP_N_PROBES = 3
 
+# How many of a column's top values the prompt renders. The profiler stores up
+# to 50 for a low-cardinality column, so this cap is what decides which of them
+# the model actually sees.
+MAX_SAMPLE_VALUES = 10
+
 _NON_ALPHANUMERIC_RE = re.compile(r"[^a-z0-9]")
 
 
@@ -96,7 +101,7 @@ def _profile_block(column: dict[str, Any]) -> str:
         lines.append(f"Distinct values: {distinct_count}{hc}")
     values = column.get("values") or []
     if values:
-        shown = ", ".join(f"{str(v)!r} ({f:,})" for v, f in values[:10])
+        shown = ", ".join(f"{str(v)!r} ({f:,})" for v, f in values[:MAX_SAMPLE_VALUES])
         lines.append(f"Top values (value: frequency): {shown}")
     elif column.get("example_value") is not None:
         lines.append(f"Example value: {column['example_value']}")

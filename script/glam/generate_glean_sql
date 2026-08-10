@@ -2,11 +2,9 @@
 
 set -ex
 
-# The generators own their output directory: they write query.sql when the ping
-# has probes and remove the directory when it has none, both exiting 0. Any
-# non-zero exit is therefore a real failure and must fail this script -- it used
-# to be indistinguishable from "no probes found", so a Glean Dictionary timeout
-# could silently drop a ping's query and leave the Airflow task green.
+# Generators write query.sql when the ping has probes and remove the directory
+# when it has none, both exiting 0. Any non-zero exit is therefore a real failure
+# and must fail this script.
 function write_scalars {
     local product=$1
     local dataset=$2

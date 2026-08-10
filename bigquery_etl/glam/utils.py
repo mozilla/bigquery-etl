@@ -124,17 +124,29 @@ def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMet
     return custom
 
 
-def _get_with_retries(url: str) -> requests.Response:
-    """GET `url`, retrying transient timeouts."""
-    for attempt in range(GLEAN_DICTIONARY_RETRIES):
+def _get_with_retries(url: str) -> requests.Response:  # type: ignore[return]
+    """GET `url`, retrying transient errors and GLEAN_DICTIONARY_RETRY_STATUS.
+
+    The last attempt always returns or raises, which mypy cannot infer,
+    hence the type: ignore[return].
+    """
+    for attempt in range(GLEAN_DICTIONARY_RETRIES + 1):
+        last = attempt == GLEAN_DICTIONARY_RETRIES
         try:
             resp = requests.get(url, timeout=GLEAN_DICTIONARY_TIMEOUT)
-            if resp.status_code not in GLEAN_DICTIONARY_RETRY_STATUS:
+            if last or resp.status_code not in GLEAN_DICTIONARY_RETRY_STATUS:
                 return resp
-        except _TRANSIENT_ERRORS:
-            pass
+            reason = f"HTTP {resp.status_code}"
+        except _TRANSIENT_ERRORS as e:
+            if last:
+                raise
+            reason = type(e).__name__
+        print(
+            f"retrying {url} after {reason} "
+            f"(attempt {attempt + 1}/{GLEAN_DICTIONARY_RETRIES + 1})",
+            file=sys.stderr,
+        )
         time.sleep(2**attempt)
-    return requests.get(url, timeout=GLEAN_DICTIONARY_TIMEOUT)
 
 
 def emit_query(
@@ -143,8 +155,11 @@ def emit_query(
     """Write a generated query, or skip the ping when it has no probes."""
     if sql is None:
         print(f"skipping {source_table}: no probes found", file=sys.stderr)
-        if output_dir is not None:
-            shutil.rmtree(output_dir, ignore_errors=True)
+        if output_dir is None:
+            print("-- Empty query: no probes found!")
+        # Not ignore_errors: a stale query.sql must not survive a failed removal.
+        elif Path(output_dir).exists():
+            shutil.rmtree(output_dir)
         return
 
     if output_dir is None:

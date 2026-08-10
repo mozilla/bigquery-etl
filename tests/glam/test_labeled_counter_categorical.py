@@ -210,6 +210,21 @@ class TestGleanDictionaryRetries:
                 utils.is_static_labeled_counter("org_mozilla_fenix", "m")
         assert get.call_count == utils.GLEAN_DICTIONARY_RETRIES + 1
 
+    def test_retries_are_reported(self, capsys):
+        with mock.patch.object(
+            utils.requests,
+            "get",
+            side_effect=[
+                requests.exceptions.ReadTimeout("timed out"),
+                _resp(status_code=503),
+                _resp({"type": "labeled_counter", "labels": ["a"]}),
+            ],
+        ):
+            utils.is_static_labeled_counter("org_mozilla_fenix", "m")
+        err = capsys.readouterr().err
+        assert "after ReadTimeout (attempt 1/5)" in err
+        assert "after HTTP 503 (attempt 2/5)" in err
+
     def test_404_is_not_retried(self):
         with mock.patch.object(
             utils.requests, "get", return_value=_resp(status_code=404)
@@ -243,14 +258,24 @@ class TestEmitQuery:
         utils.emit_query(None, str(out), "d.some_ping_v1")
         assert not out.exists()
 
+    def test_failed_removal_propagates(self, tmp_path):
+        out = tmp_path / "some_ping"
+        out.mkdir()
+        (out / "query.sql").write_text("SELECT 1\n")
+        with mock.patch.object(
+            utils.shutil, "rmtree", side_effect=OSError("permission denied")
+        ):
+            with pytest.raises(OSError):
+                utils.emit_query(None, str(out), "d.some_ping_v1")
+
     def test_stdout_mode_writes_sql(self, capsys):
         utils.emit_query("SELECT 1", None, "d.some_ping_v1")
         assert capsys.readouterr().out.strip() == "SELECT 1"
 
-    def test_stdout_mode_emits_nothing_when_no_probes(self, capsys):
+    def test_stdout_mode_marks_empty_query_when_no_probes(self, capsys):
         utils.emit_query(None, None, "d.some_ping_v1")
         captured = capsys.readouterr()
-        assert captured.out == ""
+        assert captured.out.strip() == "-- Empty query: no probes found!"
         assert "no probes found" in captured.err
 
 

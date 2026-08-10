@@ -305,6 +305,22 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: fog_inits_during_shutdown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times init had to be called during shutdown.
+
+        Should never have a value for any session long enough to grow idle.
+
+        '
+    - name: glean_error_event_timestamp_clamped
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we had to clamp an event timestamp
+
+        for exceeding the range of a signed 64-bit integer (9223372036854775807).
+
+        '
     - name: glean_error_io
       type: INTEGER
       mode: NULLABLE
@@ -322,6 +338,12 @@ fields:
 
 
         In Version 0 this reported the total number of tasks enqueued.
+
+        '
+    - name: glean_health_init_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A running count of how many times the Glean SDK has been initialized.
 
         '
     - name: glean_upload_deleted_pings_after_quota_hit
@@ -361,28 +383,6 @@ fields:
       description: 'The total number of pending pings at startup.
 
         This does not include deletion-request pings.
-
-        '
-    - name: glean_health_init_count
-      type: INTEGER
-      mode: NULLABLE
-      description: 'A running count of how many times the Glean SDK has been initialized.
-
-        '
-    - name: fog_inits_during_shutdown
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Counts the number of times init had to be called during shutdown.
-
-        Should never have a value for any session long enough to grow idle.
-
-        '
-    - name: glean_error_event_timestamp_clamped
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of times we had to clamp an event timestamp
-
-        for exceeding the range of a signed 64-bit integer (9223372036854775807).
 
         '
     - name: glean_migration_error
@@ -475,6 +475,34 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+    - name: glean_health_file_read_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of different errors that happened when trying to read the
+        `client_id.txt` file from disk.
+
+        '
+    - name: glean_health_file_write_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of different errors that happened when trying to write the
+        `client_id.txt` file to disk.
+
+        '
     - name: glean_upload_ping_upload_failure
       type: RECORD
       mode: REPEATED
@@ -510,34 +538,6 @@ fields:
         \ the last baseline ping)\n\nNote: Previously this also recorded the number\
         \ of submitted custom pings.\nNow it only records counts for the Glean built-in\
         \ pings.\n"
-    - name: glean_health_file_read_error
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Count of different errors that happened when trying to read the
-        `client_id.txt` file from disk.
-
-        '
-    - name: glean_health_file_write_error
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Count of different errors that happened when trying to write the
-        `client_id.txt` file to disk.
-
-        '
     - name: glean_upload_pending_pings_deleted
       type: RECORD
       mode: REPEATED
@@ -572,11 +572,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -597,11 +592,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -623,11 +613,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -651,6 +636,12 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: glean_database_load_sizes
+      type: JSON
+      mode: NULLABLE
+      description: 'The size of the db file during specific phases of initialization.
+
+        '
     - name: glean_health_data_directory_info
       type: JSON
       mode: NULLABLE
@@ -668,12 +659,6 @@ fields:
         \ time cannot be\n  determined, it will default to `0`.\n- `file_count`: The\
         \ number of files in the directory. If the directory does not exist,\n  this\
         \ will be `0`.\n- `error_message`: If there was an error accessing the di"
-    - name: glean_database_load_sizes
-      type: JSON
-      mode: NULLABLE
-      description: 'The size of the db file during specific phases of initialization.
-
-        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -740,30 +725,7 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
       - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
         type: INTEGER
         mode: NULLABLE
       - name: values
@@ -783,30 +745,7 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
       - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
         type: INTEGER
         mode: NULLABLE
       - name: values
@@ -827,30 +766,7 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
       - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
         type: INTEGER
         mode: NULLABLE
       - name: values
@@ -871,30 +787,7 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
       - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
         type: INTEGER
         mode: NULLABLE
       - name: values
@@ -916,30 +809,7 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
       - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
         type: INTEGER
         mode: NULLABLE
       - name: values
@@ -959,30 +829,7 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
       - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
         type: INTEGER
         mode: NULLABLE
       - name: values

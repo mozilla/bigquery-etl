@@ -35,6 +35,33 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+      description: The attribution campaign (e.g. 'mozilla-org').
+    - name: content
+      type: STRING
+      mode: NULLABLE
+      description: The attribution content (e.g. 'firefoxview').
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+      description: The attribution medium (e.g. 'organic' for a search engine).
+    - name: source
+      type: STRING
+      mode: NULLABLE
+      description: The attribution source (e.g. 'google-play').
+    - name: term
+      type: STRING
+      mode: NULLABLE
+      description: The attribution term (e.g. 'browser with developer tools for android').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
   - name: build_date
     type: STRING
     mode: NULLABLE
@@ -54,6 +81,17 @@ fields:
     description: The model of the device the application is running on. On Android,
       this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not
       set if the device model can't be determined (e.g. on Desktop).
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The distribution name (e.g. 'MozillaOnline').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
   - name: first_run_date
     type: STRING
     mode: NULLABLE
@@ -91,44 +129,6 @@ fields:
     mode: NULLABLE
     description: The optional Windows build number, reported by Windows (e.g. 22000)
       and not set for other platforms
-  - name: attribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: campaign
-      type: STRING
-      mode: NULLABLE
-      description: The attribution campaign (e.g. 'mozilla-org').
-    - name: content
-      type: STRING
-      mode: NULLABLE
-      description: The attribution content (e.g. 'firefoxview').
-    - name: medium
-      type: STRING
-      mode: NULLABLE
-      description: The attribution medium (e.g. 'organic' for a search engine).
-    - name: source
-      type: STRING
-      mode: NULLABLE
-      description: The attribution source (e.g. 'google-play').
-    - name: term
-      type: STRING
-      mode: NULLABLE
-      description: The attribution term (e.g. 'browser with developer tools for android').
-    - name: ext
-      type: JSON
-      mode: NULLABLE
-  - name: distribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: name
-      type: STRING
-      mode: NULLABLE
-      description: The distribution name (e.g. 'MozillaOnline').
-    - name: ext
-      type: JSON
-      mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -379,6 +379,18 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: captcha_detection_arkoselabs_oc
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the ArkoseLabs was loaded since last ping submission.
+
+        '
+    - name: captcha_detection_arkoselabs_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the ArkoseLabs was loaded since last ping submission.
+
+        '
     - name: captcha_detection_arkoselabs_pc
       type: INTEGER
       mode: NULLABLE
@@ -479,6 +491,20 @@ fields:
         since last ping submission.
 
         '
+    - name: captcha_detection_cloudflare_turnstile_oc
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Cloudflare Turnstile challenge was loaded
+        since last ping submission.
+
+        '
+    - name: captcha_detection_cloudflare_turnstile_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Cloudflare Turnstile challenge was loaded
+        since last ping submission.
+
+        '
     - name: captcha_detection_datadome_bl
       type: INTEGER
       mode: NULLABLE
@@ -489,6 +515,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'How many times the Datadome blocked a user.
+
+        '
+    - name: captcha_detection_datadome_oc
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Datadome was loaded since last ping submission.
 
         '
     - name: captcha_detection_datadome_pc
@@ -527,6 +559,20 @@ fields:
       mode: NULLABLE
       description: 'Number of times the user completed a Google reCAPTCHA v2 challenge
         automatically since last ping submission.
+
+        '
+    - name: captcha_detection_google_recaptcha_v2_oc
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Google reCAPTCHA v2 was loaded since last
+        ping submission.
+
+        '
+    - name: captcha_detection_google_recaptcha_v2_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Google reCAPTCHA v2 was loaded since last
+        ping submission.
 
         '
     - name: captcha_detection_google_recaptcha_v2_pc
@@ -569,6 +615,18 @@ fields:
       description: 'Number of times the user completed an hCaptcha challenge automatically.
 
         '
+    - name: captcha_detection_hcaptcha_oc
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the hCaptcha was loaded since last ping submission.
+
+        '
+    - name: captcha_detection_hcaptcha_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the hCaptcha was loaded since last ping submission.
+
+        '
     - name: captcha_detection_hcaptcha_pc
       type: INTEGER
       mode: NULLABLE
@@ -605,64 +663,6 @@ fields:
       description: 'The number of pages visited since the last ping submission.
 
         '
-    - name: captcha_detection_arkoselabs_oc
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the ArkoseLabs was loaded since last ping submission.
-
-        '
-    - name: captcha_detection_arkoselabs_oc_pbm
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the ArkoseLabs was loaded since last ping submission.
-
-        '
-    - name: captcha_detection_cloudflare_turnstile_oc
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the Cloudflare Turnstile challenge was loaded
-        since last ping submission.
-
-        '
-    - name: captcha_detection_cloudflare_turnstile_oc_pbm
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the Cloudflare Turnstile challenge was loaded
-        since last ping submission.
-
-        '
-    - name: captcha_detection_datadome_oc
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the Datadome was loaded since last ping submission.
-
-        '
-    - name: captcha_detection_google_recaptcha_v2_oc
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the Google reCAPTCHA v2 was loaded since last
-        ping submission.
-
-        '
-    - name: captcha_detection_google_recaptcha_v2_oc_pbm
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the Google reCAPTCHA v2 was loaded since last
-        ping submission.
-
-        '
-    - name: captcha_detection_hcaptcha_oc
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the hCaptcha was loaded since last ping submission.
-
-        '
-    - name: captcha_detection_hcaptcha_oc_pbm
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Number of times the hCaptcha was loaded since last ping submission.
-
-        '
     - name: captcha_detection_datadome_oc_pbm
       type: INTEGER
       mode: NULLABLE
@@ -677,11 +677,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -702,11 +697,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -727,11 +717,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -752,11 +737,6 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE

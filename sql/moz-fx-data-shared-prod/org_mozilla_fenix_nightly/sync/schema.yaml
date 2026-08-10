@@ -35,62 +35,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
-  - name: client_id
-    type: STRING
-    mode: NULLABLE
-    description: A UUID uniquely identifying the client.
-  - name: device_manufacturer
-    type: STRING
-    mode: NULLABLE
-    description: The manufacturer of the device the application is running on. Not
-      set if the device manufacturer can't be determined (e.g. on Desktop).
-  - name: device_model
-    type: STRING
-    mode: NULLABLE
-    description: The model of the device the application is running on. On Android,
-      this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not
-      set if the device model can't be determined (e.g. on Desktop).
-  - name: first_run_date
-    type: STRING
-    mode: NULLABLE
-    description: The date of the first run of the application.
-  - name: locale
-    type: STRING
-    mode: NULLABLE
-    description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
-  - name: os
-    type: STRING
-    mode: NULLABLE
-    description: 'The name of the operating system. Possible values: Android, iOS,
-      Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, unknown'
-  - name: os_version
-    type: STRING
-    mode: NULLABLE
-    description: The user-visible version of the operating system (e.g. "1.2.3").
-      If the version detection fails, this metric gets set to `Unknown`.
-  - name: telemetry_sdk_build
-    type: STRING
-    mode: NULLABLE
-    description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
-  - name: windows_build_number
-    type: INTEGER
-    mode: NULLABLE
-    description: The optional Windows build number, reported by Windows (e.g. 22000)
-      and not set for other platforms
-  - name: session_count
-    type: INTEGER
-    mode: NULLABLE
-    description: An optional running counter of the number of sessions for a client.
-  - name: session_id
-    type: STRING
-    mode: NULLABLE
-    description: An optional UUID uniquely identifying the client's current session.
   - name: attribution
     type: RECORD
     mode: NULLABLE
@@ -118,6 +62,25 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+    description: A UUID uniquely identifying the client.
+  - name: device_manufacturer
+    type: STRING
+    mode: NULLABLE
+    description: The manufacturer of the device the application is running on. Not
+      set if the device manufacturer can't be determined (e.g. on Desktop).
+  - name: device_model
+    type: STRING
+    mode: NULLABLE
+    description: The model of the device the application is running on. On Android,
+      this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not
+      set if the device model can't be determined (e.g. on Desktop).
   - name: distribution
     type: RECORD
     mode: NULLABLE
@@ -129,6 +92,43 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
+  - name: first_run_date
+    type: STRING
+    mode: NULLABLE
+    description: The date of the first run of the application.
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
+  - name: os
+    type: STRING
+    mode: NULLABLE
+    description: 'The name of the operating system. Possible values: Android, iOS,
+      Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, unknown'
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+    description: The user-visible version of the operating system (e.g. "1.2.3").
+      If the version detection fails, this metric gets set to `Unknown`.
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+    description: An optional running counter of the number of sessions for a client.
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+    description: An optional UUID uniquely identifying the client's current session.
+  - name: telemetry_sdk_build
+    type: STRING
+    mode: NULLABLE
+    description: The version of the Glean SDK
+  - name: windows_build_number
+    type: INTEGER
+    mode: NULLABLE
+    description: The optional Windows build number, reported by Windows (e.g. 22000)
+      and not set for other platforms
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -228,6 +228,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -240,14 +248,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -265,20 +265,6 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -297,10 +283,120 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pwmgr_login_page_safety
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The safety of a page where we see a password field. (0: safe page
+        & safe submit; 1: safe page & unsafe submit; 2: safe page & unknown submit;
+        3: unsafe page & safe submit; 4: unsafe page & unsafe submit; 5: unsafe page
+        & unknown submit)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PWMGR_LOGIN_PAGE_SAFETY.
+
+        '
+    - name: pwmgr_prompt_remember_action
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Action taken by user through prompt for creating a login. (0=Prompt
+        displayed [always recorded], 1=Add login, 2=Don''t save now, 3=Never save)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PWMGR_PROMPT_REMEMBER_ACTION.
+
+        '
+    - name: pwmgr_prompt_update_action
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Action taken by user through prompt for modifying a login. (0=Prompt
+        displayed [always recorded], 1=Update login, 2=Don''t update, 3=Remove saved
+        login)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PWMGR_PROMPT_UPDATE_ACTION.
+
+        '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: syncs_session_start_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'When the sync telemetry session begins (the `SyncTelemetryImpl`
+
+        constructor runs).
+
+        Typically useful for ordering "sync" pings.
+
+        '
+    - name: raw_syncs_session_start_date
+      type: STRING
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -401,28 +497,100 @@ fields:
         system paths.
 
         '
-  - name: uuid
+  - name: object
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: sync_sync_uuid
-      type: STRING
+    - name: syncs_migrations
+      type: JSON
       mode: NULLABLE
-      description: 'Unique identifier for this sync, used to correlate together individual
-        pings for data types that were synchronized together (history, bookmarks,
-        logins). If a data type is synchronized by itself via the legacy ''sync''
-        API (as opposed to the Sync Manager), then this field will not be set on the
-        corresponding ping.
+      description: "The application-services developers are in the process of oxidizing\
+        \ parts\nof firefox sync and the related data storage code,\nwhich typically\
+        \ requires migrating the old storage into a new database and/or format.\n\n\
+        When a migration like this occurs,\na record is reported in this list the\
+        \ next time the sync ping is submitted.\n\n```text\n  [{\n    migration_type:\
+        \ Presently this is only ever \"webext-storage\",\n    entries: The number\
+        \ of entries/preferences in the source (legacy) database, including ones we\
+        \ failed to read,\n    entriesSuccessful: he number of entries/preferences\
+        \ (see below) which we have successfully migrated into the destination database,\n\
+        \    extensions: The number of distinct extensions which have at least one\
+        \ preference in the source (legacy) database,\n    extensionsSuccessful: The\
+        \ number of distinct extensions which have at least one preference in the\
+        \ destination (migrated) database,\n    openFailure: A boolean flag that is\
+        \ true if we hit a read error prior to . This likely indicates complete corruptio"
+    - name: syncs_syncs
+      type: JSON
+      mode: NULLABLE
+      description: "Recorded syncs.\nThe \"sync\" ping is not submitted if this is\
+        \ empty.\n```text\n  [{\n    when: integer ms since epoch,\n    took: integer\
+        \ ms duration,\n    didLogin: true if first sync after login,\n    why:\n\
+        \      - \"startup\" if first sync after browser startup\n      - \"schedule\"\
+        \ if it's been too long since the last sync\n      - \"score\" if one of sync's\
+        \ trackers has a high score value indicating many changes since the last sync\n\
+        \      - \"user\" if the user manually triggered the sync\n      - \"tabs\"\
+        \ if the user opened the synced tabs sidebar, triggering a sync\n    failureReason:\
+        \ { // if there was an error\n      name: {\"httperror\"|\"networkerror\"\
+        |...},\n      code: error code for \"httperror\" and \"networkerror\" only,\n\
+        \      error: error string for \"othererror\" and \"unexpectederror\" only,\n\
+        \      from: for \"autherror\" only,\n    },\n    devices: [{ // excluded\
+        \ if we couldn't get a valid uid or local device id\n      os: provided by\
+        \ `Services.appinfo.OS`,\n      version: provided by `Services.appinfo.version`,\n\
+        \      id: hashed FxA d"
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: syncs_discarded
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many syncs happened which were not reported in detail
+
+        due to being over the number of syncs we report detailed information for.
 
         '
-    - name: sync_v2_sync_uuid
-      type: STRING
+    - name: system_os_service_pack_major
+      type: INTEGER
       mode: NULLABLE
-      description: 'Unique identifier for this sync, used to correlate together individual
-        pings for data types that were synchronized together (history, bookmarks,
-        logins). If a data type is synchronized by itself via the legacy ''sync''
-        API (as opposed to the Sync Manager), then this field will not be set on the
-        corresponding ping.
+      description: 'The Windows service pack''s major version, according to WindowsVersionInfo.
+
+        Windows only.
+
+        e.g. 0
+
+        '
+    - name: system_os_service_pack_minor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows service pack''s minor version, according to WindowsVersionInfo.
+
+        Windows only.
+
+        e.g. 0
+
+        '
+    - name: system_os_windows_build_number
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows build number, according to ''CurrentBuild'' in the
+        Windows registry.
+
+        Windows only.
+
+        e.g. 26100
+
+        Expected in most cases to be identical to `client_info.windows_build_number`.
+
+        '
+    - name: system_os_windows_ubr
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows update build revision number, according to
+
+        `SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion`.
+
+        Windows only.
+
+        e.g. 3775
 
         '
   - name: string
@@ -524,213 +692,6 @@ fields:
         e.g. "3.4.33"
 
         '
-  - name: custom_distribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: pwmgr_login_page_safety
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The safety of a page where we see a password field. (0: safe page
-        & safe submit; 1: safe page & unsafe submit; 2: safe page & unknown submit;
-        3: unsafe page & safe submit; 4: unsafe page & unsafe submit; 5: unsafe page
-        & unknown submit)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_LOGIN_PAGE_SAFETY.
-
-        '
-    - name: pwmgr_prompt_remember_action
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'Action taken by user through prompt for creating a login. (0=Prompt
-        displayed [always recorded], 1=Add login, 2=Don''t save now, 3=Never save)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_PROMPT_REMEMBER_ACTION.
-
-        '
-    - name: pwmgr_prompt_update_action
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'Action taken by user through prompt for modifying a login. (0=Prompt
-        displayed [always recorded], 1=Update login, 2=Don''t update, 3=Remove saved
-        login)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_PROMPT_UPDATE_ACTION.
-
-        '
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: syncs_session_start_date
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'When the sync telemetry session begins (the `SyncTelemetryImpl`
-
-        constructor runs).
-
-        Typically useful for ordering "sync" pings.
-
-        '
-    - name: raw_syncs_session_start_date
-      type: STRING
-      mode: NULLABLE
-  - name: object
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: syncs_migrations
-      type: JSON
-      mode: NULLABLE
-      description: "The application-services developers are in the process of oxidizing\
-        \ parts\nof firefox sync and the related data storage code,\nwhich typically\
-        \ requires migrating the old storage into a new database and/or format.\n\n\
-        When a migration like this occurs,\na record is reported in this list the\
-        \ next time the sync ping is submitted.\n\n```text\n  [{\n    migration_type:\
-        \ Presently this is only ever \"webext-storage\",\n    entries: The number\
-        \ of entries/preferences in the source (legacy) database, including ones we\
-        \ failed to read,\n    entriesSuccessful: he number of entries/preferences\
-        \ (see below) which we have successfully migrated into the destination database,\n\
-        \    extensions: The number of distinct extensions which have at least one\
-        \ preference in the source (legacy) database,\n    extensionsSuccessful: The\
-        \ number of distinct extensions which have at least one preference in the\
-        \ destination (migrated) database,\n    openFailure: A boolean flag that is\
-        \ true if we hit a read error prior to . This likely indicates complete corruptio"
-    - name: syncs_syncs
-      type: JSON
-      mode: NULLABLE
-      description: "Recorded syncs.\nThe \"sync\" ping is not submitted if this is\
-        \ empty.\n```text\n  [{\n    when: integer ms since epoch,\n    took: integer\
-        \ ms duration,\n    didLogin: true if first sync after login,\n    why:\n\
-        \      - \"startup\" if first sync after browser startup\n      - \"schedule\"\
-        \ if it's been too long since the last sync\n      - \"score\" if one of sync's\
-        \ trackers has a high score value indicating many changes since the last sync\n\
-        \      - \"user\" if the user manually triggered the sync\n      - \"tabs\"\
-        \ if the user opened the synced tabs sidebar, triggering a sync\n    failureReason:\
-        \ { // if there was an error\n      name: {\"httperror\"|\"networkerror\"\
-        |...},\n      code: error code for \"httperror\" and \"networkerror\" only,\n\
-        \      error: error string for \"othererror\" and \"unexpectederror\" only,\n\
-        \      from: for \"autherror\" only,\n    },\n    devices: [{ // excluded\
-        \ if we couldn't get a valid uid or local device id\n      os: provided by\
-        \ `Services.appinfo.OS`,\n      version: provided by `Services.appinfo.version`,\n\
-        \      id: hashed FxA d"
-  - name: quantity
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: syncs_discarded
-      type: INTEGER
-      mode: NULLABLE
-      description: 'How many syncs happened which were not reported in detail
-
-        due to being over the number of syncs we report detailed information for.
-
-        '
-    - name: system_os_service_pack_major
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The Windows service pack''s major version, according to WindowsVersionInfo.
-
-        Windows only.
-
-        e.g. 0
-
-        '
-    - name: system_os_service_pack_minor
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The Windows service pack''s minor version, according to WindowsVersionInfo.
-
-        Windows only.
-
-        e.g. 0
-
-        '
-    - name: system_os_windows_build_number
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The Windows build number, according to ''CurrentBuild'' in the
-        Windows registry.
-
-        Windows only.
-
-        e.g. 26100
-
-        Expected in most cases to be identical to `client_info.windows_build_number`.
-
-        '
-    - name: system_os_windows_ubr
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The Windows update build revision number, according to
-
-        `SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion`.
-
-        Windows only.
-
-        e.g. 3775
-
-        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -745,6 +706,30 @@ fields:
 
 
         This metric is only attached to a ping if it already contains other data.
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: sync_sync_uuid
+      type: STRING
+      mode: NULLABLE
+      description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
+
+        '
+    - name: sync_v2_sync_uuid
+      type: STRING
+      mode: NULLABLE
+      description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
 
         '
 - name: normalized_app_name
@@ -791,10 +776,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

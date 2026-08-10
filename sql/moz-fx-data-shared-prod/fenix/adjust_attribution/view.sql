@@ -141,7 +141,27 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    client_info.attribution,
+    client_info.distribution
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -160,7 +180,17 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(
-      metrics.timing_distribution.adjust_attribution_adjust_attribution_time
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.adjust_attribution_adjust_attribution_time.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.adjust_attribution_adjust_attribution_time.values
+      ) AS `adjust_attribution_adjust_attribution_time`
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
@@ -185,7 +215,27 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    client_info.attribution,
+    client_info.distribution
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -204,7 +254,17 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(
-      metrics.timing_distribution.adjust_attribution_adjust_attribution_time
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.adjust_attribution_adjust_attribution_time.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.adjust_attribution_adjust_attribution_time.values
+      ) AS `adjust_attribution_adjust_attribution_time`
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,

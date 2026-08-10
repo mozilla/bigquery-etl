@@ -275,9 +275,21 @@ SELECT
       metrics.labeled_counter.glean_upload_pending_pings_deleted
     ) AS `labeled_counter`,
     STRUCT(
-      metrics.memory_distribution.glean_database_size,
-      metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
-      metrics.memory_distribution.glean_upload_pending_pings_directory_size
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.memory_distribution.glean_database_size.sum,
+        metrics.memory_distribution.glean_database_size.values
+      ) AS `glean_database_size`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.sum,
+        metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.values
+      ) AS `glean_upload_discarded_exceeding_pings_size`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.memory_distribution.glean_upload_pending_pings_directory_size.sum,
+        metrics.memory_distribution.glean_upload_pending_pings_directory_size.values
+      ) AS `glean_upload_pending_pings_directory_size`
     ) AS `memory_distribution`,
     STRUCT(
       metrics.object.glean_health_data_directory_info,
@@ -291,12 +303,72 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
-      metrics.timing_distribution.glean_database_write_time,
-      metrics.timing_distribution.glean_upload_send_failure,
-      metrics.timing_distribution.glean_upload_send_success,
-      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
-      metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.glean_migration_migration_duration
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_database_write_time.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_database_write_time.values
+      ) AS `glean_database_write_time`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_upload_send_failure.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_upload_send_failure.values
+      ) AS `glean_upload_send_failure`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_upload_send_success.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_upload_send_success.values
+      ) AS `glean_upload_send_success`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait.values
+      ) AS `glean_validation_shutdown_dispatcher_wait`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_validation_shutdown_wait.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_validation_shutdown_wait.values
+      ) AS `glean_validation_shutdown_wait`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_migration_migration_duration.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_migration_migration_duration.values
+      ) AS `glean_migration_migration_duration`
     ) AS `timing_distribution`,
     STRUCT(metrics.uuid.glean_health_recovered_client_id) AS `uuid`
   ) AS `metrics`,
@@ -353,9 +425,21 @@ SELECT
       metrics.labeled_counter.glean_upload_pending_pings_deleted
     ) AS `labeled_counter`,
     STRUCT(
-      metrics.memory_distribution.glean_database_size,
-      metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
-      metrics.memory_distribution.glean_upload_pending_pings_directory_size
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.memory_distribution.glean_database_size.sum,
+        metrics.memory_distribution.glean_database_size.values
+      ) AS `glean_database_size`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.sum,
+        metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.values
+      ) AS `glean_upload_discarded_exceeding_pings_size`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.memory_distribution.glean_upload_pending_pings_directory_size.sum,
+        metrics.memory_distribution.glean_upload_pending_pings_directory_size.values
+      ) AS `glean_upload_pending_pings_directory_size`
     ) AS `memory_distribution`,
     STRUCT(
       metrics.object.glean_health_data_directory_info,
@@ -369,12 +453,72 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
-      metrics.timing_distribution.glean_database_write_time,
-      metrics.timing_distribution.glean_upload_send_failure,
-      metrics.timing_distribution.glean_upload_send_success,
-      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
-      metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.glean_migration_migration_duration
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_database_write_time.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_database_write_time.values
+      ) AS `glean_database_write_time`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_upload_send_failure.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_upload_send_failure.values
+      ) AS `glean_upload_send_failure`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_upload_send_success.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_upload_send_success.values
+      ) AS `glean_upload_send_success`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait.values
+      ) AS `glean_validation_shutdown_dispatcher_wait`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_validation_shutdown_wait.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_validation_shutdown_wait.values
+      ) AS `glean_validation_shutdown_wait`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.glean_migration_migration_duration.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.glean_migration_migration_duration.values
+      ) AS `glean_migration_migration_duration`
     ) AS `timing_distribution`,
     STRUCT(metrics.uuid.glean_health_recovered_client_id) AS `uuid`
   ) AS `metrics`,

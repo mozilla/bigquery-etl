@@ -35,62 +35,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
-  - name: client_id
-    type: STRING
-    mode: NULLABLE
-    description: A UUID uniquely identifying the client.
-  - name: device_manufacturer
-    type: STRING
-    mode: NULLABLE
-    description: The manufacturer of the device the application is running on. Not
-      set if the device manufacturer can't be determined (e.g. on Desktop).
-  - name: device_model
-    type: STRING
-    mode: NULLABLE
-    description: The model of the device the application is running on. On Android,
-      this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not
-      set if the device model can't be determined (e.g. on Desktop).
-  - name: first_run_date
-    type: STRING
-    mode: NULLABLE
-    description: The date of the first run of the application.
-  - name: locale
-    type: STRING
-    mode: NULLABLE
-    description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
-  - name: os
-    type: STRING
-    mode: NULLABLE
-    description: 'The name of the operating system. Possible values: Android, iOS,
-      Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, unknown'
-  - name: os_version
-    type: STRING
-    mode: NULLABLE
-    description: The user-visible version of the operating system (e.g. "1.2.3").
-      If the version detection fails, this metric gets set to `Unknown`.
-  - name: telemetry_sdk_build
-    type: STRING
-    mode: NULLABLE
-    description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
-  - name: windows_build_number
-    type: INTEGER
-    mode: NULLABLE
-    description: The optional Windows build number, reported by Windows (e.g. 22000)
-      and not set for other platforms
-  - name: session_count
-    type: INTEGER
-    mode: NULLABLE
-    description: An optional running counter of the number of sessions for a client.
-  - name: session_id
-    type: STRING
-    mode: NULLABLE
-    description: An optional UUID uniquely identifying the client's current session.
   - name: attribution
     type: RECORD
     mode: NULLABLE
@@ -118,6 +62,25 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+    description: A UUID uniquely identifying the client.
+  - name: device_manufacturer
+    type: STRING
+    mode: NULLABLE
+    description: The manufacturer of the device the application is running on. Not
+      set if the device manufacturer can't be determined (e.g. on Desktop).
+  - name: device_model
+    type: STRING
+    mode: NULLABLE
+    description: The model of the device the application is running on. On Android,
+      this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not
+      set if the device model can't be determined (e.g. on Desktop).
   - name: distribution
     type: RECORD
     mode: NULLABLE
@@ -129,6 +92,43 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
+  - name: first_run_date
+    type: STRING
+    mode: NULLABLE
+    description: The date of the first run of the application.
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
+  - name: os
+    type: STRING
+    mode: NULLABLE
+    description: 'The name of the operating system. Possible values: Android, iOS,
+      Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, unknown'
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+    description: The user-visible version of the operating system (e.g. "1.2.3").
+      If the version detection fails, this metric gets set to `Unknown`.
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+    description: An optional running counter of the number of sessions for a client.
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+    description: An optional UUID uniquely identifying the client's current session.
+  - name: telemetry_sdk_build
+    type: STRING
+    mode: NULLABLE
+    description: The version of the Glean SDK
+  - name: windows_build_number
+    type: INTEGER
+    mode: NULLABLE
+    description: The optional Windows build number, reported by Windows (e.g. 22000)
+      and not set for other platforms
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -228,6 +228,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -240,14 +248,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -405,12 +405,6 @@ fields:
         with.
 
         '
-    - name: first_session_network
-      type: STRING
-      mode: NULLABLE
-      description: 'The name of the Network that sourced this installation.
-
-        '
     - name: first_session_distribution_id
       type: STRING
       mode: NULLABLE
@@ -419,6 +413,44 @@ fields:
         to identify installs from Mozilla Online, but now also identifies
 
         partnership deal distributions
+
+        '
+    - name: first_session_install_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Used to identify the source the app was installed from.
+
+        '
+    - name: first_session_network
+      type: STRING
+      mode: NULLABLE
+      description: 'The name of the Network that sourced this installation.
+
+        '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
+    - name: meta_attribution_app
+      type: STRING
+      mode: NULLABLE
+      description: 'The mobile application ID in Meta''s attribution.
+
+        '
+    - name: meta_attribution_nonce
+      type: STRING
+      mode: NULLABLE
+      description: 'Nonce used to decrypt the encrypted Meta attribution data.
+
+        '
+    - name: meta_attribution_t
+      type: STRING
+      mode: NULLABLE
+      description: 'Value tracking user interaction with Meta attribution.
 
         '
     - name: play_store_attribution_campaign
@@ -451,84 +483,36 @@ fields:
       description: 'The name of the utm_term that is responsible for this installation.
 
         '
-    - name: glean_client_annotation_experimentation_id
-      type: STRING
-      mode: NULLABLE
-      description: 'An experimentation identifier derived and provided by the application
-
-        for the purpose of experimentation enrollment.
-
-        '
-    - name: meta_attribution_app
-      type: STRING
-      mode: NULLABLE
-      description: 'The mobile application ID in Meta''s attribution.
-
-        '
-    - name: meta_attribution_nonce
-      type: STRING
-      mode: NULLABLE
-      description: 'Nonce used to decrypt the encrypted Meta attribution data.
-
-        '
-    - name: meta_attribution_t
-      type: STRING
-      mode: NULLABLE
-      description: 'Value tracking user interaction with Meta attribution.
-
-        '
-    - name: first_session_install_source
-      type: STRING
-      mode: NULLABLE
-      description: 'Used to identify the source the app was installed from.
-
-        '
-  - name: timing_distribution
+  - name: string_list
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: first_session_adjust_attribution_time
-      type: RECORD
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: meta_attribution_data
+      type: STRING
       mode: NULLABLE
-      fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The time that it takes to derive the attribution parameters by
-        the Adjust SDK.
+      description: 'The Meta attribution data in encrypted format.
+
+        '
+    - name: play_store_attribution_install_referrer_response
+      type: STRING
+      mode: NULLABLE
+      description: 'The full install referrer response.
 
         '
   - name: timespan
@@ -549,36 +533,29 @@ fields:
         the Adjust SDK.
 
         '
-  - name: text2
+  - name: timing_distribution
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: meta_attribution_data
-      type: STRING
+    - name: first_session_adjust_attribution_time
+      type: RECORD
       mode: NULLABLE
-      description: 'The Meta attribution data in encrypted format.
-
-        '
-    - name: play_store_attribution_install_referrer_response
-      type: STRING
-      mode: NULLABLE
-      description: 'The full install referrer response.
-
-        '
-  - name: string_list
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_ping_uploader_capabilities
-      type: STRING
-      mode: REPEATED
-      description: 'The list of requested uploader capabilities for the ping this
-        is sent in.
-
-        Should be the same as the ones defined for that particular ping.
-
-
-        This metric is only attached to a ping if it already contains other data.
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time that it takes to derive the attribution parameters by
+        the Adjust SDK.
 
         '
   - name: text
@@ -635,10 +612,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

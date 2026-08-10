@@ -180,9 +180,34 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    client_info.attribution,
+    client_info.distribution
+  ) AS `client_info`,
   document_id,
-  events,
+  ARRAY(
+    SELECT
+      STRUCT(events.category, events.extra, events.name, events.timestamp, events.session)
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
   metadata,
   STRUCT(
     STRUCT(
@@ -209,7 +234,17 @@ SELECT
     ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
-      metrics.timing_distribution.play_store_attribution_attribution_time
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.play_store_attribution_attribution_time.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.play_store_attribution_attribution_time.values
+      ) AS `play_store_attribution_attribution_time`
     ) AS `timing_distribution`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
@@ -220,7 +255,17 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ping_info.experiments,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    ping_info.server_knobs_config,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
   app_version_major,
@@ -237,9 +282,34 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    client_info.attribution,
+    client_info.distribution
+  ) AS `client_info`,
   document_id,
-  events,
+  ARRAY(
+    SELECT
+      STRUCT(events.category, events.extra, events.name, events.timestamp, events.session)
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
   metadata,
   STRUCT(
     STRUCT(
@@ -266,7 +336,17 @@ SELECT
     ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
-      metrics.timing_distribution.play_store_attribution_attribution_time
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `bucket_count`,
+        CAST(NULL AS INTEGER) AS `count`,
+        CAST(NULL AS STRING) AS `histogram_type`,
+        CAST(NULL AS INTEGER) AS `overflow`,
+        CAST(NULL AS ARRAY<FLOAT64>) AS `range`,
+        metrics.timing_distribution.play_store_attribution_attribution_time.sum,
+        CAST(NULL AS STRING) AS `time_unit`,
+        CAST(NULL AS INTEGER) AS `underflow`,
+        metrics.timing_distribution.play_store_attribution_attribution_time.values
+      ) AS `play_store_attribution_attribution_time`
     ) AS `timing_distribution`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
@@ -277,7 +357,17 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ping_info.experiments,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    ping_info.server_knobs_config,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
   app_version_major,

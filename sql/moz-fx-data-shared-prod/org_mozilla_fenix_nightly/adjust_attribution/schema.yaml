@@ -35,6 +35,33 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+      description: The attribution campaign (e.g. 'mozilla-org').
+    - name: content
+      type: STRING
+      mode: NULLABLE
+      description: The attribution content (e.g. 'firefoxview').
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+      description: The attribution medium (e.g. 'organic' for a search engine).
+    - name: source
+      type: STRING
+      mode: NULLABLE
+      description: The attribution source (e.g. 'google-play').
+    - name: term
+      type: STRING
+      mode: NULLABLE
+      description: The attribution term (e.g. 'browser with developer tools for android').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
   - name: build_date
     type: STRING
     mode: NULLABLE
@@ -54,6 +81,17 @@ fields:
     description: The model of the device the application is running on. On Android,
       this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not
       set if the device model can't be determined (e.g. on Desktop).
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The distribution name (e.g. 'MozillaOnline').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
   - name: first_run_date
     type: STRING
     mode: NULLABLE
@@ -91,44 +129,6 @@ fields:
     mode: NULLABLE
     description: The optional Windows build number, reported by Windows (e.g. 22000)
       and not set for other platforms
-  - name: attribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: campaign
-      type: STRING
-      mode: NULLABLE
-      description: The attribution campaign (e.g. 'mozilla-org').
-    - name: content
-      type: STRING
-      mode: NULLABLE
-      description: The attribution content (e.g. 'firefoxview').
-    - name: medium
-      type: STRING
-      mode: NULLABLE
-      description: The attribution medium (e.g. 'organic' for a search engine).
-    - name: source
-      type: STRING
-      mode: NULLABLE
-      description: The attribution source (e.g. 'google-play').
-    - name: term
-      type: STRING
-      mode: NULLABLE
-      description: The attribution term (e.g. 'browser with developer tools for android').
-    - name: ext
-      type: JSON
-      mode: NULLABLE
-  - name: distribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: name
-      type: STRING
-      mode: NULLABLE
-      description: The distribution name (e.g. 'MozillaOnline').
-    - name: ext
-      type: JSON
-      mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -402,54 +402,6 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
-  - name: timing_distribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: adjust_attribution_adjust_attribution_time
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The time that it takes to derive the attribution parameters by
-        the Adjust SDK.
-
-        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -464,6 +416,31 @@ fields:
 
 
         This metric is only attached to a ping if it already contains other data.
+
+        '
+  - name: timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: adjust_attribution_adjust_attribution_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time that it takes to derive the attribution parameters by
+        the Adjust SDK.
 
         '
 - name: normalized_app_name

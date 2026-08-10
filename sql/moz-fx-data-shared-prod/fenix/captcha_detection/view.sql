@@ -321,7 +321,27 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    client_info.attribution,
+    client_info.distribution
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -387,10 +407,26 @@ SELECT
       metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
-      metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
-      metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm,
-      metrics.custom_distribution.captcha_detection_awswaf_solutions_required,
-      metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.sum,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.values
+      ) AS `captcha_detection_arkoselabs_solutions_required`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.sum,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.values
+      ) AS `captcha_detection_arkoselabs_solutions_required_pbm`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.sum,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.values
+      ) AS `captcha_detection_awswaf_solutions_required`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.sum,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.values
+      ) AS `captcha_detection_awswaf_solutions_required_pbm`
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -425,7 +461,27 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    client_info.attribution,
+    client_info.distribution
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -491,10 +547,26 @@ SELECT
       metrics.counter.captcha_detection_datadome_oc_pbm
     ) AS `counter`,
     STRUCT(
-      metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
-      metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm,
-      metrics.custom_distribution.captcha_detection_awswaf_solutions_required,
-      metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.sum,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.values
+      ) AS `captcha_detection_arkoselabs_solutions_required`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.sum,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.values
+      ) AS `captcha_detection_arkoselabs_solutions_required_pbm`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.sum,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.values
+      ) AS `captcha_detection_awswaf_solutions_required`,
+      STRUCT(
+        CAST(NULL AS INTEGER) AS `count`,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.sum,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.values
+      ) AS `captcha_detection_awswaf_solutions_required_pbm`
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

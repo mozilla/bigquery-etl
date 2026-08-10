@@ -14,15 +14,15 @@ AS
 -- Categories, from most to least specific:
 --   library_warning     -- mozanalysis-internal WARNINGs with no experiment
 --                           attribution (metrics.py/functions.py/segments.py)
---   graceful_degradation -- any other WARNING: jetstream detected missing
+--   valid_degradation   -- any other WARNING: jetstream detected missing
 --                           data/config and fell back to a degraded but valid
 --                           computation (e.g. covariate adjustment unavailable)
---   expected_skip       -- experiment intentionally not analyzed this run
+--   skipped             -- experiment intentionally not analyzed this run
 --                           (ValidationException family + unsupported app)
---   resource_limit      -- jetstream couldn't run at this scale: BigQuery
+--   resources           -- jetstream couldn't run at this scale: BigQuery
 --                           rejected the query (Resources exceeded / Operation
 --                           timed out) or a Dask worker died (KilledWorker)
---   data_quality        -- metric values are all zero (raw or after outlier
+--   data                -- metric values are all zero (raw or after outlier
 --                           trimming), so relative uplift is undefined
 --   configuration       -- config named a segment/column/app that jetstream
 --                           could not resolve, or the config itself failed to
@@ -42,7 +42,7 @@ SELECT
       AND filename IN ('metrics.py', 'functions.py', 'segments.py')
       THEN 'library_warning'
     WHEN log_level = 'WARNING'
-      THEN 'graceful_degradation'
+      THEN 'valid_degradation'
     WHEN exception_type IN (
         -- jetstream.errors.ValidationException subclasses: the experiment is
         -- intentionally not analyzed this run, not a failure to compute.
@@ -58,15 +58,15 @@ SELECT
         -- not a ValidationException, but the same "not analyzed" semantics
         'UnsupportedApplicationException'
       )
-      THEN 'expected_skip'
+      THEN 'skipped'
     WHEN message LIKE '%Resources exceeded%'
       OR message LIKE '%Operation timed out%'
       OR exception_type = 'KilledWorker'
-      THEN 'resource_limit'
+      THEN 'resources'
     WHEN filename = 'statistics.py'
       AND func_name = 'transform'
       AND exception_type = 'StatisticComputationException'
-      THEN 'data_quality'
+      THEN 'data'
     WHEN
       -- config named a segment that doesn't resolve against jetstream's
       -- metric table (aliased `m`) or covariate-adjustment metric table

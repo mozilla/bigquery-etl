@@ -2,6 +2,11 @@
 
 set -ex
 
+# The generators own their output directory: they write query.sql when the ping
+# has probes and remove the directory when it has none, both exiting 0. Any
+# non-zero exit is therefore a real failure and must fail this script -- it used
+# to be indistinguishable from "no probes found", so a Glean Dictionary timeout
+# could silently drop a ping's query and leave the Airflow task green.
 function write_scalars {
     local product=$1
     local dataset=$2
@@ -9,16 +14,10 @@ function write_scalars {
     local dst_project=$4
     local sql_dir=$5
     local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
-    mkdir -p "$directory"
-    if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
+    python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
         --product "$product" \
-        > "$directory/query.sql"; then
-            echo "skipping $directory/query.sql: no probes found"
-            rm -r "$directory"
-    else
-        echo "generated $directory/query.sql"
-    fi
+        --output-dir "$directory"
 }
 
 function write_histograms {
@@ -28,16 +27,20 @@ function write_histograms {
     local dst_project=$4
     local sql_dir=$5
     local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
-    mkdir -p "$directory"
-    if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
+    python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
         --source-table "$dataset.$table" \
         --product "$product" \
-        > "$directory/query.sql"; then
-            echo "skipping $directory/query.sql: no probes found"
-            rm -r "$directory"
-    else
-        echo "generated $directory/query.sql"
-    fi
+        --output-dir "$directory"
+}
+
+function wait_for_pids {
+    # Wait on each pid individually so a failing generator fails this script. A
+    # bare `wait` always returns 0, so backgrounded failures were invisible even
+    # though the functions above run under `set -e`.
+    local pid
+    for pid in "$@"; do
+        wait "$pid"
+    done
 }
 
 function write_clients_daily_aggregates {
@@ -80,16 +83,20 @@ function write_clients_daily_aggregates {
         select(.tableReference.tableId | test($exclude_pattern) | not) |
         "\(.tableReference.tableId)"')
 
-    # generate schemas in parallel
+    # generate schemas in parallel, 2 tables at a time to limit concurrent
+    # python processes
+    local pids=()
     for table in $tables; do
-        # 2 tables at a time to limit concurrent python processes
-        i=$((i % 2))
-        ((i++==0)) && wait
         write_scalars "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
+        pids+=("$!")
         write_histograms "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
+        pids+=("$!")
+        if ((${#pids[@]} >= 4)); then
+            wait_for_pids "${pids[@]}"
+            pids=()
+        fi
     done
-
-    wait
+    wait_for_pids "${pids[@]}"
 }
 
 cd "$(dirname "$0")/../.."

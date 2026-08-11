@@ -48,6 +48,7 @@ SELECT
       LAX_BOOL(event_extra.is_private_mode) AS `is_private_mode`,
       LAX_BOOL(event_extra.is_toolbar) AS `is_toolbar`,
       LAX_BOOL(event_extra.outcome) AS `outcome`,
+      LAX_BOOL(event_extra.photo_selected) AS `photo_selected`,
       LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,
       LAX_BOOL(event_extra.succeeded) AS `succeeded`
     ) AS `boolean`,

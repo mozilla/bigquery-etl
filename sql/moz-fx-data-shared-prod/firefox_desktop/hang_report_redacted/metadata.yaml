@@ -1,0 +1,33 @@
+friendly_name: Hang Report (redacted)
+description: |-
+  Narrow projection of `firefox_desktop_stable.hang_report_v1` for the
+  Background Hang Reporter aggregation job, which runs as a mozilla-central
+  TaskCluster cron (bug 2048276).
+
+  This is an allow-list: it exposes only the columns that job reads, and the
+  projection is itself the access control. The consumer is granted on this view
+  rather than on `firefox_desktop.hang_report`, so everything left out is
+  unreachable even if the job's credential is compromised. Not exposed:
+  session id, geo, ISP, attribution, experiments, user-agent data, and
+  IP-derived metadata.
+
+  Note this is stricter than the `stable_views_redacted` generator, which
+  removes only metrics tagged `highly_sensitive`. `hang_report` is not in that
+  generator's ping list; this view is checked in at the path the generator
+  would use, which it treats as a manual override.
+
+  `client_id` is exposed as-is. It is read only in memory, to build
+  HyperLogLog sketches for a distinct-affected-clients-per-hang-signature
+  metric. No identifier is written to any published artifact -- only aggregate
+  counts leave the job.
+owners: []
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/hang-report-collection
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.hang_report_v1

@@ -2,9 +2,15 @@ fields:
 - name: issue_key
   type: STRING
   mode: NULLABLE
+  description: >-
+    The ticket's current key. Changes if the ticket is moved to another project.
 - name: project_key
   type: STRING
   mode: NULLABLE
+  description: >-
+    Project the ticket currently lives in. NOT always SREIN: intake tickets are
+    moved to the owning team's project after triage and stay in scope via the
+    SREIN label, so expect MZCLD, SVCSE, PAY and others.
 - name: issue_type
   type: STRING
   mode: NULLABLE

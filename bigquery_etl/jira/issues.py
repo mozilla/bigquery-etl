@@ -43,6 +43,25 @@ VALUE_KEYS = ("name", "displayName", "value")
 
 VALID_MODES = ("NULLABLE", "REPEATED")
 
+# Types this module knows how to produce. bigquery.SchemaField accepts any
+# string, and _extra_values falls through to the untouched-value branch for
+# anything unrecognised, so a typo like "DATETIEM" would build fine and only
+# surface as a load failure.
+VALID_TYPES = (
+    "STRING",
+    "BOOL",
+    "INT64",
+    "FLOAT64",
+    "NUMERIC",
+    "DATE",
+    "DATETIME",
+    "TIMESTAMP",
+)
+
+# Types whose extraction yields a scalar or None, never a list, so pairing them
+# with REPEATED would produce a permanently empty column.
+SCALAR_ONLY_TYPES = ("DATE", "DATETIME", "TIMESTAMP")
+
 logger = logging.getLogger(__name__)
 
 
@@ -69,6 +88,17 @@ class JiraField:
                 f"JiraField({self.column!r}) has mode {self.mode!r}; "
                 f"expected one of {VALID_MODES}"
             )
+        if self.bq_type not in VALID_TYPES:
+            raise ValueError(
+                f"JiraField({self.column!r}) has bq_type {self.bq_type!r}; "
+                f"expected one of {VALID_TYPES}"
+            )
+        if self.mode == "REPEATED" and self.bq_type in SCALAR_ONLY_TYPES:
+            raise ValueError(
+                f"JiraField({self.column!r}) pairs mode REPEATED with bq_type "
+                f"{self.bq_type!r}, whose parser always returns a scalar or None, "
+                "so the column would always be empty"
+            )
 
 
 def extract_value(raw: Any) -> Any:
@@ -81,7 +111,11 @@ def extract_value(raw: Any) -> Any:
     run down with it.
     """
     if isinstance(raw, list):
-        return [extract_value(item) for item in raw]
+        # Unusable elements are dropped rather than kept as None: the only
+        # consumer of a list is a REPEATED column, and BigQuery rejects a null
+        # element inside one with "Array specifies a null element", which would
+        # fail the load for the same reason the scalar branch returns None.
+        return [value for value in (extract_value(i) for i in raw) if value is not None]
 
     if isinstance(raw, dict):
         for key in VALUE_KEYS:
@@ -231,7 +265,11 @@ class JiraAPI:
             raw = fields.get(field.jira_field)
 
             if field.bq_type == "TIMESTAMP":
-                value: Any = self.client.to_bq_timestamp(raw)
+                # extract_value first: to_bq_timestamp hands its argument to
+                # strptime, which raises TypeError on a dict or list, and only
+                # ValueError is caught -- so an object-valued field would escape
+                # and kill the whole run instead of nulling one cell.
+                value: Any = self.client.to_bq_timestamp(extract_value(raw))
             elif field.bq_type == "DATETIME":
                 value = parse_datetime(extract_value(raw))
             elif field.bq_type == "DATE":
@@ -241,9 +279,13 @@ class JiraAPI:
 
             # A field Jira omitted must still appear on the row: NDJSON loads
             # infer nothing from an absent key, and a REPEATED column cannot
-            # take null.
+            # take null. A single-valued multi-select arrives unwrapped, so wrap
+            # it rather than discarding it.
             if field.mode == "REPEATED":
-                value = value if isinstance(value, list) else []
+                if value is None:
+                    value = []
+                elif not isinstance(value, list):
+                    value = [value]
             values[field.column] = value
 
         return values

@@ -366,3 +366,94 @@ def test_option_valued_extra_fields_use_their_value_key():
     assert out["severity"] == "S3"
     assert out["detection_method"] == "Manual"
     assert out["affected_entities"] == "phabricator"
+
+
+# --- review feedback: load-killing edge cases -------------------------------
+
+
+def test_extract_value_drops_unusable_list_elements():
+    """BigQuery rejects a null element inside a REPEATED column.
+
+    The scalar branch returns None for an unrecognised object shape so a dict
+    never reaches a STRING column. The list branch has to go further and drop
+    those elements: a REPEATED column with [None] fails the load with "Array
+    specifies a null element", which is the same outcome the scalar rule exists
+    to prevent.
+    """
+    assert extract_value([{"id": "1", "self": "https://..."}]) == []
+    assert extract_value([{"name": "a"}, {"id": "2"}, {"name": "b"}]) == ["a", "b"]
+    assert extract_value([None, "keep", None]) == ["keep"]
+
+
+@responses.activate
+def test_timestamp_typed_extra_field_survives_an_object_value():
+    """A TIMESTAMP field reconfigured to a select must not kill the run.
+
+    to_bq_timestamp hands its argument to strptime, which raises TypeError on a
+    dict. Only ValueError is caught, so the exception would escape and take the
+    whole load down rather than nulling one cell.
+    """
+    issue = {
+        "key": "ABC-1",
+        "fields": {**ISSUE["fields"], "customfield_1": {"value": "not a date"}},
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = ABC",
+        extra_fields=[JiraField("ts", "customfield_1", bq_type="TIMESTAMP")],
+    ).get_issues()
+
+    assert out["ts"] is None
+
+
+@responses.activate
+def test_repeated_field_wraps_a_bare_scalar():
+    """A single-value multi-select comes back unwrapped; keep the value."""
+    issue = {"key": "ABC-1", "fields": {**ISSUE["fields"], "customfield_1": "solo"}}
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = ABC",
+        extra_fields=[JiraField("tags", "customfield_1", mode="REPEATED")],
+    ).get_issues()
+
+    assert out["tags"] == ["solo"]
+
+
+@responses.activate
+def test_repeated_field_still_empty_when_jira_omits_it():
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [ISSUE]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = ABC",
+        extra_fields=[JiraField("tags", "customfield_99999", mode="REPEATED")],
+    ).get_issues()
+
+    assert out["tags"] == []
+
+
+@pytest.mark.parametrize("bad", ["DATETIEM", "TIMESTAMPZ", "", "string"])
+def test_jira_field_rejects_an_unknown_bq_type(bad):
+    """Caught at declaration, not at load: _extra_values would silently fall through."""
+    with pytest.raises(ValueError, match="bq_type"):
+        JiraField("x", "customfield_1", bq_type=bad)
+
+
+@pytest.mark.parametrize("good", ["STRING", "TIMESTAMP", "DATETIME", "DATE", "INT64"])
+def test_jira_field_accepts_supported_bq_types(good):
+    assert JiraField("x", "customfield_1", bq_type=good).bq_type == good
+
+
+def test_repeated_mode_rejects_a_parsed_scalar_type():
+    """DATE/DATETIME/TIMESTAMP parsers return a scalar, so REPEATED is always [].
+
+    Nothing declares this combination today; rejecting it stops a future table
+    from getting a permanently empty column with no error.
+    """
+    for bq_type in ("DATE", "DATETIME", "TIMESTAMP"):
+        with pytest.raises(ValueError, match="REPEATED"):
+            JiraField("x", "customfield_1", bq_type=bq_type, mode="REPEATED")

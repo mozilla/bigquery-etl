@@ -1,0 +1,21 @@
+# city NULL should result in ??. activity_segment calculation remains stable.
+- submission_date: 2020-01-05
+  app_name: Fenix
+  client_id: client-3
+  sample_id: 3
+  city: ??
+  activity_segment: segment-3
+  is_dau: False
+  is_wau: True
+  is_mau: True
+# city not NULL and activity_segment calculation remain stable.
+- submission_date: 2020-01-05
+  app_name: Fenix
+  client_id: client-4
+  sample_id: 3
+  city: city-4
+  activity_segment: segment-4
+  is_monthly_user: True
+  is_dau: False
+  is_wau: False
+  is_mau: True

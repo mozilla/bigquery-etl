@@ -1,0 +1,28 @@
+---
+- submission_date: 2020-01-03
+  app_name: Firefox Desktop
+  city: ??
+  country: ??
+  os_version_major: 10
+  os_version_minor: 0
+  os: Windows_NT
+  os_version_build: Windows 11
+  daily_users: 0
+  weekly_users: 0
+  monthly_users: 0
+  dau: 0
+  wau: 0
+  mau: 0
+- submission_date: 2020-01-03
+  app_name: Firefox Desktop
+  city: ??
+  country: ??
+  os: Linux
+  os_version_major: 0
+  os_version_minor: 0
+  daily_users: 1
+  weekly_users: 1
+  monthly_users: 1
+  dau: 0
+  wau: 0
+  mau: 0

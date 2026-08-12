@@ -1,0 +1,5 @@
+# additional combinations for active users
+- first_seen_date: 2010-01-05
+  client_id: client-1
+- first_seen_date: 2010-01-05
+  client_id: client-2

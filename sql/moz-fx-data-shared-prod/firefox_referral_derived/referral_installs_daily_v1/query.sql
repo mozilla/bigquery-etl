@@ -1,6 +1,7 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- The invite code arrives as `fxrefer<code>`; after the prefix is stripped it
+-- The invite code arrives as `fxrefer<code>` (legacy sessions use the older
+-- `fxrefer:<code>`; both are accepted); after the prefix is stripped it
 -- is expected to be 17 chars (Website team, 2026-07-24). That length is
 -- documentation only — it is NOT enforced by any check here or in bigconfig.yml.
 -- The prefix strip is length-agnostic, so a length change needs no code change.
@@ -71,7 +72,11 @@ referred_clients AS (
   -- sessions carry different fxrefer codes would be counted under each code,
   -- inflating the cross-code total that referral_installs_totals_v1 sums.
   SELECT
-    REGEXP_REPLACE(ga4.content, r'^fxrefer', '') AS invite_code,
+    -- `:?` keeps the legacy `fxrefer:<code>` format working: the ga4 CTE looks
+    -- back 30 days, and backfills reach further, so pre-2026-08 sessions are
+    -- still in scope. Without it those codes keep a leading colon and split
+    -- into a separate group key.
+    REGEXP_REPLACE(ga4.content, r'^fxrefer:?', '') AS invite_code,
     cfs.client_id,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS cfs
@@ -91,7 +96,7 @@ referred_clients AS (
   -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
   --   UNION ALL
   --   SELECT
-  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer', '') AS invite_code,
+  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer:?', '') AS invite_code,
   --     client_id
   --   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   --   WHERE first_seen_date = @submission_date

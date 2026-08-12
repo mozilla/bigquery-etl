@@ -1,4 +1,5 @@
-# tok1 and tok2 both resolve to sessions carrying fxreferTESTCODE01 (2 installs).
+# tok1 and tok2 resolve to sessions carrying TESTCODE01 in the current and the
+# legacy prefix format respectively; both strip to TESTCODE01 (2 installs).
 # tok3 has no matching fxrefer session -> excluded.
 - dl_token: "tok1"
   ga_client_id: "ga1"

@@ -1,4 +1,7 @@
-# ga1: code in manual_content. ga2: code in first_content_from_event_params.
+# ga1: code in manual_content, current `fxrefer<code>` format.
+# ga2: code in first_content_from_event_params, legacy `fxrefer:<code>` format
+#      (still within the 30-day look-back) -> must strip to the same code as ga1
+#      rather than splitting into a `:TESTCODE01` group.
 # ga3: an organic session with no referral code -> should not contribute.
 - ga_client_id: "ga1"
   session_date: "2026-07-20"
@@ -9,7 +12,7 @@
 - ga_client_id: "ga2"
   session_date: "2026-07-21"
   manual_content: null
-  first_content_from_event_params: "fxreferTESTCODE01"
+  first_content_from_event_params: "fxrefer:TESTCODE01"
   all_reported_stub_session_ids:
   - "s2"
 - ga_client_id: "ga3"

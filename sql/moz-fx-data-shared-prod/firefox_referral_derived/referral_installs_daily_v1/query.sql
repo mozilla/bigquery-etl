@@ -1,6 +1,6 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- The invite code arrives as `fxrefer:<code>`; after the prefix is stripped it
+-- The invite code arrives as `fxrefer<code>`; after the prefix is stripped it
 -- is expected to be 17 chars (Website team, 2026-07-24). That length is
 -- documentation only — it is NOT enforced by any check here or in bigconfig.yml.
 -- The prefix strip is length-agnostic, so a length change needs no code change.
@@ -10,7 +10,7 @@
 --   silently drops Mac/Linux. The GA4/dltoken path is the cross-platform source.
 --
 -- Proven chain (validated 2026-07 against test code TESTCODE01):
---   GA4 (utm_content=fxrefer:) -> dl_token_ga_attribution_lookup_v2 (on dl_token)
+--   GA4 (utm_content=fxrefer) -> dl_token_ga_attribution_lookup_v2 (on dl_token)
 --     -> baseline_clients_first_seen_v1 -> installed client.
 --   This is the `firefox_desktop_derived.cfs_ga4_attr_v1` join pattern.
 --
@@ -57,7 +57,7 @@ ga4 AS (
     -- download precedes first-run; look back so the session is in range
     session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND session_date <= @submission_date
-    AND (manual_content LIKE 'fxrefer:%' OR first_content_from_event_params LIKE 'fxrefer:%')
+    AND (manual_content LIKE 'fxrefer%' OR first_content_from_event_params LIKE 'fxrefer%')
 ),
 referred_clients AS (
   -- One row per referred first_run client, per platform. Aggregation happens
@@ -68,10 +68,10 @@ referred_clients AS (
   -- pair appears on multiple session rows across the 30-day look-back — so
   -- QUALIFY collapses each client to a single (invite_code, client_id) row,
   -- matching the cfs_ga4_attr_v1 dedupe. Without it, a client whose fanned-out
-  -- sessions carry different fxrefer: codes would be counted under each code,
+  -- sessions carry different fxrefer codes would be counted under each code,
   -- inflating the cross-code total that referral_installs_totals_v1 sums.
   SELECT
-    REGEXP_REPLACE(ga4.content, r'^fxrefer:', '') AS invite_code,
+    REGEXP_REPLACE(ga4.content, r'^fxrefer', '') AS invite_code,
     cfs.client_id,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS cfs
@@ -85,17 +85,17 @@ referred_clients AS (
   WHERE
     cfs.submission_date = @submission_date -- required partition filter
     AND cfs.first_seen_date = @submission_date -- clients first seen today
-    AND ga4.content LIKE 'fxrefer:%' -- referred clients only
+    AND ga4.content LIKE 'fxrefer%' -- referred clients only
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY cfs.client_id ORDER BY ga4.session_date DESC, ga4.content) = 1
   -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
   --   UNION ALL
   --   SELECT
-  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer:', '') AS invite_code,
+  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer', '') AS invite_code,
   --     client_id
   --   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   --   WHERE first_seen_date = @submission_date
-  --     AND play_store_attribution_content LIKE 'fxrefer:%'
+  --     AND play_store_attribution_content LIKE 'fxrefer%'
 )
 SELECT
   @submission_date AS submission_date,

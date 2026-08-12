@@ -9,7 +9,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Referral (invite) code, with the `fxrefer:` prefix stripped. Expected to be
+    Referral (invite) code, with the `fxrefer` prefix stripped. Expected to be
     17 chars (confirmed by the Website team 2026-07-24). Derived from a referral
     id generated within Firefox; not associated with FxA or any real-world
     identity.

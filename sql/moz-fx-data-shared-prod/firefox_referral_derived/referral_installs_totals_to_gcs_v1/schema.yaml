@@ -17,7 +17,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Referral (invite) code, `fxrefer:` prefix stripped (expected 17 chars).
+    Referral (invite) code, `fxrefer` prefix stripped (expected 17 chars).
     First column of the exported CSV.
 - name: total_installs
   type: INTEGER

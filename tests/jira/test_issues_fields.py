@@ -457,3 +457,89 @@ def test_repeated_mode_rejects_a_parsed_scalar_type():
     for bq_type in ("DATE", "DATETIME", "TIMESTAMP"):
         with pytest.raises(ValueError, match="REPEATED"):
             JiraField("x", "customfield_1", bq_type=bq_type, mode="REPEATED")
+
+
+# --- utc_naive: zone-less strings that are known to be UTC -------------------
+#
+# The IIM incident timing fields carry no offset, but the incident data model
+# specifies UTC (confirmed by the incident process owner in review). utc_naive
+# is opt-in per field rather than a blanket rule for TIMESTAMP, so no other
+# table's TIMESTAMP field silently acquires a UTC assumption it cannot support.
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("2026-07-25 09:49", "2026-07-25T09:49:00+00:00"),
+        ("2026-07-25 09:49:12", "2026-07-25T09:49:12+00:00"),
+        ("2026-07-25T09:49", "2026-07-25T09:49:00+00:00"),
+        ("  2026-07-25 09:49  ", "2026-07-25T09:49:00+00:00"),
+        ("not a datetime", None),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_parse_utc_timestamp(raw, expected):
+    from bigquery_etl.jira.issues import parse_utc_timestamp
+
+    assert parse_utc_timestamp(raw) == expected
+
+
+def test_parse_utc_timestamp_is_not_local_time_dependent(monkeypatch):
+    """A naive strptime plus .astimezone() would use the container's local zone.
+
+    That would make the same input produce different output depending on where
+    the DAG ran, so the UTC zone is attached explicitly rather than inferred.
+    """
+    from bigquery_etl.jira.issues import parse_utc_timestamp
+
+    monkeypatch.setenv("TZ", "America/Los_Angeles")
+    assert parse_utc_timestamp("2026-07-25 09:49") == "2026-07-25T09:49:00+00:00"
+
+
+@responses.activate
+def test_utc_naive_field_is_stamped_utc():
+    issue = {
+        "key": "IIM-308",
+        "fields": {**ISSUE["fields"], "customfield_18692": "2026-07-25 09:49"},
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = IIM",
+        extra_fields=[
+            JiraField(
+                "time_declared",
+                "customfield_18692",
+                bq_type="TIMESTAMP",
+                utc_naive=True,
+            )
+        ],
+    ).get_issues()
+
+    assert out["time_declared"] == "2026-07-25T09:49:00+00:00"
+
+
+@responses.activate
+def test_timestamp_without_utc_naive_still_requires_an_offset():
+    """Guards the opt-in: a plain TIMESTAMP field must not gain a UTC assumption."""
+    issue = {
+        "key": "IIM-308",
+        "fields": {**ISSUE["fields"], "customfield_18692": "2026-07-25 09:49"},
+    }
+    responses.get(f"{BASE}/rest/api/3/search/jql", json={"issues": [issue]})
+
+    (out,) = JiraAPI(
+        BASE,
+        "project = IIM",
+        extra_fields=[JiraField("t", "customfield_18692", bq_type="TIMESTAMP")],
+    ).get_issues()
+
+    assert out["t"] is None
+
+
+def test_utc_naive_requires_a_timestamp_type():
+    """utc_naive only means anything on the TIMESTAMP path."""
+    with pytest.raises(ValueError, match="utc_naive"):
+        JiraField("x", "customfield_1", bq_type="DATETIME", utc_naive=True)

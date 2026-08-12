@@ -8,7 +8,7 @@ nothing are unaffected, which is what keeps the pre-existing tables working.
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Optional, Sequence
 
 from google.cloud import bigquery
@@ -72,14 +72,16 @@ class JiraField:
     `column` is the BigQuery column name, `jira_field` the Jira field id as the
     API names it (`priority`, `labels`, `customfield_10420`). `bq_type` of
     TIMESTAMP routes the value through the same UTC normalization the base
-    timestamps use. `mode="REPEATED"` is for Jira fields that return an array,
-    such as `labels` or `components`.
+    timestamps use, which requires an offset in the source; set `utc_naive` for a
+    zone-less source that the data model specifies as UTC. `mode="REPEATED"` is
+    for Jira fields that return an array, such as `labels` or `components`.
     """
 
     column: str
     jira_field: str
     bq_type: str = "STRING"
     mode: str = "NULLABLE"
+    utc_naive: bool = False
 
     def __post_init__(self) -> None:
         """Reject a mode BigQuery would not accept, at declaration rather than load."""
@@ -92,6 +94,12 @@ class JiraField:
             raise ValueError(
                 f"JiraField({self.column!r}) has bq_type {self.bq_type!r}; "
                 f"expected one of {VALID_TYPES}"
+            )
+        if self.utc_naive and self.bq_type != "TIMESTAMP":
+            raise ValueError(
+                f"JiraField({self.column!r}) sets utc_naive with bq_type "
+                f"{self.bq_type!r}; it only applies to TIMESTAMP, whose parser is "
+                "the one that needs an offset"
             )
         if self.mode == "REPEATED" and self.bq_type in SCALAR_ONLY_TYPES:
             raise ValueError(
@@ -155,6 +163,29 @@ def parse_datetime(raw: Any) -> Optional[str]:
 
     logger.warning("Unparseable datetime value %r; storing NULL", raw)
     return None
+
+
+def parse_utc_timestamp(raw: Any) -> Optional[str]:
+    """Parse a zone-less datetime string known to be UTC into a TIMESTAMP literal.
+
+    For fields whose source carries no offset but whose data model specifies UTC,
+    such as the IIM incident timing fields. The UTC zone is attached explicitly
+    rather than relying on `.astimezone()`, which would interpret a naive
+    datetime as the container's local time and make the same input produce
+    different output depending on where the DAG ran.
+
+    Returns None on unparseable input, like the other parsers, so a free-text
+    field cannot fail the load for the whole table.
+    """
+    normalized = parse_datetime(raw)
+    if normalized is None:
+        return None
+
+    return (
+        datetime.strptime(normalized, "%Y-%m-%d %H:%M:%S")
+        .replace(tzinfo=timezone.utc)
+        .isoformat(timespec="seconds")
+    )
 
 
 def parse_date(raw: Any) -> Optional[str]:
@@ -264,12 +295,14 @@ class JiraAPI:
         for field in self.extra_fields:
             raw = fields.get(field.jira_field)
 
-            if field.bq_type == "TIMESTAMP":
+            if field.bq_type == "TIMESTAMP" and field.utc_naive:
+                value: Any = parse_utc_timestamp(extract_value(raw))
+            elif field.bq_type == "TIMESTAMP":
                 # extract_value first: to_bq_timestamp hands its argument to
                 # strptime, which raises TypeError on a dict or list, and only
                 # ValueError is caught -- so an object-valued field would escape
                 # and kill the whole run instead of nulling one cell.
-                value: Any = self.client.to_bq_timestamp(extract_value(raw))
+                value = self.client.to_bq_timestamp(extract_value(raw))
             elif field.bq_type == "DATETIME":
                 value = parse_datetime(extract_value(raw))
             elif field.bq_type == "DATE":

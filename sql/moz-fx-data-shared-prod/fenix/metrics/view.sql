@@ -1198,7 +1198,10 @@ SELECT
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
       metrics.labeled_counter.tls_reasons_for_not_false_starting,
-      metrics.labeled_counter.pkcs11_builtin_roots_module_source
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source,
+      metrics.labeled_counter.jxl_animated,
+      metrics.labeled_counter.jxl_decode_result,
+      metrics.labeled_counter.jxl_hdr
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1903,7 +1906,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
       metrics.memory_distribution.networking_http_3_final_w_max,
       metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
-      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate
+      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate,
+      metrics.memory_distribution.image_decode_speed_jxl
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3469,7 +3473,10 @@ SELECT
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
       metrics.labeled_counter.tls_reasons_for_not_false_starting,
-      metrics.labeled_counter.pkcs11_builtin_roots_module_source
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source,
+      metrics.labeled_counter.jxl_animated,
+      metrics.labeled_counter.jxl_decode_result,
+      metrics.labeled_counter.jxl_hdr
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4174,7 +4181,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
       metrics.memory_distribution.networking_http_3_final_w_max,
       metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
-      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate
+      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate,
+      metrics.memory_distribution.image_decode_speed_jxl
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -5760,7 +5768,10 @@ SELECT
       metrics.labeled_counter.tls_kea_ecdhe_curve,
       metrics.labeled_counter.tls_npn_type,
       metrics.labeled_counter.tls_reasons_for_not_false_starting,
-      metrics.labeled_counter.pkcs11_builtin_roots_module_source
+      metrics.labeled_counter.pkcs11_builtin_roots_module_source,
+      metrics.labeled_counter.jxl_animated,
+      metrics.labeled_counter.jxl_decode_result,
+      metrics.labeled_counter.jxl_hdr
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6465,7 +6476,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
       metrics.memory_distribution.networking_http_3_final_w_max,
       metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
-      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate
+      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate,
+      metrics.memory_distribution.image_decode_speed_jxl
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

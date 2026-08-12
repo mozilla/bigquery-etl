@@ -8991,6 +8991,54 @@ fields:
         `none` means no built-in roots module could be loaded at all.
 
         '
+    - name: jxl_animated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a successfully decoded JPEG XL image is animated.
+
+        '
+    - name: jxl_decode_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Decode result of a JPEG XL image. Failures are recorded on whichever
+        decode pass first fails (so failures during the metadata or frame-count pass
+        are still captured); successes are recorded only on the pixel-producing decode.
+        success means a complete frame was produced (for an animation, at least one
+        complete frame, even if a later frame was truncated; a hard decode error on
+        any frame is recorded as a failure instead); partial_frame means the decode
+        ended with only a partial (progressive) frame rendered; no_frame means it
+        ended without producing any frame; no_basic_info means there was not enough
+        data to even parse the basic info (image dimensions).
+
+        '
+    - name: jxl_hdr
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a successfully decoded JPEG XL image used the HDR (f16)
+        output path.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -10445,6 +10493,31 @@ fields:
         exit when using SEARCH. The SEARCH draft suggests a cwnd drain-phase using
         the empty-buffer version of this as a target value; We record this alternative
         for evaluation without implementing the drain-phase.
+
+        '
+    - name: image_decode_speed_jxl
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'JPEG XL image decode speed (Kbytes/sec)
 
         '
   - name: string

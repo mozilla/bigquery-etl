@@ -12326,6 +12326,48 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page has a speculation rule with a non-null tag
+    - name: use_counter2_filesystemfilehandlemove_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document calls FileSystemHandle.move() on a file handle
+    - name: use_counter2_filesystemfilehandlemove_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page calls FileSystemHandle.move() on a file handle
+    - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called FileSystemHandle.move_FileSystemDirectoryHandle
+    - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called FileSystemHandle.move_FileSystemDirectoryHandle
+    - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_usvstring_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called FileSystemHandle.move_FileSystemDirectoryHandle_USVString
+    - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_usvstring_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called FileSystemHandle.move_FileSystemDirectoryHandle_USVString
+    - name: use_counter2_filesystemhandle_move_usvstring_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called FileSystemHandle.move_USVString
+    - name: use_counter2_filesystemhandle_move_usvstring_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called FileSystemHandle.move_USVString
+    - name: use_counter2_filesystemhandlemovestringifiedobject_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document calls FileSystemHandle.move() with a stringified
+        object as name
+    - name: use_counter2_filesystemhandlemovestringifiedobject_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page calls FileSystemHandle.move() with a stringified
+        object as name
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24513,6 +24555,49 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page has a speculation rule with a non-null tag
+        - name: use_counter2_filesystemfilehandlemove_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document calls FileSystemHandle.move() on a file
+            handle
+        - name: use_counter2_filesystemfilehandlemove_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page calls FileSystemHandle.move() on a file handle
+        - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called FileSystemHandle.move_FileSystemDirectoryHandle
+        - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called FileSystemHandle.move_FileSystemDirectoryHandle
+        - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_usvstring_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called FileSystemHandle.move_FileSystemDirectoryHandle_USVString
+        - name: use_counter2_filesystemhandle_move_filesystemdirectoryhandle_usvstring_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called FileSystemHandle.move_FileSystemDirectoryHandle_USVString
+        - name: use_counter2_filesystemhandle_move_usvstring_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called FileSystemHandle.move_USVString
+        - name: use_counter2_filesystemhandle_move_usvstring_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called FileSystemHandle.move_USVString
+        - name: use_counter2_filesystemhandlemovestringifiedobject_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document calls FileSystemHandle.move() with a stringified
+            object as name
+        - name: use_counter2_filesystemhandlemovestringifiedobject_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page calls FileSystemHandle.move() with a stringified
+            object as name
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -1,7 +1,15 @@
 friendly_name: Jira SREIN Ticket Events
-description: "Change events on Jira tickets in the SREIN (MozCloud Intake) project,\
-  \ pulled\nfrom Jira API v3. One row per event: issue creation, status changes, other\n\
-  field changes, and comments.\n\nComment text is stored in `comment_body`, flattened\
+description: "Change events on MozCloud Intake (SREIN) Jira tickets, pulled from Jira\
+  \ API v3.\nOne row per event: issue creation, status changes, other field changes,\
+  \ and\ncomments.\n\nScope is `project = SREIN OR labels = SREIN`. Intake tickets\
+  \ are frequently\ntriaged and *moved* to the owning team's project, which changes\
+  \ their key and\nremoves them from a project-scoped query along with their entire\
+  \ history; the\nSREIN label survives a move and recovers them. The label alone is\
+  \ not\nsufficient either, because older tickets predate the automation that applies\
+  \ it.\nTwo consequences for consumers: `project_key` is **not** always SREIN \u2014\
+  \ expect\nMZCLD, SVCSE, PAY and others for tickets that were moved \u2014 and `issue_key`\
+  \ is\nthe ticket's *current* key, with the rename itself recorded as `field_change`\n\
+  rows on `Key` and `project`.\n\nComment text is stored in `comment_body`, flattened\
   \ from Atlassian Document\nFormat to plain text \u2014 one line per ADF block, formatting\
   \ marks dropped,\nmentions rendered as their display text, embedded media omitted.\
   \ Description\nedits likewise keep their before/after text in `from_value`/`to_value`.\

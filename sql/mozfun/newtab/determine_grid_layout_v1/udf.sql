@@ -66,12 +66,33 @@ old_grid AS (
     ] AS experiments
 )
 SELECT
-  assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 130, new_grid.experiments)),
+  -- OLD_GRID: pre-136 with no qualifying experiment and is_section=FALSE
   assert.equals('OLD_GRID', newtab.determine_grid_layout_v1(FALSE, 130, old_grid.experiments)),
+  -- NEW_GRID via experiment override (pre-136 but qualifying experiment)
+  assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 130, new_grid.experiments)),
+  -- NEW_GRID via version >= 136 (regardless of experiment) up to but not including 151
   assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 136, old_grid.experiments)),
-  assert.equals('NOVA_SECTION', newtab.determine_grid_layout_v1(TRUE, 151, old_grid.experiments)),
-  assert.equals('NOVA_GRID', newtab.determine_grid_layout_v1(FALSE, 161, old_grid.experiments)),
+  assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 150, old_grid.experiments)),
+  -- SECTION_GRID: is_section=TRUE at any pre-Nova version (< 151)
+  assert.equals('SECTION_GRID', newtab.determine_grid_layout_v1(TRUE, 100, old_grid.experiments)),
   assert.equals('SECTION_GRID', newtab.determine_grid_layout_v1(TRUE, 136, old_grid.experiments)),
+  assert.equals('SECTION_GRID', newtab.determine_grid_layout_v1(TRUE, 150, old_grid.experiments)),
+  -- NOVA_GRID / NOVA_SECTION: version 151..154 (below the POSTNOVA cutoff of 155)
+  assert.equals('NOVA_GRID', newtab.determine_grid_layout_v1(FALSE, 151, old_grid.experiments)),
+  assert.equals('NOVA_GRID', newtab.determine_grid_layout_v1(FALSE, 154, old_grid.experiments)),
+  assert.equals('NOVA_SECTION', newtab.determine_grid_layout_v1(TRUE, 151, old_grid.experiments)),
+  assert.equals('NOVA_SECTION', newtab.determine_grid_layout_v1(TRUE, 154, old_grid.experiments)),
+  -- POSTNOVA_GRID / POSTNOVA_SECTION: version >= 155
+  assert.equals('POSTNOVA_GRID', newtab.determine_grid_layout_v1(TRUE, 155, old_grid.experiments)),
+  assert.equals(
+    'POSTNOVA_SECTION',
+    newtab.determine_grid_layout_v1(FALSE, 155, old_grid.experiments)
+  ),
+  assert.equals('POSTNOVA_GRID', newtab.determine_grid_layout_v1(TRUE, 161, old_grid.experiments)),
+  assert.equals(
+    'POSTNOVA_SECTION',
+    newtab.determine_grid_layout_v1(FALSE, 161, old_grid.experiments)
+  ),
 FROM
   new_grid,
   old_grid;

@@ -63,11 +63,17 @@ ga4 AS (
     -- Match the code's SHAPE, not a bare prefix. With the colon gone there is
     -- no delimiter, so `LIKE 'fxrefer%'` would also swallow unrelated content
     -- like `fxreferral-2026` and strip it down to a junk code (`ral-2026`).
-    -- Anchored + alphanumeric-only remainder keeps that out while staying
+    -- Anchored, `[A-Za-z0-9_]` remainder keeps that out while staying
     -- length-agnostic, as the header comment intends.
+    --
+    -- The charset INCLUDES `_` deliberately: the only referral session in 60
+    -- days of GA4 (2026-07-23, firefox.com) was `fxrefer:test_code_here`, which
+    -- an alphanumeric-only class would silently drop. Codes containing `-` are
+    -- still rejected, so confirm the real charset with the Website team before
+    -- QA volume arrives.
     AND (
-      REGEXP_CONTAINS(manual_content, r'^fxrefer:?[A-Za-z0-9]+$')
-      OR REGEXP_CONTAINS(first_content_from_event_params, r'^fxrefer:?[A-Za-z0-9]+$')
+      REGEXP_CONTAINS(manual_content, r'^fxrefer:?[A-Za-z0-9_]+$')
+      OR REGEXP_CONTAINS(first_content_from_event_params, r'^fxrefer:?[A-Za-z0-9_]+$')
     )
 ),
 referred_clients AS (
@@ -101,7 +107,7 @@ referred_clients AS (
     cfs.submission_date = @submission_date -- required partition filter
     AND cfs.first_seen_date = @submission_date -- clients first seen today
     -- referred clients only; same shape check as the ga4 CTE
-    AND REGEXP_CONTAINS(ga4.content, r'^fxrefer:?[A-Za-z0-9]+$')
+    AND REGEXP_CONTAINS(ga4.content, r'^fxrefer:?[A-Za-z0-9_]+$')
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY cfs.client_id ORDER BY ga4.session_date DESC, ga4.content) = 1
   -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
@@ -111,7 +117,7 @@ referred_clients AS (
   --     client_id
   --   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   --   WHERE first_seen_date = @submission_date
-  --     AND REGEXP_CONTAINS(play_store_attribution_content, r'^fxrefer:?[A-Za-z0-9]+$')
+  --     AND REGEXP_CONTAINS(play_store_attribution_content, r'^fxrefer:?[A-Za-z0-9_]+$')
 )
 SELECT
   @submission_date AS submission_date,

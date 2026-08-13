@@ -1,5 +1,6 @@
-# tok1/tok2 resolve to current-format sessions and tok4 to a legacy `fxrefer:`
-# session; all three strip to TESTCODE01 (3 installs).
+# tok1/tok2 resolve to current-format TESTCODE01 sessions (2 installs).
+# tok4 resolves to a legacy `fxrefer:test_code_here` session (1 install) — the
+# real value seen in GA4, whose underscores pin the invite-code charset.
 # tok3 has no matching fxrefer session -> excluded.
 # tok5 resolves to the near-miss `fxreferral-2026` session -> excluded.
 - dl_token: "tok1"

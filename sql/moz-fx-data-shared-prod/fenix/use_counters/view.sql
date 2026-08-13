@@ -2963,7 +2963,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_file_system_handle_move_stringified_object,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
-      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring,
+      metrics.counter.use_counter_css_doc_css_moz_line_scroll_amount,
+      metrics.counter.use_counter_css_page_css_moz_line_scroll_amount
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5950,7 +5952,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_file_system_handle_move_stringified_object,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
-      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring,
+      metrics.counter.use_counter_css_doc_css_moz_line_scroll_amount,
+      metrics.counter.use_counter_css_page_css_moz_line_scroll_amount
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8937,7 +8941,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_file_system_handle_move_stringified_object,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
-      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring,
+      metrics.counter.use_counter_css_doc_css_moz_line_scroll_amount,
+      metrics.counter.use_counter_css_page_css_moz_line_scroll_amount
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11924,7 +11930,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_file_system_handle_move_stringified_object,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
-      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring,
+      metrics.counter.use_counter_css_doc_css_moz_line_scroll_amount,
+      metrics.counter.use_counter_css_page_css_moz_line_scroll_amount
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14911,7 +14919,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_file_system_handle_move_stringified_object,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
       metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
-      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring,
+      metrics.counter.use_counter_css_doc_css_moz_line_scroll_amount,
+      metrics.counter.use_counter_css_page_css_moz_line_scroll_amount
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

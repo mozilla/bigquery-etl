@@ -3,8 +3,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Referral (invite) code, with the `fxrefer:` prefix stripped (expected 17
-    chars). Delivered as the first CSV column consumed by firefox.com.
+    Referral (invite) code, with the `fxrefer` prefix stripped: always exactly 17
+    chars of Crockford base32 (digits and upper-case letters), enforced upstream
+    in referral_installs_daily_v1. Delivered as the first CSV column consumed by
+    firefox.com.
 - name: total_installs
   type: INTEGER
   mode: NULLABLE

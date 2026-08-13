@@ -13683,6 +13683,25 @@ fields:
         output path.
 
         '
+    - name: tab_stale_drag_recovery
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records how often the tab strip had to recover from a tab drag
+        that never ended, leaving the toolbar unusable. "session_live" means a drag
+        session was still current, i.e. the session outlived the drag; "session_ended"
+        means none was left, i.e. the end of the drag never reached the tab strip.
+        The "_after_drop" variants mean the drag was dropped and the drop animation
+        is what failed to leave moving-tab mode, so they measure a Firefox shortcoming
+        while the others measure a platform one.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

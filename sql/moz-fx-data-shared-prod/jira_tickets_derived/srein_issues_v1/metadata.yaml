@@ -1,0 +1,29 @@
+friendly_name: Jira SREIN Issues
+description: |-
+  Current-state snapshot of Jira issues in the MozCloud Intake (SREIN) support
+  universe, pulled from Jira API v3 (/rest/api/3/search/jql). Full refresh
+  daily; see jira_events_derived.srein_events_v1 for per-event history.
+
+  Scope is `project = SREIN OR labels = SREIN`. Intake tickets are frequently
+  triaged and *moved* to the owning team's project, which changes their key and
+  removes them from a project-scoped query; the SREIN label survives a move and
+  recovers them. The label alone is not sufficient either, because older tickets
+  predate the automation that applies it.
+
+  Two consequences for consumers: `project_key` is **not** always SREIN — expect
+  MZCLD, SVCSE, PAY and others for tickets that were moved — and `issue_key` is
+  the ticket's *current* key, so it changes when a ticket is moved.
+owners:
+- wstuckey@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+  owner1: wstuckey@mozilla.com
+
+scheduling:
+  dag_name: bqetl_jira_tickets
+  secrets:
+  - deploy_target: JIRA_USERNAME
+    key: bqetl_jira_service_desk__jira_username
+  - deploy_target: JIRA_TOKEN
+    key: bqetl_jira_service_desk__jira_token

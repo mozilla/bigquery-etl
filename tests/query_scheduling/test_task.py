@@ -47,6 +47,126 @@ class TestTask:
         assert task.public_json
         assert task.arguments == ["--append_table"]
 
+    def test_description_markdown(self):
+        from bigquery_etl.metadata.parse_metadata import WorkgroupAccessMetadata
+
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        # labels as parsed by Metadata.from_file: synthesized `dag`/`owner<N>`
+        # keys and a list-valued `review_bugs` label.
+        metadata = Metadata(
+            friendly_name="Incremental Query",
+            description="Daily incremental aggregate.",
+            owners=["test@example.org", "test2@example.org"],
+            labels={
+                "incremental": "",
+                "schedule": "daily",
+                "review_bugs": ["123456", "789"],
+                "dag": "bqetl_test_dag",
+                "owner1": "test",
+                "owner2": "test2",
+            },
+            scheduling={"dag_name": "bqetl_test_dag"},
+        )
+        metadata.workgroup_access = [
+            WorkgroupAccessMetadata(
+                role="roles/bigquery.dataViewer",
+                members=["workgroup:mozilla-confidential"],
+            )
+        ]
+
+        task = Task.of_query(query_file, metadata)
+
+        # metadata fields are captured on the task
+        assert task.friendly_name == "Incremental Query"
+        assert task.description == "Daily incremental aggregate."
+        assert task.owners == ["test@example.org", "test2@example.org"]
+        assert task.workgroups == ["workgroup:mozilla-confidential"]
+
+        markdown = task.description_markdown
+        assert "### Incremental Query" in markdown
+        assert "Daily incremental aggregate." in markdown
+        assert "**Owners:** test@example.org, test2@example.org" in markdown
+        # bool-style labels render as key only, key/value as "key: value", and
+        # list-valued labels are flattened rather than shown as a list literal.
+        assert (
+            "**Labels:** incremental, review_bugs: 123456, 789, schedule: daily"
+            in markdown
+        )
+        # synthesized `dag` and `owner<N>` labels are filtered out
+        assert "dag: bqetl_test_dag" not in markdown
+        assert "owner1" not in markdown
+        assert "**Workgroup access:** workgroup:mozilla-confidential" in markdown
+
+    def test_description_markdown_check_headings(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "checks.sql"
+        )
+        metadata = Metadata(
+            friendly_name="Incremental Query",
+            description="Daily incremental aggregate.",
+            owners=["test@example.org"],
+            labels={},
+            scheduling={"dag_name": "bqetl_test_dag"},
+        )
+
+        dq_check = Task.of_dq_check(query_file, is_check_fail=True, metadata=metadata)
+        assert "### Incremental Query (data checks)" in dq_check.description_markdown
+
+        bigeye = Task.of_bigeye_check(query_file, metadata=metadata)
+        assert (
+            "### Incremental Query (Bigeye monitoring)" in bigeye.description_markdown
+        )
+
+    def test_source_url(self):
+        query_file = "sql/moz-fx-data-shared-prod/telemetry_derived/foo_v1/query.sql"
+
+        # repo is taken from Dag.repo, not inferred from the DAG name prefix
+        public_task = Task(
+            dag_name="bqetl_test_dag",
+            query_file=query_file,
+            owner="test@example.org",
+            repo="bigquery-etl",
+        )
+        assert public_task.source_url == (
+            "https://github.com/mozilla/bigquery-etl/blob/generated-sql/"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/foo_v1/query.sql"
+        )
+
+        # a `bqetl_*`-named DAG that actually lives in private-bigquery-etl still
+        # links to the private repo, because the repo comes from Dag.repo
+        private_task = Task(
+            dag_name="bqetl_test_dag",
+            query_file=query_file,
+            owner="test@example.org",
+            repo="private-bigquery-etl",
+        )
+        assert private_task.source_url == (
+            "https://github.com/mozilla/private-bigquery-etl/blob/"
+            "private-generated-sql/"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/foo_v1/query.sql"
+        )
+
+        # without a resolved repo, no source link is emitted
+        no_repo_task = Task(
+            dag_name="bqetl_test_dag", query_file=query_file, owner="test@example.org"
+        )
+        assert no_repo_task.source_url is None
+
     def test_of_multipart_query(self):
         query_file = (
             TEST_DIR

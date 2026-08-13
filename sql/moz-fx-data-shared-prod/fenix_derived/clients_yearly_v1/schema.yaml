@@ -6,6 +6,8 @@ fields:
 - name: days_seen_bytes
   type: BYTES
   mode: NULLABLE
+  description: A byte array representing the days within the past year that this client was seen, with each
+    bit encoding presence on a specific day.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -22,12 +24,23 @@ fields:
 - name: durations
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql_generators/glean_usage/templates/baseline_clients_daily_v1.schema.yaml
+    field: durations
+    append: Clients that did not send a ping on the submission date have their previous row carried forward,
+      so for those rows this value comes from the client's most recent active day.
 - name: days_seen_session_start_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-day bit pattern anchored on the submission date. Bit n is set when a Glean baseline app
+    session started n days before the submission date, for n in 0..27. Note this window is 28 days, unlike
+    the 365-day `days_seen_bytes` above.
 - name: days_seen_session_end_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-day bit pattern anchored on the submission date. Bit n is set when a Glean baseline app
+    session ended n days before the submission date, for n in 0..27. Note this window is 28 days, unlike
+    the 365-day `days_seen_bytes` above.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -39,6 +52,7 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: The normalized version string of the Android operating system (e.g., '13', '14', '16').
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
@@ -61,9 +75,15 @@ fields:
 - name: app_build
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql_generators/glean_usage/templates/baseline_clients_daily_v1.schema.yaml
+    field: app_build
 - name: app_channel
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql_generators/glean_usage/templates/baseline_clients_daily_v1.schema.yaml
+    field: app_channel
 - name: app_display_version
   type: STRING
   mode: NULLABLE
@@ -93,6 +113,12 @@ fields:
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql_generators/glean_usage/templates/baseline_clients_daily_v1.schema.yaml
+    field: is_new_profile
+    append: Clients that did not send a ping on the submission date have their previous row carried forward,
+      so for those rows this value comes from the client's most recent active day rather than the submission
+      date.
 - name: isp
   type: STRING
   mode: NULLABLE
@@ -105,3 +131,6 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: /sql_generators/glean_usage/templates/baseline_clients_daily_v1.schema.yaml
+    field: geo_subdivision

@@ -12,9 +12,9 @@ a specific window (most failures don't -- see FAILED_SQL).
 Table names under `mozanalysis` don't map 1:1 to a single experiment slug
 without normalizing hyphens to underscores (`jetstream.bq_normalize_name`),
 so the set of tables written on the target date is discovered via
-`INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`, matched back to experiment
-slugs primarily via each table's description (falling back to matching the
-table name when a description is missing), and unioned into a single query
+`INFORMATION_SCHEMA.JOBS_BY_PROJECT`, matched back to experiment slugs
+primarily via each table's description (falling back to matching the table
+name when a description is missing), and unioned into a single query
 alongside the failure view.
 
 `--date` is jetstream's analysis date, matching its own `--date={{ds}}`
@@ -24,12 +24,13 @@ timestamps are filtered on `date + 1`, not `date` itself.
 Scheduled to run after telemetry-airflow's `jetstream` DAG completes for the
 same analysis date (see metadata.yaml's `depends_on`).
 
-Backfillable, with one caveat: TABLE_STORAGE_TIMELINE is historical, so
-discovery is accurate for old dates, but if a table's content changes after
-the target date (e.g. an in-progress "overall" table, or an explicit rerun),
-a backfill reads today's content, not the target date's -- BigQuery has no
-way to recover the old rows past its few-day time-travel window. Tables
-written once and never touched again (the common case) aren't affected.
+Backfillable, with one caveat: JOBS_BY_PROJECT is historical, so discovery
+is accurate for old dates, but if a table's content changes after the
+target date (e.g. a `rerun`/`rerun-config-changed` recomputing an
+experiment's history), a backfill reads today's content, not the target
+date's -- BigQuery has no way to recover the old rows past its few-day
+time-travel window. Tables written once and never touched again (the
+common case) aren't affected.
 """
 
 from argparse import ArgumentParser
@@ -65,15 +66,17 @@ PERIOD_TOKENS = [
 
 DISCOVER_TABLES_SQL = f"""
 WITH discovered_tables AS (
-  -- `timestamp` is a periodic snapshot time (matches nearly every table
-  -- ever created); `creation_time` only changes when jetstream rewrites a
-  -- table, so it's the right filter for "written on this date". Views
-  -- aren't excluded automatically here, unlike TABLE_STORAGE.
-  SELECT DISTINCT table_name
-  FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`
-  WHERE table_schema = '{STATS_DATASET}'
-    AND table_type = 'BASE TABLE'
-    AND STARTS_WITH(table_name, 'statistics_')
+  -- JOBS_BY_PROJECT is a historical, per-job record (180-day retention),
+  -- unlike INFORMATION_SCHEMA.TABLES/TABLE_STORAGE, which only ever reflect
+  -- a table's current state -- querying those for a past date silently
+  -- misses any table rewritten since.
+  SELECT DISTINCT destination_table.table_id AS table_name
+  FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+  WHERE destination_table.project_id = '{PROJECT}'
+    AND destination_table.dataset_id = '{STATS_DATASET}'
+    AND STARTS_WITH(destination_table.table_id, 'statistics_')
+    AND job_type = 'LOAD'
+    AND error_result IS NULL
     AND DATE(creation_time) = DATE_ADD(@date, INTERVAL 1 DAY)
 ),
 -- jetstream sets each table's description to the exact experiment slug.
@@ -176,11 +179,13 @@ WHERE table_type = 'BASE TABLE' AND table_name IN UNNEST(@table_names)
 """
 
 RAW_DISCOVERED_COUNT_SQL = f"""
-SELECT COUNT(DISTINCT table_name) AS n
-FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`
-WHERE table_schema = '{STATS_DATASET}'
-  AND table_type = 'BASE TABLE'
-  AND STARTS_WITH(table_name, 'statistics_')
+SELECT COUNT(DISTINCT destination_table.table_id) AS n
+FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+WHERE destination_table.project_id = '{PROJECT}'
+  AND destination_table.dataset_id = '{STATS_DATASET}'
+  AND STARTS_WITH(destination_table.table_id, 'statistics_')
+  AND job_type = 'LOAD'
+  AND error_result IS NULL
   AND DATE(creation_time) = DATE_ADD(@date, INTERVAL 1 DAY)
 """
 
@@ -190,8 +195,8 @@ def discover_statistics_tables(
 ) -> list[bigquery.Row]:
     """Find the statistics_* tables written on `date`, matched to experiments.
 
-    A table found via TABLE_STORAGE_TIMELINE may have since been deleted (it's
-    a historical record, so this is expected for old-enough backfills, not a
+    A table found via JOBS_BY_PROJECT may have since been deleted (it's a
+    historical record, so this is expected for old-enough backfills, not a
     bug), which would otherwise crash the whole day's query with "Not found"
     when build_succeeded_sql tries to read it. Tables missing today are
     dropped and reported rather than silently skipped.

@@ -1,8 +1,6 @@
-# tok1/tok2 resolve to current-format TESTCODE01 sessions (2 installs).
-# tok4 resolves to a legacy `fxrefer:test_code_here` session (1 install) — the
-# real value seen in GA4, whose underscores pin the invite-code charset.
-# tok3 has no matching fxrefer session -> excluded.
-# tok5 resolves to the near-miss `fxreferral-2026` session -> excluded.
+# tok1/tok2 -> the same valid code (2 installs); tok4 -> a second valid code
+# (1 install). tok3 has no referral session; tok5/tok6/tok7 resolve to sessions
+# that must fail the invite-code shape check.
 - dl_token: "tok1"
   ga_client_id: "ga1"
   stub_session_id: "s1"
@@ -22,4 +20,12 @@
 - dl_token: "tok5"
   ga_client_id: "ga5"
   stub_session_id: "s5"
+  first_seen_date: "2026-07-21"
+- dl_token: "tok6"
+  ga_client_id: "ga6"
+  stub_session_id: "s6"
+  first_seen_date: "2026-07-21"
+- dl_token: "tok7"
+  ga_client_id: "ga7"
+  stub_session_id: "s7"
   first_seen_date: "2026-07-21"

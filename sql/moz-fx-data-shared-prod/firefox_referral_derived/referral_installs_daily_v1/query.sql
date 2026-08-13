@@ -1,18 +1,24 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- The invite code arrives as `fxrefer<code>` (legacy sessions use the older
--- `fxrefer:<code>`; both are accepted); after the prefix is stripped it
--- is expected to be 17 chars (Website team, 2026-07-24). That length is
--- documentation only — it is NOT enforced by any check here or in bigconfig.yml.
--- The prefix strip is length-agnostic, so a length change needs no code change;
--- the match does require the remainder to be alphanumeric, so a code format
--- that adds punctuation WOULD need the regexes below updated.
+-- The invite code arrives as `fxrefer<CODE>`, where CODE is exactly 17 chars of
+-- Crockford base32 — digits and upper-case letters only, e.g.
+-- `fxrefer177HGE4JW5KB6FVW2`. `fxrefer` is always lower case. This format is
+-- guaranteed by the Websites team (Steve Jalim, 2026-08-13, PR #9780), which is
+-- why the regexes below enforce it exactly rather than matching a bare prefix.
+--
+-- The older `fxrefer:<code>` form is deliberately NOT accepted: it never reaches
+-- QA or prod, and the one historical session carrying it (2026-07-23, a manual
+-- test with a lower-case underscored code) is not real referral traffic.
+--
+-- TRADE-OFF: enforcing the length means a future format change silently matches
+-- nothing rather than emitting junk codes. If the Websites team ever changes the
+-- code length or charset, these regexes MUST change in the same release.
 --
 -- DESKTOP source = GA4 / download-attribution path (cross-platform: Windows + Mac).
 --   Do NOT use `telemetry.install` — it is the Windows-only installer ping and
 --   silently drops Mac/Linux. The GA4/dltoken path is the cross-platform source.
 --
--- Proven chain (validated 2026-07 against test code TESTCODE01):
+-- Proven chain (validated 2026-07 against a manual test code):
 --   GA4 (utm_content=fxrefer) -> dl_token_ga_attribution_lookup_v2 (on dl_token)
 --     -> baseline_clients_first_seen_v1 -> installed client.
 --   This is the `firefox_desktop_derived.cfs_ga4_attr_v1` join pattern.
@@ -60,20 +66,13 @@ ga4 AS (
     -- download precedes first-run; look back so the session is in range
     session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND session_date <= @submission_date
-    -- Match the code's SHAPE, not a bare prefix. With the colon gone there is
-    -- no delimiter, so `LIKE 'fxrefer%'` would also swallow unrelated content
-    -- like `fxreferral-2026` and strip it down to a junk code (`ral-2026`).
-    -- Anchored, `[A-Za-z0-9_]` remainder keeps that out while staying
-    -- length-agnostic, as the header comment intends.
-    --
-    -- The charset INCLUDES `_` deliberately: the only referral session in 60
-    -- days of GA4 (2026-07-23, firefox.com) was `fxrefer:test_code_here`, which
-    -- an alphanumeric-only class would silently drop. Codes containing `-` are
-    -- still rejected, so confirm the real charset with the Website team before
-    -- QA volume arrives.
+    -- Match the code's exact SHAPE, not a bare prefix. With the colon gone there
+    -- is no delimiter, so `LIKE 'fxrefer%'` would also swallow unrelated content
+    -- like `fxreferral-2026` and strip it to a junk code (`ral-2026`) that would
+    -- reach the CSV firefox.com ingests. Nothing downstream validates the code.
     AND (
-      REGEXP_CONTAINS(manual_content, r'^fxrefer:?[A-Za-z0-9_]+$')
-      OR REGEXP_CONTAINS(first_content_from_event_params, r'^fxrefer:?[A-Za-z0-9_]+$')
+      REGEXP_CONTAINS(manual_content, r'^fxrefer[A-Z0-9]{17}$')
+      OR REGEXP_CONTAINS(first_content_from_event_params, r'^fxrefer[A-Z0-9]{17}$')
     )
 ),
 referred_clients AS (
@@ -88,11 +87,9 @@ referred_clients AS (
   -- sessions carry different fxrefer codes would be counted under each code,
   -- inflating the cross-code total that referral_installs_totals_v1 sums.
   SELECT
-    -- `:?` keeps the legacy `fxrefer:<code>` format working: the ga4 CTE looks
-    -- back 30 days, and backfills reach further, so pre-2026-08 sessions are
-    -- still in scope. Without it those codes keep a leading colon and split
-    -- into a separate group key.
-    REGEXP_REPLACE(ga4.content, r'^fxrefer:?', '') AS invite_code,
+    -- Safe to strip a bare `fxrefer`: the shape check above already guarantees
+    -- the remainder is exactly 17 Crockford chars with no delimiter.
+    REGEXP_REPLACE(ga4.content, r'^fxrefer', '') AS invite_code,
     cfs.client_id,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS cfs
@@ -107,17 +104,17 @@ referred_clients AS (
     cfs.submission_date = @submission_date -- required partition filter
     AND cfs.first_seen_date = @submission_date -- clients first seen today
     -- referred clients only; same shape check as the ga4 CTE
-    AND REGEXP_CONTAINS(ga4.content, r'^fxrefer:?[A-Za-z0-9_]+$')
+    AND REGEXP_CONTAINS(ga4.content, r'^fxrefer[A-Z0-9]{17}$')
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY cfs.client_id ORDER BY ga4.session_date DESC, ga4.content) = 1
   -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
   --   UNION ALL
   --   SELECT
-  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer:?', '') AS invite_code,
+  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer', '') AS invite_code,
   --     client_id
   --   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   --   WHERE first_seen_date = @submission_date
-  --     AND REGEXP_CONTAINS(play_store_attribution_content, r'^fxrefer:?[A-Za-z0-9_]+$')
+  --     AND REGEXP_CONTAINS(play_store_attribution_content, r'^fxrefer[A-Z0-9]{17}$')
 )
 SELECT
   @submission_date AS submission_date,

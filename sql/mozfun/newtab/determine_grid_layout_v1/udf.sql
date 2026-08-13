@@ -8,6 +8,11 @@ CREATE OR REPLACE FUNCTION newtab.determine_grid_layout_v1(
 )
 RETURNS STRING AS (
   CASE
+    WHEN app_version >= 155
+      AND is_section
+      THEN 'POSTNOVA_GRID'
+    WHEN app_version >= 155
+      THEN 'POSTNOVA_SECTION'
     WHEN app_version >= 151
       AND is_section
       THEN 'NOVA_SECTION'

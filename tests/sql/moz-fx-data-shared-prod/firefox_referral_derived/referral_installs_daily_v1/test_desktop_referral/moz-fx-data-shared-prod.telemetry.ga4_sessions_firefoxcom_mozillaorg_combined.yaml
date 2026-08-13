@@ -1,8 +1,11 @@
-# ga1: code in manual_content, current `fxrefer<code>` format.
-# ga2: code in first_content_from_event_params, legacy `fxrefer:<code>` format
-#      (still within the 30-day look-back) -> must strip to the same code as ga1
-#      rather than splitting into a `:TESTCODE01` group.
+# ga1: current `fxrefer<code>` format in manual_content.
+# ga2: current format in first_content_from_event_params.
 # ga3: an organic session with no referral code -> should not contribute.
+# ga4: legacy `fxrefer:<code>` format, still pulled in by the 30-day look-back
+#      -> must strip to the same TESTCODE01 group as ga1/ga2, not `:TESTCODE01`.
+# ga5: unrelated content that merely starts with the letters `fxrefer` -> must be
+#      rejected by the shape check. If it leaked through it would strip to the
+#      junk code `ral-2026` and add a bogus row to the firefox.com CSV.
 - ga_client_id: "ga1"
   session_date: "2026-07-20"
   manual_content: "fxreferTESTCODE01"
@@ -12,7 +15,7 @@
 - ga_client_id: "ga2"
   session_date: "2026-07-21"
   manual_content: null
-  first_content_from_event_params: "fxrefer:TESTCODE01"
+  first_content_from_event_params: "fxreferTESTCODE01"
   all_reported_stub_session_ids:
   - "s2"
 - ga_client_id: "ga3"
@@ -21,3 +24,15 @@
   first_content_from_event_params: null
   all_reported_stub_session_ids:
   - "s3"
+- ga_client_id: "ga4"
+  session_date: "2026-07-19"
+  manual_content: "fxrefer:TESTCODE01"
+  first_content_from_event_params: null
+  all_reported_stub_session_ids:
+  - "s4"
+- ga_client_id: "ga5"
+  session_date: "2026-07-21"
+  manual_content: "fxreferral-2026"
+  first_content_from_event_params: null
+  all_reported_stub_session_ids:
+  - "s5"

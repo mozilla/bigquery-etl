@@ -4,7 +4,9 @@
 -- `fxrefer:<code>`; both are accepted); after the prefix is stripped it
 -- is expected to be 17 chars (Website team, 2026-07-24). That length is
 -- documentation only — it is NOT enforced by any check here or in bigconfig.yml.
--- The prefix strip is length-agnostic, so a length change needs no code change.
+-- The prefix strip is length-agnostic, so a length change needs no code change;
+-- the match does require the remainder to be alphanumeric, so a code format
+-- that adds punctuation WOULD need the regexes below updated.
 --
 -- DESKTOP source = GA4 / download-attribution path (cross-platform: Windows + Mac).
 --   Do NOT use `telemetry.install` — it is the Windows-only installer ping and
@@ -58,7 +60,15 @@ ga4 AS (
     -- download precedes first-run; look back so the session is in range
     session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND session_date <= @submission_date
-    AND (manual_content LIKE 'fxrefer%' OR first_content_from_event_params LIKE 'fxrefer%')
+    -- Match the code's SHAPE, not a bare prefix. With the colon gone there is
+    -- no delimiter, so `LIKE 'fxrefer%'` would also swallow unrelated content
+    -- like `fxreferral-2026` and strip it down to a junk code (`ral-2026`).
+    -- Anchored + alphanumeric-only remainder keeps that out while staying
+    -- length-agnostic, as the header comment intends.
+    AND (
+      REGEXP_CONTAINS(manual_content, r'^fxrefer:?[A-Za-z0-9]+$')
+      OR REGEXP_CONTAINS(first_content_from_event_params, r'^fxrefer:?[A-Za-z0-9]+$')
+    )
 ),
 referred_clients AS (
   -- One row per referred first_run client, per platform. Aggregation happens
@@ -90,7 +100,8 @@ referred_clients AS (
   WHERE
     cfs.submission_date = @submission_date -- required partition filter
     AND cfs.first_seen_date = @submission_date -- clients first seen today
-    AND ga4.content LIKE 'fxrefer%' -- referred clients only
+    -- referred clients only; same shape check as the ga4 CTE
+    AND REGEXP_CONTAINS(ga4.content, r'^fxrefer:?[A-Za-z0-9]+$')
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY cfs.client_id ORDER BY ga4.session_date DESC, ga4.content) = 1
   -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
@@ -100,7 +111,7 @@ referred_clients AS (
   --     client_id
   --   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   --   WHERE first_seen_date = @submission_date
-  --     AND play_store_attribution_content LIKE 'fxrefer%'
+  --     AND REGEXP_CONTAINS(play_store_attribution_content, r'^fxrefer:?[A-Za-z0-9]+$')
 )
 SELECT
   @submission_date AS submission_date,

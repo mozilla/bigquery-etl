@@ -1,7 +1,10 @@
-# c1, c2 first-seen today via tok1/tok2 -> both TESTCODE01 (install_count = 2).
+# c1, c2, c5 first-seen today via tok1/tok2 (current format) and tok4 (legacy
+# `fxrefer:` format) -> all TESTCODE01 (install_count = 3).
 # c3 first-seen today but its dltoken has no referral -> excluded.
 # c4 carries a referral dltoken but was first seen on a prior day -> excluded by
 # the first_seen_date = @submission_date filter.
+# c6 resolves to the near-miss `fxreferral-2026` session -> excluded by the
+# invite-code shape check, so no `ral-2026` row appears.
 # attribution_ext is a JSON column — represent it as an inline object so it
 # loads as JSON (a quoted string would load as a JSON string scalar and
 # attribution_ext.dltoken would be NULL).
@@ -21,3 +24,11 @@
   submission_date: "2026-07-24"
   first_seen_date: "2026-07-10"
   attribution_ext: {dltoken: "tok1"}
+- client_id: "c5"
+  submission_date: "2026-07-24"
+  first_seen_date: "2026-07-24"
+  attribution_ext: {dltoken: "tok4"}
+- client_id: "c6"
+  submission_date: "2026-07-24"
+  first_seen_date: "2026-07-24"
+  attribution_ext: {dltoken: "tok5"}

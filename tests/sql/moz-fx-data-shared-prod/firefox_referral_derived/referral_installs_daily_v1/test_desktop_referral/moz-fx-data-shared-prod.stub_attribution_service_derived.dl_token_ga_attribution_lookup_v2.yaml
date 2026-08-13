@@ -1,6 +1,7 @@
-# tok1 and tok2 resolve to sessions carrying TESTCODE01 in the current and the
-# legacy prefix format respectively; both strip to TESTCODE01 (2 installs).
+# tok1/tok2 resolve to current-format sessions and tok4 to a legacy `fxrefer:`
+# session; all three strip to TESTCODE01 (3 installs).
 # tok3 has no matching fxrefer session -> excluded.
+# tok5 resolves to the near-miss `fxreferral-2026` session -> excluded.
 - dl_token: "tok1"
   ga_client_id: "ga1"
   stub_session_id: "s1"
@@ -12,4 +13,12 @@
 - dl_token: "tok3"
   ga_client_id: "ga3"
   stub_session_id: "s3"
+  first_seen_date: "2026-07-21"
+- dl_token: "tok4"
+  ga_client_id: "ga4"
+  stub_session_id: "s4"
+  first_seen_date: "2026-07-19"
+- dl_token: "tok5"
+  ga_client_id: "ga5"
+  stub_session_id: "s5"
   first_seen_date: "2026-07-21"

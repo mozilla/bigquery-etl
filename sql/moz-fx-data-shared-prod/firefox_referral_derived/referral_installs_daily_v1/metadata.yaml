@@ -4,7 +4,7 @@ description: |-
   Firefox Referral Program (DENG-11237).
 
   Desktop only for the MVP: the referral code arrives via the GA4 /
-  download-attribution path (utm_content=fxrefer:<code>) and is joined through
+  download-attribution path (utm_content=fxrefer<code>) and is joined through
   the download token to baseline_clients_first_seen_v1, following the
   cfs_ga4_attr_v1 pattern. Each client is first-seen exactly once, so daily rows
   do not double-count across partitions.

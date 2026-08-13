@@ -4,6 +4,7 @@ WITH counts AS (
     application,
     channel,
     engine_name,
+    AVG(sync_time) AS avg_sync_time,
     COUNT(*) AS count_total,
     COUNTIF(
       failure_reason_list IS NULL
@@ -29,6 +30,11 @@ WITH counts AS (
         metrics.labeled_string.logins_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.logins_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.logins_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.logins_sync_v2_finished_at,
+          metrics.datetime.logins_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_fenix.logins_sync
       UNION ALL
@@ -40,6 +46,11 @@ WITH counts AS (
         metrics.labeled_string.logins_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.logins_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.logins_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.logins_sync_v2_finished_at,
+          metrics.datetime.logins_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox_beta.logins_sync
       UNION ALL
@@ -51,6 +62,11 @@ WITH counts AS (
         metrics.labeled_string.logins_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.logins_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.logins_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.logins_sync_v2_finished_at,
+          metrics.datetime.logins_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox.logins_sync
       UNION ALL
@@ -62,6 +78,11 @@ WITH counts AS (
         metrics.labeled_string.logins_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.logins_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.logins_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.logins_sync_v2_finished_at,
+          metrics.datetime.logins_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefoxbeta.logins_sync
       UNION ALL
@@ -73,6 +94,11 @@ WITH counts AS (
         metrics.labeled_string.logins_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.logins_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.logins_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.logins_sync_v2_finished_at,
+          metrics.datetime.logins_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefox.logins_sync
       UNION ALL
@@ -84,6 +110,11 @@ WITH counts AS (
         metrics.labeled_string.bookmarks_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.bookmarks_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.bookmarks_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.bookmarks_sync_v2_finished_at,
+          metrics.datetime.bookmarks_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_fenix.bookmarks_sync
       UNION ALL
@@ -95,6 +126,11 @@ WITH counts AS (
         metrics.labeled_string.bookmarks_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.bookmarks_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.bookmarks_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.bookmarks_sync_v2_finished_at,
+          metrics.datetime.bookmarks_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox_beta.bookmarks_sync
       UNION ALL
@@ -106,6 +142,11 @@ WITH counts AS (
         metrics.labeled_string.bookmarks_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.bookmarks_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.bookmarks_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.bookmarks_sync_v2_finished_at,
+          metrics.datetime.bookmarks_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox.bookmarks_sync
       UNION ALL
@@ -117,6 +158,11 @@ WITH counts AS (
         metrics.labeled_string.bookmarks_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.bookmarks_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.bookmarks_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.bookmarks_sync_v2_finished_at,
+          metrics.datetime.bookmarks_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefoxbeta.bookmarks_sync
       UNION ALL
@@ -128,6 +174,11 @@ WITH counts AS (
         metrics.labeled_string.bookmarks_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.bookmarks_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.bookmarks_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.bookmarks_sync_v2_finished_at,
+          metrics.datetime.bookmarks_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefox.bookmarks_sync
       UNION ALL
@@ -139,8 +190,77 @@ WITH counts AS (
         metrics.labeled_string.addresses_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.addresses_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.addresses_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.addresses_sync_v2_finished_at,
+          metrics.datetime.addresses_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_fenix.addresses_sync
+      UNION ALL
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
+        "firefox-android" AS application,
+        "beta" AS channel,
+        "addresses" AS engine_name,
+        metrics.labeled_string.addresses_sync_v2_failure_reason AS failure_reason_list,
+        metrics.labeled_counter.addresses_sync_v2_incoming AS incoming_counts,
+        metrics.labeled_counter.addresses_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.addresses_sync_v2_finished_at,
+          metrics.datetime.addresses_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
+      FROM
+        mozdata.org_mozilla_fenix.addresses_sync
+      UNION ALL
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
+        "firefox-android" AS application,
+        "release" AS channel,
+        "addresses" AS engine_name,
+        metrics.labeled_string.addresses_sync_v2_failure_reason AS failure_reason_list,
+        metrics.labeled_counter.addresses_sync_v2_incoming AS incoming_counts,
+        metrics.labeled_counter.addresses_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.addresses_sync_v2_finished_at,
+          metrics.datetime.addresses_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
+      FROM
+        mozdata.org_mozilla_fenix.addresses_sync
+      UNION ALL
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
+        "firefox-ios" AS application,
+        "beta" AS channel,
+        "addresses" AS engine_name,
+        metrics.labeled_string.addresses_sync_v2_failure_reason AS failure_reason_list,
+        metrics.labeled_counter.addresses_sync_v2_incoming AS incoming_counts,
+        metrics.labeled_counter.addresses_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.addresses_sync_v2_finished_at,
+          metrics.datetime.addresses_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
+      FROM
+        mozdata.org_mozilla_ios_firefoxbeta.addresses_sync
+      UNION ALL
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
+        "firefox-ios" AS application,
+        "release" AS channel,
+        "addresses" AS engine_name,
+        metrics.labeled_string.addresses_sync_v2_failure_reason AS failure_reason_list,
+        metrics.labeled_counter.addresses_sync_v2_incoming AS incoming_counts,
+        metrics.labeled_counter.addresses_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.addresses_sync_v2_finished_at,
+          metrics.datetime.addresses_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
+      FROM
+        mozdata.org_mozilla_ios_firefox.addresses_sync
       UNION ALL
       SELECT
         DATE(submission_timestamp) AS submission_date,
@@ -150,6 +270,11 @@ WITH counts AS (
         metrics.labeled_string.creditcards_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.creditcards_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.creditcards_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.creditcards_sync_v2_finished_at,
+          metrics.datetime.creditcards_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_fenix.creditcards_sync
       UNION ALL
@@ -161,6 +286,11 @@ WITH counts AS (
         metrics.labeled_string.creditcards_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.creditcards_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.creditcards_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.creditcards_sync_v2_finished_at,
+          metrics.datetime.creditcards_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox_beta.creditcards_sync
       UNION ALL
@@ -172,6 +302,11 @@ WITH counts AS (
         metrics.labeled_string.creditcards_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.creditcards_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.creditcards_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.creditcards_sync_v2_finished_at,
+          metrics.datetime.creditcards_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox.creditcards_sync
       UNION ALL
@@ -183,6 +318,11 @@ WITH counts AS (
         metrics.labeled_string.creditcards_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.creditcards_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.creditcards_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.creditcards_sync_v2_finished_at,
+          metrics.datetime.creditcards_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefoxbeta.creditcards_sync
       UNION ALL
@@ -194,6 +334,11 @@ WITH counts AS (
         metrics.labeled_string.creditcards_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.creditcards_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.creditcards_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.creditcards_sync_v2_finished_at,
+          metrics.datetime.creditcards_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefox.creditcards_sync
       UNION ALL
@@ -205,6 +350,11 @@ WITH counts AS (
         metrics.labeled_string.history_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.history_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.history_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.history_sync_v2_finished_at,
+          metrics.datetime.history_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_fenix.history_sync
       UNION ALL
@@ -216,6 +366,11 @@ WITH counts AS (
         metrics.labeled_string.history_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.history_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.history_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.history_sync_v2_finished_at,
+          metrics.datetime.history_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox_beta.history_sync
       UNION ALL
@@ -227,6 +382,11 @@ WITH counts AS (
         metrics.labeled_string.history_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.history_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.history_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.history_sync_v2_finished_at,
+          metrics.datetime.history_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox.history_sync
       UNION ALL
@@ -238,6 +398,11 @@ WITH counts AS (
         metrics.labeled_string.history_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.history_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.history_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.history_sync_v2_finished_at,
+          metrics.datetime.history_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefoxbeta.history_sync
       UNION ALL
@@ -249,6 +414,11 @@ WITH counts AS (
         metrics.labeled_string.history_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.history_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.history_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.history_sync_v2_finished_at,
+          metrics.datetime.history_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefox.history_sync
       UNION ALL
@@ -260,6 +430,11 @@ WITH counts AS (
         metrics.labeled_string.tabs_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.tabs_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.tabs_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.tabs_sync_v2_finished_at,
+          metrics.datetime.tabs_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_fenix.tabs_sync
       UNION ALL
@@ -271,6 +446,11 @@ WITH counts AS (
         metrics.labeled_string.tabs_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.tabs_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.tabs_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.tabs_sync_v2_finished_at,
+          metrics.datetime.tabs_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox_beta.tabs_sync
       UNION ALL
@@ -282,6 +462,11 @@ WITH counts AS (
         metrics.labeled_string.tabs_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.tabs_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.tabs_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.tabs_sync_v2_finished_at,
+          metrics.datetime.tabs_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_firefox.tabs_sync
       UNION ALL
@@ -293,6 +478,11 @@ WITH counts AS (
         metrics.labeled_string.tabs_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.tabs_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.tabs_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.tabs_sync_v2_finished_at,
+          metrics.datetime.tabs_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefoxbeta.tabs_sync
       UNION ALL
@@ -304,6 +494,11 @@ WITH counts AS (
         metrics.labeled_string.tabs_sync_v2_failure_reason AS failure_reason_list,
         metrics.labeled_counter.tabs_sync_v2_incoming AS incoming_counts,
         metrics.labeled_counter.tabs_sync_v2_outgoing AS outgoing_counts,
+        TIMESTAMP_DIFF(
+          metrics.datetime.tabs_sync_v2_finished_at,
+          metrics.datetime.tabs_sync_v2_started_at,
+          SECOND
+        ) AS sync_time
       FROM
         mozdata.org_mozilla_ios_firefox.tabs_sync
     )
@@ -321,6 +516,7 @@ SELECT
   count_total,
   count_success,
   count_errors,
+  avg_sync_time,
   applied_count,
   reconciled_count,
   failed_to_apply_count,

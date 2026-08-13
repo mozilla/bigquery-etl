@@ -1922,7 +1922,12 @@ bqetl_firefox_referral:
     referral_installs_daily_v1 -> referral_installs_totals_v1 ->
     referral_installs_totals_to_gcs_v1.
   repo: bigquery-etl
-  schedule_interval: 0 4 * * *
+  # Aligned with bqetl_ga4_firefoxdotcom (0 14 * * *) so the external task
+  # sensor's execution_delta is 0. At 0 4 * * * the run for ds=D started 10h
+  # before its upstream GA4 run for the same ds even began, so every run sat in
+  # a ~10h no-op sensor wait. Completion time is unchanged (still gated by
+  # firefoxdotcom_derived.ga_sessions_v2); this only removes the dead wait.
+  schedule_interval: 0 14 * * *
   tags:
     - impact/tier_3
 

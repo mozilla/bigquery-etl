@@ -3,15 +3,18 @@
 """Build the daily jetstream analysis success/failure rollup.
 
 For a given date, records one row per (experiment, analysis_period,
-analysis_basis, segment, metric) cell that jetstream either successfully
-computed (found in that experiment's `statistics_*` tables) or failed to
-compute (found in `monitoring.jetstream_analysis_errors`).
+window_index, analysis_basis, segment, metric) cell that jetstream either
+successfully computed (found in that experiment's `statistics_*` tables) or
+failed to compute (found in `monitoring.jetstream_analysis_errors`).
+`window_index` is NULL when the failure that produced a row didn't identify
+a specific window (most failures don't -- see FAILED_SQL).
 
 Table names under `mozanalysis` don't map 1:1 to a single experiment slug
 without normalizing hyphens to underscores (`jetstream.bq_normalize_name`),
 so the set of tables written on the target date is discovered via
 `INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`, matched back to experiment
-slugs via each table's description, and unioned into a single query
+slugs primarily via each table's description (falling back to matching the
+table name when a description is missing), and unioned into a single query
 alongside the failure view.
 
 `--date` is jetstream's analysis date, matching its own `--date={{ds}}`
@@ -37,6 +40,11 @@ PROJECT = "moz-fx-data-experiments"
 DATASET = "monitoring"
 STATS_DATASET = "mozanalysis"
 DESTINATION_TABLE = "analysis_results_monitoring_v1"
+
+# Safety margin below BigQuery's 1,000-referenced-resource-per-query cap,
+# which build_final_sql approaches as one reference per discovered table.
+# Peak observed over 180 days is 314.
+MAX_DISCOVERED_TABLES = 900
 
 # error_category values (see jetstream_analysis_errors/view.sql) that represent
 # an actual failure to compute something. Excludes `skipped` (the experiment
@@ -74,31 +82,61 @@ table_experiments AS (
   FROM `{PROJECT}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE option_name = 'description'
 ),
+-- A table can lack a description (https://github.com/mozilla/jetstream/issues/3299);
+-- those fall back to matching the table name against known experiment
+-- slugs, resolving ambiguous prefix matches (e.g. "foo" vs "foo-bar") by
+-- preferring the longest slug.
+normalized_experiments AS (
+  SELECT
+    normandy_slug AS experiment,
+    REGEXP_REPLACE(normandy_slug, r'[^a-zA-Z0-9_]', '_') AS normalized_slug
+  FROM `{PROJECT}.{DATASET}.experimenter_experiments_v1`
+  WHERE normandy_slug IS NOT NULL
+),
+fallback_matched AS (
+  SELECT
+    d.table_name,
+    e.experiment,
+    ROW_NUMBER() OVER (
+      PARTITION BY d.table_name ORDER BY LENGTH(e.normalized_slug) DESC
+    ) AS rn
+  FROM discovered_tables d
+  LEFT JOIN table_experiments t USING (table_name)
+  JOIN normalized_experiments e
+    ON STARTS_WITH(d.table_name, CONCAT('statistics_', e.normalized_slug, '_'))
+  WHERE t.experiment IS NULL
+),
+table_experiments_resolved AS (
+  SELECT table_name, experiment, 'description' AS matched_via FROM table_experiments
+  UNION ALL
+  SELECT table_name, experiment, 'fallback' AS matched_via FROM fallback_matched WHERE rn = 1
+),
 with_period_window AS (
   SELECT
     d.table_name,
     e.experiment,
+    e.matched_via,
     SUBSTR(
       d.table_name,
       LENGTH('statistics_' || REGEXP_REPLACE(e.experiment, r'[^a-zA-Z0-9_]', '_') || '_') + 1
     ) AS period_window
   FROM discovered_tables d
-  JOIN table_experiments e USING (table_name)
+  JOIN table_experiments_resolved e USING (table_name)
 )
 SELECT
   table_name,
   experiment,
-  REGEXP_REPLACE(period_window, r'_\\d+$', '') AS analysis_period
+  matched_via,
+  REGEXP_REPLACE(period_window, r'_\\d+$', '') AS analysis_period,
+  CAST(REGEXP_EXTRACT(period_window, r'_(\\d+)$') AS INT64) AS window_index
 FROM with_period_window
 WHERE REGEXP_CONTAINS(period_window, r'^({"|".join(PERIOD_TOKENS)})_\\d+$')
 """
 
 # `analysis_period` on failed rows is sometimes bare (e.g. "day", logged by
-# statistics.py) and sometimes period+window-count (e.g. "day_7", logged by
-# calculate_metrics/calculate_metric_for_ds). Window granularity isn't tracked
-# by this rollup (see plan-error-categorization.md), so both are normalized to
-# the bare period token to match the analysis_period produced by table
-# discovery above.
+# statistics.py -- window_index is then NULL, same "unattributed" semantics
+# as a NULL analysis_basis/segment/metric) and sometimes period+window-count
+# (e.g. "day_7", logged by calculate_metrics/calculate_metric_for_ds).
 FAILED_SQL = f"""
 SELECT
   * EXCEPT (timestamp)
@@ -107,6 +145,7 @@ FROM (
     @date AS analysis_date,
     experiment,
     REGEXP_REPLACE(analysis_period, r'_\\d+$', '') AS analysis_period,
+    CAST(REGEXP_EXTRACT(analysis_period, r'_(\\d+)$') AS INT64) AS window_index,
     analysis_basis,
     segment,
     metric,
@@ -120,20 +159,29 @@ FROM (
     AND error_category IN ({", ".join(f"'{c}'" for c in FAILURE_CATEGORIES)})
 )
 QUALIFY ROW_NUMBER() OVER (
-  PARTITION BY experiment, analysis_period, analysis_basis, segment, metric
+  PARTITION BY experiment, analysis_period, window_index, analysis_basis, segment, metric
   ORDER BY timestamp DESC
 ) = 1
 """
 
 
 def _escape(value: str) -> str:
-    return value.replace("'", "''")
+    return value.replace("\\", "\\\\").replace("'", "''")
 
 
 CURRENTLY_EXISTS_SQL = f"""
 SELECT table_name
 FROM `{PROJECT}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLES`
 WHERE table_type = 'BASE TABLE' AND table_name IN UNNEST(@table_names)
+"""
+
+RAW_DISCOVERED_COUNT_SQL = f"""
+SELECT COUNT(DISTINCT table_name) AS n
+FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`
+WHERE table_schema = '{STATS_DATASET}'
+  AND table_type = 'BASE TABLE'
+  AND STARTS_WITH(table_name, 'statistics_')
+  AND DATE(creation_time) = DATE_ADD(@date, INTERVAL 1 DAY)
 """
 
 
@@ -155,6 +203,29 @@ def discover_statistics_tables(
         ),
     )
     tables = list(job.result())
+
+    raw_count = next(
+        iter(
+            client.query(
+                RAW_DISCOVERED_COUNT_SQL,
+                job_config=bigquery.QueryJobConfig(
+                    query_parameters=[
+                        bigquery.ScalarQueryParameter("date", "DATE", date)
+                    ]
+                ),
+            ).result()
+        )
+    ).n
+    unmatched = raw_count - len({row.table_name for row in tables})
+    if unmatched:
+        print(
+            f"{unmatched} table(s) matched neither a description nor a "
+            "known experiment slug -- excluded from this day's rollup"
+        )
+    fallback_count = sum(1 for row in tables if row.matched_via == "fallback")
+    if fallback_count:
+        print(f"{fallback_count} table(s) had no description; matched by name instead")
+
     if not tables:
         return tables
 
@@ -178,12 +249,17 @@ def discover_statistics_tables(
 
 
 def build_succeeded_sql(tables: list[bigquery.Row]) -> str:
-    """Build a UNION ALL over the discovered tables' (metric, segment, basis)."""
+    """Build a UNION ALL over the discovered tables' (metric, segment, basis).
+
+    Each table is exactly one (experiment, analysis_period, window_index) --
+    that's what its name encodes -- so window_index is a literal per subquery.
+    """
     if not tables:
         return """
         SELECT
           CAST(NULL AS STRING) AS experiment,
           CAST(NULL AS STRING) AS analysis_period,
+          CAST(NULL AS INT64) AS window_index,
           CAST(NULL AS STRING) AS analysis_basis,
           CAST(NULL AS STRING) AS segment,
           CAST(NULL AS STRING) AS metric
@@ -193,6 +269,7 @@ def build_succeeded_sql(tables: list[bigquery.Row]) -> str:
         SELECT DISTINCT
           '{_escape(row.experiment)}' AS experiment,
           '{_escape(row.analysis_period)}' AS analysis_period,
+          {row.window_index if row.window_index is not None else "CAST(NULL AS INT64)"} AS window_index,
           analysis_basis,
           segment,
           metric
@@ -217,6 +294,7 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
         @date AS analysis_date,
         experiment,
         analysis_period,
+        window_index,
         analysis_basis,
         segment,
         metric,
@@ -229,12 +307,13 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
       COALESCE(f.analysis_date, s.analysis_date) AS analysis_date,
       COALESCE(f.experiment, s.experiment) AS experiment,
       COALESCE(f.analysis_period, s.analysis_period) AS analysis_period,
+      COALESCE(f.window_index, s.window_index) AS window_index,
       COALESCE(f.analysis_basis, s.analysis_basis) AS analysis_basis,
       COALESCE(f.segment, s.segment) AS segment,
       COALESCE(f.metric, s.metric) AS metric,
       CASE
-        WHEN f.error_category IS NOT NULL AND s.status IS NOT NULL THEN 'partial'
-        WHEN f.error_category IS NOT NULL THEN 'failed'
+        WHEN f.status IS NOT NULL AND s.status IS NOT NULL THEN 'partial'
+        WHEN f.status IS NOT NULL THEN 'failed'
         ELSE 'succeeded'
       END AS status,
       f.error_category
@@ -242,6 +321,7 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
     FULL OUTER JOIN succeeded s
       ON f.experiment = s.experiment
       AND f.analysis_period = s.analysis_period
+      AND f.window_index = s.window_index
       AND f.analysis_basis = s.analysis_basis
       AND f.segment = s.segment
       AND f.metric = s.metric
@@ -263,6 +343,13 @@ def main():
 
     tables = discover_statistics_tables(client, args.date)
     print(f"Discovered {len(tables)} statistics tables")
+    if len(tables) > MAX_DISCOVERED_TABLES:
+        raise RuntimeError(
+            f"{len(tables)} tables discovered for {args.date}, over the "
+            f"{MAX_DISCOVERED_TABLES} safety margin -- query would likely hit "
+            "BigQuery's 1,000-referenced-resource limit. Suggested fix: "
+            "implement chunking."
+        )
     final_sql = build_final_sql(tables)
 
     destination = (

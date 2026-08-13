@@ -14,6 +14,13 @@ fields:
     Analysis period (e.g., day, week, days28, overall). NULL on a failed row
     means the failure occurred before a specific period could be attributed
     (e.g., an unexpected task failure at the top of the analysis run).
+- name: window_index
+  type: INT64
+  mode: NULLABLE
+  description: |-
+    Which window of analysis_period this row is for (e.g., 7 for the
+    "day_7" table). NULL on most failed rows, since most failure log sites
+    don't record which window they were computing.
 - name: analysis_basis
   type: STRING
   mode: NULLABLE

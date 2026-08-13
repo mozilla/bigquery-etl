@@ -13,9 +13,17 @@ Table names under `mozanalysis` don't encode analysis_basis, and don't map
 date is discovered via `INFORMATION_SCHEMA.TABLE_STORAGE`, matched back to
 experiment slugs, and unioned into a single query alongside the failure view.
 
+`--date` is jetstream's analysis date, matching its own `--date={{ds}}`
+argument. Both it and this task actually run a day later, so table/log
+timestamps are filtered on `date + 1`, not `date` itself.
+
 Scheduled to run after telemetry-airflow's `jetstream` DAG completes for the
-same date (see metadata.yaml's `depends_on`), since jetstream's own run isn't
-part of this DAG and this rollup would otherwise see a partial day.
+same analysis date (see metadata.yaml's `depends_on`).
+
+Not safely backfillable: `TABLE_STORAGE` only records a table's most recent
+write, so re-running this for an older date after a later rerun will find
+none of that date's tables and silently overwrite its partition. Only run
+for the current date.
 """
 
 from argparse import ArgumentParser
@@ -34,8 +42,7 @@ DESTINATION_TABLE = "analysis_results_monitoring_v1"
 # (ambiguous by construction -- see that view's comments).
 FAILURE_CATEGORIES = ["resources", "data", "configuration", "jetstream_failure"]
 
-# ordered longest-first so a shorter token (e.g. "day") can't partially shadow
-# a longer one (e.g. "days28") in the REGEXP_CONTAINS alternation below.
+# valid jetstream.AnalysisPeriod values, as they appear in table name suffixes.
 PERIOD_TOKENS = [
     "preenrollment_week",
     "preenrollment_days28",
@@ -56,43 +63,31 @@ WITH discovered_tables AS (
     AND ts.table_type = 'BASE TABLE'
     AND t.table_type = 'BASE TABLE'
     AND STARTS_WITH(ts.table_name, 'statistics_')
-    AND DATE(ts.storage_last_modified_time) = @date
+    AND DATE(ts.storage_last_modified_time) = DATE_ADD(@date, INTERVAL 1 DAY)
 ),
-normalized_experiments AS (
-  SELECT
-    normandy_slug AS experiment,
-    REGEXP_REPLACE(normandy_slug, r'[^a-zA-Z0-9_]', '_') AS normalized_slug
-  FROM `{PROJECT}.{DATASET}.experimenter_experiments_v1`
-  WHERE normandy_slug IS NOT NULL
+-- jetstream sets each table's description to the exact experiment slug.
+table_experiments AS (
+  SELECT table_name, TRIM(option_value, '"') AS experiment
+  FROM `{PROJECT}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+  WHERE option_name = 'description'
 ),
-matched AS (
-  -- a table can prefix-match more than one experiment's normalized slug
-  -- (e.g. "ios-worldcup-feature" is a prefix of "ios-worldcup-feature-1512");
-  -- resolved by preferring the longest (most specific) slug below.
+with_period_window AS (
   SELECT
-    t.table_name,
+    d.table_name,
     e.experiment,
-    e.normalized_slug,
-    SUBSTR(t.table_name, LENGTH('statistics_' || e.normalized_slug || '_') + 1) AS period_window
-  FROM discovered_tables t
-  JOIN normalized_experiments e
-    ON STARTS_WITH(t.table_name, CONCAT('statistics_', e.normalized_slug, '_'))
-),
-ranked AS (
-  SELECT
-    table_name,
-    experiment,
-    period_window,
-    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY LENGTH(normalized_slug) DESC) AS rn
-  FROM matched
+    SUBSTR(
+      d.table_name,
+      LENGTH('statistics_' || REGEXP_REPLACE(e.experiment, r'[^a-zA-Z0-9_]', '_') || '_') + 1
+    ) AS period_window
+  FROM discovered_tables d
+  JOIN table_experiments e USING (table_name)
 )
 SELECT
   table_name,
   experiment,
   REGEXP_REPLACE(period_window, r'_\\d+$', '') AS analysis_period
-FROM ranked
-WHERE rn = 1
-  AND REGEXP_CONTAINS(period_window, r'^({"|".join(PERIOD_TOKENS)})_\\d+$')
+FROM with_period_window
+WHERE REGEXP_CONTAINS(period_window, r'^({"|".join(PERIOD_TOKENS)})_\\d+$')
 """
 
 # `analysis_period` on failed rows is sometimes bare (e.g. "day", logged by
@@ -103,19 +98,24 @@ WHERE rn = 1
 # discovery above.
 FAILED_SQL = f"""
 SELECT
-  @date AS analysis_date,
-  experiment,
-  REGEXP_REPLACE(analysis_period, r'_\\d+$', '') AS analysis_period,
-  analysis_basis,
-  segment,
-  metric,
-  'failed' AS status,
-  error_category
-FROM `{PROJECT}.{DATASET}.jetstream_analysis_errors`
-WHERE source = 'jetstream'
-  AND experiment IS NOT NULL
-  AND DATE(timestamp) = @date
-  AND error_category IN ({", ".join(f"'{c}'" for c in FAILURE_CATEGORIES)})
+  * EXCEPT (timestamp)
+FROM (
+  SELECT
+    @date AS analysis_date,
+    experiment,
+    REGEXP_REPLACE(analysis_period, r'_\\d+$', '') AS analysis_period,
+    analysis_basis,
+    segment,
+    metric,
+    'failed' AS status,
+    error_category,
+    timestamp
+  FROM `{PROJECT}.{DATASET}.jetstream_analysis_errors`
+  WHERE source = 'jetstream'
+    AND experiment IS NOT NULL
+    AND DATE(timestamp) = DATE_ADD(@date, INTERVAL 1 DAY)
+    AND error_category IN ({", ".join(f"'{c}'" for c in FAILURE_CATEGORIES)})
+)
 QUALIFY ROW_NUMBER() OVER (
   PARTITION BY experiment, analysis_period, analysis_basis, segment, metric
   ORDER BY timestamp DESC
@@ -164,7 +164,12 @@ def build_succeeded_sql(tables: list[bigquery.Row]) -> str:
 
 
 def build_final_sql(tables: list[bigquery.Row]) -> str:
-    """Combine failed and succeeded into one table."""
+    """Combine failed and succeeded into one table, one row per cell.
+
+    A cell can have both a failure logged and output in the statistics table
+    (e.g. one statistic/reference-branch errored, another didn't) -- such
+    cells are labelled "partial" rather than picking a side.
+    """
     succeeded_sql = build_succeeded_sql(tables)
     return f"""
     WITH failed AS (
@@ -178,15 +183,31 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
         analysis_basis,
         segment,
         metric,
-        'succeeded' AS status,
-        CAST(NULL AS STRING) AS error_category
+        'succeeded' AS status
       FROM (
         {succeeded_sql}
       )
     )
-    SELECT * FROM failed
-    UNION ALL
-    SELECT * FROM succeeded
+    SELECT
+      COALESCE(f.analysis_date, s.analysis_date) AS analysis_date,
+      COALESCE(f.experiment, s.experiment) AS experiment,
+      COALESCE(f.analysis_period, s.analysis_period) AS analysis_period,
+      COALESCE(f.analysis_basis, s.analysis_basis) AS analysis_basis,
+      COALESCE(f.segment, s.segment) AS segment,
+      COALESCE(f.metric, s.metric) AS metric,
+      CASE
+        WHEN f.error_category IS NOT NULL AND s.status IS NOT NULL THEN 'partial'
+        WHEN f.error_category IS NOT NULL THEN 'failed'
+        ELSE 'succeeded'
+      END AS status,
+      f.error_category
+    FROM failed f
+    FULL OUTER JOIN succeeded s
+      ON f.experiment = s.experiment
+      AND f.analysis_period = s.analysis_period
+      AND f.analysis_basis = s.analysis_basis
+      AND f.segment = s.segment
+      AND f.metric = s.metric
     """
 
 
@@ -204,6 +225,7 @@ def main():
     client = bigquery.Client(project=args.project)
 
     tables = discover_statistics_tables(client, args.date)
+    print(f"Discovered {len(tables)} statistics tables")
     final_sql = build_final_sql(tables)
 
     destination = (
@@ -221,10 +243,8 @@ def main():
             ),
         ),
     )
-    job.result()
-    print(
-        f"Wrote {job.output_rows} rows to {destination} ({len(tables)} tables discovered)"
-    )
+    result = job.result()
+    print(f"Wrote {result.total_rows} rows to {destination}")
 
 
 if __name__ == "__main__":

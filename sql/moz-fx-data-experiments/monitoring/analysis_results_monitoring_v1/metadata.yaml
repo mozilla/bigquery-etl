@@ -2,19 +2,20 @@ friendly_name: Analysis Results Monitoring
 description: |-
   Daily rollup of experiment analysis metrics with success/failure status, at
   (experiment, analysis_period, analysis_basis, segment, metric) grain. Each
-  row records whether that cell was successfully computed (found in the
-  experiment's `statistics_*` tables) or failed (found in
-  `jetstream_analysis_errors`, with its `error_category`). Used to measure
-  experiment- and metric-level analysis success rates. A NULL in
-  `analysis_period`, `analysis_basis`, `segment`, or `metric` on a failed row
-  means the failure was broader than a single cell (e.g. a NULL `metric`
-  means the whole experiment/period run failed before any specific metric was
-  attempted) -- see view.sql in jetstream_analysis_errors for which log sites
-  produce which NULLs.
+  row's status is succeeded, failed, or partial (both a logged failure and
+  output exist for that cell -- see query.py), with `error_category` set for
+  failed/partial rows. Used to measure experiment- and metric-level analysis
+  success rates. A NULL in `analysis_period`, `analysis_basis`, `segment`, or
+  `metric` on a failed row means the failure was broader than a single cell
+  (e.g. a NULL `metric` means the whole experiment/period run failed before
+  any specific metric was attempted) -- see view.sql in
+  jetstream_analysis_errors for which log sites produce which NULLs.
+
+  Not safely backfillable -- see query.py's docstring.
 owners:
   - mwilliams@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   schedule: daily
 bigquery:
   time_partitioning:
@@ -25,6 +26,9 @@ scheduling:
   dag_name: bqetl_experiments_daily
   arguments:
     - --date={{ds}}
+  referenced_tables:
+    - ['moz-fx-data-experiments', 'monitoring', 'logs']
   depends_on:
     - task_id: jetstream_run
       dag_name: jetstream
+      execution_delta: -1h

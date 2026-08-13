@@ -2,7 +2,7 @@ fields:
 - name: analysis_date
   type: DATE
   mode: NULLABLE
-  description: The date this row's success/failure status was observed.
+  description: The jetstream analysis date this row's status pertains to.
 - name: experiment
   type: STRING
   mode: NULLABLE
@@ -44,10 +44,14 @@ fields:
 - name: status
   type: STRING
   mode: NULLABLE
-  description: One of "succeeded" or "failed".
+  description: |-
+    One of "succeeded", "failed", or "partial" (both a logged failure and
+    output in the statistics table exist for this cell, e.g. one statistic
+    or reference branch errored while another for the same metric didn't).
 - name: error_category
   type: STRING
   mode: NULLABLE
   description: |-
-    Set only when status = "failed": resources, data, configuration, or
-    jetstream_failure. See jetstream_analysis_errors/view.sql for definitions.
+    Set when status = "failed" or "partial": resources, data, configuration,
+    or jetstream_failure. See jetstream_analysis_errors/view.sql for
+    definitions.

@@ -10,12 +10,10 @@ description: |-
   (e.g. a NULL `metric` means the whole experiment/period run failed before
   any specific metric was attempted) -- see view.sql in
   jetstream_analysis_errors for which log sites produce which NULLs.
-
-  Not safely backfillable -- see query.py's docstring.
 owners:
   - mwilliams@mozilla.com
 labels:
-  incremental: false
+  incremental: true
   schedule: daily
 bigquery:
   time_partitioning:

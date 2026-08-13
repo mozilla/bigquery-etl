@@ -7,11 +7,12 @@ analysis_basis, segment, metric) cell that jetstream either successfully
 computed (found in that experiment's `statistics_*` tables) or failed to
 compute (found in `monitoring.jetstream_analysis_errors`).
 
-Table names under `mozanalysis` don't encode analysis_basis, and don't map
-1:1 to a single experiment slug without normalizing hyphens to underscores
-(`jetstream.bq_normalize_name`), so the set of tables written on the target
-date is discovered via `INFORMATION_SCHEMA.TABLE_STORAGE`, matched back to
-experiment slugs, and unioned into a single query alongside the failure view.
+Table names under `mozanalysis` don't map 1:1 to a single experiment slug
+without normalizing hyphens to underscores (`jetstream.bq_normalize_name`),
+so the set of tables written on the target date is discovered via
+`INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`, matched back to experiment
+slugs via each table's description, and unioned into a single query
+alongside the failure view.
 
 `--date` is jetstream's analysis date, matching its own `--date={{ds}}`
 argument. Both it and this task actually run a day later, so table/log
@@ -20,10 +21,12 @@ timestamps are filtered on `date + 1`, not `date` itself.
 Scheduled to run after telemetry-airflow's `jetstream` DAG completes for the
 same analysis date (see metadata.yaml's `depends_on`).
 
-Not safely backfillable: `TABLE_STORAGE` only records a table's most recent
-write, so re-running this for an older date after a later rerun will find
-none of that date's tables and silently overwrite its partition. Only run
-for the current date.
+Backfillable, with one caveat: TABLE_STORAGE_TIMELINE is historical, so
+discovery is accurate for old dates, but if a table's content changes after
+the target date (e.g. an in-progress "overall" table, or an explicit rerun),
+a backfill reads today's content, not the target date's -- BigQuery has no
+way to recover the old rows past its few-day time-travel window. Tables
+written once and never touched again (the common case) aren't affected.
 """
 
 from argparse import ArgumentParser
@@ -54,16 +57,16 @@ PERIOD_TOKENS = [
 
 DISCOVER_TABLES_SQL = f"""
 WITH discovered_tables AS (
-  -- TABLE_STORAGE can lag behind deletions, so cross-check against TABLES.
-  SELECT ts.table_name
-  FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE` ts
-  JOIN `{PROJECT}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLES` t
-    ON ts.table_name = t.table_name
-  WHERE ts.table_schema = '{STATS_DATASET}'
-    AND ts.table_type = 'BASE TABLE'
-    AND t.table_type = 'BASE TABLE'
-    AND STARTS_WITH(ts.table_name, 'statistics_')
-    AND DATE(ts.storage_last_modified_time) = DATE_ADD(@date, INTERVAL 1 DAY)
+  -- `timestamp` is a periodic snapshot time (matches nearly every table
+  -- ever created); `creation_time` only changes when jetstream rewrites a
+  -- table, so it's the right filter for "written on this date". Views
+  -- aren't excluded automatically here, unlike TABLE_STORAGE.
+  SELECT DISTINCT table_name
+  FROM `{PROJECT}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`
+  WHERE table_schema = '{STATS_DATASET}'
+    AND table_type = 'BASE TABLE'
+    AND STARTS_WITH(table_name, 'statistics_')
+    AND DATE(creation_time) = DATE_ADD(@date, INTERVAL 1 DAY)
 ),
 -- jetstream sets each table's description to the exact experiment slug.
 table_experiments AS (
@@ -127,17 +130,51 @@ def _escape(value: str) -> str:
     return value.replace("'", "''")
 
 
+CURRENTLY_EXISTS_SQL = f"""
+SELECT table_name
+FROM `{PROJECT}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLES`
+WHERE table_type = 'BASE TABLE' AND table_name IN UNNEST(@table_names)
+"""
+
+
 def discover_statistics_tables(
     client: bigquery.Client, date: str
 ) -> list[bigquery.Row]:
-    """Find the statistics_* tables written on `date`, matched to experiments."""
+    """Find the statistics_* tables written on `date`, matched to experiments.
+
+    A table found via TABLE_STORAGE_TIMELINE may have since been deleted (it's
+    a historical record, so this is expected for old-enough backfills, not a
+    bug), which would otherwise crash the whole day's query with "Not found"
+    when build_succeeded_sql tries to read it. Tables missing today are
+    dropped and reported rather than silently skipped.
+    """
     job = client.query(
         DISCOVER_TABLES_SQL,
         job_config=bigquery.QueryJobConfig(
             query_parameters=[bigquery.ScalarQueryParameter("date", "DATE", date)]
         ),
     )
-    return list(job.result())
+    tables = list(job.result())
+    if not tables:
+        return tables
+
+    exists_job = client.query(
+        CURRENTLY_EXISTS_SQL,
+        job_config=bigquery.QueryJobConfig(
+            query_parameters=[
+                bigquery.ArrayQueryParameter(
+                    "table_names", "STRING", [row.table_name for row in tables]
+                )
+            ]
+        ),
+    )
+    existing_names = {row.table_name for row in exists_job.result()}
+
+    missing = [row.table_name for row in tables if row.table_name not in existing_names]
+    if missing:
+        print(f"Skipping {len(missing)} table(s) no longer present: {missing}")
+
+    return [row for row in tables if row.table_name in existing_names]
 
 
 def build_succeeded_sql(tables: list[bigquery.Row]) -> str:

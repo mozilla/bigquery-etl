@@ -42,7 +42,8 @@ SELECT
   sap_events_with_client_info_cte.subsession_end_time,
   sap_events_with_client_info_cte.subsession_counter,
   sap_events_with_client_info_cte.experiments,
-  clients_with_adblocker_addons_cte.has_adblocker_addon,
+  -- match v8: clients with no adblocker addon are FALSE, not NULL
+  COALESCE(clients_with_adblocker_addons_cte.has_adblocker_addon, FALSE) AS has_adblocker_addon,
   sap_is_enterprise_cte.policies_is_enterprise
 FROM
   `search_derived.search_clients_daily_v9.sap_events_with_client_info_cte`

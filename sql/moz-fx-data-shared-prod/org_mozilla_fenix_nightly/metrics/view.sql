@@ -31,6 +31,10 @@ SELECT
             ) AS blocklist_mlbf_stash_time_oldest,
             metrics.datetime.blocklist_mlbf_stash_time_oldest AS raw_blocklist_mlbf_stash_time_oldest,
             mozfun.glean.parse_datetime(
+              metrics.datetime.glean_validation_first_run_hour
+            ) AS glean_validation_first_run_hour,
+            metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour,
+            mozfun.glean.parse_datetime(
               metrics.datetime.privacy_notice_banner_displayed_date
             ) AS privacy_notice_banner_displayed_date,
             metrics.datetime.privacy_notice_banner_displayed_date AS raw_privacy_notice_banner_displayed_date,

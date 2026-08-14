@@ -1070,6 +1070,106 @@ fields:
         support and forces FIPS mode on when the host is in FIPS mode.
 
         '
+    - name: bounce_tracking_protection_enabled_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Keeps track of whether the feature is enabled at startup.
+
+        '
+    - name: bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Keeps track of whether the feature is enabled and running in dry-run
+        mode at startup.
+
+        '
+    - name: browser_ui_proton_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the Proton default theme is enabled.
+
+        '
+    - name: contextual_menu_long_press_tapped
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Text selection contextual menu option tapped.
+
+        '
+    - name: customize_home_recently_saved
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'An indication of whether the recently
+
+        saved section is enabled to be displayed
+
+        '
+    - name: gfx_tmp_writable
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Is the system temporary directory writable This metric was generated
+        to correspond to the Legacy Telemetry scalar gfx.tmp_writable.
+
+        '
+    - name: gifft_validation_main_ping_assembling
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The value `true`, recorded when a Firefox Telemetry "main" ping
+        is about
+
+        to be assembled.
+
+        To be used to validate GIFFT.
+
+        '
+    - name: glean_core_migration_successful
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Reports `true` if the client was successfully migrated from the
+        Android-specific implementation of the Glean SDK to the cross-platform one.
+    - name: glean_error_preinit_tasks_timeout
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Set to true if the tasks that are queued prior to Glean initialization
+        time out.
+    - name: metrics_activity_state_provider_error
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The `StartupActivityStateProvider...onActivityStarted` was unexpectedly
+
+        called twice. We can use this metric to validate our assumptions about
+
+        how these APIs are called. This probe can be removed once we validate
+
+        these assumptions.
+
+        '
+    - name: preferences_open_links_in_private
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the user has enabled open links in a private tab.
+        default: false
+
+        '
+    - name: preferences_private_search_suggestions
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the user has enabled showing search suggestions
+        in private mode. default: false (we prompt the user, asking them to make a
+        selection)
+
+        '
+    - name: preferences_search_term_groups_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Is search term group in tabs tray on?
+
+        '
+    - name: wallpapers_discovered_wallpaper_feature
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the user has discovered the wallpaper feature.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3127,6 +3227,222 @@ fields:
       mode: NULLABLE
       description: 'Number of times the selected audio session changed for a top-level
         browsing context.
+
+        '
+    - name: apz_scrollwheel_overshoot
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of overshoot events, where the user reverses scrollwheel
+        direction soon after the last scrollwheel input. This metric was generated
+        to correspond to the Legacy Telemetry scalar apz.scrollwheel_overshoot.
+
+        '
+    - name: bloburl_resolve_stopped
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times we do not resolve a blob URL because of
+        different partition keys
+
+        '
+    - name: cookie_banners_cookie_injection_fail
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often the cookie banner is still shown even if we have
+        injected cookies.
+
+        '
+    - name: credit_cards_autofill_card
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of times the user has autofilled
+
+        a credit card.
+
+        '
+    - name: credit_cards_delete_card
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of credit cards that have been deleted
+        by
+
+        the user.
+
+        '
+    - name: credit_cards_manual_save
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of credit cards that have been saved
+
+        manually by the user.
+
+        '
+    - name: dotprint_android_dialog_requested
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Opening the Android print dialog was requested via window.print.
+
+        '
+    - name: dotprint_requested
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times window.print was requested.
+
+        '
+    - name: downloads_downloaded_pdf_open_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many times open button has been clicked
+
+        for a downloaded pdf.
+
+        '
+    - name: downloads_pdf_download_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many times a pdf has been downloaded.
+
+        '
+    - name: events_total_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of URIs visited by the user in the current session,
+        including
+
+        page reloads. This does not include background page requests and URIs from
+
+        embedded pages or private browsing but may be incremented without user
+
+        interaction by website scripts that programmatically redirect to a new
+
+        location.
+
+        '
+    - name: formautofill_addresses_detected_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at detection time number of address form sections. A single
+        form can contain more than one address form section. This metric was generated
+        to correspond to the Legacy Telemetry scalar formautofill.addresses.detected_sections_count.
+
+        '
+    - name: formautofill_addresses_submitted_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at submission time number of credit card form sections submitted.
+        This metric was generated to correspond to the Legacy Telemetry scalar formautofill.addresses.submitted_sections_count.
+
+        '
+    - name: formautofill_credit_cards_detected_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at detection time number of credit card form sections. A
+        single form can contain more than one credit card form section. This metric
+        was generated to correspond to the Legacy Telemetry scalar formautofill.creditCards.detected_sections_count.
+
+        '
+    - name: formautofill_credit_cards_submitted_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at submission time number of credit card form sections submitted.
+        This metric was generated to correspond to the Legacy Telemetry scalar formautofill.creditCards.submitted_sections_count.
+
+        '
+    - name: glean_time_invalid_timezone_offset
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times we encountered an invalid timezone
+        offset
+
+        when trying to get the current time.
+
+        A timezone offset is invalid if it is outside [-24h, +24h].
+
+        If invalid a UTC offset is used (+0h).
+
+        '
+    - name: glean_validation_app_forceclosed_count
+      type: INTEGER
+      mode: NULLABLE
+      description: This metric counts how many times a dirty bit was detected when
+        starting the Glean SDK, on Android. This dirty bit is set to `true` when Android's
+        lifecycle `ON_START` is hit and flipped back to false on `ON_STOP`. When an
+        application is force-closed, it might not get the `ON_STOP` and so the value
+        would stay `true`. The next time Glean starts, it will increment this counter.
+    - name: glean_validation_baseline_ping_count
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of baseline pings sent during the lifetime of this metrics
+        ping.
+    - name: logins_store_migration_num_failed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of login records which failed to migrate
+
+        '
+    - name: logins_store_migration_num_processed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of login records processed by the migration
+
+        '
+    - name: logins_store_migration_num_succeeded
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of login records successfully migrated
+
+        '
+    - name: logins_store_unlock_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times the login store was unlocked. It is intended
+        to be used together with `unlock_error_count` to measure the overall error
+        rate of unlocking the logins store.
+
+        '
+    - name: metrics_credit_cards_autofill_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of times the user has autofilled
+
+        a credit card.
+
+        '
+    - name: metrics_credit_cards_deleted_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of credit cards that have
+        been
+
+        deleted by the user.
+
+        '
+    - name: metrics_credit_cards_saved_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of credit cards that have
+        been
+
+        saved manually by the user.
+
+        '
+    - name: recent_bookmarks_bookmark_clicked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of times that a user
+
+        has clicked on a recently saved bookmark from the home
+
+        screen.
+
+        '
+    - name: recent_bookmarks_show_all_bookmarks
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of times that a user
+
+        has clicked the show all button for recently saved bookmarks
+
+        on the home screen.
 
         '
   - name: custom_distribution
@@ -11050,6 +11366,292 @@ fields:
         positive answer records 0.
 
         '
+    - name: cert_compression_brotli_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: The difference between the length of encoded certificate vs the
+        actual certificate.
+    - name: cert_compression_zlib_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: The difference between the length of encoded certificate vs the
+        actual certificate.
+    - name: cert_compression_zstd_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: The difference between the length of encoded certificate vs the
+        actual certificate.
+    - name: cookie_banners_click_query_selector_run_count_per_window_frame
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How often a query selector is run during the lifetime of a sub-frame
+        content window.
+
+        '
+    - name: cookie_banners_click_query_selector_run_count_per_window_top_level
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How often a query selector is run during the lifetime of a top-level
+        content window.
+
+        '
+    - name: cookie_banners_click_query_selector_run_duration_per_window_frame
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent (in microseconds) on running querySelector for
+        the lifetime of a sub-frame content window.
+
+        '
+    - name: cookie_banners_click_query_selector_run_duration_per_window_top_level
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent (in microseconds) on running querySelector for
+        the lifetime of a top-level content window.
+
+        '
+    - name: fog_validation_gvsv_number_of_unique_site_origins_all_tabs
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time between tab selection and first composite of the tab content
+        onto the screen. Implemented alongside the Geckoview Streaming version to
+        measure potential differences between the two.
+
+        '
+    - name: js_baseline_compile_percentage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percentage of execution time spent during Baseline compilation
+        for JS scripts up until the page load event fires.
+
+        '
+    - name: js_delazification_percentage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percentage of execution time spent during delazification for JS
+        scripts up until the page load event fires.
+
+        '
+    - name: js_execution_percentage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percentage of page load time spent executing Javascript.
+
+        '
+    - name: js_xdr_encode_percentage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percentage of execution time spent during XDR encoding for JS
+        scripts up until the page load event fires.
+
+        '
+    - name: search_terms_group_size_distribution
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The distribution of search term tab group sizes. Rather than reporting
+
+        individual sizes directly as integers, it is currently desired to
+
+        report the sizes according to certain size ranges.
+
+        The "buckets" for reporting group sizes will be mapped as follows:
+
+        * 2 tabs -> 1
+
+        * 3-5 tabs -> 2
+
+        * 6-10 tabs -> 3
+
+        * 11+ tabs -> 4
+
+        Where the reported number will be 1, 2, 3, or 4, accordingly.
+
+        As an example, say a user has three groups of sizes 3, 6, and 15. The
+
+        app will report 2, 3, and 4 when this metric is tracked.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -11104,6 +11706,15 @@ fields:
 
         '
     - name: raw_blocklist_mlbf_stash_time_oldest
+      type: STRING
+      mode: NULLABLE
+    - name: glean_validation_first_run_hour
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The hour of the first run of the application.
+
+        '
+    - name: raw_glean_validation_first_run_hour
       type: STRING
       mode: NULLABLE
     - name: privacy_notice_banner_displayed_date
@@ -12126,6 +12737,28 @@ fields:
         identifiers, e.g. `translations`, `voiceSearch` or `pageSummaries`.
 
         '
+    - name: data_storage_migration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Indicates whether or not migration was successful for each nsIDataStorage.
+    - name: oskeystore_self_test
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Whether or not each step of the OSKeyStore self test succeeded.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -18152,6 +18785,558 @@ fields:
         output path.
 
         '
+    - name: cert_compression_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The number of times each certificate compression algorithm was
+        used.
+    - name: cookie_banners_click_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Given a matching cookie banner rule, how often do we handle or
+        fail to handle cookie banners, labelled by reason. The ''success'' and ''fail''
+        counters count the total numbers independently of the reason counters. Counters
+        are incremented after the content window has been destroyed. This metric additionally
+        reports cookie injections after which we didn''t see a banner as "success_cookie_injected".
+
+        '
+    - name: cookie_banners_cmp_detected_cmp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often a specific cmp has been detected by our cookie
+        banner handling.
+
+        '
+    - name: cookie_banners_cmp_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Given a matching CMP rule, how often do we handle or fail to handle
+        cookie banners, labelled by reason. The ''success'' and ''fail'' counters
+        count the total numbers independently of the reason counters. Counters are
+        incremented after the content window has been destroyed.
+
+        '
+    - name: cookie_banners_rule_lookup_by_domain
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of hit/miss of cookie banner rule lookups for
+        domain. We collect three types of counters, including counters for overall
+        rule lookup, counters for cookie rule lookup and counters for click rule lookup.
+        We also divide the counter by top-level loads and iframe loads. For each domain,
+        we will only collect once.
+
+        '
+    - name: cookie_banners_rule_lookup_by_load
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of hit/miss of cookie banner rule lookups for
+        every load. We collect three types of counters, including counters for overall
+        rule lookup, counters for cookie rule lookup and counters for click rule lookup.
+        We also divide the counter by top-level loads and iframe loads.
+
+        '
+    - name: data_storage_entries
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Counts the number of entries stored in each nsIDataStorage.
+    - name: dotprint_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'An error occured while setting up for printing. Default label
+        is ''unknown''.
+
+        '
+    - name: engine_tab_kills
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often was the content process of a foreground (selected) or
+
+        background tab killed.
+
+        '
+    - name: fog_validation_gvsv_audio_stream_init
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        GeckoView Streaming API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
+
+        '
+    - name: fog_validation_gvsv_audio_stream_init_gecko
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        Glean API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
+
+        '
+    - name: fog_validation_gvsv_audio_stream_init_gvst
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        Glean API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
+
+        '
+    - name: ipc_received_messages_content_background
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+    - name: ipc_received_messages_content_foreground
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+    - name: ipc_received_messages_gpu_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+    - name: ipc_received_messages_parent_active
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+    - name: ipc_received_messages_parent_inactive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+    - name: ipc_sent_messages_content_background
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+    - name: ipc_sent_messages_content_foreground
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+    - name: ipc_sent_messages_gpu_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+    - name: ipc_sent_messages_parent_active
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+    - name: ipc_sent_messages_parent_inactive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+    - name: logins_store_unlock_error_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of errors encountered when unlocking the logins store,
+        labeled by type. It is intended to be used together with `unlock_count` to
+        measure the overall error rate of unlocking the logins store.
+
+        '
+    - name: media_decode_error_per_mime_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the number of times the media with a specific mime type
+        (Eg. audio/vorbis, that would be used as the key) encounters a decode error
+        during playback. This metric was generated to correspond to the Legacy Telemetry
+        scalar media.decode_error_per_mime_type.
+
+        '
+    - name: netwerk_early_hints
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the different type of resources that are sent for early
+        hints.
+
+        '
+    - name: netwerk_eh_link_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts different type of link headers that are sent in early hint
+
+        '
+    - name: netwerk_eh_response_version
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'HTTP protocol version from Early Hints response
+
+        '
+    - name: netwerk_http3_ech_outcome_grease
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 when a GREASE ECH Extension was
+        sent
+
+        '
+    - name: netwerk_http3_ech_outcome_none
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 when No ECH Extension was sent
+
+        '
+    - name: netwerk_http3_ech_outcome_real
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 when a ''real'' ECH Extension was
+        sent
+
+        '
+    - name: network_data_size_pb_per_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of KB we transferred keyed by "contentType"
+
+        '
+    - name: network_data_size_per_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of KB we transferred keyed by "contentType"
+
+        '
+    - name: networking_https_upgrade_with_https_rr
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether an HTTP request gets upgraded to HTTPS because of HTTPS
+        RR
+
+        '
+    - name: networking_speculative_connection_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the occurrence of each outcome of a speculative connection
+
+        '
+    - name: rtcrtpsender_setparameters_blame_length_changed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call that attempted to change the number of encodings, broken
+        down by the eTLD+1 of the site. Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+    - name: rtcrtpsender_setparameters_blame_no_getparameters
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call because `[[LastReturnedParameters]]` was not set, broken
+        down by the eTLD+1 of the site. (ie; there was not a recent enough call to
+        `getParameters`) Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+    - name: rtcrtpsender_setparameters_blame_no_transactionid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call that did not set the transactionId field, broken down
+        by the eTLD+1 of the site. Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+    - name: rtcrtpsender_setparameters_blame_stale_transactionid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call that used a stale transaction id, broken down by the
+        eTLD+1 of the site. Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -19860,6 +21045,33 @@ fields:
       description: 'Happy Eyeballs: end-to-end time in milliseconds from algorithm
         start to a successful connection or final failure, keyed by whether the algorithm
         ultimately succeeded or failed.
+
+        '
+    - name: networking_http_3_ecn_ce_ect0_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000).
 
         '
   - name: labeled_memory_distribution
@@ -24799,6 +26011,12 @@ fields:
       description: 'The value of the "nimbus.qa.string-user" pref.
 
         '
+    - name: fog_validation_some_object
+      type: JSON
+      mode: NULLABLE
+      description: 'Static data recorded to verify the new object metric type end-to-end.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -25326,6 +26544,52 @@ fields:
       description: 'Number of Local Mode mappings currently used when opening DevTools.
 
         '
+    - name: avif_aom_decode_error
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Image-decode Error from AOM decoder (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: avif_dav1d_decode_error
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Image-decode Error from dav1d decoder
+
+        '
+    - name: extensions_quarantined_domains_listsize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of domains listed in the quarantined domains list pref
+        for the client during this session.
+
+        '
+    - name: fog_validation_gvsv_primary_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Primary display pixel height, recorded alongside the GeckoView
+        Streaming
+
+        API for the purposes of Validation (hence GVSV).
+
+        '
+    - name: fog_validation_gvsv_primary_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Primary display pixel width, recorded alongside the GeckoView
+        Streaming
+
+        API for the purposes of Validation (hence GVSV).
+
+        '
+    - name: recent_bookmarks_recent_bookmarks_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of bookmarked items appearing in the
+
+        Recently Saved section on the home page.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE
@@ -25761,6 +27025,79 @@ fields:
         one observer failure. Denominator is incremented on every call; numerator
         is incremented when hadFailures is true or the promise rejects. This currently
         does not keep track of regular PBM teardown (last PBM window exited).
+
+        '
+    - name: cookie_banners_cmp_ratio_handled_by_cmp_rule
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The proportion of cookie banners handled by CMP rules within the
+        total number of cases handled, including those handled by site-specific rules.
+
+        '
+    - name: pkcs11_built_in_roots_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the built-in roots module.
+
+        '
+    - name: pkcs11_nss_cert_db
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the NSS cert DB.
+
+        '
+    - name: rtcrtpsender_setparameters_warn_rid_changed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call that
+        attempted to change the rid on an encoding (note that we only check this if
+        the encoding count did not change, see warn_length_changed).
+
+        '
+    - name: rtcrtpsender_setparameters_warn_stale_transactionid
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call that
+        used a stale transaction id.
 
         '
   - name: string
@@ -26430,6 +27767,121 @@ fields:
         or none.
 
         '
+    - name: experiments_metrics_active_experiment
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the branch name of the active experiment, if the client
+        is enrolled in the `fenix-test-2019-08-05` experiment. This is intended to
+        validate that the service-experiments library properly matches clients to
+        experiments and can take action based on a multi-branched experiment. This
+        is done by recording the experiment branch name in this string metric which
+        allows the experiment to be transparent and unobtrusive to the user.
+
+        '
+    - name: extensions_quarantined_domains_listhash
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA1 cryptographic hash of the quarantined domains string pref.
+
+        '
+    - name: extensions_quarantined_domains_remotehash
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA1 cryptographic hash of the quarantined domains string pref
+        as it was set based on the value got synced from the RemoteSettings collection.
+        AMRemoteSettings will be re-processing the entries on the next application
+        startup and so this metric lifetime can be set to application and expect it
+        to be always set to the value got from the RemoteSettings collection.
+
+        '
+    - name: geckoview_build_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The Buildid of the Gecko engine, example: 20200205124310
+
+        '
+    - name: geckoview_validation_build_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The Buildid of the Gecko engine, example: 20200205124310 Mirror
+        of `geckoview.build_id` for validation of migrated data.
+
+        '
+    - name: geckoview_validation_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the Gecko engine, example: 74.0a1 Mirror of `geckoview.version`
+        for validation of migrated data.
+
+        '
+    - name: geckoview_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the Gecko engine, example: 74.0a1
+
+        '
+    - name: gfx_adapter_primary_device_id_last_seen
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter device identification last seen This is a temporary
+        workaround for some early telemetry system issues. See Bug 1601091 for more
+        information
+
+        '
+    - name: gfx_status_compositor_last_seen
+      type: STRING
+      mode: NULLABLE
+      description: 'Name of the graphics compositor last seen in use. Possible values
+        are "opengl, d3d11, client, webrender or basic" This is a temporary workaround
+        for some early telemetry system issues. See Bug 1601091 for more information
+
+        '
+    - name: metrics_install_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Used to identify the source the app was installed from.
+
+        '
+    - name: metrics_toolbar_position
+      type: STRING
+      mode: NULLABLE
+      description: 'A string that indicates the new position of the toolbar TOP or
+        BOTTOM
+
+        '
+    - name: metrics_total_uri_count
+      type: STRING
+      mode: NULLABLE
+      description: 'A counter of URIs visited by the user in the current session,
+        including page reloads. This does not include background page requests and
+        URIs from embedded pages or private browsing.
+
+        '
+    - name: ping_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'The optional reason the ping was submitted.
+
+        The specific values for reason are specific to each ping, and are
+
+        documented in the ping''s pings.yaml file.
+
+        '
+    - name: search_default_engine_submission_url
+      type: STRING
+      mode: NULLABLE
+      description: 'If the search engine is pre-loaded with Fenix this value will
+        be he base
+
+        URL we use to build the search query for the search engine. For example:
+
+        https://mysearchengine.com/?query=%s. If it''s a custom search engine
+
+        (defined: https://github.com/mozilla-mobile/fenix/issues/1607) the value
+
+        will be "custom"
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -26551,6 +28003,125 @@ fields:
         Examples include "appChanged", "directoryState".
 
         Previously reported in "main" ping `simpleMeasurements`.
+
+        '
+    - name: logins_store_migration_errors
+      type: STRING
+      mode: REPEATED
+      description: 'Errors discovered in the migration.
+
+        '
+    - name: metrics_syncing_items
+      type: STRING
+      mode: REPEATED
+      description: 'The preference keys for the switch preferences the user has enabled
+        to sync with FxA. We currently track: Bookmarks and History.
+
+        '
+    - name: preferences_open_links_in_a_private_tab
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled open links in a private tab.
+        default: false
+
+        '
+    - name: preferences_open_links_in_app
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has the open links in apps feature enabled.
+        default: false
+
+        '
+    - name: preferences_remote_debugging
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has remote debugging enabled default:
+        false
+
+        '
+    - name: preferences_search_bookmarks
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled bookmark search suggestions
+        default: true
+
+        '
+    - name: preferences_search_browsing_history
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled browsing history suggestions.
+        default: true
+
+        '
+    - name: preferences_search_suggestions_private
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled showing search suggestions
+        in private mode. default: false (we prompt the user, asking them to make a
+        selection)
+
+        '
+    - name: preferences_show_clipboard_suggestions
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled clipboard search suggestions.
+        default: true
+
+        '
+    - name: preferences_show_search_shortcuts
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled search shortcuts. default:
+        true
+
+        '
+    - name: preferences_show_search_suggestions
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has search suggestions enabled default:
+        true
+
+        '
+    - name: preferences_show_voice_search
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has enabled the voice search button. default:
+        true
+
+        '
+    - name: preferences_sync
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user is signed into FxA default: false
+
+        '
+    - name: preferences_telemetry
+      type: STRING
+      mode: REPEATED
+      description: 'Whether or not the user has telemetry enabled. Note we should
+        never receive a "false" value for this since telemetry would not send in that
+        case. default: true
+
+        '
+    - name: preferences_theme
+      type: STRING
+      mode: REPEATED
+      description: 'The theme the user has enabled. "light," "dark," "system," or
+        "battery" default: "system" for API 28+, else "light"
+
+        '
+    - name: preferences_toolbar_position
+      type: STRING
+      mode: REPEATED
+      description: 'The position of the toolbar default: bottom (defaults to top if
+        the user has accessibility services)
+
+        '
+    - name: preferences_tracking_protection
+      type: STRING
+      mode: REPEATED
+      description: 'What type of enhanced tracking protection the user has enabled.
+        "standard," "strict," "custom," or "" (if disabled) default: "standard"
 
         '
   - name: text2
@@ -26700,6 +28271,65 @@ fields:
       description: 'The time in milliseconds to initialize the NSS component in the
         parent process. This metric was generated to correspond to the Legacy Telemetry
         scalar networking.nss_initialization.
+
+        '
+    - name: engine_kill_background_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Measures the age of the engine session of a background tab at
+        the
+
+        time its content process got killed.
+
+        '
+    - name: engine_kill_foreground_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Measures the age of the engine session of a foreground (selected)
+        tab
+
+        at the time its content process got killed.
+
+        '
+    - name: logins_store_migration_total_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How long the migration tool
+
+        '
+    - name: play_store_attribution_deferred_deeplink_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time that it takes to receive deferred deeplink from the Google
+        Play Store.
 
         '
   - name: timing_distribution
@@ -35688,6 +37318,1095 @@ fields:
       description: 'The duration for one full migration run at startup.
 
         '
+    - name: cert_verifier_cert_trust_evaluation_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures how long we take to evaluate the trust status of a certificate.
+
+        '
+    - name: cookie_banners_click_handle_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long it takes to handle cookie banners successfully
+        from DOMContentLoaded until click.
+
+        '
+    - name: cookie_banners_cmp_handle_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long it takes to handle cookie banners successfully
+        using CMP rules from DOMContentLoaded until click. This metric is a variant
+        of the cookieBanners.click.handle_duration.
+
+        '
+    - name: engine_tab_kill_background_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures the age of the engine session of a background tab at
+        the
+
+        time its content process got killed.
+
+        '
+    - name: engine_tab_kill_foreground_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures the age of the engine session of a foreground (selected)
+        tab
+
+        at the time its content process got killed.
+
+        '
+    - name: extensions_timing_storage_local_get_json
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of time it takes to perform a get via storage.local using
+        the JSONFile backend.
+
+        '
+    - name: extensions_timing_storage_local_set_json
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of time it takes to perform a set via storage.local using
+        the JSONFile backend.
+
+        '
+    - name: fingerprinting_protection_canvas_noise_calculate_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long to generate canvas random noises.
+
+        '
+    - name: fingerprinting_protection_canvas_noise_calculate_time_ns
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long to generate canvas random noises.
+
+        '
+    - name: fog_validation_gvsv_composite_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Glean equivalent to the Geckoview Stream gfx Composite Time metric.
+        Represents The time taken to composite a frame. Differs between non-webrender
+        and webrender, see the non-validation version for more details.
+
+        '
+    - name: gfx_status_framebuild_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to build a webrender frame. This involves calculating
+        the visibility of primitives, requesting resources, and building the render
+        passes which will be used to render the frame.
+
+        '
+    - name: gfx_status_sceneswap_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to do a webrender scene swap. This is book-keeping
+        that APZ must perform once webrender has built a new scene.
+
+        '
+    - name: gfx_webrender_framebuild_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to build a webrender frame. This involves calculating
+        the visibility of primitives, requesting resources, and building the render
+        passes which will be used to render the frame.
+
+        '
+    - name: gfx_webrender_render_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to build a webrender frame. This involves calculating
+        the visibility of primitives, requesting resources, and building the render
+        passes which will be used to render the frame.
+
+        '
+    - name: gfx_webrender_scenebuild_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to build a webrender scene. This occurs each time
+        webrender receives a new display list. This additionally includes blob rasterization
+        time.
+
+        '
+    - name: gfx_webrender_sceneswap_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to do a webrender scene swap. This is book-keeping
+        that APZ must perform once webrender has built a new scene.
+
+        '
+    - name: js_bytecode_caching_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent caching JS bytecode for scripts executed during a page
+        load.
+
+        '
+    - name: logins_store_read_query_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to execute a read query on the logins store (such
+        as listing all logins, or finding a specific login by id).
+
+        '
+    - name: logins_store_unlock_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to open the logins store on startup, or after locking
+        it due to user inactivity.
+
+        '
+    - name: logins_store_write_query_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to execute a write query on the logins store (such
+        as adding, updating, or deleting a login record).
+
+        '
+    - name: network_open_to_transaction_pending
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time spent from HttpChannelChild::AsyncOpen to adding the
+        transaction to the nsHttpConnectionMgr
+
+        '
+    - name: networking_http_content_html5parser_ondatafinished_to_onstop_delay_negative
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between processing OnStopRequest and processing OnDataFinished
+        (if OnStopRequest comes first)
+
+        '
+    - name: networking_http_content_ondatafinished_to_onstop_delay_negative
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between processing OnStopRequest and processing OnDataFinished
+        (if OnStopRequest comes first)
+
+        '
+    - name: perf_startup_app_on_create_to_glean_init
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A subsection of the duration of `FenixApplication.onCreate` and
+        thus the
+
+        `application_on_create` probe from the start of the method through when
+
+        `initializeGlean` is called. Note: `initializeGlean` is a no-op for Beta
+
+        and Release builds which instead initialize it during
+
+        `MigratingFenixApplication`, which we don''t currently measure.
+
+        '
+    - name: perf_startup_app_on_create_to_megazord_init
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A subsection of the duration of `FenixApplication.onCreate` and
+        thus the
+
+        `application_on_create` probe from after the `app_on_create_to_glean_init`
+
+        probe until we block for the megazord to complete set up.
+
+        '
+    - name: perf_startup_app_on_create_to_setup_in_main
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A subsection of the duration of `FenixApplication.onCreate` and
+        thus the
+
+        `application_on_create` probe from after the
+
+        `app_on_create_to_megazord_init` probe until the end of
+
+        `setupInMainProcessOnly`, which is expected to be the end of the
+
+        `onCreate` call (unless the implementation later changes).
+
+        '
+    - name: perf_startup_base_bfragment_on_create_view
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of `BaseBrowserFragment.onCreateView`.
+
+        '
+    - name: perf_startup_base_bfragment_on_view_created
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of `BaseBrowserFragment.onViewCreated`.
+
+        '
+    - name: perf_startup_home_activity_on_create
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of `HomeActivity.onCreate`.
+
+        '
+    - name: perf_startup_home_activity_on_start
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of `HomeActivity.onStart`. This may encapsulate
+
+        `HomeFragment` or `BrowserFragment` creation, depending on the code path,
+
+        so we expect this to take varying amounts of time. As such, this probe may
+
+        not be easy to interpret directly but we believe collecting it may give us
+
+        more information about different patterns we might see in performance
+
+        data.
+
+        '
+    - name: perf_startup_home_fragment_on_create_view
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of `HomeFragment.onCreateView`.
+
+        '
+    - name: perf_startup_home_fragment_on_view_created
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of `HomeFragment.onViewCreated`.
+
+        '
+    - name: performance_interaction_tab_switch_composite
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time between tab selection and first composite of the tab content
+        onto the screen.
+
+        '
+    - name: performance_pageload_dcl
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in milliseconds from navigationStart to domContentLoaded
+        for the foreground http or https root content document.
+
+        '
+    - name: performance_pageload_dcl_responsestart
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in milliseconds from responseStart to domContentLoaded for
+        the foreground http or https root content document.
+
+        '
+    - name: performance_pageload_eh_fcp_preconnect
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        only on page load where the main document uses preconnect but did not use
+        Early Hints preload.
+
+        '
+    - name: performance_pageload_eh_fcp_preconnect_preload_with_eh
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        on early page load where the main document uses preconnect and supports Early
+        Hints preload.
+
+        '
+    - name: performance_pageload_eh_fcp_preconnect_preload_without_eh
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        on early page load where the preconnected main document uses preconnect and
+        preload without Early Hints.
+
+        '
+    - name: performance_pageload_eh_fcp_preload_with_eh
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        only on page load where the main document uses or supports Early Hints preload.
+
+        '
+    - name: performance_pageload_eh_fcp_preload_without_eh
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        only on page load where the main document uses preload without Early Hints.
+
+        '
+    - name: performance_pageload_req_anim_frame_callback
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in milliseconds calling all request animation frame
+        callbacks for a document before it has reached readystate complete. (Migrated
+        from the geckoview metric of the same name.)
+
+        '
+    - name: performance_responsiveness_req_anim_frame_callback
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in milliseconds calling all request animation frame
+        callbacks for a document after it has reached readystate complete. (Migrated
+        from the geckoview metric of the same name.)
+
+        '
+    - name: performance_time_load_event_end_no_preload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from navigationStart to [`loadEventEnd`](https://www.w3.org/TR/
+        navigation-timing/#dom-performancetiming-loadend) as per the W3C Performance
+        Timing API. This is only submitted on when the document would not preload
+        a resource.
+
+        '
+    - name: performance_time_load_event_end_preload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from navigationStart to [`loadEventEnd`](https://www.w3.org/TR/
+        navigation-timing/#dom-performancetiming-loadend) as per the W3C Performance
+        Timing API. This is only submitted on when the document would preload a resource
+        (i.e., if it encounters a `<link>` element or a `Link` header with `rel="preload"`),
+        even if the `network.preload` pref is disabled.
+
+        '
+    - name: performance_time_load_event_start_no_preload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from navigationStart to [`loadEventStart`](https://www.w3.org/TR/
+        navigation-timing/#dom-performancetiming-loadstart) as per the W3C Performance
+        Timing API. This is only submitted on when the document would not preload
+        a resource.
+
+        '
+    - name: performance_time_load_event_start_preload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from navigationStart to [`loadEventStart`](https://www.w3.org/TR/
+        navigation-timing/#dom-performancetiming-loadstart) as per the W3C Performance
+        Timing API. This is only submitted on when the document would preload a resource
+        (i.e., if it encounters a `<link>` element or a `Link` header with `rel="preload"`),
+        even if the `network.preload` pref is disabled.
+
+        '
+    - name: places_manager_read_query_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to execute a read query on the places store.
+
+        '
+    - name: places_manager_scan_query_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to execute a scan query on the places store. This
+        metric is for queries that we expect to be costly e.g. getBookmarksTree(guid,
+        recursive=True).
+
+        '
+    - name: places_manager_write_query_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to execute a write query on the places store.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -35718,6 +38437,21 @@ fields:
         search engine. For example: https://mysearchengine.com/?query=%s. If it''s
 
         a custom search engine the value will not be set.
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metrics_shared_prefs_uuid
+      type: STRING
+      mode: NULLABLE
+      description: 'A UUID stored in Shared Preferences used to analyze technical
+        differences
+
+        between storage mechanisms in Android, specifically the Glean DB and
+
+        Shared Preferences.
 
         '
   - name: text

@@ -23,6 +23,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:cloud-engineering/quick-example-scheduled-report
   - workgroup:finops/billingetl-bq-scheduled
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:platform/backstage-gke

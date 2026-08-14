@@ -30,10 +30,10 @@ based on the layout type and window width. It is an update of `determine_tiles_p
 
 | `newtab_window_inner_width`        | Tiles per row |
 |-----------------------------------|----------------|
-| `< 1024`                          | 1              |
-| `1024 ≤ width < 1366`             | 2              |
-| `1366 ≤ width < 1920`             | 3              |
-| `≥ 1920`                          | 4              |
+| `< 1047`                          | 1              |
+| `1047 ≤ width < 1392`             | 2              |
+| `1392 ≤ width < 1737`             | 3              |
+| `≥ 1737`                          | 4              |
 
 ### For layout type: `SECTION_GRID`
 

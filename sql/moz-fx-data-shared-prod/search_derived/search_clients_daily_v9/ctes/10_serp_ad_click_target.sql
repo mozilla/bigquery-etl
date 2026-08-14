@@ -19,9 +19,9 @@ CROSS JOIN
   UNNEST(ad_components) AS ad_components
 WHERE
   submission_date
-  BETWEEN '2025-06-25'
-  AND '2025-09-25'
-  AND sample_id = 0
+  BETWEEN '2025-12-01'
+  AND '2026-03-31'
+  AND sample_id IN (0, 50)
 -- submission_date = @submission_date
 GROUP BY
   client_id,

@@ -56,9 +56,9 @@ FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
 WHERE
   DATE(submission_timestamp)
-  BETWEEN '2025-06-25'
-  AND '2025-09-25'
-  AND sample_id = 0
+  BETWEEN '2025-12-01'
+  AND '2026-03-31'
+  AND sample_id IN (0, 50)
 -- date(submission_timestamp) = @submission_date
   AND event = 'sap.counts'
 GROUP BY

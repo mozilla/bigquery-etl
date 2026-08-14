@@ -23,9 +23,9 @@ clients_with_adblocker_addons_cte AS (
     ON adblocker_addons_cte.addon_id = JSON_VALUE(addons, '$.id')
   WHERE
     DATE(submission_timestamp)
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
-    AND sample_id = 0
+    BETWEEN '2025-12-01'
+    AND '2026-03-31'
+    AND sample_id IN (0, 50)
     -- date(submission_timestamp) = @submission_date
     AND NOT BOOL(JSON_QUERY(addons, '$.userDisabled'))
     AND NOT BOOL(JSON_QUERY(addons, '$.appDisabled'))

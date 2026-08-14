@@ -12,7 +12,17 @@ This User-Defined Function (UDF) determines the appropriate grid layout type for
 
 ## 📌 Evaluation Criteria
 
-The UDF returns one of four possible values based on the following conditions:
+The UDF returns one of xi possible values based on the following conditions:
+
+### `POSTNOVA_SECTION`
+The post-Nova layout can have both sections and grid variants. Both have the same breakpoints, but the possible tiles differ
+
+Returned when:
+- `app_version >= 155 AND is_section=TRUE`
+
+### `POSTNOVA_GRID`
+Returned when:
+- `app_version >= 155 AND is_section=FALSE`
 
 ### `NOVA_SECTION`
 Nova can have both sections and grid variants. Both have the same breakpoints, but the possible tiles differ
@@ -47,6 +57,8 @@ Returned when:
 
 ## 🏁 Return Values
 
+- `POSTNOVA_SECTION`
+- `POSTNOVA_GRID`
 - `NOVA_SECTION`
 - `NOVA_GRID`
 - `SECTION_GRID`

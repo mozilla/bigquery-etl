@@ -23,7 +23,7 @@ description: |
     mozfun.customer_experience.normalize_product(products, 'GA4')
 
   Recomputed in full each run over a fixed window starting 2024-01-01 (no date
-  partition). `latest_document_revision_date` and the `reviewed_date` backfill
+  partition). `latest_document_reviewed_date` and the `reviewed_date` backfill
   are computed over in-window revisions only.
 
   Used by:

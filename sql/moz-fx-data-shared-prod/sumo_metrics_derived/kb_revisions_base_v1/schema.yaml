@@ -47,7 +47,7 @@ fields:
     revision with a NULL `reviewed` timestamp inherits its creation date, and an
     unreviewed revision older than the document's most recent in-window review
     inherits that review date. NULL means the revision is still awaiting review.
-- name: latest_document_revision_date
+- name: latest_document_reviewed_date
   type: DATE
   mode: NULLABLE
   description: >

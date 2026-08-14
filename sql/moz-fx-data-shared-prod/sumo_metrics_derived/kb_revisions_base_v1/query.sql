@@ -3,7 +3,8 @@
 -- KB revision throughput and review-backlog reporting.
 --
 -- Revision/article filters (matching the KB releases dashboard query):
---   d.parent_id IS NULL        -- original, non-translated articles
+--   d.parent_id IS NULL        -- original, non-translated articles (the join to
+--                              -- d is inner, so this cannot mean "no document")
 --   d.locale = 'en-US'         -- en-US articles only
 --   d.is_template = FALSE      -- exclude template revisions
 --   d.is_archived = FALSE      -- exclude archived articles
@@ -11,7 +12,7 @@
 --   product NOT IN ('Thunderbird', 'Thunderbird Android') -- handled by another team
 --
 -- Full recompute each run over a fixed window starting 2024-01-01 (no date
--- partition parameter). `latest_document_revision_date` and the `reviewed_date`
+-- partition parameter). `latest_document_reviewed_date` and the `reviewed_date`
 -- backfill below are computed over the in-window revisions only, so a document
 -- whose only reviewed revision predates the window start keeps a NULL
 -- reviewed_date.
@@ -67,9 +68,12 @@ revisions AS (
     END AS reviewer_type
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision` r
-  LEFT JOIN
+  -- Inner join: a revision whose document is missing is out of scope, and the
+  -- d.* filters below would discard it anyway.
+  JOIN
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus` d
     ON d.id = r.document_id
+  -- These stay LEFT: reviewer_id is NULL for revisions awaiting review.
   LEFT JOIN
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_auth_user` creator
     ON r.creator_id = creator.id
@@ -92,7 +96,7 @@ revisions AS (
 with_document_latest AS (
   SELECT
     * EXCEPT (raw_reviewed_date),
-    MAX(raw_reviewed_date) OVER (PARTITION BY document_id) AS latest_document_revision_date,
+    MAX(raw_reviewed_date) OVER (PARTITION BY document_id) AS latest_document_reviewed_date,
     IF(
       raw_reviewed_date IS NULL
       AND created_date <= MAX(raw_reviewed_date) OVER (PARTITION BY document_id),
@@ -113,7 +117,7 @@ SELECT
   product,
   created_date,
   reviewed_date,
-  latest_document_revision_date,
+  latest_document_reviewed_date,
   is_approved,
   creator_id,
   creator_username,

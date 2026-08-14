@@ -34,6 +34,7 @@ common case) aren't affected.
 """
 
 from argparse import ArgumentParser
+from datetime import UTC, date, datetime
 
 from google.cloud import bigquery
 
@@ -46,6 +47,12 @@ DESTINATION_TABLE = "analysis_results_monitoring_v1"
 # which build_final_sql approaches as one reference per discovered table.
 # Peak observed over 180 days is 314.
 MAX_DISCOVERED_TABLES = 900
+
+# JOBS_BY_PROJECT retains 180 days. Past that, table discovery silently
+# returns zero rows -- indistinguishable from "nothing was written that
+# day" -- so a backfill this old must fail loudly instead of reporting a
+# false 0% success rate.
+MAX_BACKFILL_AGE_DAYS = 180
 
 # error_category values (see jetstream_analysis_errors/view.sql) that represent
 # an actual failure to compute something. Excludes `skipped` (the experiment
@@ -64,6 +71,15 @@ PERIOD_TOKENS = [
     "day",
 ]
 
+# jetstream's DAG runs daily at 04:00 UTC, so a run for `@date` produces
+# rows between 04:00 UTC on `@date + 1` and 04:00 UTC on `@date + 2`.
+WINDOW_START = (
+    "TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(@date, INTERVAL 1 DAY)), INTERVAL 4 HOUR)"
+)
+WINDOW_END = (
+    "TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(@date, INTERVAL 2 DAY)), INTERVAL 4 HOUR)"
+)
+
 DISCOVER_TABLES_SQL = f"""
 WITH discovered_tables AS (
   -- JOBS_BY_PROJECT is a historical, per-job record (180-day retention),
@@ -77,11 +93,14 @@ WITH discovered_tables AS (
     AND STARTS_WITH(destination_table.table_id, 'statistics_')
     AND job_type = 'LOAD'
     AND error_result IS NULL
-    AND DATE(creation_time) = DATE_ADD(@date, INTERVAL 1 DAY)
+    AND creation_time >= {WINDOW_START}
+    AND creation_time < {WINDOW_END}
 ),
 -- jetstream sets each table's description to the exact experiment slug.
 table_experiments AS (
-  SELECT table_name, TRIM(option_value, '"') AS experiment
+  -- NULLIF: an empty (not missing) description must also fall through to
+  -- the name-matching fallback below, not resolve to experiment = ''.
+  SELECT table_name, NULLIF(TRIM(option_value, '"'), '') AS experiment
   FROM `{PROJECT}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE option_name = 'description'
 ),
@@ -138,7 +157,7 @@ WHERE REGEXP_CONTAINS(period_window, r'^({"|".join(PERIOD_TOKENS)})_\\d+$')
 
 # `analysis_period` on failed rows is sometimes bare (e.g. "day", logged by
 # statistics.py -- window_index is then NULL, same "unattributed" semantics
-# as a NULL analysis_basis/segment/metric) and sometimes period+window-count
+# as a NULL analysis_basis/segment/metric) and sometimes period+window-index
 # (e.g. "day_7", logged by calculate_metrics/calculate_metric_for_ds).
 FAILED_SQL = f"""
 SELECT
@@ -158,7 +177,8 @@ FROM (
   FROM `{PROJECT}.{DATASET}.jetstream_analysis_errors`
   WHERE source = 'jetstream'
     AND experiment IS NOT NULL
-    AND DATE(timestamp) = DATE_ADD(@date, INTERVAL 1 DAY)
+    AND timestamp >= {WINDOW_START}
+    AND timestamp < {WINDOW_END}
     AND error_category IN ({", ".join(f"'{c}'" for c in FAILURE_CATEGORIES)})
 )
 QUALIFY ROW_NUMBER() OVER (
@@ -186,7 +206,8 @@ WHERE destination_table.project_id = '{PROJECT}'
   AND STARTS_WITH(destination_table.table_id, 'statistics_')
   AND job_type = 'LOAD'
   AND error_result IS NULL
-  AND DATE(creation_time) = DATE_ADD(@date, INTERVAL 1 DAY)
+  AND creation_time >= {WINDOW_START}
+  AND creation_time < {WINDOW_END}
 """
 
 
@@ -343,6 +364,15 @@ def main():
         "--date", dest="date", required=True, help="Date to roll up (YYYY-MM-DD)"
     )
     args = parser.parse_args()
+
+    today = datetime.now(tz=UTC).date()
+    backfill_age_days = (today - date.fromisoformat(args.date)).days
+    if backfill_age_days > MAX_BACKFILL_AGE_DAYS:
+        raise RuntimeError(
+            f"--date={args.date} is {backfill_age_days} days old, past "
+            f"JOBS_BY_PROJECT's {MAX_BACKFILL_AGE_DAYS}-day retention -- "
+            "table discovery would silently find nothing."
+        )
 
     client = bigquery.Client(project=args.project)
 

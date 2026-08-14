@@ -1,0 +1,34 @@
+friendly_name: KB Revisions — Daily
+description: |
+  Day-level SUMO knowledge base revision activity, aggregated from
+  kb_revisions_base_v1.
+
+  Grain: Day x Product x Reviewer type
+
+  Built on a dense date spine (every day x every observed product x reviewer
+  type), so days with no activity report 0 rather than being absent.
+
+  - created_revisions: revisions created that day
+  - reviewed_revisions: revisions reviewed that day
+  - approved_revisions: revisions reviewed and approved that day
+  - net_revisions: created minus reviewed — a daily *flow*, not a backlog level.
+    The cumulative backlog is exposed as `running_backlog` in
+    sumo_kb_revision_kpis.
+
+  Recomputed in full each run (no date partition). Article scope and product
+  mapping are defined upstream in kb_revisions_base_v1.
+
+  Used by:
+  - sumo_kb_revision_kpis
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  type: aggregate
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

@@ -1,0 +1,38 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Activity date (UTC)
+- name: week
+  type: DATE
+  mode: NULLABLE
+  description: Start of the week (Sunday) containing `event_date`
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: Canonical CX product name; see kb_revisions_base_v1.product
+- name: reviewer_type
+  type: STRING
+  mode: NULLABLE
+  description: "Review population: 'Staff', 'Community', or 'Unreviewed'"
+- name: created_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: Revisions created on `event_date` for this product and reviewer type
+- name: reviewed_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: Revisions reviewed on `event_date` for this product and reviewer type
+- name: approved_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Revisions reviewed and approved on `event_date` for this product and reviewer
+    type. A subset of `reviewed_revisions`.
+- name: net_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    `created_revisions` minus `reviewed_revisions` — the daily net review flow,
+    not a backlog level, and can be negative. For the cumulative backlog see
+    `running_backlog` in sumo_kb_revision_kpis.

@@ -2,24 +2,36 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date of the tile ID export.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: dma
   type: STRING
-  description: String representation of the Designated Market Area.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: dma
 - mode: NULLABLE
   name: query
   type: STRING
-  description: A string a user input into the search bar reported to suggest.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: query
 - mode: NULLABLE
   name: block_id
   type: INTEGER
-  description: A unique identifier for a set of related keywords.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: block_id
 - mode: NULLABLE
   name: impressions
   type: INTEGER
-  description: The count of total impressions by users.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: impressions
 - mode: NULLABLE
   name: clicks
   type: INTEGER
-  description: The count of total clicks by users.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: clicks

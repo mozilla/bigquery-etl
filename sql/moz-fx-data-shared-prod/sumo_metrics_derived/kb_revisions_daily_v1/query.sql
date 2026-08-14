@@ -6,8 +6,19 @@
 -- type), so days with no activity report 0 rather than being absent.
 --
 -- `net_revisions` is a daily *flow* (created minus reviewed), not a backlog
--- level; the cumulative backlog is exposed as `running_backlog` in
--- sumo_kb_revision_kpis.
+-- level; the cumulative version is `backlog_change_since_window_start` in
+-- sumo_kb_revision_kpis, which is also a trend rather than a pending count.
+--
+-- Caveat on the reviewer_type split of `created_revisions` (and therefore of
+-- `net_revisions`): reviewer_type is a property of the *review*, not of anything
+-- known when the revision was created, and this table is recomputed in full each
+-- run. So a revision created today counts under 'Unreviewed' for its creation
+-- date now, and moves to 'Staff'/'Community' for that same date once it is
+-- reviewed. The recent tail is materially affected — about 27% of revisions
+-- created in the last 30 days are still unreviewed — so a created-by-reviewer-
+-- type series redistributes between buckets on every run. Day-level totals are
+-- stable; only the split is retroactively mutable. Kept at this grain because
+-- the upstream SUMO dashboard groups creations the same way.
 WITH base AS (
   SELECT
     *

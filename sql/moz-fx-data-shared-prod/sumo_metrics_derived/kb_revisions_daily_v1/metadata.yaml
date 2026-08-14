@@ -12,8 +12,14 @@ description: |
   - reviewed_revisions: revisions reviewed that day
   - approved_revisions: revisions reviewed and approved that day
   - net_revisions: created minus reviewed — a daily *flow*, not a backlog level.
-    The cumulative backlog is exposed as `running_backlog` in
-    sumo_kb_revision_kpis.
+    The cumulative version is `backlog_change_since_window_start` in
+    sumo_kb_revision_kpis, which is a backlog trend rather than a pending count.
+
+  Note: the reviewer_type split of created_revisions (and net_revisions) means
+  "eventually reviewed by" and is retroactively mutable, because reviewer_type is
+  a property of the review and this table is fully recomputed each run. Day-level
+  totals are stable; the split of the recent tail is not. See the column
+  descriptions in schema.yaml.
 
   Recomputed in full each run (no date partition). Article scope and product
   mapping are defined upstream in kb_revisions_base_v1.

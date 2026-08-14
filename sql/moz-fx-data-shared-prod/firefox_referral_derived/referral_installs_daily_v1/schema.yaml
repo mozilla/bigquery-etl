@@ -9,10 +9,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Referral (invite) code, with the `fxrefer:` prefix stripped. Expected to be
-    17 chars (confirmed by the Website team 2026-07-24). Derived from a referral
-    id generated within Firefox; not associated with FxA or any real-world
-    identity.
+    Referral (invite) code, with the `fxrefer` prefix stripped. Always exactly
+    17 chars of Crockford base32 (digits and upper-case letters); the ETL
+    enforces this, so malformed content is dropped rather than counted. Derived
+    from a referral id generated within Firefox; not associated with FxA or any
+    real-world identity.
 - name: install_count
   type: INTEGER
   mode: NULLABLE

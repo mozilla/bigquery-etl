@@ -1922,7 +1922,12 @@ bqetl_firefox_referral:
     referral_installs_daily_v1 -> referral_installs_totals_v1 ->
     referral_installs_totals_to_gcs_v1.
   repo: bigquery-etl
-  schedule_interval: 0 4 * * *
+  # Aligned with bqetl_ga4_firefoxdotcom (0 14 * * *) so the external task
+  # sensor's execution_delta is 0. At 0 4 * * * the run for ds=D started 10h
+  # before its upstream GA4 run for the same ds even began, so every run sat in
+  # a ~10h no-op sensor wait. Completion time is unchanged (still gated by
+  # firefoxdotcom_derived.ga_sessions_v2); this only removes the dead wait.
+  schedule_interval: 0 14 * * *
   tags:
     - impact/tier_3
 
@@ -2107,6 +2112,30 @@ bqetl_fred_daily_exchange_rate:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 30 23 * * *
+
+bqetl_market_research:
+  description: |
+    This DAG loads the market-research GCS corpus (browser release notes,
+    vendor blog posts, and competitor job postings) scraped by
+    docker-etl's release_scraping job into BigQuery. Scheduled on the same
+    cron as telemetry-airflow's web_scraping DAG, whose read_release_data
+    task is declared as an explicit depends_on dependency so these tasks
+    wait for that run to finish before loading.
+  default_args:
+    depends_on_past: false
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2026-08-11"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 15 * * 2
 
 bqetl_us_bls_unemployment_data:
   description: |

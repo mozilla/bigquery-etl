@@ -622,7 +622,7 @@ join_sap_serp_cte AS (
     AND sap_final_cte.normalized_engine IS NOT DISTINCT FROM serp_final_cte.serp_provider_id
     AND sap_final_cte.source IS NOT DISTINCT FROM serp_final_cte.serp_search_access_point
 ),
-consolidated AS (
+final_cte AS (
   SELECT
     serp_submission_date AS submission_date,
     serp_client_id AS client_id,
@@ -719,14 +719,6 @@ consolidated AS (
     serp_profile_group_id AS profile_group_id
   FROM
     join_sap_serp_cte
-  WHERE
-    serp_submission_date IS NOT NULL
-),
-final_cte AS (
-  SELECT
-    *
-  FROM
-    consolidated
 )
 SELECT
   *

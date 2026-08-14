@@ -60,11 +60,7 @@ SELECT
 FROM
   `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`
 WHERE
-  submission_date
-  BETWEEN '2025-12-01'
-  AND '2026-03-31'
-  AND sample_id IN (0, 50)
--- submission_date = @submission_date
+  submission_date = @submission_date
 GROUP BY
   client_id,
   submission_date,

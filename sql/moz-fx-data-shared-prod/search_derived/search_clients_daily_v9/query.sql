@@ -44,11 +44,7 @@ clients_with_adblocker_addons_cte AS (
     adblocker_addons_cte
     ON adblocker_addons_cte.addon_id = JSON_VALUE(addons, '$.id')
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND NOT BOOL(JSON_QUERY(addons, '$.userDisabled'))
     AND NOT BOOL(JSON_QUERY(addons, '$.appDisabled'))
     AND NOT BOOL(JSON_QUERY(addons, '$.blocklisted'))
@@ -72,11 +68,7 @@ sap_is_enterprise_cte AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
     AND document_id IS NOT NULL
   GROUP BY
@@ -197,11 +189,7 @@ sap_events_with_client_info_cte AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
     -- this is to get the last instance
   QUALIFY
@@ -278,11 +266,7 @@ sap_aggregates_cte AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
   GROUP BY
     client_id,
@@ -320,11 +304,7 @@ serp_is_enterprise_cte AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
   WHERE
-    submission_date
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- submission_date = @submission_date
+    submission_date = @submission_date
     AND document_id IS NOT NULL
   GROUP BY
     client_id,
@@ -390,11 +370,7 @@ serp_events_with_client_info_cte AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
   WHERE
-    submission_date
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- submission_date = @submission_date
+    submission_date = @submission_date
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -443,11 +419,7 @@ serp_ad_click_target_cte AS (
   CROSS JOIN
     UNNEST(ad_components) AS ad_components
   WHERE
-    submission_date
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- submission_date = @submission_date
+    submission_date = @submission_date
   GROUP BY
     client_id,
     submission_date,
@@ -497,11 +469,7 @@ serp_aggregates_cte AS (
   FROM
     `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`
   WHERE
-    submission_date
-    BETWEEN '2025-12-01'
-    AND '2026-03-31'
-    AND sample_id IN (0, 50)
-    -- submission_date = @submission_date
+    submission_date = @submission_date
   GROUP BY
     client_id,
     submission_date,

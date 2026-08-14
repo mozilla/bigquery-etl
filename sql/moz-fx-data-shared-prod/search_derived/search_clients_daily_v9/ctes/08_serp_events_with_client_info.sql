@@ -69,11 +69,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
 WHERE
-  submission_date
-  BETWEEN '2025-12-01'
-  AND '2026-03-31'
-  AND sample_id IN (0, 50)
--- submission_date = @submission_date
+  submission_date = @submission_date
 QUALIFY
   ROW_NUMBER() OVER (
     PARTITION BY

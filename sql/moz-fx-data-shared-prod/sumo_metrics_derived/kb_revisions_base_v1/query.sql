@@ -49,14 +49,21 @@ revisions AS (
     creator.is_staff AS creator_is_staff,
     r.reviewer_id,
     reviewer.username AS reviewer_username,
-    -- Review population the revision belongs to. NULL `is_staff` means no
-    -- reviewer is attached yet, i.e. the revision is still awaiting review.
+    -- Review population the revision belongs to. Keyed off `reviewer_id`, which
+    -- is what actually carries "nobody has picked this up yet" — a NULL
+    -- `reviewer.is_staff` cannot distinguish that from a reviewer_id whose user
+    -- row is missing from `kitsune_auth_user` (deleted or unsynced account), so
+    -- that case gets its own 'Unknown' label rather than being folded into
+    -- 'Unreviewed'. No revision is in that state today; the branch exists so a
+    -- future join miss shows up instead of inflating the unreviewed bucket.
     CASE
+      WHEN r.reviewer_id IS NULL
+        THEN 'Unreviewed'
       WHEN reviewer.is_staff
         THEN 'Staff'
       WHEN NOT reviewer.is_staff
         THEN 'Community'
-      ELSE 'Unreviewed'
+      ELSE 'Unknown'
     END AS reviewer_type
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision` r

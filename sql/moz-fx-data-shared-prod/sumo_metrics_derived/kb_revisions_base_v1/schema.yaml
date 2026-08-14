@@ -82,4 +82,9 @@ fields:
   mode: NULLABLE
   description: >
     Review population: 'Staff' or 'Community' based on the reviewer's staff flag,
-    or 'Unreviewed' when no reviewer is attached to the revision.
+    'Unreviewed' when `reviewer_id` is NULL, or 'Unknown' when `reviewer_id` is
+    set but has no matching row in `kitsune_auth_user` (no revision is in that
+    state today). Note that 'Unreviewed' does NOT imply `reviewed_date IS NULL`:
+    most 'Unreviewed' revisions inherit a `reviewed_date` from the document's
+    latest review, so they count toward `reviewed_revisions` downstream. See the
+    note on `reviewed_date`.

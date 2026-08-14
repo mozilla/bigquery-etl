@@ -6,7 +6,13 @@ SELECT
     search_engine
   ) AS serp_provider_id, -- this is engine
   sap_source AS serp_search_access_point,
-  STRING_AGG(DISTINCT ad_components.component, ', ') AS ad_click_target
+  -- ORDER BY makes the concatenation order deterministic (STRING_AGG is arbitrary otherwise)
+  STRING_AGG(
+    DISTINCT ad_components.component,
+    ', '
+    ORDER BY
+      ad_components.component
+  ) AS ad_click_target
 FROM
   `mozdata.firefox_desktop.serp_events`
 CROSS JOIN

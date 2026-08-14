@@ -1,7 +1,7 @@
 -- Query for search_derived.search_clients_daily_v9
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-CREATE TEMP FUNCTION safe_parse_timestamp(ts string) AS (
+CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
   COALESCE(
         -- full datetime with offset
     SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),
@@ -170,21 +170,21 @@ sap_events_with_client_info_cte AS (
     ping_info.seq AS subsession_counter,
     [
       STRUCT(
-        json_keys(experiments)[OFFSET(0)] AS key,
+        JSON_KEYS(experiments)[OFFSET(0)] AS key,
         STRUCT(
           REPLACE(
-            TO_JSON_STRING(experiments[json_keys(experiments)[OFFSET(0)]].branch),
+            TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].branch),
             '"',
             ''
           ) AS branch,
           STRUCT(
             REPLACE(
-              TO_JSON_STRING(experiments[json_keys(experiments)[OFFSET(0)]].extra.type),
+              TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].extra.type),
               '"',
               ''
             ) AS type,
             REPLACE(
-              TO_JSON_STRING(experiments[json_keys(experiments)[OFFSET(0)]].extra.enrollment_id),
+              TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].extra.enrollment_id),
               '"',
               ''
             ) AS enrollment_id

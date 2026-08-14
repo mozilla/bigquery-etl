@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION safe_parse_timestamp(ts string) AS (
+CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
   COALESCE(
         -- full datetime with offset
     SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),

@@ -9,7 +9,7 @@ FROM
 CROSS JOIN
   UNNEST(events) AS events
 WHERE
-  events.category = "credit_card_key_regeneration"
+  events.category = "logins_store_key_regeneration"
   AND events.name = "keychain_data_lost"
   AND DATE(submission_timestamp) = @submission_date
 GROUP BY

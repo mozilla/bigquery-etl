@@ -2,7 +2,8 @@ SELECT
   DATE(submission_timestamp) AS submission_date,
   "firefox_android" AS application,
   normalized_channel AS channel,
-  SUM(metrics.counter.logins_store_mirror_undecryptable_deleted) AS count
+  SUM(metrics.counter.logins_store_mirror_undecryptable_deleted) AS count,
+  COUNT(DISTINCT client_info.client_id) AS client_count
 FROM
   `moz-fx-data-shared-prod.fenix.metrics`
 WHERE
@@ -17,7 +18,8 @@ SELECT
   DATE(submission_timestamp) AS submission_date,
   "firefox_ios" AS application,
   normalized_channel AS channel,
-  SUM(metrics.counter.logins_store_mirror_undecryptable_deleted) AS count
+  SUM(metrics.counter.logins_store_mirror_undecryptable_deleted) AS count,
+  COUNT(DISTINCT client_info.client_id) AS client_count
 FROM
   `moz-fx-data-shared-prod.firefox_ios.metrics`
 WHERE

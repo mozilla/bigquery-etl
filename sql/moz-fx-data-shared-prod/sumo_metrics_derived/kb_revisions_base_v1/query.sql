@@ -16,6 +16,16 @@
 -- backfill below are computed over the in-window revisions only, so a document
 -- whose only reviewed revision predates the window start keeps a NULL
 -- reviewed_date.
+--
+-- The window filters on `r.created` only, so a revision created before the window
+-- start but reviewed inside it is absent entirely (21 revisions to date). That
+-- means `reviewed_revisions` / `approved_revisions` in kb_revisions_daily_v1
+-- understate review throughput for dates early in the window -- an early-2024
+-- pass that cleared a 2023 backlog is invisible -- and the understatement decays
+-- as the window ages. Do not compare early-2024 throughput against later dates as
+-- if they were on the same footing. Filtering on `created OR reviewed` would fix
+-- this, but it would also diverge from the upstream SUMO dashboard that this
+-- table was validated against, so it is left as a known limitation.
 WITH window_start AS (
   SELECT
     DATE '2024-01-01' AS start_date
@@ -86,9 +96,12 @@ revisions AS (
     AND d.is_template = FALSE
     AND d.is_archived = FALSE
     AND LOWER(d.title) NOT LIKE 'forum response%'
+    -- Ends at yesterday, not CURRENT_DATE: today is still accumulating, and a
+    -- partial day would bias the last point of every moving average downstream.
+    -- Matches kb_quality_metrics_article_v1's last-complete-day convention.
     AND DATE(r.created)
     BETWEEN (SELECT start_date FROM window_start)
-    AND CURRENT_DATE
+    AND DATE(CURRENT_DATE - INTERVAL 1 DAY)
 ),
 -- Assume every revision preceding a reviewed revision was covered by that same
 -- review pass, so an unreviewed revision older than the document's most recent

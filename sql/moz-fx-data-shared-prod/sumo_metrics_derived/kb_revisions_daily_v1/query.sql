@@ -40,8 +40,15 @@ dates AS (
   FROM
     (SELECT DISTINCT product, reviewer_type FROM base) AS columns
   CROSS JOIN
+    -- Ends at yesterday to match the upstream window: today is still
+    -- accumulating, and a partial final day would bias the last point of every
+    -- moving average in sumo_kb_revision_kpis.
     UNNEST(
-      GENERATE_DATE_ARRAY((SELECT start_date FROM window_start), CURRENT_DATE, INTERVAL 1 DAY)
+      GENERATE_DATE_ARRAY(
+        (SELECT start_date FROM window_start),
+        DATE(CURRENT_DATE - INTERVAL 1 DAY),
+        INTERVAL 1 DAY
+      )
     ) AS event_date
 ),
 created_revisions AS (

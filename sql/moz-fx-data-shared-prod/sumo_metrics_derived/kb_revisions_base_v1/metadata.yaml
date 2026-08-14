@@ -22,9 +22,15 @@ description: |
   - product: canonical CX product name from
     mozfun.customer_experience.normalize_product(products, 'GA4')
 
-  Recomputed in full each run over a fixed window starting 2024-01-01 (no date
-  partition). `latest_document_reviewed_date` and the `reviewed_date` backfill
-  are computed over in-window revisions only.
+  Recomputed in full each run over a fixed window starting 2024-01-01 and ending
+  on the last complete day (no date partition). `latest_document_reviewed_date`
+  and the `reviewed_date` backfill are computed over in-window revisions only.
+
+  Known limitation: the window filters on creation date only, so a revision
+  created before 2024-01-01 but reviewed after it is absent entirely (21 to
+  date). Review counts derived from this table therefore understate throughput
+  for dates early in the window, decaying as the window ages — do not compare
+  early-2024 review throughput against later dates as if equivalent.
 
   Used by:
   - kb_revisions_daily_v1

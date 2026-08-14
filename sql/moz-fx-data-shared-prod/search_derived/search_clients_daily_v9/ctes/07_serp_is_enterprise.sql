@@ -3,8 +3,9 @@
 SELECT
   glean_client_id AS client_id,
   submission_date,
-  array_last(
-    ARRAY_AGG(policies_is_enterprise ORDER BY event_timestamp DESC)
+  -- match v8: statistical mode over the day, ties broken toward the latest event
+  mozfun.stats.mode_last(
+    ARRAY_AGG(policies_is_enterprise ORDER BY event_timestamp)
   ) AS policies_is_enterprise
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`

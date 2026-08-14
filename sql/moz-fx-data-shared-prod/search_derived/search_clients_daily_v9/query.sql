@@ -61,11 +61,13 @@ sap_is_enterprise_cte AS (
   SELECT
     client_id,
     DATE(submission_timestamp) AS submission_date,
-    CAST(
-      JSON_VALUE(
-        array_last(ARRAY_AGG(metrics.boolean.policies_is_enterprise ORDER BY event_timestamp DESC)),
-        '$'
-      ) AS boolean
+    -- match v8: statistical mode over the day, ties broken toward the latest event
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        CAST(JSON_VALUE(metrics.boolean.policies_is_enterprise, '$') AS boolean)
+        ORDER BY
+          event_timestamp
+      )
     ) AS policies_is_enterprise
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
@@ -394,8 +396,9 @@ serp_is_enterprise_cte AS (
   SELECT
     glean_client_id AS client_id,
     submission_date,
-    array_last(
-      ARRAY_AGG(policies_is_enterprise ORDER BY event_timestamp DESC)
+    -- match v8: statistical mode over the day, ties broken toward the latest event
+    mozfun.stats.mode_last(
+      ARRAY_AGG(policies_is_enterprise ORDER BY event_timestamp)
     ) AS policies_is_enterprise
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`

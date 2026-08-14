@@ -2,6 +2,9 @@ fields:
 - mode: NULLABLE
   name: request_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: request_id
 - mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
@@ -16,9 +19,15 @@ fields:
 - mode: NULLABLE
   name: advertiser
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: advertiser
 - mode: NULLABLE
   name: block_id
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: block_id
 - mode: NULLABLE
   name: context_id
   type: STRING
@@ -32,6 +41,9 @@ fields:
 - mode: NULLABLE
   name: is_clicked
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: is_clicked
 - mode: NULLABLE
   name: locale
   type: STRING
@@ -40,9 +52,15 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: region
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: region
 - mode: NULLABLE
   name: normalized_os
   type: STRING
@@ -61,6 +79,9 @@ fields:
 - mode: NULLABLE
   name: position
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: position
 - mode: NULLABLE
   name: reporting_url
   type: STRING
@@ -74,37 +95,63 @@ fields:
 - mode: NULLABLE
   name: version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: version
 - mode: NULLABLE
   name: timestamp
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: timestamp
 - mode: NULLABLE
   name: query
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: query
 - mode: NULLABLE
   name: dma
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: dma
 - mode: NULLABLE
   name: form_factor
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: form_factor
 - mode: NULLABLE
   name: browser
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: browser
 - mode: NULLABLE
   name: os_family
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: os_family
 - mode: NULLABLE
   name: session_id
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: session_id
 - mode: NULLABLE
   name: sequence_no
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: sequence_no
 - mode: NULLABLE
   name: match_type
   type: STRING
-  description: >-
-    Whether the suggest result was a best/top match or not. Either
-    "best-match" or "firefox-suggest". Only populated for Glean
-    impressions; NULL for legacy impressions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: match_type
 - fields:
   - mode: NULLABLE
     name: slug
@@ -115,3 +162,6 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: experiments

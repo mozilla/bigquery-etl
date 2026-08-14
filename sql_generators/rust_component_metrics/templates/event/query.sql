@@ -2,7 +2,8 @@ SELECT
     DATE(submission_timestamp) AS submission_date,
     "{{ application }}" as application,
     normalized_channel AS channel,
-    COUNT(*) as count
+    COUNT(*) as count,
+    COUNT(DISTINCT client_info.client_id) as client_count
 FROM `moz-fx-data-shared-prod.{{ dataset_name }}.events`
 CROSS JOIN UNNEST(events) as events 
 WHERE

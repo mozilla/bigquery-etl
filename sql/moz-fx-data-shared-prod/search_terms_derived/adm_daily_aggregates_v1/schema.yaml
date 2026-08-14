@@ -2,16 +2,30 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date of the tile ID export
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: query
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: query
 - mode: NULLABLE
   name: block_id
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: block_id
 - mode: NULLABLE
   name: impressions
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: impressions
 - mode: NULLABLE
   name: clicks
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: clicks

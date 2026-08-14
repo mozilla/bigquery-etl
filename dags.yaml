@@ -2113,6 +2113,30 @@ bqetl_fred_daily_exchange_rate:
   repo: bigquery-etl
   schedule_interval: 30 23 * * *
 
+bqetl_market_research:
+  description: |
+    This DAG loads the market-research GCS corpus (browser release notes,
+    vendor blog posts, and competitor job postings) scraped by
+    docker-etl's release_scraping job into BigQuery. Scheduled on the same
+    cron as telemetry-airflow's web_scraping DAG, whose read_release_data
+    task is declared as an explicit depends_on dependency so these tasks
+    wait for that run to finish before loading.
+  default_args:
+    depends_on_past: false
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2026-08-11"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 15 * * 2
+
 bqetl_us_bls_unemployment_data:
   description: |
     This DAG pulls US unemployment data from the BLS API

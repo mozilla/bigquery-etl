@@ -239,10 +239,12 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Which file in the directory that commit touched, e.g. query.sql,
-    metadata.yaml or schema.yaml. Tracking the whole directory rather than just
-    the definition file matters because a schema.yaml edit can break a task as
-    easily as a query change; this says which kind of change it was.
+    Which file that commit touched, as a path relative to the entity's directory
+    -- usually a bare filename such as query.sql, metadata.yaml or schema.yaml.
+    The directory itself is already in metadata_path. Tracking the whole
+    directory rather than just the definition file matters because a schema.yaml
+    edit can break a task as easily as a query change; this says which kind of
+    change it was.
 - name: last_changed_status
   type: STRING
   mode: REQUIRED

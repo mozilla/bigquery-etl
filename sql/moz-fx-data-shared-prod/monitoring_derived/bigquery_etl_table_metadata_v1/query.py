@@ -47,6 +47,7 @@ from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
+from bigquery_etl.query_scheduling.utils import SCHEDULE_INTERVAL_ALIASES
 from bigquery_etl.schema import Schema
 
 logger = logging.getLogger(__name__)
@@ -62,19 +63,6 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 SCHEMA_FILE = Path(__file__).resolve().parent / "schema.yaml"
 
 IMPACT_TAG_PREFIX = "impact/"
-
-# Mirrors the alias table in bigquery_etl/query_scheduling/utils.py, which is a
-# local inside schedule_interval_delta and so cannot be imported. `once` is
-# deliberately absent: that function maps it to "* * * * *" to make delta
-# arithmetic work, which would render here as "every minute" -- the opposite of
-# what it means.
-SCHEDULE_ALIASES = {
-    "yearly": "0 0 1 1 *",
-    "monthly": "0 0 1 * *",
-    "weekly": "0 0 * * 0",
-    "daily": "0 0 * * *",
-    "hourly": "0 * * * *",
-}
 
 TIMEDELTA_RE = re.compile(r"(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?")
 
@@ -269,7 +257,10 @@ def git_last_changed(
                 continue
             key = "/".join(parts[:4])
             if key not in last:
-                last[key] = {**commit, "last_changed_file": line}
+                # Path relative to the entity directory, not the repo: the
+                # directory prefix is already in metadata_path, and this keeps
+                # any nested path readable rather than truncating to a basename.
+                last[key] = {**commit, "last_changed_file": "/".join(parts[4:])}
 
     logger.info(f"Resolved git history for {len(last)} entity directories")
     return last, "ok"
@@ -313,7 +304,10 @@ def describe_schedule(interval: Optional[str]) -> tuple[Optional[str], Optional[
     if interval == "once":
         return "once", "Runs once; no recurring schedule"
 
-    cron = SCHEDULE_ALIASES.get(interval, interval)
+    # `once` is handled above, before this lookup: the shared alias table maps it
+    # to "* * * * *" so schedule_interval_delta can do arithmetic on it, which
+    # here would render as "every minute" -- the opposite of what it means.
+    cron = SCHEDULE_INTERVAL_ALIASES.get(interval, interval)
 
     delta = TIMEDELTA_RE.fullmatch(cron)
     if delta and any(delta.groups()):

@@ -9,6 +9,19 @@ TIMEDELTA_RE = re.compile(
 
 TELEMETRY_ALERTS_EMAIL = "telemetry-alerts@mozilla.com"
 
+# Cron equivalents of the named schedule_intervals accepted by
+# SCHEDULE_INTERVAL_RE. Note `once` is mapped to a concrete cron only so that
+# schedule_interval_delta can do arithmetic on it; it does not mean "every
+# minute", so consumers that render intervals for humans should special-case it.
+SCHEDULE_INTERVAL_ALIASES = {
+    "yearly": "0 0 1 1 *",
+    "monthly": "0 0 1 * *",
+    "weekly": "0 0 * * 0",
+    "daily": "0 0 * * *",
+    "hourly": "0 * * * *",
+    "once": "* * * * *",
+}
+
 
 def is_timedelta_string(s):
     """
@@ -96,14 +109,7 @@ def schedule_interval_delta(schedule_interval1, schedule_interval2):
     ):
         return None
 
-    aliases = {
-        "yearly": "0 0 1 1 *",
-        "monthly": "0 0 1 * *",
-        "weekly": "0 0 * * 0",
-        "daily": "0 0 * * *",
-        "hourly": "0 * * * *",
-        "once": "* * * * *",
-    }
+    aliases = SCHEDULE_INTERVAL_ALIASES
 
     cron_regex = re.compile(
         r"^(?P<minutes>\d+) (?P<hours>\d+) (?P<day>\d+) (?P<month>\d+) (?P<dow>\d+)$"

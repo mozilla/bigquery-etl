@@ -82,5 +82,6 @@ QUALIFY
       serp_provider_id,
       serp_search_access_point
     ORDER BY
-      event_timestamp DESC
+      event_timestamp DESC,
+      impression_id -- deterministic tiebreaker (unique serp_events_v2 key) so serp passthroughs are reproducible on ties
   ) = 1

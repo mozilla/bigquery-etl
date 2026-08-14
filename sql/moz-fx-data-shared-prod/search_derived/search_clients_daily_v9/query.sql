@@ -487,7 +487,8 @@ serp_events_with_client_info_cte AS (
         serp_provider_id,
         serp_search_access_point
       ORDER BY
-        event_timestamp DESC
+        event_timestamp DESC,
+        impression_id -- deterministic tiebreaker (unique serp_events_v2 key) so serp passthroughs are reproducible on ties
     ) = 1
 ),
 serp_events_clients_ad_enterprise_cte AS (

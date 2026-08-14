@@ -1,0 +1,71 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: ''
+- name: advertiser
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: click_url
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: iab_category
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: icon
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: impression_url
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: id
+  type: INT64
+  mode: NULLABLE
+  description: ''
+- name: suggestion_id
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: keywords
+  type: STRING
+  mode: REPEATED
+  description: ''
+- name: full_keywords
+  type: RECORD
+  mode: REPEATED
+  description: ''
+  fields:
+  - name: count
+    type: INT64
+    mode: NULLABLE
+    description: ''
+  - name: keyword
+    type: STRING
+    mode: NULLABLE
+    description: ''
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: url
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: score
+  type: FLOAT64
+  mode: NULLABLE
+  description: ''
+- name: serp_categories
+  type: RECORD
+  mode: REPEATED
+  description: ''
+  fields:
+  - name: category
+    type: INT64
+    mode: NULLABLE
+    description: ''

@@ -1697,6 +1697,7 @@ use_counters:
 - name: use_counter_doc_element_onmousewheel
 - name: use_counter_doc_element_releasecapture
 - name: use_counter_doc_element_releasepointercapture
+- name: use_counter_doc_element_requestfullscreen
 - name: use_counter_doc_element_scrollintoviewifneeded
 - name: use_counter_doc_element_setcapture
 - name: use_counter_doc_element_sethtml
@@ -1933,6 +1934,7 @@ use_counters:
 - name: use_counter_doc_pushsubscription_unsubscribe
 - name: use_counter_doc_range_createcontextualfragment
 - name: use_counter_doc_reportingobserver_constructor
+- name: use_counter_doc_requested_keyboard_lock
 - name: use_counter_doc_sanitizer_constructor
 - name: use_counter_doc_sanitizer_sanitize
 - name: use_counter_doc_scheduler_posttask
@@ -2211,6 +2213,7 @@ use_counters:
 - name: use_counter_page_element_onmousewheel
 - name: use_counter_page_element_releasecapture
 - name: use_counter_page_element_releasepointercapture
+- name: use_counter_page_element_requestfullscreen
 - name: use_counter_page_element_scrollintoviewifneeded
 - name: use_counter_page_element_setcapture
 - name: use_counter_page_element_sethtml
@@ -2447,6 +2450,7 @@ use_counters:
 - name: use_counter_page_pushsubscription_unsubscribe
 - name: use_counter_page_range_createcontextualfragment
 - name: use_counter_page_reportingobserver_constructor
+- name: use_counter_page_requested_keyboard_lock
 - name: use_counter_page_sanitizer_constructor
 - name: use_counter_page_sanitizer_sanitize
 - name: use_counter_page_scheduler_posttask

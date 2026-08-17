@@ -1,0 +1,37 @@
+friendly_name: "KB Revisions \u2014 Daily"
+description: "Day-level SUMO knowledge base revision activity, aggregated from\nkb_revisions_base_v1.\n\
+  \nGrain: Day x Product x Reviewer type\n\nBuilt on a dense date spine (every day\
+  \ x every observed product x reviewer\ntype), so days with no activity report 0\
+  \ rather than being absent.\n\n- created_revisions: revisions created that day\n\
+  - reviewed_revisions: revisions reviewed that day\n- approved_revisions: revisions\
+  \ reviewed and approved that day\n- net_revisions: created minus reviewed \u2014\
+  \ a daily *flow*, not a backlog level.\n  The cumulative version is `backlog_change_since_window_start`\
+  \ in\n  sumo_kb_revision_kpis, which is a backlog trend rather than a pending count.\n\
+  \nNote: the reviewer_type split of created_revisions (and net_revisions) means\n\
+  \"eventually reviewed by\" and is retroactively mutable, because reviewer_type is\n\
+  a property of the review and this table is fully recomputed each run. Day-level\n\
+  totals are stable; the split of the recent tail is not. See the column\ndescriptions\
+  \ in schema.yaml.\n\nRecomputed in full each run (no date partition). Article scope\
+  \ and product\nmapping are defined upstream in kb_revisions_base_v1.\n\nUsed by:\n\
+  - sumo_kb_revision_kpis\n"
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  application: sumo
+  type: aggregate
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_metrics_derived.kb_revisions_base_v1

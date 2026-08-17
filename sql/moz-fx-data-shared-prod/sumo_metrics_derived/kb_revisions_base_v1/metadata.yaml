@@ -1,0 +1,49 @@
+friendly_name: KB Revisions Base
+description: "SUMO knowledge base revisions at the revision grain, with review dates,\n\
+  reviewer population, and canonical product. Single source of truth for KB\nrevision\
+  \ throughput and review-backlog reporting.\n\nGrain: Revision\n\nScope (en-US, original\
+  \ non-translated articles):\n- parent_id IS NULL, locale = 'en-US', is_template\
+  \ = FALSE, is_archived = FALSE\n- \"forum response%\" revisions excluded\n- Thunderbird\
+  \ / Thunderbird Android excluded (maintained by another team)\n\nKey columns:\n\
+  - created_date: date the revision was created\n- reviewed_date: date the revision\
+  \ was reviewed. Backfilled in two cases \u2014\n  an approved revision with a NULL\
+  \ `reviewed` timestamp inherits its creation\n  date, and an unreviewed revision\
+  \ older than the document's most recent\n  review inherits that review date (all\
+  \ prior revisions are assumed covered\n  by the same review pass). NULL means still\
+  \ awaiting review.\n- reviewer_type: 'Staff', 'Community', or 'Unreviewed' (no reviewer\
+  \ attached)\n- product: canonical CX product name from\n  mozfun.customer_experience.normalize_product(products,\
+  \ 'GA4')\n\nRecomputed in full each run over a fixed window starting 2024-01-01\
+  \ and ending\non the last complete day (no date partition). `latest_document_reviewed_date`\n\
+  and the `reviewed_date` backfill are computed over in-window revisions only.\n\n\
+  Known limitation: the window filters on creation date only, so a revision\ncreated\
+  \ before 2024-01-01 but reviewed after it is absent entirely (21 to\ndate). Review\
+  \ counts derived from this table therefore understate throughput\nfor dates early\
+  \ in the window, decaying as the window ages \u2014 do not compare\nearly-2024 review\
+  \ throughput against later dates as if equivalent.\n\nUsed by:\n- kb_revisions_daily_v1\n\
+  - sumo_kb_revision_kpis\n"
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  application: sumo
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  checks.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_auth_user
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision

@@ -1,0 +1,21 @@
+friendly_name: SUMO KB Revision KPIs
+description: >
+  Day-level SUMO knowledge base revision KPIs: total revisions created,
+  reviewed, and approved across all products and reviewer types, their 14-day
+  moving averages, and the same moving averages lagged 14 days for
+  period-over-period comparison. `total_backlog` is the daily net flow (created
+  minus reviewed) and can be negative.
+
+  `backlog_change_since_window_start` is the cumulative net flow since the
+  upstream window start — it is NOT the pending-review count. Revisions created
+  before 2024-01-01 are outside kb_revisions_base_v1, so roughly 3,400 older
+  revisions that remain unreviewed are absent from the sum, and it can go
+  negative when cumulative reviews since the window start exceed cumulative
+  creations. Treat it as a backlog trend, not a level.
+
+  Rolled up from kb_revisions_daily_v1 so the population, product, and reviewer
+  definitions stay in one place — join back to that table on `event_date` to
+  break the totals down by product or reviewer type.
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience

@@ -1,0 +1,27 @@
+---
+friendly_name: Gecko Trace Events Bridge
+description: |-
+  Links between traces and events.
+
+  Each row has one (stable_trace_id, stable_event_id) pair.
+  Use this table to find all traces that went through a specific event,
+  or all events in a specific trace.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: org_mozilla_fenix_nightly
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:"]
+
+bigquery:
+  clustering:
+    fields:
+      - stable_trace_id
+      - stable_event_id

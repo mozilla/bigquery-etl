@@ -1,0 +1,26 @@
+---
+friendly_name: Gecko Trace Events
+description: |-
+  Daily counts of event types from Gecko traces.
+
+  Each row has one event signature and the count for one day.
+  The stable_event_id is a UUID. It does not change after the first insert.
+  A re-run of the same day overwrites the counts. It does not add to them.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: firefox_desktop
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:"]
+
+bigquery:
+  clustering:
+    fields:
+      - event_signature

@@ -409,7 +409,10 @@ SELECT
       metrics.counter.layout_global_stylesheet_not_found,
       metrics.counter.media_audio_session_api_used,
       metrics.counter.media_audio_session_inactivated_by_arbitration,
-      metrics.counter.media_audio_session_selected_changed
+      metrics.counter.media_audio_session_selected_changed,
+      metrics.counter.security_ui_neterror_alternate_host_suggested,
+      metrics.counter.security_ui_neterror_search_cta_clicked,
+      metrics.counter.security_ui_neterror_search_cta_shown
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1201,7 +1204,10 @@ SELECT
       metrics.labeled_counter.pkcs11_builtin_roots_module_source,
       metrics.labeled_counter.jxl_animated,
       metrics.labeled_counter.jxl_decode_result,
-      metrics.labeled_counter.jxl_hdr
+      metrics.labeled_counter.jxl_hdr,
+      metrics.labeled_counter.security_ui_neterror_search_cta_action,
+      metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
+      metrics.labeled_counter.security_ui_neterror_search_cta_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2684,7 +2690,10 @@ SELECT
       metrics.counter.layout_global_stylesheet_not_found,
       metrics.counter.media_audio_session_api_used,
       metrics.counter.media_audio_session_inactivated_by_arbitration,
-      metrics.counter.media_audio_session_selected_changed
+      metrics.counter.media_audio_session_selected_changed,
+      metrics.counter.security_ui_neterror_alternate_host_suggested,
+      metrics.counter.security_ui_neterror_search_cta_clicked,
+      metrics.counter.security_ui_neterror_search_cta_shown
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3476,7 +3485,10 @@ SELECT
       metrics.labeled_counter.pkcs11_builtin_roots_module_source,
       metrics.labeled_counter.jxl_animated,
       metrics.labeled_counter.jxl_decode_result,
-      metrics.labeled_counter.jxl_hdr
+      metrics.labeled_counter.jxl_hdr,
+      metrics.labeled_counter.security_ui_neterror_search_cta_action,
+      metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
+      metrics.labeled_counter.security_ui_neterror_search_cta_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4979,7 +4991,10 @@ SELECT
       metrics.counter.layout_global_stylesheet_not_found,
       metrics.counter.media_audio_session_api_used,
       metrics.counter.media_audio_session_inactivated_by_arbitration,
-      metrics.counter.media_audio_session_selected_changed
+      metrics.counter.media_audio_session_selected_changed,
+      metrics.counter.security_ui_neterror_alternate_host_suggested,
+      metrics.counter.security_ui_neterror_search_cta_clicked,
+      metrics.counter.security_ui_neterror_search_cta_shown
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5771,7 +5786,10 @@ SELECT
       metrics.labeled_counter.pkcs11_builtin_roots_module_source,
       metrics.labeled_counter.jxl_animated,
       metrics.labeled_counter.jxl_decode_result,
-      metrics.labeled_counter.jxl_hdr
+      metrics.labeled_counter.jxl_hdr,
+      metrics.labeled_counter.security_ui_neterror_search_cta_action,
+      metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
+      metrics.labeled_counter.security_ui_neterror_search_cta_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

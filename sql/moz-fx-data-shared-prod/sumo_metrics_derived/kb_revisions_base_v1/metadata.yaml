@@ -1,0 +1,49 @@
+friendly_name: KB Revisions Base
+description: |
+  SUMO knowledge base revisions at the revision grain, with review dates,
+  reviewer population, and canonical product. Single source of truth for KB
+  revision throughput and review-backlog reporting.
+
+  Grain: Revision
+
+  Scope (en-US, original non-translated articles):
+  - parent_id IS NULL, locale = 'en-US', is_template = FALSE, is_archived = FALSE
+  - "forum response%" revisions excluded
+  - Thunderbird / Thunderbird Android excluded (maintained by another team)
+
+  Key columns:
+  - created_date: date the revision was created
+  - reviewed_date: date the revision was reviewed. Backfilled in two cases —
+    an approved revision with a NULL `reviewed` timestamp inherits its creation
+    date, and an unreviewed revision older than the document's most recent
+    review inherits that review date (all prior revisions are assumed covered
+    by the same review pass). NULL means still awaiting review.
+  - reviewer_type: 'Staff', 'Community', or 'Unreviewed' (no reviewer attached)
+  - product: canonical CX product name from
+    mozfun.customer_experience.normalize_product(products, 'GA4')
+
+  Recomputed in full each run over a fixed window starting 2024-01-01 and ending
+  on the last complete day (no date partition). `latest_document_reviewed_date`
+  and the `reviewed_date` backfill are computed over in-window revisions only.
+
+  Known limitation: the window filters on creation date only, so a revision
+  created before 2024-01-01 but reviewed after it is absent entirely (21 to
+  date). Review counts derived from this table therefore understate throughput
+  for dates early in the window, decaying as the window ages — do not compare
+  early-2024 review throughput against later dates as if equivalent.
+
+  Used by:
+  - kb_revisions_daily_v1
+  - sumo_kb_revision_kpis
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

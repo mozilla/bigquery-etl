@@ -71,8 +71,11 @@ SELECT
   assert.equals(4, newtab.determine_tiles_per_row_v2('POSTNOVA_GRID', 3000)),
   assert.equals(1, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 723)),
   assert.equals(2, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 724)),
+  assert.equals(2, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 1068)),
   assert.equals(3, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 1069)),
+  assert.equals(3, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 1413)),
   assert.equals(4, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 1414)),
+  assert.equals(4, newtab.determine_tiles_per_row_v2('POSTNOVA_SECTION', 3000)),
   -- NOVA_GRID / NOVA_SECTION: <1047 / <1392 / <1737 / else
   assert.equals(1, newtab.determine_tiles_per_row_v2('NOVA_GRID', 1046)),
   assert.equals(2, newtab.determine_tiles_per_row_v2('NOVA_GRID', 1047)),

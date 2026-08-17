@@ -10,9 +10,9 @@ RETURNS STRING AS (
   CASE
     WHEN app_version >= 155
       AND is_section
-      THEN 'POSTNOVA_GRID'
-    WHEN app_version >= 155
       THEN 'POSTNOVA_SECTION'
+    WHEN app_version >= 155
+      THEN 'POSTNOVA_GRID'
     WHEN app_version >= 151
       AND is_section
       THEN 'NOVA_SECTION'
@@ -83,16 +83,16 @@ SELECT
   assert.equals('NOVA_SECTION', newtab.determine_grid_layout_v1(TRUE, 151, old_grid.experiments)),
   assert.equals('NOVA_SECTION', newtab.determine_grid_layout_v1(TRUE, 154, old_grid.experiments)),
   -- POSTNOVA_GRID / POSTNOVA_SECTION: version >= 155
-  assert.equals('POSTNOVA_GRID', newtab.determine_grid_layout_v1(TRUE, 155, old_grid.experiments)),
   assert.equals(
     'POSTNOVA_SECTION',
-    newtab.determine_grid_layout_v1(FALSE, 155, old_grid.experiments)
+    newtab.determine_grid_layout_v1(TRUE, 155, old_grid.experiments)
   ),
-  assert.equals('POSTNOVA_GRID', newtab.determine_grid_layout_v1(TRUE, 161, old_grid.experiments)),
+  assert.equals('POSTNOVA_GRID', newtab.determine_grid_layout_v1(FALSE, 155, old_grid.experiments)),
   assert.equals(
     'POSTNOVA_SECTION',
-    newtab.determine_grid_layout_v1(FALSE, 161, old_grid.experiments)
+    newtab.determine_grid_layout_v1(TRUE, 161, old_grid.experiments)
   ),
+  assert.equals('POSTNOVA_GRID', newtab.determine_grid_layout_v1(FALSE, 161, old_grid.experiments)),
 FROM
   new_grid,
   old_grid;

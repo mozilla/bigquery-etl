@@ -347,7 +347,7 @@ metrics_ping AS (
     normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
-    {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
+    {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust_attribution' %}
       {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
         NULLIF(metrics.string.{{ field.name.replace('adjust_', 'adjust_attribution_').replace('_ad_group', '_adgroup') }}, "") AS {{ field.name }},
       {% endfor %}
@@ -367,13 +367,13 @@ adjust_attribution_ping AS (
     normalized_channel,
     ARRAY_AGG(
       IF(
-        {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
+        {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust_attribution' %}
         {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
           {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
         {% endfor %}
         {% endfor %}
         STRUCT(
-          {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
+          {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust_attribution' %}
           {% for field in attribution_group.fields %}
             {% if field.name.endswith("_timestamp") %}
               submission_timestamp AS {{ field.name }}

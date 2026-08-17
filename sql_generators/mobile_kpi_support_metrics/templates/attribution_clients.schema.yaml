@@ -22,7 +22,7 @@ fields:
 
 {%- for attribution_group in product_attribution_groups %}
 {% if attribution_group.name in ["adjust_attribution"] -%}{# do not add fields since they're part of adjust -#}
-{% elif attribution_group.name in ["meta", "adjust", "adjust_attribution", "play_store"] %}
+{% elif attribution_group.name in ["meta", "adjust", "play_store"] %}
 - mode: NULLABLE
   name: {{ attribution_group.name }}_info
   type: RECORD

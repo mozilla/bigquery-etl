@@ -29,6 +29,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: partial
+    append: Lowercased and trimmed. Sourced from Merino logs; rows without a Merino match are excluded.
 - mode: NULLABLE
   name: position
   type: INTEGER
@@ -41,6 +42,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: match_type
+    append: Only populated for Glean impressions; NULL for legacy impressions.
 - fields:
   - mode: NULLABLE
     name: slug

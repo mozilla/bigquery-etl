@@ -2,9 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
-    field: submission_date
+  description: Date of the tile ID export.
 - mode: NULLABLE
   name: dma
   type: STRING

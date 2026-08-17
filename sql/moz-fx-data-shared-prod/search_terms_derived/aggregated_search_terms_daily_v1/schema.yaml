@@ -3,8 +3,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The sanitized search query string entered by the user, sourced from the `sanitized_query`
-    field of the suggest impression data. Null when the query could not be matched to a known suggestion
-    keyword.
+    field of the suggest impression data.
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -35,15 +34,18 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: advertiser
+    append: Null when the query could not be matched to a known suggestion keyword.
 - name: iab_category
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: iab_category
+    append: Null when the query could not be matched to a known suggestion keyword.
 - name: title
   type: STRING
   mode: NULLABLE
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: title
+    append: Null when the query could not be matched to a known suggestion keyword.

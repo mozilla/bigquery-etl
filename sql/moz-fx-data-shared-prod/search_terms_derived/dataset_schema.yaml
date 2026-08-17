@@ -30,11 +30,13 @@ fields:
 - name: experiments_branch
   description: The branch name within a Nimbus experiment that the user was assigned to, such as 'control', 'treatment-a', or 'rollout-branch'.
     Represents the specific variant of an experiment experienced by the user.
+  type: STRING
 - name: experiments_slug
   description: The unique slug identifier for a Nimbus experiment or rollout that the user was enrolled in at the time of the event. Used to link
     individual records to specific experimental configurations.
+  type: STRING
 - name: form_factor
-  description: The form factor of the device used to make the request, such as 'desktop' or 'other'. Allows segmentation of search and suggestion
+  description: The form factor of the device used to make the request. Allows segmentation of search and suggestion
     activity by device category.
   type: STRING
 - name: iab_category

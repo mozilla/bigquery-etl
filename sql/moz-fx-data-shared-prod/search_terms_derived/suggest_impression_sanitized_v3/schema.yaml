@@ -152,13 +152,20 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: match_type
+    append: Only populated for Glean impressions; NULL for legacy impressions.
 - fields:
   - mode: NULLABLE
     name: slug
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+      field: experiments_slug
   - mode: NULLABLE
     name: branch
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+      field: experiments_branch
   mode: REPEATED
   name: experiments
   type: RECORD

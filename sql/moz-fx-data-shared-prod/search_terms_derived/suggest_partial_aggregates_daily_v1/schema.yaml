@@ -29,6 +29,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: partial
+    append: Lowercased and trimmed. Sourced from Merino logs; rows without a Merino match are excluded.
 - mode: NULLABLE
   name: impression_count
   type: INTEGER

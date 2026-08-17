@@ -28,11 +28,11 @@ Returned when:
 Nova can have both sections and grid variants. Both have the same breakpoints, but the possible tiles differ
 
 Returned when:
-- `155 >= app_version >= 151 AND is_section=TRUE`
+- `155 > app_version >= 151 AND is_section=TRUE`
 
 ### `NOVA_GRID`
 Returned when:
-- `155 >= app_version >= 151 AND is_section=FALSE`
+- `155 > app_version >= 151 AND is_section=FALSE`
 
 ### `SECTION_GRID`
 Returned when:

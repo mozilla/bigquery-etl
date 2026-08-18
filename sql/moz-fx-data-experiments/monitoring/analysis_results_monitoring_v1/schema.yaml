@@ -62,3 +62,13 @@ fields:
     Set when status = "failed" or "partial": resources, data, configuration,
     or jetstream_failure. See jetstream_analysis_errors/view.sql for
     definitions.
+- name: exception_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The original exception type from Jetstream's logs.
+- name: exception
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The original exception message from Jetstream's logs.

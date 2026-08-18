@@ -1,4 +1,4 @@
-2026-08-17:
+2026-08-18:
   start_date: 2026-02-20
   end_date: 2026-08-12
   reason: Update new table with historical data.
@@ -17,4 +17,4 @@
   - --project=moz-fx-data-backfill-slots
   - --destination_project=moz-fx-data-shared-prod
   - --destination_dataset=backfills_staging_derived
-  - --destination_table=monitoring__analysis_results_monitoring_v1_2026_08_17
+  - --destination_table=monitoring__analysis_results_monitoring_v1_2026_08_18

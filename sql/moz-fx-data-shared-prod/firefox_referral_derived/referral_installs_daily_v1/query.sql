@@ -41,9 +41,13 @@
 -- vanishingly rare; the durable fix is a client-level first-seen table, tracked
 -- as a follow-up rather than paid for on every run here.
 WITH referred_clients AS (
-  -- One row per referred client per platform, un-aggregated, so a code used on
-  -- both desktop and Android collapses to a single row below rather than one row
-  -- per platform. Desktop and Fenix client_id namespaces are disjoint.
+  -- One row per referred client per platform, un-aggregated, so that the
+  -- aggregation below collapses desktop and Android together WITHIN a channel
+  -- rather than emitting a row per platform. Note this is not a single row per
+  -- code: normalized_channel is part of the grain, so a code used on desktop
+  -- release and Android nightly still produces two rows. Desktop and Fenix
+  -- client_id namespaces are disjoint, so the distinct count never
+  -- double-counts across platforms.
   SELECT
     metrics.string.browser_referral_code AS raw_code,
     normalized_channel,

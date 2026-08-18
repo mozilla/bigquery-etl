@@ -1,126 +1,76 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- The invite code arrives as `fxrefer<CODE>`, where CODE is exactly 17 chars of
--- Crockford base32 — digits and upper-case letters only, e.g.
--- `fxrefer177HGE4JW5KB6FVW2`. `fxrefer` is always lower case. This format is
--- guaranteed by the Websites team (Steve Jalim, 2026-08-13, PR #9780), which is
--- why the regexes below enforce it exactly rather than matching a bare prefix.
+-- SOURCE: the dedicated Glean `referrals` ping, sent once on first run by a
+-- profile that carries referral attribution data.
+--   * Desktop: `firefox_desktop.referrals`, metric `browser.referral_code`
+--     (bug 2055255, shipped in Firefox 155).
+--   * Android: `fenix.referrals`, metric `referrals.code`
+--     (bug 2062793, the Fenix equivalent).
 --
--- The older `fxrefer:<code>` form is deliberately NOT accepted: it never reaches
--- QA or prod, and the one historical session carrying it (2026-07-23, a manual
--- test with a lower-case underscored code) is not real referral traffic.
+-- WHY NOT ATTRIBUTION / GA4: Firefox deliberately strips the referral code out
+-- of regular attribution data and submits it via this separate ping instead —
+-- that is the entire point of bug 2055255. A referred install therefore lands in
+-- `baseline_clients_first_seen_v1` with source=www.firefox.com, medium=referral,
+-- campaign=firefox-referral and a valid dltoken, but `attribution.content` NULL.
+-- The previous version of this query chased the code through GA4 `utm_content`
+-- -> dl_token -> baseline_clients_first_seen and so returned zero rows every day
+-- from launch; see DENG-11237. Do NOT reintroduce that path: the website does
+-- send `content=fxrefer<code>` in the attribution code, but the client removes it
+-- before it reaches any attribution field we can read.
 --
--- TRADE-OFF: enforcing the length means a future format change silently matches
--- nothing rather than emitting junk codes. If the Websites team ever changes the
--- code length or charset, these regexes MUST change in the same release.
+-- CODE FORMAT: the ping carries the code BARE — `1WYYSNCNGE6S7WKGF`, not
+-- `fxrefer1WYYSNCNGE6S7WKGF` — because the client strips the prefix when it
+-- extracts the code. We strip an optional `fxrefer` prefix anyway so that a
+-- client-side change which stops stripping it does not silently drop every row,
+-- then enforce the 17-char Crockford base32 shape (digits and upper-case
+-- letters). Malformed codes are dropped rather than counted: nothing downstream
+-- validates the code before firefox.com ingests the CSV.
 --
--- DESKTOP source = GA4 / download-attribution path (cross-platform: Windows + Mac).
---   Do NOT use `telemetry.install` — it is the Windows-only installer ping and
---   silently drops Mac/Linux. The GA4/dltoken path is the cross-platform source.
+-- CHANNEL: all channels are counted and `normalized_channel` is kept as a
+-- column so consumers can filter. As of 2026-08-18 only nightly has ever
+-- reported — the instrumentation targets 155 and had not reached release — so
+-- filtering to release here would make this table permanently empty and remove
+-- the only way to validate the pipeline end to end. Revisit before the referral
+-- hub is public: nightly test installs should not inflate a user-facing count.
 --
--- Proven chain (validated 2026-07 against a manual test code):
---   GA4 (utm_content=fxrefer) -> dl_token_ga_attribution_lookup_v2 (on dl_token)
---     -> baseline_clients_first_seen_v1 -> installed client.
---   This is the `firefox_desktop_derived.cfs_ga4_attr_v1` join pattern.
---
--- One invite code can drive installs on BOTH desktop and Fenix (a single shared
--- code, friends on different platforms). So we collect referred clients per
--- platform WITHOUT aggregating, UNION them, and COUNT(DISTINCT client_id) once
--- at the end — each (submission_date, invite_code) is a single row with the
--- combined count. Desktop and Fenix client_id namespaces are disjoint, so the
--- cross-platform distinct count equals the sum of the two.
---
--- STATUS:
---   * Desktop source is LOCKED — the GA4 / download-attribution path is the
---     accepted permanent source (confirmed in DENG-11237, 2026-07-24).
---   * Fenix (Android) half is BLOCKED pending the Play Store attribution
---     mechanism/field from Nathan (see commented UNION ALL below).
---   * US-only MVP; Linux/iOS/EU/UK are unattributable, so counts undercount by design.
-WITH stub_attr AS (
-  -- dl_token -> GA identifiers, one row per dl_token
+-- GRAIN / DEDUPE: one row per (submission_date, invite_code, normalized_channel),
+-- counting distinct client_ids. The ping fires once per profile, so within a
+-- partition COUNT(DISTINCT client_id) is exact. KNOWN LIMITATION: a client whose
+-- upload is retried across a midnight boundary would be counted in two
+-- partitions and so twice in the cumulative total. Accepted for the MVP as
+-- vanishingly rare; the durable fix is a client-level first-seen table, tracked
+-- as a follow-up rather than paid for on every run here.
+WITH referred_clients AS (
+  -- One row per referred client per platform, un-aggregated, so a code used on
+  -- both desktop and Android collapses to a single row below rather than one row
+  -- per platform. Desktop and Fenix client_id namespaces are disjoint.
   SELECT
-    dl_token,
-    ga_client_id,
-    stub_session_id,
+    metrics.string.browser_referral_code AS raw_code,
+    normalized_channel,
+    client_info.client_id AS client_id,
   FROM
-    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v2`
+    `moz-fx-data-shared-prod.firefox_desktop.referrals`
   WHERE
-    COALESCE(ga_client_id, '') <> ''
-    AND COALESCE(stub_session_id, '') <> ''
-    AND COALESCE(dl_token, '') <> ''
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY dl_token ORDER BY first_seen_date ASC) = 1
-),
-ga4 AS (
-  -- GA4 session carrying the referral code in utm_content
+    DATE(submission_timestamp) = @submission_date
+  UNION ALL
   SELECT
-    ga_client_id,
-    stub_session_id,
-    session_date,
-    COALESCE(manual_content, first_content_from_event_params) AS content,
+    metrics.string.referrals_code AS raw_code,
+    normalized_channel,
+    client_info.client_id AS client_id,
   FROM
-    `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined`
-  LEFT JOIN
-    UNNEST(all_reported_stub_session_ids) AS stub_session_id
+    `moz-fx-data-shared-prod.fenix.referrals`
   WHERE
-    -- download precedes first-run; look back so the session is in range
-    session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND session_date <= @submission_date
-    -- Match the code's exact SHAPE, not a bare prefix. With the colon gone there
-    -- is no delimiter, so `LIKE 'fxrefer%'` would also swallow unrelated content
-    -- like `fxreferral-2026` and strip it to a junk code (`ral-2026`) that would
-    -- reach the CSV firefox.com ingests. Nothing downstream validates the code.
-    AND (
-      REGEXP_CONTAINS(manual_content, r'^fxrefer[A-Z0-9]{17}$')
-      OR REGEXP_CONTAINS(first_content_from_event_params, r'^fxrefer[A-Z0-9]{17}$')
-    )
-),
-referred_clients AS (
-  -- One row per referred first_run client, per platform. Aggregation happens
-  -- once, after the (future) UNION, so a code seen on both platforms yields a
-  -- single combined row rather than one row per platform.
-  --
-  -- DESKTOP: the ga4 CTE can fan out — the same (ga_client_id, stub_session_id)
-  -- pair appears on multiple session rows across the 30-day look-back — so
-  -- QUALIFY collapses each client to a single (invite_code, client_id) row,
-  -- matching the cfs_ga4_attr_v1 dedupe. Without it, a client whose fanned-out
-  -- sessions carry different fxrefer codes would be counted under each code,
-  -- inflating the cross-code total that referral_installs_totals_v1 sums.
-  SELECT
-    -- Safe to strip a bare `fxrefer`: the shape check above already guarantees
-    -- the remainder is exactly 17 Crockford chars with no delimiter.
-    REGEXP_REPLACE(ga4.content, r'^fxrefer', '') AS invite_code,
-    cfs.client_id,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS cfs
-  LEFT JOIN
-    stub_attr
-    ON JSON_VALUE(cfs.attribution_ext.dltoken) = stub_attr.dl_token
-  LEFT JOIN
-    ga4
-    ON stub_attr.ga_client_id = ga4.ga_client_id
-    AND stub_attr.stub_session_id = ga4.stub_session_id
-  WHERE
-    cfs.submission_date = @submission_date -- required partition filter
-    AND cfs.first_seen_date = @submission_date -- clients first seen today
-    -- referred clients only; same shape check as the ga4 CTE
-    AND REGEXP_CONTAINS(ga4.content, r'^fxrefer[A-Z0-9]{17}$')
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY cfs.client_id ORDER BY ga4.session_date DESC, ga4.content) = 1
-  -- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, uncomment:
-  --   UNION ALL
-  --   SELECT
-  --     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer', '') AS invite_code,
-  --     client_id
-  --   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
-  --   WHERE first_seen_date = @submission_date
-  --     AND REGEXP_CONTAINS(play_store_attribution_content, r'^fxrefer[A-Z0-9]{17}$')
+    DATE(submission_timestamp) = @submission_date
 )
 SELECT
   @submission_date AS submission_date,
-  invite_code,
+  REGEXP_REPLACE(raw_code, r'^fxrefer', '') AS invite_code,
+  normalized_channel,
   COUNT(DISTINCT client_id) AS install_count,
 FROM
   referred_clients
+WHERE
+  REGEXP_CONTAINS(REGEXP_REPLACE(raw_code, r'^fxrefer', ''), r'^[A-Z0-9]{17}$')
 GROUP BY
-  invite_code
+  invite_code,
+  normalized_channel

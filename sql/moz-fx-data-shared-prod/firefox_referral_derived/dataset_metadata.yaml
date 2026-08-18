@@ -4,8 +4,11 @@ description: |-
 
   Aggregates Firefox first_run installs by referral (invite) code so referrers
   can see how many installs their code produced on the referral hub page on
-  firefox.com. Desktop attribution flows through the GA4 / download-attribution
-  path (utm_content=fxrefer<code> -> download token -> baseline_clients_first_seen).
+  firefox.com. The invite code comes from the dedicated Glean `referrals` ping,
+  sent once on first run — `firefox_desktop.referrals` on desktop and
+  `fenix.referrals` on Android. Firefox strips the code out of regular
+  attribution data by design, so it is not readable from GA4 or from
+  `attribution.content`.
 dataset_base_acl: derived
 user_facing: false
 labels: {}

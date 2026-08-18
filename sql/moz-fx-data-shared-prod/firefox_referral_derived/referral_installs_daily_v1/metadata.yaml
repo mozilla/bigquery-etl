@@ -3,15 +3,20 @@ description: |-
   Daily count of Firefox first_run installs per referral (invite) code for the
   Firefox Referral Program (DENG-11237).
 
-  Desktop only for the MVP: the referral code arrives via the GA4 /
-  download-attribution path (utm_content=fxrefer<code>) and is joined through
-  the download token to baseline_clients_first_seen_v1, following the
-  cfs_ga4_attr_v1 pattern. Each client is first-seen exactly once, so daily rows
-  do not double-count across partitions.
+  Sourced from the dedicated Glean `referrals` ping, which Firefox sends once on
+  first run when a profile carries referral attribution data: desktop via
+  `firefox_desktop.referrals` / `browser.referral_code` (bug 2055255, Firefox
+  155) and Android via `fenix.referrals` / `referrals.code` (bug 2062793).
 
-  The desktop source (the GA4 / download-attribution path) is the accepted,
-  validated source. The Fenix (Android) half is blocked pending the Play Store
-  attribution mechanism from Nathan.
+  Firefox deliberately strips the referral code out of regular attribution data
+  and submits it through this ping instead, so the code is NOT readable from GA4
+  `utm_content` or from `attribution.content` on baseline_clients_first_seen_v1.
+  An earlier version of this query used that path and returned zero rows every
+  day; do not reintroduce it.
+
+  All channels are counted, with normalized_channel kept as a column so
+  consumers can filter. Only nightly had reported as of 2026-08-18, since the
+  instrumentation targets 155 and had not reached release.
 owners:
 - phlee@mozilla.com
 labels:

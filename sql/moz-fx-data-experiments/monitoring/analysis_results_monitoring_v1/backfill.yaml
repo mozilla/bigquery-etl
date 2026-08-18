@@ -12,7 +12,9 @@
   ignore_date_partition_offset: false
   query_script_entrypoint: main
   query_script_date_arg: date
+  query_script_dry_run_arg: --dry-run
   query_script_args:
+  - --project=moz-fx-data-backfill-slots
   - --destination_project=moz-fx-data-shared-prod
   - --destination_dataset=backfills_staging_derived
   - --destination_table=monitoring__analysis_results_monitoring_v1_2026_08_17

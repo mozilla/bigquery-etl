@@ -357,13 +357,16 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
 def main():
     """Run."""
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument("--project", default=PROJECT)
+    parser.add_argument(
+        "--project", default=PROJECT, help="Billing project (no affect on query)."
+    )
     parser.add_argument("--destination_project", default=PROJECT)
     parser.add_argument("--destination_dataset", default=DATASET)
     parser.add_argument("--destination_table", default=DESTINATION_TABLE)
     parser.add_argument(
         "--date", dest="date", required=True, help="Date to roll up (YYYY-MM-DD)"
     )
+    parser.add_argument("--dry-run", default=False)
     args = parser.parse_args()
 
     today = datetime.now(tz=UTC).date()
@@ -401,10 +404,12 @@ def main():
             time_partitioning=bigquery.TimePartitioning(
                 type_=bigquery.TimePartitioningType.DAY, field="analysis_date"
             ),
+            dry_run=args.dry_run,
         ),
     )
-    result = job.result()
-    print(f"Wrote {result.total_rows} rows to {destination}")
+    if not args.dry_run:
+        result = job.result()
+        print(f"Wrote {result.total_rows} rows to {destination}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,19 @@
+friendly_name: Market Research Competitor Job Postings
+description: |-
+  Competitor job postings scraped from Greenhouse and Teamtailor careers
+  sites, for competitive intelligence on where other browser vendors are
+  hiring. Each weekly run captures a full snapshot of the postings open at
+  that time, so a posting that stays open appears once per `scraped_date` --
+  filter to a single scraped_date to avoid counting the same job more than
+  once. Refreshed weekly as a full reload.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.external_derived.market_research_jobs_v1

@@ -14,9 +14,21 @@ description: |-
   An earlier version of this query used that path and returned zero rows every
   day; do not reintroduce it.
 
-  All channels are counted, with normalized_channel kept as a column so
+  Grain: one row per (submission_date, invite_code, normalized_channel). A code
+  used on more than one channel produces more than one row.
+
+  Counting: the ping fires once per profile, so COUNT(DISTINCT client_id) within
+  a partition is an exact install count. Known limitation — a client whose upload
+  is retried across a midnight boundary lands in two partitions and so counts
+  twice in the cumulative total. Accepted as vanishingly rare for the MVP; the
+  durable fix is a client-level first-seen table.
+
+  Channel: all channels are counted, with normalized_channel kept as a column so
   consumers can filter. Only nightly had reported as of 2026-08-18, since the
-  instrumentation targets 155 and had not reached release.
+  instrumentation targets 155 and had not reached release. Filtering to release
+  here would leave the table permanently empty and remove the only way to
+  validate the pipeline end to end; filter in referral_installs_totals_v1
+  instead, before the referral hub is public.
 owners:
 - phlee@mozilla.com
 labels:

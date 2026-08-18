@@ -1,52 +1,20 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- SOURCE: the dedicated Glean `referrals` ping, sent once on first run by a
--- profile that carries referral attribution data.
---   * Desktop: `firefox_desktop.referrals`, metric `browser.referral_code`
---     (bug 2055255, shipped in Firefox 155).
---   * Android: `fenix.referrals`, metric `referrals.code`
---     (bug 2062793, the Fenix equivalent).
+-- Source: the dedicated Glean `referrals` ping, sent once on first run by a
+-- profile carrying referral attribution data — `browser.referral_code` on
+-- desktop (bug 2055255), `referrals.code` on Android (bug 2062793).
 --
--- WHY NOT ATTRIBUTION / GA4: Firefox deliberately strips the referral code out
--- of regular attribution data and submits it via this separate ping instead —
--- that is the entire point of bug 2055255. A referred install therefore lands in
--- `baseline_clients_first_seen_v1` with source=www.firefox.com, medium=referral,
--- campaign=firefox-referral and a valid dltoken, but `attribution.content` NULL.
--- The previous version of this query chased the code through GA4 `utm_content`
--- -> dl_token -> baseline_clients_first_seen and so returned zero rows every day
--- from launch; see DENG-11237. Do NOT reintroduce that path: the website does
--- send `content=fxrefer<code>` in the attribution code, but the client removes it
--- before it reaches any attribution field we can read.
+-- Do NOT try to read the code from GA4 `utm_content` or from
+-- `attribution.content`. Firefox strips it out of regular attribution data by
+-- design — that is the point of bug 2055255 — so an earlier version of this
+-- query which used that path returned zero rows every day from launch
+-- (DENG-11237).
 --
--- CODE FORMAT: the ping carries the code BARE — `1WYYSNCNGE6S7WKGF`, not
--- `fxrefer1WYYSNCNGE6S7WKGF` — because the client strips the prefix when it
--- extracts the code. We strip an optional `fxrefer` prefix anyway so that a
--- client-side change which stops stripping it does not silently drop every row,
--- then enforce the 17-char Crockford base32 shape (digits and upper-case
--- letters). Malformed codes are dropped rather than counted: nothing downstream
--- validates the code before firefox.com ingests the CSV.
---
--- CHANNEL: all channels are counted and `normalized_channel` is kept as a
--- column so consumers can filter. As of 2026-08-18 only nightly has ever
--- reported — the instrumentation targets 155 and had not reached release — so
--- filtering to release here would make this table permanently empty and remove
--- the only way to validate the pipeline end to end. Revisit before the referral
--- hub is public: nightly test installs should not inflate a user-facing count.
---
--- GRAIN / DEDUPE: one row per (submission_date, invite_code, normalized_channel),
--- counting distinct client_ids. The ping fires once per profile, so within a
--- partition COUNT(DISTINCT client_id) is exact. KNOWN LIMITATION: a client whose
--- upload is retried across a midnight boundary would be counted in two
--- partitions and so twice in the cumulative total. Accepted for the MVP as
--- vanishingly rare; the durable fix is a client-level first-seen table, tracked
--- as a follow-up rather than paid for on every run here.
+-- See metadata.yaml for the grain, channel and dedupe notes.
 WITH referred_clients AS (
-  -- One row per referred client per platform, un-aggregated, so that the
-  -- aggregation below collapses desktop and Android together WITHIN a channel
-  -- rather than emitting a row per platform. Note this is not a single row per
-  -- code: normalized_channel is part of the grain, so a code used on desktop
-  -- release and Android nightly still produces two rows. Desktop and Fenix
-  -- client_id namespaces are disjoint, so the distinct count never
+  -- One row per referred client per platform, un-aggregated, so the aggregation
+  -- below collapses desktop and Android together within a channel. Desktop and
+  -- Fenix client_id namespaces are disjoint, so the distinct count never
   -- double-counts across platforms.
   SELECT
     metrics.string.browser_referral_code AS raw_code,
@@ -67,10 +35,13 @@ WITH referred_clients AS (
     DATE(submission_timestamp) = @submission_date
 ),
 codes AS (
-  -- Strip the optional prefix exactly once, so the value that is validated below
-  -- is the same value that gets emitted. Spelling the REGEXP_REPLACE out twice
-  -- would let a future edit validate one expression and emit another — the silent
-  -- junk-code failure the header comment is guarding against.
+  -- Stripped after the UNION rather than in each branch above, so the prefix is
+  -- removed in exactly one place and the value validated below is the same value
+  -- that gets emitted.
+  --
+  -- The ping already carries the code bare (the client strips `fxrefer` when it
+  -- extracts it), so this is belt-and-braces: if a client-side change ever stops
+  -- stripping it, rows keep flowing instead of silently vanishing.
   SELECT
     REGEXP_REPLACE(raw_code, r'^fxrefer', '') AS invite_code,
     normalized_channel,
@@ -78,10 +49,8 @@ codes AS (
   FROM
     referred_clients
 )
--- Column order matches the destination table, which already exists in prod as
--- (submission_date, invite_code, install_count). BigQuery matches a schema update
--- by ordinal position, so normalized_channel is APPENDED rather than slotted in
--- next to invite_code where it reads more naturally.
+-- normalized_channel is last to match the destination table, which already
+-- exists as (submission_date, invite_code, install_count).
 SELECT
   @submission_date AS submission_date,
   invite_code,
@@ -90,6 +59,22 @@ SELECT
 FROM
   codes
 WHERE
+  -- Drop anything that is not a well-formed code. The ping is a free-form string
+  -- metric, so a malformed value is possible in practice: a client-side bug, a
+  -- hand-edited attribution code, or a truncated value all arrive here as data.
+  -- Nothing downstream validates the code before firefox.com ingests the CSV, so
+  -- this is the only gate.
+  --
+  -- Expected shape is literally 17 chars of [A-Z0-9] — this is deliberately a
+  -- little looser than Crockford base32, which also excludes I/L/O/U; the extra
+  -- strictness would buy nothing and would break if the generator changed.
+  --
+  -- CASE: every code observed so far is upper case, and Crockford is
+  -- case-insensitive by spec, so a lower-case code would be valid to the
+  -- Websites team but dropped here. Left strict rather than upper-casing,
+  -- because the CSV is matched against Springfield's stored codes and silently
+  -- changing case could mismatch. Confirm with the Websites team; if lower case
+  -- is possible, normalise here rather than widening the charset.
   REGEXP_CONTAINS(invite_code, r'^[A-Z0-9]{17}$')
 GROUP BY
   invite_code,

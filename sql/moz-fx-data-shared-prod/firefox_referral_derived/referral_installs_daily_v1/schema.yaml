@@ -23,13 +23,12 @@ fields:
     Distinct clients that reported this invite code on submission_date in this
     channel. The ping fires once per profile, so this is a distinct install
     count.
-# normalized_channel is last because the table already exists in prod as
-# (submission_date, invite_code, install_count) and BigQuery matches a schema
-# update by ordinal position — a new column has to be appended, not inserted.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
   description: >-
     Release channel of the client that reported the referral (release, beta,
     nightly, esr). Kept so consumers can exclude pre-release test traffic; this
-    table intentionally does not filter it.
+    table intentionally does not filter it. Populated from 2026-08-17 onwards,
+    the first day the `referrals` ping reported; the column was appended to an
+    all-empty table, so no earlier partition has a value for it.

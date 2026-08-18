@@ -1,6 +1,7 @@
 friendly_name: Newtab Component-level Content Table
 description: |-
   Contains information about content interactions, both organic and sponsored, from the newtab ping.  Each record represents a specific content position during a specific visit
+  Updated in [PR 9717](https://github.com/mozilla/bigquery-etl/pull/9717/changes) to use determine_tiles_per_row_v2 to determine number of rows in the layout.
 owners:
 - jsnyder@mozilla.com
 labels:

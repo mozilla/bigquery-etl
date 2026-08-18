@@ -61,16 +61,32 @@ WITH referred_clients AS (
     `moz-fx-data-shared-prod.fenix.referrals`
   WHERE
     DATE(submission_timestamp) = @submission_date
+),
+codes AS (
+  -- Strip the optional prefix exactly once, so the value that is validated below
+  -- is the same value that gets emitted. Spelling the REGEXP_REPLACE out twice
+  -- would let a future edit validate one expression and emit another — the silent
+  -- junk-code failure the header comment is guarding against.
+  SELECT
+    REGEXP_REPLACE(raw_code, r'^fxrefer', '') AS invite_code,
+    normalized_channel,
+    client_id,
+  FROM
+    referred_clients
 )
+-- Column order matches the destination table, which already exists in prod as
+-- (submission_date, invite_code, install_count). BigQuery matches a schema update
+-- by ordinal position, so normalized_channel is APPENDED rather than slotted in
+-- next to invite_code where it reads more naturally.
 SELECT
   @submission_date AS submission_date,
-  REGEXP_REPLACE(raw_code, r'^fxrefer', '') AS invite_code,
-  normalized_channel,
+  invite_code,
   COUNT(DISTINCT client_id) AS install_count,
+  normalized_channel,
 FROM
-  referred_clients
+  codes
 WHERE
-  REGEXP_CONTAINS(REGEXP_REPLACE(raw_code, r'^fxrefer', ''), r'^[A-Z0-9]{17}$')
+  REGEXP_CONTAINS(invite_code, r'^[A-Z0-9]{17}$')
 GROUP BY
   invite_code,
   normalized_channel

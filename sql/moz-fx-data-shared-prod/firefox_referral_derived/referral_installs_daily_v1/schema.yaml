@@ -16,13 +16,6 @@ fields:
     strips the `fxrefer` prefix before submitting, and the ETL strips it again
     defensively. Derived from a referral id generated within Firefox; not
     associated with FxA or any real-world identity.
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-  description: >-
-    Release channel of the client that reported the referral (release, beta,
-    nightly, esr). Kept so consumers can exclude pre-release test traffic; this
-    table intentionally does not filter it.
 - name: install_count
   type: INTEGER
   mode: NULLABLE
@@ -30,3 +23,13 @@ fields:
     Distinct clients that reported this invite code on submission_date in this
     channel. The ping fires once per profile, so this is a distinct install
     count.
+# normalized_channel is last because the table already exists in prod as
+# (submission_date, invite_code, install_count) and BigQuery matches a schema
+# update by ordinal position — a new column has to be appended, not inserted.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Release channel of the client that reported the referral (release, beta,
+    nightly, esr). Kept so consumers can exclude pre-release test traffic; this
+    table intentionally does not filter it.

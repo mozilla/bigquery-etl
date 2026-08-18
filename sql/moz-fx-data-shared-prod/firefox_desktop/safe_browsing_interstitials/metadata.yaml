@@ -1,0 +1,21 @@
+friendly_name: Safe Browsing Interstitials
+description: |-
+  The Safe Browsing interstitial funnel for Firefox Desktop: about:blocked
+  displays plus the two button presses users can make on the warning page.
+
+  Read the caveats on the underlying table
+  firefox_desktop_derived.safe_browsing_interstitials_v1 before computing rates.
+  Displays count renders rather than unique encounters, so action/displays
+  ratios are lower bounds.
+owners:
+- lcrouch@mozilla.com
+labels:
+  owner: lcrouch
+  owner1: lcrouch
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.safe_browsing_interstitials_v1

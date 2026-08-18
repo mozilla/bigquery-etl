@@ -69,12 +69,11 @@ WHERE
   -- little looser than Crockford base32, which also excludes I/L/O/U; the extra
   -- strictness would buy nothing and would break if the generator changed.
   --
-  -- CASE: every code observed so far is upper case, and Crockford is
-  -- case-insensitive by spec, so a lower-case code would be valid to the
-  -- Websites team but dropped here. Left strict rather than upper-casing,
-  -- because the CSV is matched against Springfield's stored codes and silently
-  -- changing case could mismatch. Confirm with the Websites team; if lower case
-  -- is possible, normalise here rather than widening the charset.
+  -- Upper case only is correct: codes are guaranteed upper case by the Websites
+  -- team (Steve Jalim, 2026-08-18). Crockford itself is case-insensitive, so if
+  -- that guarantee is ever dropped, normalise with UPPER() here rather than
+  -- widening the charset — the CSV is matched against Springfield's stored
+  -- codes, so case has to end up consistent with those.
   REGEXP_CONTAINS(invite_code, r'^[A-Z0-9]{17}$')
 GROUP BY
   invite_code,

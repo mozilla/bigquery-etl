@@ -1,17 +1,26 @@
 friendly_name: Referral Installs Daily
-description: |-
-  Daily count of Firefox first_run installs per referral (invite) code for the
-  Firefox Referral Program (DENG-11237).
-
-  Desktop only for the MVP: the referral code arrives via the GA4 /
-  download-attribution path (utm_content=fxrefer<code>) and is joined through
-  the download token to baseline_clients_first_seen_v1, following the
-  cfs_ga4_attr_v1 pattern. Each client is first-seen exactly once, so daily rows
-  do not double-count across partitions.
-
-  The desktop source (the GA4 / download-attribution path) is the accepted,
-  validated source. The Fenix (Android) half is blocked pending the Play Store
-  attribution mechanism from Nathan.
+description: "Daily count of Firefox first_run installs per referral (invite) code\
+  \ for the\nFirefox Referral Program (DENG-11237).\n\nSourced from the dedicated\
+  \ Glean `referrals` ping, which Firefox sends once on\nfirst run when a profile\
+  \ carries referral attribution data: desktop via\n`firefox_desktop.referrals` /\
+  \ `browser.referral_code` (bug 2055255, Firefox\n155) and Android via `fenix.referrals`\
+  \ / `referrals.code` (bug 2062793).\n\nFirefox deliberately strips the referral\
+  \ code out of regular attribution data\nand submits it through this ping instead,\
+  \ so the code is NOT readable from GA4\n`utm_content` or from `attribution.content`\
+  \ on baseline_clients_first_seen_v1.\nAn earlier version of this query used that\
+  \ path and returned zero rows every\nday; do not reintroduce it.\n\nGrain: one row\
+  \ per (submission_date, invite_code, normalized_channel). A code\nused on more than\
+  \ one channel produces more than one row.\n\nCounting: the ping fires once per profile,\
+  \ so COUNT(DISTINCT client_id) within\na partition is an exact install count. Known\
+  \ limitation \u2014 a client whose upload\nis retried across a midnight boundary\
+  \ lands in two partitions and so counts\ntwice in the cumulative total. Accepted\
+  \ as vanishingly rare for the MVP; the\ndurable fix is a client-level first-seen\
+  \ table.\n\nChannel: all channels are counted, with normalized_channel kept as a\
+  \ column so\nconsumers can filter. Only nightly had reported as of 2026-08-18, since\
+  \ the\ninstrumentation targets 155 and had not reached release. Filtering to release\n\
+  here would leave the table permanently empty and remove the only way to\nvalidate\
+  \ the pipeline end to end; filter in referral_installs_totals_v1\ninstead, before\
+  \ the referral hub is public."
 owners:
 - phlee@mozilla.com
 labels:
@@ -33,7 +42,6 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1
-  - moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v2
-  - moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined
+  - moz-fx-data-shared-prod.fenix.referrals
+  - moz-fx-data-shared-prod.firefox_desktop.referrals
 require_column_descriptions: true

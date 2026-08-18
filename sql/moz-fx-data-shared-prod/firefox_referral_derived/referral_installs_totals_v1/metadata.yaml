@@ -3,10 +3,22 @@ description: |-
   Cumulative all-time Firefox first_run installs per referral (invite) code for
   the Firefox Referral Program (DENG-11237).
 
-  Full-refresh rollup of referral_installs_daily_v1. Zero-install codes are
-  omitted. This will be the source table for a fast-follow CSV export to the
-  Website team's GCS bucket (pending the bucket + IAM). Column order
-  (invite_code, total_installs) matches the required CSV format.
+  Rollup of referral_installs_daily_v1. The whole table is overwritten on every
+  run rather than appended to, so it always reflects all daily partitions as they
+  stand; there is no incremental state to backfill. The `referrals` ping fires
+  once per profile, so summing install_count across partitions gives the all-time
+  distinct install count per code. Daily rows are grained by normalized_channel
+  and are summed across channels and platforms here.
+
+  Zero-install codes are omitted. Source table for the CSV export to the Website
+  team's GCS bucket; column order (invite_code, total_installs) matches the
+  required CSV format.
+
+  Channel: pre-release traffic is currently included, because as of 2026-08-18
+  nightly was the only channel reporting the ping. Once 155 reaches release,
+  decide whether the CSV firefox.com ingests should exclude non-release installs.
+  This is the place to add that filter, so referral_installs_daily_v1 stays
+  complete.
 owners:
 - phlee@mozilla.com
 labels:

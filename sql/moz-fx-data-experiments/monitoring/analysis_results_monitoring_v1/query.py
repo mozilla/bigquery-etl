@@ -358,6 +358,7 @@ def main():
     """Run."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default=PROJECT)
+    parser.add_argument("--destination_project", default=PROJECT)
     parser.add_argument("--destination_dataset", default=DATASET)
     parser.add_argument("--destination_table", default=DESTINATION_TABLE)
     parser.add_argument(
@@ -388,7 +389,7 @@ def main():
     final_sql = build_final_sql(tables)
 
     destination = (
-        f"{args.project}.{args.destination_dataset}.{args.destination_table}"
+        f"{args.destination_project}.{args.destination_dataset}.{args.destination_table}"
         f"${args.date.replace('-', '')}"
     )
     job = client.query(

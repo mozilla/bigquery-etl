@@ -1,5 +1,5 @@
 2026-08-17:
-  start_date: 2026-02-17
+  start_date: 2026-02-20
   end_date: 2026-08-12
   reason: Update new table with historical data.
   watchers:
@@ -13,9 +13,9 @@
   query_script_entrypoint: main
   query_script_date_arg: date
   query_script_args:
-  - --project=moz-fx-data-experiments
+  - --destination_project=moz-fx-data-shared-prod
   - --destination_dataset=backfills_staging_derived
-  - --monitoring__analysis_results_monitoring_v1_2026_08_17
+  - --destination_table=monitoring__analysis_results_monitoring_v1_2026_08_17
 # WARNING: Destination tables arguments for python scripts are not automatically
 # configured to write to a backfill staging table.
 # Adjust the query_script_arg values as needed.

@@ -359,6 +359,8 @@ metrics_ping AS (
       BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
       AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
     AND client_info.client_id IS NOT NULL
+    -- Date when adjust_attribution ping was added as a data source in this query
+    AND DATE(submission_timestamp) >= "2026-08-18"
 ),
 adjust_attribution_ping AS (
   SELECT

@@ -7,7 +7,7 @@ description: |-
 
   Notes:
   - 2025-05-14: `normalized_channel` field added (backfilled up until 2023-04-08, prior to this the value will always be `null`)
-  - 2026-08-06: adjust_attribution ping added as the source of adjust attribution info.
+  - 2026-08-18: adjust_attribution ping added as the source of adjust attribution info.
   - 2026-04-07: first-session ping no longer contains play store attribution, this now comes from play-store-attribution ping.
 
 owners:

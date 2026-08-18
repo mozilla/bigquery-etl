@@ -358,7 +358,9 @@ def main():
     """Run."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--project", default=PROJECT, help="Billing project (no affect on query)."
+        "--project",
+        default=PROJECT,
+        help="Billing project (no effect on query source/destination).",
     )
     parser.add_argument("--destination_project", default=PROJECT)
     parser.add_argument("--destination_dataset", default=DATASET)
@@ -366,7 +368,7 @@ def main():
     parser.add_argument(
         "--date", dest="date", required=True, help="Date to roll up (YYYY-MM-DD)"
     )
-    parser.add_argument("--dry-run", default=False)
+    parser.add_argument("--dry_run", "--dry-run", action="store_true")
     args = parser.parse_args()
 
     today = datetime.now(tz=UTC).date()

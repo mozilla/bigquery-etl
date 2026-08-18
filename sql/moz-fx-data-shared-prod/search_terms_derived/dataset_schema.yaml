@@ -1,6 +1,6 @@
 fields:
 - name: advertiser
-  description: The name of the advertiser or brand associated with a sponsored search suggestion or ad placement. Identifies the commercial entity
+  description: The name of the advertiser or brand associated with a search suggestion or sponsored ad placement. Identifies the commercial entity
     whose content was surfaced to the user.
   type: STRING
 - name: block_id
@@ -12,7 +12,7 @@ fields:
     Helps identify the user agent associated with the search or suggestion event.
   type: STRING
 - name: clicks
-  description: The number of times a user clicked on a sponsored suggestion or ad result during a given period. A value of zero indicates the
+  description: The number of times a user clicked on a suggestion or sponsored ad result during a given period. A value of zero indicates the
     result was shown but not interacted with.
   type: INT64
 - name: country
@@ -21,7 +21,7 @@ fields:
   type: STRING
 - name: dma
   description: The Designated Market Area (DMA) code representing the regional television or advertising market of the user, applicable primarily
-    within the United States. This field is frequently null for non-US or unresolvable locations.
+    within the United States.
   type: STRING
 - name: experiments
   description: An array of Nimbus experiment enrollments active at the time of the event, each containing a slug identifying the experiment and
@@ -44,7 +44,7 @@ fields:
     Used to classify ad content according to industry-standard taxonomy.
   type: STRING
 - name: impressions
-  description: The number of times a sponsored suggestion or ad was displayed to users during a given period. Reflects the total exposure count
+  description: The number of times a suggestion or sponsored ad was displayed to users during a given period. Reflects the total exposure count
     for a particular result or placement.
   type: INT64
 - name: is_clicked
@@ -68,8 +68,7 @@ fields:
     numbers generally indicate higher placement in the suggestion UI.
   type: INT64
 - name: query
-  description: The full search query string entered by the user that triggered a suggestion or sponsored result. Represents the complete search
-    term at the time of the event.
+  description: The sanitized search query string (PII removed) that triggered a suggestion or sponsored result, sourced from Merino logs.
   type: STRING
 - name: region
   description: The ISO 3166-2 subdivision code (e.g., US state abbreviation) representing the sub-national region of the user or request origin.

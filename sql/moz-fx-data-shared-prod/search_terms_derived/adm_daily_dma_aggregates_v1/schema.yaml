@@ -9,6 +9,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: dma
+    append: Empty string when the DMA could not be resolved; never null.
 - mode: NULLABLE
   name: query
   type: STRING

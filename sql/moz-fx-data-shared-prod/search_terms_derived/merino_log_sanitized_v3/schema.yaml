@@ -35,6 +35,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: dma
+    append: Frequently null for non-US or unresolvable locations.
 - mode: NULLABLE
   name: form_factor
   type: STRING

@@ -104,6 +104,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: timestamp
+    append: Truncated to second-level granularity in this table.
 - mode: NULLABLE
   name: query
   type: STRING
@@ -116,6 +117,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: dma
+    append: Frequently null for non-US or unresolvable locations.
 - mode: NULLABLE
   name: form_factor
   type: STRING
@@ -140,12 +142,14 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: session_id
+    append: Null for impressions with no matching Merino log row.
 - mode: NULLABLE
   name: sequence_no
   type: INTEGER
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: sequence_no
+    append: Null for impressions with no matching Merino log row.
 - mode: NULLABLE
   name: match_type
   type: STRING

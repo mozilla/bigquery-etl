@@ -17,6 +17,7 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
     field: form_factor
+    append: 'Sourced from Merino logs; e.g. "desktop", "phone".'
 - mode: NULLABLE
   name: advertiser
   type: STRING

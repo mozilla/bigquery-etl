@@ -68,9 +68,11 @@ def _parse_check_output(output: str) -> str:
     return output
 
 
-@click.group(help="""
+@click.group(
+    help="""
         Commands for managing and running bqetl data checks.
-    """)
+    """
+)
 @click.pass_context
 def check(ctx):
     """Create the CLI group for the check command."""
@@ -261,7 +263,6 @@ def _run_check(
     )
     result_split_by_marker = _render_result_split_by_marker(marker, rendered_result)
     checks = sqlparse.split(result_split_by_marker)
-    seek_location = 0
     check_failed = False
 
     with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
@@ -270,9 +271,13 @@ def _run_check(
             if len(rendered_check) == 0:
                 continue
             rendered_check = rendered_check.strip()
+            # reset the stream for each check so only the current check is passed to
+            # bq; tracking offsets would need byte lengths, not character lengths.
+            query_stream.seek(0)
+            query_stream.truncate()
             query_stream.write(rendered_check)
-            query_stream.seek(seek_location)
-            seek_location += len(rendered_check)
+            query_stream.flush()
+            query_stream.seek(0)
 
             # run the query as shell command so that passed parameters can be used as is
             try:

@@ -2,26 +2,26 @@
 
 """Snapshot the metadata bigquery-etl declares for every table and view.
 
-One row per ``sql/<project>/<dataset>/<table>/metadata.yaml``, carrying
+One row per `sql/<project>/<dataset>/<table>/metadata.yaml`, carrying
 ownership, the scheduling DAG and its impact tier, the authored labels, and
 who last changed the entity. Built from three sources:
 
 1. The repo checkout inside the Docker image (the Dockerfile does
-   ``COPY . .``): metadata.yaml for owners, labels and deprecation, and
-   dags.yaml for the DAG's ``impact/tier_*`` tag, owner, alert emails and
+   `COPY . .`): metadata.yaml for owners, labels and deprecation, and
+   dags.yaml for the DAG's `impact/tier_*` tag, owner, alert emails and
    schedule. These reflect main at image build time, not the live Airflow
-   metadata DB -- for runtime DAG state see ``monitoring_derived.airflow_dag_*``.
-2. INFORMATION_SCHEMA.TABLES at run time, for ``table_type``. Only BigQuery
-   knows what a deployed object actually is: ``definition_type`` is the repo's
+   metadata DB -- for runtime DAG state see `monitoring_derived.airflow_dag_*`.
+2. INFORMATION_SCHEMA.TABLES at run time, for `table_type`. Only BigQuery
+   knows what a deployed object actually is: `definition_type` is the repo's
    view of it and the two legitimately disagree, since some query.sql
    directories deploy as VIEW or CLONE and directories holding no SQL at all
    are still real tables.
-3. ``git log`` over the same checkout, for the ``last_changed_*`` columns,
+3. `git log` over the same checkout, for the `last_changed_*` columns,
    which link an entity to the merged PR that last touched it.
 
 Both external lookups can fail without the rest of the snapshot being wrong,
-so each carries a status column -- ``table_type_status`` and
-``last_changed_status`` -- that separates "we looked and it is not there" from
+so each carries a status column -- `table_type_status` and
+`last_changed_status` -- that separates "we looked and it is not there" from
 "we could not look". A null with no status is never a silent failure.
 
 UDFs and stored procedures are excluded: they are routines rather than
@@ -29,7 +29,7 @@ tables, are never scheduled, and conventionally declare no owners, so they
 would distort ownership-coverage denominators.
 
 Every metadata.yaml produces a row even if it fails to parse: the row is
-emitted with ``metadata_parse_error`` set, ``owner_count`` 0 and the other
+emitted with `metadata_parse_error` set, `owner_count` 0 and the other
 metadata-derived columns NULL. Dropping such rows would make a broken file
 indistinguishable from an entity that does not exist.
 """
@@ -52,14 +52,13 @@ from bigquery_etl.schema import Schema
 
 logger = logging.getLogger(__name__)
 
-# Repo root, resolved from this file's location so the script works both in the
-# Docker image (/app/sql/...) and from a local checkout.
+# Four levels up from sql/<project>/<dataset>/<entity>/query.py, so this resolves
+# in the Docker image (/app) and in a local checkout alike.
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
-# In production bqetl deploys the destination table from this schema.yaml before
-# the job runs, and a load job whose schema disagrees with the deployed table
-# fails outright. Read the same file rather than restating the fields here, so
-# the two cannot drift.
+# Read the schema from file rather than restating the fields in Python: bqetl
+# deploys the destination table from this schema.yaml, and a load job whose
+# schema disagrees with the deployed table fails outright.
 SCHEMA_FILE = Path(__file__).resolve().parent / "schema.yaml"
 
 IMPACT_TAG_PREFIX = "impact/"
@@ -133,10 +132,10 @@ WHERE table_schema IN UNNEST(@datasets)
 
 
 def github_slug() -> str:
-    """Return the ``owner/repo`` of the git remote, e.g. mozilla/bigquery-etl.
+    """Return the `owner/repo` of the git remote, e.g. mozilla/bigquery-etl.
 
     PR numbers are per-repository, so the link has to point at whichever repo
-    this checkout's history came from. That is not necessarily ``dag_repo``: in
+    this checkout's history came from. That is not necessarily `dag_repo`: in
     production the job runs from the private-bigquery-etl image, whose commits
     and PR numbers are its own even for entities published from the public repo.
     """
@@ -163,7 +162,7 @@ def github_slug() -> str:
 def parse_pr(subject: str) -> tuple[Optional[int], str]:
     """Split a commit subject into (PR number, title).
 
-    Returns ``(None, subject)`` when the subject shows no sign of a merged PR,
+    Returns `(None, subject)` when the subject shows no sign of a merged PR,
     so direct pushes are reported with a title but no PR link.
     """
     for pattern in (PR_SQUASH_RE, PR_MERGE_RE):
@@ -179,19 +178,19 @@ def git_last_changed(
 ) -> tuple[dict[str, dict[str, Any]], str]:
     """Return entity-directory -> last-commit details, plus a status.
 
-    One ``git log`` pass over ``sql_dir`` newest-first: the first time a path
+    One `git log` pass over `sql_dir` newest-first: the first time a path
     appears is by definition its most recent change, so the whole tree resolves
     in a single subprocess (~0.3s for the full history).
 
     Tracks the entity *directory*, not just the definition file, because a
     schema.yaml or metadata.yaml edit can break a task just as easily as a
-    query.sql edit; ``last_changed_file`` records which one it was.
+    query.sql edit; `last_changed_file` records which one it was.
 
     Uses the committer date rather than the author date: when correlating with a
     task failure what matters is when the change landed on the branch, not when
     someone first wrote it.
 
-    The status is ``ok`` when history is usable, otherwise a reason. A shallow
+    The status is `ok` when history is usable, otherwise a reason. A shallow
     clone is treated as unusable rather than partially trusted -- it would map
     every entity to the build commit and read as "everything changed today".
     """
@@ -289,11 +288,11 @@ def _names(field: str, lookup: dict[int, str]) -> str:
 def describe_schedule(interval: Optional[str]) -> tuple[Optional[str], Optional[str]]:
     """Render a schedule_interval as (frequency bucket, human description).
 
-    Handles the grammar accepted by ``is_schedule_interval`` in
+    Handles the grammar accepted by `is_schedule_interval` in
     bigquery_etl/query_scheduling/utils.py: the named aliases, a 5-field cron
-    with lists/steps/ranges, or a ``NhNmNs`` timedelta. Anything outside that --
+    with lists/steps/ranges, or a `NhNmNs` timedelta. Anything outside that --
     including the 6- and 7-field crons the regex permits but no DAG currently
-    uses -- falls back to (``other``, the raw string) rather than guessing.
+    uses -- falls back to (`other`, the raw string) rather than guessing.
 
     All times are UTC, which is what Airflow schedules on.
     """
@@ -382,7 +381,7 @@ def _describe_cron(
 
 
 def dag_tier(tags: list[str]) -> Optional[str]:
-    """Return the tier suffix of the DAG's ``impact/*`` tag, e.g. ``tier_1``.
+    """Return the tier suffix of the DAG's `impact/*` tag, e.g. `tier_1`.
 
     All 155 DAGs in dags.yaml currently carry exactly one impact tag, so the
     sort is defensive: if a DAG is ever tagged with several, the lowest (most
@@ -398,7 +397,7 @@ def dag_tier(tags: list[str]) -> Optional[str]:
 
 
 def repo_relative_path(path: Path) -> str:
-    """Return ``path`` relative to the repo root, or absolute if it is outside.
+    """Return `path` relative to the repo root, or absolute if it is outside.
 
     A --sql-dir pointing somewhere other than the repo checkout (used for
     testing) is not under REPO_ROOT, and relative_to would raise rather than
@@ -411,10 +410,10 @@ def repo_relative_path(path: Path) -> str:
 
 
 def source_url(path: Optional[str], repo: Optional[str]) -> Optional[str]:
-    """Return a GitHub link to ``path`` on the published branch.
+    """Return a GitHub link to `path` on the published branch.
 
-    Mirrors ``Task.source_url`` in bigquery_etl/query_scheduling/task.py so the
-    links here match the ones bqetl puts in generated DAG docs. ``repo`` comes
+    Mirrors `Task.source_url` in bigquery_etl/query_scheduling/task.py so the
+    links here match the ones bqetl puts in generated DAG docs. `repo` comes
     from the scheduling DAG; unscheduled entities have none, and default to the
     public repo, which is correct for everything in the public checkout.
     """
@@ -428,7 +427,7 @@ def source_url(path: Optional[str], repo: Optional[str]) -> Optional[str]:
 
 
 def definition_type(table_dir: Path) -> Optional[str]:
-    """Return the filename that defines the entity, e.g. ``query.sql``.
+    """Return the filename that defines the entity, e.g. `query.sql`.
 
     Returns None when the directory contains no recognised definition file. That
     is mostly tables with only metadata.yaml + schema.yaml (defined in BigQuery
@@ -446,7 +445,7 @@ def bigquery_table_types(
 ) -> tuple[dict[tuple[str, str, str], str], set[str]]:
     """Look up INFORMATION_SCHEMA.TABLES.table_type for the given projects.
 
-    ``keys`` is the set of (project, dataset) pairs to resolve. Returns the
+    `keys` is the set of (project, dataset) pairs to resolve. Returns the
     (project, dataset, table) -> table_type mapping plus the set of projects
     that could not be queried at all, so callers can tell "this object is not in
     BigQuery" apart from "we were unable to look".
@@ -478,14 +477,14 @@ def bigquery_table_types(
 
 
 def authored_labels(metadata_file: Path) -> dict[str, Any]:
-    """Return the ``labels`` block exactly as written in metadata.yaml.
+    """Return the `labels` block exactly as written in metadata.yaml.
 
     Read from the raw YAML rather than the parsed Metadata because
-    ``Metadata.from_file`` rewrites the block before returning it: it overwrites
-    ``owner{n}`` with the local parts of the ``owners`` emails and injects a
-    ``dag`` key from ``scheduling.dag_name``. The labels actually applied to the
+    `Metadata.from_file` rewrites the block before returning it: it overwrites
+    `owner{n}` with the local parts of the `owners` emails and injects a
+    `dag` key from `scheduling.dag_name`. The labels actually applied to the
     deployed BigQuery table are already available in
-    ``monitoring_derived.bigquery_tables_inventory_v1``; what is not recorded
+    `monitoring_derived.bigquery_tables_inventory_v1`; what is not recorded
     anywhere else is what a human wrote here, including values the tooling
     silently discards.
     """
@@ -503,9 +502,9 @@ def authored_labels(metadata_file: Path) -> dict[str, Any]:
 
 
 def label_value(value: Any) -> str:
-    """Render a label value as a string for the ``labels`` map.
+    """Render a label value as a string for the `labels` map.
 
-    Label values are not all strings: booleans appear as YAML ``true``/``false``
+    Label values are not all strings: booleans appear as YAML `true`/`false`
     and review_bugs is a list. Lowercasing booleans keeps them consistent with
     how they are written in the file rather than rendering Python's "True".
     """
@@ -637,7 +636,7 @@ def build_row(
 def collect_rows(
     client: bigquery.Client, sql_dir: Path, dags_config: Path, submission_date: str
 ) -> list[dict[str, Any]]:
-    """Build a row for every table-level metadata.yaml under ``sql_dir``."""
+    """Build a row for every table-level metadata.yaml under `sql_dir`."""
     dags = DagCollection.from_file(dags_config)
     logger.info(f"Loaded {len(dags.dags)} DAGs from {dags_config}")
 
@@ -654,6 +653,30 @@ def collect_rows(
         f"Excluded {len(excluded)} routines "
         f"({'/'.join(sorted(EXCLUDED_DEFINITION_FILES))}); {len(rows)} rows remain."
     )
+
+    # Checked here rather than in main() because this is where the DagCollection
+    # is in scope, so a scheduled entity whose dag_name is absent from dags.yaml
+    # can be identified directly. A handful is normal -- an entity may reference
+    # a DAG defined in another repo. A large fraction means the wrong dags.yaml
+    # was loaded (in production this runs in the private-bigquery-etl image,
+    # whose dags.yaml is not guaranteed to carry the public DAG definitions),
+    # which would otherwise write a full snapshot with every dag_tier NULL.
+    # .get(): a row whose metadata.yaml failed to parse never reaches the
+    # scheduling fields, so dag_name is absent rather than None.
+    scheduled = [r for r in rows if r.get("dag_name")]
+    undefined = [r for r in scheduled if dags.dag_by_name(r["dag_name"]) is None]
+    if undefined:
+        sample = ", ".join(sorted({r["dag_name"] for r in undefined})[:5])
+        logger.warning(
+            f"{len(undefined)}/{len(scheduled)} scheduled entities name a DAG "
+            f"that is not defined in {dags_config}; e.g. {sample}"
+        )
+    if scheduled and len(undefined) > 0.1 * len(scheduled):
+        raise RuntimeError(
+            f"{len(undefined)} of {len(scheduled)} scheduled entities name a DAG "
+            f"missing from {dags_config}. Refusing to write a snapshot with "
+            f"mostly-NULL tier data."
+        )
 
     table_types, unavailable = bigquery_table_types(
         client, {(r["project_id"], r["dataset_id"]) for r in rows}
@@ -787,28 +810,6 @@ def main() -> None:
         f"{len(rows)} tables and views; {tier_1} on tier-1 DAGs; "
         f"{unowned} without an owner; {errors} metadata parse errors."
     )
-
-    # A resolved DAG always carries at least a `repo/*` tag (Dag.from_dict adds
-    # one), so empty dag_tags on a scheduled table means its dag_name was absent
-    # from dags.yaml. A handful is normal -- a table can reference a DAG defined
-    # in another repo. A large fraction means we loaded the wrong dags.yaml (in
-    # production this job runs in the private-bigquery-etl image, whose
-    # dags.yaml is not guaranteed to contain the public DAG definitions), which
-    # would otherwise write a full snapshot with every dag_tier silently NULL.
-    scheduled = [r for r in rows if r.get("is_scheduled")]
-    unresolved = [r for r in scheduled if not r.get("dag_tags")]
-    if unresolved:
-        sample = ", ".join(sorted({r["dag_name"] for r in unresolved})[:5])
-        logger.warning(
-            f"{len(unresolved)}/{len(scheduled)} scheduled tables reference a "
-            f"DAG missing from {args.dags_config}; e.g. {sample}"
-        )
-    if scheduled and len(unresolved) > 0.1 * len(scheduled):
-        raise RuntimeError(
-            f"{len(unresolved)} of {len(scheduled)} scheduled tables could not "
-            f"resolve their DAG in {args.dags_config}. Refusing to write a "
-            f"snapshot with mostly-NULL tier data."
-        )
 
     destination = f"{args.project}.{args.destination_dataset}.{args.destination_table}"
     if args.dry_run:

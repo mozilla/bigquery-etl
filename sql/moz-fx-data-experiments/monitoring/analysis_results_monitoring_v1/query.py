@@ -291,6 +291,8 @@ def build_succeeded_sql(tables: list[bigquery.Row]) -> str:
           CAST(NULL AS STRING) AS analysis_basis,
           CAST(NULL AS STRING) AS segment,
           CAST(NULL AS STRING) AS metric
+        FROM (SELECT 1)
+        WHERE FALSE
         """
     return "\nUNION ALL\n".join(f"""
         SELECT DISTINCT
@@ -326,8 +328,8 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
         segment,
         metric,
         'succeeded' AS status,
-        '' AS exception,
-        '' AS exception_type
+        CAST(NULL AS STRING) AS exception_type,
+        CAST(NULL AS STRING) AS exception
       FROM (
         {succeeded_sql}
       )
@@ -339,15 +341,15 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
       COALESCE(f.window_index, s.window_index) AS window_index,
       COALESCE(f.analysis_basis, s.analysis_basis) AS analysis_basis,
       COALESCE(f.segment, s.segment) AS segment,
-      COALESCE(f.metric, s.metric) AS metric,
-      COALESCE(f.exception, s.exception) AS exception,
-      COALESCE(f.exception_type, s.exception_type) AS exception_type,
+      COALESCE(f.metric, s.metric) AS metric
       CASE
         WHEN f.status IS NOT NULL AND s.status IS NOT NULL THEN 'partial'
         WHEN f.status IS NOT NULL THEN 'failed'
         ELSE 'succeeded'
       END AS status,
-      f.error_category
+      f.error_category,
+      f.exception_type,
+      f.exception
     FROM failed f
     FULL OUTER JOIN succeeded s
       ON f.experiment = s.experiment

@@ -56,9 +56,6 @@ logger = logging.getLogger(__name__)
 # in the Docker image (/app) and in a local checkout alike.
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
-# Read the schema from file rather than restating the fields in Python: bqetl
-# deploys the destination table from this schema.yaml, and a load job whose
-# schema disagrees with the deployed table fails outright.
 SCHEMA_FILE = Path(__file__).resolve().parent / "schema.yaml"
 
 IMPACT_TAG_PREFIX = "impact/"

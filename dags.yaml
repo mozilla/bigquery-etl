@@ -2137,6 +2137,36 @@ bqetl_market_research:
   repo: bigquery-etl
   schedule_interval: 0 15 * * 2
 
+bqetl_plausible:
+  description: |
+    This DAG loads Plausible Analytics' daily raw parquet exports for
+    firefox.com from
+    gs://moz-fx-data-prod-external-plausible-data/firefox-com/<ds>/ into
+    plausible_external.events_v1 and plausible_external.sessions_v1. Each
+    export file covers exactly one day and replaces a single partition, so
+    clearing a task is a safe way to reload a date.
+
+    Plausible pushes the files on its own schedule, so the 12:00 UTC run time
+    is a provisional buffer rather than a confirmed arrival time -- see
+    sql/moz-fx-data-shared-prod/plausible_external/README.md. A task fails
+    with an explicit message and leaves its partition untouched when the
+    export has not landed yet.
+  default_args:
+    depends_on_past: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2026-07-30"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
+
 bqetl_us_bls_unemployment_data:
   description: |
     This DAG pulls US unemployment data from the BLS API

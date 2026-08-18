@@ -745,7 +745,8 @@ SELECT
       metrics.labeled_counter.jxl_hdr,
       metrics.labeled_counter.security_ui_neterror_search_cta_action,
       metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
-      metrics.labeled_counter.security_ui_neterror_search_cta_reason
+      metrics.labeled_counter.security_ui_neterror_search_cta_reason,
+      metrics.labeled_counter.cache_schema_init_error
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1279,7 +1280,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_rtt,
       metrics.custom_distribution.networking_http_3_rtt_var,
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
-      metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread
+      metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
+      metrics.custom_distribution.networking_http_3_max_consecutive_ptos
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

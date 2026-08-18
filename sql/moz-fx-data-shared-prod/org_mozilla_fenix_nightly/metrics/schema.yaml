@@ -11671,6 +11671,31 @@ fields:
         app will report 2, 3, and 4 when this metric is tracked.
 
         '
+    - name: networking_http_3_max_consecutive_ptos
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The longest run of consecutive probe timeouts (PTOs) an established
+        HTTP/3 connection saw over its lifetime, recorded once when the connection
+        is closed. A long run means the path went dark (a black hole): this is the
+        condition neqo''s max_pto black-hole detector acts on, so the distribution
+        shows how often established connections break and, once the detector is enabled,
+        whether it closes them sooner. 0 means the connection saw no PTO.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -19411,6 +19436,22 @@ fields:
         shown. Connectivity dropping *after* the CTA was shown is a different thing
         and is counted by search_cta_click_aborted, not here. Records only the reason
         label, never content.
+
+        '
+    - name: cache_schema_init_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts errors encountered when initializing or migrating a Cache
+        API caches.sqlite schema during quota initialization. Labeled by error category:
+        "future_version" when the on-disk schema version exceeds the code''s latest
+        version (e.g. profile downgrade), "other" for all remaining schema errors.
 
         '
   - name: labeled_custom_distribution

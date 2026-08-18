@@ -1,0 +1,20 @@
+2026-08-17:
+  start_date: 2026-02-20
+  end_date: 2026-08-12
+  reason: Update new table with historical data.
+  watchers:
+  - mwilliams@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: main
+  query_script_date_arg: date
+  query_script_dry_run_arg: --dry-run
+  query_script_args:
+  - --project=moz-fx-data-backfill-slots
+  - --destination_project=moz-fx-data-shared-prod
+  - --destination_dataset=backfills_staging_derived
+  - --destination_table=monitoring__analysis_results_monitoring_v1_2026_08_17

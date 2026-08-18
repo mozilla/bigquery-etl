@@ -182,7 +182,7 @@ bqetl backfill create moz-fx-data-shared-prod.monitoring_derived.stable_and_deri
 **If a Python-script backfill fails:** the script creates its own staging table, so copying the production table
 permissions happens after the backfill rather than at deploy time. The copy is attempted even when the backfill itself
 fails, so a partially written staging table is still manageable. If the permissions copy fails, the staging table 
-is deleted so we aren't left with an undeleteable table. It should be recoverable via time-travel if needed.
+is deleted so we aren't left with an undeletable table. It should be recoverable via time-travel if needed.
 Check the logs to see which failure case occurred.
 
 ## Reinitializing a whole table:

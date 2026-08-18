@@ -913,7 +913,7 @@ def initiate(
             is_python_script=is_python_script,
             effective_table_name=effective_table_name,
         )
-    except Exception:
+    except (Exception, SystemExit):
         if is_python_script and copy_table_permissions:
             # A python-script backfill creates its staging table in the script, so an exception
             # causes the permissions copy to be skipped, leaving an undeletable table that
@@ -923,6 +923,11 @@ def initiate(
                 client.get_table(backfill_staging_qualified_table_name)
             except NotFound:
                 pass
+            except Exception as lookup_exc:
+                click.echo(
+                    f"Failed to check whether staging table "
+                    f"{backfill_staging_qualified_table_name} exists: {lookup_exc}"
+                )
             else:
                 # Log rather than raise so the original failure below is what surfaces.
                 try:

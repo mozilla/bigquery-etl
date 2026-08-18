@@ -2,10 +2,13 @@ friendly_name: Firefox Referral Derived
 description: |-
   Derived tables supporting the Firefox Referral Program (DENG-11237).
 
-  Aggregates Firefox first_run installs by referral (invite) code so referrers
-  can see how many installs their code produced on the referral hub page on
-  firefox.com. Desktop attribution flows through the GA4 / download-attribution
-  path (utm_content=fxrefer<code> -> download token -> baseline_clients_first_seen).
+  Firefox users can invite friends with a personal invite link. These tables
+  count how many people installed Firefox from each invite code, so a referrer
+  can see their own total on the referral hub page on firefox.com.
+
+  Each new install that came from an invite link reports its code once, on first
+  run. We count those reports per code, per day, and keep a running all-time
+  total that is exported to the Websites team as a CSV.
 dataset_base_acl: derived
 user_facing: false
 labels: {}

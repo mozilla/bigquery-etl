@@ -1,0 +1,11 @@
+---
+# Desktop-only case. The Android side must still be mocked, or the test queries
+# the real fenix.referrals view. One rejected row rather than an empty file, to
+# assert the union contributes nothing here.
+- submission_timestamp: '2026-07-24 14:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-f-reject
+  metrics:
+    string:
+      referrals_code: null

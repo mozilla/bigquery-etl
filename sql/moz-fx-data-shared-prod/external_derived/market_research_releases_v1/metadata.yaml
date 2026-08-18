@@ -1,0 +1,28 @@
+friendly_name: Market Research Browser Releases
+description: |-
+  Browser and product release-note records (developer and user-facing)
+  scraped from vendor release-note pages by docker-etl's release_scraping
+  job, scheduled weekly by telemetry-airflow's web_scraping DAG
+  (task read_release_data). Source records are written as individual JSON
+  files to gs://moz-fx-data-prod-external-data/MARKET_RESEARCH/STRUCTURED/.
+  This table is a full truncate & reload of that corpus on each run.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: false
+  owner1: lmcfall
+scheduling:
+  dag_name: bqetl_market_research
+  date_partition_parameter: null
+  arguments: ["--date", "{{ds}}"]
+  depends_on:
+  - task_id: read_release_data
+    dag_name: web_scraping
+    execution_delta: 0h
+bigquery:
+  range_partitioning: null
+  clustering:
+    fields:
+    - browser
+    - release_date
+require_column_descriptions: true

@@ -341,7 +341,7 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
       COALESCE(f.window_index, s.window_index) AS window_index,
       COALESCE(f.analysis_basis, s.analysis_basis) AS analysis_basis,
       COALESCE(f.segment, s.segment) AS segment,
-      COALESCE(f.metric, s.metric) AS metric
+      COALESCE(f.metric, s.metric) AS metric,
       CASE
         WHEN f.status IS NOT NULL AND s.status IS NOT NULL THEN 'partial'
         WHEN f.status IS NOT NULL THEN 'failed'

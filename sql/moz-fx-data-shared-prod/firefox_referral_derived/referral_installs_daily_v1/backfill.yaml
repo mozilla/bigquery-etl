@@ -1,0 +1,15 @@
+2026-08-18:
+  start_date: 2026-08-17
+  end_date: 2026-08-17
+  reason: 'https://mozilla-hub.atlassian.net/browse/DENG-11237 - repopulate the 2026-08-17
+    partition after switching the query from the GA4/dltoken path to the Glean referrals
+    ping (PR #9792). The original run produced zero rows because the referral code
+    is never present in attribution data.'
+  watchers:
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

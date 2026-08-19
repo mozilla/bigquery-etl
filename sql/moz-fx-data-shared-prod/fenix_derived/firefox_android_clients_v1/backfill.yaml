@@ -23,7 +23,7 @@
     so a run overlapping the copy loop would silently revert partitions already copied.
   watchers:
   - phlee@mozilla.com
-  status: Initiate
+  status: Complete
   custom_query_path: sql/moz-fx-data-shared-prod/fenix_derived/firefox_android_clients_v1/backfill_deng_11356.sql
   override_depends_on_past_null_partition: true
   override_depends_on_past_end_date: true

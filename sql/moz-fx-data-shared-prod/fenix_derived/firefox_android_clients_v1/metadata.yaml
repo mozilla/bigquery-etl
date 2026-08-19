@@ -56,6 +56,9 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
+  backfill_deng_11356.sql:
+  - moz-fx-data-shared-prod.fenix.play_store_attribution
+  - moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1
   checks.sql:
   - ..
   query.sql:

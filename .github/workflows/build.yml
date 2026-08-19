@@ -35,6 +35,9 @@ on:
 permissions: {}
 
 env:
+  # Only the build job uses this directly. Other jobs ask for the exact patch version build
+  # resolved to, because the venv cache key includes the patch version and jobs in one run can
+  # resolve to different patches while a release rolls out
   PYTHON_VERSION: '3.11'
   PRIVATE_REPO: mozilla/private-bigquery-etl
 
@@ -187,6 +190,10 @@ jobs:
       name: dev
       deployment: false
     if: *is-allowed-event
+    # Exported so downstream jobs request this exact patch version rather
+    # than re-resolving PYTHON_VERSION
+    outputs:
+      python-version: ${{ steps.setup_python.outputs.python-version }}
     steps:
       - &checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -196,8 +203,8 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
           # Fork ref gated by the external-fork approval (see checkout-with-history).
           allow-unsafe-pr-checkout: true
-      - &setup-python
-        name: Set up Python
+      # Not the shared *setup-python anchor because the other ones reference needs.build.outputs.python-version
+      - name: Set up Python
         id: setup_python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
@@ -250,7 +257,15 @@ jobs:
     needs: [build]
     steps:
       - *checkout
-      - *setup-python
+      # Request the patch version build resolved to, so the venv cache key matches
+      - &setup-python
+        name: Set up Python
+        id: setup_python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: ${{ needs.build.outputs.python-version }}
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
       - *restore-venv
       - name: Verify that requirements.txt contains the right dependencies for this python version
         run: |
@@ -562,7 +577,7 @@ jobs:
   docs:
     name: Build and Deploy Documentation
     runs-on: ubuntu-latest
-    needs: [generate-sql]
+    needs: [build, generate-sql]
     if: &is-main-deploy
       github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
@@ -600,7 +615,7 @@ jobs:
   deploy-changes-to-stage:
     name: Deploy Changes to Stage
     runs-on: ubuntu-latest
-    needs: [generate-sql, decide-runs]
+    needs: [build, generate-sql, decide-runs]
     if: |
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
@@ -686,7 +701,7 @@ jobs:
   dry-run-sql:
     name: Dry Run SQL
     runs-on: ubuntu-latest
-    needs: [deploy-changes-to-stage, decide-runs]
+    needs: [build, deploy-changes-to-stage, decide-runs]
     if: |
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
@@ -738,7 +753,7 @@ jobs:
   test-sql:
     name: Test SQL
     runs-on: ubuntu-latest
-    needs: [deploy-changes-to-stage, decide-runs]
+    needs: [build, deploy-changes-to-stage, decide-runs]
     if: |
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
@@ -765,7 +780,7 @@ jobs:
   test-routines:
     name: Test Routines
     runs-on: ubuntu-latest
-    needs: [deploy-changes-to-stage, decide-runs]
+    needs: [build, deploy-changes-to-stage, decide-runs]
     if: |
       (needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
@@ -795,7 +810,7 @@ jobs:
   validate-views:
     name: Validate Views
     runs-on: ubuntu-latest
-    needs: [deploy-changes-to-stage, decide-runs]
+    needs: [build, deploy-changes-to-stage, decide-runs]
     if: |
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
@@ -858,7 +873,7 @@ jobs:
       id-token: write
       contents: read
     environment: *build-env
-    needs: [generate-sql, decide-runs]
+    needs: [build, generate-sql, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
       - *checkout
@@ -918,7 +933,7 @@ jobs:
   reset-stage-env:
     name: Reset Stage Environment
     runs-on: ubuntu-latest
-    needs: [test-sql, validate-views, validate-metadata, dry-run-sql, test-routines, decide-runs]
+    needs: [build, test-sql, validate-views, validate-metadata, dry-run-sql, test-routines, decide-runs]
     if: |
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:

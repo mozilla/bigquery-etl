@@ -41,7 +41,7 @@ existing_keys AS (
   FROM
     `moz-fx-data-shared-prod.market_intel_derived.market_research_releases_retrieval_index_v1`
   WHERE
-    scraped_date <= @submission_date
+    scraped_date < @submission_date
 ),
 -- A single scrape can in principle re-emit the same (browser, version,
 -- source_type) identity more than once; keep the richest copy so the grain

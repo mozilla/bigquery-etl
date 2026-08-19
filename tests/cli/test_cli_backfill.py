@@ -2429,6 +2429,260 @@ class TestBackfill:
         assert result.exception.__cause__ is permissions_error
         mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
 
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_copies_permissions_on_failure(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """A failed python-script backfill should still copy prod permissions to the staging table so it stays manageable."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is propagated
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # prod permissions were copied so the staging table stays manageable
+        mock_copy_perms.assert_called_once_with(
+            mock_client(), prod_table, staging_table
+        )
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_deletes_staging_on_permission_copy_failure(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """If permission copying fails after a python-script backfill failure, the staging table is deleted and the original failure is still raised."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+        mock_copy_perms.side_effect = Exception("IAM policy denied")
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is still raised
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # the staging table is deleted because copying its permissions failed
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_skips_permission_copy_when_staging_missing(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """If a python-script backfill fails before creating its staging table, there are no permissions to copy."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        def get_table(name, *args, **kwargs):
+            if name == staging_table:
+                raise NotFound("staging table not found")
+            if name == prod_table:
+                return MagicMock()
+            raise AssertionError(f"unexpected get_table call: {name}")
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.side_effect = get_table
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is propagated unobscured
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # no staging table exists, so no permissions copy and no delete are attempted
+        mock_copy_perms.assert_not_called()
+        mock_client().delete_table.assert_not_called()
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_permission_copy_failure_raises_once(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """When only the permissions copy fails, it raises directly and isn't retried against the deleted staging table."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        permissions_error = Exception("IAM policy denied")
+        mock_copy_perms.side_effect = permissions_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the permissions error surfaces since the backfill itself succeeded
+        assert result.exit_code == 1
+        assert "Failed to copy permissions" in str(result.exception)
+        assert result.exception.__cause__ is permissions_error
+        # copying is attempted once, not retried against the table cleanup just deleted
+        mock_copy_perms.assert_called_once_with(
+            mock_client(), prod_table, staging_table
+        )
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
     @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_from_entry_should_fail(
         self, mock_client, runner

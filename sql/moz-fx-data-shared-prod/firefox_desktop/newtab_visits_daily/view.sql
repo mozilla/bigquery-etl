@@ -18,7 +18,7 @@ enriched AS (
 SELECT
   'Firefox Desktop' AS app_name,
   layout_type,
-  mozfun.newtab.determine_tiles_per_row_v1(layout_type, newtab_window_inner_width) AS tiles_per_row,
+  mozfun.newtab.determine_tiles_per_row_v2(layout_type, newtab_window_inner_width) AS tiles_per_row,
   enriched.* EXCEPT (layout_type)
 FROM
   enriched

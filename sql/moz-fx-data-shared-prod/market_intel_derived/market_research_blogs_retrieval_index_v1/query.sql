@@ -39,7 +39,7 @@ existing_keys AS (
   FROM
     `moz-fx-data-shared-prod.market_intel_derived.market_research_blogs_retrieval_index_v1`
   WHERE
-    scraped_date <= @submission_date
+    scraped_date < @submission_date
 ),
 -- A single scrape can in principle re-emit the same source_url more than
 -- once (e.g. the same post surfacing in two feeds); keep the richest copy so

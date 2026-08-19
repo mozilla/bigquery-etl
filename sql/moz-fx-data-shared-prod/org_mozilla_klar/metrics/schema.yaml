@@ -2710,6 +2710,40 @@ fields:
         shown (gates passed and a default search engine exists). Content-free.
 
         '
+    - name: devtools_debugger_stylesheets_links_opened_in_debugger_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times stylesheets link from another panel opens the
+        stylesheet in the debugger.
+
+        '
+    - name: devtools_debugger_stylesheets_stylesheet_pref_disabled_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the preference to enable the stylesheets in the
+        debugger feature has been disabled from the Settings panel.
+
+        '
+    - name: devtools_debugger_stylesheets_stylesheet_pref_enabled_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the preference to enable the stylesheets in the
+        debugger feature has been enabled from the Settings panel.
+
+        '
+    - name: devtools_debugger_stylesheets_stylesheets_edited_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of unique stylesheets edited in the debugger.
+
+        '
+    - name: devtools_debugger_stylesheets_stylesheets_opened_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times stylesheets have been selected and opened in the
+        debugger.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

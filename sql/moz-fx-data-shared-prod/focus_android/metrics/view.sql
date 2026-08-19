@@ -313,7 +313,12 @@ SELECT
       metrics.counter.media_audio_session_selected_changed,
       metrics.counter.security_ui_neterror_alternate_host_suggested,
       metrics.counter.security_ui_neterror_search_cta_clicked,
-      metrics.counter.security_ui_neterror_search_cta_shown
+      metrics.counter.security_ui_neterror_search_cta_shown,
+      metrics.counter.devtools_debugger_stylesheets_links_opened_in_debugger_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_disabled_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_enabled_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_edited_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2323,7 +2328,12 @@ SELECT
       metrics.counter.media_audio_session_selected_changed,
       metrics.counter.security_ui_neterror_alternate_host_suggested,
       metrics.counter.security_ui_neterror_search_cta_clicked,
-      metrics.counter.security_ui_neterror_search_cta_shown
+      metrics.counter.security_ui_neterror_search_cta_shown,
+      metrics.counter.devtools_debugger_stylesheets_links_opened_in_debugger_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_disabled_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_enabled_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_edited_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4333,7 +4343,12 @@ SELECT
       metrics.counter.media_audio_session_selected_changed,
       metrics.counter.security_ui_neterror_alternate_host_suggested,
       metrics.counter.security_ui_neterror_search_cta_clicked,
-      metrics.counter.security_ui_neterror_search_cta_shown
+      metrics.counter.security_ui_neterror_search_cta_shown,
+      metrics.counter.devtools_debugger_stylesheets_links_opened_in_debugger_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_disabled_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_enabled_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_edited_count,
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

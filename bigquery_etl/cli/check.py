@@ -263,30 +263,22 @@ def _run_check(
     checks = sqlparse.split(result_split_by_marker)
     check_failed = False
 
-    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        for rendered_check in checks:
-            # since the last check will end with ; the last entry will be empty string.
-            if len(rendered_check) == 0:
-                continue
-            rendered_check = rendered_check.strip()
-            # reset the stream for each check so only the current check is passed to
-            # bq; tracking offsets would need byte lengths, not character lengths.
-            query_stream.seek(0)
-            query_stream.truncate()
-            query_stream.write(rendered_check)
-            query_stream.flush()
-            query_stream.seek(0)
+    for rendered_check in checks:
+        # since the last check will end with ; the last entry will be empty string.
+        if len(rendered_check) == 0:
+            continue
+        rendered_check = rendered_check.strip()
 
-            # run the query as shell command so that passed parameters can be used as is
-            try:
-                subprocess.check_output(
-                    ["bq", "query"] + query_arguments,
-                    stdin=query_stream,
-                    encoding="UTF-8",
-                )
-            except CalledProcessError as e:
-                print(_parse_check_output(e.output))
-                check_failed = True
+        # run the query as shell command so that passed parameters can be used as is
+        try:
+            subprocess.check_output(
+                ["bq", "query"] + query_arguments,
+                input=rendered_check,
+                encoding="UTF-8",
+            )
+        except CalledProcessError as e:
+            print(_parse_check_output(e.output))
+            check_failed = True
 
     if check_failed:
         sys.exit(1)

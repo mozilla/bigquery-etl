@@ -5,11 +5,12 @@ description: |-
   job, scheduled weekly by telemetry-airflow's web_scraping DAG
   (task read_release_data). Source records are written as individual JSON
   files to gs://moz-fx-data-prod-external-data/MARKET_RESEARCH/STRUCTURED/.
-  This table is a full truncate & reload of that corpus on each run.
+  Each run incrementally appends only GCS blobs not already loaded, using
+  `blob_name` as the load cursor (see query.py).
 owners:
 - lmcfall@mozilla.com
 labels:
-  incremental: false
+  incremental: true
   owner1: lmcfall
 scheduling:
   dag_name: bqetl_market_research

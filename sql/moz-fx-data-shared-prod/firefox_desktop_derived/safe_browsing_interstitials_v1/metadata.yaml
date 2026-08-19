@@ -23,9 +23,9 @@ owners:
 labels:
   incremental: true
   owner1: lcrouch
-  dag: bqetl_default
+  dag: bqetl_safe_browsing
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_safe_browsing
 bigquery:
   time_partitioning:
     type: day

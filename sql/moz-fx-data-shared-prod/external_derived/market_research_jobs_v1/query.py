@@ -1,9 +1,30 @@
 """Load competitor job posting records from GCS into BigQuery.
 
-Reads every job posting JSON record written by docker-etl's release_scraping
-job (scheduled weekly by telemetry-airflow's web_scraping DAG) under
-gs://moz-fx-data-prod-external-data/MARKET_RESEARCH/JOBS/, and
-truncate-and-reloads the destination table from the full corpus on each run.
+Reads job posting JSON records written by docker-etl's release_scraping job
+(scheduled weekly by telemetry-airflow's web_scraping DAG) under
+gs://moz-fx-data-prod-external-data/MARKET_RESEARCH/JOBS/, and incrementally
+appends only blobs not already present in the destination table.
+
+`blob_name` (already stored per row for traceability) doubles as a load
+cursor: every run lists the full GCS prefix, diffs it against the
+`blob_name`s already loaded, and downloads+appends only what's new. A job
+posting that stays open across weekly scrapes still gets a new blob each
+week (path includes `scraped_date`, per release_scraping's
+`gcs_job_path_for`), so this never suppresses a real snapshot -- it only
+avoids re-downloading and re-loading snapshots already ingested by a
+previous run.
+
+Known gap: release_scraping's own docs note that *same-day reruns* of the
+scrape task overwrite that day's job blobs in place at the same path (job
+postings, unlike releases/blogs, have no existing-path dedup check before
+scraping). In normal operation this is already covered -- the
+`bqetl_market_research` DAG depends on telemetry-airflow's
+`web_scraping.read_release_data` task finishing (including its automatic
+retries) before this loader runs, so by the time it runs, that day's
+content is final. The residual case this loader can't detect is a
+*manual* rerun/backfill of `read_release_data` for a `scraped_date` this
+loader already ingested -- that overwrite would be silently missed, since
+a previously-seen blob name is never re-fetched.
 
 Records come from two different scrapers (Greenhouse and Teamtailor)
 with slightly different construction but the same final key set, so one
@@ -17,6 +38,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+from google.api_core.exceptions import NotFound
 from google.cloud import bigquery, storage
 
 from bigquery_etl.schema import Schema
@@ -28,19 +50,36 @@ TABLE_ID = "moz-fx-data-shared-prod.external_derived.market_research_jobs_v1"
 # Filename prefix release_scraping uses for job posting records.
 BLOB_PREFIX = "job_"
 
-# Each record is its own small blob, so reloading the corpus is bound by request
-# latency rather than bandwidth. Downloading concurrently keeps the runtime flat
-# as the corpus grows instead of scaling with the number of blobs -- this matters
-# most here, since every run adds a full snapshot under a new scraped_date.
+# Most runs only have a handful of new blobs, but keep concurrency for the
+# first-ever backfill run (or a run after a long gap) where the new set can
+# be as large as the full historical corpus.
 DOWNLOAD_WORKERS = 16
 
-# schema.yaml is the single source of truth for the destination schema. This
-# load truncates the table, which replaces its schema, so passing a separately
-# maintained schema here would silently overwrite the field descriptions that
-# `bqetl deploy` applies from schema.yaml.
+# schema.yaml is the single source of truth for the destination schema.
+# Passed explicitly (with autodetect=False) so an appended batch can never
+# silently drift the destination schema from what schema.yaml declares.
 SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
 SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
 COLUMNS = [field.name for field in SCHEMA]
+
+
+def get_existing_blob_names(bq_client):
+    """Return the set of `blob_name`s already loaded into the destination table.
+
+    Returns an empty set if the table doesn't exist yet (schema not deployed,
+    or first-ever run), so that case is treated the same as "nothing loaded
+    yet" rather than an error.
+    """
+    try:
+        return {
+            row.blob_name
+            for row in bq_client.query(
+                f"SELECT DISTINCT blob_name FROM `{TABLE_ID}`"
+            ).result()
+        }
+    except NotFound:
+        return set()
+
 
 # Malformed dates encountered while normalizing, so that one bad value in one
 # blob degrades to NULL instead of failing the whole weekly reload. Appended to
@@ -138,18 +177,28 @@ if __name__ == "__main__":
             f"filename convention. Examples: {skipped_blobs[:5]}"
         )
 
-    with ThreadPoolExecutor(max_workers=DOWNLOAD_WORKERS) as pool:
-        rows = list(pool.map(fetch_and_normalize, blobs))
-
-    # The corpus only ever grows, so an empty listing always means something
-    # upstream broke (failed scrape, renamed prefix, lost bucket access).
-    # Loading it would truncate the table, and because --date is ignored a
-    # rerun can't restore the previous contents, so fail loudly instead.
-    if not rows:
+    # The corpus only ever grows, so an empty full listing always means
+    # something upstream broke (failed scrape, renamed prefix, lost bucket
+    # access) -- fail loudly rather than silently loading nothing.
+    if not blobs:
         raise ValueError(
             f"No job posting records found under gs://{GCS_BUCKET}/"
-            f"{GCS_JOBS_PREFIX}/ -- refusing to truncate {TABLE_ID}"
+            f"{GCS_JOBS_PREFIX}/ -- refusing to load {TABLE_ID}"
         )
+
+    bq_client = bigquery.Client()
+    existing_blob_names = get_existing_blob_names(bq_client)
+    new_blobs = [blob for blob in blobs if blob.name not in existing_blob_names]
+    print(
+        f"{len(new_blobs)} of {len(blobs)} blobs are new "
+        f"({len(blobs) - len(new_blobs)} already loaded)"
+    )
+    if not new_blobs:
+        print("No new blobs since the last run -- nothing to load.")
+        raise SystemExit(0)
+
+    with ThreadPoolExecutor(max_workers=DOWNLOAD_WORKERS) as pool:
+        rows = list(pool.map(fetch_and_normalize, new_blobs))
 
     if unparseable_dates:
         print(
@@ -160,11 +209,10 @@ if __name__ == "__main__":
             print(f"  {detail}")
 
     results_df = pd.DataFrame(rows, columns=COLUMNS)
-    print(f"Parsed {len(results_df)} rows")
+    print(f"Parsed {len(results_df)} new rows")
 
-    bq_client = bigquery.Client()
     job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
         autodetect=False,
         schema=SCHEMA,
     )
@@ -176,4 +224,4 @@ if __name__ == "__main__":
     )
     load_job.result()  # waits for completion
 
-    print(f"Loaded {len(results_df)} rows into {TABLE_ID} (full reload)")
+    print(f"Appended {len(results_df)} new rows to {TABLE_ID} (incremental load)")

@@ -881,37 +881,63 @@ def initiate(
                 f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
             )
 
-    if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
-        click.echo(
-            f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
-        )
+    try:
+        if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
+            click.echo(
+                f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+            )
 
+            _initiate_backfill(
+                ctx,
+                qualified_table_name,
+                backfill_staging_qualified_table_name,
+                entry_to_initiate,
+                parallelism,
+                dry_run=True,
+                billing_project=billing_project,
+                is_python_script=is_python_script,
+                query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
+                effective_table_name=effective_table_name,
+            )
+
+        click.echo(
+            f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
+        )
         _initiate_backfill(
             ctx,
             qualified_table_name,
             backfill_staging_qualified_table_name,
             entry_to_initiate,
             parallelism,
-            dry_run=True,
             billing_project=billing_project,
             is_python_script=is_python_script,
-            query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
             effective_table_name=effective_table_name,
         )
-
-    click.echo(
-        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
-    )
-    _initiate_backfill(
-        ctx,
-        qualified_table_name,
-        backfill_staging_qualified_table_name,
-        entry_to_initiate,
-        parallelism,
-        billing_project=billing_project,
-        is_python_script=is_python_script,
-        effective_table_name=effective_table_name,
-    )
+    except (Exception, SystemExit):
+        if is_python_script and copy_table_permissions:
+            # A python-script backfill creates its staging table in the script, so an exception
+            # causes the permissions copy to be skipped, leaving an undeletable table that
+            # needs to be fixed. The failure can also happen before the script created the
+            # staging table (e.g. during the dry run), in which case there's nothing to fix.
+            try:
+                client.get_table(backfill_staging_qualified_table_name)
+            except NotFound:
+                pass
+            except Exception as lookup_exc:
+                click.echo(
+                    f"Failed to check whether staging table "
+                    f"{backfill_staging_qualified_table_name} exists: {lookup_exc}"
+                )
+            else:
+                # Log rather than raise so the original failure below is what surfaces.
+                try:
+                    _copy_permissions_with_cleanup()
+                except Exception as cleanup_exc:
+                    click.echo(
+                        f"Failed to copy permissions to staging table "
+                        f"{backfill_staging_qualified_table_name} after backfill failure: {cleanup_exc}"
+                    )
+        raise
 
     if copy_table_permissions and is_python_script:
         _copy_permissions_with_cleanup()

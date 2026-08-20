@@ -55,7 +55,7 @@ SELECT
     (SELECT COUNT(*) FROM unmapped) > 0,
     ERROR(
       FORMAT(
-        'Unmapped KB product paths — add to normalize_product UDF: %t',
+        'Unmapped KB product paths - add to normalize_product UDF: %t',
         ARRAY(SELECT AS STRUCT products, revisions FROM unmapped ORDER BY revisions DESC)
       )
     ),
@@ -103,7 +103,7 @@ SELECT
     (SELECT COUNT(*) FROM thunderbird_excluded) > 0,
     ERROR(
       FORMAT(
-        'New Thunderbird-mapped KB product paths are being excluded from kb_revisions_base_v1 — confirm they are Thunderbird-team content: %t',
+        'New Thunderbird-mapped KB product paths are being excluded from kb_revisions_base_v1 - confirm they are Thunderbird-team content: %t',
         ARRAY(
           SELECT AS STRUCT
             products,

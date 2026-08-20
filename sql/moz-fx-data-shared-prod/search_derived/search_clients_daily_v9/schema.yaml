@@ -285,9 +285,6 @@ fields:
 - name: unknown
   type: INTEGER
   mode: NULLABLE
-- name: is_sap_monetizable
-  type: INTEGER
-  mode: NULLABLE
 - name: has_adblocker_addon
   type: BOOLEAN
   mode: NULLABLE

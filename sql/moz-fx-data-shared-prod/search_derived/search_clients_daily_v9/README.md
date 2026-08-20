@@ -227,7 +227,9 @@ A few output columns are worth calling out.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.
 - `experiments` prefers the SERP passthrough. The SAP fallback is built from `json_keys(experiments)[offset(0)]` and therefore carries only the first experiment.
 
-The following columns are emitted as a literal `null` because no Glean equivalent has been wired up yet: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, `is_sap_monetizable`, and all thirteen `scalar_parent_urlbar_searchmode_*` columns. Note that `search_cohort` is typed `INTEGER` in `schema.yaml`, where v8 had it as a string.
+The following columns are emitted as a literal `null` because no Glean equivalent has been wired up yet: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, and all thirteen `scalar_parent_urlbar_searchmode_*` columns. Note that `search_cohort` is typed `INTEGER` in `schema.yaml`, where v8 had it as a string.
+
+`is_sap_monetizable` is **not** carried over from v8. It is absent from both the query and `schema.yaml`, so v9 is not column-compatible with v8 on that field.
 
 ## Determinism and reproducibility
 

@@ -805,7 +805,6 @@ final_cte AS (
     serp_num_ads_blocked AS num_ads_blocked, -- NEW
     serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
     NULL AS unknown,
-    NULL AS is_sap_monetizable, -- REVISIT
     serp_has_adblocker_addon AS has_adblocker_addon,
     serp_policies_is_enterprise AS policies_is_enterprise,
     serp_os_version_major AS os_version_major,

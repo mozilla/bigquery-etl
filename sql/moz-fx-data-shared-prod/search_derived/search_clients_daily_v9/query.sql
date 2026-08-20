@@ -528,7 +528,7 @@ join_sap_serp_cte AS (
       serp_final_cte.legacy_telemetry_client_id,
       sap_final_cte.legacy_telemetry_client_id
     ) AS legacy_telemetry_client_id,
-    sap_final_cte.sap,
+    COALESCE(sap_final_cte.sap, 0) AS sap,
     COALESCE(
       serp_final_cte.profile_group_id,
       sap_final_cte.profile_group_id
@@ -642,25 +642,29 @@ join_sap_serp_cte AS (
     ) AS policies_is_enterprise,
     serp_final_cte.ad_click_target AS serp_ad_click_target,
     serp_final_cte.serp_ad_blocker_inferred AS serp_ad_blocker_inferred,
-    serp_final_cte.serp_follow_on_searches_tagged_count AS serp_follow_on_searches_tagged_count,
-    serp_final_cte.serp_searches_tagged_count AS serp_searches_tagged_count,
-    serp_final_cte.serp_searches_organic_count AS serp_searches_organic_count,
-    serp_final_cte.serp_with_ads_organic_count AS serp_with_ads_organic_count,
-    serp_final_cte.serp_with_ads_tagged_count AS serp_with_ads_tagged_count,
-    serp_final_cte.serp_ad_clicks_tagged_count AS serp_ad_clicks_tagged_count,
-    serp_final_cte.serp_ad_clicks_organic_count AS serp_ad_clicks_organic_count,
-    serp_final_cte.num_ad_clicks AS serp_num_ad_clicks,
-    serp_final_cte.num_non_ad_link_clicks AS serp_num_non_ad_link_clicks,
-    serp_final_cte.num_other_engagements AS serp_num_other_engagements,
-    serp_final_cte.num_ads_loaded AS serp_num_ads_loaded,
-    serp_final_cte.num_ads_visible AS serp_num_ads_visible,
-    serp_final_cte.num_ads_blocked AS serp_num_ads_blocked,
-    serp_final_cte.num_ads_notshowing AS serp_num_ads_notshowing,
+    -- serp-only counts: a sap-only row had no matching SERP rows for that key, so 0 not NULL
+    COALESCE(
+      serp_final_cte.serp_follow_on_searches_tagged_count,
+      0
+    ) AS serp_follow_on_searches_tagged_count,
+    COALESCE(serp_final_cte.serp_searches_tagged_count, 0) AS serp_searches_tagged_count,
+    COALESCE(serp_final_cte.serp_searches_organic_count, 0) AS serp_searches_organic_count,
+    COALESCE(serp_final_cte.serp_with_ads_organic_count, 0) AS serp_with_ads_organic_count,
+    COALESCE(serp_final_cte.serp_with_ads_tagged_count, 0) AS serp_with_ads_tagged_count,
+    COALESCE(serp_final_cte.serp_ad_clicks_tagged_count, 0) AS serp_ad_clicks_tagged_count,
+    COALESCE(serp_final_cte.serp_ad_clicks_organic_count, 0) AS serp_ad_clicks_organic_count,
+    COALESCE(serp_final_cte.num_ad_clicks, 0) AS serp_num_ad_clicks,
+    COALESCE(serp_final_cte.num_non_ad_link_clicks, 0) AS serp_num_non_ad_link_clicks,
+    COALESCE(serp_final_cte.num_other_engagements, 0) AS serp_num_other_engagements,
+    COALESCE(serp_final_cte.num_ads_loaded, 0) AS serp_num_ads_loaded,
+    COALESCE(serp_final_cte.num_ads_visible, 0) AS serp_num_ads_visible,
+    COALESCE(serp_final_cte.num_ads_blocked, 0) AS serp_num_ads_blocked,
+    COALESCE(serp_final_cte.num_ads_notshowing, 0) AS serp_num_ads_notshowing,
     COALESCE(
       serp_final_cte.profile_age_in_days,
       sap_final_cte.profile_age_in_days
     ) AS profile_age_in_days,
-    serp_final_cte.serp_counts,
+    COALESCE(serp_final_cte.serp_counts, 0) AS serp_counts,
     -- counts and sums fall back to 0, not NULL, when neither side reported them
     COALESCE(
       serp_final_cte.sessions_started_on_this_day,
@@ -769,7 +773,7 @@ final_cte AS (
     serp_searches_organic_count AS organic,
     serp_searches_tagged_count AS tagged_serp,
     serp_follow_on_searches_tagged_count AS tagged_follow_on,
-    COALESCE(sap, 0) AS sap,
+    sap,
     serp_counts,
     serp_ad_click_target AS ad_click_target,
     serp_num_ad_clicks AS ad_click,

@@ -213,7 +213,17 @@ The prefix on a column name says which side it can come from. A coalesced column
 
 **Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
 
-Five of the shared measures take a third fallback of `0`, so a row where neither side reported a value carries a zero rather than a `null`: `sessions_started_on_this_day`, `active_hours_sum`, `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max`. `profile_age_in_days` is deliberately excluded — a zero there would read as a profile created that day rather than as a missing value.
+#### Counts and sums are zero, never null
+
+Every count and sum in this CTE falls back to `0`. A row that reaches this CTE from one side only has no counterpart on the other side for that client, date, engine and access point, so zero is the count rather than an unknown.
+
+The trade-off is that a zero no longer distinguishes "no activity" from "the other side's data is missing or late". Conditions where SAP is recorded but not SERP are mostly on engines where we have not instrumented SERP metrics at all. If needed, look at the search provider to check uncertainty.
+
+- Shared measures take a third `coalesce` argument: `sessions_started_on_this_day`, `active_hours_sum`, `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max`.
+- `sap` is zero on a serp-only row.
+- The fifteen SERP-only counts are zero on a sap-only row: `serp_counts`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six `num_*` measures.
+
+Three columns are deliberately left alone. `profile_age_in_days` is not a count, and a zero would read as a profile created that day rather than as a missing value. `ad_click_target` is a string and `ad_blocker_inferred` is a boolean, so neither has a meaningful zero.
 
 #### Two constraints worth knowing before editing this CTE
 
@@ -226,7 +236,6 @@ This is `final_cte`. It renames the joined columns to the output schema and perf
 
 A few output columns are worth calling out.
 
-- `sap` is wrapped in `coalesce(sap, 0)`. It is the one measure that comes from the SAP side alone, so on a serp-only row it would otherwise be `null`; zero is the accurate reading, since that combination had no SAP events.
 - `engine` and `normalized_engine` are currently the same value — the normalized engine, with the SAP fallback already applied in the join. This differs from v8, where `engine` was the raw value and `normalized_engine` was `null`. Whether to keep both is an open question with data science.
 - `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.

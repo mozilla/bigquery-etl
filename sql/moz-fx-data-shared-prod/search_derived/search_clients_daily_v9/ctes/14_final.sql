@@ -47,7 +47,7 @@ SELECT
   serp_searches_organic_count AS organic,
   serp_searches_tagged_count AS tagged_serp,
   serp_follow_on_searches_tagged_count AS tagged_follow_on,
-  COALESCE(sap, 0) AS sap,
+  sap,
   serp_counts,
   serp_ad_click_target AS ad_click_target,
   serp_num_ad_clicks AS ad_click,

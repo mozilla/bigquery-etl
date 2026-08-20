@@ -1,10 +1,11 @@
--- Hourly aggregate of ads client metrics pings across iOS and Android platforms.
+-- Hourly aggregate of ads client metrics pings across desktop, iOS and Android platforms.
 -- Covers operation counts (labeled_counter) and error occurrence counts (labeled_string)
 -- broken down by key, plus total ping count and device dimensions.
 -- Source tables and their channels:
 --   - org_mozilla_ios_firefox_live (iOS release)
 --   - org_mozilla_firefox_live (Android release)
 --   - org_mozilla_fenix_live (Android nightly)
+--   - firefox_desktop_live (Desktop, all channels in one table)
 -- Only pings with at least one ads_client metric entry are included.
 WITH ios_base AS (
   SELECT
@@ -111,6 +112,47 @@ android_nightly_base AS (
       OR ARRAY_LENGTH(metrics.labeled_string.ads_client_http_cache_outcome) > 0
     )
 ),
+-- Desktop ships all channels (nightly/beta/release) in a single table, so unlike
+-- Android there is one CTE for the whole surface. Desktop re-declares the ads_client
+-- category in browser/components/newtab/metrics.yaml rather than inheriting the
+-- application-services metrics.yaml the mobile apps use (bug 2058567).
+desktop_base AS (
+  SELECT
+    submission_timestamp,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    normalized_channel,
+    'Desktop' AS surface,
+    normalized_os,
+    'Firefox Desktop' AS app_name,
+    normalized_channel AS channel,
+    metrics.labeled_counter.ads_client_client_operation_total AS client_operation_total,
+    metrics.labeled_string.ads_client_client_error AS client_error,
+    metrics.labeled_string.ads_client_build_cache_error AS build_cache_error,
+    metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
+    metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
+  FROM
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.firefox_desktop_live.metrics_v1`
+    {% endif %}
+  WHERE
+    {% if is_init() %}
+      -- Desktop only started recording these metrics in Nightly in 2026-08; starting
+      -- earlier would scan months of empty partitions of a very large table.
+      DATE(submission_timestamp) >= DATE("2026-08-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
+    AND (
+      ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
+      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
+      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_build_cache_error) > 0
+      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_deserialization_error) > 0
+      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_http_cache_outcome) > 0
+    )
+),
 base AS (
   SELECT
     *
@@ -126,6 +168,11 @@ base AS (
     *
   FROM
     android_nightly_base
+  UNION ALL BY NAME
+  SELECT
+    *
+  FROM
+    desktop_base
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
@@ -218,6 +265,12 @@ SELECT
   SUM(
     (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'store_failed')
   ) AS http_cache_outcome_store_failed,
+  -- Only desktop can report this today: the shared component emits it
+  -- (CacheOutcome::TrimFailed), but the mobile metrics.yaml omits it from its label
+  -- list, so on mobile it would land in '__other__' instead.
+  SUM(
+    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'trim_failed')
+  ) AS http_cache_outcome_trim_failed,
 FROM
   base
 GROUP BY

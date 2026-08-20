@@ -224,6 +224,7 @@ This is `final_cte`. It renames the joined columns to the output schema and perf
 
 A few output columns are worth calling out.
 
+- `sap` is wrapped in `coalesce(sap, 0)`. It is the one measure that comes from the SAP side alone, so on a serp-only row it would otherwise be `null`; zero is the accurate reading, since that combination had no SAP events.
 - `engine` and `normalized_engine` are both normalized. `engine` is the SERP provider, and `normalized_engine` is the same value falling back to the SAP engine. This differs from v8, where `engine` was the raw value and `normalized_engine` was `null`.
 - `tagged_sap` and `tagged_serp` both map to the same SERP measure, `serp_searches_tagged_count`. SAP has no `is_tagged`, so there is no independent SAP-side tagged count to report.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.

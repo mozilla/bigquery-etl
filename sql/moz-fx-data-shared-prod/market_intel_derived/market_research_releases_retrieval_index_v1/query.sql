@@ -27,11 +27,16 @@ WITH raw_new AS (
   WHERE
     scraped_date = @submission_date
 ),
--- Identities already enriched by a previous run. Self-referencing anti-join
--- lookup: the `<=` predicate satisfies this table's required partition filter
--- while still scanning all prior history. On the first-ever run the table
--- exists but is empty, so this yields zero rows and everything is treated as
--- new -- which is the desired behaviour.
+-- Identities already enriched by a STRICTLY EARLIER run. Self-referencing
+-- anti-join lookup: `<` (not `<=`) deliberately excludes this run's own
+-- target partition, so a rerun of an already-succeeded @submission_date
+-- always recomputes that partition's identities fresh instead of seeing
+-- its own prior output and anti-joining everything away to empty (which
+-- would WRITE_TRUNCATE the partition to empty on rerun -- a real bug this
+-- table used to have). `<` still satisfies the required partition filter
+-- while scanning all strictly-prior history. On the first-ever run the
+-- table exists but is empty, so this yields zero rows and everything is
+-- treated as new -- which is the desired behaviour.
 existing_keys AS (
   SELECT DISTINCT
     browser,

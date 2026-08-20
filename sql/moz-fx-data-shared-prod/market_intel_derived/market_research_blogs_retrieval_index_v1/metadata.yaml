@@ -35,9 +35,7 @@ labels:
 schema:
   allow_field_addition: true
 scheduling:
-scheduling:
   dag_name: bqetl_market_research
-  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

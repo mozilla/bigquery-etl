@@ -46,7 +46,7 @@ AI-enriched retrieval table derived from the scraped browser vendor blog corpus,
 ```mermaid
 flowchart TD
   A[Scraped vendor blog posts<br/>`moz-fx-data-shared-prod.external.market_research_blogs`] -->|"scraped_date = @submission_date"| B[**This query**]
-  H[(Prior history<br/>this table, `scraped_date <= @submission_date`)] -->|"anti-join on `source_url`"| B
+  H[(Prior history<br/>this table, `scraped_date < @submission_date`)] -->|"anti-join on `source_url`"| B
   B -->|"Gemini AI.GENERATE + AI.EMBED<br/>on never-seen posts only"| C[Partitioned table<br/>time: `scraped_date`<br/>cluster: `browser`, `source_type`]
   C --> D[View<br/>`market_intel.market_research_blogs_retrieval_index`<br/>`WHERE metadata.embedding_succeeded`]
 ```
@@ -56,7 +56,7 @@ flowchart TD
 ## 🧠 How It Works
 
 1. **Input** — `raw_new` selects the scrape being processed (`scraped_date = @submission_date`). The upstream loader incrementally appends newly-scraped GCS blobs into a cumulative table, so this is not a clean single-day arrivals feed — the batch can include anything scraped that week, old or new.
-2. **History lookup** — `existing_keys` reads this table's own prior partitions (`scraped_date <= @submission_date`) for every `source_url` already indexed.
+2. **History lookup** — `existing_keys` reads this table's own strictly-prior partitions (`scraped_date < @submission_date`) for every `source_url` already indexed.
 3. **Dedupe** — `raw_dedup` reduces the scrape to one row per `source_url`, keeping the longest `raw_text` if the same post surfaces in two feeds.
 4. **Anti-join** — `new_only` keeps only posts absent from `existing_keys`. This is what makes the pipeline affordable: AI.GENERATE and AI.EMBED run on new posts only.
 5. **AI generation** — `AI.GENERATE` with Gemini produces summary, category, topics, and entities per post.
@@ -212,7 +212,7 @@ WHERE scraped_date >= '2020-01-01'
 - **Scheduled on `bqetl_market_research`.** Same weekly cron (`0 15 * * 2`) as the three upstream loaders. No explicit `depends_on` is needed for task ordering within the DAG — bqetl auto-detects the dependency on the upstream loader task from the tables `query.sql` references (see `references:` in `metadata.yaml`), the same mechanism documented in `docs/reference/scheduling.md`.
 - **No `labels:` block yet.** `change_controlled`/`level` are omitted for now — `change_controlled` needs a `CODEOWNERS` entry for `/sql/moz-fx-data-shared-prod/market_intel_derived/**`, and `level: gold` additionally needs unit tests and a Bigeye `bigconfig.yml`. Neither exists yet; add both labels together once they do.
 - **Declarative anti-join incremental, not a plain date filter.** A plain `WHERE DATE(created_date) = @submission_date` filter only works when a source is an append-only daily-arrivals feed. This corpus is not: all three market-research loaders incrementally append newly-scraped GCS blobs into a cumulative table. A plain date filter would therefore re-enrich the whole corpus every single week, at full AI.GENERATE + AI.EMBED cost. The anti-join against this table's own history keeps the standard `@submission_date` contract while enriching only posts never seen before.
-- **Why `scraped_date <= @submission_date` in the history CTE.** The `<=` predicate satisfies this table's `require_partition_filter: true` while still scanning all prior partitions. A bare `SELECT ... FROM <self>` would be rejected.
+- **Why `scraped_date < @submission_date` (not `<=`) in the history CTE.** Using `<=` would include this run's own target partition in the self-lookup, so a rerun of an already-succeeded `@submission_date` would see its own prior output, anti-join every identity away to nothing, and `WRITE_TRUNCATE` the partition to empty. `<` excludes the current partition, so a rerun always recomputes it fresh instead of destroying it. `<` still satisfies this table's `require_partition_filter: true` while scanning all strictly-prior partitions; a bare `SELECT ... FROM <self>` would be rejected.
 - **First run is self-correcting.** On the first-ever run the table exists (schema is deployed before data runs) but is empty, so `existing_keys` returns zero rows and every post in the scrape is treated as new. This is intentional and is not special-cased.
 - **NULL-safe identity matching.** `source_url` is a scraped value and can in principle be NULL, so the anti-join coalesces both sides to `''`. Without this a NULL-keyed row would never match its prior-run self and would be re-embedded on every scrape.
 - **No join-back after enrichment.** A finer output grain than the distinct-text grain fed to the LLM would force a join back; this table's output grain equals its LLM input grain, so none is needed. The AI CTEs therefore chain directly (`new_only` → `blogs_llm` → `blogs_embedding`) with no join, which also avoids re-introducing the NULL-key hazard on the join back.

@@ -731,13 +731,11 @@ final_cte AS (
     serp_search_access_point AS source,
     serp_partner_code AS partner_code, -- NEW
     serp_country AS country,
-    NULL AS addon_version,
     serp_app_version AS app_version,
     serp_windows_build_number AS windows_build_number, -- NEW
     serp_distribution_id AS distribution_id,
     serp_locale AS locale,
     serp_region_home_region AS user_pref_browser_search_region,
-    NULL AS search_cohort,
     serp_os AS os,
     serp_normalized_os AS normalized_os, -- NEW
     serp_os_version AS os_version,
@@ -762,28 +760,13 @@ final_cte AS (
     serp_subsession_start_time AS subsession_start_time, -- NEW
     serp_subsession_end_time AS subsession_end_time, -- NEW
     serp_subsession_counter AS subsession_counter, -- NEW
-    NULL AS subsessions_hours_sum,
     serp_sessions_started_on_this_day AS sessions_started_on_this_day,
     serp_overridden_by_third_party AS overridden_by_third_party, -- NEW
-    NULL AS active_addons_count_mean,
     serp_max_concurrent_tab_count_max AS max_concurrent_tab_count_max,
     serp_scalar_parent_browser_engagement_tab_open_event_count_sum AS tab_open_event_count_sum,
     serp_active_hours_sum AS active_hours_sum,
     serp_scalar_parent_browser_engagement_total_uri_count_sum AS total_uri_count,
     serp_experiments AS experiments,
-    NULL AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
-    NULL AS scalar_parent_urlbar_searchmode_handoff_sum,
-    NULL AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
-    NULL AS scalar_parent_urlbar_searchmode_oneoff_sum,
-    NULL AS scalar_parent_urlbar_searchmode_other_sum,
-    NULL AS scalar_parent_urlbar_searchmode_shortcut_sum,
-    NULL AS scalar_parent_urlbar_searchmode_tabmenu_sum,
-    NULL AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
-    NULL AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
-    NULL AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
-    NULL AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
-    NULL AS scalar_parent_urlbar_searchmode_touchbar_sum,
-    NULL AS scalar_parent_urlbar_searchmode_typed_sum,
     serp_profile_age_in_days AS profile_age_in_days,
     serp_searches_organic_count AS organic,
     serp_searches_tagged_count AS tagged_sap,
@@ -804,7 +787,6 @@ final_cte AS (
     serp_num_ads_visible AS num_ads_visible, -- NEW
     serp_num_ads_blocked AS num_ads_blocked, -- NEW
     serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
-    NULL AS unknown,
     serp_has_adblocker_addon AS has_adblocker_addon,
     serp_policies_is_enterprise AS policies_is_enterprise,
     serp_os_version_major AS os_version_major,

@@ -27,9 +27,6 @@ fields:
   mode: NULLABLE
   description: Name of the country in which the activity took place, as determined
     by the IP geolocation.
-- name: addon_version
-  type: INTEGER
-  mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -47,9 +44,6 @@ fields:
   description: Set of language- and/or country-based preferences for a user interface.
 - name: user_pref_browser_search_region
   type: STRING
-  mode: NULLABLE
-- name: search_cohort
-  type: INTEGER
   mode: NULLABLE
 - name: os
   type: STRING
@@ -135,17 +129,11 @@ fields:
 - name: subsession_counter
   type: INTEGER
   mode: NULLABLE
-- name: subsessions_hours_sum
-  type: INTEGER
-  mode: NULLABLE
 - name: sessions_started_on_this_day
   type: INTEGER
   mode: NULLABLE
 - name: overridden_by_third_party
   type: BOOLEAN
-  mode: NULLABLE
-- name: active_addons_count_mean
-  type: INTEGER
   mode: NULLABLE
 - name: max_concurrent_tab_count_max
   type: INTEGER
@@ -183,45 +171,6 @@ fields:
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_handoff_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_keywordoffer_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_oneoff_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_other_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_shortcut_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_tabmenu_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_tabtosearch_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_topsites_newtab_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_touchbar_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: scalar_parent_urlbar_searchmode_typed_sum
-  type: INTEGER
-  mode: NULLABLE
 - name: profile_age_in_days
   type: INTEGER
   mode: NULLABLE
@@ -280,9 +229,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: num_ads_notshowing
-  type: INTEGER
-  mode: NULLABLE
-- name: unknown
   type: INTEGER
   mode: NULLABLE
 - name: has_adblocker_addon

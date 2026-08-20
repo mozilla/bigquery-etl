@@ -41,11 +41,13 @@ references:
   - mozdata.org_mozilla_firefox_beta.history_sync
   - mozdata.org_mozilla_firefox_beta.logins_sync
   - mozdata.org_mozilla_firefox_beta.tabs_sync
+  - mozdata.org_mozilla_ios_firefox.addresses_sync
   - mozdata.org_mozilla_ios_firefox.bookmarks_sync
   - mozdata.org_mozilla_ios_firefox.creditcards_sync
   - mozdata.org_mozilla_ios_firefox.history_sync
   - mozdata.org_mozilla_ios_firefox.logins_sync
   - mozdata.org_mozilla_ios_firefox.tabs_sync
+  - mozdata.org_mozilla_ios_firefoxbeta.addresses_sync
   - mozdata.org_mozilla_ios_firefoxbeta.bookmarks_sync
   - mozdata.org_mozilla_ios_firefoxbeta.creditcards_sync
   - mozdata.org_mozilla_ios_firefoxbeta.history_sync

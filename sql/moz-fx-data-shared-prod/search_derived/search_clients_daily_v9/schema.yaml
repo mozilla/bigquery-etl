@@ -10,9 +10,6 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-- name: engine
-  type: STRING
-  mode: NULLABLE
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

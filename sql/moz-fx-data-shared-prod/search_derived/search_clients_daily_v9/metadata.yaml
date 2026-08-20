@@ -1,6 +1,6 @@
 friendly_name: Search Clients Daily
 description: |
-  A daily aggregate of desktop searches, one row per (client_id, submission_date, engine, source).
+  A daily aggregate of desktop searches, one row per (client_id, submission_date, normalized_engine, source).
 
   Combines the SAP and SERP pipelines with a full outer join, so a row is emitted when either
   side has activity. Columns present on both sides prefer the SERP value.

@@ -2,7 +2,6 @@ SELECT
   submission_date,
   client_id,
   legacy_telemetry_client_id, -- NEW
-  provider_id AS engine, -- this is normalized in serp_events_with_client_info
   provider_id AS normalized_engine,
   search_access_point AS source,
   partner_code, -- NEW

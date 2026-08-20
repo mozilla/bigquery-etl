@@ -1,6 +1,6 @@
 [DENG-8178 for search_clients_daily_v9](https://mozilla-hub.atlassian.net/browse/DENG-8178)
 
-A daily aggregate of desktop searches, one row per `client_id`, `submission_date`, `engine` and `source`.
+A daily aggregate of desktop searches, one row per `client_id`, `submission_date`, `normalized_engine` and `source`.
 
 Exposed to users as view `search.search_clients_engines_sources_daily`.
 
@@ -236,7 +236,7 @@ This is `final_cte`. It renames the joined columns to the output schema and perf
 
 A few output columns are worth calling out.
 
-- `engine` and `normalized_engine` are currently the same value — the normalized engine, with the SAP fallback already applied in the join. This differs from v8, where `engine` was the raw value and `normalized_engine` was `null`. Whether to keep both is an open question with data science.
+- `normalized_engine` is the only engine column. v8's `engine` is dropped. In v8 `engine` held the raw engine string and `normalized_engine` was always null; in v9 the engine is normalized through `udf.normalize_search_engine` on both pipelines, so the two columns would have held the same value.
 - `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.
 - `experiments` prefers the SERP passthrough. The SAP fallback is built from `json_keys(experiments)[offset(0)]` and therefore carries only the first experiment.

@@ -213,6 +213,12 @@ fields:
 - name: newtab_weather_enabled
   type: BOOLEAN
   description: Whether the weather widget is enabled
+- name: newtab_scroll
+  type: BOOLEAN
+  description: Whether the user scrolled more than the scroll telemetry threshold
+    during this newtab visit. NULL if no qualifying scroll occurred (the Glean
+    metric is only set when the threshold is crossed). Sourced from the
+    `newtab.scroll` Glean metric.
 - name: default_search_engine
   type: STRING
   description: Engine_id of the default search engine

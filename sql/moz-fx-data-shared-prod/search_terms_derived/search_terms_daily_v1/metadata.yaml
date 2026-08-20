@@ -12,13 +12,13 @@ description: |-
   under-reported, since the trailing 7-day threshold window extends past the
   oldest available source data. Partitions from 2026-07-14 onward are complete.
 owners:
-- ctroy@mozilla.com
-- rburwei@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
   incremental: true
   dag: bqetl_search_terms_daily
-  owner1: ctroy
-  owner2: rburwei
+  owner1: najiang
+  owner2: csadilek
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments:

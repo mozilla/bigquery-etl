@@ -6,10 +6,12 @@ description: |-
   The sending to adMarketplace takes place in a separate DAG defined in
   the telemetry-airflow repository directly.
 owners:
-- ctroy@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
   dag: bqetl_search_terms_daily
-  owner1: ctroy
+  owner1: najiang
+  owner2: csadilek
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments:

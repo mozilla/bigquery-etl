@@ -3,9 +3,11 @@ description: |-
   Impression, click and client counts for search queries logged via
   Contextual Services Suggest Impression Pings
 owners:
-- rburwei@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
-  owner1: rburwei
+  owner1: najiang
+  owner2: csadilek
 bigquery:
   time_partitioning:
     type: day

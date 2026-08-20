@@ -7,11 +7,13 @@ description: |-
   This table allows removal of PII and slightly longer retention than
   the underlying ping table.
 owners:
-- ctroy@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
   incremental: true
   dag: bqetl_search_terms_daily
-  owner1: ctroy
+  owner1: najiang
+  owner2: csadilek
 scheduling:
   dag_name: bqetl_search_terms_daily
 bigquery:

@@ -7,10 +7,12 @@ description: |-
   See https://github.com/mozilla/search-terms-sanitization (private)
   for the code that populates this table.
 owners:
-- ctroy@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
   incremental: true
-  owner1: ctroy
+  owner1: najiang
+  owner2: csadilek
 bigquery:
   time_partitioning:
     type: day

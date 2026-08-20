@@ -12,10 +12,12 @@ description: |-
       Added contained_blank to track blank query frequency
       Added total_search_terms to track all terms inclusive of blank terms
 owners:
-- ctroy@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
   incremental: true
-  owner1: ctroy
+  owner1: najiang
+  owner2: csadilek
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

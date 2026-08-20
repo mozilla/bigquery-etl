@@ -8,10 +8,12 @@ description: |-
 
   Fulfills https://mozilla-hub.atlassian.net/browse/ROAD-85
 owners:
-- ctroy@mozilla.com
+- najiang@mozilla.com
+- csadilek@mozilla.com
 labels:
   incremental: true
-  owner1: ctroy
+  owner1: najiang
+  owner2: csadilek
 bigquery:
   time_partitioning:
     type: day

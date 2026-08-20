@@ -1,0 +1,46 @@
+friendly_name: Market Research Browser Blog Posts Retrieval Index
+description: "AI-enriched retrieval table derived from the scraped browser vendor\
+  \ blog corpus,\ncontaining embeddings and semantic features to support grounded\
+  \ question answering\nand VECTOR_SEARCH over Mozilla's market-intel corpus.\n\n\
+  Grain: one row per `source_url`. `scraped_date` is the partition column and records\n\
+  the scrape on which the post was first observed and indexed \u2014 it is NOT part\
+  \ of the grain.\n\nLLM generated fields:\n- post_summary_llm\n- post_category_llm\n\
+  - post_topics_llm\n- post_entities_llm\n- embedding based on [title, raw_text]\n\
+  \nIncremental strategy\n- The upstream loader (`external_derived.market_research_blogs_v1`)\
+  \ incrementally\n  appends newly-scraped GCS blobs into a cumulative table -- it\
+  \ is not a clean\n  single-day arrivals feed, and a `scraped_date` batch can include\
+  \ any post that\n  happened to be scraped that week. The query therefore anti-joins\
+  \ the current\n  scrape against every `source_url` already present in this table,\
+  \ and only\n  enriches posts it has never seen. This keeps the standard `@submission_date`\n\
+  \  contract while avoiding paying AI.GENERATE / AI.EMBED costs again for posts that\n\
+  \  have not changed.\n\nMetadata\n- Additional data to support technical processes,\
+  \ such as backfills or investigations.\n- The prompt version is a self-managed version\
+  \ for changes in the prompt given to the LLM."
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+  dag: bqetl_market_research
+scheduling:
+  dag_name: bqetl_market_research
+bigquery:
+  time_partitioning:
+    type: day
+    field: scraped_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - browser
+    - source_type
+schema:
+  allow_field_addition: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.external.market_research_blogs
+require_column_descriptions: true

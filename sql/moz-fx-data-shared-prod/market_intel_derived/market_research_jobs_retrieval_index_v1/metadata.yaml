@@ -1,0 +1,56 @@
+friendly_name: Market Research Competitor Job Postings Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from the scraped competitor job-posting corpus,
+  containing embeddings and semantic features to support grounded question answering
+  and VECTOR_SEARCH over Mozilla's market-intel corpus.
+
+  Grain: one row per (company, job_id, scraped_date). Unlike the releases and blogs
+  indexes, `scraped_date` IS part of the grain here: the upstream corpus is a full
+  snapshot of currently-open postings, so a posting that stays open reappears in every
+  weekly snapshot and is deliberately indexed once per snapshot. Pick a single
+  `scraped_date` when counting postings, or you will count the same job repeatedly.
+
+  LLM generated fields:
+  - job_summary_llm
+  - job_category_llm
+  - job_topics_llm
+  - job_entities_llm
+  - embedding based on [title, description_text]
+
+  Incremental strategy
+  - Because `scraped_date` is already part of the grain, no anti-join against history is
+    needed: filtering the raw corpus to `scraped_date = @submission_date` and truncating
+    that one partition is inherently non-duplicating. Every row written by a run is new
+    at this grain.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+  dag: bqetl_market_research
+scheduling:
+  dag_name: bqetl_market_research
+bigquery:
+  time_partitioning:
+    type: day
+    field: scraped_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - company
+    - source
+schema:
+  allow_field_addition: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.external.market_research_jobs
+require_column_descriptions: true

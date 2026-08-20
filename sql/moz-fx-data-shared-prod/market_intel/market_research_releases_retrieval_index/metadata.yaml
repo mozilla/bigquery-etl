@@ -1,0 +1,32 @@
+friendly_name: Market Research Browser Releases Retrieval Index
+description: "AI-enriched retrieval view over the scraped browser release-note corpus,\
+  \ containing\nembeddings and semantic features to support grounded question answering\
+  \ and\nVECTOR_SEARCH over Mozilla's market-intel corpus.\n\nGrain: one row per (browser,\
+  \ version, source_type). `scraped_date` is the partition\ncolumn of the underlying\
+  \ table and records the scrape on which the release was first\nobserved and indexed\
+  \ \u2014 it is NOT part of the grain.\n\nLLM generated fields:\n- release_summary_llm\n\
+  - release_category_llm\n- release_topics_llm\n- release_entities_llm\n- embedding\
+  \ based on [browser, version, raw_text]\n\nRead-time filtering (applied by this\
+  \ view, not stored in the underlying table)\n- Only rows where `metadata.embedding_succeeded`\
+  \ are exposed, so this view is safe to\n  use directly as a VECTOR_SEARCH base without\
+  \ a further embedding NULL check.\n- No product normalization and no recency decay\
+  \ are applied. Vendor release notes are\n  reference documents whose relevance does\
+  \ not decay on a fixed schedule, so a\n  read-time `recency_score` would be misleading;\
+  \ filter on `release_date` or\n  `scraped_date` explicitly when you want recent\
+  \ releases.\n\nUsage\n- The underlying table requires a partition filter. Always\
+  \ include\n  `WHERE scraped_date >= ...` (or an equivalent range) when querying\
+  \ this view,\n  otherwise BigQuery will reject the query.\n\nMetadata\n- Additional\
+  \ data to support technical processes, such as backfills or investigations.\n- The\
+  \ prompt version is a self-managed version for changes in the prompt given to the\
+  \ LLM."
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.market_intel_derived.market_research_releases_retrieval_index_v1

@@ -715,8 +715,7 @@ fields:
     - name: networking_http3_enabled
       type: BOOLEAN
       mode: NULLABLE
-      description: 'True if HTTP3 is enabled at the start of a session. This metric
-        was generated to correspond to the Legacy Telemetry scalar networking.http3_enabled.
+      description: 'True if HTTP3 is enabled at the start of a session.
 
         '
     - name: os_environment_is_admin_without_uac
@@ -4346,9 +4345,6 @@ fields:
       description: 'DNS Lookup Type (hit, renewal, negative-hit, literal, overflow,
         network-first, network-shared)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram DNS_LOOKUP_METHOD2.
-
         '
     - name: dom_forget_skippable_during_idle
       type: RECORD
@@ -5081,9 +5077,6 @@ fields:
       description: 'HTTP3: number of times a connection is blocked by maximum allowed
         number of parallel streams per connection
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_BLOCKED_BY_STREAM_LIMIT_PER_CONN.
-
         '
     - name: http3_drop_dgrams
       type: RECORD
@@ -5103,9 +5096,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP3: the number of dropped datagrams.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_DROP_DGRAMS.
 
         '
     - name: http3_loss_ratio
@@ -5127,9 +5117,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP3: packet loss ratio (multiply by 10000).
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_LOSS_RATIO.
-
         '
     - name: http3_request_per_conn
       type: RECORD
@@ -5149,9 +5136,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP3: Streams created per connection
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_REQUEST_PER_CONN.
 
         '
     - name: http3_saved_dgrams
@@ -5174,9 +5158,6 @@ fields:
       description: 'HTTP3: the number of saved datagrams that are waiting for keys
         to be available.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_SAVED_DGRAMS.
-
         '
     - name: http3_sending_blocked_by_flow_control_per_trans
       type: RECORD
@@ -5196,10 +5177,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP3: number of times when a stream is blocked by the flow control
-        while sendnig data.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_SENDING_BLOCKED_BY_FLOW_CONTROL_PER_TRANS.
+        while sending data.
 
         '
     - name: http3_trans_blocked_by_stream_limit_per_conn
@@ -5222,9 +5200,6 @@ fields:
       description: 'HTTP3: number of transactions that are blocked by maximum allowed
         number of parallel streams per connection
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_TRANS_BLOCKED_BY_STREAM_LIMIT_PER_CONN.
-
         '
     - name: http3_trans_sending_blocked_by_flow_control_per_conn
       type: RECORD
@@ -5245,9 +5220,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP3: number of times streams are blocked by the flow control
         while sending data per connection
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_TRANS_SENDING_BLOCKED_BY_FLOW_CONTROL_PER_CONN.
 
         '
     - name: http_altsvc_entries_per_header
@@ -5293,9 +5265,6 @@ fields:
       description: 'Channel Disposition: 0=Cancel, 1=Disk, 2=NetOK, 3=NetEarlyFail,
         4=NetlateFail, +8 for HTTPS
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP_CHANNEL_DISPOSITION.
-
         '
     - name: http_content_encoding
       type: RECORD
@@ -5315,9 +5284,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'encoding removed: 0=unknown, 1=gzip, 2=deflate, 3=brotli, 4=zstd
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP_CONTENT_ENCODING.
 
         '
     - name: http_dns_httpssvc_connection_failed_reason
@@ -5362,9 +5328,6 @@ fields:
           mode: NULLABLE
       description: 'Record at which stage an HTTPSSVC record is received
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram DNS_HTTPSSVC_RECORD_RECEIVING_STAGE.
-
         '
     - name: http_dnt_usage
       type: RECORD
@@ -5384,9 +5347,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'I want to be tracked, I do NOT want to be tracked, DNT unset
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram DNT_USAGE.
 
         '
     - name: http_proxy_type
@@ -5431,9 +5391,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP: requests per connection
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_REQUEST_PER_CONN.
-
         '
     - name: http_request_per_page
       type: RECORD
@@ -5453,9 +5410,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP: Requests per page (count)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_REQUEST_PER_PAGE.
 
         '
     - name: http_request_per_page_from_cache
@@ -5477,9 +5431,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP: Requests serviced from cache (%)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP_REQUEST_PER_PAGE_FROM_CACHE.
-
         '
     - name: http_response_version
       type: RECORD
@@ -5499,9 +5450,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP: Protocol Version Used on Response from nsHttp.h
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP_RESPONSE_VERSION.
 
         '
     - name: http_saw_quic_alt_protocol
@@ -5548,9 +5496,6 @@ fields:
       description: 'Sending TLS early data was possible: 0 - not possible, 1 - possible
         but not used, 2 - possible and used.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TLS_EARLY_DATA_NEGOTIATED.
-
         '
     - name: http_transaction_ech_retry_ech_failed_count
       type: RECORD
@@ -5571,9 +5516,6 @@ fields:
           mode: NULLABLE
       description: 'When echConfig is enabled, number of times a transaction is retried
         because of SSL_ERROR_ECH_FAILED
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_ECH_RETRY_ECH_FAILED_COUNT.
 
         '
     - name: http_transaction_ech_retry_others_count
@@ -5596,9 +5538,6 @@ fields:
       description: 'When echConfig is enabled, number of times a transaction is retried
         because of other error
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_ECH_RETRY_OTHERS_COUNT.
-
         '
     - name: http_transaction_ech_retry_with_ech_count
       type: RECORD
@@ -5620,9 +5559,6 @@ fields:
       description: 'When echConfig is enabled, number of times a transaction is retried
         because of SSL_ERROR_ECH_RETRY_WITH_ECH
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_ECH_RETRY_WITH_ECH_COUNT.
-
         '
     - name: http_transaction_ech_retry_without_ech_count
       type: RECORD
@@ -5643,9 +5579,6 @@ fields:
           mode: NULLABLE
       description: 'When echConfig is enabled, number of times a transaction is retried
         because of SSL_ERROR_ECH_RETRY_WITHOUT_ECH
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_ECH_RETRY_WITHOUT_ECH_COUNT.
 
         '
     - name: http_transaction_restart_reason
@@ -6427,10 +6360,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Collect the content policy when the resource is non-local and
-        suspended by back pressure (0-44 from nsContentPolicyType in nsIContentPolicy.idl).
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram NETWORK_BACK_PRESSURE_SUSPENSION_CP_TYPE.
+        suspended by back pressure (0-44 from nsContentPolicyType in nsIContentPolicy.idl).3
 
         '
     - name: network_backgroundfilesaver_thread_count
@@ -6452,9 +6382,6 @@ fields:
           mode: NULLABLE
       description: 'Maximum number of concurrent threads reached during a given download
         session
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram BACKGROUNDFILESAVER_THREAD_COUNT.
 
         '
     - name: network_cache_v2_input_stream_status
@@ -6478,9 +6405,6 @@ fields:
         2=out of memory, 3=disk full, 4=file corrupted, 5=file not found, 6=binding
         aborted)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram NETWORK_CACHE_V2_INPUT_STREAM_STATUS.
-
         '
     - name: network_cache_v2_output_stream_status
       type: RECORD
@@ -6503,9 +6427,6 @@ fields:
         2=out of memory, 3=disk full, 4=file corrupted, 5=file not found, 6=binding
         aborted)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram NETWORK_CACHE_V2_OUTPUT_STREAM_STATUS.
-
         '
     - name: network_http_cache_entry_reuse_count
       type: RECORD
@@ -6525,9 +6446,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Reuse count of an HTTP cache entry warmed in memory
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        HTTP_CACHE_ENTRY_REUSE_COUNT.
 
         '
     - name: network_id
@@ -6550,9 +6468,6 @@ fields:
       description: 'Network identification (0=None, 1=New Ipv4, 2=Same, 3=New IPv6,
         4=New dual)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram NETWORK_ID2.
-
         '
     - name: network_ipv4_and_ipv6_address_connectivity
       type: RECORD
@@ -6574,9 +6489,6 @@ fields:
       description: 'Count the number of 0) successful connections to an ipv4 address,
         1) failed connection an ipv4 address, 2) successful connection to an ipv6
         address and 3) failed connections to an ipv6 address.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram IPV4_AND_IPV6_ADDRESS_CONNECTIVITY.
 
         '
     - name: network_tls_early_data_bytes_written
@@ -8185,9 +8097,6 @@ fields:
           mode: NULLABLE
       description: 'H2: goaway reason client sent from rfc 7540. 31 is none sent.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram SPDY_GOAWAY_LOCAL.
-
         '
     - name: spdy_goaway_peer
       type: RECORD
@@ -8207,9 +8116,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'H2: goaway reason from peer from rfc 7540. 31 is none received.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram SPDY_GOAWAY_PEER.
 
         '
     - name: spdy_parallel_streams
@@ -8231,9 +8137,6 @@ fields:
           mode: NULLABLE
       description: 'SPDY: Streams concurrent active per connection
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SPDY_PARALLEL_STREAMS.
-
         '
     - name: spdy_request_per_conn
       type: RECORD
@@ -8253,9 +8156,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'SPDY: Streams created per connection
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SPDY_REQUEST_PER_CONN_3.
 
         '
     - name: spdy_server_initiated_streams
@@ -8277,9 +8177,6 @@ fields:
           mode: NULLABLE
       description: 'SPDY: Streams received per connection
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SPDY_SERVER_INITIATED_STREAMS.
-
         '
     - name: spdy_settings_max_streams
       type: RECORD
@@ -8299,9 +8196,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'H2: Settings Max Streams parameter
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SPDY_SETTINGS_MAX_STREAMS.
 
         '
     - name: spdy_syn_ratio
@@ -11896,9 +11790,6 @@ fields:
           mode: NULLABLE
       description: 'DNS: lookup algorithm; Keyed by TRR domain
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram DNS_LOOKUP_DISPOSITION3.
-
         '
     - name: dns_trr_blacklisted
       type: RECORD
@@ -11918,9 +11809,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'DNS check for TRR was blocked by blacklist; Keyed by TRR domain
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        DNS_TRR_BLACKLISTED3.
 
         '
     - name: dns_trr_disabled
@@ -11943,9 +11831,6 @@ fields:
       description: 'Resolve success rate when in TRR-first and called TRR-disabled
         (fall-back mode); Keyed by TRR domain
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        DNS_TRR_DISABLED3.
-
         '
     - name: dns_trr_first
       type: RECORD
@@ -11967,9 +11852,6 @@ fields:
       description: 'TRR-first mode distribution. 0=Worked, 1=fell back fine after
         TRR fail, 2=native worked, 3=both failed; Keyed by TRR domain
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram DNS_TRR_FIRST4.
-
         '
     - name: dns_trr_http_version
       type: RECORD
@@ -11989,9 +11871,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP version used by DoH endpoint
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram DNS_TRR_HTTP_VERSION2.
 
         '
     - name: dns_trr_ns_verfified
@@ -12013,9 +11892,6 @@ fields:
           mode: NULLABLE
       description: 'TRR managed to verify NS entry; Keyed by TRR domain
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        DNS_TRR_NS_VERFIFIED3.
-
         '
     - name: dns_trr_success
       type: RECORD
@@ -12036,9 +11912,6 @@ fields:
           mode: NULLABLE
       description: 'How often TRR (Trusted Recursive Resolver) requests are fine,
         time-out or error. Keyed by TRR domain
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram DNS_TRR_SUCCESS3.
 
         '
     - name: dom_quota_first_initialization_attempt
@@ -12132,9 +12005,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP Cache v2 hit/miss stats keyed by content type.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram HTTP_CACHE_DISPOSITION_3.
-
         '
     - name: http_traffic_analysis
       type: RECORD
@@ -12159,9 +12029,6 @@ fields:
         4. class of service (Leader/Background/Others) 5. tracking classification
         (Basic/Content/FingerprintingContent).
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram HTTP_TRAFFIC_ANALYSIS_3.
-
         '
     - name: networking_http3_channel_onstart_success
       type: RECORD
@@ -12182,9 +12049,6 @@ fields:
           mode: NULLABLE
       description: 'Successfully started HTTP channels when HTTP3 is used
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP3_CHANNEL_ONSTART_SUCCESS.
-
         '
     - name: networking_http_channel_disposition_upgrade
       type: RECORD
@@ -12204,9 +12068,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Upgrading display content Channel Disposition
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram HTTP_CHANNEL_DISPOSITION_UPGRADE.
 
         '
     - name: page_load_error
@@ -14164,9 +14025,6 @@ fields:
         mode: NULLABLE
       description: 'DNS: lookup algorithm
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram DNS_LOOKUP_ALGORITHM.
-
         '
     - name: dom_blink_filesystem_used
       type: RECORD
@@ -14747,9 +14605,6 @@ fields:
       description: 'Whether or not a new alt-svc mapping would change the target hostname
         of the existing mapping
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP_ALTSVC_MAPPING_CHANGED_TARGET.
-
         '
     - name: http_cache_lm_inconsistent
       type: RECORD
@@ -14763,9 +14618,6 @@ fields:
         mode: NULLABLE
       description: 'Cache discovered inconsistent last-modified entry
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        CACHE_LM_INCONSISTENT.
-
         '
     - name: http_channel_onstart_success
       type: RECORD
@@ -14778,9 +14630,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Successfully started HTTP channels
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP_CHANNEL_ONSTART_SUCCESS.
 
         '
     - name: http_connection_entry_cache_hit
@@ -14796,9 +14645,6 @@ fields:
       description: 'Fraction of sockets that used a nsConnectionEntry with history
         - size 300.
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP_CONNECTION_ENTRY_CACHE_HIT_1.
-
         '
     - name: http_echconfig_success_rate
       type: RECORD
@@ -14811,9 +14657,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'TLS handshake with and without EchConfig success rate.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram ECHCONFIG_SUCCESS_RATE.
 
         '
     - name: http_http2_fail_before_settings
@@ -14829,9 +14672,6 @@ fields:
       description: 'Whether an HTTP/2 session failed because the peer did not handshake
         properly
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP2_FAIL_BEFORE_SETTINGS.
-
         '
     - name: http_pageload_is_ssl
       type: RECORD
@@ -14845,9 +14685,6 @@ fields:
         mode: NULLABLE
       description: 'Whether a HTTP page load was over SSL or not. Recorded during
         response processing for all first-party page loads.
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP_PAGELOAD_IS_SSL.
 
         '
     - name: http_script_block_incorrect_mime
@@ -14866,9 +14703,6 @@ fields:
         worker_load, importSript_load, script_load). Whether the script load is of
         ...?  (same_origin, CORS_origin, cross_origin)
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram SCRIPT_BLOCK_INCORRECT_MIME_3.
-
         '
     - name: http_tls_early_data_accepted
       type: RECORD
@@ -14882,9 +14716,6 @@ fields:
         mode: NULLABLE
       description: 'TLS early data was used and it was accepted (true) or rejected
         (false) by the remote host.
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        TLS_EARLY_DATA_ACCEPTED.
 
         '
     - name: http_transaction_is_ssl
@@ -14900,9 +14731,6 @@ fields:
       description: 'Whether an HTTP request occurred over TLS/SSL or not. Recorded
         during response processing for all requests.
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP_TRANSACTION_IS_SSL.
-
         '
     - name: http_transaction_use_altsvc
       type: RECORD
@@ -14915,9 +14743,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Whether a HTTP transaction was routed via Alt-Svc or not.
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        HTTP_TRANSACTION_USE_ALTSVC.
 
         '
     - name: ipc_transaction_cancel
@@ -15556,9 +15381,6 @@ fields:
       description: 'Collect whether the resource is suspended by back pressure. And
         split by local-ness.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram NETWORK_BACK_PRESSURE_SUSPENSION_RATE_V2.
-
         '
     - name: network_byte_range_request
       type: RECORD
@@ -15614,9 +15436,6 @@ fields:
       description: 'Network ID presence when the network connectivity checker reports
         that we have connectivity
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram NETWORK_ID_ONLINE.
-
         '
     - name: network_race_cache_validation
       type: RECORD
@@ -15662,9 +15481,6 @@ fields:
         mode: NULLABLE
       description: 'Ratio of used and unused resources preloaded with link rel=preload
         tag or response header, broken down by supported resource type.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram REL_PRELOAD_MISS_RATIO.
 
         '
     - name: network_retried_system_channel_addon_status
@@ -15976,8 +15792,7 @@ fields:
         ,\n  \"Y12_P1Sys\",\n  \"Y13_P1\",\n  \"Y14_P3Oth\",\n  \"Y15_P3BasicLead\"\
         ,\n  \"Y16_P3BasicBg\",\n  \"Y17_P3BasicOth\",\n  \"Y18_P3ContentLead\",\n\
         \  \"Y19_P3ContentBg\",\n  \"Y20_P3ContentOth\",\n  \"Y21_P3FpLead\",\n  \"\
-        Y22_P3FpBg\",\n  \"Y23_P3FpOth\"\n\nThis metric was generated to correspond\
-        \ to the Legacy Telemetry scalar networking.data_transferred_v3_kb.\n"
+        Y22_P3FpBg\",\n  \"Y23_P3FpOth\"\n"
     - name: networking_dns_native_count
       type: RECORD
       mode: REPEATED
@@ -16422,8 +16237,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Number of times we cycled the TRR connection during a subsession.
-        Keyed by TRR provider URL. This metric was generated to correspond to the
-        Legacy Telemetry scalar networking.trr_connection_cycle_count.
+        Keyed by TRR provider URL.
 
         '
     - name: networking_trr_request_count
@@ -16465,9 +16279,6 @@ fields:
         mode: NULLABLE
       description: 'The initiator of this ORB blocked request.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram ORB_BLOCK_INITIATOR.
-
         '
     - name: orb_block_reason
       type: RECORD
@@ -16480,9 +16291,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The reason of why this request was blocked by ORB
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram ORB_BLOCK_REASON.
 
         '
     - name: orb_did_ever_block_response
@@ -19587,9 +19395,6 @@ fields:
       description: 'Number of times we attempted TRR for a successful lookup in TRR-first
         mode. Keyed by provider.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_ATTEMPT_COUNT.
-
         '
     - name: dns_trr_relevant_skip_reason_native_failed
       type: RECORD
@@ -19618,9 +19423,6 @@ fields:
       description: 'When in TRR-first mode, if TRR was skipped and native failed,
         it lists the reason we may have skipped TRR, keyed by the provider. Does not
         include requests that intentionally skip TRR.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_RELEVANT_SKIP_REASON_NATIVE_FAILED.
 
         '
     - name: dns_trr_relevant_skip_reason_native_success
@@ -19651,9 +19453,6 @@ fields:
         it lists the reason we may have skipped TRR, keyed by the provider. Does not
         include requests that intentionally skip TRR.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_RELEVANT_SKIP_REASON_NATIVE_SUCCESS.
-
         '
     - name: dns_trr_relevant_skip_reason_trr_first
       type: RECORD
@@ -19682,9 +19481,6 @@ fields:
       description: 'When in TRR-first mode, it lists the reason we may have skipped
         TRR, keyed by the provider. Does not include requests that intentionally skip
         TRR.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_RELEVANT_SKIP_REASON_TRR_FIRST.
 
         '
     - name: dns_trr_relevant_skip_reason_trr_first_type_rec
@@ -19715,9 +19511,6 @@ fields:
         TRR for HTTPS RR, keyed by the provider. Does not include requests that intentionally
         skip TRR.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_RELEVANT_SKIP_REASON_TRR_FIRST_TYPE_REC.
-
         '
     - name: dns_trr_skip_reason_native_failed
       type: RECORD
@@ -19745,9 +19538,6 @@ fields:
             mode: NULLABLE
       description: 'When in TRR-first mode, if TRR was skipped and native failed,
         it lists the reason we may have skipped TRR, keyed by the provider.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_SKIP_REASON_NATIVE_FAILED.
 
         '
     - name: dns_trr_skip_reason_native_success
@@ -19777,9 +19567,6 @@ fields:
       description: 'When in TRR-first mode, if TRR was skipped and native succeeded,
         it lists the reason we may have skipped TRR, keyed by the provider.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_SKIP_REASON_NATIVE_SUCCESS.
-
         '
     - name: dns_trr_skip_reason_retry_failed
       type: RECORD
@@ -19808,9 +19595,6 @@ fields:
       description: 'When in TRR-first mode, if TRR failed once and retried unsuccessfully,
         it lists the reason for the first failure, keyed by the provider.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_SKIP_REASON_RETRY_FAILED.
-
         '
     - name: dns_trr_skip_reason_retry_success
       type: RECORD
@@ -19838,9 +19622,6 @@ fields:
             mode: NULLABLE
       description: 'When in TRR-first mode, if TRR failed once and was successfully
         retried, it lists the reason for the first failure, keyed by the provider.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_SKIP_REASON_RETRY_SUCCESS.
 
         '
     - name: dns_trr_skip_reason_strict_mode
@@ -19871,9 +19652,6 @@ fields:
         TRR. The key is like `<provider>|<skip reason of first attempt>` or just `<provider>`
         used when there was no second attempt.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_SKIP_REASON_STRICT_MODE.
-
         '
     - name: dns_trr_skip_reason_trr_first
       type: RECORD
@@ -19901,9 +19679,6 @@ fields:
             mode: NULLABLE
       description: 'When in TRR-first mode, it lists the reason we may have skipped
         TRR, keyed by the provider.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRR_SKIP_REASON_TRR_FIRST2.
 
         '
     - name: downloads_user_action_on_blocked_download
@@ -20094,9 +19869,6 @@ fields:
       description: 'Error code when http3 connection is closed. Look at Http3Session
         for more details.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP3_CONNECTION_CLOSE_CODE_3.
-
         '
     - name: http3_counts_pto
       type: RECORD
@@ -20123,9 +19895,6 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'HTTP3: the number of PTOs.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_COUNTS_PTO.
 
         '
     - name: http3_ech_outcome
@@ -20154,9 +19923,6 @@ fields:
             mode: NULLABLE
       description: 'Success / Fail Rates for HTTP3 Keyed by ECH Usage
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP3_ECH_OUTCOME.
-
         '
     - name: http3_late_ack
       type: RECORD
@@ -20183,9 +19949,6 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'HTTP3: the number of spurious retransmissions.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_LATE_ACK.
 
         '
     - name: http3_late_ack_ratio
@@ -20215,9 +19978,6 @@ fields:
       description: 'HTTP3: spurious retransmissions ratio (spurios_retransmission
         / packet sent * 10000).
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_LATE_ACK_RATIO.
-
         '
     - name: http3_received_sent_dgrams
       type: RECORD
@@ -20244,9 +20004,6 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'HTTP3: the number of received/sent packets.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_RECEIVED_SENT_DGRAMS.
 
         '
     - name: http_channel_page_onstart_success_trr
@@ -20276,9 +20033,6 @@ fields:
       description: 'Successfully started HTTP channels for page loading when TRR is
         enabled; Keyed by TRR domain
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP_CHANNEL_PAGE_ONSTART_SUCCESS_TRR3.
-
         '
     - name: http_channel_sub_onstart_success_trr
       type: RECORD
@@ -20306,9 +20060,6 @@ fields:
             mode: NULLABLE
       description: 'Successfully started HTTP channels for resource loading when TRR
         is enabled; Keyed by TRR domain
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram HTTP_CHANNEL_SUB_ONSTART_SUCCESS_TRR3.
 
         '
     - name: http_connection_close_reason
@@ -20562,9 +20313,6 @@ fields:
       description: 'Percentage of the entries with the given content type. Numbers
         are sampled periodically, every time 2GB of data is written to the cache.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram NETWORK_CACHE_ENTRY_COUNT_SHARE.
-
         '
     - name: network_cache_hit_rate_per_cache_size
       type: RECORD
@@ -20621,9 +20369,6 @@ fields:
             mode: NULLABLE
       description: 'Percentage of the cache size occupied by given content type. Numbers
         are sampled periodically, every time 2GB of data is written to the cache.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram NETWORK_CACHE_SIZE_SHARE.
 
         '
     - name: quotamanager_initialize_repository_number_of_iterations
@@ -21827,9 +21572,6 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Time for a completed TRR resolution (msec); Keyed by TRR domain
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_TRR_LOOKUP_TIME3.
 
         '
     - name: dom_quota_info_load_time
@@ -24696,9 +24438,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP: KB read per connection
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_KBREAD_PER_CONN2.
-
         '
     - name: image_decode_speed_avif
       type: RECORD
@@ -25366,9 +25105,6 @@ fields:
           mode: NULLABLE
       description: 'Size of continued H2 headers in bytes.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SPDY_CONTINUED_HEADERS.
-
         '
     - name: spdy_kbread_per_conn
       type: RECORD
@@ -25388,9 +25124,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'SPDY: KB read per connection
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SPDY_KBREAD_PER_CONN2.
 
         '
     - name: spdy_settings_iw
@@ -26395,7 +26128,6 @@ fields:
       description: 'A bitfield representation for the usage of HTTPS RR prefs. bit
         0: network.dns.upgrade_with_https_rr is enabled or not. bit 1: network.dns.use_https_rr_as_altsvc
         is enabled or not. bit 2: network.dns.echconfig.enabled is enabled or not.
-        This metric was generated to correspond to the Legacy Telemetry scalar networking.https_rr_prefs_usage.
 
         '
     - name: networking_loading_certs_task
@@ -29687,9 +29419,6 @@ fields:
           mode: NULLABLE
       description: 'DNS Cache Entry Age for by-type queries at Removal Time (minutes)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_BY_TYPE_CLEANUP_AGE.
-
         '
     - name: dns_by_type_failed_lookup_time
       type: RECORD
@@ -29711,9 +29440,6 @@ fields:
       description: 'Time for a completed by-type resolution that has a negative answer
         (msec).
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_BY_TYPE_FAILED_LOOKUP_TIME.
-
         '
     - name: dns_by_type_premature_eviction
       type: RECORD
@@ -29734,9 +29460,6 @@ fields:
           mode: NULLABLE
       description: 'DNS Cache Entry Age for by-type queries at Removal Time of non-expired
         entries (minutes)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_BY_TYPE_PREMATURE_EVICTION.
 
         '
     - name: dns_by_type_succeeded_lookup_time
@@ -29781,9 +29504,6 @@ fields:
           mode: NULLABLE
       description: 'DNS Cache Entry Age at Removal Time (minutes)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_CLEANUP_AGE.
-
         '
     - name: dns_native_lookup_time
       type: RECORD
@@ -29803,9 +29523,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time for a completed native name resolution (msec)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_NATIVE_LOOKUP_TIME.
 
         '
     - name: dns_native_queuing
@@ -29827,9 +29544,6 @@ fields:
           mode: NULLABLE
       description: 'Time in resolve queue waiting to getaddrinfo (msec)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_NATIVE_QUEUING.
-
         '
     - name: dns_premature_eviction
       type: RECORD
@@ -29849,9 +29563,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'DNS Cache Entry Age at Removal Time of non-expired entries (minutes)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_PREMATURE_EVICTION.
 
         '
     - name: dns_trr_processing_time
@@ -29873,9 +29584,6 @@ fields:
           mode: NULLABLE
       description: 'Time from the last received byte of the response until we have
         notified the consumer with a DNS record (msec)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_TRR_PROCESSING_TIME.
 
         '
     - name: dom_contentprocess_launch_mainthread
@@ -31245,9 +30953,6 @@ fields:
       description: 'Time difference between setting timer value and actually firing
         the timer for calling neqo
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP3_TIMER_DELAYED.
-
         '
     - name: http_subitem_first_byte_latency_time
       type: RECORD
@@ -31269,9 +30974,6 @@ fields:
       description: 'HTTP subitem channel: Page start -> first byte received for subitem
         reply (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_SUBITEM_FIRST_BYTE_LATENCY_TIME.
-
         '
     - name: http_subitem_open_latency_time
       type: RECORD
@@ -31292,9 +30994,6 @@ fields:
           mode: NULLABLE
       description: 'HTTP subitem channel: Page start -> subitem open() (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_SUBITEM_OPEN_LATENCY_TIME.
-
         '
     - name: http_transaction_wait_time_http
       type: RECORD
@@ -31314,9 +31013,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time from submission to dispatch of HTTP transaction (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_WAIT_TIME_HTTP.
 
         '
     - name: http_transaction_wait_time_http2_sup_http3
@@ -31362,9 +31058,6 @@ fields:
           mode: NULLABLE
       description: 'Time from submission to dispatch of HTTP/3 transaction (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_WAIT_TIME_HTTP3.
-
         '
     - name: http_transaction_wait_time_spdy
       type: RECORD
@@ -31384,9 +31077,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time from submission to dispatch of SPDY transaction (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TRANSACTION_WAIT_TIME_SPDY.
 
         '
     - name: httpsfirst_downgrade_time
@@ -32624,9 +32314,6 @@ fields:
           mode: NULLABLE
       description: 'The delay caused by the e10s back pressure suspension(ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram NETWORK_BACK_PRESSURE_SUSPENSION_DELAY_TIME_MS.
-
         '
     - name: network_cache_hit_time
       type: RECORD
@@ -32688,8 +32375,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection cache read start
-        to cache read end. Corresponds to Legacy histogram HTTP_PAGE_CACHE_READ_TIME_V2
-        in Desktop.
+        to cache read end.
 
         '
     - name: network_complete_load
@@ -32710,8 +32396,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection open to complete
-        load (cache read end/until the last byte received) Corresponds to Legacy histogram
-        HTTP_PAGE_COMPLETE_LOAD_V2 in Desktop.
+        load (cache read end/until the last byte received)
 
         '
     - name: network_complete_load_cached
@@ -32732,8 +32417,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection open to cache read
-        end. Corresponds to Legacy histogram HTTP_PAGE_COMPLETE_LOAD_CACHED_V2 in
-        Desktop.
+        end.
 
         '
     - name: network_complete_load_net
@@ -32754,8 +32438,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection open to the last
-        byte received. Corresponds to Legacy histogram HTTP_PAGE_COMPLETE_LOAD_NET_V2
-        in Desktop.
+        byte received.
 
         '
     - name: network_cookies_sqlite_open_readahead
@@ -32777,9 +32460,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent on cookie DB open with readahead (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MOZ_SQLITE_COOKIES_OPEN_READAHEAD_MS.
-
         '
     - name: network_disk_cache2_shutdown_clear_private
       type: RECORD
@@ -32800,9 +32480,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent (ms) during shutdown deleting disk cache v2 for ''clear
         private data'' option
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram NETWORK_DISK_CACHE2_SHUTDOWN_CLEAR_PRIVATE.
 
         '
     - name: network_disk_cache_shutdown_v2
@@ -32846,8 +32523,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from the DNS request being issued
-        to the response. Corresponds to Legacy histogram HTTP_PAGE_DNS_LOOKUP_TIME
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        to the response.
 
         '
     - name: network_dns_start
@@ -32868,8 +32544,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection open to the DNS
-        request being issued. Corresponds to Legacy histogram HTTP_PAGE_DNS_ISSUE_TIME
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        request being issued.
 
         '
     - name: network_first_from_cache
@@ -32890,8 +32565,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection open to cache read
-        start. Corresponds to Legacy histogram HTTP_PAGE_OPEN_TO_FIRST_FROM_CACHE_V2
-        in Desktop.
+        start.
 
         '
     - name: network_first_sent_to_last_received
@@ -32912,8 +32586,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from first byte of request sent
-        to the last byte received. Corresponds to Legacy histogram HTTP_PAGE_FIRST_SENT_TO_LAST_RECEIVED
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        to the last byte received.
 
         '
     - name: network_font_download_end
@@ -32956,9 +32629,6 @@ fields:
           mode: NULLABLE
       description: 'Time for which an HTTP cache entry is kept warmed in memory
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_CACHE_ENTRY_ALIVE_TIME.
-
         '
     - name: network_http_cache_entry_reload_time
       type: RECORD
@@ -32979,9 +32649,6 @@ fields:
           mode: NULLABLE
       description: 'Time before we reload an HTTP cache entry again to memory
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram HTTP_CACHE_ENTRY_RELOAD_TIME.
-
         '
     - name: network_http_revalidation
       type: RECORD
@@ -33000,8 +32667,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'In the HTTP page channel, time for positive cache validation Corresponds
-        to Legacy histogram HTTP_PAGE_REVALIDATION in Desktop.
+      description: 'In the HTTP page channel, time for positive cache validation
 
         '
     - name: network_open_to_first_received
@@ -33022,8 +32688,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel,time from connection open to the first
-        byte received. Corresponds to Legacy histogram HTTP_PAGE_OPEN_TO_FIRST_RECEIVED
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        byte received.
 
         '
     - name: network_open_to_first_sent
@@ -33044,8 +32709,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from connection open to the first
-        byte of requst sent. Corresponds to Legacy histogram HTTP_PAGE_OPEN_TO_FIRST_SENT
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        byte of requst sent.
 
         '
     - name: network_race_cache_with_network_ocec_on_start_diff
@@ -33114,8 +32778,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection cache read start
-        to cache read end. Corresponds to Legacy histogram HTTP_SUB_CACHE_READ_TIME_V2
-        in Desktop.
+        to cache read end.
 
         '
     - name: network_sub_complete_load
@@ -33136,8 +32799,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to complete
-        load (cache read end/until the last byte received) Corresponds to Legacy histogram
-        HTTP_SUB_COMPLETE_LOAD_V2 in Desktop.
+        load (cache read end/until the last byte received)
 
         '
     - name: network_sub_complete_load_cached
@@ -33158,8 +32820,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to cache
-        read end. Corresponds to Legacy histogram HTTP_SUB_COMPLETE_LOAD_CACHED_V2
-        in Desktop.
+        read end.
 
         '
     - name: network_sub_complete_load_net
@@ -33180,8 +32841,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to the
-        last byte received. Corresponds to Legacy histogram HTTP_SUB_COMPLETE_LOAD_NET_V2
-        in Desktop.
+        last byte received.
 
         '
     - name: network_sub_dns_end
@@ -33202,8 +32862,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from the DNS request being issued
-        to the response. Corresponds to Legacy histogram HTTP_SUB_DNS_LOOKUP_TIME
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        to the response.
 
         '
     - name: network_sub_dns_start
@@ -33224,8 +32883,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to the
-        DNS request being issued. Corresponds to Legacy histogram HTTP_SUB_DNS_ISSUE_TIME
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        DNS request being issued.
 
         '
     - name: network_sub_first_from_cache
@@ -33246,8 +32904,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to cache
-        read start. Corresponds to Legacy histogram HTTP_SUB_OPEN_TO_FIRST_FROM_CACHE_V2
-        in Desktop.
+        read start.
 
         '
     - name: network_sub_first_sent_to_last_received
@@ -33268,8 +32925,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from first byte of request sent
-        to the last byte received. Corresponds to Legacy histogram HTTP_SUB_FIRST_SENT_TO_LAST_RECEIVED
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        to the last byte received.
 
         '
     - name: network_sub_http_revalidation
@@ -33290,7 +32946,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time for positive cache validation
-        Corresponds to Legacy histogram HTTP_SUB_REVALIDATION in Desktop.
 
         '
     - name: network_sub_open_to_first_received
@@ -33311,8 +32966,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to the
-        first byte received. Corresponds to Legacy histogram HTTP_SUB_OPEN_TO_FIRST_RECEIVED
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        first byte received.
 
         '
     - name: network_sub_open_to_first_sent
@@ -33333,8 +32987,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from connection open to the
-        first byte of requst sent. Corresponds to Legacy histogram HTTP_SUB_OPEN_TO_FIRST_SENT
-        in Desktop. (Migrated from the geckoview metric of the same name).
+        first byte of requst sent.
 
         '
     - name: network_sub_tcp_connection
@@ -33355,9 +33008,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from the TCP SYN packet is received
-        to the connection is established and ready for HTTP. Corresponds to Legacy
-        histogram HTTP_SUB_TCP_CONNECTION_2 in Desktop (Migrated from the geckoview
-        metric of the same name).
+        to the connection is established and ready for HTTP.
 
         '
     - name: network_sub_tls_handshake
@@ -33378,9 +33029,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP subitem channel, time from after the TCP SYN packet
-        is received to the secure connection is established and ready for HTTP. Corresponds
-        to Legacy histogram HTTP_SUB_TLS_HANDSHAKE in Desktop. (Migrated from the
-        geckoview metric of the same name).
+        is received to the secure connection is established and ready for HTTP.
 
         '
     - name: network_tcp_connection
@@ -33401,9 +33050,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from the TCP SYN packet is received
-        to the connection is established and ready for HTTP. Corresponds to Legacy
-        histogram HTTP_PAGE_TCP_CONNECTION_2 in Desktop (Migrated from the geckoview
-        metric of the same name).
+        to the connection is established and ready for HTTP.
 
         '
     - name: network_tls_handshake
@@ -33424,9 +33071,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'In the HTTP page channel, time from after the TCP SYN packet is
-        received to the secure connection is established and ready for HTTP. Corresponds
-        to Legacy histogram HTTP_PAGE_TLS_HANDSHAKE in Desktop. (Migrated from the
-        geckoview metric of the same name).
+        received to the secure connection is established and ready for HTTP.
 
         '
     - name: networking_cache_metadata_first_read_time
@@ -33967,9 +33612,6 @@ fields:
       description: 'Time spent blocked in PR_Close when there has been the connectivity
         change in the last 60s (ms).
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PRCLOSE_UDP_BLOCKING_TIME_CONNECTIVITY_CHANGE.
-
         '
     - name: networking_prclose_udp_blocking_time_link_change
       type: RECORD
@@ -33990,9 +33632,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent blocked in PR_Close when there has been a link change
         in the last 60s (ms).
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PRCLOSE_UDP_BLOCKING_TIME_LINK_CHANGE.
 
         '
     - name: networking_prclose_udp_blocking_time_normal
@@ -34016,9 +33655,6 @@ fields:
         there has been niether a network nor an offline state change in the last 60s
         (ms).
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PRCLOSE_UDP_BLOCKING_TIME_NORMAL.
-
         '
     - name: networking_prclose_udp_blocking_time_offline
       type: RECORD
@@ -34040,9 +33676,6 @@ fields:
       description: 'Time spent blocked in PR_Close when the offline state has changed
         in the last 60s (ms).
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PRCLOSE_UDP_BLOCKING_TIME_OFFLINE.
-
         '
     - name: networking_prclose_udp_blocking_time_shutdown
       type: RECORD
@@ -34062,9 +33695,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent blocked in PR_Close during a shutdown (ms).
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PRCLOSE_UDP_BLOCKING_TIME_SHUTDOWN.
 
         '
     - name: networking_prconnect_blocking_time_connectivity_change

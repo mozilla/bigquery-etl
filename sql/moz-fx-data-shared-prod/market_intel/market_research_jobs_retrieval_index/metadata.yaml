@@ -1,0 +1,44 @@
+friendly_name: Market Research Competitor Job Postings Retrieval Index
+description: |-
+  AI-enriched retrieval view over the scraped competitor job-posting corpus, containing
+  embeddings and semantic features to support grounded question answering and
+  VECTOR_SEARCH over Mozilla's market-intel corpus.
+
+  Grain: one row per (company, job_id, scraped_date). Unlike the releases and blogs
+  indexes, `scraped_date` IS part of the grain here: a posting that stays open reappears
+  in every weekly snapshot and is indexed once per snapshot. Pick a single
+  `scraped_date` when counting postings, or you will count the same job repeatedly.
+
+  LLM generated fields:
+  - job_summary_llm
+  - job_category_llm
+  - job_topics_llm
+  - job_entities_llm
+  - embedding based on [title, description_text]
+
+  Read-time filtering (applied by this view, not stored in the underlying table)
+  - Only rows where `metadata.embedding_succeeded` are exposed, so this view is safe to
+    use directly as a VECTOR_SEARCH base without a further embedding NULL check.
+  - No product normalization and no recency decay are applied. Because `scraped_date` is
+    part of the grain, callers already have to pick a snapshot; a read-time
+    `recency_score` would duplicate that choice confusingly.
+
+  Usage
+  - The underlying table requires a partition filter. Always include
+    `WHERE scraped_date >= ...` (or an equivalent range) when querying this view,
+    otherwise BigQuery will reject the query.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.market_intel_derived.market_research_jobs_retrieval_index_v1

@@ -165,11 +165,12 @@ def _stage_source(bq_client, blob, tmp_table):
 def _check_staged(bq_client, tmp_table, expected_date, partition_field, duplicate_key):
     """Validate the staged file before it replaces a destination partition.
 
-    Raises when the file is empty or spans a date other than `expected_date`,
-    since either would mean writing rows into the wrong partition (or blanking
-    a good one). Conditions we can load through -- unexpected site_ids, and
-    duplicate keys that the vendor is supposed to have removed -- are reported
-    rather than raised.
+    Raises when the file is empty, spans a date other than `expected_date`, or
+    covers a site other than firefox.com. The first two would write rows into
+    the wrong partition or blank a good one; the third would quietly mix another
+    property's traffic into tables documented as firefox.com-only. Duplicate
+    keys that the vendor is supposed to have removed are reported rather than
+    raised, because the typed SELECT already resolves them.
     """
     duplicates = f"COUNT(*) - COUNT(DISTINCT {duplicate_key})" if duplicate_key else "0"
     checks = f"""
@@ -212,10 +213,14 @@ def _check_staged(bq_client, tmp_table, expected_date, partition_field, duplicat
         )
 
     if row.unexpected_site_rows:
-        print(
-            f"WARNING: {row.unexpected_site_rows} rows have a site_id other than "
-            f"{EXPECTED_SITE_ID} (firefox.com). The export may now cover "
-            "additional Plausible properties; confirm they belong in this table."
+        raise ValueError(
+            f"{row.unexpected_site_rows} of {row.total_rows} staged rows have a "
+            f"site_id other than {EXPECTED_SITE_ID} (firefox.com). These tables, "
+            "and the schema.yaml description of every site_id column, are scoped "
+            "to firefox.com, so loading them would inflate every downstream "
+            "count. Plausible has likely added a property to this export: decide "
+            "whether it belongs here, in its own table, or filtered out, rather "
+            "than letting it land unnoticed."
         )
 
     if row.duplicate_rows:

@@ -134,4 +134,16 @@ A missing file fails the task with an explicit message and leaves the
 destination partition untouched, so a late export is fixed by clearing the task
 once the file lands.
 
+The DAG carries `triage/no_triage` because it is expected to fail daily until
+the vendor feed resumes. Drop that tag once the cadence is confirmed.
+
+To reload a range of dates rather than clearing tasks one at a time, both
+`query.py` files expose a module-level `main()`:
+
+```
+./bqetl query backfill plausible_external.events_v1 \
+  --start-date 2026-07-30 --end-date 2026-08-05 \
+  --query-script-entrypoint main --query-script-date-arg date
+```
+
 [deng-11379]: https://mozilla-hub.atlassian.net/browse/DENG-11379

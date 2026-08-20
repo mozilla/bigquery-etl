@@ -66,7 +66,9 @@ WHERE
   _session_row = 1
 """
 
-if __name__ == "__main__":
+
+def main():
+    """Load one day. Also the `bqetl query backfill` script entrypoint."""
     run(
         parse_args(__doc__),
         table="sessions_v1",
@@ -79,3 +81,7 @@ if __name__ == "__main__":
         select_sql=SELECT_SQL,
         duplicate_key="session_id",
     )
+
+
+if __name__ == "__main__":
+    main()

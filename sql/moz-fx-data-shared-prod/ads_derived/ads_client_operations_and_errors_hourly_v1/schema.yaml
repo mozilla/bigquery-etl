@@ -172,3 +172,10 @@ fields:
     mode: NULLABLE
     description: >-
       Total number of 'store_failed' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_trim_failed
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'trim_failed' occurrences from ads_client.http_cache_outcome labeled_string.
+      Populated by desktop only: the shared ads-client component emits this outcome, but the
+      mobile metrics.yaml omits it from its label list, so on mobile it falls into '__other__'.

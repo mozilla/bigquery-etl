@@ -211,6 +211,8 @@ Every column present on both sides is combined with `coalesce(serp, sap)`. SERP 
 
 `normalized_engine` follows the same rule one level down, in the final CTE, falling back to the SAP engine when the SERP provider is `null`.
 
+Five of the shared measures take a third fallback of `0`, so a row where neither side reported a value carries a zero rather than a `null`: `sessions_started_on_this_day`, `active_hours_sum`, `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max`. `profile_age_in_days` is deliberately excluded — a zero there would read as a profile created that day rather than as a missing value.
+
 #### Two constraints worth knowing before editing this CTE
 
 - **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each key is spelled out as an equality plus an explicit both-`null` match. The shorter `is not distinct from` form is legal under a `left join` but will not compile here.

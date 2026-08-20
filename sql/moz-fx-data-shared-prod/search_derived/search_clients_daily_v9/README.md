@@ -226,7 +226,7 @@ A few output columns are worth calling out.
 
 - `sap` is wrapped in `coalesce(sap, 0)`. It is the one measure that comes from the SAP side alone, so on a serp-only row it would otherwise be `null`; zero is the accurate reading, since that combination had no SAP events.
 - `engine` and `normalized_engine` are both normalized. `engine` is the SERP provider, and `normalized_engine` is the same value falling back to the SAP engine. This differs from v8, where `engine` was the raw value and `normalized_engine` was `null`.
-- `tagged_sap` and `tagged_serp` both map to the same SERP measure, `serp_searches_tagged_count`. SAP has no `is_tagged`, so there is no independent SAP-side tagged count to report.
+- `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.
 - `experiments` prefers the SERP passthrough. The SAP fallback is built from `json_keys(experiments)[offset(0)]` and therefore carries only the first experiment.
 

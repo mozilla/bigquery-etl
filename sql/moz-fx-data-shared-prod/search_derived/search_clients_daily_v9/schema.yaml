@@ -177,9 +177,6 @@ fields:
 - name: organic
   type: INTEGER
   mode: NULLABLE
-- name: tagged_sap
-  type: INTEGER
-  mode: NULLABLE
 - name: tagged_serp
   type: INTEGER
   mode: NULLABLE

@@ -775,7 +775,6 @@ final_cte AS (
     serp_experiments AS experiments,
     serp_profile_age_in_days AS profile_age_in_days,
     serp_searches_organic_count AS organic,
-    serp_searches_tagged_count AS tagged_sap,
     serp_searches_tagged_count AS tagged_serp,
     serp_follow_on_searches_tagged_count AS tagged_follow_on,
     COALESCE(sap, 0) AS sap,

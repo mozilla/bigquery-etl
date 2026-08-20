@@ -209,13 +209,15 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the shared measures such as `profile_age_in_days` and `active_hours_sum`.
 
-`normalized_engine` follows the same rule one level down, in the final CTE, falling back to the SAP engine when the SERP provider is `null`.
+The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap` from SAP, and `serp_counts`, `serp_ad_click_target`, `serp_os_version_major`, `serp_os_version_minor` and the SERP ad and engagement counts from SERP.
+
+**Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
 
 Five of the shared measures take a third fallback of `0`, so a row where neither side reported a value carries a zero rather than a `null`: `sessions_started_on_this_day`, `active_hours_sum`, `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max`. `profile_age_in_days` is deliberately excluded — a zero there would read as a profile created that day rather than as a missing value.
 
 #### Two constraints worth knowing before editing this CTE
 
-- **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each key is spelled out as an equality plus an explicit both-`null` match. The shorter `is not distinct from` form is legal under a `left join` but will not compile here.
+- **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each key is spelled out as an equality plus an explicit both-`null` match.
 - **Three `coalesce`s need an explicit cast.** `sap_aggregates_cte` casts its integer counters to `float64`, so combining them with the SERP side would widen the result and break the `INTEGER` types declared in `schema.yaml`. `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max` therefore cast the SAP side back to `int64` inside the `coalesce`. `active_hours_sum` is a float on both sides and needs no cast.
 
 ### Final
@@ -225,7 +227,7 @@ This is `final_cte`. It renames the joined columns to the output schema and perf
 A few output columns are worth calling out.
 
 - `sap` is wrapped in `coalesce(sap, 0)`. It is the one measure that comes from the SAP side alone, so on a serp-only row it would otherwise be `null`; zero is the accurate reading, since that combination had no SAP events.
-- `engine` and `normalized_engine` are both normalized. `engine` is the SERP provider, and `normalized_engine` is the same value falling back to the SAP engine. This differs from v8, where `engine` was the raw value and `normalized_engine` was `null`.
+- `engine` and `normalized_engine` are currently the same value — the normalized engine, with the SAP fallback already applied in the join. This differs from v8, where `engine` was the raw value and `normalized_engine` was `null`. Whether to keep both is an open question with data science.
 - `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.
 - `experiments` prefers the SERP passthrough. The SAP fallback is built from `json_keys(experiments)[offset(0)]` and therefore carries only the first experiment.

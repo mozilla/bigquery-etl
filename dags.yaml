@@ -1922,12 +1922,13 @@ bqetl_firefox_referral:
     referral_installs_daily_v1 -> referral_installs_totals_v1 ->
     referral_installs_totals_to_gcs_v1.
   repo: bigquery-etl
-  # Aligned with bqetl_ga4_firefoxdotcom (0 14 * * *) so the external task
-  # sensor's execution_delta is 0. At 0 4 * * * the run for ds=D started 10h
-  # before its upstream GA4 run for the same ds even began, so every run sat in
-  # a ~10h no-op sensor wait. Completion time is unchanged (still gated by
-  # firefoxdotcom_derived.ga_sessions_v2); this only removes the dead wait.
-  schedule_interval: 0 14 * * *
+  # Moved back to 0 4 * * * now that the GA4 dependency is gone. This DAG used to
+  # read firefoxdotcom_derived.ga_sessions_v2 and so was aligned with
+  # bqetl_ga4_firefoxdotcom (0 14 * * *) to keep the external task sensor's
+  # execution_delta at 0. The source is now the Glean `referrals` ping, whose only
+  # upstream is copy_deduplicate, so the run no longer has to wait ~10h for GA4
+  # and the totals reach the Website team's bucket much earlier in the day.
+  schedule_interval: 0 4 * * *
   tags:
     - impact/tier_3
 
@@ -2885,3 +2886,28 @@ bqetl_socorro_import:
     depends_on_past: false
   tags:
     - impact/tier_2
+
+bqetl_safe_browsing:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lcrouch@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: lcrouch@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-09-01'
+  description: 'Daily aggregation of the Safe Browsing interstitial funnel for Firefox
+    Desktop: about:blocked warning page displays and the button presses users make
+    on them.'
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

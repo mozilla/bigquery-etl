@@ -173,6 +173,8 @@ FROM (
     metric,
     'failed' AS status,
     error_category,
+    exception_type,
+    exception,
     timestamp
   FROM `{PROJECT}.{DATASET}.jetstream_analysis_errors`
   WHERE source = 'jetstream'
@@ -289,6 +291,7 @@ def build_succeeded_sql(tables: list[bigquery.Row]) -> str:
           CAST(NULL AS STRING) AS analysis_basis,
           CAST(NULL AS STRING) AS segment,
           CAST(NULL AS STRING) AS metric
+        FROM (SELECT 1)
         WHERE FALSE
         """
     return "\nUNION ALL\n".join(f"""
@@ -324,7 +327,9 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
         analysis_basis,
         segment,
         metric,
-        'succeeded' AS status
+        'succeeded' AS status,
+        CAST(NULL AS STRING) AS exception_type,
+        CAST(NULL AS STRING) AS exception
       FROM (
         {succeeded_sql}
       )
@@ -342,7 +347,9 @@ def build_final_sql(tables: list[bigquery.Row]) -> str:
         WHEN f.status IS NOT NULL THEN 'failed'
         ELSE 'succeeded'
       END AS status,
-      f.error_category
+      f.error_category,
+      f.exception_type,
+      f.exception
     FROM failed f
     FULL OUTER JOIN succeeded s
       ON f.experiment = s.experiment

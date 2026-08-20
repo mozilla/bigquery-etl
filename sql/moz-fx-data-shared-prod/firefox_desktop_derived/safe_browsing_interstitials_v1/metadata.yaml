@@ -1,0 +1,38 @@
+friendly_name: Safe Browsing Interstitials
+description: |-
+  The Safe Browsing interstitial funnel for Firefox Desktop: how often an
+  about:blocked warning page is rendered, and what users then do with it.
+
+  One row per day, channel, OS, country, threat type (Malware / Phishing /
+  Unwanted / Harmful) and scope (top-level page or iframe), with display counts
+  from page.load_error and button-press counts from urlclassifier.ui_events.
+
+  KNOWN BIAS: displays count renders, not unique encounters. A blocked URL is
+  never added to the classifier cache, so every reload and session restore
+  re-renders the interstitial and re-counts. Observed displays per client run
+  1.7-2.1 where a single warning would be 1.0. Because the actions are counted
+  per click, any action/displays ratio is a LOWER BOUND on the true
+  per-encounter rate. The inflation cannot be divided out; neither metric
+  carries a navigation or session key.
+
+  Also note that left_site undercounts how many people left the blocked page.
+  Most users who take a warning seriously close the tab or navigate away without
+  pressing a button, and Firefox records nothing in that case.
+owners:
+- lcrouch@mozilla.com
+labels:
+  incremental: true
+  owner1: lcrouch
+scheduling:
+  dag_name: bqetl_safe_browsing
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - threat_type
+require_column_descriptions: true

@@ -65,11 +65,13 @@ def parse_args(description, argv=None):
         help="Dataset to stage the raw parquet in before typing it.",
     )
     parser.add_argument(
-        "--table-prefix",
-        default="",
+        "--destination-table",
+        default=None,
         help=(
-            "Prefix for the destination table name. Useful when testing into a "
-            "shared scratch dataset, where an unprefixed events_v1 would collide."
+            "Fully qualified project.dataset.table to write instead of the "
+            "table this script normally owns. `bqetl backfill` passes this to "
+            "redirect a run into backfills_staging_derived, and it is also the "
+            "way to test a load into a scratch dataset."
         ),
     )
     parser.add_argument("--source-bucket", default=GCS_BUCKET)
@@ -243,22 +245,36 @@ def _load_partition(bq_client, tmp_table, destination, select_sql):
     print(f"Loaded {job.total_rows} rows into {destination}")
 
 
+def resolve_destination(args, table):
+    """Return the partition to write, as `project.dataset.table$YYYYMMDD`.
+
+    `--destination-table` wins when set, which is how `bqetl backfill` points a
+    run at a table in backfills_staging_derived instead of the production one.
+    The date decorator is appended either way, so a backfill fills the staging
+    table one partition at a time and stays as rerunnable as a scheduled run.
+    """
+    target = args.destination_table or f"{args.project}.{args.dataset}.{table}"
+    if target.count(".") != 2:
+        raise ValueError(
+            f"--destination-table must be a fully qualified "
+            f"project.dataset.table, got {target!r}."
+        )
+    return f"{target}${args.date.strftime('%Y%m%d')}"
+
+
 def run(args, *, table, source_file, partition_field, select_sql, duplicate_key=None):
     """Load one day of a Plausible export into one partition of `table`.
 
     `select_sql` is formatted with `tmp_table` and must project the columns of
     `table`'s schema.yaml, in order, with explicit types.
     """
+    destination = resolve_destination(args, table)
     blob = _require_source_blob(args, source_file)
 
     bq_client = bigquery.Client(args.project)
     tmp_table = (
         f"{args.project}.{args.tmp_dataset}"
         f".plausible_{table}_{uuid.uuid4().hex[:8]}"
-    )
-    destination = (
-        f"{args.project}.{args.dataset}.{args.table_prefix}{table}"
-        f"${args.date.strftime('%Y%m%d')}"
     )
 
     try:

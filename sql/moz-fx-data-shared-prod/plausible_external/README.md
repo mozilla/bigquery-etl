@@ -137,8 +137,37 @@ once the file lands.
 The DAG carries `triage/no_triage` because it is expected to fail daily until
 the vendor feed resumes. Drop that tag once the cadence is confirmed.
 
-To reload a range of dates rather than clearing tasks one at a time, both
-`query.py` files expose a module-level `main()`:
+## Backfilling
+
+Both `query.py` files expose a module-level `main()` and accept a fully
+qualified `--destination-table`, which is what managed backfills need from a
+query script (supported since #8940). A `backfill.yaml` entry looks like:
+
+```yaml
+query_script_entrypoint: main
+query_script_date_arg: date
+query_script_args:
+- --destination-table=moz-fx-data-shared-prod.backfills_staging_derived.plausible_external__events_v1_2026_08_20
+```
+
+`bqetl backfill create` writes that `--destination-table` line for you; the
+staging table name has to match for the copy to production to work.
+
+Each date fills its own partition of the staging table, so a backfill is as
+rerunnable as a scheduled run. The same flag is the way to load into a scratch
+dataset when testing:
+
+```
+python sql/moz-fx-data-shared-prod/plausible_external/events_v1/query.py \
+  --date 2026-08-05 \
+  --destination-table mozdata.analysis.plausible_events_v1
+```
+
+Either way the destination table must already exist and be day-partitioned on
+`timestamp` (events) or `start` (sessions) — this load writes a partition
+decorator, which cannot create a table.
+
+To run it directly rather than through a `backfill.yaml`:
 
 ```
 ./bqetl query backfill plausible_external.events_v1 \

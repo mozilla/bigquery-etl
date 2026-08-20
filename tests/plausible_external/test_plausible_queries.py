@@ -106,3 +106,50 @@ def test_backfill_entrypoint_is_callable(table):
         f"{table}: query.py must expose a module-level main() for "
         "`bqetl query backfill --query-script-entrypoint main`."
     )
+
+
+def _load_module():
+    """Import the shared loader."""
+    spec = importlib.util.spec_from_file_location(
+        "plausible_load", _dataset_dir / "load.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_destination_defaults_to_the_owned_table():
+    """Without an override, a run writes its own table's dated partition."""
+    load = _load_module()
+    args = load.parse_args("t", ["--date", "2026-08-05"])
+    assert (
+        load.resolve_destination(args, "events_v1")
+        == "moz-fx-data-shared-prod.plausible_external.events_v1$20260805"
+    )
+
+
+def test_destination_table_override_is_honoured():
+    """`bqetl backfill` redirects the run into backfills_staging_derived.
+
+    It passes the staging table as a fully qualified --destination-table, and
+    the date decorator still has to be appended so each date fills its own
+    partition of the staging table.
+    """
+    load = _load_module()
+    staging = (
+        "moz-fx-data-shared-prod.backfills_staging_derived"
+        ".plausible_external__events_v1_2026_08_20"
+    )
+    args = load.parse_args(
+        "t", ["--date", "2026-08-05", f"--destination-table={staging}"]
+    )
+    assert load.resolve_destination(args, "events_v1") == f"{staging}$20260805"
+
+
+def test_destination_table_must_be_fully_qualified():
+    """A bare table name would silently write to the wrong place."""
+    load = _load_module()
+    args = load.parse_args("t", ["--date", "2026-08-05", "--destination-table=events"])
+    with pytest.raises(ValueError, match="fully qualified"):
+        load.resolve_destination(args, "events_v1")

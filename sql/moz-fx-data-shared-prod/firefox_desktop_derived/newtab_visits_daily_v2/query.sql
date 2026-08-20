@@ -327,7 +327,7 @@ core_visit_metrics AS (
     AND LOGICAL_OR(is_default_ui) AS is_section,
     ANY_VALUE(ping_info.experiments) AS experiments,
     ANY_VALUE(newtab_weather_enabled) AS newtab_weather_enabled,
-    ANY_VALUE(newtab_scroll) AS newtab_scroll,
+    LOGICAL_OR(newtab_scroll) AS newtab_scroll,
     ANY_VALUE(default_search_engine) AS default_search_engine,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
     ANY_VALUE(topsite_rows) AS topsite_rows,

@@ -41,6 +41,7 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_installer_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_launcher_process_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_translations_stable.INFORMATION_SCHEMA.PARTITIONS
@@ -58,6 +59,7 @@ references:
   - moz-fx-data-shared-prod.monitoring_derived.table_partition_expirations_v1
   - moz-fx-data-shared-prod.moso_mastodon_backend_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.moso_mastodon_web_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.moz_backstage_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mozilla_lockbox_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mozilla_mach_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS

@@ -379,14 +379,12 @@ fields:
     - name: search_engine_default_engine_id
       type: STRING
       mode: NULLABLE
-      description: 'Deprecated in Fx139, please use provider_id, partner_code,
+      description: '**Deprecated in Fx 139**, please use `provider_id`, `partner_code`,
 
-        overridden_by_third_party and display_name instead.
+        `overridden_by_third_party` and `display_name` instead.
 
 
-        The telemetry id of the search engine.
-
-        For example: "engine1"
+        The telemetry id of the search engine. For example: `google-b-d`.
 
 
         For application-provided engines, this is the identifier plus telemetry
@@ -399,14 +397,12 @@ fields:
     - name: search_engine_private_engine_id
       type: STRING
       mode: NULLABLE
-      description: 'Deprecated in Fx139, please use provider_id, partner_code,
+      description: '**Deprecated in Fx 139**, please use `provider_id`, `partner_code`,
 
-        overridden_by_third_party and display_name instead.
+        `overridden_by_third_party` and `display_name` instead.
 
 
-        The telemetry id of the search engine.
-
-        For example: "engine1"
+        The telemetry id of the search engine. For example: `google-b-d`.
 
 
         For application-provided engines, this is the identifier plus telemetry
@@ -620,7 +616,7 @@ fields:
     - name: search_engine_default_overridden_by_third_party
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Set to true if the user''s default search engine has been allowed
+      description: 'Set to `true` if the user''s default search engine has been allowed
         to be
 
         overridden by a third-party add-on or OpenSearch engine.
@@ -629,7 +625,7 @@ fields:
     - name: search_engine_private_overridden_by_third_party
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Set to true if the user''s default search engine has been allowed
+      description: 'Set to `true` if the user''s default search engine has been allowed
         to be
 
         overridden by a third-party add-on or OpenSearch engine.

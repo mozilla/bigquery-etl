@@ -804,7 +804,7 @@ fields:
     - name: search_engine_default_overridden_by_third_party
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Set to true if the user''s default search engine has been allowed
+      description: 'Set to `true` if the user''s default search engine has been allowed
         to be
 
         overridden by a third-party add-on or OpenSearch engine.
@@ -813,7 +813,7 @@ fields:
     - name: search_engine_private_overridden_by_third_party
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Set to true if the user''s default search engine has been allowed
+      description: 'Set to `true` if the user''s default search engine has been allowed
         to be
 
         overridden by a third-party add-on or OpenSearch engine.
@@ -14549,15 +14549,15 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Counts the type of initialization statuses on start up.\nfailedSettings\
-        \ - failed loading and migrating the search settings file.\nfailedFetchEngines\
-        \ - failed to load or parse the configuration from remote\n              \
-        \       settings.\nfailedLoadEngines - failed to create all the search engines\
-        \ from the\n                    configuration or user installed engines.\n\
-        failedLoadSettingsAddonManager - the addon manager ready promise was rejected.\
-        \ (from FF135)\nsettingsCorrupt - the search settings were reset because of\
-        \ an exception, but\n                  the search service still finished initializing.\
-        \ (from FF136)\nsuccess - search service successfully initialized.\n"
+      description: "Counts the type of initialization statuses on start up.\n\n- `failedSettings`\
+        \ failed loading and migrating the search settings file.\n- `failedFetchEngines`\
+        \ failed to load or parse the configuration from\n  remote settings.\n- `failedLoadEngines`\
+        \ failed to create all the search engines from the\n  configuration or user\
+        \ installed engines.\n- `failedLoadSettingsAddonManager` the addon manager\
+        \ ready promise was\n  rejected. (from Fx 135)\n- `settingsCorrupt` the search\
+        \ settings were reset because of an exception,\n  but the search service still\
+        \ finished initializing. (from Fx 136)\n- `success` the search service successfully\
+        \ initialized.\n"
     - name: extensions_counters_browser_action_preload_result
       type: RECORD
       mode: REPEATED
@@ -22046,10 +22046,11 @@ fields:
         we were online at page load: the captive-portal reading was stale and the
         authoritative re-check came back offline/captive or timed out, so no CTA was
         shown. Connectivity dropping *after* the CTA was shown is a different thing
-        and is counted by search_cta_click_aborted, not here. Records only the reason
-        label, never content.
-
-        '
+        and is counted by search_cta_click_aborted, not here. not_top_level means
+        the error document was not the top-level document (a DNS failure inside an
+        embedded document on a page that loaded fine), so no CTA was offered; it is
+        evaluated before the failed URL is looked at, which is why such a load can
+        never appear under keywords_found, no_path or no_mean'
     - name: cache_schema_init_error
       type: RECORD
       mode: REPEATED
@@ -24092,32 +24093,32 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Records the number of insecure (i.e., using http) OpenSearch search
-        engines a given user has installed. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.searchinit.insecure_opensearch_engine_count.
+
+        engines a given user has installed.
 
         '
     - name: browser_searchinit_insecure_opensearch_update_count
       type: INTEGER
       mode: NULLABLE
       description: 'Records the number of OpenSearch search engines with insecure
-        updates enabled (i.e., using http) a given user has installed. This metric
-        was generated to correspond to the Legacy Telemetry scalar browser.searchinit.insecure_opensearch_update_count.
+
+        updates enabled (i.e., using http) a given user has installed.
 
         '
     - name: browser_searchinit_secure_opensearch_engine_count
       type: INTEGER
       mode: NULLABLE
       description: 'Records the number of secure (i.e., using https) OpenSearch search
-        engines a given user has installed. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.searchinit.secure_opensearch_engine_count.
+
+        engines a given user has installed.
 
         '
     - name: browser_searchinit_secure_opensearch_update_count
       type: INTEGER
       mode: NULLABLE
       description: 'Records the number of OpenSearch search engines with secure updates
-        enabled (i.e., using https) a given user has installed. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.searchinit.secure_opensearch_update_count.
+
+        enabled (i.e., using https) a given user has installed.
 
         '
     - name: browser_timings_last_shutdown
@@ -24473,14 +24474,12 @@ fields:
     - name: search_engine_default_engine_id
       type: STRING
       mode: NULLABLE
-      description: 'Deprecated in Fx139, please use provider_id, partner_code,
+      description: '**Deprecated in Fx 139**, please use `provider_id`, `partner_code`,
 
-        overridden_by_third_party and display_name instead.
+        `overridden_by_third_party` and `display_name` instead.
 
 
-        The telemetry id of the search engine.
-
-        For example: "engine1"
+        The telemetry id of the search engine. For example: `google-b-d`.
 
 
         For application-provided engines, this is the identifier plus telemetry
@@ -24493,12 +24492,28 @@ fields:
     - name: search_engine_default_load_path
       type: STRING
       mode: NULLABLE
-      description: "A path relating to where the search engine was installed/loaded\
-        \ from.\nFor example:\n  `[app]appDefault` for a config search engine.\n \
-        \ `[addon]<extension id>` for a WebExtension-based engine.\n  `[https]developer.mozilla.org/mdn-web-docs.xml`\
-        \ for an OpenSearch-based\n  engine.\n  `[policy]` for an enteprise policy\
-        \ engine.\n  `[user]` for a search engine defined by the user or generated\
-        \ from a\n  web page.\nNote: this metric is truncated at 100 characters.\n"
+      description: 'A path relating to where the search engine was installed/loaded
+        from.
+
+
+        For example:
+
+        - `[app]<config identifier>` for a config search engine.
+
+        - `[addon]<extension id>` for a WebExtension-based engine.
+
+        - `[https]developer.mozilla.org/mdn-web-docs.xml` for an OpenSearch-based
+        engine.
+
+        - `[policy]` for an enteprise policy engine.
+
+        - `[user]` for a search engine defined by the user or generated from a web
+        page.
+
+
+        Note: this metric is truncated at 100 characters.
+
+        '
     - name: search_engine_default_verified
       type: STRING
       mode: NULLABLE
@@ -24531,14 +24546,12 @@ fields:
     - name: search_engine_private_engine_id
       type: STRING
       mode: NULLABLE
-      description: 'Deprecated in Fx139, please use provider_id, partner_code,
+      description: '**Deprecated in Fx 139**, please use `provider_id`, `partner_code`,
 
-        overridden_by_third_party and display_name instead.
+        `overridden_by_third_party` and `display_name` instead.
 
 
-        The telemetry id of the search engine.
-
-        For example: "engine1"
+        The telemetry id of the search engine. For example: `google-b-d`.
 
 
         For application-provided engines, this is the identifier plus telemetry
@@ -24562,17 +24575,39 @@ fields:
     - name: search_engine_private_load_path
       type: STRING
       mode: NULLABLE
-      description: "A path relating to where the search engine was installed/loaded\
-        \ from.\nFor example:\n  `[app]appDefault` for a config search engine.\n \
-        \ `[addon]<extension id>` for a WebExtension-based engine.\n  `[https]developer.mozilla.org/mdn-web-docs.xml`\
-        \ for an OpenSearch-based\n  engine.\n  `[policy]` for an enteprise policy\
-        \ engine.\n  `[user]` for a search engine defined by the user or generated\
-        \ from a\n  web page.\nNote: this metric is truncated at 100 characters.\n\
-        \nIf this string is an empty string (`\"\"`), this means that one or both\
-        \ of\nthe preferences `browser.search.separatePrivateDefault` and\n`browser.search.separatePrivateDefault.ui.enabled`\
-        \ are set to false.\nIt is possible that the user selects the same private\
-        \ engine as for the\ndefault engine, and hence both versions of these fields\
-        \ will be filled in.\n"
+      description: 'A path relating to where the search engine was installed/loaded
+        from.
+
+
+        For example:
+
+        - `[app]<config identifier>` for a config search engine.
+
+        - `[addon]<extension id>` for a WebExtension-based engine.
+
+        - `[https]developer.mozilla.org/mdn-web-docs.xml` for an OpenSearch-based
+        engine.
+
+        - `[policy]` for an enteprise policy engine.
+
+        - `[user]` for a search engine defined by the user or generated from a web
+        page.
+
+
+        Note: this metric is truncated at 100 characters.
+
+
+        If this string is an empty string (`""`), this means that one or both of
+
+        the preferences `browser.search.separatePrivateDefault` and
+
+        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+
+        It is possible that the user selects the same private engine as for the
+
+        default engine, and hence both versions of these fields will be filled in.
+
+        '
     - name: search_engine_private_verified
       type: STRING
       mode: NULLABLE
@@ -42280,9 +42315,6 @@ fields:
           mode: NULLABLE
       description: 'The time spent in the fully-black screen in fullscreen transition
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FULLSCREEN_TRANSITION_BLACK_MS.
-
         '
     - name: dom_gc_in_progress
       type: RECORD
@@ -43766,10 +43798,16 @@ fields:
     - name: search_engine_default_submission_url
       type: STRING
       mode: NULLABLE
-      description: "The submission URL of the default engine. This is only reported\
-        \ in the\ncases where:\n  The engine is an application provided engine.\n\
-        \  The engine has the same name as an application provided engine.\n  The\
-        \ engine matches one of a specific list of well known search engines.\n"
+      description: 'The submission URL of the default engine. This is only reported
+        in the cases where:
+
+        - The engine is an application provided engine.
+
+        - The engine has the same name as an application provided engine.
+
+        - The engine matches one of a specific list of well known search engines.
+
+        '
     - name: search_engine_private_submission_url
       type: STRING
       mode: NULLABLE
@@ -51960,13 +51998,25 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Records the WebExtension ID of a search engine where the WebExtension
-        is not installed (= 1), disabled (= 2), search engine no longer specified
-        (= 4), a different name (= 5), where the submission URL is different between
-        the search engine and the WebExtension (= 6). The value ''3'' has been replaced
-        by ''6'' to distinguish newer entries. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.searchinit.engine_invalid_webextension,
-        which was removed in Fx 139.
+      description: 'Records when a search engine details are not in sync with the
+        associated
+
+        WebExtension. The labels are the WebExtension identifiers.
+
+        The values are a custom enumeration with meanings being where the WebExtension:
+
+
+        1. is not installed
+
+        2. is disabled
+
+        3. (Unused, replaced by 6 which has a better algorithm)
+
+        4. no longer specifies a search engine
+
+        5. has a different name for the search engine
+
+        6. has a different submission URL to the search engine
 
         '
     - name: normandy_recipe_freshness
@@ -52087,7 +52137,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records the count of hidden search engines.\n- `oneOff` refers\
+      description: "Records the count of hidden search engines.\n\n- `oneOff` refers\
         \ to an engine hidden from only the one-off buttons or\n  the unified search\
         \ button.\n- `disabled` refers to an engine that has been disabled from the\
         \ whole\n  application, e.g. removed from the old settings (prior to FF 152)\
@@ -52103,15 +52153,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records the type and number of search engines that a user has\
-        \ installed and enabled.\nThe total of all labels is the total count of search\
-        \ engines installed.\n- `appProvidedConfig` refers to the search engine integrations\
-        \ provided by\n  the application.\n- `userInstalledConfig` refers to engines\
-        \ from the application's\n  configuration that the user has chosen to install.\n\
-        - `openSearch` refers to an engine installed via a web page providing an\n\
-        \  \"OpenSearch\" definition.\n- `addon` refers to an engine linked to a particular\
-        \ add-on. - `policy` refers to an engine added by an enterprise policy. -\
-        \ `user` refers to an engine a user has added, e.g. via the settings\n  UI\
-        \ to add an engine, or via right-clicking on a search field on a web\n  page.\n"
+        \ installed\nand enabled.\n\nThe total of all labels is the total count of\
+        \ search engines installed.\n\n- `appProvidedConfig` refers to the search\
+        \ engine integrations provided by\n  the application.\n- `userInstalledConfig`\
+        \ refers to engines from the application's\n  configuration that the user\
+        \ has chosen to install.\n- `openSearch` refers to an engine installed via\
+        \ a web page providing an\n  \"OpenSearch\" definition.\n- `addon` refers\
+        \ to an engine linked to a particular add-on.\n- `policy` refers to an engine\
+        \ added by an enterprise policy.\n- `user` refers to an engine a user has\
+        \ added, e.g. via the settings\n  UI to add an engine, or via right-clicking\
+        \ on a search field on a web\n  page.\n"
   - name: labeled_memory_distribution
     type: RECORD
     mode: NULLABLE

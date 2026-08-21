@@ -9097,10 +9097,11 @@ fields:
         we were online at page load: the captive-portal reading was stale and the
         authoritative re-check came back offline/captive or timed out, so no CTA was
         shown. Connectivity dropping *after* the CTA was shown is a different thing
-        and is counted by search_cta_click_aborted, not here. Records only the reason
-        label, never content.
-
-        '
+        and is counted by search_cta_click_aborted, not here. not_top_level means
+        the error document was not the top-level document (a DNS failure inside an
+        embedded document on a page that loaded fine), so no CTA was offered; it is
+        evaluated before the failed URL is looked at, which is why such a load can
+        never appear under keywords_found, no_path or no_mean'
     - name: cache_schema_init_error
       type: RECORD
       mode: REPEATED
@@ -37565,9 +37566,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'The time spent in the fully-black screen in fullscreen transition
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FULLSCREEN_TRANSITION_BLACK_MS.
 
         '
     - name: dom_gc_in_progress

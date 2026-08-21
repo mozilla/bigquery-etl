@@ -471,7 +471,7 @@ fields:
     - name: search_engine_default_overridden_by_third_party
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Set to true if the user''s default search engine has been allowed
+      description: 'Set to `true` if the user''s default search engine has been allowed
         to be
 
         overridden by a third-party add-on or OpenSearch engine.
@@ -480,7 +480,7 @@ fields:
     - name: search_engine_private_overridden_by_third_party
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Set to true if the user''s default search engine has been allowed
+      description: 'Set to `true` if the user''s default search engine has been allowed
         to be
 
         overridden by a third-party add-on or OpenSearch engine.
@@ -572,12 +572,28 @@ fields:
     - name: search_engine_default_load_path
       type: STRING
       mode: NULLABLE
-      description: "A path relating to where the search engine was installed/loaded\
-        \ from.\nFor example:\n  `[app]appDefault` for a config search engine.\n \
-        \ `[addon]<extension id>` for a WebExtension-based engine.\n  `[https]developer.mozilla.org/mdn-web-docs.xml`\
-        \ for an OpenSearch-based\n  engine.\n  `[policy]` for an enteprise policy\
-        \ engine.\n  `[user]` for a search engine defined by the user or generated\
-        \ from a\n  web page.\nNote: this metric is truncated at 100 characters.\n"
+      description: 'A path relating to where the search engine was installed/loaded
+        from.
+
+
+        For example:
+
+        - `[app]<config identifier>` for a config search engine.
+
+        - `[addon]<extension id>` for a WebExtension-based engine.
+
+        - `[https]developer.mozilla.org/mdn-web-docs.xml` for an OpenSearch-based
+        engine.
+
+        - `[policy]` for an enteprise policy engine.
+
+        - `[user]` for a search engine defined by the user or generated from a web
+        page.
+
+
+        Note: this metric is truncated at 100 characters.
+
+        '
     - name: search_engine_default_partner_code
       type: STRING
       mode: NULLABLE
@@ -624,17 +640,39 @@ fields:
     - name: search_engine_private_load_path
       type: STRING
       mode: NULLABLE
-      description: "A path relating to where the search engine was installed/loaded\
-        \ from.\nFor example:\n  `[app]appDefault` for a config search engine.\n \
-        \ `[addon]<extension id>` for a WebExtension-based engine.\n  `[https]developer.mozilla.org/mdn-web-docs.xml`\
-        \ for an OpenSearch-based\n  engine.\n  `[policy]` for an enteprise policy\
-        \ engine.\n  `[user]` for a search engine defined by the user or generated\
-        \ from a\n  web page.\nNote: this metric is truncated at 100 characters.\n\
-        \nIf this string is an empty string (`\"\"`), this means that one or both\
-        \ of\nthe preferences `browser.search.separatePrivateDefault` and\n`browser.search.separatePrivateDefault.ui.enabled`\
-        \ are set to false.\nIt is possible that the user selects the same private\
-        \ engine as for the\ndefault engine, and hence both versions of these fields\
-        \ will be filled in.\n"
+      description: 'A path relating to where the search engine was installed/loaded
+        from.
+
+
+        For example:
+
+        - `[app]<config identifier>` for a config search engine.
+
+        - `[addon]<extension id>` for a WebExtension-based engine.
+
+        - `[https]developer.mozilla.org/mdn-web-docs.xml` for an OpenSearch-based
+        engine.
+
+        - `[policy]` for an enteprise policy engine.
+
+        - `[user]` for a search engine defined by the user or generated from a web
+        page.
+
+
+        Note: this metric is truncated at 100 characters.
+
+
+        If this string is an empty string (`""`), this means that one or both of
+
+        the preferences `browser.search.separatePrivateDefault` and
+
+        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+
+        It is possible that the user selects the same private engine as for the
+
+        default engine, and hence both versions of these fields will be filled in.
+
+        '
     - name: search_engine_private_partner_code
       type: STRING
       mode: NULLABLE
@@ -792,10 +830,16 @@ fields:
     - name: search_engine_default_submission_url
       type: STRING
       mode: NULLABLE
-      description: "The submission URL of the default engine. This is only reported\
-        \ in the\ncases where:\n  The engine is an application provided engine.\n\
-        \  The engine has the same name as an application provided engine.\n  The\
-        \ engine matches one of a specific list of well known search engines.\n"
+      description: 'The submission URL of the default engine. This is only reported
+        in the cases where:
+
+        - The engine is an application provided engine.
+
+        - The engine has the same name as an application provided engine.
+
+        - The engine matches one of a specific list of well known search engines.
+
+        '
     - name: search_engine_private_submission_url
       type: STRING
       mode: NULLABLE

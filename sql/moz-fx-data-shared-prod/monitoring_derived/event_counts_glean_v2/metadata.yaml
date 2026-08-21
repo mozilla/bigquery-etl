@@ -51,6 +51,7 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_stable.sync_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1
+  - moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.events_v1
   - moz-fx-data-shared-prod.glam_stable.events_v1
   - moz-fx-data-shared-prod.glean_dictionary_stable.events_v1
   - moz-fx-data-shared-prod.gleanjs_docs_stable.events_v1
@@ -61,6 +62,7 @@ references:
   - moz-fx-data-shared-prod.monitor_backend_stable.events_v1
   - moz-fx-data-shared-prod.monitor_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.monitor_frontend_stable.events_v1
+  - moz-fx-data-shared-prod.moz_backstage_stable.events_v1
   - moz-fx-data-shared-prod.mozilla_mach_stable.events_v1
   - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.mozphab_stable.events_v1

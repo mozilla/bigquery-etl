@@ -51,11 +51,6 @@ SELECT
   ) AS profile_age_in_days,
   COUNT(*) AS serp_counts_total,
   COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
-  SUM(browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
-  SUM(
-    browser_engagement_tab_open_event_count
-  ) AS serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
-  SUM(browser_engagement_uri_count) AS serp_scalar_parent_browser_engagement_total_uri_count_sum,
   MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
 FROM
   `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`

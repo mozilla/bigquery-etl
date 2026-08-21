@@ -38,9 +38,6 @@ SELECT
   sessions_started_on_this_day,
   overridden_by_third_party, -- NEW
   max_concurrent_tab_count_max,
-  scalar_parent_browser_engagement_tab_open_event_count_sum AS tab_open_event_count_sum,
-  active_hours_sum,
-  scalar_parent_browser_engagement_total_uri_count_sum AS total_uri_count,
   experiments,
   profile_age_in_days,
   serp_searches_organic_count AS organic,

@@ -135,15 +135,6 @@ fields:
 - name: max_concurrent_tab_count_max
   type: INTEGER
   mode: NULLABLE
-- name: tab_open_event_count_sum
-  type: INTEGER
-  mode: NULLABLE
-- name: active_hours_sum
-  type: FLOAT
-  mode: NULLABLE
-- name: total_uri_count
-  type: INTEGER
-  mode: NULLABLE
 - name: experiments
   type: RECORD
   mode: REPEATED

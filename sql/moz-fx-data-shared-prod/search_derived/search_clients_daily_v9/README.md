@@ -209,7 +209,7 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 #### Column precedence
 
-Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the shared measures such as `profile_age_in_days` and `active_hours_sum`.
+Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the shared measures such as `profile_age_in_days` and `sessions_started_on_this_day`.
 
 The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total` from SAP, and `serp_counts_total`, `serp_ad_click_target`, `serp_os_version_major`, `serp_os_version_minor` and the SERP ad and engagement counts from SERP.
 
@@ -221,7 +221,7 @@ Every count and sum in this CTE falls back to `0`. A row that reaches this CTE f
 
 The trade-off is that a zero no longer distinguishes "no activity" from "the other side's data is missing or late". Conditions where SAP is recorded but not SERP are mostly on engines where we have not instrumented SERP metrics at all. If needed, look at the search provider to check uncertainty.
 
-- Shared measures take a third `coalesce` argument: `sessions_started_on_this_day`, `active_hours_sum`, `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max`.
+- Shared measures take a third `coalesce` argument: `sessions_started_on_this_day` and `max_concurrent_tab_count_max`.
 - `sap_counts_total` is zero on a serp-only row.
 - The fifteen SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six `num_*` measures.
 
@@ -230,7 +230,7 @@ Three columns are deliberately left alone. `profile_age_in_days` is not a count,
 #### Two constraints worth knowing before editing this CTE
 
 - **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each key is spelled out as an equality plus an explicit both-`null` match.
-- **Three `coalesce`s need an explicit cast.** `sap_aggregates_cte` casts its integer counters to `float64`, so combining them with the SERP side would widen the result and break the `INTEGER` types declared in `schema.yaml`. `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max` therefore cast the SAP side back to `int64` inside the `coalesce`. `active_hours_sum` is a float on both sides and needs no cast.
+- **One `coalesce` needs an explicit cast.** `sap_aggregates_cte` casts its integer counter to `float64`, so combining it with the SERP side would widen the result and break the `INTEGER` type declared in `schema.yaml`. `max_concurrent_tab_count_max` therefore casts the SAP side back to `int64` inside the `coalesce`.
 
 ### Final
 
@@ -247,10 +247,9 @@ v9 is **not** a column-for-column match of v8 and is not intended to be. Every c
 
 ## Determinism and reproducibility
 
-One output is non-deterministic across runs for the same `submission_date`, and one carries a tie that BigQuery does not break. Both match `search_clients_daily_v8` and are left unchanged.
+One output carries a tie that BigQuery does not break. It matches `search_clients_daily_v8` and is left unchanged.
 
 - `policies_is_enterprise` (the `_is_enterprise_cte`s): `mozfun.stats.mode_last(array_agg(... order by event_timestamp))` takes the statistical mode, breaking ties toward the latest event. On two mode-tied values whose events share the same `event_timestamp` the tiebreak is arbitrary. v8 is the same: `mozfun.stats.mode_last(array_agg(... order by submission_timestamp))`, no secondary tiebreaker.
-- `active_hours_sum`: BigQuery does not guarantee summation order, and the per-event value is fractional (active ticks divided by 720), so results can differ in the last bit. Making it deterministic requires `round()` or `numeric`, which changes the emitted values. `total_uri_count` and `tab_open_event_count_sum` are not affected, because they sum integer-valued counters and are emitted as `int64`.
 
 Two outputs were non-deterministic and have been made reproducible:
 

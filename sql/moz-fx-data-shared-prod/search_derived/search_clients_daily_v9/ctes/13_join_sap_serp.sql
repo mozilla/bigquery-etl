@@ -158,23 +158,8 @@ SELECT
     sap_final_cte.sessions_started_on_this_day,
     0
   ) AS sessions_started_on_this_day,
-  COALESCE(
-    serp_final_cte.active_hours_sum,
-    sap_final_cte.active_hours_sum,
-    0
-  ) AS active_hours_sum,
-  -- sap_aggregates_cte casts these integer counters to float64, so cast back to
+  -- sap_aggregates_cte casts this integer counter to float64, so cast back to
   -- INT64 to keep the column's declared INTEGER type
-  COALESCE(
-    serp_final_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
-    CAST(sap_final_cte.scalar_parent_browser_engagement_tab_open_event_count_sum AS INT64),
-    0
-  ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
-  COALESCE(
-    serp_final_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum,
-    CAST(sap_final_cte.scalar_parent_browser_engagement_total_uri_count_sum AS INT64),
-    0
-  ) AS scalar_parent_browser_engagement_total_uri_count_sum,
   COALESCE(
     serp_final_cte.max_concurrent_tab_count_max,
     CAST(sap_final_cte.concurrent_tab_count_max AS INT64),

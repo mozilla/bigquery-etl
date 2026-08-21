@@ -247,19 +247,6 @@ sap_aggregates_cte AS (
     ) AS profile_age_in_days,
     COUNT(*) AS sap_counts_total,
     COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
-    SUM(
-      CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_active_ticks') AS float64) / (
-        3600 / 5
-      )
-    ) AS active_hours_sum,
-    SUM(
-      CAST(
-        JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_tab_open_event_count') AS float64
-      )
-    ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
-    SUM(
-      CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_uri_count') AS float64)
-    ) AS scalar_parent_browser_engagement_total_uri_count_sum,
     MAX(
       CAST(
         JSON_EXTRACT_SCALAR(
@@ -286,9 +273,6 @@ sap_final_cte AS (
     sap_aggregates_cte.profile_age_in_days,
     sap_aggregates_cte.sap_counts_total,
     sap_aggregates_cte.sessions_started_on_this_day,
-    sap_aggregates_cte.active_hours_sum,
-    sap_aggregates_cte.scalar_parent_browser_engagement_tab_open_event_count_sum,
-    sap_aggregates_cte.scalar_parent_browser_engagement_total_uri_count_sum,
     sap_aggregates_cte.concurrent_tab_count_max
   FROM
     sap_events_clients_ad_enterprise_cte
@@ -465,11 +449,6 @@ serp_aggregates_cte AS (
     ) AS profile_age_in_days,
     COUNT(*) AS serp_counts_total,
     COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
-    SUM(browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
-    SUM(
-      browser_engagement_tab_open_event_count
-    ) AS serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
-    SUM(browser_engagement_uri_count) AS serp_scalar_parent_browser_engagement_total_uri_count_sum,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
     `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`
@@ -503,9 +482,6 @@ serp_final_cte AS (
     serp_aggregates_cte.profile_age_in_days,
     serp_aggregates_cte.serp_counts_total,
     serp_aggregates_cte.sessions_started_on_this_day,
-    serp_aggregates_cte.active_hours_sum,
-    serp_aggregates_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
-    serp_aggregates_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum,
     serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
     serp_events_clients_ad_enterprise_cte
@@ -676,23 +652,8 @@ join_sap_serp_cte AS (
       sap_final_cte.sessions_started_on_this_day,
       0
     ) AS sessions_started_on_this_day,
-    COALESCE(
-      serp_final_cte.active_hours_sum,
-      sap_final_cte.active_hours_sum,
-      0
-    ) AS active_hours_sum,
-    -- sap_aggregates_cte casts these integer counters to float64, so cast back to
+    -- sap_aggregates_cte casts this integer counter to float64, so cast back to
     -- INT64 to keep the column's declared INTEGER type
-    COALESCE(
-      serp_final_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
-      CAST(sap_final_cte.scalar_parent_browser_engagement_tab_open_event_count_sum AS INT64),
-      0
-    ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
-    COALESCE(
-      serp_final_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum,
-      CAST(sap_final_cte.scalar_parent_browser_engagement_total_uri_count_sum AS INT64),
-      0
-    ) AS scalar_parent_browser_engagement_total_uri_count_sum,
     COALESCE(
       serp_final_cte.max_concurrent_tab_count_max,
       CAST(sap_final_cte.concurrent_tab_count_max AS INT64),
@@ -769,9 +730,6 @@ final_cte AS (
     sessions_started_on_this_day,
     overridden_by_third_party, -- NEW
     max_concurrent_tab_count_max,
-    scalar_parent_browser_engagement_tab_open_event_count_sum AS tab_open_event_count_sum,
-    active_hours_sum,
-    scalar_parent_browser_engagement_total_uri_count_sum AS total_uri_count,
     experiments,
     profile_age_in_days,
     serp_searches_organic_count AS organic,

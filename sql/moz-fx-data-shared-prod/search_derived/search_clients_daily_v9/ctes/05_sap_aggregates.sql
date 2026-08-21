@@ -34,19 +34,6 @@ SELECT
   ) AS profile_age_in_days,
   COUNT(*) AS sap_counts_total,
   COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
-  SUM(
-    CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_active_ticks') AS float64) / (
-      3600 / 5
-    )
-  ) AS active_hours_sum,
-  SUM(
-    CAST(
-      JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_tab_open_event_count') AS float64
-    )
-  ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
-  SUM(
-    CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_uri_count') AS float64)
-  ) AS scalar_parent_browser_engagement_total_uri_count_sum,
   MAX(
     CAST(
       JSON_EXTRACT_SCALAR(

@@ -107,17 +107,17 @@ SELECT
     sap_final_cte.overridden_by_third_party
   ) AS overridden_by_third_party,
   COALESCE(
-    serp_final_cte.subsession_start_time,
-    sap_final_cte.subsession_start_time
-  ) AS subsession_start_time,
+    serp_final_cte.ping_start_time,
+    sap_final_cte.ping_start_time
+  ) AS ping_start_time,
   COALESCE(
-    serp_final_cte.subsession_end_time,
-    sap_final_cte.subsession_end_time
-  ) AS subsession_end_time,
+    serp_final_cte.ping_end_time,
+    sap_final_cte.ping_end_time
+  ) AS ping_end_time,
   COALESCE(
-    serp_final_cte.subsession_counter,
-    sap_final_cte.subsession_counter
-  ) AS subsession_counter,
+    serp_final_cte.ping_seq,
+    sap_final_cte.ping_seq
+  ) AS ping_seq,
   COALESCE(serp_final_cte.experiments, sap_final_cte.experiments) AS experiments,
   COALESCE(
     serp_final_cte.has_adblocker_addon,

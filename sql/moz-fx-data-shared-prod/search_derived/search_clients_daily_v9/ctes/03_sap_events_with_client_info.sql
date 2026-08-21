@@ -93,9 +93,9 @@ SELECT
   CAST(
     JSON_VALUE(event_extra.overridden_by_third_party, '$') AS boolean
   ) AS overridden_by_third_party,
-  ping_info.start_time AS subsession_start_time,
-  ping_info.end_time AS subsession_end_time,
-  ping_info.seq AS subsession_counter,
+  ping_info.start_time AS ping_start_time,
+  ping_info.end_time AS ping_end_time,
+  ping_info.seq AS ping_seq,
   [
     STRUCT(
       JSON_KEYS(experiments)[OFFSET(0)] AS key,

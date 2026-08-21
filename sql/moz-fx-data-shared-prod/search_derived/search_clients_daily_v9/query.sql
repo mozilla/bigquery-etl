@@ -161,9 +161,9 @@ sap_events_with_client_info_cte AS (
     CAST(
       JSON_VALUE(event_extra.overridden_by_third_party, '$') AS boolean
     ) AS overridden_by_third_party,
-    ping_info.start_time AS subsession_start_time,
-    ping_info.end_time AS subsession_end_time,
-    ping_info.seq AS subsession_counter,
+    ping_info.start_time AS ping_start_time,
+    ping_info.end_time AS ping_end_time,
+    ping_info.seq AS ping_seq,
     [
       STRUCT(
         JSON_KEYS(experiments)[OFFSET(0)] AS key,
@@ -350,9 +350,9 @@ serp_events_with_client_info_cte AS (
     search_engine_private_submission_url,
     search_engine_private_overridden_by_third_party,
     CAST(overridden_by_third_party AS boolean) AS overridden_by_third_party,
-    subsession_start_time,
-    subsession_end_time,
-    subsession_counter,
+    subsession_start_time AS ping_start_time,
+    subsession_end_time AS ping_end_time,
+    subsession_counter AS ping_seq,
     experiments
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
@@ -597,17 +597,17 @@ join_sap_serp_cte AS (
       sap_final_cte.overridden_by_third_party
     ) AS overridden_by_third_party,
     COALESCE(
-      serp_final_cte.subsession_start_time,
-      sap_final_cte.subsession_start_time
-    ) AS subsession_start_time,
+      serp_final_cte.ping_start_time,
+      sap_final_cte.ping_start_time
+    ) AS ping_start_time,
     COALESCE(
-      serp_final_cte.subsession_end_time,
-      sap_final_cte.subsession_end_time
-    ) AS subsession_end_time,
+      serp_final_cte.ping_end_time,
+      sap_final_cte.ping_end_time
+    ) AS ping_end_time,
     COALESCE(
-      serp_final_cte.subsession_counter,
-      sap_final_cte.subsession_counter
-    ) AS subsession_counter,
+      serp_final_cte.ping_seq,
+      sap_final_cte.ping_seq
+    ) AS ping_seq,
     COALESCE(serp_final_cte.experiments, sap_final_cte.experiments) AS experiments,
     COALESCE(
       serp_final_cte.has_adblocker_addon,
@@ -714,9 +714,9 @@ final_cte AS (
     default_private_search_engine_provider_id, -- NEW
     default_private_search_engine_overridden, -- NEW
     sample_id,
-    subsession_start_time, -- NEW
-    subsession_end_time, -- NEW
-    subsession_counter, -- NEW
+    ping_start_time, -- NEW
+    ping_end_time, -- NEW
+    ping_seq, -- NEW
     overridden_by_third_party, -- NEW
     max_concurrent_tab_count_max,
     experiments,

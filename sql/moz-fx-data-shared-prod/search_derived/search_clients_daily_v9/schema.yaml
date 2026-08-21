@@ -117,13 +117,13 @@ fields:
   mode: NULLABLE
   description: A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: subsession_start_time
+- name: ping_start_time
   type: STRING
   mode: NULLABLE
-- name: subsession_end_time
+- name: ping_end_time
   type: STRING
   mode: NULLABLE
-- name: subsession_counter
+- name: ping_seq
   type: INTEGER
   mode: NULLABLE
 - name: overridden_by_third_party

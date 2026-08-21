@@ -32,9 +32,9 @@ SELECT
   default_private_search_engine_provider_id, -- NEW
   default_private_search_engine_overridden, -- NEW
   sample_id,
-  subsession_start_time, -- NEW
-  subsession_end_time, -- NEW
-  subsession_counter, -- NEW
+  ping_start_time, -- NEW
+  ping_end_time, -- NEW
+  ping_seq, -- NEW
   overridden_by_third_party, -- NEW
   max_concurrent_tab_count_max,
   experiments,

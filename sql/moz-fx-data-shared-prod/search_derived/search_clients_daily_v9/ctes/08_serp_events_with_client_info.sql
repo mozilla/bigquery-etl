@@ -62,9 +62,9 @@ SELECT
   search_engine_private_submission_url,
   search_engine_private_overridden_by_third_party,
   CAST(overridden_by_third_party AS boolean) AS overridden_by_third_party,
-  subsession_start_time,
-  subsession_end_time,
-  subsession_counter,
+  subsession_start_time AS ping_start_time,
+  subsession_end_time AS ping_end_time,
+  subsession_counter AS ping_seq,
   experiments
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`

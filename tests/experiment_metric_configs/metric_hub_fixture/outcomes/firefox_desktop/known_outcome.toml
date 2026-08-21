@@ -1,0 +1,4 @@
+friendly_name = "Known Outcome"
+description = "An outcome that exists for firefox_desktop."
+
+[metrics]

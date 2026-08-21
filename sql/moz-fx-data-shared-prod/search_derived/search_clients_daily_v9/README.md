@@ -137,7 +137,9 @@ SERP's comes from `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v
 
 The engine is normalized on both sides through `udf.normalize_search_engine`. On the SAP side the input is `provider_id`, except where `provider_id` is `other`, in which case `provider_name` is normalized instead. On the SERP side the input is `search_engine`.
 
-An empty string `partner_code` is converted to `null` on both sides, and the SAP `source` value `urlbar-handoff` is rewritten to `urlbar_handoff`.
+An empty string `partner_code` is converted to `null` on both sides.
+
+SAP `source` values are rewritten onto the SERP vocabulary, which the SERP side carries unmodified as `sap_source`. `abouthome` becomes `about_home`, `newtab` becomes `about_newtab`, and every remaining hyphen becomes an underscore, so `urlbar-handoff`, `urlbar-searchmode` and `urlbar-persisted` become `urlbar_handoff`, `urlbar_searchmode` and `urlbar_persisted`. A `null` source stays `null`. The same expression appears in both `sap_events_with_client_info` and `sap_aggregates`; the two CTEs join on `source`, so they have to derive it identically.
 
 #### Events with client info
 

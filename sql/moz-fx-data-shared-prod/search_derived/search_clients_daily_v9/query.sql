@@ -94,9 +94,11 @@ sap_events_with_client_info_cte AS (
       ELSE JSON_VALUE(event_extra.partner_code)
     END AS partner_code,
     CASE
-      WHEN JSON_VALUE(event_extra.source) = 'urlbar-handoff'
-        THEN 'urlbar_handoff'
-      ELSE JSON_VALUE(event_extra.source)
+      WHEN JSON_VALUE(event_extra.source) = 'abouthome'
+        THEN 'about_home'
+      WHEN JSON_VALUE(event_extra.source) = 'newtab'
+        THEN 'about_newtab'
+      ELSE REPLACE(JSON_VALUE(event_extra.source), '-', '_')
     END AS source,
     -- end as search_access_point, -- rename
     sample_id,
@@ -231,10 +233,13 @@ sap_aggregates_cte AS (
           JSON_VALUE(event_extra.provider_id)
         )
     END AS normalized_engine,
+    -- must stay identical to sap_events_with_client_info_cte: source is a join key
     CASE
-      WHEN JSON_VALUE(event_extra.source) = 'urlbar-handoff'
-        THEN 'urlbar_handoff'
-      ELSE JSON_VALUE(event_extra.source)
+      WHEN JSON_VALUE(event_extra.source) = 'abouthome'
+        THEN 'about_home'
+      WHEN JSON_VALUE(event_extra.source) = 'newtab'
+        THEN 'about_newtab'
+      ELSE REPLACE(JSON_VALUE(event_extra.source), '-', '_')
     END AS source,
     -- end as search_access_point, -- rename
     MAX(UNIX_DATE(DATE((ping_info.parsed_start_time)))) - MAX(

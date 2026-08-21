@@ -452,9 +452,6 @@ fields:
     - mode: NULLABLE
       name: crash_cause
       type: STRING
-      description: 'The cause of the crash. May be one of `os_fault` or `java_exception`.
-
-        '
   - name: timespan
     type: RECORD
     fields:
@@ -550,9 +547,6 @@ fields:
     - mode: NULLABLE
       name: crash_breadcrumbs
       type: JSON
-      description: 'Crash breadcrumb information.
-
-        '
   - name: quantity
     type: RECORD
     fields:

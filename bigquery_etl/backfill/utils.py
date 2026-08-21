@@ -280,7 +280,7 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
 
 def get_scheduled_backfills(
     sql_dir,
-    project: str,
+    project: Optional[str] = None,
     qualified_table_name: Optional[str] = None,
     status: Optional[str] = None,
     ignore_old_entries: bool = False,
@@ -289,11 +289,19 @@ def get_scheduled_backfills(
 ) -> Dict[str, Backfill]:
     """Return backfill entries to initiate or complete.
 
+    project restricts which project's queries are scanned for backfill entries;
+    None scans every project.
+
     When a target environment is active, destination_project is where the staging
     and backup tables live (the target project), which is checked for existence
     instead of the production backfill project.
+
+    The client runs in the project holding the staging and backup tables, which is
+    the backfill project regardless of which project the query itself is in.
     """
-    client = bigquery.Client(project=destination_project or project)
+    client = bigquery.Client(
+        project=destination_project or BACKFILL_DESTINATION_PROJECT
+    )
 
     if qualified_table_name:
         backfills_dict = {

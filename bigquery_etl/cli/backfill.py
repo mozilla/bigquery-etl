@@ -34,6 +34,7 @@ from ..backfill.shredder_mitigation import (
 )
 from ..backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
+    BACKFILL_DESTINATION_PROJECT,
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
@@ -96,6 +97,15 @@ def _destination_project(
     used to pick the BigQuery client project.
     """
     return target.project_id if target else default
+
+
+def _staging_client_project(target: Optional[Target]) -> str:
+    """Return the project the BigQuery client should run in.
+
+    Backfill jobs read and write staging and backup tables, which always live in the staging project
+    or the target project under --target, not necessarily in the project the query is in.
+    """
+    return _destination_project(target, None) or BACKFILL_DESTINATION_PROJECT
 
 
 def _resolve_backfill_table(
@@ -629,15 +639,17 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
     ./bqetl backfill scheduled moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
     \b
-    # Get info for all tables.
+    # Get info for all tables in all projects.
     ./bqetl backfill scheduled
+
+    \b
+    # Restrict the scan to a single project.
+    ./bqetl backfill scheduled --project-id=moz-fx-data-shared-prod
     """,
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option(
-    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
-)
+@project_id_option()
 @click.option(
     "--status",
     type=click.Choice([s.value for s in BackfillStatus]),
@@ -791,8 +803,7 @@ def initiate(
         / ("query.py" if is_python_script else "query.sql")
     )
 
-    effective_project = _destination_project(target, project_id)
-    client = bigquery.Client(project=effective_project)
+    client = bigquery.Client(project=_staging_client_project(target))
 
     if target is not None:
         # Permission mirroring from the production table is meaningless in a dev
@@ -1293,8 +1304,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         sys.exit(1)
 
     target = _get_target(ctx)
-    effective_project = _destination_project(target, project_id)
-    client = bigquery.Client(project=effective_project)
+    client = bigquery.Client(project=_staging_client_project(target))
 
     click.echo("Backfill processing (complete) started....")
 

@@ -15,7 +15,7 @@ SELECT
     serp_final_cte.legacy_telemetry_client_id,
     sap_final_cte.legacy_telemetry_client_id
   ) AS legacy_telemetry_client_id,
-  COALESCE(sap_final_cte.sap, 0) AS sap,
+  COALESCE(sap_final_cte.sap_counts, 0) AS sap_counts,
   COALESCE(
     serp_final_cte.profile_group_id,
     sap_final_cte.profile_group_id

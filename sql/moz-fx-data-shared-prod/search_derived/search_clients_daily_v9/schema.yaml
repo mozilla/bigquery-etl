@@ -180,7 +180,7 @@ fields:
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
-- name: sap
+- name: sap_counts
   type: INTEGER
   mode: NULLABLE
 - name: serp_counts

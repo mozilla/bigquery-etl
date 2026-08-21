@@ -182,7 +182,7 @@ Each row represents aggregated search activity and engagement metrics for a spec
 
 The two sides do not compute the same measures.
 
-- SAP produces `sap` (a count of `sap.counts` events) plus session and engagement measures, and derives `profile_age_in_days` from `ping_info.parsed_start_time` against the first run date.
+- SAP produces `sap_counts` (a count of `sap.counts` events) plus session and engagement measures, and derives `profile_age_in_days` from `ping_info.parsed_start_time` against the first run date.
 - SERP produces `serp_counts` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `sap_source` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`. SERP derives `profile_age_in_days` from `subsession_start_time` against the first run date.
 
 #### SAP and SERP Final
@@ -201,7 +201,7 @@ This is the `join_sap_serp_cte`. The grain is **one row per `client_id`, `submis
 
 The two pipelines are combined with a `full outer join`, so a row survives if it appears on either side.
 
-- A search access point with no matching SERP impression keeps its `sap` count. Driving the join from SERP alone would drop that activity entirely, since the SAP `source` and SERP `sap_source` vocabularies only partly overlap.
+- A search access point with no matching SERP impression keeps its `sap_counts` value. Driving the join from SERP alone would drop that activity entirely, since the SAP `source` and SERP `sap_source` vocabularies only partly overlap.
 - A SERP impression with no matching SAP event keeps its ad and engagement measures.
 - Measures that exist on only one side are `null` on rows from the other side. Rows contributed solely by SAP have no `serp_counts`, `ad_click_target`, `os_version_major` or `os_version_minor`, and no `serp_*` ad or engagement counts.
 
@@ -209,7 +209,7 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the shared measures such as `profile_age_in_days` and `active_hours_sum`.
 
-The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap` from SAP, and `serp_counts`, `serp_ad_click_target`, `serp_os_version_major`, `serp_os_version_minor` and the SERP ad and engagement counts from SERP.
+The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap_counts` from SAP, and `serp_counts`, `serp_ad_click_target`, `serp_os_version_major`, `serp_os_version_minor` and the SERP ad and engagement counts from SERP.
 
 **Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
 
@@ -220,7 +220,7 @@ Every count and sum in this CTE falls back to `0`. A row that reaches this CTE f
 The trade-off is that a zero no longer distinguishes "no activity" from "the other side's data is missing or late". Conditions where SAP is recorded but not SERP are mostly on engines where we have not instrumented SERP metrics at all. If needed, look at the search provider to check uncertainty.
 
 - Shared measures take a third `coalesce` argument: `sessions_started_on_this_day`, `active_hours_sum`, `tab_open_event_count_sum`, `total_uri_count` and `max_concurrent_tab_count_max`.
-- `sap` is zero on a serp-only row.
+- `sap_counts` is zero on a serp-only row.
 - The fifteen SERP-only counts are zero on a sap-only row: `serp_counts`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six `num_*` measures.
 
 Three columns are deliberately left alone. `profile_age_in_days` is not a count, and a zero would read as a profile created that day rather than as a missing value. `ad_click_target` is a string and `ad_blocker_inferred` is a boolean, so neither has a meaningful zero.

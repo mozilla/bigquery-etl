@@ -49,7 +49,7 @@ SELECT
   MAX(UNIX_DATE(DATE(to_utc_string(subsession_start_time)))) - MAX(
     UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
   ) AS profile_age_in_days,
-  COUNT(*) AS serp_counts,
+  COUNT(*) AS serp_counts_total,
   COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
   SUM(browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
   SUM(

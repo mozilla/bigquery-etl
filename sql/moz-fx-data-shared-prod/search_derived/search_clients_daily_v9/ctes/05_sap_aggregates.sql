@@ -32,7 +32,7 @@ SELECT
   MAX(UNIX_DATE(DATE((ping_info.parsed_start_time)))) - MAX(
     UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
   ) AS profile_age_in_days,
-  COUNT(*) AS sap_counts,
+  COUNT(*) AS sap_counts_total,
   COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
   SUM(
     CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_active_ticks') AS float64) / (

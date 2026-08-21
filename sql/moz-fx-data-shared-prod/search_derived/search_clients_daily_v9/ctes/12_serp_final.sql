@@ -18,7 +18,7 @@ SELECT
   serp_aggregates_cte.num_ads_blocked,
   serp_aggregates_cte.num_ads_notshowing,
   serp_aggregates_cte.profile_age_in_days,
-  serp_aggregates_cte.serp_counts,
+  serp_aggregates_cte.serp_counts_total,
   serp_aggregates_cte.sessions_started_on_this_day,
   serp_aggregates_cte.active_hours_sum,
   serp_aggregates_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum,

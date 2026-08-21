@@ -245,7 +245,7 @@ sap_aggregates_cte AS (
     MAX(UNIX_DATE(DATE((ping_info.parsed_start_time)))) - MAX(
       UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
     ) AS profile_age_in_days,
-    COUNT(*) AS sap_counts,
+    COUNT(*) AS sap_counts_total,
     COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
     SUM(
       CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_active_ticks') AS float64) / (
@@ -284,7 +284,7 @@ sap_final_cte AS (
   SELECT
     sap_events_clients_ad_enterprise_cte.*,
     sap_aggregates_cte.profile_age_in_days,
-    sap_aggregates_cte.sap_counts,
+    sap_aggregates_cte.sap_counts_total,
     sap_aggregates_cte.sessions_started_on_this_day,
     sap_aggregates_cte.active_hours_sum,
     sap_aggregates_cte.scalar_parent_browser_engagement_tab_open_event_count_sum,
@@ -463,7 +463,7 @@ serp_aggregates_cte AS (
     MAX(UNIX_DATE(DATE(to_utc_string(subsession_start_time)))) - MAX(
       UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
     ) AS profile_age_in_days,
-    COUNT(*) AS serp_counts,
+    COUNT(*) AS serp_counts_total,
     COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
     SUM(browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
     SUM(
@@ -501,7 +501,7 @@ serp_final_cte AS (
     serp_aggregates_cte.num_ads_blocked,
     serp_aggregates_cte.num_ads_notshowing,
     serp_aggregates_cte.profile_age_in_days,
-    serp_aggregates_cte.serp_counts,
+    serp_aggregates_cte.serp_counts_total,
     serp_aggregates_cte.sessions_started_on_this_day,
     serp_aggregates_cte.active_hours_sum,
     serp_aggregates_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
@@ -533,7 +533,7 @@ join_sap_serp_cte AS (
       serp_final_cte.legacy_telemetry_client_id,
       sap_final_cte.legacy_telemetry_client_id
     ) AS legacy_telemetry_client_id,
-    COALESCE(sap_final_cte.sap_counts, 0) AS sap_counts,
+    COALESCE(sap_final_cte.sap_counts_total, 0) AS sap_counts_total,
     COALESCE(
       serp_final_cte.profile_group_id,
       sap_final_cte.profile_group_id
@@ -669,7 +669,7 @@ join_sap_serp_cte AS (
       serp_final_cte.profile_age_in_days,
       sap_final_cte.profile_age_in_days
     ) AS profile_age_in_days,
-    COALESCE(serp_final_cte.serp_counts, 0) AS serp_counts,
+    COALESCE(serp_final_cte.serp_counts_total, 0) AS serp_counts_total,
     -- counts and sums fall back to 0, not NULL, when neither side reported them
     COALESCE(
       serp_final_cte.sessions_started_on_this_day,
@@ -777,8 +777,8 @@ final_cte AS (
     serp_searches_organic_count AS organic,
     serp_searches_tagged_count AS tagged_serp,
     serp_follow_on_searches_tagged_count AS tagged_follow_on,
-    sap_counts,
-    serp_counts,
+    sap_counts_total,
+    serp_counts_total,
     serp_ad_click_target AS ad_click_target,
     serp_num_ad_clicks AS ad_click,
     serp_ad_clicks_organic_count AS ad_click_organic,

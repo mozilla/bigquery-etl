@@ -15,7 +15,7 @@ SELECT
     serp_final_cte.legacy_telemetry_client_id,
     sap_final_cte.legacy_telemetry_client_id
   ) AS legacy_telemetry_client_id,
-  COALESCE(sap_final_cte.sap_counts, 0) AS sap_counts,
+  COALESCE(sap_final_cte.sap_counts_total, 0) AS sap_counts_total,
   COALESCE(
     serp_final_cte.profile_group_id,
     sap_final_cte.profile_group_id
@@ -151,7 +151,7 @@ SELECT
     serp_final_cte.profile_age_in_days,
     sap_final_cte.profile_age_in_days
   ) AS profile_age_in_days,
-  COALESCE(serp_final_cte.serp_counts, 0) AS serp_counts,
+  COALESCE(serp_final_cte.serp_counts_total, 0) AS serp_counts_total,
   -- counts and sums fall back to 0, not NULL, when neither side reported them
   COALESCE(
     serp_final_cte.sessions_started_on_this_day,

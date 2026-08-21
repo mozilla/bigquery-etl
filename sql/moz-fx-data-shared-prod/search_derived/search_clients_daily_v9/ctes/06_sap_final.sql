@@ -2,7 +2,7 @@
 SELECT
   sap_events_clients_ad_enterprise_cte.*,
   sap_aggregates_cte.profile_age_in_days,
-  sap_aggregates_cte.sap_counts,
+  sap_aggregates_cte.sap_counts_total,
   sap_aggregates_cte.sessions_started_on_this_day,
   sap_aggregates_cte.active_hours_sum,
   sap_aggregates_cte.scalar_parent_browser_engagement_tab_open_event_count_sum,

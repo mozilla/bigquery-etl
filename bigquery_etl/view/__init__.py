@@ -413,7 +413,20 @@ class View:
 
                 try:
                     if self.schema_path.is_file():
-                        table = self.schema.deploy(target_view)
+                        # A view's column modes/types are whatever BigQuery
+                        # computed for the query output (always NULLABLE, never
+                        # REQUIRED). Deploying descriptions must not push the
+                        # schema file's modes, or BigQuery rejects the update
+                        # (e.g. "changed mode from NULLABLE to REQUIRED"). Start
+                        # from the live view schema and overlay only descriptions.
+                        live_schema = Schema.from_bigquery_schema(table.schema)
+                        live_schema.merge(
+                            self.schema,
+                            attributes=["description"],
+                            add_missing_fields=False,
+                            ignore_missing_fields=True,
+                        )
+                        table = live_schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

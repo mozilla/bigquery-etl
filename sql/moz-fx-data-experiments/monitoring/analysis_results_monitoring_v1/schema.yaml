@@ -1,0 +1,74 @@
+fields:
+- name: analysis_date
+  type: DATE
+  mode: NULLABLE
+  description: The jetstream analysis date this row's status pertains to.
+- name: experiment
+  type: STRING
+  mode: NULLABLE
+  description: Nimbus experiment (or rollout) normandy_slug.
+- name: analysis_period
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Analysis period (e.g., day, week, days28, overall). NULL on a failed row
+    means the failure occurred before a specific period could be attributed
+    (e.g., an unexpected task failure at the top of the analysis run).
+- name: window_index
+  type: INT64
+  mode: NULLABLE
+  description: |-
+    Which window of analysis_period this row is for (e.g., 7 for the
+    "day_7" table). NULL on most failed rows, since most failure log sites
+    don't record which window they were computing.
+- name: analysis_basis
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Analysis basis (e.g., enrollments, exposures). NULL on a failed row means
+    the failure affected all bases for that experiment/period.
+- name: segment
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Segment slug, or "all" for the full population. NULL on a failed row
+    means the failure affected every segment for that experiment/metric
+    (e.g., a failure computing the underlying per-datasource metric table,
+    which all segments are derived from).
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Metric slug. NULL on a failed row means the log record that produced it
+    doesn't identify a specific metric -- either because the failure occurred
+    before metric computation started (e.g., publishing the results view,
+    fetching the experiment definition), or because it was a single combined
+    query covering every metric for that period/basis at once (the legacy,
+    non-discrete metrics path). The affected metric set may still be knowable
+    from jetstream's own configuration, just not from the data sources this
+    rollup reads; these rows are excluded from metric-level success-rate
+    denominators for that experiment/period/basis as a result.
+- name: status
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    One of "succeeded", "failed", or "partial" (both a logged failure and
+    output in the statistics table exist for this cell, e.g. one statistic
+    or reference branch errored while another for the same metric didn't).
+- name: error_category
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Set when status = "failed" or "partial": resources, data, configuration,
+    or jetstream_failure. See jetstream_analysis_errors/view.sql for
+    definitions.
+- name: exception_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The original exception type from Jetstream's logs.
+- name: exception
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The original exception message from Jetstream's logs.

@@ -5,7 +5,7 @@ description: |-
   CSV into the Postgres DB behind the referral hub page.
 
   CSV column contract (no header row), written to the bucket root:
-    invite_code   STRING   referral (invite) code, fxrefer: prefix stripped
+    invite_code   STRING   referral (invite) code, fxrefer prefix stripped
     total_installs INTEGER cumulative all-time distinct first_run installs
   One file per run date named `referral_data-<date>.csv` (date = Airflow {{ds}}),
   so an Airflow retry overwrites the same object. Runs daily.

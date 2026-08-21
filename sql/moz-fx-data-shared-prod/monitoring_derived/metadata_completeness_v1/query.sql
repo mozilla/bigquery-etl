@@ -48,7 +48,12 @@ shared_prod_and_mozdata_column_metadata_completeness AS (
     table_name,
     COUNT(1) AS nbr_columns,
     SUM(
-      CASE WHEN description IS NOT NULL AND description != '' THEN 1 ELSE 0 END
+      CASE
+        WHEN description IS NOT NULL
+          AND description != ''
+          THEN 1
+        ELSE 0
+      END
     ) AS nbr_columns_with_non_null_desc
   FROM
     `mozdata.region-US.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS`
@@ -63,7 +68,12 @@ shared_prod_and_mozdata_column_metadata_completeness AS (
     table_name,
     COUNT(1) AS nbr_columns,
     SUM(
-      CASE WHEN description IS NOT NULL AND description != '' THEN 1 ELSE 0 END
+      CASE
+        WHEN description IS NOT NULL
+          AND description != ''
+          THEN 1
+        ELSE 0
+      END
     ) AS nbr_columns_with_non_null_desc
   FROM
     `moz-fx-data-shared-prod.region-US.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS`

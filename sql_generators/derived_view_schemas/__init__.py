@@ -125,6 +125,18 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
                 logging.info(f"Simple SELECT * view detected for {view_file}, copying reference schema directly")
                 try:
                     reference_schema = Schema.from_schema_file(reference_schema_file)
+                    # Views cannot have REQUIRED columns: BigQuery reports view
+                    # columns as NULLABLE and rejects a NULLABLE->REQUIRED update
+                    # on deploy. Coerce REQUIRED to NULLABLE (leaving REPEATED
+                    # intact) so the generated schema matches the deployable view.
+                    def _nullable_required_modes(fields):
+                        for field in fields:
+                            if field.get("mode") == "REQUIRED":
+                                field["mode"] = "NULLABLE"
+                            if field.get("fields"):
+                                _nullable_required_modes(field["fields"])
+
+                    _nullable_required_modes(reference_schema.schema.get("fields", []))
                     reference_schema.to_yaml_file(view_directory / SCHEMA_FILE)
                     return
                 except Exception as e:

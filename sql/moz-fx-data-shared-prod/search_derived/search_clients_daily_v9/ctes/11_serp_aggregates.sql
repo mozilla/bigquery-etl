@@ -50,7 +50,6 @@ SELECT
     UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
   ) AS profile_age_in_days,
   COUNT(*) AS serp_counts_total,
-  COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
   MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
 FROM
   `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`

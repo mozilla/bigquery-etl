@@ -152,14 +152,8 @@ SELECT
     sap_final_cte.profile_age_in_days
   ) AS profile_age_in_days,
   COALESCE(serp_final_cte.serp_counts_total, 0) AS serp_counts_total,
-  -- counts and sums fall back to 0, not NULL, when neither side reported them
-  COALESCE(
-    serp_final_cte.sessions_started_on_this_day,
-    sap_final_cte.sessions_started_on_this_day,
-    0
-  ) AS sessions_started_on_this_day,
-  -- sap_aggregates_cte casts this integer counter to float64, so cast back to
-  -- INT64 to keep the column's declared INTEGER type
+  -- falls back to 0, not NULL, when neither side reported it. sap_aggregates_cte casts
+  -- this integer counter to float64, so cast back to INT64 to keep the declared INTEGER type
   COALESCE(
     serp_final_cte.max_concurrent_tab_count_max,
     CAST(sap_final_cte.concurrent_tab_count_max AS INT64),

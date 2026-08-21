@@ -35,7 +35,6 @@ SELECT
   subsession_start_time, -- NEW
   subsession_end_time, -- NEW
   subsession_counter, -- NEW
-  sessions_started_on_this_day,
   overridden_by_third_party, -- NEW
   max_concurrent_tab_count_max,
   experiments,

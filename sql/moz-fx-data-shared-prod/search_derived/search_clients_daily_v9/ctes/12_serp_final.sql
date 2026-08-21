@@ -19,7 +19,6 @@ SELECT
   serp_aggregates_cte.num_ads_notshowing,
   serp_aggregates_cte.profile_age_in_days,
   serp_aggregates_cte.serp_counts_total,
-  serp_aggregates_cte.sessions_started_on_this_day,
   serp_aggregates_cte.max_concurrent_tab_count_max
 FROM
   `search_derived.search_clients_daily_v9.serp_events_clients_ad_enterprise_cte`

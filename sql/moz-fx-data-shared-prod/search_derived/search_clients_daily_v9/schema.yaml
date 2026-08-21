@@ -126,9 +126,6 @@ fields:
 - name: subsession_counter
   type: INTEGER
   mode: NULLABLE
-- name: sessions_started_on_this_day
-  type: INTEGER
-  mode: NULLABLE
 - name: overridden_by_third_party
   type: BOOLEAN
   mode: NULLABLE

@@ -33,7 +33,6 @@ SELECT
     UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
   ) AS profile_age_in_days,
   COUNT(*) AS sap_counts_total,
-  COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
   MAX(
     CAST(
       JSON_EXTRACT_SCALAR(

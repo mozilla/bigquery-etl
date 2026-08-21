@@ -246,7 +246,6 @@ sap_aggregates_cte AS (
       UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
     ) AS profile_age_in_days,
     COUNT(*) AS sap_counts_total,
-    COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
     MAX(
       CAST(
         JSON_EXTRACT_SCALAR(
@@ -272,7 +271,6 @@ sap_final_cte AS (
     sap_events_clients_ad_enterprise_cte.*,
     sap_aggregates_cte.profile_age_in_days,
     sap_aggregates_cte.sap_counts_total,
-    sap_aggregates_cte.sessions_started_on_this_day,
     sap_aggregates_cte.concurrent_tab_count_max
   FROM
     sap_events_clients_ad_enterprise_cte
@@ -448,7 +446,6 @@ serp_aggregates_cte AS (
       UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
     ) AS profile_age_in_days,
     COUNT(*) AS serp_counts_total,
-    COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
     `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`
@@ -481,7 +478,6 @@ serp_final_cte AS (
     serp_aggregates_cte.num_ads_notshowing,
     serp_aggregates_cte.profile_age_in_days,
     serp_aggregates_cte.serp_counts_total,
-    serp_aggregates_cte.sessions_started_on_this_day,
     serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
     serp_events_clients_ad_enterprise_cte
@@ -646,14 +642,8 @@ join_sap_serp_cte AS (
       sap_final_cte.profile_age_in_days
     ) AS profile_age_in_days,
     COALESCE(serp_final_cte.serp_counts_total, 0) AS serp_counts_total,
-    -- counts and sums fall back to 0, not NULL, when neither side reported them
-    COALESCE(
-      serp_final_cte.sessions_started_on_this_day,
-      sap_final_cte.sessions_started_on_this_day,
-      0
-    ) AS sessions_started_on_this_day,
-    -- sap_aggregates_cte casts this integer counter to float64, so cast back to
-    -- INT64 to keep the column's declared INTEGER type
+    -- falls back to 0, not NULL, when neither side reported it. sap_aggregates_cte casts
+    -- this integer counter to float64, so cast back to INT64 to keep the declared INTEGER type
     COALESCE(
       serp_final_cte.max_concurrent_tab_count_max,
       CAST(sap_final_cte.concurrent_tab_count_max AS INT64),
@@ -727,7 +717,6 @@ final_cte AS (
     subsession_start_time, -- NEW
     subsession_end_time, -- NEW
     subsession_counter, -- NEW
-    sessions_started_on_this_day,
     overridden_by_third_party, -- NEW
     max_concurrent_tab_count_max,
     experiments,

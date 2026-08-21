@@ -203,7 +203,7 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 - A search access point with no matching SERP impression keeps its `sap_counts` value. Driving the join from SERP alone would drop that activity entirely, since the SAP `source` and SERP `sap_source` vocabularies only partly overlap.
 - A SERP impression with no matching SAP event keeps its ad and engagement measures.
-- Measures that exist on only one side are `null` on rows from the other side. Rows contributed solely by SAP have no `serp_counts`, `ad_click_target`, `os_version_major` or `os_version_minor`, and no `serp_*` ad or engagement counts.
+- Four SERP-only columns are `null` on a sap-only row: `ad_click_target`, `ad_blocker_inferred`, `os_version_major` and `os_version_minor`. Every other SERP-only measure is a count and falls back to `0`.
 
 #### Column precedence
 

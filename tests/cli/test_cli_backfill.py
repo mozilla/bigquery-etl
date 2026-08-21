@@ -26,6 +26,7 @@ from bigquery_etl.backfill.utils import (
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
+    get_scheduled_backfills,
     qualified_table_name_matching,
     query_supports_reinitialize,
 )
@@ -35,6 +36,7 @@ from bigquery_etl.cli.backfill import (
     _initiate_backfill,
     _reinitialize_into_staging,
     _resolve_backfill_table,
+    _staging_client_project,
     complete,
     create,
     info,
@@ -4232,7 +4234,7 @@ class TestBackfillTargetSupport:
         )
 
     def test_staging_name_without_destination_project_should_default_to_prod(self):
-        """get_backfill_staging_qualified_table_name without a destination should default to the prod backfill project."""
+        """get_backfill_staging_qualified_table_name without a destination should default to the prod staging project."""
         name = get_backfill_staging_qualified_table_name(
             self.PROD_TABLE, date(2021, 5, 3)
         )
@@ -4326,3 +4328,241 @@ class TestBackfillTargetSupport:
             # the staging existence check used the target project, not prod
             checked_staging = mock_table_exists.call_args_list[0].args[1]
             assert checked_staging.startswith("sandbox.backfills_staging_derived.")
+
+
+class TestBackfillNonSharedProdProject:
+    """Backfills for queries outside moz-fx-data-shared-prod.
+
+    Staging and backup tables stay in the staging project no matter which project
+    the query is in, so everything lives in one place.
+    """
+
+    EXPERIMENTS_TABLE = "moz-fx-data-experiments.monitoring.analysis_results_v1"
+
+    def _write_backfill_entry(self, project, status="Complete"):
+        table_dir = f"sql/{project}/monitoring/analysis_results_v1"
+        os.makedirs(table_dir)
+        with open(f"{table_dir}/query.sql", "w") as f:
+            f.write("SELECT 1")
+        with open(f"{table_dir}/metadata.yaml", "w") as f:
+            f.write(yaml.dump(TABLE_METADATA_CONF))
+        with open(f"{table_dir}/{BACKFILL_FILE}", "w") as f:
+            f.write(
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-01-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                f"  status: {status}\n"
+            )
+
+    def test_staging_name_for_non_shared_prod_table_should_use_staging_project(self):
+        """Staging tables for a non-shared-prod query still live in the staging project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.EXPERIMENTS_TABLE, date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "moz_fx_data_experiments__monitoring__analysis_results_v1_2021_05_03"
+        )
+
+    def test_backup_name_for_non_shared_prod_table_should_use_staging_project(self):
+        """Backup tables for a non-shared-prod query still live in the staging project."""
+        name = get_backfill_backup_table_name(self.EXPERIMENTS_TABLE, date(2021, 5, 3))
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "moz_fx_data_experiments__monitoring__analysis_results_v1_backup_2021_05_03"
+        )
+
+    def test_staging_name_for_shared_prod_table_should_not_be_prefixed(self):
+        """Tables in the staging project keep their existing unprefixed names."""
+        name = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-shared-prod.test_derived.test_table_v1", date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "test_derived__test_table_v1_2021_05_03"
+        )
+
+    def test_backup_name_for_shared_prod_table_should_not_be_prefixed(self):
+        """Backups in the staging project keep their existing unprefixed names."""
+        name = get_backfill_backup_table_name(
+            "moz-fx-data-shared-prod.test_derived.test_table_v1", date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "test_derived__test_table_v1_backup_2021_05_03"
+        )
+
+    def test_staging_names_for_same_table_in_different_projects_should_differ(self):
+        """The prefix is what keeps same-named tables from colliding in one dataset."""
+        shared_prod = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-shared-prod.monitoring.analysis_results_v1", date(2021, 5, 3)
+        )
+        experiments = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-experiments.monitoring.analysis_results_v1", date(2021, 5, 3)
+        )
+        assert shared_prod != experiments
+
+    def test_staging_client_project_without_target_should_be_staging_project(self):
+        """Without a target the client runs in the staging project, not the query's project."""
+        assert _staging_client_project(None) == BACKFILL_DESTINATION_PROJECT
+
+    def test_staging_client_project_with_target_should_be_target_project(self):
+        """A target redirects the client to the target project."""
+        target = Target(name="dev", project_id="sandbox")
+        assert _staging_client_project(target) == "sandbox"
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_should_use_staging_project_for_client(
+        self, mock_client, mock_table_exists
+    ):
+        """The staging existence check runs in the staging project, not the query's project."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+
+            # staging exists, backup does not -> eligible to complete
+            mock_table_exists.side_effect = [True, False]
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-experiments",
+                self.EXPERIMENTS_TABLE,
+                status=BackfillStatus.COMPLETE.value,
+            )
+
+            assert self.EXPERIMENTS_TABLE in result
+            assert (
+                mock_client.call_args.kwargs["project"] == BACKFILL_DESTINATION_PROJECT
+            )
+            checked_staging = mock_table_exists.call_args_list[0].args[1]
+            assert checked_staging.startswith(
+                f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            )
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_without_project_should_scan_all_projects(
+        self, mock_client, mock_table_exists
+    ):
+        """project=None scans every project so non-shared-prod entries are picked up."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            # no staging table exists yet -> both entries are eligible to initiate
+            mock_table_exists.return_value = False
+
+            result = get_scheduled_backfills(
+                "sql",
+                None,
+                status=BackfillStatus.INITIATE.value,
+            )
+
+            assert set(result) == {
+                self.EXPERIMENTS_TABLE,
+                "moz-fx-data-shared-prod.monitoring.analysis_results_v1",
+            }
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_with_project_should_restrict_scan(
+        self, mock_client, mock_table_exists
+    ):
+        """Passing a project restricts the scan to that project."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            mock_table_exists.return_value = False
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-experiments",
+                status=BackfillStatus.INITIATE.value,
+            )
+
+            assert set(result) == {self.EXPERIMENTS_TABLE}
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_scheduled_json_should_include_staging_and_backup_tables(
+        self, mock_client, mock_table_exists
+    ):
+        """The JSON output carries the table names so consumers don't rebuild them."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            mock_table_exists.return_value = False
+
+            result = runner.invoke(
+                scheduled,
+                ["--status=Initiate", "--json_path=out.json"],
+            )
+
+            assert result.exit_code == 0
+
+            entries = {
+                e["qualified_table_name"]: e
+                for e in json.loads(Path("out.json").read_text())
+            }
+
+            staging_prefix = (
+                f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            )
+
+            experiments = entries[self.EXPERIMENTS_TABLE]
+            assert experiments["staging_table"] == (
+                f"{staging_prefix}moz_fx_data_experiments__monitoring"
+                "__analysis_results_v1_2021_05_03"
+            )
+            assert experiments["backup_table"] == (
+                f"{staging_prefix}moz_fx_data_experiments__monitoring"
+                "__analysis_results_v1_backup_2021_05_03"
+            )
+
+            shared_prod = entries[
+                "moz-fx-data-shared-prod.monitoring.analysis_results_v1"
+            ]
+            assert shared_prod["staging_table"] == (
+                f"{staging_prefix}monitoring__analysis_results_v1_2021_05_03"
+            )
+            assert shared_prod["backup_table"] == (
+                f"{staging_prefix}monitoring__analysis_results_v1_backup_2021_05_03"
+            )
+
+    def test_info_without_project_should_scan_all_projects(self):
+        """info with no project lists entries from every project."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+            self._write_backfill_entry("moz-fx-data-shared-prod")
+
+            result = runner.invoke(info, [])
+
+            assert result.exit_code == 0
+            assert self.EXPERIMENTS_TABLE in result.output
+            assert "moz-fx-data-shared-prod.monitoring.analysis_results_v1" in (
+                result.output
+            )
+            assert "total of 2 backfill(s)" in result.output
+
+    def test_info_with_project_should_restrict_to_that_project(self):
+        """info with a project only lists that project's entries."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+            self._write_backfill_entry("moz-fx-data-shared-prod")
+
+            result = runner.invoke(info, ["--project-id=moz-fx-data-experiments"])
+
+            assert result.exit_code == 0
+            assert self.EXPERIMENTS_TABLE in result.output
+            assert "moz-fx-data-shared-prod.monitoring.analysis_results_v1" not in (
+                result.output
+            )
+            assert "total of 1 backfill(s)" in result.output

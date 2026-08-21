@@ -1,10 +1,24 @@
 """Load browser release-note records from GCS into BigQuery.
 
-Reads every developer- and user-facing release-note JSON record written by
+Reads developer- and user-facing release-note JSON records written by
 docker-etl's release_scraping job (scheduled weekly by telemetry-airflow's
 web_scraping DAG) under
 gs://moz-fx-data-prod-external-data/MARKET_RESEARCH/STRUCTURED/, and
-truncate-and-reloads the destination table from the full corpus on each run.
+incrementally appends only blobs not already present in the destination
+table.
+
+The upstream corpus is write-once per identity: release_scraping's own
+`gcs_path_for`/`gcs_user_release_path_for` key the blob name on
+`browser`+`version`+`release_date` (not `scraped_date`), and the scraper
+fetches existing GCS paths up front and skips scraping anything already
+present -- so a given release note is scraped and uploaded at most once,
+ever, and its blob is never touched again. That makes `blob_name` (already
+stored per row for traceability) a safe load cursor: every run lists the
+full GCS prefix, diffs it against the `blob_name`s already loaded, and
+downloads+appends only what's new. The one edge case this doesn't cover:
+if release_scraping's own dedup logic ever changed such that a blob got
+rewritten in place under the same name, that update would be silently
+missed here, since a previously-seen blob name is never re-fetched.
 """
 
 import json
@@ -14,6 +28,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+from google.api_core.exceptions import NotFound
 from google.cloud import bigquery, storage
 
 from bigquery_etl.schema import Schema
@@ -25,18 +40,36 @@ TABLE_ID = "moz-fx-data-shared-prod.external_derived.market_research_releases_v1
 # Filename prefixes release_scraping uses for developer and user release notes.
 BLOB_PREFIXES = ("release_", "user_release_")
 
-# Each record is its own small blob, so reloading the corpus is bound by request
-# latency rather than bandwidth. Downloading concurrently keeps the runtime flat
-# as the corpus grows instead of scaling with the number of blobs.
+# Most runs only have a handful of new blobs, but keep concurrency for the
+# first-ever backfill run (or a run after a long gap) where the new set can
+# be as large as the full historical corpus.
 DOWNLOAD_WORKERS = 16
 
-# schema.yaml is the single source of truth for the destination schema. This
-# load truncates the table, which replaces its schema, so passing a separately
-# maintained schema here would silently overwrite the field descriptions that
-# `bqetl deploy` applies from schema.yaml.
+# schema.yaml is the single source of truth for the destination schema.
+# Passed explicitly (with autodetect=False) so an appended batch can never
+# silently drift the destination schema from what schema.yaml declares.
 SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
 SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
 COLUMNS = [field.name for field in SCHEMA]
+
+
+def get_existing_blob_names(bq_client):
+    """Return the set of `blob_name`s already loaded into the destination table.
+
+    Returns an empty set if the table doesn't exist yet (schema not deployed,
+    or first-ever run), so that case is treated the same as "nothing loaded
+    yet" rather than an error.
+    """
+    try:
+        return {
+            row.blob_name
+            for row in bq_client.query(
+                f"SELECT DISTINCT blob_name FROM `{TABLE_ID}`"
+            ).result()
+        }
+    except NotFound:
+        return set()
+
 
 # Malformed dates encountered while normalizing, so that one bad value in one
 # blob degrades to NULL instead of failing the whole weekly reload. Appended to
@@ -134,18 +167,28 @@ if __name__ == "__main__":
             f"changed its filename convention. Examples: {skipped_blobs[:5]}"
         )
 
-    with ThreadPoolExecutor(max_workers=DOWNLOAD_WORKERS) as pool:
-        rows = list(pool.map(fetch_and_normalize, blobs))
-
-    # The corpus only ever grows, so an empty listing always means something
-    # upstream broke (failed scrape, renamed prefix, lost bucket access).
-    # Loading it would truncate the table, and because --date is ignored a
-    # rerun can't restore the previous contents, so fail loudly instead.
-    if not rows:
+    # The corpus only ever grows, so an empty full listing always means
+    # something upstream broke (failed scrape, renamed prefix, lost bucket
+    # access) -- fail loudly rather than silently loading nothing.
+    if not blobs:
         raise ValueError(
             f"No release-note records found under gs://{GCS_BUCKET}/"
-            f"{GCS_STRUCTURED_PREFIX}/ -- refusing to truncate {TABLE_ID}"
+            f"{GCS_STRUCTURED_PREFIX}/ -- refusing to load {TABLE_ID}"
         )
+
+    bq_client = bigquery.Client()
+    existing_blob_names = get_existing_blob_names(bq_client)
+    new_blobs = [blob for blob in blobs if blob.name not in existing_blob_names]
+    print(
+        f"{len(new_blobs)} of {len(blobs)} blobs are new "
+        f"({len(blobs) - len(new_blobs)} already loaded)"
+    )
+    if not new_blobs:
+        print("No new blobs since the last run -- nothing to load.")
+        raise SystemExit(0)
+
+    with ThreadPoolExecutor(max_workers=DOWNLOAD_WORKERS) as pool:
+        rows = list(pool.map(fetch_and_normalize, new_blobs))
 
     if unparseable_dates:
         print(
@@ -156,11 +199,10 @@ if __name__ == "__main__":
             print(f"  {detail}")
 
     results_df = pd.DataFrame(rows, columns=COLUMNS)
-    print(f"Parsed {len(results_df)} rows")
+    print(f"Parsed {len(results_df)} new rows")
 
-    bq_client = bigquery.Client()
     job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
         autodetect=False,
         schema=SCHEMA,
     )
@@ -172,4 +214,4 @@ if __name__ == "__main__":
     )
     load_job.result()  # waits for completion
 
-    print(f"Loaded {len(results_df)} rows into {TABLE_ID} (full reload)")
+    print(f"Appended {len(results_df)} new rows to {TABLE_ID} (incremental load)")

@@ -1,0 +1,52 @@
+friendly_name: Market Research Browser Blog Posts Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from the scraped browser vendor blog corpus,
+  containing embeddings and semantic features to support grounded question answering
+  and VECTOR_SEARCH over Mozilla's market-intel corpus.
+
+  Grain: one row per `source_url`. `scraped_date` is the partition column and records
+  the scrape on which the post was first observed and indexed — it is NOT part of the grain.
+
+  LLM generated fields:
+  - post_summary_llm
+  - post_category_llm
+  - post_topics_llm
+  - post_entities_llm
+  - embedding based on [title, raw_text]
+
+  Incremental strategy
+  - The upstream loader (`external_derived.market_research_blogs_v1`) incrementally
+    appends newly-scraped GCS blobs into a cumulative table -- it is not a clean
+    single-day arrivals feed, and a `scraped_date` batch can include any post that
+    happened to be scraped that week. The query therefore anti-joins the current
+    scrape against every `source_url` already present in this table, and only
+    enriches posts it has never seen. This keeps the standard `@submission_date`
+    contract while avoiding paying AI.GENERATE / AI.EMBED costs again for posts that
+    have not changed.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+schema:
+  allow_field_addition: true
+scheduling:
+  dag_name: bqetl_market_research
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'scraped_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - browser
+    - source_type
+require_column_descriptions: true
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.external.market_research_blogs

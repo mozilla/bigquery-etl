@@ -84,3 +84,6 @@ fields:
 - name: is_enrollment_paused
   type: BOOL
   mode: NULLABLE
+- !include-field
+  file: /sql/moz-fx-data-experiments/monitoring/experiment_metric_configs_v1/schema.yaml
+  field: metric_config

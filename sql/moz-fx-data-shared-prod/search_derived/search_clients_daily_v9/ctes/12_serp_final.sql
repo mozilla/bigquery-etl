@@ -24,7 +24,7 @@ FROM
   `search_derived.search_clients_daily_v9.serp_events_clients_ad_enterprise_cte`
 LEFT JOIN
   `search_derived.search_clients_daily_v9.serp_ad_click_target_cte`
-  USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
+  USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
 LEFT JOIN
   `search_derived.search_clients_daily_v9.serp_aggregates_cte`
-  USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
+  USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)

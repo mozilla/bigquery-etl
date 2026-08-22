@@ -1,6 +1,6 @@
 [DENG-8178 for search_clients_daily_v9](https://mozilla-hub.atlassian.net/browse/DENG-8178)
 
-A daily aggregate of desktop searches, one row per `client_id`, `submission_date`, `normalized_engine` and `source`.
+A daily aggregate of desktop searches, one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `source`.
 
 Exposed to users as view `search.search_clients_engines_sources_daily`.
 
@@ -13,13 +13,13 @@ graph TD
 
     %% SAP
     subgraph SG1["SAP: Customer Enrichment Pipeline"]
-    base_sap("sap_events_with_client_info<br/>---<br/>latest record by:<br/>client_id<br/>submission_date<br/>normalized_engine<br/>source")
+    base_sap("sap_events_with_client_info<br/>---<br/>latest record by:<br/>client_id<br/>submission_date<br/>normalized_engine<br/>partner_code<br/>source")
 
     sap_enterprise("sap_is_enterprise<br/>---<br/>group by:<br/>client_id<br/>submission_date")
 
     sap_full_events("sap_events_clients_ad_enterprise")
 
-    sap_agg("sap_aggregates<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>normalized_engine<br/>source")
+    sap_agg("sap_aggregates<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>normalized_engine<br/>partner_code<br/>source")
 
     sap_final("sap_final")
 
@@ -29,7 +29,7 @@ graph TD
 
     sap_full_events -->|"sap events"| sap_final
 
-    sap_agg -->|"left join using (client_id, submission_date, normalized_engine, source)"| sap_final
+    sap_agg -->|"left join using (client_id, submission_date, normalized_engine, partner_code, source)"| sap_final
     end
 
     adblocker -->|"left join using (client_id, submission_date)"| sap_full_events
@@ -37,15 +37,15 @@ graph TD
 
     %% SERP
     subgraph SG2["SERP: Customer Enrichment Pipeline"]
-    base_serp("serp_events_with_client_info<br/>---<br/>latest record by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>serp_search_access_point")
+    base_serp("serp_events_with_client_info<br/>---<br/>latest record by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>partner_code<br/>serp_search_access_point")
 
     serp_enterprise("serp_is_enterprise<br/>---<br/>group by:<br/>client_id<br/>submission_date")
 
     serp_full_events("serp_events_clients_ad_enterprise")
 
-    serp_agg("serp_aggregates<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>serp_search_access_point")
+    serp_agg("serp_aggregates<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>partner_code<br/>serp_search_access_point")
 
-    serp_ad_click("serp_ad_click_target<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>serp_search_access_point")
+    serp_ad_click("serp_ad_click_target<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>partner_code<br/>serp_search_access_point")
 
     serp_final("serp_final")
 
@@ -55,14 +55,14 @@ graph TD
 
     serp_full_events -->|"serp events"| serp_final
 
-    serp_agg -->|"left join using (client_id, submission_date, serp_provider_id, serp_search_access_point)"| serp_final
+    serp_agg -->|"left join using (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)"| serp_final
 
-    serp_ad_click -->|"left join using (client_id, submission_date, serp_provider_id, serp_search_access_point)"| serp_final
+    serp_ad_click -->|"left join using (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)"| serp_final
     end
 
     %% FINALS
 
-    join_sap_serp("join_sap_serp<br/>---<br/>serp_final full outer join sap_final on:<br/>client_id<br/>submission_date<br/>engine<br/>source<br/>---<br/>shared columns coalesced serp first")
+    join_sap_serp("join_sap_serp<br/>---<br/>serp_final full outer join sap_final on:<br/>client_id<br/>submission_date<br/>engine<br/>partner_code<br/>source<br/>---<br/>shared columns coalesced serp first")
 
     final("final<br/>---<br/>renames to the output schema<br/>no further aggregation")
 
@@ -87,7 +87,11 @@ graph TD
 
 ## A note on `partner_code`
 
-`partner_code` is **not** part of the grain anywhere in this query. It is carried as a passthrough from the latest event of each client, date, engine and source combination. Two searches on the same engine and source with different partner codes on the same day collapse into one row, and the surviving row reports the partner code of the most recent event. Tagged and organic volumes are still counted separately, through `is_tagged` in the SERP aggregates, so this passthrough does not affect those measures.
+`partner_code` is part of the grain. Two searches on the same engine and source with different partner codes on the same day produce two rows, one per code.
+
+It is never `null`. Both pipelines derive it as `coalesce(nullif(partner_code, ''), 'no_code')`, so an empty string and an absent key both become the literal `no_code`. This is required rather than cosmetic: `partner_code` is a key in all three internal joins, and BigQuery's equality never matches `null` to `null`, so a nullable key would silently lose every affected row's aggregates. It also means consumers can split on `partner_code` with `=` and `!=` without a `null` bucket escaping both sides.
+
+The expression is duplicated across five CTEs — the two `_events_with_client_info` and the three aggregate CTEs — because each derives the value independently from its own scan. They must stay byte-identical or the joins miss.
 
 ## Helper functions
 
@@ -137,21 +141,21 @@ SERP's comes from `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v
 
 The engine is normalized on both sides through `udf.normalize_search_engine`. On the SAP side the input is `provider_id`, except where `provider_id` is `other`, in which case `provider_name` is normalized instead. On the SERP side the input is `search_engine`.
 
-An empty string `partner_code` is converted to `null` on both sides.
+An empty string or absent `partner_code` becomes `no_code` on both sides.
 
 SAP `source` values are rewritten onto the SERP vocabulary, which the SERP side carries unmodified as `sap_source`. `abouthome` becomes `about_home`, `newtab` becomes `about_newtab`, and every remaining hyphen becomes an underscore, so `urlbar-handoff`, `urlbar-searchmode` and `urlbar-persisted` become `urlbar_handoff`, `urlbar_searchmode` and `urlbar_persisted`. A `null` source stays `null`. The same expression appears in both `sap_events_with_client_info` and `sap_aggregates`; the two CTEs join on `source`, so they have to derive it identically.
 
 #### Events with client info
 
-These are the `_events_with_client_info` CTEs. The grain is **one row per `client_id`, `submission_date`, engine and access point** — `normalized_engine` and `source` on the SAP side, `serp_provider_id` and `serp_search_access_point` on the SERP side.
+These are the `_events_with_client_info` CTEs. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point** — `normalized_engine` and `source` on the SAP side, `serp_provider_id` and `serp_search_access_point` on the SERP side.
 
-Each row represents the most recent search event for a specific client, on a specific day, using a specific search engine, from a specific source. Every other column, including `partner_code`, is a passthrough from that one surviving event.
+Each row represents the most recent search event for a specific client, on a specific day, using a specific search engine, with a specific partner code, from a specific source. Every other column is a passthrough from that one surviving event.
 
-**Note:** If a client performed multiple searches on the same day with the same engine and source combination, they would still only get one row in this result set, showing the details from their most recent search event (based on the latest `event_timestamp`).
+**Note:** If a client performed multiple searches on the same day with the same engine, partner code and source combination, they would still only get one row in this result set, showing the details from their most recent search event (based on the latest `event_timestamp`).
 
 ##### Qualify
 
-- partitions events by `client_id`, `submission_date`, engine and access point (`row_number()`)
+- partitions events by `client_id`, `submission_date`, engine, `partner_code` and access point (`row_number()`)
 - lists the most recent event first (`order by event_timestamp desc`)
 - on the SERP side adds `impression_id` as a secondary sort key so ties are broken deterministically
 - keeps only the most recent event (`qualify row_number() = 1`)
@@ -165,22 +169,22 @@ Each row represents the most recent search event for a specific client, on a spe
 
 #### SERP Ad Click Targets
 
-This is the SERP `ad_click_target` CTE. The grain is **one row per `client_id`, `submission_date`, `serp_provider_id` and `serp_search_access_point`**.
+This is the SERP `ad_click_target` CTE. The grain is **one row per `client_id`, `submission_date`, `serp_provider_id`, `partner_code` and `serp_search_access_point`**.
 
-Each row represents a concatenated list of distinct ad components that a specific client clicked on, for a specific day, on a specific search engine, from a specific search access point.
+Each row represents a concatenated list of distinct ad components that a specific client clicked on, for a specific day, on a specific search engine, with a specific partner code, from a specific search access point.
 
-**Note:** If a client clicked on multiple ads (or the same ad multiple times) on the same day with the same engine and search access point combination, they would get one row in this result set with all their distinct ad components listed as a comma-separated string.
+**Note:** If a client clicked on multiple ads (or the same ad multiple times) on the same day with the same engine, partner code and search access point combination, they would get one row in this result set with all their distinct ad components listed as a comma-separated string.
 
 - accesses individual ad component records (`unnest(ad_components)`)
 - collect all unique ad component values clicked and concatenates them into a single comma-separated string in a deterministic order (`string_agg(distinct ... order by ad_components.component)`)
 
 #### Aggregates
 
-These are the `_aggregates` CTEs. The grain is **one row per `client_id`, `submission_date`, engine and access point** — the same keys the corresponding `_events_with_client_info` CTE partitions by.
+These are the `_aggregates` CTEs. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point** — the same keys the corresponding `_events_with_client_info` CTE partitions by.
 
-Each row represents aggregated search activity and engagement metrics for a specific client, on a specific day, using a specific search engine, from a specific source.
+Each row represents aggregated search activity and engagement metrics for a specific client, on a specific day, using a specific search engine, with a specific partner code, from a specific source.
 
-**Note:** If a client performed multiple searches on the same day with the same engine and source combination, they would get one row in this result set with all their activity aggregated together.
+**Note:** If a client performed multiple searches on the same day with the same engine, partner code and source combination, they would get one row in this result set with all their activity aggregated together.
 
 The two sides do not compute the same measures.
 
@@ -193,11 +197,11 @@ The two sides do not compute the same measures.
 - `left join`ed to `_aggregates`
 - on the SERP side also `left join`ed to `serp_ad_click_target`
 
-SAP joins using `client_id, submission_date, normalized_engine, source`. SERP joins using `client_id, submission_date, serp_provider_id, serp_search_access_point`.
+SAP joins using `client_id, submission_date, normalized_engine, partner_code, source`. SERP joins using `client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point`.
 
 ### Join SAP and SERP
 
-This is the `join_sap_serp_cte`. The grain is **one row per `client_id`, `submission_date`, engine and access point**, carrying both the SAP and the SERP measures for that combination.
+This is the `join_sap_serp_cte`. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point**, carrying both the SAP and the SERP measures for that combination.
 
 #### Full outer join, not serp-driven
 
@@ -217,7 +221,7 @@ The prefix on a column name says which side it can come from. A coalesced column
 
 #### Counts and sums are zero, never null
 
-Every count and sum in this CTE falls back to `0`. A row that reaches this CTE from one side only has no counterpart on the other side for that client, date, engine and access point, so zero is the count rather than an unknown.
+Every count and sum in this CTE falls back to `0`. A row that reaches this CTE from one side only has no counterpart on the other side for that client, date, engine, partner code and access point, so zero is the count rather than an unknown.
 
 The trade-off is that a zero no longer distinguishes "no activity" from "the other side's data is missing or late". Conditions where SAP is recorded but not SERP are mostly on engines where we have not instrumented SERP metrics at all. If needed, look at the search provider to check uncertainty.
 
@@ -229,7 +233,7 @@ Three columns are deliberately left alone. `profile_age_in_days` is not a count,
 
 #### Two constraints worth knowing before editing this CTE
 
-- **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each key is spelled out as an equality plus an explicit both-`null` match.
+- **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each nullable key is spelled out as an equality plus an explicit both-`null` match. `partner_code` is the exception: it is never `null`, so a plain `=` is enough.
 - **One `coalesce` needs an explicit cast.** `sap_aggregates_cte` casts its integer counter to `float64`, so combining it with the SERP side would widen the result and break the `INTEGER` type declared in `schema.yaml`. `max_concurrent_tab_count_max` therefore casts the SAP side back to `int64` inside the `coalesce`.
 
 ### Final

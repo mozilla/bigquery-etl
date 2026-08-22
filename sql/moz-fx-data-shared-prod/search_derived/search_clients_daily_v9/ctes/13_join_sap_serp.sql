@@ -185,3 +185,5 @@ FULL OUTER JOIN
       AND serp_final_cte.serp_search_access_point IS NULL
     )
   )
+  -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
+  AND sap_final_cte.partner_code = serp_final_cte.partner_code

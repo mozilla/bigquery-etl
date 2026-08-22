@@ -20,11 +20,9 @@ SELECT
         )
     ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine`(JSON_VALUE(event_extra.provider_id))
   END AS normalized_engine, -- this is "engine" in v8
-  CASE
-    WHEN JSON_VALUE(event_extra.partner_code) = ''
-      THEN NULL
-    ELSE JSON_VALUE(event_extra.partner_code)
-  END AS partner_code,
+  -- partner_code is a grain key, so it must never be NULL: an absent JSON key and an
+  -- empty string both become 'no_code' so equality joins match rather than silently missing
+  COALESCE(NULLIF(JSON_VALUE(event_extra.partner_code), ''), 'no_code') AS partner_code,
   CASE
     WHEN JSON_VALUE(event_extra.source) = 'abouthome'
       THEN 'about_home'
@@ -132,6 +130,7 @@ QUALIFY
       client_id,
       submission_date,
       normalized_engine,
+      partner_code,
       source
     ORDER BY
       event_timestamp DESC

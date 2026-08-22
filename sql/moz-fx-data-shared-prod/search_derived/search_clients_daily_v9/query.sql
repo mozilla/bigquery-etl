@@ -88,11 +88,9 @@ sap_events_with_client_info_cte AS (
           JSON_VALUE(event_extra.provider_id)
         )
     END AS normalized_engine, -- this is "engine" in v8
-    CASE
-      WHEN JSON_VALUE(event_extra.partner_code) = ''
-        THEN NULL
-      ELSE JSON_VALUE(event_extra.partner_code)
-    END AS partner_code,
+    -- partner_code is a grain key, so it must never be NULL: an absent JSON key and an
+    -- empty string both become 'no_code' so equality joins match rather than silently missing
+    COALESCE(NULLIF(JSON_VALUE(event_extra.partner_code), ''), 'no_code') AS partner_code,
     CASE
       WHEN JSON_VALUE(event_extra.source) = 'abouthome'
         THEN 'about_home'
@@ -200,6 +198,7 @@ sap_events_with_client_info_cte AS (
         client_id,
         submission_date,
         normalized_engine,
+        partner_code,
         source
       ORDER BY
         event_timestamp DESC
@@ -233,6 +232,8 @@ sap_aggregates_cte AS (
           JSON_VALUE(event_extra.provider_id)
         )
     END AS normalized_engine,
+    -- must stay identical to sap_events_with_client_info_cte: partner_code is a join key
+    COALESCE(NULLIF(JSON_VALUE(event_extra.partner_code), ''), 'no_code') AS partner_code,
     -- must stay identical to sap_events_with_client_info_cte: source is a join key
     CASE
       WHEN JSON_VALUE(event_extra.source) = 'abouthome'
@@ -263,6 +264,7 @@ sap_aggregates_cte AS (
     client_id,
     submission_date,
     normalized_engine,
+    partner_code,
     source
     -- search_access_point
 ),
@@ -276,7 +278,7 @@ sap_final_cte AS (
     sap_events_clients_ad_enterprise_cte
   LEFT JOIN
     sap_aggregates_cte
-    USING (client_id, submission_date, normalized_engine, source)
+    USING (client_id, submission_date, normalized_engine, partner_code, source)
     -- using(client_id, submission_date, normalized_engine, partner_code, search_access_point) -- rename
 ),
 serp_is_enterprise_cte AS (
@@ -304,11 +306,9 @@ serp_events_with_client_info_cte AS (
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(
       search_engine
     ) AS serp_provider_id, -- this is engine
-    CASE
-      WHEN partner_code = ''
-        THEN NULL
-      ELSE partner_code
-    END AS partner_code,
+    -- partner_code is a grain key, so it must never be NULL: an absent map key and an
+    -- empty string both become 'no_code' so equality joins match rather than silently missing
+    COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     sap_source AS serp_search_access_point,
     sample_id,
     profile_group_id,
@@ -364,6 +364,7 @@ serp_events_with_client_info_cte AS (
         client_id,
         submission_date,
         serp_provider_id,
+        partner_code,
         serp_search_access_point
       ORDER BY
         event_timestamp DESC,
@@ -393,6 +394,8 @@ serp_ad_click_target_cte AS (
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(
       search_engine
     ) AS serp_provider_id, -- this is engine
+    -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
+    COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     sap_source AS serp_search_access_point,
     -- ORDER BY makes the concatenation order deterministic (STRING_AGG is arbitrary otherwise)
     STRING_AGG(
@@ -411,6 +414,7 @@ serp_ad_click_target_cte AS (
     client_id,
     submission_date,
     serp_provider_id,
+    partner_code,
     serp_search_access_point
 ),
 serp_aggregates_cte AS (
@@ -420,6 +424,8 @@ serp_aggregates_cte AS (
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(
       search_engine
     ) AS serp_provider_id, -- this is engine
+    -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
+    COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     sap_source AS serp_search_access_point,
     LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
     COUNTIF(
@@ -455,6 +461,7 @@ serp_aggregates_cte AS (
     client_id,
     submission_date,
     serp_provider_id,
+    partner_code,
     serp_search_access_point
 ),
 serp_final_cte AS (
@@ -483,10 +490,10 @@ serp_final_cte AS (
     serp_events_clients_ad_enterprise_cte
   LEFT JOIN
     serp_ad_click_target_cte
-    USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
+    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
   LEFT JOIN
     serp_aggregates_cte
-    USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
+    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
 ),
 join_sap_serp_cte AS (
   SELECT
@@ -678,6 +685,8 @@ join_sap_serp_cte AS (
         AND serp_final_cte.serp_search_access_point IS NULL
       )
     )
+    -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
+    AND sap_final_cte.partner_code = serp_final_cte.partner_code
 ),
 final_cte AS (
   SELECT

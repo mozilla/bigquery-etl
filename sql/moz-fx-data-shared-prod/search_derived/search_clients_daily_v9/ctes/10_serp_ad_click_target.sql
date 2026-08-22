@@ -5,6 +5,8 @@ SELECT
   `moz-fx-data-shared-prod.udf.normalize_search_engine`(
     search_engine
   ) AS serp_provider_id, -- this is engine
+  -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
+  COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
   sap_source AS serp_search_access_point,
   -- ORDER BY makes the concatenation order deterministic (STRING_AGG is arbitrary otherwise)
   STRING_AGG(
@@ -23,4 +25,5 @@ GROUP BY
   client_id,
   submission_date,
   serp_provider_id,
+  partner_code,
   serp_search_access_point

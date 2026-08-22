@@ -8,5 +8,5 @@ FROM
   `search_derived.search_clients_daily_v9.sap_events_clients_ad_enterprise_cte`
 LEFT JOIN
   `search_derived.search_clients_daily_v9.sap_aggregates_cte`
-  USING (client_id, submission_date, normalized_engine, source)
+  USING (client_id, submission_date, normalized_engine, partner_code, source)
 -- using(client_id, submission_date, normalized_engine, partner_code, search_access_point) -- rename

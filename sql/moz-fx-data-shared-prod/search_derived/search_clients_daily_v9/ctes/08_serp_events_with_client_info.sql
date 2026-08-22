@@ -16,11 +16,9 @@ SELECT
   `moz-fx-data-shared-prod.udf.normalize_search_engine`(
     search_engine
   ) AS serp_provider_id, -- this is engine
-  CASE
-    WHEN partner_code = ''
-      THEN NULL
-    ELSE partner_code
-  END AS partner_code,
+  -- partner_code is a grain key, so it must never be NULL: an absent map key and an
+  -- empty string both become 'no_code' so equality joins match rather than silently missing
+  COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
   sap_source AS serp_search_access_point,
   sample_id,
   profile_group_id,
@@ -76,6 +74,7 @@ QUALIFY
       client_id,
       submission_date,
       serp_provider_id,
+      partner_code,
       serp_search_access_point
     ORDER BY
       event_timestamp DESC,

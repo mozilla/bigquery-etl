@@ -20,6 +20,8 @@ SELECT
         )
     ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine`(JSON_VALUE(event_extra.provider_id))
   END AS normalized_engine,
+  -- must stay identical to sap_events_with_client_info_cte: partner_code is a join key
+  COALESCE(NULLIF(JSON_VALUE(event_extra.partner_code), ''), 'no_code') AS partner_code,
   -- must stay identical to sap_events_with_client_info_cte: source is a join key
   CASE
     WHEN JSON_VALUE(event_extra.source) = 'abouthome'
@@ -50,5 +52,6 @@ GROUP BY
   client_id,
   submission_date,
   normalized_engine,
+  partner_code,
   source
 -- search_access_point

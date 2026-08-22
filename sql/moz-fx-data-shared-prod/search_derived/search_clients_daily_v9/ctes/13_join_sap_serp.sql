@@ -21,7 +21,23 @@ SELECT
     sap_final_cte.profile_group_id
   ) AS profile_group_id,
   COALESCE(serp_final_cte.country, sap_final_cte.country) AS country,
+  COALESCE(
+    serp_final_cte.normalized_app_name,
+    sap_final_cte.normalized_app_name
+  ) AS normalized_app_name,
   COALESCE(serp_final_cte.app_version, sap_final_cte.app_version) AS app_version,
+  COALESCE(
+    serp_final_cte.app_major_version,
+    sap_final_cte.app_major_version
+  ) AS app_major_version,
+  COALESCE(
+    serp_final_cte.app_minor_version,
+    sap_final_cte.app_minor_version
+  ) AS app_minor_version,
+  COALESCE(
+    serp_final_cte.app_patch_revision,
+    sap_final_cte.app_patch_revision
+  ) AS app_patch_revision,
   COALESCE(serp_final_cte.channel, sap_final_cte.channel) AS channel,
   COALESCE(
     serp_final_cte.normalized_channel,

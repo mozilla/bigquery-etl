@@ -6,7 +6,11 @@ SELECT
   search_access_point AS source,
   partner_code, -- NEW
   country,
+  normalized_app_name,
   app_version,
+  app_major_version,
+  app_minor_version,
+  app_patch_revision,
   windows_build_number, -- NEW
   distribution_id,
   locale,

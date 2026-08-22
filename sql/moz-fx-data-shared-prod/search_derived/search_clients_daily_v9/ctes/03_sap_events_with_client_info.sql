@@ -35,7 +35,17 @@ SELECT
   profile_group_id,
   legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
   normalized_country_code AS country,
-  normalized_app_name AS app_version,
+  normalized_app_name,
+  mozfun.norm.browser_version_info(client_info.app_display_version).version AS app_version,
+  mozfun.norm.browser_version_info(
+    client_info.app_display_version
+  ).major_version AS app_major_version,
+  mozfun.norm.browser_version_info(
+    client_info.app_display_version
+  ).minor_version AS app_minor_version,
+  mozfun.norm.browser_version_info(
+    client_info.app_display_version
+  ).patch_revision AS app_patch_revision,
   client_info.app_channel AS channel,
   normalized_channel,
   client_info.locale,

@@ -103,7 +103,17 @@ sap_events_with_client_info_cte AS (
     profile_group_id,
     legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
     normalized_country_code AS country,
-    normalized_app_name AS app_version,
+    normalized_app_name,
+    mozfun.norm.browser_version_info(client_info.app_display_version).version AS app_version,
+    mozfun.norm.browser_version_info(
+      client_info.app_display_version
+    ).major_version AS app_major_version,
+    mozfun.norm.browser_version_info(
+      client_info.app_display_version
+    ).minor_version AS app_minor_version,
+    mozfun.norm.browser_version_info(
+      client_info.app_display_version
+    ).patch_revision AS app_patch_revision,
     client_info.app_channel AS channel,
     normalized_channel,
     client_info.locale,
@@ -314,7 +324,11 @@ serp_events_with_client_info_cte AS (
     profile_group_id,
     legacy_telemetry_client_id,
     normalized_country_code AS country,
-    normalized_app_name AS app_version,
+    normalized_app_name,
+    browser_version_info.version AS app_version,
+    browser_version_info.major_version AS app_major_version,
+    browser_version_info.minor_version AS app_minor_version,
+    browser_version_info.patch_revision AS app_patch_revision,
     channel,
     normalized_channel,
     locale,
@@ -518,7 +532,23 @@ join_sap_serp_cte AS (
       sap_final_cte.profile_group_id
     ) AS profile_group_id,
     COALESCE(serp_final_cte.country, sap_final_cte.country) AS country,
+    COALESCE(
+      serp_final_cte.normalized_app_name,
+      sap_final_cte.normalized_app_name
+    ) AS normalized_app_name,
     COALESCE(serp_final_cte.app_version, sap_final_cte.app_version) AS app_version,
+    COALESCE(
+      serp_final_cte.app_major_version,
+      sap_final_cte.app_major_version
+    ) AS app_major_version,
+    COALESCE(
+      serp_final_cte.app_minor_version,
+      sap_final_cte.app_minor_version
+    ) AS app_minor_version,
+    COALESCE(
+      serp_final_cte.app_patch_revision,
+      sap_final_cte.app_patch_revision
+    ) AS app_patch_revision,
     COALESCE(serp_final_cte.channel, sap_final_cte.channel) AS channel,
     COALESCE(
       serp_final_cte.normalized_channel,
@@ -697,7 +727,11 @@ final_cte AS (
     search_access_point AS source,
     partner_code, -- NEW
     country,
+    normalized_app_name,
     app_version,
+    app_major_version,
+    app_minor_version,
+    app_patch_revision,
     windows_build_number, -- NEW
     distribution_id,
     locale,

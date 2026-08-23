@@ -213,7 +213,7 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 #### Column precedence
 
-Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max`.
+Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max`.
 
 The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total` from SAP, and `serp_counts_total`, `serp_ad_click_target`, `serp_os_version_major`, `serp_os_version_minor` and the SERP ad and engagement counts from SERP.
 
@@ -245,7 +245,7 @@ A few output columns are worth calling out.
 - `normalized_engine` is the only engine column. v8's `engine` is dropped. In v8 `engine` held the raw engine string and `normalized_engine` was always null; in v9 the engine is normalized through `udf.normalize_search_engine` on both pipelines, so the two columns would have held the same value.
 - `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - `search_with_ads` is the **tagged** count and `search_with_ads_organic` is the organic one.
-- `experiments` prefers the SERP passthrough. The SAP fallback is built from `json_keys(experiments)[offset(0)]` and therefore carries only the first experiment.
+- `experiments` prefers the SERP passthrough, which arrives as a repeated field and is never `null`. Because `coalesce` returns the first non-`null` argument and an empty array is not `null`, the SAP side is only reached on sap-only rows. The SAP side builds the same shape from JSON, one element per enrollment, ordered by experiment slug.
 
 v9 is **not** a column-for-column match of v8 and is not intended to be. Every column carries real data; nothing is emitted as a placeholder `null` purely to preserve the v8 shape. Nineteen v8 columns that had no Glean source are therefore absent from both the query and `schema.yaml`: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, `is_sap_monetizable`, and the thirteen `scalar_parent_urlbar_searchmode_*` columns.
 
@@ -255,7 +255,8 @@ One output carries a tie that BigQuery does not break. It matches `search_client
 
 - `policies_is_enterprise` (the `_is_enterprise_cte`s): `mozfun.stats.mode_last(array_agg(... order by event_timestamp))` takes the statistical mode, breaking ties toward the latest event. On two mode-tied values whose events share the same `event_timestamp` the tiebreak is arbitrary. v8 is the same: `mozfun.stats.mode_last(array_agg(... order by submission_timestamp))`, no secondary tiebreaker.
 
-Two outputs were non-deterministic and have been made reproducible:
+Three outputs were non-deterministic and have been made reproducible:
 
 - `ad_click_target` (`string_agg`): `order by ad_components.component`. `distinct` fixes the set; the `order by` fixes the concatenation order.
+- `experiments` on the SAP side (`sap_events_with_client_info_cte`): the array is built by iterating `json_keys(experiments, 1)`, whose order BigQuery does not document as stable, so the element order is pinned with `order by k` on the experiment slug. The SERP side is a passthrough of `ping_info.experiments` and keeps whatever order the ping carried; the two conventions never mix, because the `coalesce` in `join_sap_serp_cte` takes one side's array whole.
 - SERP passthrough columns (`serp_events_with_client_info_cte`): the `qualify row_number() over (... order by event_timestamp desc)` picked an arbitrary row when two events for the same client, date, engine, and access point shared an `event_timestamp`. `impression_id` is now a secondary sort key; it is unique in `serp_events_v2`, so the surviving row is fully determined.

@@ -134,7 +134,13 @@ SELECT
     serp_final_cte.ping_seq,
     sap_final_cte.ping_seq
   ) AS ping_seq,
-  COALESCE(serp_final_cte.experiments, sap_final_cte.experiments) AS experiments,
+  -- prefer whichever side recorded enrollments, not merely whichever side exists. an empty
+  -- array is not NULL, so without the IF a SERP impression that predates an enrollment
+  -- would win over a SAP event that carries it
+  COALESCE(
+    IF(ARRAY_LENGTH(serp_final_cte.experiments) = 0, NULL, serp_final_cte.experiments),
+    sap_final_cte.experiments
+  ) AS experiments,
   COALESCE(
     serp_final_cte.has_adblocker_addon,
     sap_final_cte.has_adblocker_addon

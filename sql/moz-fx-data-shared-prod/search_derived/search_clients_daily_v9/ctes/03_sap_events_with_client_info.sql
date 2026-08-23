@@ -104,30 +104,23 @@ SELECT
   ping_info.start_time AS ping_start_time,
   ping_info.end_time AS ping_end_time,
   ping_info.seq AS ping_seq,
-  [
-    STRUCT(
-      JSON_KEYS(experiments)[OFFSET(0)] AS key,
+  -- one element per enrollment. ORDER BY makes the element order reproducible, since
+  -- JSON_KEYS does not document a stable order
+  ARRAY(
+    SELECT AS STRUCT
+      k AS key,
       STRUCT(
-        REPLACE(
-          TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].branch),
-          '"',
-          ''
-        ) AS branch,
+        JSON_VALUE(experiments[k].branch) AS branch,
         STRUCT(
-          REPLACE(
-            TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].extra.type),
-            '"',
-            ''
-          ) AS type,
-          REPLACE(
-            TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].extra.enrollment_id),
-            '"',
-            ''
-          ) AS enrollment_id
+          JSON_VALUE(experiments[k].extra.type) AS type,
+          JSON_VALUE(experiments[k].extra.enrollment_id) AS enrollment_id
         ) AS extra
       ) AS value
-    )
-  ] AS experiments
+    FROM
+      UNNEST(JSON_KEYS(experiments, 1)) AS k
+    ORDER BY
+      k
+  ) AS experiments
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
 WHERE

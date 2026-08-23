@@ -172,30 +172,23 @@ sap_events_with_client_info_cte AS (
     ping_info.start_time AS ping_start_time,
     ping_info.end_time AS ping_end_time,
     ping_info.seq AS ping_seq,
-    [
-      STRUCT(
-        JSON_KEYS(experiments)[OFFSET(0)] AS key,
+    -- one element per enrollment. ORDER BY makes the element order reproducible, since
+    -- JSON_KEYS does not document a stable order
+    ARRAY(
+      SELECT AS STRUCT
+        k AS key,
         STRUCT(
-          REPLACE(
-            TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].branch),
-            '"',
-            ''
-          ) AS branch,
+          JSON_VALUE(experiments[k].branch) AS branch,
           STRUCT(
-            REPLACE(
-              TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].extra.type),
-              '"',
-              ''
-            ) AS type,
-            REPLACE(
-              TO_JSON_STRING(experiments[JSON_KEYS(experiments)[OFFSET(0)]].extra.enrollment_id),
-              '"',
-              ''
-            ) AS enrollment_id
+            JSON_VALUE(experiments[k].extra.type) AS type,
+            JSON_VALUE(experiments[k].extra.enrollment_id) AS enrollment_id
           ) AS extra
         ) AS value
-      )
-    ] AS experiments
+      FROM
+        UNNEST(JSON_KEYS(experiments, 1)) AS k
+      ORDER BY
+        k
+    ) AS experiments
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
@@ -645,7 +638,13 @@ join_sap_serp_cte AS (
       serp_final_cte.ping_seq,
       sap_final_cte.ping_seq
     ) AS ping_seq,
-    COALESCE(serp_final_cte.experiments, sap_final_cte.experiments) AS experiments,
+    -- prefer whichever side recorded enrollments, not merely whichever side exists. an empty
+    -- array is not NULL, so without the IF a SERP impression that predates an enrollment
+    -- would win over a SAP event that carries it
+    COALESCE(
+      IF(ARRAY_LENGTH(serp_final_cte.experiments) = 0, NULL, serp_final_cte.experiments),
+      sap_final_cte.experiments
+    ) AS experiments,
     COALESCE(
       serp_final_cte.has_adblocker_addon,
       sap_final_cte.has_adblocker_addon

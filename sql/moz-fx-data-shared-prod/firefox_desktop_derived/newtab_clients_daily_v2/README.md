@@ -63,6 +63,9 @@ This dataset provides a daily summary of user engagement with the Firefox Newtab
 - `topsite_rows`, `topsite_sponsored_tiles_configured`
 - `newtab_blocked_sponsors`: Dismissed advertisers list
 
+### 📜 Engagement Behavior
+- `newtab_scroll`: Whether the user scrolled past the scroll telemetry threshold during any newtab visit that day (NULL if no visit crossed the threshold)
+
 ### 🧭 Visit & Engagement Counts
 | Category     | Visit Counts | Event Counts |
 |--------------|--------------|--------------|

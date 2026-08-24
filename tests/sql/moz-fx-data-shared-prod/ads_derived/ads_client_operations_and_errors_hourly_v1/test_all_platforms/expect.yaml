@@ -19,14 +19,17 @@
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
+  client_error_other: 0
   build_cache_error_builder_error: 0
   build_cache_error_database_error: 0
   build_cache_error_empty_db_path: 0
   build_cache_error_invalid_max_size: 0
   build_cache_error_invalid_ttl: 0
+  build_cache_error_other: 0
   deserialization_error_invalid_ad_item: 0
   deserialization_error_invalid_array: 0
   deserialization_error_invalid_structure: 0
+  deserialization_error_other: 0
   http_cache_outcome_cleanup_failed: 0
   http_cache_outcome_hit: 0
   http_cache_outcome_lookup_failed: 0
@@ -35,6 +38,7 @@
   http_cache_outcome_no_cache: 0
   http_cache_outcome_store_failed: 0
   http_cache_outcome_trim_failed: 0
+  http_cache_outcome_other: 0
 # Android Release: 1 ping with ops only
 - submission_date: "2025-01-15"
   submission_hour: "2025-01-15T10:00:00+00:00"
@@ -55,14 +59,17 @@
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
+  client_error_other: 0
   build_cache_error_builder_error: 0
   build_cache_error_database_error: 0
   build_cache_error_empty_db_path: 0
   build_cache_error_invalid_max_size: 0
   build_cache_error_invalid_ttl: 0
+  build_cache_error_other: 0
   deserialization_error_invalid_ad_item: 0
   deserialization_error_invalid_array: 0
   deserialization_error_invalid_structure: 0
+  deserialization_error_other: 0
   http_cache_outcome_cleanup_failed: 0
   http_cache_outcome_hit: 0
   http_cache_outcome_lookup_failed: 0
@@ -71,6 +78,7 @@
   http_cache_outcome_no_cache: 0
   http_cache_outcome_store_failed: 0
   http_cache_outcome_trim_failed: 0
+  http_cache_outcome_other: 0
 # Desktop: 2 pings aggregated (op_request_ads=2+3=5, op_record_click=1)
 #          http_cache_outcome hit=1, trim_failed=1+1=2
 - submission_date: "2025-01-15"
@@ -92,14 +100,17 @@
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
+  client_error_other: 0
   build_cache_error_builder_error: 0
   build_cache_error_database_error: 0
   build_cache_error_empty_db_path: 0
   build_cache_error_invalid_max_size: 0
   build_cache_error_invalid_ttl: 0
+  build_cache_error_other: 0
   deserialization_error_invalid_ad_item: 0
   deserialization_error_invalid_array: 0
   deserialization_error_invalid_structure: 0
+  deserialization_error_other: 0
   http_cache_outcome_cleanup_failed: 0
   http_cache_outcome_hit: 1
   http_cache_outcome_lookup_failed: 0
@@ -108,6 +119,7 @@
   http_cache_outcome_no_cache: 0
   http_cache_outcome_store_failed: 0
   http_cache_outcome_trim_failed: 2
+  http_cache_outcome_other: 0
 # Android-nightly (Fenix): 1 ping with 1 build_cache_error occurrence
 - submission_date: "2025-01-15"
   submission_hour: "2025-01-15T10:00:00+00:00"
@@ -128,14 +140,17 @@
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
+  client_error_other: 0
   build_cache_error_builder_error: 0
   build_cache_error_database_error: 1
   build_cache_error_empty_db_path: 0
   build_cache_error_invalid_max_size: 0
   build_cache_error_invalid_ttl: 0
+  build_cache_error_other: 0
   deserialization_error_invalid_ad_item: 0
   deserialization_error_invalid_array: 0
   deserialization_error_invalid_structure: 0
+  deserialization_error_other: 0
   http_cache_outcome_cleanup_failed: 0
   http_cache_outcome_hit: 0
   http_cache_outcome_lookup_failed: 0
@@ -144,3 +159,4 @@
   http_cache_outcome_no_cache: 0
   http_cache_outcome_store_failed: 0
   http_cache_outcome_trim_failed: 0
+  http_cache_outcome_other: 0

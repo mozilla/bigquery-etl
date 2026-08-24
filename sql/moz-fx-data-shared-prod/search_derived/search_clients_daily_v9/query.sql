@@ -308,14 +308,14 @@ serp_events_with_client_info_cte AS (
     submission_date,
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(
       search_engine
-    ) AS serp_provider_id, -- this is engine
+    ) AS provider_id, -- this is engine
     -- partner_code is a grain key, so it must never be NULL: an absent map key and an
     -- empty string both become 'no_code' so equality joins match rather than silently missing
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
     -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
     -- so all three copies must lower it identically
-    LOWER(sap_source) AS serp_search_access_point,
+    LOWER(sap_source) AS search_access_point,
     sample_id,
     profile_group_id,
     legacy_telemetry_client_id,
@@ -373,9 +373,9 @@ serp_events_with_client_info_cte AS (
       PARTITION BY
         client_id,
         submission_date,
-        serp_provider_id,
+        provider_id,
         partner_code,
-        serp_search_access_point
+        search_access_point
       ORDER BY
         event_timestamp DESC,
         impression_id -- deterministic tiebreaker (unique serp_events_v2 key) so serp passthroughs are reproducible on ties
@@ -403,13 +403,13 @@ serp_ad_click_target_cte AS (
     submission_date,
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(
       search_engine
-    ) AS serp_provider_id, -- this is engine
+    ) AS provider_id, -- this is engine
     -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
     -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
     -- so all three copies must lower it identically
-    LOWER(sap_source) AS serp_search_access_point,
+    LOWER(sap_source) AS search_access_point,
     -- ORDER BY makes the concatenation order deterministic (STRING_AGG is arbitrary otherwise)
     STRING_AGG(
       DISTINCT ad_components.component,
@@ -426,9 +426,9 @@ serp_ad_click_target_cte AS (
   GROUP BY
     client_id,
     submission_date,
-    serp_provider_id,
+    provider_id,
     partner_code,
-    serp_search_access_point
+    search_access_point
 ),
 serp_aggregates_cte AS (
   SELECT
@@ -436,13 +436,13 @@ serp_aggregates_cte AS (
     submission_date,
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(
       search_engine
-    ) AS serp_provider_id, -- this is engine
+    ) AS provider_id, -- this is engine
     -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
     -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
     -- so all three copies must lower it identically
-    LOWER(sap_source) AS serp_search_access_point,
+    LOWER(sap_source) AS search_access_point,
     LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
     COUNTIF(
       (is_tagged IS TRUE)
@@ -476,9 +476,9 @@ serp_aggregates_cte AS (
   GROUP BY
     client_id,
     submission_date,
-    serp_provider_id,
+    provider_id,
     partner_code,
-    serp_search_access_point
+    search_access_point
 ),
 serp_final_cte AS (
   SELECT
@@ -506,10 +506,10 @@ serp_final_cte AS (
     serp_events_clients_ad_enterprise_cte
   LEFT JOIN
     serp_ad_click_target_cte
-    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
+    USING (client_id, submission_date, provider_id, partner_code, search_access_point)
   LEFT JOIN
     serp_aggregates_cte
-    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
+    USING (client_id, submission_date, provider_id, partner_code, search_access_point)
 ),
 join_sap_serp_cte AS (
   SELECT
@@ -517,9 +517,9 @@ join_sap_serp_cte AS (
     -- a serp_ or sap_ prefix means the value comes from that side only
     COALESCE(serp_final_cte.client_id, sap_final_cte.client_id) AS client_id,
     COALESCE(serp_final_cte.submission_date, sap_final_cte.submission_date) AS submission_date,
-    COALESCE(serp_final_cte.serp_provider_id, sap_final_cte.normalized_engine) AS provider_id,
+    COALESCE(serp_final_cte.provider_id, sap_final_cte.normalized_engine) AS provider_id,
     COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code) AS partner_code,
-    COALESCE(serp_final_cte.serp_search_access_point, sap_final_cte.source) AS search_access_point,
+    COALESCE(serp_final_cte.search_access_point, sap_final_cte.source) AS search_access_point,
     COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id) AS sample_id,
     COALESCE(
       serp_final_cte.legacy_telemetry_client_id,
@@ -695,12 +695,12 @@ join_sap_serp_cte AS (
       OR (sap_final_cte.submission_date IS NULL AND serp_final_cte.submission_date IS NULL)
     )
     AND (
-      sap_final_cte.normalized_engine = serp_final_cte.serp_provider_id
-      OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.serp_provider_id IS NULL)
+      sap_final_cte.normalized_engine = serp_final_cte.provider_id
+      OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.provider_id IS NULL)
     )
     AND (
-      sap_final_cte.source = serp_final_cte.serp_search_access_point
-      OR (sap_final_cte.source IS NULL AND serp_final_cte.serp_search_access_point IS NULL)
+      sap_final_cte.source = serp_final_cte.search_access_point
+      OR (sap_final_cte.source IS NULL AND serp_final_cte.search_access_point IS NULL)
     )
     -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
     AND sap_final_cte.partner_code = serp_final_cte.partner_code

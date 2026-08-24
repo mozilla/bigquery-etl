@@ -4,9 +4,9 @@ SELECT
   -- a serp_ or sap_ prefix means the value comes from that side only
   COALESCE(serp_final_cte.client_id, sap_final_cte.client_id) AS client_id,
   COALESCE(serp_final_cte.submission_date, sap_final_cte.submission_date) AS submission_date,
-  COALESCE(serp_final_cte.serp_provider_id, sap_final_cte.normalized_engine) AS provider_id,
+  COALESCE(serp_final_cte.provider_id, sap_final_cte.normalized_engine) AS provider_id,
   COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code) AS partner_code,
-  COALESCE(serp_final_cte.serp_search_access_point, sap_final_cte.source) AS search_access_point,
+  COALESCE(serp_final_cte.search_access_point, sap_final_cte.source) AS search_access_point,
   COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id) AS sample_id,
   COALESCE(
     serp_final_cte.legacy_telemetry_client_id,
@@ -176,12 +176,12 @@ FULL OUTER JOIN
     OR (sap_final_cte.submission_date IS NULL AND serp_final_cte.submission_date IS NULL)
   )
   AND (
-    sap_final_cte.normalized_engine = serp_final_cte.serp_provider_id
-    OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.serp_provider_id IS NULL)
+    sap_final_cte.normalized_engine = serp_final_cte.provider_id
+    OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.provider_id IS NULL)
   )
   AND (
-    sap_final_cte.source = serp_final_cte.serp_search_access_point
-    OR (sap_final_cte.source IS NULL AND serp_final_cte.serp_search_access_point IS NULL)
+    sap_final_cte.source = serp_final_cte.search_access_point
+    OR (sap_final_cte.source IS NULL AND serp_final_cte.search_access_point IS NULL)
   )
   -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
   AND sap_final_cte.partner_code = serp_final_cte.partner_code

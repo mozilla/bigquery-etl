@@ -37,15 +37,15 @@ graph TD
 
     %% SERP
     subgraph SG2["SERP: Customer Enrichment Pipeline"]
-    base_serp("serp_events_with_client_info<br/>---<br/>latest record by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>partner_code<br/>serp_search_access_point")
+    base_serp("serp_events_with_client_info<br/>---<br/>latest record by:<br/>client_id<br/>submission_date<br/>provider_id<br/>partner_code<br/>search_access_point")
 
     serp_enterprise("serp_is_enterprise<br/>---<br/>group by:<br/>client_id<br/>submission_date")
 
     serp_full_events("serp_events_clients_ad_enterprise")
 
-    serp_agg("serp_aggregates<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>partner_code<br/>serp_search_access_point")
+    serp_agg("serp_aggregates<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>provider_id<br/>partner_code<br/>search_access_point")
 
-    serp_ad_click("serp_ad_click_target<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>serp_provider_id<br/>partner_code<br/>serp_search_access_point")
+    serp_ad_click("serp_ad_click_target<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>provider_id<br/>partner_code<br/>search_access_point")
 
     serp_final("serp_final")
 
@@ -55,9 +55,9 @@ graph TD
 
     serp_full_events -->|"serp events"| serp_final
 
-    serp_agg -->|"left join using (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)"| serp_final
+    serp_agg -->|"left join using (client_id, submission_date, provider_id, partner_code, search_access_point)"| serp_final
 
-    serp_ad_click -->|"left join using (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)"| serp_final
+    serp_ad_click -->|"left join using (client_id, submission_date, provider_id, partner_code, search_access_point)"| serp_final
     end
 
     %% FINALS
@@ -149,7 +149,7 @@ The SERP side lowercases `sap_source`. `serp_events` emits one mixed-case value,
 
 #### Events with client info
 
-These are the `_events_with_client_info` CTEs. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point** — `normalized_engine` and `source` on the SAP side, `serp_provider_id` and `serp_search_access_point` on the SERP side.
+These are the `_events_with_client_info` CTEs. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point** — `normalized_engine` and `source` on the SAP side, `provider_id` and `search_access_point` on the SERP side.
 
 Each row represents the most recent search event for a specific client, on a specific day, using a specific search engine, with a specific partner code, from a specific source. Every other column is a passthrough from that one surviving event.
 
@@ -171,7 +171,7 @@ Each row represents the most recent search event for a specific client, on a spe
 
 #### SERP Ad Click Targets
 
-This is the SERP `ad_click_target` CTE. The grain is **one row per `client_id`, `submission_date`, `serp_provider_id`, `partner_code` and `serp_search_access_point`**.
+This is the SERP `ad_click_target` CTE. The grain is **one row per `client_id`, `submission_date`, `provider_id`, `partner_code` and `search_access_point`**.
 
 Each row represents a concatenated list of distinct ad components that a specific client clicked on, for a specific day, on a specific search engine, with a specific partner code, from a specific search access point.
 
@@ -199,7 +199,7 @@ The two sides do not compute the same measures.
 - `left join`ed to `_aggregates`
 - on the SERP side also `left join`ed to `serp_ad_click_target`
 
-SAP joins using `client_id, submission_date, normalized_engine, partner_code, source`. SERP joins using `client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point`.
+SAP joins using `client_id, submission_date, normalized_engine, partner_code, source`. SERP joins using `client_id, submission_date, provider_id, partner_code, search_access_point`.
 
 ### Join SAP and SERP
 

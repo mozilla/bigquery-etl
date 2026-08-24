@@ -519,20 +519,14 @@ join_sap_serp_cte AS (
     COALESCE(serp_final_cte.submission_date, sap_final_cte.submission_date) AS submission_date,
     COALESCE(serp_final_cte.serp_provider_id, sap_final_cte.normalized_engine) AS provider_id,
     COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code) AS partner_code,
-    COALESCE(
-      serp_final_cte.serp_search_access_point,
-      sap_final_cte.source
-    ) AS search_access_point,
+    COALESCE(serp_final_cte.serp_search_access_point, sap_final_cte.source) AS search_access_point,
     COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id) AS sample_id,
     COALESCE(
       serp_final_cte.legacy_telemetry_client_id,
       sap_final_cte.legacy_telemetry_client_id
     ) AS legacy_telemetry_client_id,
     COALESCE(sap_final_cte.sap_counts_total, 0) AS sap_counts_total,
-    COALESCE(
-      serp_final_cte.profile_group_id,
-      sap_final_cte.profile_group_id
-    ) AS profile_group_id,
+    COALESCE(serp_final_cte.profile_group_id, sap_final_cte.profile_group_id) AS profile_group_id,
     COALESCE(serp_final_cte.country, sap_final_cte.country) AS country,
     COALESCE(
       serp_final_cte.normalized_app_name,
@@ -635,18 +629,9 @@ join_sap_serp_cte AS (
       serp_final_cte.overridden_by_third_party,
       sap_final_cte.overridden_by_third_party
     ) AS overridden_by_third_party,
-    COALESCE(
-      serp_final_cte.ping_start_time,
-      sap_final_cte.ping_start_time
-    ) AS ping_start_time,
-    COALESCE(
-      serp_final_cte.ping_end_time,
-      sap_final_cte.ping_end_time
-    ) AS ping_end_time,
-    COALESCE(
-      serp_final_cte.ping_seq,
-      sap_final_cte.ping_seq
-    ) AS ping_seq,
+    COALESCE(serp_final_cte.ping_start_time, sap_final_cte.ping_start_time) AS ping_start_time,
+    COALESCE(serp_final_cte.ping_end_time, sap_final_cte.ping_end_time) AS ping_end_time,
+    COALESCE(serp_final_cte.ping_seq, sap_final_cte.ping_seq) AS ping_seq,
     -- prefer whichever side recorded enrollments, not merely whichever side exists. an empty
     -- array is not NULL, so without the IF a SERP impression that predates an enrollment
     -- would win over a SAP event that carries it
@@ -711,17 +696,11 @@ join_sap_serp_cte AS (
     )
     AND (
       sap_final_cte.normalized_engine = serp_final_cte.serp_provider_id
-      OR (
-        sap_final_cte.normalized_engine IS NULL
-        AND serp_final_cte.serp_provider_id IS NULL
-      )
+      OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.serp_provider_id IS NULL)
     )
     AND (
       sap_final_cte.source = serp_final_cte.serp_search_access_point
-      OR (
-        sap_final_cte.source IS NULL
-        AND serp_final_cte.serp_search_access_point IS NULL
-      )
+      OR (sap_final_cte.source IS NULL AND serp_final_cte.serp_search_access_point IS NULL)
     )
     -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
     AND sap_final_cte.partner_code = serp_final_cte.partner_code

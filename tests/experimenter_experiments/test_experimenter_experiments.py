@@ -1,10 +1,13 @@
 """Tests for the metric-config sidecar read in experimenter_experiments_v1/query.py."""
 
+import datetime
 import importlib.util
+import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+import pytz
 
 QUERY_DIR = (
     Path(__file__).resolve().parents[2]
@@ -58,7 +61,6 @@ class TestReadMetricConfigs:
         }
 
     def test_query_failure_returns_empty_dict(self, query):
-        # A missing/unreadable sidecar table must never fail the ten-minute import.
         with patch("google.cloud.bigquery.Client") as mock_client:
             mock_client.return_value.query.side_effect = Exception("boom")
             result = query.read_metric_configs(
@@ -66,3 +68,28 @@ class TestReadMetricConfigs:
             )
 
         assert result == {}
+
+    def test_date_time_results_are_json_serializable(self, query):
+        fake_rows = [
+            MagicMock(
+                normandy_slug="slug-a",
+                metric_config={
+                    "external_config_last_modified": pytz.utc.localize(
+                        datetime.datetime(2024, 1, 1, 12, 30)
+                    ),
+                    "overrides": {"start_date": datetime.date(2024, 6, 1)},
+                },
+            )
+        ]
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = fake_rows
+            result = query.read_metric_configs(
+                "proj", "monitoring", "experiment_metric_configs_v1"
+            )
+
+        json.dumps(result)
+        assert (
+            result["slug-a"]["external_config_last_modified"]
+            == "2024-01-01T12:30:00+00:00"
+        )
+        assert result["slug-a"]["overrides"]["start_date"] == "2024-06-01"

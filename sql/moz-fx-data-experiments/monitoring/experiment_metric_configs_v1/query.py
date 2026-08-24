@@ -120,7 +120,7 @@ class MetricConfig:
     has_external_config: bool = False
     external_config_url: str | None = None
     external_config_last_modified: str | None = None
-    has_external_config_overrides: bool = False
+    has_external_config_overrides: bool | None = None
     skip: bool | None = None
     is_private: bool | None = None
     analysis_unit: str | None = None
@@ -329,7 +329,12 @@ def get_metric_configs(
             logger.warning(
                 f"Cannot resolve metric config for {nimbus_experiment.slug}: {e}"
             )
-            metric_config = MetricConfig(resolution_error=str(e))
+            metric_config = MetricConfig(
+                has_external_config=(
+                    _find_external_config(nimbus_experiment.slug, configs) is not None
+                ),
+                resolution_error=str(e),
+            )
 
         rows.append(
             Row(
@@ -368,7 +373,7 @@ def main():
 
     client = bigquery.Client(args.project)
     client.load_table_from_json(blob, destination_table, job_config=job_config).result()
-    print(f"Loaded {len(blob)} experiment metric configs")
+    logger.info(f"Loaded {len(blob)} experiment metric configs")
 
 
 if __name__ == "__main__":

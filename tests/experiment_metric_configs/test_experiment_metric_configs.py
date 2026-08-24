@@ -140,10 +140,13 @@ class TestGetMetricConfigs:
         rows = query.get_metric_configs(experiments, configs)
 
         by_slug = {row.normandy_slug: row for row in rows}
-        assert (
-            by_slug["segment-failure-experiment"].metric_config.resolution_error
-            is not None
-        )
+        failed = by_slug["segment-failure-experiment"].metric_config
+        assert failed.resolution_error is not None
+        # segment-failure-experiment.toml is a real external config; it just
+        # fails to resolve, so has_external_config must still read True.
+        assert failed.has_external_config is True
+        assert failed.has_external_config_overrides is None
+
         assert (
             by_slug["no-external-config-experiment"].metric_config.resolution_error
             is None

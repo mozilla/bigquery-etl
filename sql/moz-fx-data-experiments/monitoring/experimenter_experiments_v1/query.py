@@ -36,8 +36,18 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
         client = bigquery.Client(project)
         rows = client.query(
             f"SELECT normandy_slug, metric_config FROM `{project}.{dataset}.{table}`"
+            " WHERE metric_config IS NOT NULL"
         ).result()
-        return {row.normandy_slug: dict(row.metric_config) for row in rows}
+
+        # load_table_from_json can't serialize datetime/date objects, so unstructure them
+        converter = cattrs.BaseConverter()
+        converter.register_unstructure_hook(datetime.datetime, lambda d: d.isoformat())
+        converter.register_unstructure_hook(datetime.date, lambda d: d.isoformat())
+
+        return {
+            row.normandy_slug: converter.unstructure(dict(row.metric_config))
+            for row in rows
+        }
     except Exception as e:
         logger.warning(f"Cannot read metric configs from {table}: {e}")
         return {}
@@ -66,15 +76,15 @@ def main():
 
     blob = converter.unstructure(experiments)
 
+    if args.dry_run:
+        print(json.dumps(blob))
+        sys.exit(0)
+
     metric_configs = read_metric_configs(
         args.project, args.destination_dataset, args.metric_config_table
     )
     for row in blob:
         row["metric_config"] = metric_configs.get(row["normandy_slug"])
-
-    if args.dry_run:
-        print(json.dumps(blob))
-        sys.exit(0)
 
     client = bigquery.Client(args.project)
     client.load_table_from_json(blob, destination_table, job_config=job_config).result()

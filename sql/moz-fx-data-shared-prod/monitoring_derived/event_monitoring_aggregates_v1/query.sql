@@ -4364,6 +4364,50 @@ moz_backstage_aggregated AS (
     experiment,
     experiment_branch
 ),
+base_firefox_enterprise_desktop_enterprise_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.enterprise_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
 base_firefox_enterprise_desktop_events_v1 AS (
   SELECT
     DATE(@submission_date) AS submission_date,
@@ -4408,6 +4452,358 @@ base_firefox_enterprise_desktop_events_v1 AS (
     experiment,
     experiment_branch
 ),
+base_firefox_enterprise_desktop_newtab_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.newtab_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_nimbus_targeting_context_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.nimbus_targeting_context_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_post_profile_restore_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.post_profile_restore_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_profile_restore_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.profile_restore_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_profiles_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.profiles_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_prototype_no_code_events_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.prototype_no_code_events_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_sync_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.sync_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
+base_firefox_enterprise_desktop_urlbar_keyword_exposure_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.urlbar_keyword_exposure_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
 firefox_enterprise_desktop_aggregated AS (
   SELECT
     submission_date,
@@ -4424,7 +4820,57 @@ firefox_enterprise_desktop_aggregated AS (
     experiment_branch,
     SUM(total_events) AS total_events,
   FROM
-    (SELECT * FROM base_firefox_enterprise_desktop_events_v1)
+    (
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_enterprise_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_events_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_newtab_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_nimbus_targeting_context_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_post_profile_restore_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_profile_restore_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_profiles_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_prototype_no_code_events_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_sync_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_firefox_enterprise_desktop_urlbar_keyword_exposure_v1
+    )
   GROUP BY
     submission_date,
     window_start,

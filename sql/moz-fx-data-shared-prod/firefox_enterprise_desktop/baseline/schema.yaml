@@ -313,6 +313,12 @@ fields:
         scalar policies.is_enterprise.
 
         '
+    - name: usage_is_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether Firefox is set as the default browser.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -450,6 +456,12 @@ fields:
         \ of a dedicated profiles build skipped over the old default\n    profile\
         \ and created a new profile.\n  restart-claimed-default:\n    A first run\
         \ of a dedicate"
+    - name: usage_distribution_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The distribution id associated with the install of Firefox.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -481,6 +493,260 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The duration of the last foreground session.
+
+        '
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_engagement_active_ticks
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of five-second intervals (''ticks'') the user was considered
+
+        ''active''.
+
+
+        ''active'' means keyboard or mouse interaction with the application.
+
+        It doesn''t take into account whether or not the window has focus or is in
+
+        the foreground, only if it is receiving these interaction events.
+
+
+        Migrated from Telemetry''s `browser.engagement.active_ticks`.
+
+        '
+    - name: browser_engagement_active_ticks_non_synthesized
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of five-second intervals (''ticks'') the user was considered
+
+        ''active'', counting only non-synthesized events.
+
+
+        This is a corrected version of `active_ticks` that excludes synthesized
+
+        mouse and pointer events (for example, the synthesized pointer move that
+
+        is dispatched when content shifts under a stationary cursor during
+
+        scrolling, reflow or content insertion). Such synthesized events inflated
+
+        `active_ticks` starting in Firefox 140. Recorded side-by-side with
+
+        `active_ticks` for data continuity while the correction is evaluated.
+
+        '
+    - name: browser_engagement_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of total non-unique http(s) URIs visited, including
+        page
+
+        reloads, after the session has been restored. URIs on minimized or
+
+        background tabs may also be counted. Private browsing uris are included.
+
+
+        Migrated from Telemetry''s
+
+        `browser.engagement.total_uri_count_normal_and_private_mode`.
+
+        '
+  - name: labeled_custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_engagement_consecutive_active_ticks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Distribution of the number of consecutive five-second intervals
+        (''ticks'')
+
+        the user was considered ''active'' before transitioning to inactive.
+
+
+        Each sample is the length of one uninterrupted run of active ticks,
+
+        recorded when the run ends. This complements the `active_ticks` counters
+
+        (which only track the total) by capturing how long users stay
+
+        continuously engaged, and helps inform whether additional active-tick
+
+        intervals should be introduced in the future.
+
+
+        The `active_ticks` label mirrors the legacy `active_ticks` counter,
+
+        counting all events. The `active_ticks_non_synthesized` label mirrors
+
+        `active_ticks_non_synthesized`, excluding synthesized mouse and pointer
+
+        events. The two labels are recorded side-by-side for easier analysis.
+
+
+        A run still in progress when a ping is submitted is not recorded in that
+
+        ping; it is recorded in a later ping once the run ends.
+
+        '
+  - name: labeled_timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_engagement_inactive_period_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Distribution of the duration of periods during which the user
+        was
+
+        considered ''inactive'', measured from when the user goes inactive until
+
+        the next activity resumes.
+
+
+        Combined with `consecutive_active_ticks`, this helps reason about user
+
+        interaction patterns more holistically and informs whether additional
+
+        active-tick intervals (e.g. 20s or 60s) should be introduced in the
+
+        future.
+
+
+        The `active_ticks` label measures inactive periods for the legacy stream
+
+        (all events). The `active_ticks_non_synthesized` label measures them for
+
+        the corrected stream, which excludes synthesized mouse and pointer
+
+        events. The two labels are recorded side-by-side for easier analysis.
+
+
+        An inactive period still in progress when a ping is submitted is not
+
+        recorded in that ping; it is recorded in a later ping once activity
+
+        resumes.
+
+        '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_attribution_ext
+      type: JSON
+      mode: NULLABLE
+      description: "Extended attribution information.\nMapped to client_info.attribution.ext\
+        \ in datasets.\n* `experiment`: name/id of the enrolled funnel experiment\n\
+        * `variation`: name/id of the variation cohort used in the enrolled funnel\
+        \ experiment\n* `ua`: identifier derived from the user agent downloading the\
+        \ installer\n        e.g. chrome, Google Chrome 123\n* `dltoken`: Unique token\
+        \ created at Firefox download time.\n             e.g. c18f86a3-f228-4d98-91bb-f90135c0aa9c\n\
+        * `msstoresignedin`: only present if the installation was done through the\
+        \ Microsoft Store,\n                     and was able to retrieve the \"campaign\
+        \ ID\" it was first installed with.\n                     This value is \"\
+        true\" if the user was signed into the Microsoft Store\n                 \
+        \    when they first installed, and false otherwise.\n* `msclkid`: only present\
+        \ if the installation was done through the Microsoft Store, and the\n    \
+        \         install is attributable to a Microsoft Store Ads Campaign ID. This\
+        \ differs\n             from a Campaign ID originating "
+    - name: glean_distribution_ext
+      type: JSON
+      mode: NULLABLE
+      description: 'Extended distribution information.
+
+        Mapped to client_info.distribution.ext in datasets.
+
+        * `distributionVersion`: pref `distribution.version`, `null` on failure
+
+        * `partnerId`: pref `mozilla.partner.id`, `null` on failure
+
+        * `distributor`:  pref `app.distributor`, `null` on failure
+
+        * `distributorChannel`: pref `app.distributor.channel`, `null` on failure
+
+        * `partnerNames`: list from prefs `app.partner.<name>=<name>`
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: legacy_telemetry_client_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The client_id according to Telemetry.
+
+        Might not always have a value due to being too early for it to have
+
+        loaded.
+
+        Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0`
+
+        in pings near when the data upload pref is disabled (if Telemetry gets
+
+        to go first), or between when a client_id has been removed and when it
+
+        has been regenerated.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+    - name: legacy_telemetry_profile_group_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The profile_group_id according to Telemetry.
+
+        Might not always have a value due to being too early for it to have
+
+        loaded.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
 
         '
 - name: normalized_app_name

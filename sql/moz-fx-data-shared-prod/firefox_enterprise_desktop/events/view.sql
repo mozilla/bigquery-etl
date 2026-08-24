@@ -6,10 +6,11 @@ SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
     mozfun.norm.glean_ping_info(ping_info) AS ping_info,
+    (SELECT AS STRUCT metrics.*, metrics.url2 AS url) AS metrics,
     mozfun.norm.glean_client_info_attribution(
       client_info,
-      CAST(NULL AS JSON),
-      CAST(NULL AS JSON)
+      metrics.object.glean_attribution_ext,
+      metrics.object.glean_distribution_ext
     ) AS client_info
   ),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,

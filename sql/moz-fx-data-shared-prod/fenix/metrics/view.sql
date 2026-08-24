@@ -1214,7 +1214,9 @@ SELECT
       metrics.labeled_counter.security_ui_neterror_search_cta_action,
       metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
       metrics.labeled_counter.security_ui_neterror_search_cta_reason,
-      metrics.labeled_counter.cache_schema_init_error
+      metrics.labeled_counter.cache_schema_init_error,
+      metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
+      metrics.labeled_counter.network_ssl_token_cache_db_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3502,7 +3504,9 @@ SELECT
       metrics.labeled_counter.security_ui_neterror_search_cta_action,
       metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
       metrics.labeled_counter.security_ui_neterror_search_cta_reason,
-      metrics.labeled_counter.cache_schema_init_error
+      metrics.labeled_counter.cache_schema_init_error,
+      metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
+      metrics.labeled_counter.network_ssl_token_cache_db_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5810,7 +5814,9 @@ SELECT
       metrics.labeled_counter.security_ui_neterror_search_cta_action,
       metrics.labeled_counter.security_ui_neterror_search_cta_click_aborted,
       metrics.labeled_counter.security_ui_neterror_search_cta_reason,
-      metrics.labeled_counter.cache_schema_init_error
+      metrics.labeled_counter.cache_schema_init_error,
+      metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
+      metrics.labeled_counter.network_ssl_token_cache_db_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

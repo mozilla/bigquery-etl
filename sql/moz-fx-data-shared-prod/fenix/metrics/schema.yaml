@@ -16968,9 +16968,6 @@ fields:
         was blocked, ''allowed'' = at least one cryptominer was detected and allowed.)
         Note, pageLoad is used as a baseline measurement.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram CRYPTOMINERS_BLOCKED_COUNT.
-
         '
     - name: contentblocking_email_tracker_count
       type: RECORD
@@ -20019,6 +20016,38 @@ fields:
         API caches.sqlite schema during quota initialization. Labeled by error category:
         "future_version" when the on-disk schema version exceeds the code''s latest
         version (e.g. profile downgrade), "other" for all remaining schema errors.
+
+        '
+    - name: firefox_ai_runtime_onnx_native_availability
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the native ONNX runtime could be loaded in the inference
+        process, as reported by InferenceSession.isAvailable(). It is recorded at
+        most once per profile, guarded by the browser.ml.onnxNativeAvailabilityReported
+        pref.
+
+        '
+    - name: network_ssl_token_cache_db_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Failures touching the persisted TLS token database: ''open'' (unopenable,
+        so removed), ''schema'' (no usable table), ''read'' (unreadable row), ''write''
+        (snapshot not written). Routine removal when persistence is disabled is not
+        counted.
 
         '
   - name: quantity

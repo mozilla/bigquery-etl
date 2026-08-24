@@ -512,11 +512,13 @@ fields:
       mode: NULLABLE
       description: 'The name of the newtab page layout variant the client is assigned,
         for layout experimentation. One of nova-full-width, side-by-side-content-lead,
-        side-by-side-widgets-lead, side-by-side-content-lead-five or side-by-side-widgets-lead-five.
-        The -five variants reach five card columns counting the widgets column, the
-        others four. Reports the assigned variant whether or not the page can currently
-        render it, and covers variants set by pref as well as by a Nimbus train-hop
-        configuration.
+        side-by-side-widgets-lead, side-by-side-content-lead-five, side-by-side-widgets-lead-five,
+        spaces-buttons-top or spaces-buttons-bottom. The -five variants reach five
+        card columns counting the widgets column, the others four. The spaces variants
+        split the band into separately-navigable panels and differ only in where the
+        segmented control sits. Reports the assigned variant whether or not the page
+        can currently render it, and covers variants set by pref as well as by a Nimbus
+        train-hop configuration.
 
         '
   - name: uuid

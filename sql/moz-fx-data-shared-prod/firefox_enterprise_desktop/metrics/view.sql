@@ -11,6 +11,10 @@ SELECT
         metrics.* REPLACE (
           STRUCT(
             mozfun.glean.parse_datetime(
+              metrics.datetime.background_update_time_last_update_scheduled
+            ) AS background_update_time_last_update_scheduled,
+            metrics.datetime.background_update_time_last_update_scheduled AS raw_background_update_time_last_update_scheduled,
+            mozfun.glean.parse_datetime(
               metrics.datetime.blocklist_last_modified_rs_addons_mblf
             ) AS blocklist_last_modified_rs_addons_mblf,
             metrics.datetime.blocklist_last_modified_rs_addons_mblf AS raw_blocklist_last_modified_rs_addons_mblf,
@@ -29,15 +33,26 @@ SELECT
             mozfun.glean.parse_datetime(
               metrics.datetime.blocklist_mlbf_stash_time_oldest
             ) AS blocklist_mlbf_stash_time_oldest,
-            metrics.datetime.blocklist_mlbf_stash_time_oldest AS raw_blocklist_mlbf_stash_time_oldest
+            metrics.datetime.blocklist_mlbf_stash_time_oldest AS raw_blocklist_mlbf_stash_time_oldest,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.legacy_telemetry_session_start_date
+            ) AS legacy_telemetry_session_start_date,
+            metrics.datetime.legacy_telemetry_session_start_date AS raw_legacy_telemetry_session_start_date,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.smart_window_memories_last_updated
+            ) AS smart_window_memories_last_updated,
+            metrics.datetime.smart_window_memories_last_updated AS raw_smart_window_memories_last_updated,
+            mozfun.glean.parse_datetime(metrics.datetime.termsofuse_date) AS termsofuse_date,
+            metrics.datetime.termsofuse_date AS raw_termsofuse_date
           ) AS datetime
         ),
-        metrics.text2 AS text
+        metrics.text2 AS text,
+        metrics.url2 AS url
     ) AS metrics,
     mozfun.norm.glean_client_info_attribution(
       client_info,
-      CAST(NULL AS JSON),
-      CAST(NULL AS JSON)
+      metrics.object.glean_attribution_ext,
+      metrics.object.glean_distribution_ext
     ) AS client_info
   ),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,

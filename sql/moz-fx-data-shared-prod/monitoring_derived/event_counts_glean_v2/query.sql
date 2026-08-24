@@ -2589,6 +2589,41 @@ moz_backstage_events_v1 AS (
     normalized_country_code,
     app_version
 ),
+firefox_enterprise_desktop_enterprise_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "enterprise" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.enterprise_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
 firefox_enterprise_desktop_events_v1 AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -2605,6 +2640,286 @@ firefox_enterprise_desktop_events_v1 AS (
     COUNT(*) * 10 AS total_events,
   FROM
     `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.events_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_newtab_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "newtab" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.newtab_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_nimbus_targeting_context_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "nimbus_targeting_context" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.nimbus_targeting_context_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_post_profile_restore_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "post_profile_restore" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.post_profile_restore_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_profile_restore_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "profile_restore" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.profile_restore_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_profiles_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "profiles" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.profiles_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_prototype_no_code_events_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "prototype_no_code_events" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.prototype_no_code_events_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_sync_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "sync" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.sync_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+firefox_enterprise_desktop_urlbar_keyword_exposure_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "firefox_enterprise_desktop" AS app_id,
+    "firefox_enterprise_desktop" AS app_name,
+    "Firefox Enterprise for Desktop" AS normalized_app_name,
+    "urlbar_keyword_exposure" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.urlbar_keyword_exposure_v1`
   CROSS JOIN
     UNNEST(events) AS event
   WHERE
@@ -2997,4 +3312,49 @@ UNION ALL
 SELECT
   *
 FROM
+  firefox_enterprise_desktop_enterprise_v1
+UNION ALL
+SELECT
+  *
+FROM
   firefox_enterprise_desktop_events_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_newtab_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_nimbus_targeting_context_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_post_profile_restore_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_profile_restore_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_profiles_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_prototype_no_code_events_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_sync_v1
+UNION ALL
+SELECT
+  *
+FROM
+  firefox_enterprise_desktop_urlbar_keyword_exposure_v1

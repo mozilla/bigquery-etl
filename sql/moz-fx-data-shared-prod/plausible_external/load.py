@@ -184,7 +184,11 @@ def _check_staged(bq_client, tmp_table, expected_date, partition_field, duplicat
           MAX(`{partition_field}`) AS max_value,
           -- SAFE_CAST because site_id is staged as a string: it is one of the
           -- unsigned 64-bit columns re-encoded to make the file loadable.
-          COUNTIF(SAFE_CAST(site_id AS INT64) <> {EXPECTED_SITE_ID})
+          -- IS DISTINCT FROM, not <>, because COUNTIF only counts TRUE: a NULL
+          -- or non-numeric site_id casts to NULL and would slip through the
+          -- comparison silently. Those are exactly the vendor changes this
+          -- check exists to catch.
+          COUNTIF(SAFE_CAST(site_id AS INT64) IS DISTINCT FROM {EXPECTED_SITE_ID})
             AS unexpected_site_rows,
           {duplicates} AS duplicate_rows
         FROM
@@ -217,7 +221,8 @@ def _check_staged(bq_client, tmp_table, expected_date, partition_field, duplicat
     if row.unexpected_site_rows:
         raise ValueError(
             f"{row.unexpected_site_rows} of {row.total_rows} staged rows have a "
-            f"site_id other than {EXPECTED_SITE_ID} (firefox.com). These tables, "
+            f"site_id that is not {EXPECTED_SITE_ID} (firefox.com), or that is "
+            "null or non-numeric. These tables, "
             "and the schema.yaml description of every site_id column, are scoped "
             "to firefox.com, so loading them would inflate every downstream "
             "count. Plausible has likely added a property to this export: decide "

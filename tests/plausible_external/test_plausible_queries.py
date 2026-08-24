@@ -13,6 +13,7 @@ columns -- would silently swap values instead.
 
 import importlib.util
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -153,3 +154,65 @@ def test_destination_table_must_be_fully_qualified():
     args = load.parse_args("t", ["--date", "2026-08-05", "--destination-table=events"])
     with pytest.raises(ValueError, match="fully qualified"):
         load.resolve_destination(args, "events_v1")
+
+
+def _capture_check_sql():
+    """Run _check_staged against a stub client and return the SQL it issued."""
+    load = _load_module()
+    captured = {}
+
+    class FakeRow:
+        total_rows = 10
+        out_of_range_rows = 0
+        min_value = "a"
+        max_value = "b"
+        unexpected_site_rows = 0
+        duplicate_rows = 0
+
+    class FakeClient:
+        def query(self, sql, job_config=None):
+            captured["sql"] = sql
+            return SimpleNamespace(result=lambda: [FakeRow()])
+
+    load._check_staged(FakeClient(), "p.tmp.staged", "2026-08-05", "timestamp", None)
+    return captured["sql"], load.EXPECTED_SITE_ID
+
+
+def _site_id_comparison(sql):
+    """Return the comparison node the site_id guard is built from."""
+    tree = parse_one(sql, dialect="bigquery")
+    projection = next(
+        e for e in tree.expressions if e.alias_or_name == "unexpected_site_rows"
+    )
+    comparisons = [
+        n
+        for n in projection.find_all(exp.Binary)
+        if isinstance(n, (exp.NEQ, exp.NullSafeNEQ))
+    ]
+    assert len(comparisons) == 1, f"expected one comparison, got {comparisons}"
+    return comparisons[0]
+
+
+def test_site_id_guard_is_null_safe():
+    """The site_id guard must use IS DISTINCT FROM, not `<>`.
+
+    COUNTIF only counts TRUE, so `SAFE_CAST(site_id AS INT64) <> 86997652`
+    evaluates to NULL -- and is silently not counted -- when site_id is null or
+    non-numeric. Those are precisely the vendor changes this guard exists to
+    catch, so a plain `<>` lets them through while the surrounding empty-file
+    and date-range checks still fire.
+    """
+    sql, _ = _capture_check_sql()
+    comparison = _site_id_comparison(sql)
+    assert isinstance(comparison, exp.NullSafeNEQ), (
+        "site_id guard uses `<>`, which does not count null or non-numeric "
+        "site_ids. Use IS DISTINCT FROM."
+    )
+
+
+def test_site_id_guard_compares_against_the_expected_site():
+    """The guard has to be pinned to the firefox.com site_id."""
+    sql, expected_site_id = _capture_check_sql()
+    comparison = _site_id_comparison(sql)
+    assert comparison.right.name == str(expected_site_id)
+    assert "site_id" in comparison.left.sql(dialect="bigquery")

@@ -439,7 +439,7 @@ serp_aggregates_cte AS (
       (is_tagged IS TRUE)
       AND (
         sap_source = 'follow_on_from_refine_on_incontent_search'
-        OR sap_source = 'follow_on_from_refine_on_serp'
+        OR LOWER(sap_source) = 'follow_on_from_refine_on_serp'
       )
     ) AS serp_follow_on_searches_tagged_count,
     COUNTIF(is_tagged IS TRUE) AS serp_searches_tagged_count,

@@ -26,7 +26,10 @@ SELECT
   ) AS serp_provider_id, -- this is engine
   -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
   COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
-  sap_source AS serp_search_access_point,
+  -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
+  -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
+  -- so all three copies must lower it identically
+  LOWER(sap_source) AS serp_search_access_point,
   LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
   COUNTIF(
     (is_tagged IS TRUE)

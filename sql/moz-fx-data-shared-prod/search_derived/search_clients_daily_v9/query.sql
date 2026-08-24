@@ -312,7 +312,10 @@ serp_events_with_client_info_cte AS (
     -- partner_code is a grain key, so it must never be NULL: an absent map key and an
     -- empty string both become 'no_code' so equality joins match rather than silently missing
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
-    sap_source AS serp_search_access_point,
+    -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
+    -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
+    -- so all three copies must lower it identically
+    LOWER(sap_source) AS serp_search_access_point,
     sample_id,
     profile_group_id,
     legacy_telemetry_client_id,
@@ -403,7 +406,10 @@ serp_ad_click_target_cte AS (
     ) AS serp_provider_id, -- this is engine
     -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
-    sap_source AS serp_search_access_point,
+    -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
+    -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
+    -- so all three copies must lower it identically
+    LOWER(sap_source) AS serp_search_access_point,
     -- ORDER BY makes the concatenation order deterministic (STRING_AGG is arbitrary otherwise)
     STRING_AGG(
       DISTINCT ad_components.component,
@@ -433,7 +439,10 @@ serp_aggregates_cte AS (
     ) AS serp_provider_id, -- this is engine
     -- must stay identical to serp_events_with_client_info_cte: partner_code is a join key
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
-    sap_source AS serp_search_access_point,
+    -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
+    -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
+    -- so all three copies must lower it identically
+    LOWER(sap_source) AS serp_search_access_point,
     LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
     COUNTIF(
       (is_tagged IS TRUE)

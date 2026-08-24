@@ -143,7 +143,9 @@ The engine is normalized on both sides through `udf.normalize_search_engine`. On
 
 An empty string or absent `partner_code` becomes `no_code` on both sides.
 
-SAP `source` values are rewritten onto the SERP vocabulary, which the SERP side carries unmodified as `sap_source`. `abouthome` becomes `about_home`, `newtab` becomes `about_newtab`, and every remaining hyphen becomes an underscore, so `urlbar-handoff`, `urlbar-searchmode` and `urlbar-persisted` become `urlbar_handoff`, `urlbar_searchmode` and `urlbar_persisted`. A `null` source stays `null`. The same expression appears in both `sap_events_with_client_info` and `sap_aggregates`; the two CTEs join on `source`, so they have to derive it identically.
+SAP `source` values are rewritten onto the SERP vocabulary, which the SERP side reads from `sap_source`. `abouthome` becomes `about_home`, `newtab` becomes `about_newtab`, and every remaining hyphen becomes an underscore, so `urlbar-handoff`, `urlbar-searchmode` and `urlbar-persisted` become `urlbar_handoff`, `urlbar_searchmode` and `urlbar_persisted`. A `null` source stays `null`. The same expression appears in both `sap_events_with_client_info` and `sap_aggregates`; the two CTEs join on `source`, so they have to derive it identically.
+
+The SERP side lowercases `sap_source`. `serp_events` emits one mixed-case value, `follow_on_from_refine_on_SERP`, in an otherwise entirely lowercase vocabulary, and this column is both a grain key and the output `source` column. Left raw it would be a silent-empty-result trap: a consumer filtering `source = 'follow_on_from_refine_on_serp'` would match nothing, with no error and no hint. Lowering has no effect on the join — the SAP side has no lowercase counterpart for that value, so the row is SERP-only either way, which is correct, since a follow-on search is issued from the results page rather than a browser search access point. The `lower()` is duplicated across the three SERP CTEs that derive this column, for the same reason `partner_code` is: each scans the source table independently, and they join on the result.
 
 #### Events with client info
 

@@ -19,7 +19,10 @@ SELECT
   -- partner_code is a grain key, so it must never be NULL: an absent map key and an
   -- empty string both become 'no_code' so equality joins match rather than silently missing
   COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
-  sap_source AS serp_search_access_point,
+  -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
+  -- mixed-case value in an otherwise lowercase vocabulary. this is a grain key,
+  -- so all three copies must lower it identically
+  LOWER(sap_source) AS serp_search_access_point,
   sample_id,
   profile_group_id,
   legacy_telemetry_client_id,

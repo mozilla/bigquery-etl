@@ -319,13 +319,15 @@ def get_metric_configs(
     nimbus_experiments: list[NimbusExperiment], configs: ConfigCollection
 ) -> list[Row]:
     """Resolve metric config for each experiment. A bad config never fails the run."""
-    computed_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    computed_at = datetime.datetime.now(datetime.UTC).isoformat()
     rows = []
 
     for nimbus_experiment in nimbus_experiments:
         try:
             metric_config = resolve_metric_config(nimbus_experiment, configs)
-        except RECOVERABLE_RESOLUTION_ERRORS as e:
+        except Exception as e:
+            # don't fail if there is any error resolving the metric config,
+            # attach the error to the row and proceed
             logger.warning(
                 f"Cannot resolve metric config for {nimbus_experiment.slug}: {e}"
             )

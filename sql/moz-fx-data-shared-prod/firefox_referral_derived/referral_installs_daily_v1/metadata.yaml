@@ -3,15 +3,32 @@ description: |-
   Daily count of Firefox first_run installs per referral (invite) code for the
   Firefox Referral Program (DENG-11237).
 
-  Desktop only for the MVP: the referral code arrives via the GA4 /
-  download-attribution path (utm_content=fxrefer:<code>) and is joined through
-  the download token to baseline_clients_first_seen_v1, following the
-  cfs_ga4_attr_v1 pattern. Each client is first-seen exactly once, so daily rows
-  do not double-count across partitions.
+  Sourced from the dedicated Glean `referrals` ping, which Firefox sends once on
+  first run when a profile carries referral attribution data: desktop via
+  `firefox_desktop.referrals` / `browser.referral_code` (bug 2055255, Firefox
+  155) and Android via `fenix.referrals` / `referrals.code` (bug 2062793).
 
-  The desktop source (the GA4 / download-attribution path) is the accepted,
-  validated source. The Fenix (Android) half is blocked pending the Play Store
-  attribution mechanism from Nathan.
+  Firefox deliberately strips the referral code out of regular attribution data
+  and submits it through this ping instead, so the code is NOT readable from GA4
+  `utm_content` or from `attribution.content` on baseline_clients_first_seen_v1.
+  An earlier version of this query used that path and returned zero rows every
+  day; do not reintroduce it.
+
+  Grain: one row per (submission_date, invite_code, normalized_channel). A code
+  used on more than one channel produces more than one row.
+
+  Counting: the ping fires once per profile, so COUNT(DISTINCT client_id) within
+  a partition is an exact install count. Known limitation — a client whose upload
+  is retried across a midnight boundary lands in two partitions and so counts
+  twice in the cumulative total. Accepted as vanishingly rare for the MVP; the
+  durable fix is a client-level first-seen table.
+
+  Channel: all channels are counted, with normalized_channel kept as a column so
+  consumers can filter. Only nightly had reported as of 2026-08-18, since the
+  instrumentation targets 155 and had not reached release. Filtering to release
+  here would leave the table permanently empty and remove the only way to
+  validate the pipeline end to end; filter in referral_installs_totals_v1
+  instead, before the referral hub is public.
 owners:
 - phlee@mozilla.com
 labels:

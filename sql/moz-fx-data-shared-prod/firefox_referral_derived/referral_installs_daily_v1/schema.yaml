@@ -3,19 +3,32 @@ fields:
   type: DATE
   mode: NULLABLE
   description: >-
-    Partition date; the day clients were first seen and their referred installs
-    counted.
+    Partition date; the day the Glean `referrals` ping carrying this invite code
+    was received. The ping is sent once on first run, so this is the install day
+    for all but late-arriving uploads.
 - name: invite_code
   type: STRING
   mode: NULLABLE
   description: >-
-    Referral (invite) code, with the `fxrefer:` prefix stripped. Expected to be
-    17 chars (confirmed by the Website team 2026-07-24). Derived from a referral
-    id generated within Firefox; not associated with FxA or any real-world
-    identity.
+    Referral (invite) code, as carried by the `referrals` ping. Always exactly 17
+    chars of Crockford base32 (digits and upper-case letters); the ETL enforces
+    this, so malformed codes are dropped rather than counted. The client already
+    strips the `fxrefer` prefix before submitting, and the ETL strips it again
+    defensively. Derived from a referral id generated within Firefox; not
+    associated with FxA or any real-world identity.
 - name: install_count
   type: INTEGER
   mode: NULLABLE
   description: >-
-    Distinct Firefox first_run installs attributed to this invite code on
-    submission_date.
+    Distinct clients that reported this invite code on submission_date in this
+    channel. The ping fires once per profile, so this is a distinct install
+    count.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Release channel of the client that reported the referral (release, beta,
+    nightly, esr). Kept so consumers can exclude pre-release test traffic; this
+    table intentionally does not filter it. Populated from 2026-08-17 onwards,
+    the first day the `referrals` ping reported; the column was appended to an
+    all-empty table, so no earlier partition has a value for it.

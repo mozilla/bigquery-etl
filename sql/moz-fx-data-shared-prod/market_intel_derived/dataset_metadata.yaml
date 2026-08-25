@@ -1,0 +1,19 @@
+friendly_name: Market Intel Derived
+description: |-
+  Dataset to store AI-enriched market-intelligence retrieval tables.
+
+  Derived from the market-research corpus loaded into `external_derived` by
+  docker-etl's release_scraping job:
+   - Browser release notes (developer and user-facing)
+   - Browser vendor blog posts
+   - Competitor job postings
+
+  Tables in this dataset carry Gemini-generated summaries, classifications,
+  topics, entities, and vector embeddings so a RAG agent can run
+  VECTOR_SEARCH over the market-intel corpus.
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

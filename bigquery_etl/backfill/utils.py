@@ -92,7 +92,7 @@ def get_entries_from_qualified_table_name(
 
 
 def get_qualified_table_name_to_entries_map_by_project(
-    sql_dir, project_id: str, status: Optional[str] = None
+    sql_dir, project_id: Optional[str], status: Optional[str] = None
 ) -> Dict[str, List[Backfill]]:
     """Return backfill entries from project or all projects if project_id=None is given."""
     backfills_dict: dict = {}
@@ -124,6 +124,19 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
     return backfill_file
 
 
+def _staging_table_prefix(source_project: str) -> str:
+    """Return the table name prefix identifying the project being backfilled.
+
+    Staging tables for every project share one dataset, so a table from a project
+    other than the default would otherwise collide with the same dataset.table in
+    the default project. Names from the default project are left unprefixed to keep
+    existing staging tables (and anything referring to them) unchanged.
+    """
+    if source_project == BACKFILL_DESTINATION_PROJECT:
+        return ""
+    return f"{source_project}__"
+
+
 def get_backfill_staging_qualified_table_name(
     qualified_table_name, entry_date, destination_project: Optional[str] = None
 ) -> str:
@@ -132,8 +145,9 @@ def get_backfill_staging_qualified_table_name(
     When a target environment is active, destination_project points the staging
     table at the target project (e.g. a dev sandbox) instead of production.
     """
-    _, dataset, table = qualified_table_name_matching(qualified_table_name)
-    backfill_table_id = f"{dataset}__{table}_{entry_date}".replace("-", "_")
+    source_project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    prefix = _staging_table_prefix(source_project)
+    backfill_table_id = f"{prefix}{dataset}__{table}_{entry_date}".replace("-", "_")
     project = destination_project or BACKFILL_DESTINATION_PROJECT
 
     return f"{project}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
@@ -149,8 +163,11 @@ def get_backfill_backup_table_name(
     When a target environment is active, destination_project points the backup
     table at the target project (e.g. a dev sandbox) instead of production.
     """
-    _, dataset, table = qualified_table_name_matching(qualified_table_name)
-    cloned_table_id = f"{dataset}__{table}_backup_{entry_date}".replace("-", "_")
+    source_project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    prefix = _staging_table_prefix(source_project)
+    cloned_table_id = f"{prefix}{dataset}__{table}_backup_{entry_date}".replace(
+        "-", "_"
+    )
     project = destination_project or BACKFILL_DESTINATION_PROJECT
 
     return f"{project}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
@@ -280,7 +297,7 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
 
 def get_scheduled_backfills(
     sql_dir,
-    project: str,
+    project: Optional[str] = None,
     qualified_table_name: Optional[str] = None,
     status: Optional[str] = None,
     ignore_old_entries: bool = False,
@@ -289,11 +306,19 @@ def get_scheduled_backfills(
 ) -> Dict[str, Backfill]:
     """Return backfill entries to initiate or complete.
 
+    project restricts which project's queries are scanned for backfill entries;
+    None scans every project.
+
     When a target environment is active, destination_project is where the staging
     and backup tables live (the target project), which is checked for existence
     instead of the production backfill project.
+
+    The client runs in the project holding the staging and backup tables, which is
+    the backfill project regardless of which project the query itself is in.
     """
-    client = bigquery.Client(project=destination_project or project)
+    client = bigquery.Client(
+        project=destination_project or BACKFILL_DESTINATION_PROJECT
+    )
 
     if qualified_table_name:
         backfills_dict = {

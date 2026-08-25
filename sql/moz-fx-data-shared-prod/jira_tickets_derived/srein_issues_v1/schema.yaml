@@ -1,0 +1,52 @@
+fields:
+- name: issue_key
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The ticket's current key. Changes if the ticket is moved to another project.
+- name: project_key
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Project the ticket currently lives in. NOT always SREIN: intake tickets are
+    moved to the owning team's project after triage and stay in scope via the
+    SREIN label, so expect MZCLD, SVCSE, PAY and others.
+- name: issue_type
+  type: STRING
+  mode: NULLABLE
+- name: summary
+  type: STRING
+  mode: NULLABLE
+- name: status
+  type: STRING
+  mode: NULLABLE
+- name: created
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: resolved
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: updated
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the issue was last modified, normalized to UTC.
+- name: priority
+  type: STRING
+  mode: NULLABLE
+  description: Priority name, e.g. P0. Intake defaults to P1, so anything else was set deliberately.
+- name: assignee
+  type: STRING
+  mode: NULLABLE
+  description: Display name of the current assignee.
+- name: reporter
+  type: STRING
+  mode: NULLABLE
+  description: Display name of the person who filed the ticket.
+- name: resolution
+  type: STRING
+  mode: NULLABLE
+  description: Resolution name once resolved, e.g. Done. NULL while open.
+- name: labels
+  type: STRING
+  mode: REPEATED
+  description: All labels on the issue. Includes SREIN for intake tickets, which is what keeps a ticket in scope after it is moved to another project.

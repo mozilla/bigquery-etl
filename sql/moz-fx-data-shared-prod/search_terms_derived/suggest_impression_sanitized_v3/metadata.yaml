@@ -1,7 +1,8 @@
 friendly_name: Sanitized Firefox Search Impression Data
 
 owners:
-  - ctroy@mozilla.com
+  - najiang@mozilla.com
+  - csadilek@mozilla.com
 
 labels:
   incremental: true

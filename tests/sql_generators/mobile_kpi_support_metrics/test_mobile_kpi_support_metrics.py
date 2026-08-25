@@ -33,6 +33,7 @@ class MobileTestProducts(Enum):
             AttributionFields.meta,
             AttributionFields.install_source,
             AttributionFields.adjust,
+            AttributionFields.adjust_attribution,
             AttributionFields.distribution_id,
         ],
     )

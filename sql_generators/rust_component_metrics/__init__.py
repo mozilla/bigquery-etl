@@ -19,6 +19,32 @@ def all_metric_groups() -> list["MetricGroup"]:
     return [
         MetricGroup(
             ping="metrics",
+            category="credit_card_key_regeneration",
+            applications=[
+                Application.firefox_ios,
+            ],
+            metrics=[
+                Event("corrupt"),
+                Event("keychain_data_lost"),
+                Event("lost"),
+                Event("other"),
+            ],
+        ),
+        MetricGroup(
+            ping="metrics",
+            category="logins_store_key_regeneration",
+            applications=[
+                Application.firefox_ios,
+            ],
+            metrics=[
+                Event("corrupt"),
+                Event("keychain_data_lost"),
+                Event("lost"),
+                Event("other"),
+            ],
+        ),
+        MetricGroup(
+            ping="metrics",
             category="logins_store",
             applications=[
                 Application.firefox_android,
@@ -57,6 +83,16 @@ def all_metric_groups() -> list["MetricGroup"]:
                 LabeledDistribution("ingest_download_time", DistributionType.timing),
                 LabeledDistribution("ingest_time", DistributionType.timing),
                 LabeledDistribution("query_time", DistributionType.timing),
+            ],
+        ),
+        MetricGroup(
+            ping="metrics",
+            category="user",
+            applications=[
+                Application.firefox_ios,
+            ],
+            metrics=[
+                Counter("credit_cards_undecryptable_count"),
             ],
         ),
     ]

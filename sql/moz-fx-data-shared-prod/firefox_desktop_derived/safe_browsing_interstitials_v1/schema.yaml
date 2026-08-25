@@ -1,0 +1,78 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the ping was received by the ingestion edge server.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized release channel, e.g. release, beta, nightly.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized operating system name.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Normalized ISO country code, or '??' when unknown.
+- name: threat_type
+  type: STRING
+  mode: NULLABLE
+  description: >
+    Which Safe Browsing list triggered the interstitial: Malware, Phishing,
+    Unwanted, or Harmful. Derived from the page.load_error category label on the
+    display side and from the event code on the action side.
+- name: scope
+  type: STRING
+  mode: NULLABLE
+  description: >
+    Whether the blocked resource was the top-level page or an iframe within it.
+    Iframe rows are rare; some days have none at all. Keep scope matched when
+    forming ratios -- mixing top-level actions with all-scope displays breaks
+    them.
+- name: displays
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Times an about:blocked interstitial was rendered, from page.load_error.
+    Counts renders, not unique encounters: a blocked URL is never cache-tagged,
+    so every reload and session restore re-counts. Inflated relative to distinct
+    warnings seen.
+- name: display_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Distinct clients counted within this one row, meaning this combination of
+    date, channel, OS, country, threat type and scope. NOT additive: summing this
+    column across rows double-counts any client that appears in more than one, for
+    example someone who saw both a phishing and a malware block on the same day.
+    To count clients across a wider slice, go back to the source ping.
+    Dividing displays by this gives displays per client, which runs 1.7-2.1 in
+    practice and is the measure of the reload inflation.
+- name: left_site
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Times a user pressed "Get me out of here" (the *_GET_ME_OUT_OF_HERE event
+    codes). Note that most users who heed a warning leave without pressing
+    anything, so this undercounts heeding.
+- name: proceeded_anyway
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Times a user used the override link and continued to the blocked site (the
+    *_IGNORE_WARNING event codes). Gated on browser.safebrowsing.allowOverride,
+    which defaults to true.
+- name: left_site_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Distinct clients that pressed "Go Back" within this one row. Not additive
+    across rows; see display_clients.
+- name: proceeded_anyway_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Distinct clients that overrode a warning within this one row. Not additive
+    across rows; see display_clients. Compare against proceeded_anyway to see
+    whether overriding is a one-off or a habit.

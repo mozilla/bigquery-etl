@@ -1,9 +1,14 @@
 from datetime import date
 
-from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
+from bigquery_etl.metadata.parse_metadata import (
+    DatasetMetadata,
+    ExternalSharingMetadata,
+    Metadata,
+)
 from bigquery_etl.metadata.validate_metadata import (
     validate_dataset_classification,
     validate_deprecation,
+    validate_external_sharing,
     validate_public_data,
 )
 
@@ -40,6 +45,86 @@ class TestValidateMetadata(object):
         )
         assert (
             validate_public_data(metadata_invalid_public, "test/path/metadata.yaml")
+            is False
+        )
+
+    def test_validate_external_sharing(self, tmp_path):
+        external_sharing = ExternalSharingMetadata(
+            exchange="test_exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=["group:partner@example.org"],
+        )
+
+        def _dataset_metadata(external_sharing=None):
+            return DatasetMetadata(
+                friendly_name="test",
+                description="test",
+                dataset_base_acl="view",
+                user_facing=True,
+                external_sharing=external_sharing,
+            )
+
+        def _dataset_dir(name, authorized_view=True, view_metadata=True):
+            dataset_dir = tmp_path / name
+            view_dir = dataset_dir / "my_view"
+            view_dir.mkdir(parents=True)
+            (view_dir / "view.sql").write_text("SELECT 1\n")
+            if view_metadata:
+                metadata = (
+                    "friendly_name: v\ndescription: v\nowners:\n  - t@example.org\n"
+                )
+                if authorized_view:
+                    metadata += "labels:\n  authorized: true\n"
+                (view_dir / "metadata.yaml").write_text(metadata)
+            return str(dataset_dir)
+
+        # no external_sharing configured -> always valid
+        assert validate_external_sharing(
+            "some_dataset", _dataset_metadata(), _dataset_dir("some_dataset")
+        )
+
+        # valid: `_shared` dataset with an authorized view
+        assert validate_external_sharing(
+            "foo_shared",
+            _dataset_metadata(external_sharing),
+            _dataset_dir("foo_shared"),
+        )
+
+        # invalid: `_shared` dataset with a view missing the authorized label
+        assert (
+            validate_external_sharing(
+                "bar_shared",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("bar_shared", authorized_view=False),
+            )
+            is False
+        )
+
+        # invalid: a view.sql with no metadata.yaml at all
+        assert (
+            validate_external_sharing(
+                "baz_shared",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("baz_shared", view_metadata=False),
+            )
+            is False
+        )
+
+        # invalid: dataset not suffixed with _shared
+        assert (
+            validate_external_sharing(
+                "foo_shared_derived",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("foo_shared_derived"),
+            )
+            is False
+        )
+        assert (
+            validate_external_sharing(
+                "foo_derived",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("foo_derived"),
+            )
             is False
         )
 

@@ -35,7 +35,6 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
     date_to_pull_data_for_month = date_to_pull_data_for.month
     date_to_pull_data_for_day = date_to_pull_data_for.day
 
-    # Add 1 day to date to pull data for
     end_date = date_to_pull_data_for + timedelta(days=1)
 
     day_after_date_to_pull_data_for_yr = end_date.year
@@ -88,7 +87,13 @@ def get_slow_start_rates_by_app_and_date(
         api_url, headers=headers, json=request_payload, timeout=timeout_seconds
     )
 
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        raise requests.exceptions.HTTPError(
+            f"Request to: {response.url} failed with status {response.status_code}: {response.text}"
+        ) from err
+
     return response.json()
 
 
@@ -106,8 +111,7 @@ def main():
     logical_dag_date_string = logical_dag_date.strftime("%Y-%m-%d")
     print("logical_dag_date_string: ", logical_dag_date_string)
 
-    # Get 2 days prior - we always will pull data for the previous day
-    data_pull_date = logical_dag_date - timedelta(days=1)
+    data_pull_date = logical_dag_date
     data_pull_date_string = data_pull_date.strftime("%Y-%m-%d")
     print("data_pull_date")
     print(data_pull_date)

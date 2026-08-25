@@ -15,9 +15,13 @@ fields:
 - mode: NULLABLE
   name: activations_count
   type: INTEGER
+  description: 1 if `fenix.new_profile_activation` reported this client as activated on the submission date,
+    0 otherwise; sum across rows to count activations over a period.
 - mode: NULLABLE
   name: active_day_count
   type: INTEGER
+  description: 1 if this client sent a baseline ping on the submission date, 0 otherwise; sum across rows
+    to count active days over a period.
 - mode: NULLABLE
   name: searches
   type: INTEGER

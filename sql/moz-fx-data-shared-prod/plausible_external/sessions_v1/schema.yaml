@@ -1,0 +1,158 @@
+fields:
+- name: site_id
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Plausible numeric identifier of the site the session was recorded on.
+    Constant 86997652 (firefox.com) for every row of this export.
+- name: session_id
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Plausible visit identifier and the primary key of this table; joins to
+    plausible_external.events_v1. Typed NUMERIC rather than INTEGER because
+    Plausible emits this as an unsigned 64-bit hash and observed values exceed
+    the INT64 range.
+- name: start
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    UTC time the session began. The export file for a given day contains only
+    sessions that started on that day, so this is the partition column. A
+    session is therefore filed by when it began, even when its activity ran
+    past midnight -- see README.md.
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    UTC time of the most recent update to the session. For sessions still
+    active at midnight this falls on the day after `start` (observed up to
+    ~9 hours into the next day), which is the source of the window-split
+    caveat documented in README.md.
+- name: hostname
+  type: STRING
+  mode: NULLABLE
+  description: Hostname the session entered on, e.g. firefox.com.
+- name: entry_page
+  type: STRING
+  mode: NULLABLE
+  description: Path of the first page viewed in the session.
+- name: exit_page
+  type: STRING
+  mode: NULLABLE
+  description: Path of the last page viewed in the session.
+- name: exit_page_hostname
+  type: STRING
+  mode: NULLABLE
+  description: Hostname recorded on the last page viewed in the session.
+- name: is_bounce
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the session was a single-page visit. Delivered by the vendor as
+    0/1 and cast to BOOLEAN on load.
+- name: pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Total pageviews in the session. Counts the whole session, including any
+    activity after midnight, so summing this over a `start` partition will not
+    match a count of pageview rows in the same events_v1 partition.
+- name: event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Total pageviews and goal conversions in the session, excluding the
+    synthetic engagement events. Like pageviews, it covers the whole session
+    rather than a single day.
+- name: duration
+  type: INTEGER
+  mode: NULLABLE
+  description: Total elapsed time of the session in seconds.
+- name: referrer
+  type: STRING
+  mode: NULLABLE
+  description: Full referrer URL for the session, or NULL when there was none.
+- name: referrer_source
+  type: STRING
+  mode: NULLABLE
+  description: Plausible-normalized referrer source name.
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: ISO 3166-1 alpha-2 country code derived from the visitor's IP.
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: Full country name corresponding to country_code.
+- name: subdivision1_code
+  type: STRING
+  mode: NULLABLE
+  description: ISO 3166-2 code of the first-level subdivision (region/state).
+- name: subdivision2_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ISO 3166-2 code of the second-level subdivision (county). Usually NULL;
+    Plausible does not resolve it for most locations.
+- name: region_name
+  type: STRING
+  mode: NULLABLE
+  description: Full name of the first-level subdivision.
+- name: screen_size
+  type: STRING
+  mode: NULLABLE
+  description: Device size category, one of Desktop, Mobile, Tablet, or Laptop.
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating system name reported by the visitor's user agent.
+- name: operating_system_version
+  type: STRING
+  mode: NULLABLE
+  description: Operating system version reported by the visitor's user agent.
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser name reported by the visitor's user agent.
+- name: browser_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser version reported by the visitor's user agent.
+- name: utm_medium
+  type: STRING
+  mode: NULLABLE
+  description: utm_medium query parameter of the session's entry URL.
+- name: utm_source
+  type: STRING
+  mode: NULLABLE
+  description: utm_source query parameter of the session's entry URL.
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+  description: utm_campaign query parameter of the session's entry URL.
+- name: utm_content
+  type: STRING
+  mode: NULLABLE
+  description: utm_content query parameter of the session's entry URL.
+- name: utm_term
+  type: STRING
+  mode: NULLABLE
+  description: utm_term query parameter of the session's entry URL.
+- name: acquisition_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Marketing channel Plausible attributes the session to, e.g. Referral,
+    Organic Search, Direct, Paid Search. Derived by the vendor's own
+    attribution logic, which we do not control or reproduce.
+- name: entry_props
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Custom properties from the session's first pageview as a raw JSON string,
+    "{}" when none were sent. Observed keys: method, platform, product,
+    release_channel, download_language, and gtm.uniqueEventId. Kept as a
+    string rather than BigQuery JSON so that an unexpected vendor payload
+    cannot fail the daily load; use JSON_VALUE(entry_props, '$.method')
+    downstream.

@@ -101,7 +101,7 @@ bqetl_google_play_store:
   description: Schedules daily level google play store export data
   schedule_interval: 10 18 * * *
   tags:
-    - impact/tier_2
+    - impact/tier_3
 
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
@@ -725,7 +725,7 @@ bqetl_search_terms_daily:
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
     outside of Airflow.
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 10 * * *
   tags:
     - impact/tier_1
 
@@ -1917,10 +1917,17 @@ bqetl_firefox_referral:
     start_date: '2026-07-23'
   description: |
     Aggregates Firefox first_run installs by referral (invite) code for the
-    Firefox Referral Program (DENG-11237). Chain: referral_installs_daily_v1 ->
-    referral_installs_totals_v1. The CSV-to-GCS export is a fast-follow, pending
-    the Website team's bucket + IAM.
+    Firefox Referral Program (DENG-11237), then exports the cumulative totals to
+    the Website team's GCS bucket (fx-referral-data-prod) as CSV. Chain:
+    referral_installs_daily_v1 -> referral_installs_totals_v1 ->
+    referral_installs_totals_to_gcs_v1.
   repo: bigquery-etl
+  # Moved back to 0 4 * * * now that the GA4 dependency is gone. This DAG used to
+  # read firefoxdotcom_derived.ga_sessions_v2 and so was aligned with
+  # bqetl_ga4_firefoxdotcom (0 14 * * *) to keep the external task sensor's
+  # execution_delta at 0. The source is now the Glean `referrals` ping, whose only
+  # upstream is copy_deduplicate, so the run no longer has to wait ~10h for GA4
+  # and the totals reach the Website team's bucket much earlier in the day.
   schedule_interval: 0 4 * * *
   tags:
     - impact/tier_3
@@ -2106,6 +2113,66 @@ bqetl_fred_daily_exchange_rate:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 30 23 * * *
+
+bqetl_market_research:
+  description: |
+    This DAG loads the market-research GCS corpus (browser release notes,
+    vendor blog posts, and competitor job postings) scraped by
+    docker-etl's release_scraping job into BigQuery. Scheduled on the same
+    cron as telemetry-airflow's web_scraping DAG, whose read_release_data
+    task is declared as an explicit depends_on dependency so these tasks
+    wait for that run to finish before loading.
+  default_args:
+    depends_on_past: false
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2026-08-11"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 15 * * 2
+
+bqetl_plausible:
+  description: |
+    This DAG loads Plausible Analytics' daily raw parquet exports for
+    firefox.com from
+    gs://moz-fx-data-prod-external-plausible-data/firefox-com/<ds>/ into
+    plausible_external.events_v1 and plausible_external.sessions_v1. Each
+    export file covers exactly one day and replaces a single partition, so
+    clearing a task is a safe way to reload a date.
+
+    Plausible pushes the files on its own schedule, so the 12:00 UTC run time
+    is a provisional buffer rather than a confirmed arrival time -- see
+    sql/moz-fx-data-shared-prod/plausible_external/README.md. A task fails
+    with an explicit message and leaves its partition untouched when the
+    export has not landed yet.
+  default_args:
+    depends_on_past: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2026-07-30"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+    # Plausible has delivered nothing since 2026-08-05, so this DAG is expected
+    # to fail daily until the vendor feed resumes. Those failures are known and
+    # outside our control, and nothing downstream consumes these tables yet, so
+    # they should not cost triage a bug each morning. Drop this tag once the
+    # export cadence is confirmed -- email_on_failure still notifies the owner.
+    - triage/no_triage
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
 
 bqetl_us_bls_unemployment_data:
   description: |
@@ -2819,3 +2886,28 @@ bqetl_socorro_import:
     depends_on_past: false
   tags:
     - impact/tier_2
+
+bqetl_safe_browsing:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lcrouch@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: lcrouch@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-09-01'
+  description: 'Daily aggregation of the Safe Browsing interstitial funnel for Firefox
+    Desktop: about:blocked warning page displays and the button presses users make
+    on them.'
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

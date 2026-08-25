@@ -1,89 +1,14 @@
 fields:
-- name: experimenter_slug
-  type: STRING
-  mode: NULLABLE
 - name: normandy_slug
   type: STRING
   mode: NULLABLE
-- name: type
-  type: STRING
+  description: Normandy slug of the experiment. Joins to experimenter_experiments_v1.
+
+- name: computed_at
+  type: TIMESTAMP
   mode: NULLABLE
-- name: status
-  type: STRING
-  mode: NULLABLE
-- name: start_date
-  type: DATE
-  mode: NULLABLE
-- name: end_date
-  type: DATE
-  mode: NULLABLE
-- name: enrollment_end_date
-  type: DATE
-  mode: NULLABLE
-- name: proposed_enrollment
-  type: INTEGER
-  mode: NULLABLE
-- name: reference_branch
-  type: STRING
-  mode: NULLABLE
-- name: is_high_population
-  type: BOOL
-  mode: NULLABLE
-- name: branches
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: slug
-    type: STRING
-    mode: NULLABLE
-  - name: ratio
-    type: INTEGER
-    mode: NULLABLE
-  - name: features
-    type: JSON
-    mode: NULLABLE
-- name: app_id
-  type: STRING
-  mode: NULLABLE
-- name: app_name
-  type: STRING
-  mode: NULLABLE
-- name: channel
-  type: STRING
-  mode: NULLABLE
-- name: channels
-  type: STRING
-  mode: REPEATED
-- name: targeting
-  type: STRING
-  mode: NULLABLE
-- name: targeted_percent
-  type: FLOAT
-  mode: NULLABLE
-- name: namespace
-  type: STRING
-  mode: NULLABLE
-- name: feature_ids
-  type: STRING
-  mode: REPEATED
-- name: is_rollout
-  type: BOOL
-  mode: NULLABLE
-- name: outcomes
-  type: STRING
-  mode: REPEATED
-- name: segments
-  type: STRING
-  mode: REPEATED
-- name: randomization_unit
-  type: STRING
-  mode: NULLABLE
-- name: is_firefox_labs_opt_in
-  type: BOOL
-  mode: NULLABLE
-- name: is_enrollment_paused
-  type: BOOL
-  mode: NULLABLE
+  description: When this row was resolved against metric-hub HEAD.
+
 - name: metric_config
   type: RECORD
   mode: NULLABLE
@@ -100,13 +25,11 @@ fields:
   - name: external_config_last_modified
     type: TIMESTAMP
     mode: NULLABLE
-    description: Last-modified timestamp of the experiment's metric-hub/jetstream
-      config, if any.
+    description: Last-modified timestamp of the experiment's metric-hub/jetstream config, if any.
   - name: has_external_config_overrides
     type: BOOL
     mode: NULLABLE
-    description: Whether the external config overrides Experimenter-provided dates
-      or reference branch.
+    description: Whether the external config overrides Experimenter-provided dates or reference branch.
   - name: skip
     type: BOOL
     mode: NULLABLE
@@ -130,8 +53,7 @@ fields:
   - name: overrides
     type: RECORD
     mode: NULLABLE
-    description: Values the external config overrides relative to Experimenter. Subfields
-      are NULL when not overridden.
+    description: Values the external config overrides relative to Experimenter. Subfields are NULL when not overridden.
     fields:
     - name: reference_branch
       type: STRING
@@ -182,8 +104,7 @@ fields:
   - name: metrics
     type: RECORD
     mode: REPEATED
-    description: Metrics resolved for the experiment, deduplicated by (metric, statistic)
-      across all analysis periods.
+    description: Metrics resolved for the experiment, deduplicated by (metric, statistic) across all analysis periods.
     fields:
     - name: name
       type: STRING
@@ -203,13 +124,11 @@ fields:
     - name: category
       type: STRING
       mode: NULLABLE
-      description: Free-text grouping label set by the metric's author (e.g. KPI,
-        search).
+      description: Free-text grouping label set by the metric's author (e.g. KPI, search).
     - name: level
       type: STRING
       mode: NULLABLE
-      description: Data-quality tier set by the metric's author (gold, silver, or
-        bronze).
+      description: Data-quality tier set by the metric's author (gold, silver, or bronze).
     - name: owner
       type: STRING
       mode: REPEATED
@@ -230,13 +149,11 @@ fields:
       - name: analysis_periods
         type: STRING
         mode: REPEATED
-        description: Analysis periods (daily, weekly, days28, overall, preenrollment_weekly,
-          preenrollment_days28) this statistic is computed for.
+        description: Analysis periods (daily, weekly, days28, overall, preenrollment_weekly, preenrollment_days28) this statistic is computed for.
   - name: unresolved_metrics
     type: RECORD
     mode: REPEATED
-    description: Metric references that failed to resolve, so the rest of the experiment's
-      config could still be captured.
+    description: Metric references that failed to resolve, so the rest of the experiment's config could still be captured.
     fields:
     - name: name
       type: STRING
@@ -250,14 +167,8 @@ fields:
   - name: unresolved_outcomes
     type: STRING
     mode: REPEATED
-    description: Outcome slugs referenced by the experiment that don't support its
-      platform.
+    description: Outcome slugs referenced by the experiment that don't support its platform.
   - name: resolution_error
     type: STRING
     mode: NULLABLE
-    description: Set only when the experiment's config could not be resolved at all
-      (e.g. an invalid experiment spec).
-- name: metric_config_computed_at
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: When this row was resolved against metric-hub HEAD.
+    description: Set only when the experiment's config could not be resolved at all (e.g. an invalid experiment spec).

@@ -39,8 +39,8 @@ SELECT
     serp_final_cte.normalized_os_version,
     sap_final_cte.normalized_os_version
   ) AS normalized_os_version,
-  serp_final_cte.os_version_major AS serp_os_version_major,
-  serp_final_cte.os_version_minor AS serp_os_version_minor,
+  COALESCE(serp_final_cte.os_version_major, sap_final_cte.os_version_major) AS os_version_major,
+  COALESCE(serp_final_cte.os_version_minor, sap_final_cte.os_version_minor) AS os_version_minor,
   COALESCE(
     serp_final_cte.windows_build_number,
     sap_final_cte.windows_build_number

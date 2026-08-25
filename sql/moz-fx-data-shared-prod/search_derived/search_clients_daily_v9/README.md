@@ -211,13 +211,13 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 - A search access point with no matching SERP impression keeps its `sap_counts_total` value. Driving the join from SERP alone would drop that activity entirely, since the SAP `source` and SERP `sap_source` vocabularies only partly overlap.
 - A SERP impression with no matching SAP event keeps its ad and engagement measures.
-- Four SERP-only columns are `null` on a sap-only row: `ad_click_target`, `ad_blocker_inferred`, `os_version_major` and `os_version_minor`. Every other SERP-only measure is a count and falls back to `0`.
+- Two SERP-only columns are `null` on a sap-only row: `ad_click_target` and `ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`. `os_version_major` and `os_version_minor` used to be `null` here too; both pipelines now derive them, so they are coalesced like the other operating system columns.
 
 #### Column precedence
 
 Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max`.
 
-The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total` from SAP, and `serp_counts_total`, `serp_ad_click_target`, `serp_os_version_major`, `serp_os_version_minor` and the SERP ad and engagement counts from SERP.
+The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total` from SAP, and `serp_counts_total`, `serp_ad_click_target`, `serp_ad_blocker_inferred` and the SERP ad and engagement counts from SERP.
 
 **Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
 

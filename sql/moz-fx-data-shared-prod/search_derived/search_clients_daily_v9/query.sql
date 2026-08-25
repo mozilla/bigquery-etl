@@ -121,6 +121,27 @@ sap_events_with_client_info_cte AS (
     normalized_os,
     client_info.os_version,
     normalized_os_version,
+    -- must stay identical to the SERP copy so the two sides coalesce to one vocabulary.
+    -- on Windows both branches return the same release name, since windows_version_info
+    -- takes no major/minor argument -- inherited from v8 and preserved deliberately
+    CASE
+      WHEN mozfun.norm.os(client_info.os) = "Windows"
+        THEN mozfun.norm.windows_version_info(
+            client_info.os,
+            client_info.os_version,
+            client_info.windows_build_number
+          )
+      ELSE CAST(mozfun.norm.truncate_version(client_info.os_version, "major") AS STRING)
+    END AS os_version_major,
+    CASE
+      WHEN mozfun.norm.os(client_info.os) = "Windows"
+        THEN mozfun.norm.windows_version_info(
+            client_info.os,
+            client_info.os_version,
+            client_info.windows_build_number
+          )
+      ELSE CAST(mozfun.norm.truncate_version(client_info.os_version, "minor") AS STRING)
+    END AS os_version_minor,
     client_info.windows_build_number,
     client_info.distribution.name AS distribution_id,
     UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date))) AS profile_creation_date,
@@ -164,8 +185,6 @@ sap_events_with_client_info_cte AS (
     CAST(
       JSON_VALUE(metrics.boolean.search_engine_private_overridden_by_third_party, '$') AS boolean
     ) AS search_engine_private_overridden_by_third_party,
-    JSON_VALUE(event_extra.provider_name) AS provider_name,
-    JSON_VALUE(event_extra.provider_id) AS provider_id,
     CAST(
       JSON_VALUE(event_extra.overridden_by_third_party, '$') AS boolean
     ) AS overridden_by_third_party,
@@ -558,8 +577,8 @@ join_sap_serp_cte AS (
       serp_final_cte.normalized_os_version,
       sap_final_cte.normalized_os_version
     ) AS normalized_os_version,
-    serp_final_cte.os_version_major AS serp_os_version_major,
-    serp_final_cte.os_version_minor AS serp_os_version_minor,
+    COALESCE(serp_final_cte.os_version_major, sap_final_cte.os_version_major) AS os_version_major,
+    COALESCE(serp_final_cte.os_version_minor, sap_final_cte.os_version_minor) AS os_version_minor,
     COALESCE(
       serp_final_cte.windows_build_number,
       sap_final_cte.windows_build_number
@@ -771,8 +790,8 @@ final_cte AS (
     serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
     has_adblocker_addon,
     policies_is_enterprise,
-    serp_os_version_major AS os_version_major,
-    serp_os_version_minor AS os_version_minor,
+    os_version_major,
+    os_version_minor,
     profile_group_id
   FROM
     join_sap_serp_cte

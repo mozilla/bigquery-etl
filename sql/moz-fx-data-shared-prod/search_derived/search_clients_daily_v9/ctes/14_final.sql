@@ -63,8 +63,8 @@ SELECT
   serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
   has_adblocker_addon,
   policies_is_enterprise,
-  serp_os_version_major AS os_version_major,
-  serp_os_version_minor AS os_version_minor,
+  os_version_major,
+  os_version_minor,
   profile_group_id
 FROM
   `search_derived.search_clients_daily_v9.join_sap_serp_cte`

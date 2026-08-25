@@ -1,0 +1,53 @@
+fields:
+- name: search_terms
+  type: STRING
+  mode: NULLABLE
+  description: The sanitized search query string entered by the user, sourced from
+    the `sanitized_query` field of the suggest impression data.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The UTC date on which the data was submitted or received for processing.
+    Used as the primary partition date for organizing and querying records by day.
+- name: impressions
+  type: INT64
+  mode: NULLABLE
+  description: The number of times a suggestion or sponsored ad was displayed to users
+    during a given period. Reflects the total exposure count for a particular result
+    or placement.
+- name: clicks
+  type: INT64
+  mode: NULLABLE
+  description: The number of times a user clicked on a suggestion or sponsored ad
+    result during a given period. A value of zero indicates the result was shown but
+    not interacted with.
+- name: client_days
+  type: INT64
+  mode: NULLABLE
+  description: The count of distinct `context_id` values (i.e., unique clients) that
+    generated impressions for this search term on the given submission date. Provides
+    an estimate of how many individual users searched for the term that day.
+- name: advertiser
+  type: STRING
+  mode: NULLABLE
+  description: 'The name of the advertiser or brand associated with a search suggestion
+    or sponsored ad placement. Identifies the commercial entity whose content was
+    surfaced to the user.
+
+    Null when the query could not be matched to a known suggestion keyword.'
+- name: iab_category
+  type: STRING
+  mode: NULLABLE
+  description: 'The IAB (Interactive Advertising Bureau) content category assigned
+    to the advertiser or sponsored suggestion, such as ''22 - Shopping''. Used to
+    classify ad content according to industry-standard taxonomy.
+
+    Null when the query could not be matched to a known suggestion keyword.'
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: 'The display title of the sponsored suggestion or ad result shown to
+    the user, typically the advertiser''s brand or product name. Represents the human-readable
+    label rendered in the suggestion UI.
+
+    Null when the query could not be matched to a known suggestion keyword.'

@@ -2,95 +2,184 @@ fields:
 - mode: NULLABLE
   name: request_id
   type: STRING
+  description: A unique identifier assigned to each individual search or suggestion
+    request, represented as a hexadecimal string. Used to deduplicate and trace specific
+    request events across tables.
 - mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
+  description: The timestamp at which the impression ping was received by the ingestion
+    pipeline, truncated to second-level granularity.
 - mode: NULLABLE
   name: telemetry_query
   type: STRING
+  description: The search query string as reported in the legacy quicksuggest impression
+    ping, lowercased and left-trimmed. Always null for Glean-sourced impressions;
+    the sanitized query from Merino logs is joined separately into the `query` field.
 - mode: NULLABLE
   name: advertiser
   type: STRING
+  description: The name of the advertiser or brand associated with a search suggestion
+    or sponsored ad placement. Identifies the commercial entity whose content was
+    surfaced to the user.
 - mode: NULLABLE
   name: block_id
   type: INTEGER
+  description: A numeric identifier for a specific sponsored content block or suggestion
+    unit. Used to uniquely identify and track individual ad or suggestion placements
+    within the system.
 - mode: NULLABLE
   name: context_id
   type: STRING
+  description: A UUID identifying the user for Contextual Services interaction pings.
+    Used to correlate impression and click events for the same user. Sourced from
+    the quick_suggest.context_id metric.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
+  description: A sample identifier inherited from the source ping, used for query
+    cost optimization by filtering on a subset of data. Always null for impressions
+    processed by this table.
 - mode: NULLABLE
   name: is_clicked
   type: BOOLEAN
+  description: A boolean flag indicating whether the user clicked on the suggestion
+    or sponsored result. True means the user clicked on it; false means it was shown
+    but not clicked.
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: The locale of the Firefox application at initialization time (e.g.
+    "en-US", "en-GB"). Set to "und" if the locale cannot be determined. Sourced from
+    the locale client info metric.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: The ISO 3166-1 alpha-2 country code representing the geographic country
+    of the user or request origin. Used to segment search and suggestion data by geography.
 - mode: NULLABLE
   name: region
   type: STRING
+  description: The ISO 3166-2 subdivision code (e.g., US state abbreviation) representing
+    the sub-national region of the user or request origin. This field is frequently
+    null when region cannot be determined.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
+  description: The name of the operating system on which the impression occurred (e.g.
+    "Windows", "Mac", "Linux"). Sourced from the os client info metric.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
+  description: The user-visible version of the operating system (e.g. "10.0", "25.5.0").
+    Sourced from the os_version client info metric; set to "Unknown" if version detection
+    fails.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
+  description: The normalized Firefox release channel on which the impression occurred
+    (e.g. "release", "beta", "nightly", "esr", "aurora"). Set to "Other" for unrecognized
+    channel values.
 - mode: NULLABLE
   name: position
   type: INTEGER
+  description: The numeric position at which a suggestion or sponsored result was
+    displayed in the list of results shown to the user. Lower position numbers generally
+    indicate higher placement in the suggestion UI.
 - mode: NULLABLE
   name: reporting_url
   type: STRING
+  description: The URL used to report this Quick Suggest interaction to Contextual
+    Services. Sourced from the quick_suggest.reporting_url metric.
 - mode: NULLABLE
   name: scenario
   type: STRING
+  description: The suggest scenario associated with the impression, sourced from legacy
+    quicksuggest impression pings. Always null for Glean-sourced impressions; populated
+    only in legacy telemetry.
 - mode: NULLABLE
   name: version
   type: STRING
+  description: The major version number of the Firefox browser used by the client
+    at the time of the event. Allows analysis of search and suggestion behavior across
+    different browser release versions.
 - mode: NULLABLE
   name: timestamp
   type: TIMESTAMP
+  description: 'The UTC timestamp recording the precise moment a search suggestion
+    event or request occurred. Provides high-resolution event timing down to the microsecond.
+
+    Truncated to second-level granularity in this table.'
 - mode: NULLABLE
   name: query
   type: STRING
+  description: The sanitized search query string (PII removed) that triggered a suggestion
+    or sponsored result, sourced from Merino logs.
 - mode: NULLABLE
   name: dma
   type: STRING
+  description: 'The Designated Market Area (DMA) code representing the regional television
+    or advertising market of the user, applicable primarily within the United States.
+
+    Frequently null for non-US or unresolvable locations.'
 - mode: NULLABLE
   name: form_factor
   type: STRING
+  description: The form factor of the device used to make the request. Allows segmentation
+    of search and suggestion activity by device category.
 - mode: NULLABLE
   name: browser
   type: STRING
+  description: The browser and version string of the client that made the request,
+    such as a specific Firefox release or an HTTP client like Go-http-client. Helps
+    identify the user agent associated with the search or suggestion event.
 - mode: NULLABLE
   name: os_family
   type: STRING
+  description: The operating system family of the client device, such as 'windows',
+    'macos', or 'linux', with 'other' used for unrecognized or non-desktop platforms.
+    Allows segmentation of events by client operating environment.
 - mode: NULLABLE
   name: session_id
   type: STRING
+  description: 'A UUID that uniquely identifies a user''s search session, grouping
+    related suggestion requests and interactions that occur within a single continuous
+    session. May be null when session context is not available.
+
+    Null for impressions with no matching Merino log row.'
 - mode: NULLABLE
   name: sequence_no
   type: INTEGER
+  description: 'A sequential number indicating the order of a suggestion or event
+    within a session, used to track the progression of user interactions over the
+    course of a search session. May be null when session tracking is unavailable.
+
+    Null for impressions with no matching Merino log row.'
 - mode: NULLABLE
   name: match_type
   type: STRING
-  description: >-
-    Whether the suggest result was a best/top match or not. Either
-    "best-match" or "firefox-suggest". Only populated for Glean
-    impressions; NULL for legacy impressions.
+  description: 'The type of match used to surface a search suggestion, either ''firefox-suggest''
+    for standard suggestions or ''best-match'' for a prominently featured top result.
+    Describes the matching strategy that triggered the suggestion.
+
+    Only populated for Glean impressions; NULL for legacy impressions.'
 - fields:
   - mode: NULLABLE
     name: slug
     type: STRING
+    description: The unique slug identifier for a Nimbus experiment or rollout that
+      the user was enrolled in at the time of the event. Used to link individual records
+      to specific experimental configurations.
   - mode: NULLABLE
     name: branch
     type: STRING
+    description: The branch name within a Nimbus experiment that the user was assigned
+      to, such as 'control', 'treatment-a', or 'rollout-branch'. Represents the specific
+      variant of an experiment experienced by the user.
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: An array of Nimbus experiment enrollments active at the time of the
+    event, each containing a slug identifying the experiment and a branch identifying
+    the variant the user was assigned to. Used to associate search and suggestion
+    events with active A/B tests or rollouts.

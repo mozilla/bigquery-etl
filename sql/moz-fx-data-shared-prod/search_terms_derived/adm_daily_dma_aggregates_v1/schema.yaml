@@ -6,20 +6,30 @@ fields:
 - mode: NULLABLE
   name: dma
   type: STRING
-  description: String representation of the Designated Market Area.
+  description: 'The Designated Market Area (DMA) code representing the regional television
+    or advertising market of the user, applicable primarily within the United States.
+
+    Empty string when the DMA could not be resolved; never null.'
 - mode: NULLABLE
   name: query
   type: STRING
-  description: A string a user input into the search bar reported to suggest.
+  description: The sanitized search query string (PII removed) that triggered a suggestion
+    or sponsored result, sourced from Merino logs.
 - mode: NULLABLE
   name: block_id
   type: INTEGER
-  description: A unique identifier for a set of related keywords.
+  description: A numeric identifier for a specific sponsored content block or suggestion
+    unit. Used to uniquely identify and track individual ad or suggestion placements
+    within the system.
 - mode: NULLABLE
   name: impressions
   type: INTEGER
-  description: The count of total impressions by users.
+  description: The number of times a suggestion or sponsored ad was displayed to users
+    during a given period. Reflects the total exposure count for a particular result
+    or placement.
 - mode: NULLABLE
   name: clicks
   type: INTEGER
-  description: The count of total clicks by users.
+  description: The number of times a user clicked on a suggestion or sponsored ad
+    result during a given period. A value of zero indicates the result was shown but
+    not interacted with.

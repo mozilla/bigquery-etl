@@ -2,16 +2,27 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date of the tile ID export
+  description: Date of the tile ID export.
 - mode: NULLABLE
   name: query
   type: STRING
+  description: The sanitized search query string (PII removed) that triggered a suggestion
+    or sponsored result, sourced from Merino logs.
 - mode: NULLABLE
   name: block_id
   type: INTEGER
+  description: A numeric identifier for a specific sponsored content block or suggestion
+    unit. Used to uniquely identify and track individual ad or suggestion placements
+    within the system.
 - mode: NULLABLE
   name: impressions
   type: INTEGER
+  description: The number of times a suggestion or sponsored ad was displayed to users
+    during a given period. Reflects the total exposure count for a particular result
+    or placement.
 - mode: NULLABLE
   name: clicks
   type: INTEGER
+  description: The number of times a user clicked on a suggestion or sponsored ad
+    result during a given period. A value of zero indicates the result was shown but
+    not interacted with.

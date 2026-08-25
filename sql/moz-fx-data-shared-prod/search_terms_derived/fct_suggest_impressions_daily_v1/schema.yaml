@@ -2,39 +2,49 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date of the impression event.
+  description: The UTC date on which the data was submitted or received for processing.
+    Used as the primary partition date for organizing and querying records by day.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Two-letter ISO country code.
+  description: The ISO 3166-1 alpha-2 country code representing the geographic country
+    of the user or request origin. Used to segment search and suggestion data by geography.
 - mode: NULLABLE
   name: form_factor
   type: STRING
-  description: >-
-    Form factor of the client device (e.g. "desktop", "phone").
-    Sourced from Merino logs.
+  description: 'The form factor of the device used to make the request. Allows segmentation
+    of search and suggestion activity by device category.
+
+    Sourced from Merino logs; e.g. "desktop", "phone".'
 - mode: NULLABLE
   name: advertiser
   type: STRING
-  description: Advertiser name associated with the suggest result.
+  description: The name of the advertiser or brand associated with a search suggestion
+    or sponsored ad placement. Identifies the commercial entity whose content was
+    surfaced to the user.
 - mode: NULLABLE
   name: partial
   type: STRING
-  description: >-
-    Normalized search query partial typed by the user at the time of the
-    impression, lowercased and trimmed. Sourced from Merino logs; rows
-    without a Merino match are excluded.
+  description: 'The partial query string typed by the user at the time a suggestion
+    was triggered, representing an incomplete search term. Captures the incremental
+    input that matched a suggestion before the full query was submitted.
+
+    Lowercased and trimmed. Sourced from Merino logs; rows without a Merino match
+    are excluded.'
 - mode: NULLABLE
   name: position
   type: INTEGER
-  description: Position of the suggest result in the Firefox address bar dropdown.
+  description: The numeric position at which a suggestion or sponsored result was
+    displayed in the list of results shown to the user. Lower position numbers generally
+    indicate higher placement in the suggestion UI.
 - mode: NULLABLE
   name: match_type
   type: STRING
-  description: >-
-    Whether the suggest result was a best/top match or not. Either
-    "best-match" or "firefox-suggest". Only populated for Glean
-    impressions; NULL for legacy impressions.
+  description: 'The type of match used to surface a search suggestion, either ''firefox-suggest''
+    for standard suggestions or ''best-match'' for a prominently featured top result.
+    Describes the matching strategy that triggered the suggestion.
+
+    Only populated for Glean impressions; NULL for legacy impressions.'
 - fields:
   - mode: NULLABLE
     name: slug
@@ -47,13 +57,19 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
-  description: >-
-    Active experiments the client was enrolled in at the time of the impression.
+  description: An array of Nimbus experiment enrollments active at the time of the
+    event, each containing a slug identifying the experiment and a branch identifying
+    the variant the user was assigned to. Used to associate search and suggestion
+    events with active A/B tests or rollouts.
 - mode: NULLABLE
   name: is_clicked
   type: BOOLEAN
-  description: Whether the suggest result was clicked by the user.
+  description: A boolean flag indicating whether the user clicked on the suggestion
+    or sponsored result. True means the user clicked on it; false means it was shown
+    but not clicked.
 - mode: NULLABLE
   name: version
   type: STRING
-  description: Major version of Firefox installed on the device (e.g. "155").
+  description: The major version number of the Firefox browser used by the client
+    at the time of the event. Allows analysis of search and suggestion behavior across
+    different browser release versions.

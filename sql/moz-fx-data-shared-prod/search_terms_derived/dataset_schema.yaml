@@ -1,0 +1,108 @@
+fields:
+- name: advertiser
+  description: The name of the advertiser or brand associated with a search suggestion or sponsored ad placement. Identifies the commercial entity
+    whose content was surfaced to the user.
+  type: STRING
+- name: block_id
+  description: A numeric identifier for a specific sponsored content block or suggestion unit. Used to uniquely identify and track individual
+    ad or suggestion placements within the system.
+  type: INT64
+- name: browser
+  description: The browser and version string of the client that made the request, such as a specific Firefox release or an HTTP client like Go-http-client.
+    Helps identify the user agent associated with the search or suggestion event.
+  type: STRING
+- name: clicks
+  description: The number of times a user clicked on a suggestion or sponsored ad result during a given period. A value of zero indicates the
+    result was shown but not interacted with.
+  type: INT64
+- name: country
+  description: The ISO 3166-1 alpha-2 country code representing the geographic country of the user or request origin. Used to segment search and
+    suggestion data by geography.
+  type: STRING
+- name: dma
+  description: The Designated Market Area (DMA) code representing the regional television or advertising market of the user, applicable primarily
+    within the United States.
+  type: STRING
+- name: experiments
+  description: An array of Nimbus experiment enrollments active at the time of the event, each containing a slug identifying the experiment and
+    a branch identifying the variant the user was assigned to. Used to associate search and suggestion events with active A/B tests or rollouts.
+  type: RECORD
+- name: experiments_branch
+  description: The branch name within a Nimbus experiment that the user was assigned to, such as 'control', 'treatment-a', or 'rollout-branch'.
+    Represents the specific variant of an experiment experienced by the user.
+  type: STRING
+- name: experiments_slug
+  description: The unique slug identifier for a Nimbus experiment or rollout that the user was enrolled in at the time of the event. Used to link
+    individual records to specific experimental configurations.
+  type: STRING
+- name: form_factor
+  description: The form factor of the device used to make the request. Allows segmentation of search and suggestion
+    activity by device category.
+  type: STRING
+- name: iab_category
+  description: The IAB (Interactive Advertising Bureau) content category assigned to the advertiser or sponsored suggestion, such as '22 - Shopping'.
+    Used to classify ad content according to industry-standard taxonomy.
+  type: STRING
+- name: impressions
+  description: The number of times a suggestion or sponsored ad was displayed to users during a given period. Reflects the total exposure count
+    for a particular result or placement.
+  type: INT64
+- name: is_clicked
+  description: A boolean flag indicating whether the user clicked on the suggestion or sponsored result. True means the user clicked on it; false
+    means it was shown but not clicked.
+  type: BOOLEAN
+- name: match_type
+  description: The type of match used to surface a search suggestion, either 'firefox-suggest' for standard suggestions or 'best-match' for a
+    prominently featured top result. Describes the matching strategy that triggered the suggestion.
+  type: STRING
+- name: os_family
+  description: The operating system family of the client device, such as 'windows', 'macos', or 'linux', with 'other' used for unrecognized or
+    non-desktop platforms. Allows segmentation of events by client operating environment.
+  type: STRING
+- name: partial
+  description: The partial query string typed by the user at the time a suggestion was triggered, representing an incomplete search term. Captures
+    the incremental input that matched a suggestion before the full query was submitted.
+  type: STRING
+- name: position
+  description: The numeric position at which a suggestion or sponsored result was displayed in the list of results shown to the user. Lower position
+    numbers generally indicate higher placement in the suggestion UI.
+  type: INT64
+- name: query
+  description: The sanitized search query string (PII removed) that triggered a suggestion or sponsored result, sourced from Merino logs.
+  type: STRING
+- name: region
+  description: The ISO 3166-2 subdivision code (e.g., US state abbreviation) representing the sub-national region of the user or request origin.
+    This field is frequently null when region cannot be determined.
+  type: STRING
+- name: request_id
+  description: A unique identifier assigned to each individual search or suggestion request, represented as a hexadecimal string. Used to deduplicate
+    and trace specific request events across tables.
+  type: STRING
+- name: sequence_no
+  description: A sequential number indicating the order of a suggestion or event within a session, used to track the progression of user interactions
+    over the course of a search session. May be null when session tracking is unavailable.
+  type: INT64
+- name: session_id
+  description: A UUID that uniquely identifies a user's search session, grouping related suggestion requests and interactions that occur within
+    a single continuous session. May be null when session context is not available.
+  type: STRING
+- name: started_at
+  description: The UTC timestamp indicating when a reporting period, job run, or session started. Used to denote the beginning of the time window
+    associated with the record.
+  type: TIMESTAMP
+- name: submission_date
+  description: The UTC date on which the data was submitted or received for processing. Used as the primary partition date for organizing and
+    querying records by day.
+  type: DATE
+- name: timestamp
+  description: The UTC timestamp recording the precise moment a search suggestion event or request occurred. Provides high-resolution event timing
+    down to the microsecond.
+  type: TIMESTAMP
+- name: title
+  description: The display title of the sponsored suggestion or ad result shown to the user, typically the advertiser's brand or product name.
+    Represents the human-readable label rendered in the suggestion UI.
+  type: STRING
+- name: version
+  description: The major version number of the Firefox browser used by the client at the time of the event. Allows analysis of search and suggestion
+    behavior across different browser release versions.
+  type: STRING

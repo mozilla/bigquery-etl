@@ -2,33 +2,63 @@ fields:
 - mode: NULLABLE
   name: timestamp
   type: TIMESTAMP
+  description: The UTC timestamp recording the precise moment a search suggestion
+    event or request occurred. Provides high-resolution event timing down to the microsecond.
 - mode: NULLABLE
   name: request_id
   type: STRING
+  description: A unique identifier assigned to each individual search or suggestion
+    request, represented as a hexadecimal string. Used to deduplicate and trace specific
+    request events across tables.
 - mode: NULLABLE
   name: query
   type: STRING
+  description: The sanitized search query string (PII removed) that triggered a suggestion
+    or sponsored result, sourced from Merino logs.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: The ISO 3166-1 alpha-2 country code representing the geographic country
+    of the user or request origin. Used to segment search and suggestion data by geography.
 - mode: NULLABLE
   name: region
   type: STRING
+  description: The ISO 3166-2 subdivision code (e.g., US state abbreviation) representing
+    the sub-national region of the user or request origin. This field is frequently
+    null when region cannot be determined.
 - mode: NULLABLE
   name: dma
   type: STRING
+  description: 'The Designated Market Area (DMA) code representing the regional television
+    or advertising market of the user, applicable primarily within the United States.
+
+    Frequently null for non-US or unresolvable locations.'
 - mode: NULLABLE
   name: form_factor
   type: STRING
+  description: The form factor of the device used to make the request. Allows segmentation
+    of search and suggestion activity by device category.
 - mode: NULLABLE
   name: browser
   type: STRING
+  description: The browser and version string of the client that made the request,
+    such as a specific Firefox release or an HTTP client like Go-http-client. Helps
+    identify the user agent associated with the search or suggestion event.
 - mode: NULLABLE
   name: os_family
   type: STRING
+  description: The operating system family of the client device, such as 'windows',
+    'macos', or 'linux', with 'other' used for unrecognized or non-desktop platforms.
+    Allows segmentation of events by client operating environment.
 - mode: NULLABLE
   name: session_id
   type: STRING
+  description: A UUID that uniquely identifies a user's search session, grouping related
+    suggestion requests and interactions that occur within a single continuous session.
+    May be null when session context is not available.
 - mode: NULLABLE
   name: sequence_no
   type: INTEGER
+  description: A sequential number indicating the order of a suggestion or event within
+    a session, used to track the progression of user interactions over the course
+    of a search session. May be null when session tracking is unavailable.

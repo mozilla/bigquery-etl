@@ -4,25 +4,26 @@ fields:
   mode: NULLABLE
   description: |-
     Date this row was computed for.
-- name: week_start
+- name: window_start
   type: DATE
   mode: NULLABLE
   description: |-
-    Monday of the ISO week that submission_date falls in. Counts on this row
-    reflect activity from week_start through submission_date (week-to-date),
-    not the eventual full-week total.
+    Start of the trailing 7-day window ending on submission_date
+    (submission_date minus 6 days). Counts on this row reflect activity from
+    window_start through submission_date. Every row is a complete 7-day
+    window, not a partial week.
 - name: desktop_clients
   type: INTEGER
   mode: NULLABLE
   description: |-
     Number of distinct desktop Glean client IDs linked to the account via
-    client_association_uid, seen between week_start and submission_date.
+    client_association_uid, seen between window_start and submission_date.
 - name: mobile_clients
   type: INTEGER
   mode: NULLABLE
   description: |-
     Number of distinct mobile (iOS or Android/Fenix) Glean client IDs linked
-    to the account via client_association_uid, seen between week_start and
+    to the account via client_association_uid, seen between window_start and
     submission_date.
 - name: active_accounts
   type: INTEGER

@@ -1,7 +1,7 @@
 -- Query for firefox_accounts_derived.fxa_multi_device_account_shape_daily_v1
--- Week-to-date counts are re-derived from raw pings each run (Monday through
--- @submission_date) rather than carried forward from the prior day's row,
--- since the source ping tables only retain 30 days of history.
+-- Trailing 7-day counts are re-derived from raw pings each run (the 7 days
+-- ending on @submission_date) rather than carried forward from the prior
+-- day's row, since the source ping tables only retain 30 days of history.
 WITH all_clients AS (
   SELECT
     client_info.client_id AS client_id,
@@ -11,7 +11,7 @@ WITH all_clients AS (
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN DATE_TRUNC(@submission_date, WEEK(MONDAY))
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
     AND @submission_date
     AND metrics.string.client_association_uid IS NOT NULL
     AND metrics.string.client_association_uid != ''
@@ -25,7 +25,7 @@ WITH all_clients AS (
     `moz-fx-data-shared-prod.firefox_ios.fx_accounts`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN DATE_TRUNC(@submission_date, WEEK(MONDAY))
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
     AND @submission_date
     AND metrics.string.user_client_association_uid IS NOT NULL
     AND metrics.string.user_client_association_uid != ''
@@ -39,7 +39,7 @@ WITH all_clients AS (
     `moz-fx-data-shared-prod.fenix.fx_accounts`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN DATE_TRUNC(@submission_date, WEEK(MONDAY))
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
     AND @submission_date
     AND metrics.string.client_association_uid IS NOT NULL
     AND metrics.string.client_association_uid != ''
@@ -57,13 +57,13 @@ account_week_shape AS (
 )
 SELECT
   @submission_date AS submission_date,
-  DATE_TRUNC(@submission_date, WEEK(MONDAY)) AS week_start,
+  DATE_SUB(@submission_date, INTERVAL 6 DAY) AS window_start,
   desktop_clients,
   mobile_clients,
   COUNT(DISTINCT account_uid) AS active_accounts
 FROM
   account_week_shape
 GROUP BY
-  week_start,
+  window_start,
   desktop_clients,
   mobile_clients

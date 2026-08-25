@@ -1,0 +1,46 @@
+friendly_name: FxA Email Domain Counts
+description: |-
+  Daily per-domain rollup of FxA primary email addresses, grouped by registrable
+  domain (eTLD+1). One row per (as_of_date, registrable_domain). Supports fraud
+  and abuse analysis -- domain velocity, email verification rate, and subdomain
+  fan-out -- from a table that contains no email addresses, so it can back a
+  broadly readable dashboard.
+
+  Only domains with accounts created in the trailing 28 days are emitted: of the ~121k
+  domains holding 10+ accounts, only ~2.7% gain an account on a given day, so a
+  full snapshot would spend most of every partition restating unchanged totals.
+  A per-domain time series therefore has gaps on quiet stretches -- use the
+  window columns rather than differencing `accounts` across dates. Authoritative
+  account totals live in `monitoring_db_counts_v1`, not here.
+
+  Domains with fewer than 10 total accounts are pooled into a single
+  `__below_threshold__` row instead of being published individually, because a
+  low-count personal or vanity domain effectively identifies its owner. Filter
+  that row out for per-domain analysis; watch it on its own for sprays
+  distributed across thousands of individually-tiny throwaway domains.
+owners:
+- wclouser@mozilla.com
+labels:
+  incremental: true
+  owner1: wclouser@mozilla.com
+scheduling:
+  dag_name: bqetl_accounts_derived
+  date_partition_parameter: as_of_date
+  # Adjust the execution delta for the task dependency in the bqetl_accounts_db
+  # DAG so this depends on the latest bqetl_accounts_db DAG run. The emails
+  # mirror refreshes every 3h and the query time-travels to 02:30 UTC to read a
+  # complete as_of_date; this dependency is what guarantees the 01:30 import has
+  # landed before we snapshot it.
+  depends_on:
+  - dag_name: bqetl_accounts_db
+    task_id: accounts_db_external__fxa_emails__v1
+    execution_delta: -20h
+bigquery:
+  time_partitioning:
+    type: day
+    field: as_of_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - registrable_domain

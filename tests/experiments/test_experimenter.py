@@ -41,11 +41,15 @@ class TestStatus:
         assert _status(None) == "Live"
 
     def test_future_end_date_is_live(self):
-        future = pytz.utc.localize(datetime.datetime.now() + datetime.timedelta(days=1))
+        future = pytz.utc.localize(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)
+        )
         assert _status(future) == "Live"
 
     def test_past_end_date_is_complete(self):
-        past = pytz.utc.localize(datetime.datetime.now() - datetime.timedelta(days=1))
+        past = pytz.utc.localize(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
         assert _status(past) == "Complete"
 
 

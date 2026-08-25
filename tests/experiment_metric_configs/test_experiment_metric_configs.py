@@ -94,7 +94,9 @@ class TestResolveMetricConfig:
         # override-experiment.toml sets [experiment] end_date and enrollment_period.
         ne = make_nimbus_experiment(
             "override-experiment",
-            end_date=pytz.utc.localize(datetime.datetime(2024, 8, 1)),
+            end_date=pytz.utc.localize(
+                datetime.datetime(2024, 8, 1, tzinfo=datetime.UTC)
+            ),
         )
         metric_config = query.resolve_metric_config(ne, configs)
 

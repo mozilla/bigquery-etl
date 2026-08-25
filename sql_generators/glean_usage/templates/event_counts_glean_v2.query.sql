@@ -55,7 +55,7 @@ WITH
       *
     FROM
       {{ dataset['bq_dataset_family'] }}_{{ events_table }}
-    {% if not outer_loop.last -%}
+    {% if not (outer_loop.last and loop.last) -%}
       UNION ALL
     {% endif -%}
   {% endfor %}

@@ -14,6 +14,11 @@ COPY requirements.txt requirements-private.txt* ./
 RUN pip install --no-deps -r requirements.txt && \
     if [ -f requirements-private.txt ]; then pip install --no-deps -r requirements-private.txt; fi
 
+# gbstats, the statistics engine the Highwind experiment analysis runs on, taken from GrowthBook's
+# published image at a frozen digest. Only the Python package is copied; scipy, the one dependency
+# this image lacked, is declared in requirements.in.
+FROM growthbook/growthbook@sha256:48c506939021bb04cf16457f1814b1699c1c2747a0618c73e7a2ffcff31c4ee1 AS gbstats
+
 FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 
 FROM base
@@ -22,6 +27,10 @@ RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy 
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=python-deps /usr/local /usr/local
+COPY --from=gbstats /opt/venv/lib/python3.11/site-packages/gbstats /opt/gbstats/gbstats
+COPY --from=gbstats /opt/venv/lib/python3.11/site-packages/gbstats-0.8.0.dist-info \
+  /opt/gbstats/gbstats-0.8.0.dist-info
+ENV PYTHONPATH=/opt/gbstats
 COPY .bigqueryrc /root/
 COPY . .
 RUN pip install . \

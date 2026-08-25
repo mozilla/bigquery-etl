@@ -1,0 +1,90 @@
+fields:
+  - name: as_of_date
+    type: DATE
+    mode: NULLABLE
+    description: Run date the analysis was computed for. Partition column.
+  - name: slug
+    type: STRING
+    mode: NULLABLE
+    description: Experiment slug.
+  - name: metric
+    type: STRING
+    mode: NULLABLE
+    description: Metric name, from the hard-coded desktop guardrail set.
+  - name: window
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Window label, relative to each unit's own enrollment rather than the calendar. cum:N is the
+      cumulative window covering a unit's first N weeks; week:N is the Nth disjoint week.
+  - name: window_kind
+    type: STRING
+    mode: NULLABLE
+    description: cumulative or disjoint.
+  - name: window_start
+    type: INT64
+    mode: NULLABLE
+    description: First tenure day the window covers, inclusive, counted from the unit's enrollment.
+  - name: window_end
+    type: INT64
+    mode: NULLABLE
+    description: Last tenure day the window covers, inclusive.
+  - name: branch
+    type: STRING
+    mode: NULLABLE
+    description: Treatment branch this row compares against the reference.
+  - name: reference_branch
+    type: STRING
+    mode: NULLABLE
+    description: Branch the comparison is made against, from the Experimenter mirror.
+  - name: state
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      What the cell is, and whether waiting will help. error, computation raised and needs a fix;
+      not_started, the window has not matured; insufficient_data, matured but below the minimum
+      units or no interval could be produced; forming, an interval that still includes zero;
+      confident, an interval that excludes zero. Every declared cell gets a row in one of these
+      states, including cells that produced nothing, so that a failed run is visible as errors
+      rather than as absent rows.
+  - name: point
+    type: FLOAT64
+    mode: NULLABLE
+    description: Relative difference against the reference branch, as a percentage. NULL unless the cell produced an estimate.
+  - name: lower
+    type: FLOAT64
+    mode: NULLABLE
+    description: Lower bound of the always-valid confidence interval, as a percentage.
+  - name: upper
+    type: FLOAT64
+    mode: NULLABLE
+    description: Upper bound of the always-valid confidence interval, as a percentage.
+  - name: theta
+    type: FLOAT64
+    mode: NULLABLE
+    description: >-
+      CUPED coefficient, cov(pre, post) / var(pre), pooled across the two branches being compared so
+      the adjustment is identical on each side of the contrast. Zero when the covariate had no
+      variance, which disables the adjustment rather than dividing by zero.
+  - name: n_reference
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Analysis units of the reference branch that had matured this window. After branch balancing:
+      where one arm is more than a few times the size of the smallest, it is down-sampled on a hash
+      of the analysis unit, so this is the analysed population rather than the enrolled one and will
+      not match an enrollment count for a lopsided experiment.
+  - name: n_treatment
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Analysis units of the treatment branch that had matured this window, after the same balancing
+      described on n_reference.
+  - name: error
+    type: STRING
+    mode: NULLABLE
+    description: Exception that produced an error state, truncated. NULL in every other state.
+  - name: pipeline_version
+    type: STRING
+    mode: NULLABLE
+    description: Version of the analysis that produced the row, for provenance across changes.

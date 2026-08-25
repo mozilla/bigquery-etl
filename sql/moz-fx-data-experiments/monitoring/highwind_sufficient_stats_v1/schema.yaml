@@ -1,0 +1,55 @@
+fields:
+  - name: as_of_date
+    type: DATE
+    mode: NULLABLE
+    description: Run date the aggregates were computed for. Partition column.
+  - name: slug
+    type: STRING
+    mode: NULLABLE
+    description: Experiment slug.
+  - name: metric
+    type: STRING
+    mode: NULLABLE
+    description: Metric name, from the hard-coded desktop guardrail set.
+  - name: window
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Window label, relative to each unit's own enrollment rather than the calendar. cum:N is the
+      cumulative window covering a unit's first N weeks; week:N is the Nth disjoint week. Joins to
+      highwind_statistics_v1.window.
+  - name: branch
+    type: STRING
+    mode: NULLABLE
+    description: Branch these aggregates are for.
+  - name: n
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Analysis units of this branch that had matured this window. After branch balancing, so on a
+      lopsided experiment this is the analysed population rather than the enrolled one.
+  - name: sum
+    type: FLOAT64
+    mode: NULLABLE
+    description: Sum of the metric over those units, each unit reduced to one value for the window.
+  - name: sumsq
+    type: FLOAT64
+    mode: NULLABLE
+    description: Sum of squares of the same per-unit values, which supplies the variance.
+  - name: pre_sum
+    type: FLOAT64
+    mode: NULLABLE
+    description: >-
+      Sum of the covariate, the same metric measured over a fixed pre-enrollment window. Always
+      pre-enrollment regardless of which window the row is for.
+  - name: pre_sumsq
+    type: FLOAT64
+    mode: NULLABLE
+    description: Sum of squares of the covariate, which supplies its variance.
+  - name: xp
+    type: FLOAT64
+    mode: NULLABLE
+    description: >-
+      Sum of products of the post-enrollment value and the covariate, which supplies their
+      covariance. Together with the four sums above this is what the CUPED coefficient is fitted
+      from.

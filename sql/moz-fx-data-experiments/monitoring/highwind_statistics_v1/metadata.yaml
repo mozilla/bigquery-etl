@@ -1,0 +1,41 @@
+---
+friendly_name: Highwind Experiment Statistics
+description: |-
+  Covariate-adjusted sequential analysis of every live Firefox Desktop experiment, one row per
+  (slug, metric, window, comparison). Each cell carries the relative difference against the
+  reference branch with an always-valid confidence interval, and a state describing whether waiting
+  will help: error, not_started, insufficient_data, forming or confident.
+
+  Windows are anchored to each unit's own enrollment rather than to the calendar, so week one means
+  a client's own first week and cells are comparable across clients who enrolled on different days.
+  Metrics declare a window rule (a kind and a length) rather than enumerated bounds, so the series
+  extends for as long as an experiment runs, out to a six month horizon.
+
+  The job also writes highwind_sufficient_stats_v1, the per-branch aggregates these statistics were
+  computed from, and a per-experiment JSON object to gs://mozanalysis/highwind/ for Experimenter.
+  All three come from one computation, which is why they share a directory.
+
+  Proof of concept: Firefox Desktop experiments only, a hard-coded guardrail metric set rather than
+  one resolved from metric-hub, and a full recompute each run. Rollouts are excluded because they
+  have no randomized control to compare against.
+owners:
+  - jkerim@mozilla.com
+labels:
+  incremental: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: as_of_date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{{ ds }}"]
+  # The tables behind the views the job reads, not the views themselves: dependency resolution
+  # matches these against the tasks that produce them, and a view matches nothing, which would
+  # leave this task with no upstream dependency at all.
+  referenced_tables:
+    - ['moz-fx-data-experiments', 'monitoring', 'experimenter_experiments_v1']
+    - ['moz-fx-data-shared-prod', 'firefox_desktop_derived', 'events_stream_v1']
+    - ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_joined_v1']
+    - ['moz-fx-data-shared-prod', 'search_derived', 'search_clients_daily_v8']
+    - ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_last_seen_v2']

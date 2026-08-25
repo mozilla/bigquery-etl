@@ -58,6 +58,7 @@ pytest-xdist==3.8.0
 pytest==8.4.2
 PyYAML==6.0.3
 rich-click==1.9.7
+scipy==1.15.3  # required by gbstats, installed separately in the Dockerfile
 smart_open==6.4.0
 sqlglot==28.5.0
 sqlparse==0.5.3

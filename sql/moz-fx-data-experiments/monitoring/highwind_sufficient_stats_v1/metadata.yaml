@@ -1,0 +1,27 @@
+---
+friendly_name: Highwind Sufficient Statistics
+description: |-
+  The per-branch aggregates every Highwind statistic is computed from, one row per
+  (slug, metric, window, branch). Six numbers per row are everything a covariate-adjusted mean
+  comparison needs, which is why no per-client row has to leave BigQuery.
+
+  Kept rather than discarded as an intermediate for two reasons. A disputed result can be
+  re-derived from it without re-running the source queries, and it is the grain an incremental
+  accumulation would read and add to rather than rescanning history.
+
+  Written by the highwind_statistics_v1 job, which produces both tables from one computation; this
+  directory carries the schema and the metadata but no query of its own. Join it to
+  highwind_statistics_v1 on (as_of_date, slug, metric, window).
+
+  Counts are after branch balancing: where one arm is more than a few times the size of the
+  smallest, it is down-sampled on a hash of the analysis unit, so `n` is the analysed population
+  rather than the enrolled one.
+owners:
+  - jkerim@mozilla.com
+labels:
+  incremental: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: as_of_date
+    require_partition_filter: false

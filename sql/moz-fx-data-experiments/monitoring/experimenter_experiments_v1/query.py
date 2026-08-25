@@ -35,7 +35,8 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
     try:
         client = bigquery.Client(project)
         rows = client.query(
-            f"SELECT normandy_slug, metric_config FROM `{project}.{dataset}.{table}`"
+            "SELECT normandy_slug, metric_config, computed_at"
+            f" FROM `{project}.{dataset}.{table}`"
             " WHERE metric_config IS NOT NULL"
         ).result()
 
@@ -45,11 +46,16 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
         converter.register_unstructure_hook(datetime.date, lambda d: d.isoformat())
 
         return {
-            row.normandy_slug: converter.unstructure(dict(row.metric_config))
+            row.normandy_slug: (
+                converter.unstructure(dict(row.metric_config)),
+                row.computed_at,
+            )
             for row in rows
         }
     except Exception as e:
-        logger.warning(f"Cannot read metric configs from {table}: {e}")
+        logger.warning(
+            f"Cannot read metric configs from `{project}.{dataset}.{table}`: {e}"
+        )
         return {}
 
 
@@ -84,7 +90,8 @@ def main():
         args.project, args.destination_dataset, args.metric_config_table
     )
     for row in blob:
-        row["metric_config"] = metric_configs.get(row["normandy_slug"])
+        row["metric_config"] = metric_configs.get(row["normandy_slug"])[0]
+        row["metric_config_computed_at"] = metric_configs.get(row["normandy_slug"])[1]
 
     client = bigquery.Client(args.project)
     client.load_table_from_json(blob, destination_table, job_config=job_config).result()

@@ -76,9 +76,7 @@ class Experiment:
 
 def _status(end_date: datetime.datetime | None) -> str:
     """Return the experiment status implied by its end date."""
-    is_live = end_date is None or end_date > pytz.utc.localize(
-        datetime.datetime.now(datetime.UTC)
-    )
+    is_live = end_date is None or end_date > datetime.datetime.now(datetime.UTC)
     return "Live" if is_live else "Complete"
 
 

@@ -5,7 +5,6 @@ import importlib.util
 from pathlib import Path
 
 import pytest
-import pytz
 from metric_config_parser.config import LocalConfigCollection
 
 from bigquery_etl.experiments.experimenter import Branch, NimbusExperiment, Outcome
@@ -49,7 +48,7 @@ def configs():
 def make_nimbus_experiment(slug, outcomes=None, end_date=None):
     return NimbusExperiment(
         slug=slug,
-        startDate=pytz.utc.localize(datetime.datetime(2024, 1, 1)),
+        startDate=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
         endDate=end_date,
         enrollmentEndDate=None,
         proposedEnrollment=7,
@@ -94,9 +93,7 @@ class TestResolveMetricConfig:
         # override-experiment.toml sets [experiment] end_date and enrollment_period.
         ne = make_nimbus_experiment(
             "override-experiment",
-            end_date=pytz.utc.localize(
-                datetime.datetime(2024, 8, 1, tzinfo=datetime.UTC)
-            ),
+            end_date=datetime.datetime(2024, 8, 1, tzinfo=datetime.UTC),
         )
         metric_config = query.resolve_metric_config(ne, configs)
 

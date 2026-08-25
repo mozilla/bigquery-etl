@@ -3,7 +3,6 @@
 import datetime
 
 import pytest
-import pytz
 
 from bigquery_etl.experiments.experimenter import Branch, NimbusExperiment, _status
 
@@ -11,7 +10,7 @@ from bigquery_etl.experiments.experimenter import Branch, NimbusExperiment, _sta
 def make_nimbus_experiment(channel="release", end_date=None):
     return NimbusExperiment(
         slug="test-experiment",
-        startDate=pytz.utc.localize(datetime.datetime(2024, 1, 1)),
+        startDate=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
         endDate=end_date,
         enrollmentEndDate=None,
         proposedEnrollment=7,
@@ -41,15 +40,11 @@ class TestStatus:
         assert _status(None) == "Live"
 
     def test_future_end_date_is_live(self):
-        future = pytz.utc.localize(
-            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)
-        )
+        future = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)
         assert _status(future) == "Live"
 
     def test_past_end_date_is_complete(self):
-        past = pytz.utc.localize(
-            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
-        )
+        past = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
         assert _status(past) == "Complete"
 
 

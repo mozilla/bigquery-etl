@@ -155,5 +155,6 @@ QUALIFY
       partner_code,
       source
     ORDER BY
-      event_timestamp DESC
+      event_timestamp DESC,
+      event_id -- deterministic tiebreaker (document_id plus event number) so sap passthroughs are reproducible on ties
   ) = 1

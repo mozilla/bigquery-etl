@@ -223,7 +223,8 @@ sap_events_with_client_info_cte AS (
         partner_code,
         source
       ORDER BY
-        event_timestamp DESC
+        event_timestamp DESC,
+        event_id -- deterministic tiebreaker (document_id plus event number) so sap passthroughs are reproducible on ties
     ) = 1
 ),
 sap_events_clients_ad_enterprise_cte AS (

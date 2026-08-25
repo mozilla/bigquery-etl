@@ -2,12 +2,10 @@
 
 import datetime
 import importlib.util
-import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-import pytz
 
 QUERY_DIR = (
     Path(__file__).resolve().parents[2]
@@ -41,12 +39,17 @@ def query():
 
 class TestReadMetricConfigs:
     def test_returns_configs_keyed_by_slug(self, query):
+        computed_at = datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC)
         fake_rows = [
             MagicMock(
-                normandy_slug="slug-a", metric_config={"has_external_config": True}
+                normandy_slug="slug-a",
+                metric_config={"has_external_config": True},
+                computed_at=computed_at,
             ),
             MagicMock(
-                normandy_slug="slug-b", metric_config={"has_external_config": False}
+                normandy_slug="slug-b",
+                metric_config={"has_external_config": False},
+                computed_at=computed_at,
             ),
         ]
         with patch("google.cloud.bigquery.Client") as mock_client:
@@ -56,8 +59,8 @@ class TestReadMetricConfigs:
             )
 
         assert result == {
-            "slug-a": {"has_external_config": True},
-            "slug-b": {"has_external_config": False},
+            "slug-a": ({"has_external_config": True}, computed_at.isoformat()),
+            "slug-b": ({"has_external_config": False}, computed_at.isoformat()),
         }
 
     def test_query_failure_returns_empty_dict(self, query):
@@ -74,11 +77,12 @@ class TestReadMetricConfigs:
             MagicMock(
                 normandy_slug="slug-a",
                 metric_config={
-                    "external_config_last_modified": pytz.utc.localize(
-                        datetime.datetime(2024, 1, 1, 12, 30)
+                    "external_config_last_modified": datetime.datetime(
+                        2024, 1, 1, 12, 30, tzinfo=datetime.UTC
                     ),
                     "overrides": {"start_date": datetime.date(2024, 6, 1)},
                 },
+                computed_at=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
             )
         ]
         with patch("google.cloud.bigquery.Client") as mock_client:
@@ -87,9 +91,12 @@ class TestReadMetricConfigs:
                 "proj", "monitoring", "experiment_metric_configs_v1"
             )
 
-        json.dumps(result)
+        assert "slug-a" in result
+
+        metric_config, metric_config_computed_at = result["slug-a"]
         assert (
-            result["slug-a"]["external_config_last_modified"]
+            metric_config["external_config_last_modified"]
             == "2024-01-01T12:30:00+00:00"
         )
-        assert result["slug-a"]["overrides"]["start_date"] == "2024-06-01"
+        assert metric_config["overrides"]["start_date"] == "2024-06-01"
+        assert metric_config_computed_at == "2024-01-01T00:00:00+00:00"

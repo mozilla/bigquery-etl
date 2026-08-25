@@ -48,7 +48,7 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
         return {
             row.normandy_slug: (
                 converter.unstructure(dict(row.metric_config)),
-                row.computed_at,
+                row.computed_at.isoformat() if row.computed_at else None,
             )
             for row in rows
         }

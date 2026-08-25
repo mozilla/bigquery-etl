@@ -1,0 +1,49 @@
+friendly_name: Plausible Raw Sessions
+description: |-
+  One row per visit recorded by Plausible Analytics on firefox.com, loaded
+  as-delivered from the vendor's daily sessions.parquet export in
+  gs://moz-fx-data-prod-external-plausible-data/firefox-com/<date>/.
+
+  Each daily file contains exactly the sessions whose `start` falls on that
+  date, one row per session_id, so each file replaces one `start` partition and
+  reruns are idempotent. The load additionally deduplicates on session_id,
+  keeping the most recently updated row, to harden against the vendor
+  regressing its own deduplication.
+
+  A session is filed by when it began, but its counters cover the whole visit
+  including activity after midnight, so `SUM(pageviews)` over a `start`
+  partition will not match a count of pageviews in the same events_v1
+  partition. See README.md in the parent directory before doing any
+  session-level aggregation or joining to events_v1.
+
+  The only transformations applied are normalizing the vendor's empty strings
+  to NULL and casting is_bounce from 0/1 to BOOLEAN; `entry_props` is kept as a
+  raw JSON string.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: true
+  owner1: phlee
+  dag: bqetl_plausible
+scheduling:
+  dag_name: bqetl_plausible
+  date_partition_parameter: null
+  arguments:
+  - --date
+  - '{{ds}}'
+bigquery:
+  time_partitioning:
+    type: day
+    field: start
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - acquisition_channel
+    - country_code
+    - entry_page
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+require_column_descriptions: true

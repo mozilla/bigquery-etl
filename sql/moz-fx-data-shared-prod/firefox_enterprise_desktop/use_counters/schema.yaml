@@ -22355,6 +22355,78 @@ fields:
         `use.counter.shared_workers_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_doc_document_parsehtml
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Document.parseHTML. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_document_parsehtmlunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Document.parseHTMLUnsafe. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_element_sethtmlunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Element.setHTMLUnsafe. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_shadowroot_sethtml
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called ShadowRoot.setHTML. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_shadowroot_sethtmlunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called ShadowRoot.setHTMLUnsafe. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_document_parsehtml
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Document.parseHTML. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_document_parsehtmlunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Document.parseHTMLUnsafe. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_element_sethtmlunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Element.setHTMLUnsafe. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_shadowroot_sethtml
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called ShadowRoot.setHTML. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_shadowroot_sethtmlunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called ShadowRoot.setHTMLUnsafe. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

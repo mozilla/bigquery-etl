@@ -1,0 +1,49 @@
+friendly_name: Plausible Raw Events
+description: |-
+  One row per event recorded by Plausible Analytics on firefox.com, loaded
+  as-delivered from the vendor's daily events.parquet export in
+  gs://moz-fx-data-prod-external-plausible-data/firefox-com/<date>/.
+
+  Each daily file contains exactly the events whose timestamp falls on that
+  date, so each file replaces one `timestamp` partition and reruns are
+  idempotent.
+
+  Two caveats before aggregating:
+    * `name = 'engagement'` is a synthetic event Plausible emits during page
+      interaction and is ~77% of rows. Filter to name = 'pageview' for
+      pageview-only analysis.
+    * Events for a session that spans midnight are split across two daily
+      partitions while its sessions_v1 row stays on its start date, so
+      joins to sessions_v1 must span date and date + 1. See README.md in
+      the parent directory.
+
+  The only transformation applied is normalizing the vendor's empty strings
+  to NULL; `props` is kept as a raw JSON string.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: true
+  owner1: phlee
+  dag: bqetl_plausible
+scheduling:
+  dag_name: bqetl_plausible
+  date_partition_parameter: null
+  arguments:
+  - --date
+  - '{{ds}}'
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - name
+    - country_code
+    - pathname
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+require_column_descriptions: true

@@ -33,7 +33,7 @@ FENIX_CHANNEL_EXPRESSION = """\
 mozfun.norm.fenix_app_info("{bq_dataset_family}", client_info.app_build).channel \
 AS normalized_channel,"""
 
-# App ids left out of the `crash_live` views, by dataset family
+# Deprecated apps
 EXCLUDED_DATASET_FAMILIES = {
     "org_mozilla_fenix_nightly",
     "org_mozilla_fennec_aurora",
@@ -49,10 +49,16 @@ def _generate_crash_live_views(
         if not apps:
             raise ValueError(f"No app listings found for {dataset}")
 
+        included = [
+            app
+            for app in apps
+            if app["bq_dataset_family"] not in EXCLUDED_DATASET_FAMILIES
+        ]
+        if not included:
+            raise ValueError(f"All app ids of {dataset} are excluded")
+
         schemas = {}
-        for app in apps:
-            if app["bq_dataset_family"] in EXCLUDED_DATASET_FAMILIES:
-                continue
+        for app in included:
             live_table = f"{target_project}.{app['bq_dataset_family']}_live.crash_v1"
             project, live_dataset, table = live_table.split(".")
             schema = Schema.for_table(
@@ -62,13 +68,14 @@ def _generate_crash_live_views(
                 partitioned_by="submission_timestamp",
                 use_cloud_function=use_cloud_function,
             )
+            # Schema.for_table returns an empty schema for any failure, including
+            # authentication and dry run errors.
             if len(schema.schema["fields"]) == 0:
-                click.echo(f"Skipping {live_table}, no schema found")
-                continue
+                raise ValueError(
+                    f"Could not get schema for {live_table} from dry run, "
+                    f"possible authentication issue."
+                )
             schemas[live_table] = (app, schema)
-
-        if not schemas:
-            raise ValueError(f"No live crash tables found for {dataset}")
 
         combined_schema = Schema.empty()
         for _, schema in schemas.values():
@@ -126,8 +133,6 @@ def _generate_crash_live_views(
             "view.sql",
             reformat(view),
         )
-        # The checked-in metadata carries the workgroup access for these views,
-        # so don't overwrite it if it is already there.
         write_sql(
             Path(output_dir) / target_project,
             full_table_id,
@@ -136,6 +141,7 @@ def _generate_crash_live_views(
                 dataset=dataset,
                 description_subject=description_subject,
             ),
+            # checked-in metadata can override the workgroup access if it exists
             skip_existing=True,
         )
 

@@ -29,8 +29,11 @@
 WITH base AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    normalized_channel,
-    normalized_os,
+    -- '??' rather than NULL on every dimension, because these are the FULL OUTER
+    -- JOIN keys below and NULL never matches NULL. A null channel splits one
+    -- group into a displays-only row and an actions-only row.
+    IFNULL(normalized_channel, '??') AS normalized_channel,
+    IFNULL(normalized_os, '??') AS normalized_os,
     IFNULL(normalized_country_code, '??') AS country,
     client_info.client_id AS client_id,
     metrics.dual_labeled_counter.page_load_error AS page_load_error,

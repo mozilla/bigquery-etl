@@ -6,11 +6,13 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized release channel, e.g. release, beta, nightly.
+  description: >
+    Normalized release channel, e.g. release, beta, nightly, or '??' when the
+    ping did not report one.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized operating system name.
+  description: Normalized operating system name, or '??' when unknown.
 - name: country
   type: STRING
   mode: NULLABLE

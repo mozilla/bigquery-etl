@@ -12368,6 +12368,46 @@ fields:
       mode: NULLABLE
       description: Whether a page calls FileSystemHandle.move() with a stringified
         object as name
+    - name: use_counter2_document_parsehtml_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Document.parseHTML
+    - name: use_counter2_document_parsehtml_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Document.parseHTML
+    - name: use_counter2_document_parsehtmlunsafe_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Document.parseHTMLUnsafe
+    - name: use_counter2_document_parsehtmlunsafe_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Document.parseHTMLUnsafe
+    - name: use_counter2_element_sethtmlunsafe_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Element.setHTMLUnsafe
+    - name: use_counter2_element_sethtmlunsafe_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Element.setHTMLUnsafe
+    - name: use_counter2_shadowroot_sethtml_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called ShadowRoot.setHTML
+    - name: use_counter2_shadowroot_sethtml_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called ShadowRoot.setHTML
+    - name: use_counter2_shadowroot_sethtmlunsafe_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called ShadowRoot.setHTMLUnsafe
+    - name: use_counter2_shadowroot_sethtmlunsafe_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called ShadowRoot.setHTMLUnsafe
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24598,6 +24638,46 @@ fields:
           mode: NULLABLE
           description: Whether a page calls FileSystemHandle.move() with a stringified
             object as name
+        - name: use_counter2_document_parsehtml_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Document.parseHTML
+        - name: use_counter2_document_parsehtml_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Document.parseHTML
+        - name: use_counter2_document_parsehtmlunsafe_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Document.parseHTMLUnsafe
+        - name: use_counter2_document_parsehtmlunsafe_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Document.parseHTMLUnsafe
+        - name: use_counter2_element_sethtmlunsafe_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Element.setHTMLUnsafe
+        - name: use_counter2_element_sethtmlunsafe_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Element.setHTMLUnsafe
+        - name: use_counter2_shadowroot_sethtml_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called ShadowRoot.setHTML
+        - name: use_counter2_shadowroot_sethtml_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called ShadowRoot.setHTML
+        - name: use_counter2_shadowroot_sethtmlunsafe_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called ShadowRoot.setHTMLUnsafe
+        - name: use_counter2_shadowroot_sethtmlunsafe_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called ShadowRoot.setHTMLUnsafe
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

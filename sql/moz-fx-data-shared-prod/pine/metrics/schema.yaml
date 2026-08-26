@@ -5554,9 +5554,6 @@ fields:
       description: 'The time remaining until expiration per storage access permissions,
         in days (one record per permission, not averaged).
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram STORAGE_ACCESS_REMAINING_DAYS.
-
         '
     - name: contentblocking_strip_on_share_length_decrease
       type: RECORD
@@ -20086,9 +20083,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Storage Access API UI events.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram STORAGE_ACCESS_API_UI.
 
         '
     - name: dom_webkit_directory_used

@@ -644,9 +644,22 @@ fields:
     - name: newtab_scroll
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether the user scrolled more than SCROLL_TELEMETRY_THRESHOLD
-        pixels during a newtab session. Absent if no qualifying scroll occurred during
-        the session.
+      description: 'Whether the user scrolled more than 50 pixels during a newtab
+        session. Absent if the session ended before the newtab was ever visible.
+
+        '
+    - name: newtab_scroll100
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user scrolled more than 100 pixels during a newtab
+        session. Absent if the session ended before the newtab was ever visible.
+
+        '
+    - name: newtab_scroll250
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user scrolled more than 250 pixels during a newtab
+        session. Absent if the session ended before the newtab was ever visible.
 
         '
   - name: quantity

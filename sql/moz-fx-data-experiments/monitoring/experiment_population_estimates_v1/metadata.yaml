@@ -1,23 +1,22 @@
 ---
 friendly_name: Nimbus Experiment Population Estimates
 description: |-
-  Per-experiment eligible-client estimates for Nimbus Draft experiments on Desktop.
+  Per-experiment eligible-client estimates for Nimbus Draft experiments across
+  Desktop (firefox_desktop), Fenix (fenix), and iOS (firefox_ios).
 
   Populated daily by fetching experiments from the Experimenter v8 API where
   targetingSql.needsUpdate=true, running each experiment's translated SQL WHERE
-  clause against moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context
-  (7-day window, 10% sample x10), and writing results to GCS for Experimenter to
-  display on the Audience page.
+  clause against the appropriate nimbus_targeting_context table (7-day window,
+  10% sample x10), and writing results to GCS for Experimenter to display on
+  the Audience page.
 
-  Deduplicates on the experiment's randomization unit from the API:
-  normandy_id -> client_info.client_id,
-  group_id -> client_info.profile_group_id.
+  Desktop deduplicates on client_info.client_id using sample_id < 10.
+  Mobile deduplicates on client_id using ABS(MOD(FARM_FINGERPRINT(client_id), 10)) < 1
+  (mobile derived tables do not have a sample_id column).
 
   Results are also written to GCS at:
     gs://mozanalysis/population_sizing/experiment_population_estimates_v1_{date}.json
     gs://mozanalysis/population_sizing/experiment_population_estimates_v1_latest.json
-
-  Desktop only. Mobile apps will be added in a future iteration.
 owners:
   - ykhurana@mozilla.com
 labels:
@@ -27,6 +26,8 @@ scheduling:
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
     - ['moz-fx-data-shared-prod', 'firefox_desktop', 'nimbus_targeting_context']
+    - ['moz-fx-data-shared-prod', 'fenix_derived', 'nimbus_recorded_targeting_context_v1']
+    - ['moz-fx-data-shared-prod', 'org_mozilla_ios_firefox_derived', 'nimbus_recorded_targeting_context_v1']
 bigquery:
   time_partitioning:
     type: day

@@ -3,13 +3,19 @@ fields:
   type: STRING
   mode: REQUIRED
   description: Experiment slug from Experimenter.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Application platform the experiment targets. One of firefox_desktop,
+    fenix, or firefox_ios.
 - name: eligible_count
   type: INTEGER
   mode: NULLABLE
   description: >-
-    Estimated number of eligible Firefox Desktop clients based on the
-    experiment's targeting expression. Derived from 10% sample x10.
-    Experimenter computes projected enrollment from this using population_percent.
+    Estimated number of eligible clients based on the experiment's targeting
+    expression. Derived from 10% sample x10. Experimenter computes projected
+    enrollment from this using population_percent.
 - name: warnings
   type: STRING
   mode: REPEATED

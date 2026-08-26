@@ -6,7 +6,8 @@ Fetches Draft experiments from the Experimenter v8 API, executes their
 translated BigQuery SQL WHERE clauses against nimbus_targeting_context,
 and writes per-experiment eligible-client estimates to GCS and BigQuery.
 
-Desktop only for now. Deduplicates on client_info.client_id.
+Supports Desktop (firefox_desktop), Fenix (fenix), and iOS (firefox_ios).
+Deduplicates on client_info.client_id (desktop) or client_id (mobile).
 profile_group_id support requires a separate ticket to add that field to
 nimbus_targeting_context first.
 """
@@ -28,9 +29,22 @@ EXPERIMENTER_API_URL = (
 NIMBUS_TARGETING_TABLE = (
     "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context"
 )
+NIMBUS_TARGETING_TABLE_FENIX = (
+    "moz-fx-data-shared-prod.fenix_derived.nimbus_recorded_targeting_context_v1"
+)
+NIMBUS_TARGETING_TABLE_IOS = (
+    "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived"
+    ".nimbus_recorded_targeting_context_v1"
+)
+APP_TARGETING_TABLES = {
+    "firefox_desktop": NIMBUS_TARGETING_TABLE,
+    "fenix": NIMBUS_TARGETING_TABLE_FENIX,
+    "firefox_ios": NIMBUS_TARGETING_TABLE_IOS,
+}
+_MOBILE_APPS = frozenset({"fenix", "firefox_ios"})
 GCS_BUCKET = "mozanalysis"
 GCS_FOLDER = "population_sizing"
-# 10% sample — multiply counts by 10 to estimate full population
+# 10% sample -- multiply counts by 10 to estimate full population
 SAMPLE_ID_MAX = 10
 
 
@@ -73,20 +87,42 @@ def _col_for_index(i: int) -> str:
     return f"exp_{i}"
 
 
-def build_query(experiments: list, submission_date: date, window_days: int = 7) -> str:
+def build_query(
+    experiments: list,
+    submission_date: date,
+    table: str = NIMBUS_TARGETING_TABLE,
+    is_mobile: bool = False,
+    window_days: int = 7,
+) -> str:
     """Build a single BigQuery query counting eligible clients per experiment.
 
     Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
     collisions. One COUNTIF per experiment in a single table scan.
     clients CTE selects * so injected SQL can reference any ping field.
-    Deduplicates on client_info.client_id. profile_group_id is not yet available
-    in nimbus_targeting_context — follow-up work needed to add it and then use
-    the experiment's randomizationUnit from the API to pick the right column.
+    Desktop deduplicates on client_info.client_id with sample_id < 10.
+    Mobile deduplicates on client_id with hash-based 10% sampling (no
+    sample_id column in mobile derived tables).
     """
     window_start = submission_date - timedelta(days=window_days - 1)
     window_end = submission_date
 
-    cte = f"""\
+    if is_mobile:
+        cte = f"""\
+WITH latest_per_client AS (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (
+      PARTITION BY client_id
+      ORDER BY submission_date DESC
+    ) AS rn
+  FROM `{table}`
+  WHERE submission_date BETWEEN '{window_start}' AND '{window_end}'
+    AND ABS(MOD(FARM_FINGERPRINT(client_id), 10)) < 1
+    AND client_id IS NOT NULL
+),
+clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
+    else:
+        cte = f"""\
 WITH latest_per_client AS (
   SELECT
     *,
@@ -94,7 +130,7 @@ WITH latest_per_client AS (
       PARTITION BY client_info.client_id
       ORDER BY submission_timestamp DESC
     ) AS rn
-  FROM `{NIMBUS_TARGETING_TABLE}`
+  FROM `{table}`
   WHERE DATE(submission_timestamp) BETWEEN '{window_start}' AND '{window_end}'
     AND sample_id < {SAMPLE_ID_MAX}
     AND client_info.client_id IS NOT NULL
@@ -110,9 +146,11 @@ clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
     return f"{cte}\nSELECT\n" + ",\n".join(cols) + "\nFROM clients"
 
 
-def _dry_run_sql(sql: str, project: str) -> bool:
+def _dry_run_sql(
+    sql: str, project: str, table: str = NIMBUS_TARGETING_TABLE
+) -> bool:
     """Return True if sql is a valid BigQuery expression, False otherwise."""
-    probe = f"SELECT COUNTIF({sql}) AS c FROM `{NIMBUS_TARGETING_TABLE}` WHERE FALSE"
+    probe = f"SELECT COUNTIF({sql}) AS c FROM `{table}` WHERE FALSE"
     try:
         client = bigquery.Client(project=project)
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
@@ -123,7 +161,12 @@ def _dry_run_sql(sql: str, project: str) -> bool:
         return False
 
 
-def build_results(experiments: list, query: str, project: str) -> dict:
+def build_results(
+    experiments: list,
+    query: str,
+    project: str,
+    platform: str = "firefox_desktop",
+) -> dict:
     """Execute query and map results back to per-experiment result dicts.
 
     Uses positional index aliases (exp_0, exp_1, ...) to avoid slug collisions.
@@ -143,6 +186,7 @@ def build_results(experiments: list, query: str, project: str) -> dict:
         if eligible_count is None:
             continue
         results[exp["slug"]] = {
+            "platform": platform,
             "eligible_count": int(eligible_count),
             "warnings": exp["targetingSql"].get("warnings", []),
         }
@@ -190,6 +234,7 @@ def write_to_bigquery(
     rows = [
         {
             "slug": slug,
+            "platform": data["platform"],
             "eligible_count": data["eligible_count"],
             "warnings": data["warnings"],
             "computed_at": computed_at.isoformat(),
@@ -206,6 +251,7 @@ def write_to_bigquery(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         schema=[
             bigquery.SchemaField("slug", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("platform", "STRING"),
             bigquery.SchemaField("eligible_count", "INTEGER"),
             bigquery.SchemaField("warnings", "STRING", mode="REPEATED"),
             bigquery.SchemaField("computed_at", "TIMESTAMP", mode="REQUIRED"),
@@ -221,44 +267,79 @@ def main():
     args = parser.parse_args()
     run_date = date.fromisoformat(args.date)
 
-    experiments = fetch_experiments(args.api_url)
-    logger.info("Found %d experiments needing sizing update", len(experiments))
+    all_experiments = fetch_experiments(args.api_url)
+    logger.info("Found %d experiments needing sizing update", len(all_experiments))
 
-    if not experiments:
+    if not all_experiments:
         logger.info("No experiments to process")
         return
 
-    # Dry-run each SQL fragment individually -- drop bad ones so one bad
-    # translation doesn't block the rest of the experiments
-    valid_experiments = []
-    for exp in experiments:
-        sql = exp["targetingSql"]["sql"]
-        if _dry_run_sql(sql, project=args.project):
-            valid_experiments.append(exp)
-        else:
-            logger.warning("Skipping %s -- SQL failed dry-run validation", exp["slug"])
+    # Group experiments by platform
+    platform_groups: dict[str, list] = {}
+    for exp in all_experiments:
+        app_name = exp.get("appName", "firefox_desktop")
+        if app_name not in APP_TARGETING_TABLES:
+            logger.warning(
+                "Unknown appName %r for %s, skipping", app_name, exp["slug"]
+            )
+            continue
+        platform_groups.setdefault(app_name, []).append(exp)
 
-    if not valid_experiments:
+    all_results: dict = {}
+    has_valid = False
+
+    for app_name, experiments in platform_groups.items():
+        table = APP_TARGETING_TABLES[app_name]
+        is_mobile = app_name in _MOBILE_APPS
+
+        valid_experiments = []
+        for exp in experiments:
+            sql = exp["targetingSql"]["sql"]
+            if _dry_run_sql(sql, project=args.project, table=table):
+                valid_experiments.append(exp)
+            else:
+                logger.warning(
+                    "Skipping %s -- SQL failed dry-run validation", exp["slug"]
+                )
+
+        if not valid_experiments:
+            continue
+
+        has_valid = True
+        query = build_query(
+            valid_experiments,
+            submission_date=run_date,
+            table=table,
+            is_mobile=is_mobile,
+        )
+
+        if args.dry_run:
+            print(f"-- {app_name}\n{query}")
+            continue
+
+        results = build_results(
+            valid_experiments, query, project=args.project, platform=app_name
+        )
+        logger.info(
+            "Got sizing results for %d %s experiments", len(results), app_name
+        )
+        all_results.update(results)
+
+    if args.dry_run:
+        return
+
+    if not has_valid:
         logger.info("No valid experiments after dry-run validation")
         return
 
-    query = build_query(valid_experiments, submission_date=run_date)
-
-    if args.dry_run:
-        print(query)
-        return
-
-    results = build_results(valid_experiments, query, project=args.project)
-    logger.info("Got sizing results for %d experiments", len(results))
-
     write_to_gcs(
-        results,
+        all_results,
         bucket_name=args.gcs_bucket,
         folder=args.gcs_folder,
         run_date=args.date,
     )
     write_to_bigquery(
-        results,
+        all_results,
         project=args.project,
         dataset=args.output_dataset,
         table=args.output_table,

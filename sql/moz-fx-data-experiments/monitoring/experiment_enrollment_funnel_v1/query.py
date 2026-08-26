@@ -15,12 +15,26 @@ Exports as JSON to GCS for the Experimenter ingestion task to consume.
 import json
 import logging
 from argparse import ArgumentParser
-from datetime import date
+from datetime import date, timedelta
 
 from google.cloud import bigquery, storage
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Bound the nimbus_targeting_context scan window. Only each client's most recent
+# evaluation is used, so pings older than this are always superseded.
+#
+# This MUST stay >= the active_experiments horizon (end_date >= run_date - 90d):
+# recipes that ended within that horizon are still exported, but their clients stop
+# emitting enrollment_status events around their end_date, so a shorter scan would
+# make those slugs produce zero rows and disappear from the funnel entirely rather
+# than shrink. Keep the two windows equal at 90 days.
+#
+# Without any bound, never-ending rollouts (end_date IS NULL) pin the window open to
+# the earliest start_date (3+ years), which pushed the task past BigQuery's 6h job
+# limit. See bug 2066888.
+SCAN_WINDOW_DAYS = 90
 
 MIN_START_QUERY = """
 SELECT MIN(start_date) AS min_start_date
@@ -50,7 +64,7 @@ all_apps_raw AS (
     t.submission_timestamp
   FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
-  WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
+  WHERE DATE(t.submission_timestamp) BETWEEN @scan_start_date AND @run_date
     AND t.sample_id = 0
     AND event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
@@ -69,7 +83,7 @@ all_apps_raw AS (
     t.submission_timestamp
   FROM `moz-fx-data-shared-prod.org_mozilla_ios_firefox.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
-  WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
+  WHERE DATE(t.submission_timestamp) BETWEEN @scan_start_date AND @run_date
     AND t.sample_id = 0
     AND event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
@@ -88,7 +102,7 @@ all_apps_raw AS (
     t.submission_timestamp
   FROM `moz-fx-data-shared-prod.fenix.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
-  WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
+  WHERE DATE(t.submission_timestamp) BETWEEN @scan_start_date AND @run_date
     AND t.sample_id = 0
     AND event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
@@ -160,6 +174,11 @@ def main():
             bucket.blob(path).upload_from_string(empty, content_type="application/json")
         return
 
+    # Bound the scan to the recent window. The funnel uses only each client's most
+    # recent evaluation, so pings older than SCAN_WINDOW_DAYS are always superseded
+    # and need not be scanned; this keeps the job well under the 6h limit (bug 2066888).
+    scan_start_date = max(min_start_date, run_date - timedelta(days=SCAN_WINDOW_DAYS))
+
     rows = list(
         bq_client.query(
             FUNNEL_QUERY,
@@ -167,7 +186,7 @@ def main():
                 query_parameters=[
                     bigquery.ScalarQueryParameter("run_date", "DATE", run_date),
                     bigquery.ScalarQueryParameter(
-                        "min_start_date", "DATE", min_start_date
+                        "scan_start_date", "DATE", scan_start_date
                     ),
                 ]
             ),

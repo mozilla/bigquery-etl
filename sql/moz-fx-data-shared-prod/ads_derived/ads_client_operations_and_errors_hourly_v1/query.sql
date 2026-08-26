@@ -1,131 +1,133 @@
--- Hourly aggregate of ads client metrics pings across iOS and Android platforms.
+-- Hourly aggregate of ads client metrics pings across desktop, iOS and Android platforms.
 -- Covers operation counts (labeled_counter) and error occurrence counts (labeled_string)
 -- broken down by key, plus total ping count and device dimensions.
--- Source tables and their channels:
---   - org_mozilla_ios_firefox_live (iOS release)
---   - org_mozilla_firefox_live (Android release)
---   - org_mozilla_fenix_live (Android nightly)
+-- One `sources` entry per platform/channel combination; desktop ships every channel in a
+-- single table, so it only needs one entry despite covering nightly/beta/release.
 -- Only pings with at least one ads_client metric entry are included.
-WITH ios_base AS (
-  SELECT
-    submission_timestamp,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    normalized_channel,
-    'Mobile' AS surface,
-    client_info.os AS normalized_os,
-    'Firefox for iOS' AS app_name,
-    normalized_channel AS channel,
-    metrics.labeled_counter.ads_client_client_operation_total AS client_operation_total,
-    metrics.labeled_string.ads_client_client_error AS client_error,
-    metrics.labeled_string.ads_client_build_cache_error AS build_cache_error,
-    metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
-    metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
-  FROM
-    {% if is_init() %}
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
-    {% else %}
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1`
+--
+-- Desktop re-declares the ads_client category in browser/components/newtab/metrics.yaml
+-- rather than inheriting the application-services metrics.yaml the mobile apps use (bug
+-- 2058567). The two copies have drifted: desktop's http_cache_outcome declares a
+-- 'trim_failed' label that mobile's does not, even though the shared Rust component emits
+-- it (CacheOutcome::TrimFailed) on every platform. Glean enforces the declared label list,
+-- so a trim failure on mobile falls into the '__other__' bucket instead of 'trim_failed'.
+-- Each labeled_string group below gets a `*_other` column so a gap like this is visible in
+-- the data instead of silently dropped.
+{% set sources = [
+    {
+      'dataset': 'org_mozilla_ios_firefox',
+      'surface': 'Mobile',
+      'app_name': 'Firefox for iOS',
+      'os_expr': 'client_info.os',
+      'init_start': '2026-02-01',
+    },
+    {
+      'dataset': 'org_mozilla_firefox',
+      'surface': 'Mobile',
+      'app_name': 'Fenix',
+      'os_expr': 'client_info.os',
+      'init_start': '2026-02-01',
+    },
+    {
+      'dataset': 'org_mozilla_fenix',
+      'surface': 'Mobile',
+      'app_name': 'Fenix',
+      'os_expr': 'client_info.os',
+      'init_start': '2026-02-01',
+    },
+    {
+      'dataset': 'firefox_desktop',
+      'surface': 'Desktop',
+      'app_name': 'Firefox Desktop',
+      'os_expr': 'normalized_os',
+      'init_start': '2026-08-07',
+    },
+] %}
+{% set metric_groups = [
+    {
+      'column': 'client_operation_total',
+      'raw_column': 'metrics.labeled_counter.ads_client_client_operation_total',
+      'prefix': 'op',
+      'counter': true,
+      'other': false,
+      'comment': 'Operation totals (labeled_counter: sum values per key)',
+      'labels': ['new', 'request_ads', 'record_click', 'record_impression', 'report_ad'],
+    },
+    {
+      'column': 'client_error',
+      'raw_column': 'metrics.labeled_string.ads_client_client_error',
+      'prefix': 'client_error',
+      'counter': false,
+      'other': true,
+      'comment': 'Client errors (labeled_string: sum total occurrences per key)',
+      'labels': ['request_ads', 'record_click', 'record_impression', 'report_ad'],
+    },
+    {
+      'column': 'build_cache_error',
+      'raw_column': 'metrics.labeled_string.ads_client_build_cache_error',
+      'prefix': 'build_cache_error',
+      'counter': false,
+      'other': true,
+      'comment': 'Build cache errors (labeled_string: sum total occurrences per key)',
+      'labels': ['builder_error', 'database_error', 'empty_db_path', 'invalid_max_size', 'invalid_ttl'],
+    },
+    {
+      'column': 'deserialization_error',
+      'raw_column': 'metrics.labeled_string.ads_client_deserialization_error',
+      'prefix': 'deserialization_error',
+      'counter': false,
+      'other': true,
+      'comment': 'Deserialization errors (labeled_string: sum total occurrences per key)',
+      'labels': ['invalid_ad_item', 'invalid_array', 'invalid_structure'],
+    },
+    {
+      'column': 'http_cache_outcome',
+      'raw_column': 'metrics.labeled_string.ads_client_http_cache_outcome',
+      'prefix': 'http_cache_outcome',
+      'counter': false,
+      'other': true,
+      'comment': 'HTTP cache outcomes (labeled_string: sum total occurrences per key)',
+      'labels': ['cleanup_failed', 'hit', 'lookup_failed', 'miss_not_cacheable', 'miss_stored', 'no_cache', 'store_failed', 'trim_failed'],
+    },
+] %}
+WITH base AS (
+  {% for source in sources %}
+    {% if not loop.first %}
+      UNION ALL BY NAME
     {% endif %}
-  WHERE
-    {% if is_init() %}
-      DATE(submission_timestamp) >= DATE("2026-02-01")
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
-    AND (
-      ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_build_cache_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_deserialization_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_http_cache_outcome) > 0
-    )
-),
-android_release_base AS (
-  SELECT
-    submission_timestamp,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    normalized_channel,
-    'Mobile' AS surface,
-    client_info.os AS normalized_os,
-    'Fenix' AS app_name,
-    normalized_channel AS channel,
-    metrics.labeled_counter.ads_client_client_operation_total AS client_operation_total,
-    metrics.labeled_string.ads_client_client_error AS client_error,
-    metrics.labeled_string.ads_client_build_cache_error AS build_cache_error,
-    metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
-    metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
-  FROM
-    {% if is_init() %}
-      `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
-    {% else %}
-      `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
-    {% endif %}
-  WHERE
-    {% if is_init() %}
-      DATE(submission_timestamp) >= DATE("2026-02-01")
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
-    AND (
-      ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_build_cache_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_deserialization_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_http_cache_outcome) > 0
-    )
-),
-android_nightly_base AS (
-  SELECT
-    submission_timestamp,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    normalized_channel,
-    'Mobile' AS surface,
-    client_info.os AS normalized_os,
-    'Fenix' AS app_name,
-    normalized_channel AS channel,
-    metrics.labeled_counter.ads_client_client_operation_total AS client_operation_total,
-    metrics.labeled_string.ads_client_client_error AS client_error,
-    metrics.labeled_string.ads_client_build_cache_error AS build_cache_error,
-    metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
-    metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
-  FROM
-    {% if is_init() %}
-      `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
-    {% else %}
-      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
-    {% endif %}
-  WHERE
-    {% if is_init() %}
-      DATE(submission_timestamp) >= DATE("2026-02-01")
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
-    AND (
-      ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_build_cache_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_deserialization_error) > 0
-      OR ARRAY_LENGTH(metrics.labeled_string.ads_client_http_cache_outcome) > 0
-    )
-),
-base AS (
-  SELECT
-    *
-  FROM
-    ios_base
-  UNION ALL BY NAME
-  SELECT
-    *
-  FROM
-    android_release_base
-  UNION ALL BY NAME
-  SELECT
-    *
-  FROM
-    android_nightly_base
+    SELECT
+      submission_timestamp,
+      normalized_country_code,
+      client_info.app_display_version AS app_version,
+      normalized_channel,
+      '{{ source.surface }}' AS surface,
+      {{ source.os_expr }} AS normalized_os,
+      '{{ source.app_name }}' AS app_name,
+      normalized_channel AS channel,
+      {% for group in metric_groups %}
+        {{ group.raw_column }} AS {{ group.column }},
+      {% endfor %}
+    FROM
+      {% if is_init() %}
+        `moz-fx-data-shared-prod.{{ source.dataset }}_stable.metrics_v1`
+      {% else %}
+        `moz-fx-data-shared-prod.{{ source.dataset }}_live.metrics_v1`
+      {% endif %}
+    WHERE
+      {% if is_init() %}
+        DATE(submission_timestamp) >= DATE("{{ source.init_start }}")
+      {% else %}
+        DATE(submission_timestamp) = @submission_date
+      {% endif %}
+      AND (
+        {% for group in metric_groups %}
+          {% if not loop.first %}
+            OR
+          {% endif %}
+          ARRAY_LENGTH({{ group.raw_column }}) > 0
+        {% endfor %}
+      )
+  {% endfor %}
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
@@ -138,86 +140,26 @@ SELECT
   app_version,
   normalized_channel,
   COUNT(*) AS ping_count,
-  -- Operation totals (labeled_counter: sum values per key)
-  SUM(
-    IFNULL((SELECT SUM(value) FROM UNNEST(client_operation_total) WHERE key = 'new'), 0)
-  ) AS op_new,
-  SUM(
-    IFNULL((SELECT SUM(value) FROM UNNEST(client_operation_total) WHERE key = 'request_ads'), 0)
-  ) AS op_request_ads,
-  SUM(
-    IFNULL((SELECT SUM(value) FROM UNNEST(client_operation_total) WHERE key = 'record_click'), 0)
-  ) AS op_record_click,
-  SUM(
-    IFNULL(
-      (SELECT SUM(value) FROM UNNEST(client_operation_total) WHERE key = 'record_impression'),
-      0
-    )
-  ) AS op_record_impression,
-  SUM(
-    IFNULL((SELECT SUM(value) FROM UNNEST(client_operation_total) WHERE key = 'report_ad'), 0)
-  ) AS op_report_ad,
-  -- Client errors (labeled_string: sum total occurrences per key)
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(client_error) WHERE key = 'request_ads')
-  ) AS client_error_request_ads,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(client_error) WHERE key = 'record_click')
-  ) AS client_error_record_click,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(client_error) WHERE key = 'record_impression')
-  ) AS client_error_record_impression,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(client_error) WHERE key = 'report_ad')
-  ) AS client_error_report_ad,
-  -- Build cache errors (labeled_string: sum total occurrences per key)
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(build_cache_error) WHERE key = 'builder_error')
-  ) AS build_cache_error_builder_error,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(build_cache_error) WHERE key = 'database_error')
-  ) AS build_cache_error_database_error,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(build_cache_error) WHERE key = 'empty_db_path')
-  ) AS build_cache_error_empty_db_path,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(build_cache_error) WHERE key = 'invalid_max_size')
-  ) AS build_cache_error_invalid_max_size,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(build_cache_error) WHERE key = 'invalid_ttl')
-  ) AS build_cache_error_invalid_ttl,
-  -- Deserialization errors (labeled_string: sum total occurrences per key)
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(deserialization_error) WHERE key = 'invalid_ad_item')
-  ) AS deserialization_error_invalid_ad_item,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(deserialization_error) WHERE key = 'invalid_array')
-  ) AS deserialization_error_invalid_array,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(deserialization_error) WHERE key = 'invalid_structure')
-  ) AS deserialization_error_invalid_structure,
-  -- HTTP cache outcomes (labeled_string: sum total occurrences per key)
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'cleanup_failed')
-  ) AS http_cache_outcome_cleanup_failed,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'hit')
-  ) AS http_cache_outcome_hit,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'lookup_failed')
-  ) AS http_cache_outcome_lookup_failed,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'miss_not_cacheable')
-  ) AS http_cache_outcome_miss_not_cacheable,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'miss_stored')
-  ) AS http_cache_outcome_miss_stored,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'no_cache')
-  ) AS http_cache_outcome_no_cache,
-  SUM(
-    (SELECT COUNT(*) FROM UNNEST(http_cache_outcome) WHERE key = 'store_failed')
-  ) AS http_cache_outcome_store_failed,
+  {% for group in metric_groups %}
+    -- {{ group.comment }}
+    {% for label in group.labels %}
+      {% if group.counter %}
+        SUM(
+          IFNULL((SELECT SUM(value) FROM UNNEST({{ group.column }}) WHERE key = '{{ label }}'), 0)
+        ) AS {{ group.prefix ~ '_' ~ label }},
+      {% else %}
+        SUM(
+          (SELECT COUNT(*) FROM UNNEST({{ group.column }}) WHERE key = '{{ label }}')
+        ) AS {{ group.prefix ~ '_' ~ label }},
+      {% endif %}
+    {% endfor %}
+    {% if group.other %}
+  -- Any label outside the list above (Glean's '__other__' overflow bucket, see header).
+      SUM(
+        (SELECT COUNT(*) FROM UNNEST({{ group.column }}) WHERE key = '__other__')
+      ) AS {{ group.prefix ~ '_other' }},
+    {% endif %}
+  {% endfor %}
 FROM
   base
 GROUP BY

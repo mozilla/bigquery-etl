@@ -538,7 +538,6 @@ SELECT
       JSON_VALUE(event_extra.psi_full_avg60) AS `psi_full_avg60`,
       JSON_VALUE(event_extra.psi_some_avg10) AS `psi_some_avg10`,
       JSON_VALUE(event_extra.psi_some_avg60) AS `psi_some_avg60`,
-      JSON_VALUE(event_extra.rating) AS `rating`,
       JSON_VALUE(event_extra.re) AS `re`,
       JSON_VALUE(event_extra.reader_time) AS `reader_time`,
       JSON_VALUE(event_extra.reason) AS `reason`,

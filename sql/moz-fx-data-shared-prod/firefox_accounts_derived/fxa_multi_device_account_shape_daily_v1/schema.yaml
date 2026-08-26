@@ -1,0 +1,34 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    Date this row was computed for.
+- name: window_start
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    Start of the trailing 7-day window ending on submission_date
+    (submission_date minus 6 days). Counts on this row reflect activity from
+    window_start through submission_date. Every row is a complete 7-day
+    window, not a partial week.
+- name: desktop_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Number of distinct desktop Glean client IDs linked to the account via
+    client_association_uid, seen between window_start and submission_date.
+- name: mobile_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Number of distinct mobile (iOS or Android/Fenix) Glean client IDs linked
+    to the account via client_association_uid, seen between window_start and
+    submission_date.
+- name: active_accounts
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Number of distinct Firefox Accounts with this exact
+    (desktop_clients, mobile_clients) device shape as of submission_date.
+    No account or client identifiers are included in this table.

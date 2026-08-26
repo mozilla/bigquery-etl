@@ -1,0 +1,174 @@
+fields:
+- name: normandy_slug
+  type: STRING
+  mode: NULLABLE
+  description: Normandy slug of the experiment. Joins to experimenter_experiments_v1.
+
+- name: computed_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When this row was resolved against metric-hub HEAD.
+
+- name: metric_config
+  type: RECORD
+  mode: NULLABLE
+  description: Resolved jetstream analysis configuration for the experiment.
+  fields:
+  - name: has_external_config
+    type: BOOL
+    mode: NULLABLE
+    description: Whether an experiment-specific config exists in metric-hub/jetstream.
+  - name: external_config_url
+    type: STRING
+    mode: NULLABLE
+    description: Link to the experiment's metric-hub/jetstream config, if any.
+  - name: external_config_last_modified
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Last-modified timestamp of the experiment's metric-hub/jetstream config, if any.
+  - name: has_external_config_overrides
+    type: BOOL
+    mode: NULLABLE
+    description: Whether the external config overrides Experimenter-provided dates or reference branch.
+  - name: skip
+    type: BOOL
+    mode: NULLABLE
+    description: Whether the config marks this experiment as skipped from analysis.
+  - name: is_private
+    type: BOOL
+    mode: NULLABLE
+    description: Whether the config marks this experiment as private.
+  - name: analysis_unit
+    type: STRING
+    mode: NULLABLE
+    description: client_id or profile_group_id.
+  - name: enrollments_query_type
+    type: STRING
+    mode: NULLABLE
+    description: Enrollment query type override, if any.
+  - name: sample_size
+    type: INTEGER
+    mode: NULLABLE
+    description: Percentage of clients to sample for enrollment downsampling, if set.
+  - name: overrides
+    type: RECORD
+    mode: NULLABLE
+    description: Values the external config overrides relative to Experimenter. Subfields are NULL when not overridden.
+    fields:
+    - name: reference_branch
+      type: STRING
+      mode: NULLABLE
+    - name: start_date
+      type: DATE
+      mode: NULLABLE
+    - name: end_date
+      type: DATE
+      mode: NULLABLE
+    - name: enrollment_period
+      type: INTEGER
+      mode: NULLABLE
+  - name: segments
+    type: RECORD
+    mode: REPEATED
+    description: Segments applied to the experiment's analysis.
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: friendly_name
+      type: STRING
+      mode: NULLABLE
+    - name: description
+      type: STRING
+      mode: NULLABLE
+  - name: exposure_signal
+    type: RECORD
+    mode: NULLABLE
+    description: Exposure signal applied to the experiment's analysis, if any.
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: friendly_name
+      type: STRING
+      mode: NULLABLE
+    - name: description
+      type: STRING
+      mode: NULLABLE
+    - name: window_start
+      type: STRING
+      mode: NULLABLE
+    - name: window_end
+      type: STRING
+      mode: NULLABLE
+  - name: metrics
+    type: RECORD
+    mode: REPEATED
+    description: Metrics resolved for the experiment, deduplicated by (metric, statistic) across all analysis periods.
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: friendly_name
+      type: STRING
+      mode: NULLABLE
+    - name: description
+      type: STRING
+      mode: NULLABLE
+    - name: bigger_is_better
+      type: BOOL
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: category
+      type: STRING
+      mode: NULLABLE
+      description: Free-text grouping label set by the metric's author (e.g. KPI, search).
+    - name: level
+      type: STRING
+      mode: NULLABLE
+      description: Data-quality tier set by the metric's author (gold, silver, or bronze).
+    - name: owner
+      type: STRING
+      mode: REPEATED
+    - name: deprecated
+      type: BOOL
+      mode: NULLABLE
+    - name: analysis_bases
+      type: STRING
+      mode: REPEATED
+      description: enrollments and/or exposures.
+    - name: statistics
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: name
+        type: STRING
+        mode: NULLABLE
+      - name: analysis_periods
+        type: STRING
+        mode: REPEATED
+        description: Analysis periods (daily, weekly, days28, overall, preenrollment_weekly, preenrollment_days28) this statistic is computed for.
+  - name: unresolved_metrics
+    type: RECORD
+    mode: REPEATED
+    description: Metric references that failed to resolve, so the rest of the experiment's config could still be captured.
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: analysis_period
+      type: STRING
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+  - name: unresolved_outcomes
+    type: STRING
+    mode: REPEATED
+    description: Outcome slugs referenced by the experiment that don't support its platform.
+  - name: resolution_error
+    type: STRING
+    mode: NULLABLE
+    description: Set only when the experiment's config could not be resolved at all (e.g. an invalid experiment spec).

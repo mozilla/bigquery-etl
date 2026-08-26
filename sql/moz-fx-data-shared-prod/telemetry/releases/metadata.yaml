@@ -12,6 +12,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataplatform/crash-ping-ingest
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

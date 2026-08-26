@@ -1,0 +1,25 @@
+friendly_name: Crash Live
+description: |-
+  Live view of `crash` pings for the Focus for Android app ids.
+
+  Unlike `focus_android.crash`, this reads the live tables, so current day pings are included
+  but rows are not deduplicated. Queries must filter on `submission_timestamp` because the
+  underlying live tables require a partition filter.
+
+  Column normalization found in the standard stable views is not done here, to match the
+  live table interface.
+
+  Use `focus_android.crash` for analysis of complete days.
+owners: []
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/crash-ping-ingest
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_live.crash_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_live.crash_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.crash_v1

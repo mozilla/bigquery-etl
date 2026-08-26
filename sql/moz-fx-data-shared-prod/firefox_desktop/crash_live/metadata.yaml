@@ -1,0 +1,23 @@
+friendly_name: Crash Live
+description: |-
+  Live view of `crash` pings for `firefox-desktop`.
+
+  Unlike `firefox_desktop.crash`, this reads the live tables, so current day pings are included
+  but rows are not deduplicated. Queries must filter on `submission_timestamp` because the
+  underlying live tables require a partition filter.
+
+  Column normalization found in the standard stable views is not done here, to match the
+  live table interface.
+
+  Use `firefox_desktop.crash` for analysis of complete days.
+owners: []
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/crash-ping-ingest
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.crash_v1

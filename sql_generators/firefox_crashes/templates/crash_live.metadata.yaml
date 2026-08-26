@@ -1,0 +1,19 @@
+friendly_name: Crash Live
+description: |-
+  Live view of `crash` pings for {{ description_subject }}.
+
+  Unlike `{{ dataset }}.crash`, this reads the live tables, so current day pings are included
+  but rows are not deduplicated. Queries must filter on `submission_timestamp` because the
+  underlying live tables require a partition filter.
+
+  Column normalization found in the standard stable views is not done here, to match the
+  live table interface.
+
+  Use `{{ dataset }}.crash` for analysis of complete days.
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  # https://mozilla-hub.atlassian.net/browse/DENG-11533
+  - workgroup:dataplatform/crash-ping-ingest

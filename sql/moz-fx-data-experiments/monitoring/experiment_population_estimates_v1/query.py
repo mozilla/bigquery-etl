@@ -16,6 +16,7 @@ import json
 import logging
 from argparse import ArgumentParser
 from datetime import date, datetime, timedelta, timezone
+from typing import NamedTuple
 
 import requests
 from google.cloud import bigquery, storage  # type: ignore
@@ -36,16 +37,26 @@ NIMBUS_TARGETING_TABLE_IOS = (
     "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived"
     ".nimbus_recorded_targeting_context_v1"
 )
-APP_TARGETING_TABLES = {
-    "firefox_desktop": NIMBUS_TARGETING_TABLE,
-    "fenix": NIMBUS_TARGETING_TABLE_FENIX,
-    "firefox_ios": NIMBUS_TARGETING_TABLE_IOS,
-}
-_MOBILE_APPS = frozenset({"fenix", "firefox_ios"})
 GCS_BUCKET = "mozanalysis"
 GCS_FOLDER = "population_sizing"
-# 10% sample -- multiply counts by 10 to estimate full population
+# 10% sample -- multiply counts by 10 to estimate full population.
+# Desktop: sample_id in [0, 100) with sample_id < SAMPLE_ID_MAX.
+# Mobile: ABS(MOD(FARM_FINGERPRINT(client_id), 100)) < SAMPLE_ID_MAX mirrors
+# the same 0-99 bucket range so both branches scale together.
 SAMPLE_ID_MAX = 10
+
+
+class _AppConfig(NamedTuple):
+    table: str
+    is_mobile: bool
+
+
+# Single source of truth: table and query shape per appName.
+_APP_CONFIG: dict[str, _AppConfig] = {
+    "firefox_desktop": _AppConfig(NIMBUS_TARGETING_TABLE, False),
+    "fenix": _AppConfig(NIMBUS_TARGETING_TABLE_FENIX, True),
+    "firefox_ios": _AppConfig(NIMBUS_TARGETING_TABLE_IOS, True),
+}
 
 
 parser = ArgumentParser(description=__doc__)
@@ -90,8 +101,7 @@ def _col_for_index(i: int) -> str:
 def build_query(
     experiments: list,
     submission_date: date,
-    table: str = NIMBUS_TARGETING_TABLE,
-    is_mobile: bool = False,
+    app_name: str,
     window_days: int = 7,
 ) -> str:
     """Build a single BigQuery query counting eligible clients per experiment.
@@ -99,10 +109,14 @@ def build_query(
     Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
     collisions. One COUNTIF per experiment in a single table scan.
     clients CTE selects * so injected SQL can reference any ping field.
-    Desktop deduplicates on client_info.client_id with sample_id < 10.
-    Mobile deduplicates on client_id with hash-based 10% sampling (no
-    sample_id column in mobile derived tables).
+    Desktop deduplicates on client_info.client_id with sample_id < SAMPLE_ID_MAX.
+    Mobile deduplicates on client_id with hash-based sampling using the same
+    0-99 bucket range so both branches scale with SAMPLE_ID_MAX.
     """
+    config = _APP_CONFIG[app_name]
+    table = config.table
+    is_mobile = config.is_mobile
+
     window_start = submission_date - timedelta(days=window_days - 1)
     window_end = submission_date
 
@@ -117,7 +131,7 @@ WITH latest_per_client AS (
     ) AS rn
   FROM `{table}`
   WHERE submission_date BETWEEN '{window_start}' AND '{window_end}'
-    AND ABS(MOD(FARM_FINGERPRINT(client_id), 10)) < 1
+    AND ABS(MOD(FARM_FINGERPRINT(client_id), 100)) < {SAMPLE_ID_MAX}
     AND client_id IS NOT NULL
 ),
 clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
@@ -147,10 +161,25 @@ clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
 
 
 def _dry_run_sql(
-    sql: str, project: str, table: str = NIMBUS_TARGETING_TABLE
+    sql: str,
+    project: str,
+    app_name: str,
+    submission_date: date,
 ) -> bool:
-    """Return True if sql is a valid BigQuery expression, False otherwise."""
-    probe = f"SELECT COUNTIF({sql}) AS c FROM `{table}` WHERE FALSE"
+    """Return True if sql is a valid BigQuery expression, False otherwise.
+
+    Mobile derived tables require a partition filter (require_partition_filter=true),
+    so the probe includes submission_date to satisfy partition elimination.
+    """
+    config = _APP_CONFIG[app_name]
+    table = config.table
+    if config.is_mobile:
+        probe = (
+            f"SELECT COUNTIF({sql}) AS c FROM `{table}`"
+            f" WHERE submission_date = '{submission_date}' AND FALSE"
+        )
+    else:
+        probe = f"SELECT COUNTIF({sql}) AS c FROM `{table}` WHERE FALSE"
     try:
         client = bigquery.Client(project=project)
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
@@ -278,7 +307,7 @@ def main():
     platform_groups: dict[str, list] = {}
     for exp in all_experiments:
         app_name = exp.get("appName", "firefox_desktop")
-        if app_name not in APP_TARGETING_TABLES:
+        if app_name not in _APP_CONFIG:
             logger.warning(
                 "Unknown appName %r for %s, skipping", app_name, exp["slug"]
             )
@@ -289,41 +318,47 @@ def main():
     has_valid = False
 
     for app_name, experiments in platform_groups.items():
-        table = APP_TARGETING_TABLES[app_name]
-        is_mobile = app_name in _MOBILE_APPS
+        try:
+            valid_experiments = []
+            for exp in experiments:
+                sql = exp["targetingSql"]["sql"]
+                if _dry_run_sql(
+                    sql,
+                    project=args.project,
+                    app_name=app_name,
+                    submission_date=run_date,
+                ):
+                    valid_experiments.append(exp)
+                else:
+                    logger.warning(
+                        "Skipping %s -- SQL failed dry-run validation", exp["slug"]
+                    )
 
-        valid_experiments = []
-        for exp in experiments:
-            sql = exp["targetingSql"]["sql"]
-            if _dry_run_sql(sql, project=args.project, table=table):
-                valid_experiments.append(exp)
-            else:
-                logger.warning(
-                    "Skipping %s -- SQL failed dry-run validation", exp["slug"]
-                )
+            if not valid_experiments:
+                continue
 
-        if not valid_experiments:
-            continue
+            has_valid = True
+            query = build_query(
+                valid_experiments,
+                submission_date=run_date,
+                app_name=app_name,
+            )
 
-        has_valid = True
-        query = build_query(
-            valid_experiments,
-            submission_date=run_date,
-            table=table,
-            is_mobile=is_mobile,
-        )
+            if args.dry_run:
+                print(f"-- {app_name}\n{query}")
+                continue
 
-        if args.dry_run:
-            print(f"-- {app_name}\n{query}")
-            continue
-
-        results = build_results(
-            valid_experiments, query, project=args.project, platform=app_name
-        )
-        logger.info(
-            "Got sizing results for %d %s experiments", len(results), app_name
-        )
-        all_results.update(results)
+            results = build_results(
+                valid_experiments, query, project=args.project, platform=app_name
+            )
+            logger.info(
+                "Got sizing results for %d %s experiments", len(results), app_name
+            )
+            all_results.update(results)
+        except Exception as exc:
+            logger.error(
+                "Platform %s sizing failed, skipping: %s", app_name, exc
+            )
 
     if args.dry_run:
         return

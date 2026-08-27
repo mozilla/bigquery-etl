@@ -271,10 +271,13 @@ class ExternalDataSubscriptionMetadata:
     def validate_readers(self, attribute, value):
         """Check that each reader is a workgroup: identity."""
         for reader in value:
-            if not reader.startswith("workgroup:") or not reader[len("workgroup:") :]:
+            # workgroups are `<namespace>/<group>` (e.g.
+            # workgroup:braze/data-viewers); fail fast here instead of at
+            # `terraform apply` in cloudops-infra
+            if not re.fullmatch(r"workgroup:[a-z0-9-]+/[a-z0-9-]+", reader):
                 raise ValueError(
                     f"Invalid external_data_subscription reader {reader!r}: "
-                    "must be a 'workgroup:<name>' identity."
+                    "must be a 'workgroup:<namespace>/<group>' identity."
                 )
 
     @data_exchange_id.validator

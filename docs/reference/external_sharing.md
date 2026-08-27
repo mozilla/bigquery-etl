@@ -110,8 +110,8 @@ listing to subscribe to — the partner provides these values.
 - **No tables or views.** A subscription links a read-only dataset, so the dataset
   directory must not define any `query.sql` or `view.sql`. Build derived tables or
   views in a separate dataset that reads from the linked one.
-- **`workgroup:` readers only.** Every reader must be a `workgroup:<name>` identity
-  (a Mozilla-managed workgroup, e.g. `workgroup:mozilla-confidential/data-viewers`).
+- **`workgroup:` readers only.** Every reader must be a `workgroup:<namespace>/<group>`
+  identity (a Mozilla-managed workgroup, e.g. `workgroup:mozilla-confidential/data-viewers`).
   Access is scoped by workgroup membership and revoked by removing the workgroup
   from `readers`.
 - **Valid resource IDs.** `data_exchange_id` and `listing_id` must contain only

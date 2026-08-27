@@ -139,11 +139,14 @@ class TestParseMetadata(object):
         ]
 
     def test_invalid_external_data_subscription_readers(self):
-        # non-workgroup: and workgroup: without a name are rejected
+        # non-workgroup: and workgroups that aren't `<namespace>/<group>` are
+        # rejected
         for bad in (
             ["group:partner@example.org"],
             ["mozilla-confidential/data-viewers"],
             ["workgroup:"],
+            ["workgroup:mozilla-confidential"],  # missing /<group>
+            ["workgroup:not a workgroup"],
         ):
             with pytest.raises(ValueError):
                 ExternalDataSubscriptionMetadata(

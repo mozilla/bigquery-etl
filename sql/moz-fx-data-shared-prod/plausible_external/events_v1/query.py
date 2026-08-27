@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from load import parse_args, run  # noqa: E402
+from load import entrypoint, run  # noqa: E402
 
 # Empty strings are normalized to NULL: the source parquet declares every string
 # column non-nullable, so Plausible encodes "not collected" as "" (72% of
@@ -53,10 +53,11 @@ FROM
 """
 
 
-def main():
+@entrypoint
+def main(args):
     """Load one day. Also the `bqetl query backfill` script entrypoint."""
     run(
-        parse_args(__doc__),
+        args,
         table="events_v1",
         source_file="events.parquet",
         # Each events file holds exactly the events recorded on the export date,

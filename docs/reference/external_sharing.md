@@ -76,31 +76,44 @@ the **inbound** counterpart of `external_sharing`: subscribing links a
 
 Subscribing is configured at the **dataset level** because a subscription links a
 whole dataset. One listing subscription is created per configured dataset,
-creating the linked dataset, and the configured `readers` are granted
-`roles/bigquery.dataViewer` on it.
+creating the linked dataset, and the dataset's `workgroup_access` is applied to
+it.
 
 ### Configuration
 
 ```yaml
 # sql/moz-fx-data-shared-prod/<name>_external/dataset_metadata.yaml
+friendly_name: PMG External
+description: Data shared with us by PMG via BigQuery Data Sharing.
+dataset_base_acl: restricted
+user_facing: false
+
+# read access to the linked dataset (resolved to IAM members by Terraform)
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers
+
 external_data_subscription:
   source_project: "65960090760"   # project hosting the source exchange (id or number)
   data_exchange_id: client_04ea3564_cf0e_4809_bb70_b8912beff9cc  # source exchange ID
   listing_id: mozilla_analytics_cross_channel                    # source listing ID
-  readers:
-    - workgroup:mozilla-confidential/data-viewers
 
   # all optional:
   location: us                    # location the linked dataset is created in
                                   # (default: us)
-  friendly_name: PMG Analytics    # friendly name of the linked dataset
-  description: Data shared with … # description of the linked dataset
+  friendly_name: PMG Analytics    # linked dataset friendly name
+                                  # (default: "<Dataset> (External via BigQuery Data Sharing)")
+  description: Data shared with … # linked dataset description
+                                  # (default: the dataset `description` above)
   labels:                         # labels applied to the linked dataset
-    domain: marketing
+    domain: marketing             # (default: none)
 ```
 
 The `source_project`, `data_exchange_id` and `listing_id` identify the partner's
-listing to subscribe to — the partner provides these values.
+listing to subscribe to — the partner provides these values. Read access is
+granted through the dataset's own `workgroup_access` (the same field used by every
+other dataset), applied to the linked dataset by Terraform.
 
 ### Constraints (enforced by `bqetl metadata validate`)
 
@@ -108,12 +121,14 @@ listing to subscribe to — the partner provides these values.
   dataset whose name ends with `_external`, matching the repo convention for
   externally-sourced datasets (e.g. `acoustic_external`).
 - **No tables or views.** A subscription links a read-only dataset, so the dataset
-  directory must not define any `query.sql` or `view.sql`. Build derived tables or
-  views in a separate dataset that reads from the linked one.
-- **`workgroup:` readers only.** Every reader must be a `workgroup:<namespace>/<group>`
-  identity (a Mozilla-managed workgroup, e.g. `workgroup:mozilla-confidential/data-viewers`).
-  Access is scoped by workgroup membership and revoked by removing the workgroup
-  from `readers`.
+  directory must not define any table/view artifact (`query.sql`, `query.py`,
+  `view.sql`, `materialized_view.sql`, `script.sql`, `init.sql`). Build derived
+  tables or views in a separate dataset that reads from the linked one.
+- **Access via `workgroup_access`.** Read access to the linked dataset is granted
+  through the dataset's normal `workgroup_access` block (typically
+  `roles/bigquery.dataViewer` for a Mozilla workgroup), not a subscription-specific
+  field. Terraform applies it to the linked dataset; scope is controlled by
+  workgroup membership.
 - **Valid resource IDs.** `data_exchange_id` and `listing_id` must contain only
   letters, numbers and underscores (validated at parse time so a bad value fails
   fast rather than at `terraform apply`).

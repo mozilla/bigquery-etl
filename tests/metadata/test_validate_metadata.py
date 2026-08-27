@@ -135,7 +135,6 @@ class TestValidateMetadata(object):
             source_project="65960090760",
             data_exchange_id="partner_exchange",
             listing_id="partner_listing",
-            readers=["workgroup:mozilla-confidential/data-viewers"],
         )
 
         def _dataset_metadata(external_data_subscription=None):
@@ -178,8 +177,17 @@ class TestValidateMetadata(object):
             is False
         )
 
-        # invalid: `_external` dataset that defines a query or view
-        for i, table in enumerate(("query.sql", "view.sql")):
+        # invalid: `_external` dataset that defines any table/view artifact
+        for i, table in enumerate(
+            (
+                "query.sql",
+                "query.py",
+                "view.sql",
+                "materialized_view.sql",
+                "script.sql",
+                "init.sql",
+            )
+        ):
             assert (
                 validate_external_data_subscription(
                     "pmg_external",

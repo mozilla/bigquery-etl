@@ -256,29 +256,16 @@ class ExternalDataSubscriptionMetadata:
     """
 
     # Source project (id or number), exchange and listing identifying the
-    # partner's listing to subscribe to.
+    # partner's listing to subscribe to. Read access to the linked dataset is
+    # granted via the dataset's own `workgroup_access` (not configured here).
     source_project: str
     data_exchange_id: str = attr.ib()
     listing_id: str = attr.ib()
-    readers: List[str] = attr.ib()  # workgroup: identities granted read access
     # Linked (destination) dataset properties; sensible defaults when unset.
     location: Optional[str] = attr.ib(None)  # defaults to "us"
     friendly_name: Optional[str] = attr.ib(None)
     description: Optional[str] = attr.ib(None)
     labels: Optional[Dict] = attr.ib(None)
-
-    @readers.validator
-    def validate_readers(self, attribute, value):
-        """Check that each reader is a workgroup: identity."""
-        for reader in value:
-            # workgroups are `<namespace>/<group>` (e.g.
-            # workgroup:braze/data-viewers); fail fast here instead of at
-            # `terraform apply` in cloudops-infra
-            if not re.fullmatch(r"workgroup:[a-z0-9-]+/[a-z0-9-]+", reader):
-                raise ValueError(
-                    f"Invalid external_data_subscription reader {reader!r}: "
-                    "must be a 'workgroup:<namespace>/<group>' identity."
-                )
 
     @data_exchange_id.validator
     @listing_id.validator

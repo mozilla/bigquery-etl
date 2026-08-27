@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: country
+  type: STRING
+- mode: NULLABLE
+  name: city
+  type: STRING
+- mode: NULLABLE
+  name: geo_subdivision1
+  type: STRING
+- mode: NULLABLE
+  name: geo_subdivision2
+  type: STRING
+- mode: NULLABLE
+  name: isp_name
+  type: STRING
+- mode: NULLABLE
+  name: datetime
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: INTEGER
+  type: ping_count
+- mode: NULLABLE
+  name: avg_ping_arrival_delay_in_minutes
+  type: FLOAT

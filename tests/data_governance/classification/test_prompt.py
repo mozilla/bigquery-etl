@@ -29,6 +29,13 @@ class TestProfileBlock:
         # values win over example_value; both are never shown.
         assert "Example value" not in block
 
+    def test_a_value_with_no_frequency_is_still_rendered(self):
+        # frequency is NULLABLE in column_profiles_v1, and a column the prompt
+        # cannot render costs its whole classification.
+        block = _profile_block(column(values=[("a", None), ("b", 3)]))
+
+        assert "Top values (value: frequency): 'a', 'b' (3)" in block
+
     def test_high_cardinality_suppression_leaves_stats_only(self):
         # What suppress_high_cardinality_samples leaves behind.
         block = _profile_block(

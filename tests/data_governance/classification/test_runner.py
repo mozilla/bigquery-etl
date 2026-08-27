@@ -176,6 +176,24 @@ class FakeSanitizer:
     sanitize_many = Sanitizer.sanitize_many
 
 
+def fail_prompt_for(monkeypatch, *column_names):
+    """Make prompt building raise for the named columns, and only those.
+
+    The runner has to tell a column it cannot render apart from one the model
+    failed on, so the failure has to come from the builder rather than from a
+    value that happens to render badly.
+    """
+    names = set(column_names)
+    original = runner.build_classification_prompt
+
+    def build(column, *args, **kwargs):
+        if column["column_name"] in names:
+            raise ValueError(f"cannot render {column['column_name']}")
+        return original(column, *args, **kwargs)
+
+    monkeypatch.setattr(runner, "build_classification_prompt", build)
+
+
 class Harness:
     """The module's collaborators, all faked, with the calls they received."""
 
@@ -694,12 +712,12 @@ class TestFailureHandling:
         assert any("columns classified" in m for m in caplog.messages)
         assert any(m.startswith("TOKENS ") for m in caplog.messages)
 
-    def test_an_unpromptable_column_fails_only_itself(self, make_harness):
+    def test_a_column_the_prompt_cannot_render_fails_only_itself(
+        self, monkeypatch, make_harness
+    ):
+        fail_prompt_for(monkeypatch, "submission_timestamp")
         harness = make_harness(
-            # A None frequency breaks the prompt's rendering of top values.
-            columns=one_table(
-                [column(values=[("abc", None)]), column(column_name="user_pref")]
-            ),
+            columns=one_table([column(), column(column_name="user_pref")]),
             answers=[answer()],
         )
 
@@ -713,15 +731,14 @@ class TestFailureHandling:
         ]
         assert [r["column_name"] for r in harness.records] == ["user_pref"]
 
-    def test_unpromptable_columns_do_not_trip_the_breaker(
+    def test_a_prompt_failure_does_not_trip_the_breaker(
         self, monkeypatch, make_harness
     ):
         # The model is never called for these, so they say nothing about it.
         monkeypatch.setattr(runner, "MAX_CONSECUTIVE_FAILURES", 1)
+        fail_prompt_for(monkeypatch, "a", "b")
         harness = make_harness(
-            columns=one_table(
-                [column(column_name=name, values=[("abc", None)]) for name in "ab"]
-            ),
+            columns=one_table([column(column_name=name) for name in "ab"]),
         )
 
         with pytest.raises(RuntimeError, match="2 columns unclassified"):

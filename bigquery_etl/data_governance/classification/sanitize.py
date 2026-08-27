@@ -15,10 +15,10 @@ Two actions, by what DLP detects:
     our active detector set, so it is left untouched.
 """
 
-import logging
 from dataclasses import dataclass
 from typing import Any, Iterable
 
+import google.auth
 from google.cloud import dlp_v2
 
 from .config import ClassificationConfig
@@ -85,8 +85,6 @@ def _make_client(quota_project: str | None) -> dlp_v2.DlpServiceClient:
     the caller has serviceusage + dlp.user.
     """
     if quota_project:
-        import google.auth
-
         creds, _ = google.auth.default(quota_project_id=quota_project)
         return dlp_v2.DlpServiceClient(credentials=creds)
     return dlp_v2.DlpServiceClient()
@@ -104,9 +102,8 @@ class Sanitizer:
     ):
         """Build the client and resolve the active infoType set.
 
-        Configured infoTypes are intersected with what DLP actually supports, so
-        an unknown name in the draft sets is skipped (with a warning) rather than
-        erroring the whole request. Pass client to inject an alternative to the
+        Raises if DLP does not support every configured infoType, before any
+        value has been sent anywhere. Pass client to inject an alternative to the
         default DLP client.
         """
         self._client = client if client is not None else _make_client(quota_project)
@@ -118,15 +115,17 @@ class Sanitizer:
         self.min_likelihood = dlp_v2.Likelihood[min_likelihood]  # type: ignore[misc]
 
         supported = {it.name for it in self._client.list_info_types().info_types}
-        self.mask = sorted(TIER1_MASK_INFOTYPES & supported)
-        self.drop = sorted(TIER2_DROP_INFOTYPES & supported)
-        skipped = (TIER1_MASK_INFOTYPES | TIER2_DROP_INFOTYPES) - supported
-        if skipped:
-            logging.warning(
-                "Sanitizer: %d configured infoTypes unsupported by DLP, skipping: %s",
-                len(skipped),
-                ", ".join(sorted(skipped)),
+        missing = (TIER1_MASK_INFOTYPES | TIER2_DROP_INFOTYPES) - supported
+        if missing:
+            # Scrubbing is the only thing keeping raw sample values out of the
+            # prompt, so a detector DLP will not install is a reason to stop
+            # rather than to carry on with a smaller set.
+            raise ValueError(
+                "DLP does not support these configured infoTypes: "
+                + ", ".join(sorted(missing))
             )
+        self.mask = sorted(TIER1_MASK_INFOTYPES)
+        self.drop = sorted(TIER2_DROP_INFOTYPES)
         self._active = [{"name": n} for n in self.mask + self.drop]
         self._deidentify_config = self._build_deidentify_config()
         self._cache: dict[str, SanitizeResult] = {}

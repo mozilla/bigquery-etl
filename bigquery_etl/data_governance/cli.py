@@ -55,9 +55,8 @@ targets_argument = click.argument(
     "targets", nargs=-1, required=True, callback=_parse_targets
 )
 
-# Required rather than defaulted, because the date is what joins the three
-# upstream steps: each reads the newest partition of the step before it. Three
-# defaults evaluated from three clocks would split a pass that crosses midnight.
+# Required because the date is what joins the three upstream steps:
+# each reads the newest partition of the step before it.
 date_option = click.option(
     "--date",
     type=click.DateTime(formats=["%Y-%m-%d"]),

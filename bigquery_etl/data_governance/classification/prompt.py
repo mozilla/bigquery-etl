@@ -101,7 +101,10 @@ def _profile_block(column: dict[str, Any]) -> str:
         lines.append(f"Distinct values: {distinct_count}{hc}")
     values = column.get("values") or []
     if values:
-        shown = ", ".join(f"{str(v)!r} ({f:,})" for v, f in values[:MAX_SAMPLE_VALUES])
+        shown = ", ".join(
+            f"{str(v)!r}" + (f" ({f:,})" if f is not None else "")
+            for v, f in values[:MAX_SAMPLE_VALUES]
+        )
         lines.append(f"Top values (value: frequency): {shown}")
     elif column.get("example_value") is not None:
         lines.append(f"Example value: {column['example_value']}")

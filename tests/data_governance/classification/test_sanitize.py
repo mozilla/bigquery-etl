@@ -1,4 +1,3 @@
-import logging
 from types import SimpleNamespace
 
 import pytest
@@ -72,16 +71,17 @@ def build_sanitizer(responses=None, supported=None):
 
 
 class TestSanitizer:
-    def test_unsupported_info_type_is_skipped_and_warned(self, caplog):
+    def test_an_unsupported_info_type_fails_the_run(self):
         supported = [t for t in SUPPORTED_INFO_TYPES if t != "US_DEA_NUMBER"]
 
-        with caplog.at_level(logging.WARNING):
-            sanitizer, _ = build_sanitizer(supported=supported)
+        with pytest.raises(ValueError, match="US_DEA_NUMBER"):
+            build_sanitizer(supported=supported)
 
-        assert "US_DEA_NUMBER" in caplog.text
-        assert "US_DEA_NUMBER" not in sanitizer.drop
-        assert "EMAIL_ADDRESS" in sanitizer.mask
-        assert "CREDIT_CARD_NUMBER" in sanitizer.drop
+    def test_every_configured_info_type_is_installed(self):
+        sanitizer, _ = build_sanitizer()
+
+        assert set(sanitizer.mask) == TIER1_MASK_INFOTYPES
+        assert set(sanitizer.drop) == TIER2_DROP_INFOTYPES
 
     @pytest.mark.parametrize(
         "value,deidentified,findings,expected",

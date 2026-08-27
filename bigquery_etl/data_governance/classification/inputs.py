@@ -53,12 +53,11 @@ candidates AS (
   SELECT
     c.table_name, c.field_path, c.data_type,
     NULLIF(c.description, '') AS description,
-    -- Whether a `metrics` path is a Glean metric is the table's resolved
-    -- platform, not the path: a derived table can carry a `metrics` STRUCT of
-    -- its own (telemetry_derived.smoot_usage_* has metrics.day_0.dau), whose
-    -- fields are ordinary columns. Unresolved lineage counts as Glean, which
-    -- keeps a Glean ping table's thousands of metric leaves behaving as they do
-    -- once it resolves.
+    -- A `metrics.` path is a Glean metric only when lineage resolved the table
+    -- to ping_platform = 'glean'. Derived tables can carry a `metrics` STRUCT of
+    -- their own whose fields are ordinary columns. A NULL platform means no
+    -- lineage row or no ping found, and counts as glean so a ping table's metric
+    -- leaves behave the same before and after it resolves.
     (STARTS_WITH(c.field_path, 'metrics.')
       AND COALESCE(l.ping_platform, 'glean') = 'glean') AS is_glean_metric
   -- The same project and dataset as the parameters above, interpolated rather
@@ -105,9 +104,6 @@ QUALIFY ROW_NUMBER() OVER (
 ) = 1
 """
 
-# The QUALIFY is also what makes a probe name unique in the result:
-# (ping_platform, source_ping, probe_name) is the table's grain within one
-# fetched_at, so the only way to see a name twice is across snapshots.
 _PROBES_QUERY = """
 SELECT ping_platform, source_ping, probe_name, probe_description, probe_type,
        data_sensitivity, tags

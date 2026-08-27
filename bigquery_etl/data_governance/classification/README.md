@@ -16,8 +16,10 @@ The pipeline has four `bqetl` steps invoked by Airflow:
 ./bqetl data_governance classify moz-fx-data-shared-prod.telemetry_derived
 ```
 
-The `profile`, `lineage`, and `probes` steps run the data governance metadata jobs
-against the dataset being classified. Their outputs serve as classification inputs.
+`profile` runs the data governance profiler over the targets it is given.
+`lineage` and `probes` then run their metadata jobs over the whole `--date`
+partition the profiler wrote. All three outputs serve as classification
+inputs.
 
 For each classified column, `classify` builds a prompt, makes one model call, and records the predicted label, confidence, reasoning, and the inputs it was given. Sample values are sanitized with DLP before being sent to the model.
 

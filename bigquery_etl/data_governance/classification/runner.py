@@ -219,7 +219,7 @@ def _record(
         "data_type": column.get("data_type"),
         **answer,
         "matched_probe": probe["probe_name"] if probe else None,
-        "data_sensitivity": probe.get("data_sensitivity") or [] if probe else [],
+        "data_sensitivity": (probe.get("data_sensitivity") or []) if probe else [],
         "model": ctx.config.model,
         "taxonomy_version": ctx.taxonomy_version,
         "evidence": {

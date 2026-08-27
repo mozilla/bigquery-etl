@@ -87,7 +87,6 @@ external_data_subscription:
   source_project: "65960090760"   # project hosting the source exchange (id or number)
   data_exchange_id: client_04ea3564_cf0e_4809_bb70_b8912beff9cc  # source exchange ID
   listing_id: mozilla_analytics_cross_channel                    # source listing ID
-  data_review: https://bugzilla.mozilla.org/show_bug.cgi?id=<bug>
   readers:
     - workgroup:mozilla-confidential/data-viewers
 

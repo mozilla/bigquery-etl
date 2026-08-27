@@ -135,7 +135,6 @@ class TestValidateMetadata(object):
             source_project="65960090760",
             data_exchange_id="partner_exchange",
             listing_id="partner_listing",
-            data_review="https://bugzilla.mozilla.org/1",
             readers=["workgroup:mozilla-confidential/data-viewers"],
         )
 

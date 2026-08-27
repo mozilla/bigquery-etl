@@ -127,7 +127,6 @@ class TestParseMetadata(object):
             source_project="65960090760",
             data_exchange_id="partner_exchange",
             listing_id="partner_listing",
-            data_review="https://bugzilla.mozilla.org/1",
             readers=[
                 "workgroup:mozilla-confidential/data-viewers",
                 "workgroup:braze/data-viewers",
@@ -151,7 +150,6 @@ class TestParseMetadata(object):
                     source_project="65960090760",
                     data_exchange_id="partner_exchange",
                     listing_id="partner_listing",
-                    data_review="https://bugzilla.mozilla.org/1",
                     readers=bad,
                 )
 
@@ -161,7 +159,6 @@ class TestParseMetadata(object):
                 "source_project": "65960090760",
                 "data_exchange_id": "partner_exchange",
                 "listing_id": "partner_listing",
-                "data_review": "https://bugzilla.mozilla.org/1",
                 "readers": ["workgroup:mozilla-confidential/data-viewers"],
                 field: "has-hyphen",
             }
@@ -179,7 +176,6 @@ class TestParseMetadata(object):
             "  source_project: '65960090760'\n"
             "  data_exchange_id: partner_exchange\n"
             "  listing_id: partner_listing\n"
-            "  data_review: r\n"
             "  reader:\n"  # typo of readers
             "    - workgroup:mozilla-confidential/data-viewers\n"
         )
@@ -204,7 +200,6 @@ class TestParseMetadata(object):
             "  description: Data shared with us by PMG.\n"
             "  labels:\n"
             "    domain: marketing\n"
-            "  data_review: https://bugzilla.mozilla.org/1\n"
             "  readers:\n"
             "    - workgroup:mozilla-confidential/data-viewers\n"
         )
@@ -217,7 +212,6 @@ class TestParseMetadata(object):
             source_project="65960090760",
             data_exchange_id="partner_exchange",
             listing_id="partner_listing",
-            data_review="https://bugzilla.mozilla.org/1",
             readers=["workgroup:mozilla-confidential/data-viewers"],
             location="us",
             friendly_name="PMG Analytics",

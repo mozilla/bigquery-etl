@@ -260,7 +260,6 @@ class ExternalDataSubscriptionMetadata:
     source_project: str
     data_exchange_id: str = attr.ib()
     listing_id: str = attr.ib()
-    data_review: str = attr.ib()  # link to bug
     readers: List[str] = attr.ib()  # workgroup: identities granted read access
     # Linked (destination) dataset properties; sensible defaults when unset.
     location: Optional[str] = attr.ib(None)  # defaults to "us"

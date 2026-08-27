@@ -52,7 +52,7 @@ IDs/names) so provisioning doesn't create duplicates.
 - **`group:` or `workgroup:` subscribers only.** Every subscriber must be either
   a `group:<email>` identity (a Mozilla-managed Google group) or a
   `workgroup:<name>` identity (a Mozilla workgroup, e.g.
-  `workgroup:mozilla-confidential/data-viewers`). This keeps partner user/service
+  `workgroup:some-managed-workgroup/data-viewers`). This keeps partner user/service
   account emails out of the repo; add those accounts to the group or workgroup
   instead. `workgroup:` identities are resolved to IAM members by Terraform in
   cloudops-infra. Access is scoped by group/workgroup membership and revoked by

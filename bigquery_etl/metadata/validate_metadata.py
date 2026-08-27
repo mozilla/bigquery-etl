@@ -456,7 +456,8 @@ def validate_exclusion_list_expiration_days(metadata, path):
 def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
     """Validate external_sharing config on a dataset.
 
-    Subscriber identities are validated at parse time (must be `group:`).
+    Subscriber identities are validated at parse time (must be `group:` or
+    `workgroup:`).
     Enforces that:
     * only `_shared` datasets may be shared (they are published to the
       user-facing project and the BigQuery Sharing listing points there), and

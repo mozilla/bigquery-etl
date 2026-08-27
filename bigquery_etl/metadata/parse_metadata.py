@@ -225,8 +225,11 @@ class ExternalSharingMetadata:
             is_group = subscriber.startswith("group:") and is_email(
                 subscriber[len("group:") :]
             )
-            is_workgroup = subscriber.startswith("workgroup:") and bool(
-                subscriber[len("workgroup:") :]
+            # workgroups are `<namespace>/<group>` (e.g.
+            # workgroup:braze/data-viewers); fail fast here instead of at
+            # `terraform apply` in cloudops-infra
+            is_workgroup = bool(
+                re.fullmatch(r"workgroup:[a-z0-9-]+/[a-z0-9-]+", subscriber)
             )
             if not (is_group or is_workgroup):
                 raise ValueError(

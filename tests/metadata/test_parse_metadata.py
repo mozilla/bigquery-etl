@@ -44,12 +44,14 @@ class TestParseMetadata(object):
         assert metadata.subscribers == subscribers
 
     def test_invalid_external_sharing_subscribers(self):
-        # bare emails, group: without an email, and empty-tailed identities are
-        # all rejected
+        # bare emails, group: without an email, and workgroups that aren't
+        # `<namespace>/<group>` are all rejected
         for bad in (
             ["partner@example.org"],
             ["group:partner-data"],
             ["workgroup:"],
+            ["workgroup:some-managed-workgroup"],  # missing /<group>
+            ["workgroup:not a workgroup"],
         ):
             with pytest.raises(ValueError):
                 ExternalSharingMetadata(

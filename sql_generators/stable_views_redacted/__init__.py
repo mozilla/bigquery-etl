@@ -35,7 +35,8 @@ description: |-
 
   See the full (access-restricted) data in `{source_table_short}` and `{source_view_short}`.
 labels:
-    authorized: true
+  sql_generator: stable_views_redacted
+  authorized: true
 """
 
 # Metrics with these data_sensitivity categories are excluded from redacted views.

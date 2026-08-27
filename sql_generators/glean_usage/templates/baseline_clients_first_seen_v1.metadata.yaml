@@ -13,6 +13,7 @@ description: |-
 owners:
   - ascholtz@mozilla.com
 labels:
+  sql_generator: glean_usage
   incremental: false
   schedule: daily
 scheduling:

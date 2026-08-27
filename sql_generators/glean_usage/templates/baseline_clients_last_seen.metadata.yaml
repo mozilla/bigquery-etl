@@ -9,3 +9,5 @@ description: |-
   See also: `baseline_clients_daily`
 owners:
   - ascholtz@mozilla.com
+labels:
+  sql_generator: glean_usage

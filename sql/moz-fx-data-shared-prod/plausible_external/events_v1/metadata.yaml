@@ -26,11 +26,6 @@ labels:
   owner1: phlee
 scheduling:
   dag_name: bqetl_plausible
-  # date_partition_parameter is deliberately absent rather than null. The load
-  # writes its own partition decorator from --date, so the scheduled task needs
-  # no partition parameter either way -- DAG generation is byte-identical. But a
-  # null here makes `bqetl backfill complete` resolve no partition and raise
-  # after it has already cloned the production backup, so the key is left off.
   arguments: ["--date", "{{ds}}"]
 bigquery:
   time_partitioning:

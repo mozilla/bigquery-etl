@@ -28,6 +28,7 @@ from ..cli.target import target
 from ..cli.view import view
 from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
+from ..data_governance.cli import data_governance
 from ..dependency import dependency
 from ..docs import docs_
 from ..glam.cli import glam
@@ -61,6 +62,7 @@ def cli(prog_name=None):
         "static": static_,
         "docs": docs_,
         "copy_deduplicate": copy_deduplicate,
+        "data_governance": data_governance,
         "stage": stage,
         "backfill": backfill,
         "check": check,

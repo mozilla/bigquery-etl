@@ -65,6 +65,8 @@ SELECT
   policies_is_enterprise,
   os_version_major,
   os_version_minor,
-  profile_group_id
+  profile_group_id,
+  sap_provider_id, -- NEW
+  sap_provider_name -- NEW
 FROM
   `search_derived.search_clients_daily_glean_v1.join_sap_serp_cte`

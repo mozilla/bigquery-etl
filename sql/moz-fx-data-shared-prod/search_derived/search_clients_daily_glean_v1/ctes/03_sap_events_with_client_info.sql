@@ -16,6 +16,8 @@ SELECT
   client_id,
   submission_date,
   normalized_engine,
+  sap_provider_id,
+  sap_provider_name,
   partner_code,
   source,
   sample_id,

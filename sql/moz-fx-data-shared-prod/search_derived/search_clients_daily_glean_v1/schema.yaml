@@ -256,3 +256,15 @@ fields:
   mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.
+- name: sap_provider_id
+  type: STRING
+  mode: NULLABLE
+  description: The raw provider_id extra from the sap.counts event, before normalization
+    into normalized_engine. Null on rows built only from SERP impressions, since the
+    SERP side has no counterpart to fall back to.
+- name: sap_provider_name
+  type: STRING
+  mode: NULLABLE
+  description: The raw provider_name extra from the sap.counts event, used in place
+    of provider_id when that value is "other". Null on rows built only from SERP impressions,
+    since the SERP side has no counterpart to fall back to.

@@ -5,6 +5,10 @@ SELECT
   COALESCE(serp_final_cte.client_id, sap_final_cte.client_id) AS client_id,
   COALESCE(serp_final_cte.submission_date, sap_final_cte.submission_date) AS submission_date,
   COALESCE(serp_final_cte.provider_id, sap_final_cte.normalized_engine) AS provider_id,
+  -- sap-only, so no COALESCE and no SERP counterpart to fall back to: SERP carries a single
+  -- provider extra, already normalized into provider_id above. NULL on a serp-only row.
+  sap_final_cte.sap_provider_id,
+  sap_final_cte.sap_provider_name,
   COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code) AS partner_code,
   COALESCE(serp_final_cte.search_access_point, sap_final_cte.source) AS search_access_point,
   COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id) AS sample_id,

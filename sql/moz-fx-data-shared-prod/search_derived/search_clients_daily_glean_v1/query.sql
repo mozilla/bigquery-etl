@@ -55,7 +55,8 @@ clients_with_adblocker_addons_cte AS (
 -- the SAP row set with the three grain keys resolved once. every SAP CTE below reads this
 -- rather than the source, so the keys have a single definition and the join keys cannot drift.
 -- nothing needs excluding from the passthrough: submission_date, normalized_engine,
--- partner_code, source and browser_version_info are all names events_stream_v1 does not carry.
+-- sap_provider_id, sap_provider_name, partner_code, source and browser_version_info are all
+-- names events_stream_v1 does not carry.
 sap_base_cte AS (
   SELECT
     *,
@@ -69,6 +70,12 @@ sap_base_cte AS (
           JSON_VALUE(event_extra.provider_id)
         )
     END AS normalized_engine, -- this is "engine" in v8
+    -- the two raw extras behind normalized_engine, kept so consumers can see what the engine
+    -- CASE collapsed. prefixed here rather than at the join, unlike the README convention:
+    -- by join_sap_serp_cte provider_id already means the SERP normalized engine, so an
+    -- unprefixed sap provider_id would collide with it
+    JSON_VALUE(event_extra.provider_id) AS sap_provider_id,
+    JSON_VALUE(event_extra.provider_name) AS sap_provider_name,
     -- partner_code is a grain key, so it must never be NULL: an absent JSON key and an
     -- empty string both become 'no_code' so equality joins match rather than silently missing
     COALESCE(NULLIF(JSON_VALUE(event_extra.partner_code), ''), 'no_code') AS partner_code,
@@ -115,6 +122,8 @@ sap_events_with_client_info_cte AS (
     client_id,
     submission_date,
     normalized_engine,
+    sap_provider_id,
+    sap_provider_name,
     partner_code,
     source,
     sample_id,
@@ -520,6 +529,10 @@ join_sap_serp_cte AS (
     COALESCE(serp_final_cte.client_id, sap_final_cte.client_id) AS client_id,
     COALESCE(serp_final_cte.submission_date, sap_final_cte.submission_date) AS submission_date,
     COALESCE(serp_final_cte.provider_id, sap_final_cte.normalized_engine) AS provider_id,
+    -- sap-only, so no COALESCE and no SERP counterpart to fall back to: SERP carries a single
+    -- provider extra, already normalized into provider_id above. NULL on a serp-only row.
+    sap_final_cte.sap_provider_id,
+    sap_final_cte.sap_provider_name,
     COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code) AS partner_code,
     COALESCE(serp_final_cte.search_access_point, sap_final_cte.source) AS search_access_point,
     COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id) AS sample_id,
@@ -775,7 +788,9 @@ final_cte AS (
     policies_is_enterprise,
     os_version_major,
     os_version_minor,
-    profile_group_id
+    profile_group_id,
+    sap_provider_id, -- NEW
+    sap_provider_name -- NEW
   FROM
     join_sap_serp_cte
 )

@@ -2128,10 +2128,8 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The number of times a document hierarchy contained at least one
-        HTMLMediaElement. In addition, the telemetry probe ''MIXED_CONTENT_UNBLOCK_COUNTER''
-        records the total number of loaded top level content documents, which can
-        help us calculate the result of the percentage of documents using media. This
-        metric was generated to correspond to the Legacy Telemetry scalar media.element_in_page_count.
+        HTMLMediaElement. This metric was generated to correspond to the Legacy Telemetry
+        scalar media.element_in_page_count.
 
         '
     - name: media_mkv_content_count
@@ -7769,9 +7767,6 @@ fields:
         & safe submit; 1: safe page & unsafe submit; 2: safe page & unknown submit;
         3: unsafe page & safe submit; 4: unsafe page & unsafe submit; 5: unsafe page
         & unknown submit)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_LOGIN_PAGE_SAFETY.
 
         '
     - name: pwmgr_prompt_remember_action
@@ -13589,9 +13584,6 @@ fields:
         page load. (''pageLoad'' = There was a page load, ''blocked'' = at least one
         fingerprinter was blocked, ''allowed'' = at least one fingerprinter was detected
         and allowed.) Note, pageLoad is used as a baseline measurement.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram FINGERPRINTERS_BLOCKED_COUNT.
 
         '
     - name: contentblocking_font_fingerprinting_per_tab

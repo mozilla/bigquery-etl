@@ -1083,8 +1083,9 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether the single-row Top Sites are shown below the Smartbar
-        in Smart Window fullpage mode. Corresponds to the inverse of the `browser.smartwindow.hideTopSites`
-        pref (true when Top Sites are shown).
+        in Smart Window fullpage mode. True when the `browser.smartwindow.hideTopSites`
+        pref is false and the `browser.newtabpage.activity-stream.feeds.topsites`
+        pref is true.
 
         '
     - name: sslkeylogging_enabled
@@ -2090,10 +2091,8 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The number of times a document hierarchy contained at least one
-        HTMLMediaElement. In addition, the telemetry probe ''MIXED_CONTENT_UNBLOCK_COUNTER''
-        records the total number of loaded top level content documents, which can
-        help us calculate the result of the percentage of documents using media. This
-        metric was generated to correspond to the Legacy Telemetry scalar media.element_in_page_count.
+        HTMLMediaElement. This metric was generated to correspond to the Legacy Telemetry
+        scalar media.element_in_page_count.
 
         '
     - name: media_mkv_content_count
@@ -8183,9 +8182,6 @@ fields:
         3: unsafe page & safe submit; 4: unsafe page & unsafe submit; 5: unsafe page
         & unknown submit)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_LOGIN_PAGE_SAFETY.
-
         '
     - name: pwmgr_prompt_remember_action
       type: RECORD
@@ -13957,9 +13953,6 @@ fields:
         page load. (''pageLoad'' = There was a page load, ''blocked'' = at least one
         fingerprinter was blocked, ''allowed'' = at least one fingerprinter was detected
         and allowed.) Note, pageLoad is used as a baseline measurement.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram FINGERPRINTERS_BLOCKED_COUNT.
 
         '
     - name: contentblocking_font_fingerprinting_per_tab
@@ -21586,6 +21579,34 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         TOUCH_ENABLED_DEVICE.
+
+        '
+    - name: browser_engagement_navigation_errorpage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count URI loads triggered in a subsession from the search
+        CTA on a network error page, broken down by the originating action.
+
+        '
+    - name: browser_engagement_navigation_newtab_searchbar
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count URI loads triggered in a subsession from the New Tab
+        search bar, broken down by the originating action.
 
         '
   - name: labeled_custom_distribution

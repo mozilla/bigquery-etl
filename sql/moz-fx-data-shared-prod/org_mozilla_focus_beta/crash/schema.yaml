@@ -571,6 +571,40 @@ fields:
       type: STRING
       mode: NULLABLE
       description: A UUID for the crash event.
+    - name: crash_cpu_architecture
+      type: STRING
+      mode: NULLABLE
+      description: 'Architecture of the CPU. One of the values described in `system_info.cpu_arch`
+        of https://github.com/rust-minidump/rust-minidump/blob/main/minidump-processor/json-schema.md:
+        "x86", "amd64", "ppc", "ppc64", "sparc", "arm", "arm64", or "unknown".'
+    - name: crash_cpu_info
+      type: STRING
+      mode: NULLABLE
+      description: Information about the CPU, as a string. This typically includes
+        family, model, and stepping.
+    - name: crash_ipc_shutdown_state
+      type: STRING
+      mode: NULLABLE
+      description: IPC shutdown state, can be set to either "RecvShutdown" or "SendFinishShutdown"
+        by a content process while it's shutting down.
+    - name: crash_linux_lsb_description
+      type: STRING
+      mode: NULLABLE
+      description: The Linux lsb_release description.
+    - name: crash_os
+      type: STRING
+      mode: NULLABLE
+      description: 'The operating system name. One of the values described in `system_info.os`
+        of https://github.com/rust-minidump/rust-minidump/blob/main/minidump-processor/json-schema.md:
+        "Windows NT", "Mac OS X", "iOS", "Linux", "Solaris", "Android", or "Unknown".'
+    - name: crash_os_version
+      type: STRING
+      mode: NULLABLE
+      description: The operating system version number.
+    - name: crash_useragent_locale
+      type: STRING
+      mode: NULLABLE
+      description: User-agent locale.
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -636,6 +670,18 @@ fields:
         mode: NULLABLE
       description: The time when Firefox was installed expressed as seconds since
         the Epoch
+    - name: crash_startup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The time when Firefox was launched expressed in seconds since the
+        Epoch.
   - name: object
     type: RECORD
     mode: NULLABLE

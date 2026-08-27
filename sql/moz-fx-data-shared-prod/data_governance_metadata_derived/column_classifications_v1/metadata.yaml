@@ -1,0 +1,31 @@
+friendly_name: Column Classifications
+description: |-
+  Mozilla data taxonomy classification for the columns of the tables covered by
+  the column classification pipeline. One row per column, holding the current
+  classification rather than a history: re-classifying a column replaces its
+  row. It is unpartitioned and never expires, because a replaced row would
+  otherwise land in a different partition from the one it supersedes, and an
+  expiring partition would silently drop the classification of a column stable
+  enough not to be re-classified. History, if wanted, belongs in a separate
+  partitioned table.
+
+  Each row records the taxonomy label the model chose, its confidence and its
+  reasoning, along with the evidence the model was shown. The evidence is kept
+  permanently so a classification can still be audited after the 90-day
+  profiling tables have expired. Only DLP-sanitized sample values are stored.
+owners:
+- akomarzewski@mozilla.com
+- cmorales@mozilla.com
+labels:
+  owner1: akomarzewski
+  owner2: cmorales
+bigquery:
+  clustering:
+    fields:
+    - source_dataset
+    - source_table
+    - column_name
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/data-governance-developers

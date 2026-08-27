@@ -311,6 +311,20 @@ fields:
       type: STRING
     - name: crash_event_id
       type: STRING
+    - name: crash_cpu_architecture
+      type: STRING
+    - name: crash_cpu_info
+      type: STRING
+    - name: crash_ipc_shutdown_state
+      type: STRING
+    - name: crash_linux_lsb_description
+      type: STRING
+    - name: crash_os
+      type: STRING
+    - name: crash_os_version
+      type: STRING
+    - name: crash_useragent_locale
+      type: STRING
     - mode: NULLABLE
       name: crash_cause
       type: STRING
@@ -346,6 +360,13 @@ fields:
       - name: value
         type: INTEGER
     - name: crash_install_time
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: crash_startup_time
       type: RECORD
       fields:
       - name: time_unit

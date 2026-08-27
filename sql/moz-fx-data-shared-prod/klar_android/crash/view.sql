@@ -58,14 +58,22 @@ SELECT
       metrics.string.crash_application_build_id,
       metrics.string.crash_id,
       metrics.string.crash_file_system_access_request_path,
-      metrics.string.crash_event_id
+      metrics.string.crash_event_id,
+      metrics.string.crash_cpu_architecture,
+      metrics.string.crash_cpu_info,
+      metrics.string.crash_ipc_shutdown_state,
+      metrics.string.crash_linux_lsb_description,
+      metrics.string.crash_os,
+      metrics.string.crash_os_version,
+      metrics.string.crash_useragent_locale
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,
       metrics.timespan.environment_uptime,
       metrics.timespan.crash_last_interaction_duration,
       metrics.timespan.crash_time_since_last_crash,
-      metrics.timespan.crash_install_time
+      metrics.timespan.crash_install_time,
+      metrics.timespan.crash_startup_time
     ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,

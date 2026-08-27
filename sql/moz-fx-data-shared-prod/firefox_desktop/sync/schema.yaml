@@ -332,9 +332,6 @@ fields:
         3: unsafe page & safe submit; 4: unsafe page & unsafe submit; 5: unsafe page
         & unknown submit)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_LOGIN_PAGE_SAFETY.
-
         '
     - name: pwmgr_prompt_remember_action
       type: RECORD

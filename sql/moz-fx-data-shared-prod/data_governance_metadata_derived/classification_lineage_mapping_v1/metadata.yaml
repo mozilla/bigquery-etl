@@ -1,0 +1,35 @@
+friendly_name: Classification Lineage Mapping
+description: |-
+  Interim copy of lineage_mapping_v1, written by the column classification
+  pipeline for the tables it classifies. Identical in schema to the upstream
+  table: the fields are pulled from its schema.yaml, so the two cannot drift.
+
+  It exists because the classification pipeline profiles into its own copy of
+  column_profiles_v1 (the upstream profiler overwrites its whole profiled_at
+  partition on every run, so sharing that table would erase the profiles
+  written for the datasets it covers), and the lineage resolver has to run
+  against that copy. Since the resolver likewise rebuilds its whole resolved_at
+  partition, it writes here rather than into the shared table. Both copies are
+  deleted once upstream supports additive writes, at which point the
+  classification pipeline reads lineage_mapping_v1 directly.
+owners:
+- akomarzewski@mozilla.com
+- cmorales@mozilla.com
+labels:
+  incremental: true
+  owner1: akomarzewski
+  owner2: cmorales
+bigquery:
+  time_partitioning:
+    type: day
+    field: resolved_at
+    require_partition_filter: false
+    expiration_days: 90.0
+  clustering:
+    fields:
+    - source_dataset
+    - source_table
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/data-governance-developers

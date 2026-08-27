@@ -793,6 +793,58 @@ fields:
         other loading scenarios.
 
         '
+    - name: newtab_dwell_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Active time the user spent on this newtab, in milliseconds. Measures
+        how long the user was interacting with the browser, anywhere in the window,
+        while this newtab was the selected tab of the focused window, not how long
+        the tab was open.
+
+        One sample per newtab visit, absent when no active time accrued, so count
+        missing samples as zero when averaging newtab_session_end pings.
+
+        Resolution is about 5 seconds, so expect a cluster just under that from tabs
+        that were opened and then immediately ignored.
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE

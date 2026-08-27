@@ -269,6 +269,7 @@ SELECT
       JSON_VALUE(event_extra.auto_admin) AS `auto_admin`,
       JSON_VALUE(event_extra.autoplay_setting) AS `autoplay_setting`,
       JSON_VALUE(event_extra.backend) AS `backend`,
+      JSON_VALUE(event_extra.backend_source_revision) AS `backend_source_revision`,
       JSON_VALUE(event_extra.blockeduridetails) AS `blockeduridetails`,
       JSON_VALUE(event_extra.blockeduritype) AS `blockeduritype`,
       JSON_VALUE(event_extra.blocklist_state) AS `blocklist_state`,

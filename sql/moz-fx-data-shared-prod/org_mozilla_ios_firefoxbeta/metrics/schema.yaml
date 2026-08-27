@@ -2559,6 +2559,17 @@ fields:
       description: 'If there was an error loading the sqlite database, record it.
 
         '
+    - name: user_ai_summarize_selected_language
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the summary language the user selected in the summarize
+        settings.
+
+        Either `websiteLanguage`, or a locale identifier from the `supportedLocales`
+
+        allowlist of the `summarizer-language-expansion-feature` Nimbus feature.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

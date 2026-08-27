@@ -2,12 +2,14 @@ from datetime import date
 
 from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
+    ExternalDataSubscriptionMetadata,
     ExternalSharingMetadata,
     Metadata,
 )
 from bigquery_etl.metadata.validate_metadata import (
     validate_dataset_classification,
     validate_deprecation,
+    validate_external_data_subscription,
     validate_external_sharing,
     validate_public_data,
 )
@@ -127,6 +129,66 @@ class TestValidateMetadata(object):
             )
             is False
         )
+
+    def test_validate_external_data_subscription(self, tmp_path):
+        external_data_subscription = ExternalDataSubscriptionMetadata(
+            source_project="65960090760",
+            data_exchange_id="partner_exchange",
+            listing_id="partner_listing",
+            data_review="https://bugzilla.mozilla.org/1",
+            readers=["workgroup:mozilla-confidential/data-viewers"],
+        )
+
+        def _dataset_metadata(external_data_subscription=None):
+            return DatasetMetadata(
+                friendly_name="test",
+                description="test",
+                dataset_base_acl="view",
+                user_facing=True,
+                external_data_subscription=external_data_subscription,
+            )
+
+        def _dataset_dir(name, table=None):
+            dataset_dir = tmp_path / name
+            dataset_dir.mkdir(parents=True)
+            if table:
+                table_dir = dataset_dir / "my_table"
+                table_dir.mkdir()
+                (table_dir / table).write_text("SELECT 1\n")
+            return str(dataset_dir)
+
+        # no external_data_subscription configured -> always valid
+        assert validate_external_data_subscription(
+            "some_dataset", _dataset_metadata(), _dataset_dir("some_dataset")
+        )
+
+        # valid: `_external` dataset with no tables/views defined
+        assert validate_external_data_subscription(
+            "pmg_external",
+            _dataset_metadata(external_data_subscription),
+            _dataset_dir("pmg_external"),
+        )
+
+        # invalid: dataset not suffixed with _external
+        assert (
+            validate_external_data_subscription(
+                "pmg_derived",
+                _dataset_metadata(external_data_subscription),
+                _dataset_dir("pmg_derived"),
+            )
+            is False
+        )
+
+        # invalid: `_external` dataset that defines a query or view
+        for i, table in enumerate(("query.sql", "view.sql")):
+            assert (
+                validate_external_data_subscription(
+                    "pmg_external",
+                    _dataset_metadata(external_data_subscription),
+                    _dataset_dir(f"with_{i}_external", table=table),
+                )
+                is False
+            )
 
     def test_validate_deprecation(self):
         metadata_valid = Metadata(

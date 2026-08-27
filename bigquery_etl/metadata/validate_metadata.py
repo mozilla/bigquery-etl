@@ -502,6 +502,49 @@ def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
     return is_valid
 
 
+def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_path):
+    """Validate external_data_subscription config on a dataset.
+
+    Reader identities (`workgroup:`) and the source exchange/listing ID charset
+    are validated at parse time. Enforces that:
+    * only `_external` datasets may subscribe to external data (the linked
+      dataset is externally-sourced, matching the repo's `_external` convention),
+      and
+    * the dataset defines no tables/views: a subscription links a read-only
+      dataset provisioned by BigQuery Sharing, so no ETL can be defined in it.
+    """
+    if not dataset_metadata.external_data_subscription:
+        return True
+
+    is_valid = True
+
+    if not dataset_name.endswith("_external"):
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but is not suffixed with '_external'.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    for query_file in sorted(Path(dataset_path).glob("*/query.sql")) + sorted(
+        Path(dataset_path).glob("*/view.sql")
+    ):
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but defines "
+                f"'{query_file.parent.name}/{query_file.name}'. A subscription "
+                "links a read-only dataset; it cannot contain tables or views.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    return is_valid
+
+
 def validate_workgroup_access(metadata, path):
     """Check if there are any specifications of table-level access that are redundant with dataset access."""
     is_valid = True
@@ -778,6 +821,11 @@ def validate_datasets(target):
                         failed = True
 
                     if not validate_external_sharing(
+                        dataset_name, dataset_metadata, root
+                    ):
+                        failed = True
+
+                    if not validate_external_data_subscription(
                         dataset_name, dataset_metadata, root
                     ):
                         failed = True

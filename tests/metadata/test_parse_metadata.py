@@ -4,6 +4,7 @@ import pytest
 
 from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
+    ExternalDataSubscriptionMetadata,
     ExternalSharingMetadata,
     Metadata,
     PartitionType,
@@ -119,6 +120,109 @@ class TestParseMetadata(object):
             exchange_display_name="Mozilla - Partner",
             exchange_description="Data for partner",
             restrict_export=True,
+        )
+
+    def test_valid_external_data_subscription_readers(self):
+        metadata = ExternalDataSubscriptionMetadata(
+            source_project="65960090760",
+            data_exchange_id="partner_exchange",
+            listing_id="partner_listing",
+            data_review="https://bugzilla.mozilla.org/1",
+            readers=[
+                "workgroup:mozilla-confidential/data-viewers",
+                "workgroup:braze/data-viewers",
+            ],
+        )
+
+        assert metadata.readers == [
+            "workgroup:mozilla-confidential/data-viewers",
+            "workgroup:braze/data-viewers",
+        ]
+
+    def test_invalid_external_data_subscription_readers(self):
+        # non-workgroup: and workgroup: without a name are rejected
+        for bad in (
+            ["group:partner@example.org"],
+            ["mozilla-confidential/data-viewers"],
+            ["workgroup:"],
+        ):
+            with pytest.raises(ValueError):
+                ExternalDataSubscriptionMetadata(
+                    source_project="65960090760",
+                    data_exchange_id="partner_exchange",
+                    listing_id="partner_listing",
+                    data_review="https://bugzilla.mozilla.org/1",
+                    readers=bad,
+                )
+
+    def test_invalid_external_data_subscription_resource_id(self):
+        for field in ("data_exchange_id", "listing_id"):
+            kwargs = {
+                "source_project": "65960090760",
+                "data_exchange_id": "partner_exchange",
+                "listing_id": "partner_listing",
+                "data_review": "https://bugzilla.mozilla.org/1",
+                "readers": ["workgroup:mozilla-confidential/data-viewers"],
+                field: "has-hyphen",
+            }
+            with pytest.raises(ValueError):
+                ExternalDataSubscriptionMetadata(**kwargs)
+
+    def test_external_data_subscription_rejects_unknown_key(self, tmp_path):
+        # an unknown key (e.g. a typo) must be a hard error, not silently dropped
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_data_subscription:\n"
+            "  source_project: '65960090760'\n"
+            "  data_exchange_id: partner_exchange\n"
+            "  listing_id: partner_listing\n"
+            "  data_review: r\n"
+            "  reader:\n"  # typo of readers
+            "    - workgroup:mozilla-confidential/data-viewers\n"
+        )
+        with pytest.raises(ValueError):
+            DatasetMetadata.from_file(tmp_path / "dataset_metadata.yaml")
+
+    def test_external_data_subscription_all_fields_round_trip(self, tmp_path):
+        # Guards against schema drift from the cloudops-infra sharing module:
+        # every key the module reads must map to a field here (unknown keys are
+        # now rejected, so a field missing here would break a valid config).
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_data_subscription:\n"
+            "  source_project: '65960090760'\n"
+            "  data_exchange_id: partner_exchange\n"
+            "  listing_id: partner_listing\n"
+            "  location: us\n"
+            "  friendly_name: PMG Analytics\n"
+            "  description: Data shared with us by PMG.\n"
+            "  labels:\n"
+            "    domain: marketing\n"
+            "  data_review: https://bugzilla.mozilla.org/1\n"
+            "  readers:\n"
+            "    - workgroup:mozilla-confidential/data-viewers\n"
+        )
+
+        subscription = DatasetMetadata.from_file(
+            tmp_path / "dataset_metadata.yaml"
+        ).external_data_subscription
+
+        assert subscription == ExternalDataSubscriptionMetadata(
+            source_project="65960090760",
+            data_exchange_id="partner_exchange",
+            listing_id="partner_listing",
+            data_review="https://bugzilla.mozilla.org/1",
+            readers=["workgroup:mozilla-confidential/data-viewers"],
+            location="us",
+            friendly_name="PMG Analytics",
+            description="Data shared with us by PMG.",
+            labels={"domain": "marketing"},
         )
 
     def test_invalid_label(self):

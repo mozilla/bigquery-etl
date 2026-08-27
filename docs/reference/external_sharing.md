@@ -26,6 +26,7 @@ external_sharing:
   data_review: https://bugzilla.mozilla.org/show_bug.cgi?id=<bug>
   subscribers:
     - group:some-managed-group@mozilla.com
+    - workgroup:some-managed-workgroup/data-viewers
 
   # all optional:
   exchange_id: partner_exchange              # explicit exchange resource ID
@@ -48,11 +49,14 @@ IDs/names) so provisioning doesn't create duplicates.
 - **`_shared` datasets only.** `external_sharing` may only be set on a dataset
   whose name ends with `_shared`. These datasets are published to the
   user-facing project (`mozdata`), and the sharing listing points at that copy.
-- **`group:` subscribers only.** Every subscriber must be a `group:<email>`
-  identity — a Mozilla-managed Google group. This keeps partner user/service
-  account emails out of the repo; add those accounts to the group instead.
-  Access is scoped by group membership and revoked by removing the group from
-  `subscribers`.
+- **`group:` or `workgroup:` subscribers only.** Every subscriber must be either
+  a `group:<email>` identity (a Mozilla-managed Google group) or a
+  `workgroup:<name>` identity (a Mozilla workgroup, e.g.
+  `workgroup:mozilla-confidential/data-viewers`). This keeps partner user/service
+  account emails out of the repo; add those accounts to the group or workgroup
+  instead. `workgroup:` identities are resolved to IAM members by Terraform in
+  cloudops-infra. Access is scoped by group/workgroup membership and revoked by
+  removing the identity from `subscribers`.
 - **Authorized views.** Every view in a `_shared` dataset must set
   `labels: {authorized: true}` in its `metadata.yaml`, so the shared listing can
   read through it.

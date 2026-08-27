@@ -220,14 +220,18 @@ class ExternalSharingMetadata:
 
     @subscribers.validator
     def validate_subscribers(self, attribute, value):
-        """Check that each subscriber is a group: email identity."""
+        """Check that each subscriber is a group: email or workgroup: identity."""
         for subscriber in value:
-            if not subscriber.startswith("group:") or not is_email(
+            is_group = subscriber.startswith("group:") and is_email(
                 subscriber[len("group:") :]
-            ):
+            )
+            is_workgroup = subscriber.startswith("workgroup:") and bool(
+                subscriber[len("workgroup:") :]
+            )
+            if not (is_group or is_workgroup):
                 raise ValueError(
-                    f"Invalid external_sharing subscriber {subscriber!r}: "
-                    "must be a 'group:<email>' identity."
+                    f"Invalid external_sharing subscriber {subscriber!r}: must be "
+                    "a 'group:<email>' or 'workgroup:<name>' identity."
                 )
 
     @listing_id.validator

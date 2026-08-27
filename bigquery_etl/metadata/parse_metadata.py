@@ -255,32 +255,22 @@ class ExternalDataSubscriptionMetadata:
     into our project. Provisioned from this config by Terraform in cloudops-infra.
     """
 
-    # Project hosting the source data exchange (project id or number).
+    # Source project (id or number), exchange and listing identifying the
+    # partner's listing to subscribe to.
     source_project: str
-    # Source data exchange resource ID (from the partner's listing).
     data_exchange_id: str = attr.ib()
-    # Source listing resource ID (from the partner's listing).
     listing_id: str = attr.ib()
     data_review: str = attr.ib()  # link to bug
-    # workgroup: identities granted read access on the linked dataset.
-    readers: List[str] = attr.ib()
-    # Location the linked dataset is created in. Defaults to "us" when unset.
-    location: Optional[str] = attr.ib(None)
-    # Friendly name of the linked (destination) dataset.
+    readers: List[str] = attr.ib()  # workgroup: identities granted read access
+    # Linked (destination) dataset properties; sensible defaults when unset.
+    location: Optional[str] = attr.ib(None)  # defaults to "us"
     friendly_name: Optional[str] = attr.ib(None)
-    # Description of the linked (destination) dataset.
     description: Optional[str] = attr.ib(None)
-    # Labels applied to the linked (destination) dataset.
     labels: Optional[Dict] = attr.ib(None)
 
     @readers.validator
     def validate_readers(self, attribute, value):
-        """Check that each reader is a workgroup: identity.
-
-        Internal access to externally-sourced data is granted through
-        Mozilla-managed workgroups (e.g. `workgroup:mozilla-confidential/data-viewers`),
-        consistent with `workgroup_access`.
-        """
+        """Check that each reader is a workgroup: identity."""
         for reader in value:
             if not reader.startswith("workgroup:") or not reader[len("workgroup:") :]:
                 raise ValueError(

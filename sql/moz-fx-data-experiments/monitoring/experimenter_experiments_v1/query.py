@@ -59,6 +59,19 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
         return {}
 
 
+def attach_metric_configs(blob: list, metric_configs: dict) -> None:
+    """Attach metric config fields to each experiment row, in place.
+
+    Not every experiment has a metric config (and the config table read may have
+    been skipped entirely), so default both fields to None when the slug is
+    absent from ``metric_configs``.
+    """
+    for row in blob:
+        metric_config = metric_configs.get(row["normandy_slug"])
+        row["metric_config"] = metric_config[0] if metric_config else None
+        row["metric_config_computed_at"] = metric_config[1] if metric_config else None
+
+
 def main():
     """Run."""
     args = parser.parse_args()
@@ -89,12 +102,7 @@ def main():
     metric_configs = read_metric_configs(
         args.project, args.destination_dataset, args.metric_config_table
     )
-    for row in blob:
-        # not every experiment has a metric config (and the config table read
-        # may have been skipped entirely), so default both fields to None
-        metric_config = metric_configs.get(row["normandy_slug"])
-        row["metric_config"] = metric_config[0] if metric_config else None
-        row["metric_config_computed_at"] = metric_config[1] if metric_config else None
+    attach_metric_configs(blob, metric_configs)
 
     client = bigquery.Client(args.project)
     client.load_table_from_json(blob, destination_table, job_config=job_config).result()

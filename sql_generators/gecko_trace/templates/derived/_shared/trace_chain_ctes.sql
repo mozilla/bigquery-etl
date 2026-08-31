@@ -40,7 +40,8 @@ span_event_hashes AS (
   FROM
     raw_spans rs
   CROSS JOIN
-    UNNEST(rs.events) AS e WITH OFFSET AS offset
+    UNNEST(rs.events) AS e
+    WITH OFFSET AS offset
 ),
 leaf_spans AS (
   SELECT
@@ -50,9 +51,7 @@ leaf_spans AS (
   FROM
     raw_spans rs
   WHERE
-    rs.span_id NOT IN (
-      SELECT parent_span_id FROM raw_spans WHERE parent_span_id IS NOT NULL
-    )
+    rs.span_id NOT IN (SELECT parent_span_id FROM raw_spans WHERE parent_span_id IS NOT NULL)
 ),
 path_spans AS (
   SELECT
@@ -83,8 +82,12 @@ path_events AS (
     ps.leaf_span_id,
     seh.event_hash,
     ROW_NUMBER() OVER (
-      PARTITION BY ps.trace_id, ps.leaf_span_id
-      ORDER BY ps.depth DESC, seh.event_offset ASC
+      PARTITION BY
+        ps.trace_id,
+        ps.leaf_span_id
+      ORDER BY
+        ps.depth DESC,
+        seh.event_offset ASC
     ) AS event_position
   FROM
     path_spans ps
@@ -97,11 +100,7 @@ trace_signatures AS (
   SELECT
     trace_id,
     leaf_span_id,
-    TO_BASE64(
-      SHA256(
-        STRING_AGG(event_hash, ',' ORDER BY event_position)
-      )
-    ) AS trace_signature
+    TO_BASE64(SHA256(STRING_AGG(event_hash, ',' ORDER BY event_position))) AS trace_signature
   FROM
     path_events
   GROUP BY

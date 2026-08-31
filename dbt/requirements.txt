@@ -1,0 +1,6 @@
+# Install into a DEDICATED virtualenv, NOT your bigquery-etl venv
+#   python -m venv dbt/.venv
+#   source dbt/.venv/bin/activate
+#   pip install -r dbt/requirements.txt
+
+dbt-bigquery>=1.10.3,<2.0.0

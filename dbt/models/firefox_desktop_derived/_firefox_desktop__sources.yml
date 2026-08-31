@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: firefox_desktop
+    # Sources are always read from production, regardless of the dev target.
+    database: moz-fx-data-shared-prod
+    schema: firefox_desktop
+    description: >
+      Firefox Desktop user-facing views in moz-fx-data-shared-prod.
+    tables:
+      - name: baseline_active_users
+        description: >
+          Per-client daily activity flags derived from the Firefox Desktop baseline
+          ping (is_daily_user, is_dau, is_wau, is_mau, etc.) with client dimensions.

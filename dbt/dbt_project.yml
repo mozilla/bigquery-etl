@@ -1,0 +1,42 @@
+name: 'dbt_dev'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_dev'
+
+# Package variables.
+vars:
+  # dbt-date (bundled with dbt_expectations) uses this timezone whenever a macro
+  # needs "now"/"today". We standardize on UTC
+  'dbt_date:time_zone': 'UTC'
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Model configuration
+#
+# Naming/organization mirrors bigquery-etl: models live in folders named after the
+# BigQuery dataset they build (e.g. firefox_desktop_derived) and use `_vN` suffixes
+models:
+  dbt_dev:
+    # Derived tables are materialized as tables (mirrors bqetl derived tables)
+    +materialized: table
+
+    # Push model + column descriptions into BigQuery table/column metadata so they
+    # show up in the BigQuery console
+    +persist_docs:
+      relation: true
+      columns: true
+
+    # Specify config for a specific dataset
+    firefox_desktop_derived:
+      +tags: ["firefox_desktop"]

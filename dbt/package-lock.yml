@@ -1,0 +1,23 @@
+packages:
+  - name: codegen
+    package: dbt-labs/codegen
+    version: 0.14.1
+  - name: dbt_expectations
+    package: metaplane/dbt_expectations
+    version: 0.10.10
+  - name: dbt_utils
+    package: dbt-labs/dbt_utils
+    version: 1.4.1
+  - name: data_profiler
+    package: jmangroup/data_profiler
+    version: 1.0.0
+  - name: audit_helper
+    package: dbt-labs/audit_helper
+    version: 0.14.0
+  - name: dbt_privacy
+    package: pvcy/dbt_privacy
+    version: 0.3.1
+  - name: dbt_date
+    package: godatadriven/dbt_date
+    version: 0.21.0
+sha1_hash: bba6739bd65191e3a18357d43eeede6e302e6566

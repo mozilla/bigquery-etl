@@ -1,0 +1,30 @@
+# dbt packages. Install with: dbt deps
+#
+# dbt-codegen generates boilerplate YAML/SQL from the warehouse (fusion-compatible,
+# verified by dbt Labs). After writing a model and running it, use:
+#   dbt run-operation generate_model_yaml --args '{"model_names": ["<model>"]}'
+# to print a schema YAML you can paste into the model's .yml and fill in descriptions.
+packages:
+  - package: dbt-labs/codegen
+    version: 0.14.1
+
+  # Assertion-style tests (expect_column_values_*, table shape, etc.).
+  # Bundles dbt-date -- see dbt_project.yml `dbt_date:time_zone` var.
+  - package: metaplane/dbt_expectations
+    version: 0.10.10
+
+  # General-purpose macros (surrogate_key, star, date_spine, ...).
+  - package: dbt-labs/dbt_utils
+    version: 1.4.1
+
+  # Column profiling macro for exploratory data quality checks.
+  - package: jmangroup/data_profiler
+    version: 1.0.0
+
+  # Compare rows/columns between two relations (e.g. bqetl vs dbt output).
+  - package: dbt-labs/audit_helper
+    version: 0.14.0
+
+  # PII detection / masking helpers.
+  - package: pvcy/dbt_privacy
+    version: 0.3.1

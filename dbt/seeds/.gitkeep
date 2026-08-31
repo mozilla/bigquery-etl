@@ -1,0 +1,3 @@
+# Place CSV seed files here
+# Seeds are static datasets loaded into your warehouse
+# Example: country_codes.csv, ad_status_mapping.csv

@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: baseline_active_users_by_country_v1
+    description: >
+      Country x channel daily rollup of baseline active users, aggregated from
+      baseline_active_users_aggregates_v2. Demonstrates a downstream dbt model built
+      with ref().
+    config:
+      materialized: table
+      partition_by:
+        field: submission_date
+        data_type: date
+        granularity: day
+      require_partition_filter: false
+      cluster_by: ["country", "channel"]
+    meta:
+      bigquery_etl:
+        friendly_name: Baseline Active Users by Country
+        owners: ["cbeck@mozilla.com"]
+        labels:
+          incremental: true
+          table_type: aggregate
+        scheduling:
+          dag_name: bqetl_analytics_aggregations
+    columns:
+      - name: submission_date
+        description: Logical date the metrics were generated for.
+        tests:
+          - not_null
+      - name: country
+        description: Country reported by the client.
+      - name: channel
+        description: "Distribution channel, e.g. release, beta, nightly, esr."
+      - name: daily_users
+        description: Number of daily users for the submission_date / country / channel.
+      - name: weekly_users
+        description: Number of weekly users for the submission_date / country / channel.
+      - name: monthly_users
+        description: Number of monthly users for the submission_date / country / channel.
+      - name: dau
+        description: Daily Active Users for the submission_date / country / channel.
+      - name: wau
+        description: Weekly Active Users for the submission_date / country / channel.
+      - name: mau
+        description: Monthly Active Users for the submission_date / country / channel.

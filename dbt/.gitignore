@@ -1,0 +1,37 @@
+# dbt
+target/
+dbt_packages/
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials - NEVER commit these!
+profiles.yml
+*.json  # service account keys
+*.pem
+*.key
+
+# Environment
+.env
+.env.local
+dbt_internal_packages/
+.venv/
+venv/

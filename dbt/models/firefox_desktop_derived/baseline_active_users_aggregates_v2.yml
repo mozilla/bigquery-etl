@@ -1,0 +1,129 @@
+version: 2
+
+models:
+  - name: baseline_active_users_aggregates_v2
+    description: ""
+    columns:
+      - name: submission_date
+        data_type: date
+        description: ""
+
+      - name: first_seen_year
+        data_type: int64
+        description: ""
+
+      - name: channel
+        data_type: string
+        description: ""
+
+      - name: app_name
+        data_type: string
+        description: ""
+
+      - name: country
+        data_type: string
+        description: ""
+
+      - name: city
+        data_type: string
+        description: ""
+
+      - name: locale
+        data_type: string
+        description: ""
+
+      - name: os
+        data_type: string
+        description: ""
+
+      - name: os_grouped
+        data_type: string
+        description: ""
+
+      - name: os_version
+        data_type: string
+        description: ""
+
+      - name: os_version_major
+        data_type: int64
+        description: ""
+
+      - name: os_version_minor
+        data_type: int64
+        description: ""
+
+      - name: os_version_build
+        data_type: string
+        description: ""
+
+      - name: windows_build_number
+        data_type: int64
+        description: ""
+
+      - name: app_version
+        data_type: string
+        description: ""
+
+      - name: app_version_major
+        data_type: numeric
+        description: ""
+
+      - name: app_version_minor
+        data_type: numeric
+        description: ""
+
+      - name: app_version_patch_revision
+        data_type: numeric
+        description: ""
+
+      - name: app_version_is_major_release
+        data_type: boolean
+        description: ""
+
+      - name: is_default_browser
+        data_type: boolean
+        description: ""
+
+      - name: distribution_id
+        data_type: string
+        description: ""
+
+      - name: activity_segment
+        data_type: string
+        description: ""
+
+      - name: attribution_medium
+        data_type: string
+        description: ""
+
+      - name: attribution_source
+        data_type: string
+        description: ""
+
+      - name: daily_users
+        data_type: int64
+        description: ""
+
+      - name: weekly_users
+        data_type: int64
+        description: ""
+
+      - name: monthly_users
+        data_type: int64
+        description: ""
+
+      - name: dau
+        data_type: int64
+        description: ""
+
+      - name: wau
+        data_type: int64
+        description: ""
+
+      - name: mau
+        data_type: int64
+        description: ""
+
+      - name: policies_is_enterprise
+        data_type: boolean
+        description: ""

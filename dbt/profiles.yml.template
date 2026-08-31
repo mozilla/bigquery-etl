@@ -1,0 +1,37 @@
+# dbt profiles configuration for the dbt_dev prototype
+#
+# Copy this file to ~/.dbt/profiles.yml and set your sandbox project.
+#
+# This prototype is DEV-ONLY:
+#   - Sources are READ from moz-fx-data-shared-prod (production).
+#   - Models are WRITTEN to your personal sandbox project (you own it, so there is
+#     no risk to production and no per-user dataset prefixing needed).
+#
+# Authentication uses gcloud OAuth. Before running dbt:
+#   gcloud auth application-default login
+
+dbt_dev:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      # Your personal sandbox project. Replace <lname> with your last name, e.g.
+      # moz-fx-dev-klein-sandbox. This is where your models are created.
+      project: moz-fx-dev-<lname>-sandbox
+      # Models land in this dataset (created automatically on first run).
+      dataset: firefox_desktop_derived
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+
+# Setup Instructions
+#
+# 1. Copy this file (or just the dbt_dev block) into ~/.dbt/profiles.yml:
+#      mkdir -p ~/.dbt && cp profiles.yml.template ~/.dbt/profiles.yml
+# 2. Edit ~/.dbt/profiles.yml and replace <lname> with your sandbox project name.
+# 3. Authenticate:
+#      gcloud auth application-default login
+# 4. Verify the connection:
+#      cd dbt && dbt debug

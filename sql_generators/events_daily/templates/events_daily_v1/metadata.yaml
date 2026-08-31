@@ -5,6 +5,7 @@ description: >
 owners:
   - akomar@mozilla.com
 labels:
+  sql_generator: events_daily
   application: {{ dataset }}
   schedule: daily
   incremental: true
@@ -25,4 +26,3 @@ bigquery:
   clustering:
     fields:
       - sample_id
-

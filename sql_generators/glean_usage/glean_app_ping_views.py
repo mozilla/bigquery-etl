@@ -248,6 +248,7 @@ class GleanAppPingViews(GleanTable):
                     app_name=release_app["canonical_app_name"],
                     app_channels=", ".join(included_channel_views),
                 )
+                labels = {"sql_generator": "glean_usage"}
                 metadata_file = Path(
                     get_table_dir(output_dir, full_view_id) / "metadata.yaml"
                 )
@@ -258,9 +259,10 @@ class GleanAppPingViews(GleanTable):
                             "friendly_name" not in existing_metadata
                             and "description" not in existing_metadata
                         ):
-                            metadata_content = metadata_content + yaml.dump(
-                                existing_metadata
-                            )
+                            labels.update(existing_metadata.pop("labels", None) or {})
+                            if existing_metadata:
+                                metadata_content += yaml.dump(existing_metadata)
+                metadata_content += yaml.dump({"labels": labels})
 
                 write_sql(
                     output_dir,

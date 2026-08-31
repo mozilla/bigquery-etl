@@ -260,6 +260,7 @@ SELECT
       JSON_VALUE(event_extra.detected_language) AS `detected_language`,
       JSON_VALUE(event_extra.device_count) AS `device_count`,
       JSON_VALUE(event_extra.device_name) AS `device_name`,
+      JSON_VALUE(event_extra.device_type) AS `device_type`,
       JSON_VALUE(event_extra.didResetValue) AS `didResetValue`,
       JSON_VALUE(event_extra.direction) AS `direction`,
       JSON_VALUE(event_extra.directive) AS `directive`,

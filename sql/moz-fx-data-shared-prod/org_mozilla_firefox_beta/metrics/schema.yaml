@@ -878,7 +878,6 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether a private browsing window has been used in the session.
-        This metric was generated to correspond to the Legacy Telemetry scalar dom.parentprocess.private_window_used.
 
         '
     - name: widget_dark_mode
@@ -20026,6 +20025,26 @@ fields:
         so removed), ''schema'' (no usable table), ''read'' (unreadable row), ''write''
         (snapshot not written). Routine removal when persistence is disabled is not
         counted.
+
+        '
+    - name: quotamanager_storage_sqlite_corruption_unrecovered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Increments when a corruption error (NS_ERROR_FILE_CORRUPTED or
+        NS_ERROR_STORAGE_IOERR) propagates from a storage.sqlite operation during
+        QuotaManager initialization with no recovery path, leaving all storage APIs
+        (localStorage, IndexedDB, Cache API) broken for the session. This covers corruption
+        that passes the initial open check but breaks subsequent operations such as
+        schema upgrades, cache setup, or quota loading. Labeled by the initialization
+        context that failed. See bug 2065480. Note in some cases we recover from corruption:
+        this metric is here to record missing cases where we didn''t recover.
 
         '
   - name: quantity

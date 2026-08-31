@@ -753,7 +753,8 @@ SELECT
       metrics.labeled_counter.security_ui_neterror_search_cta_reason,
       metrics.labeled_counter.cache_schema_init_error,
       metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
-      metrics.labeled_counter.network_ssl_token_cache_db_errors
+      metrics.labeled_counter.network_ssl_token_cache_db_errors,
+      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

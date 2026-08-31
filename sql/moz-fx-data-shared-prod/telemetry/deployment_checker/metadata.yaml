@@ -12,6 +12,7 @@ description: |-
 owners: []
 labels:
   legacy: true
+  sql_generator: stable_views
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

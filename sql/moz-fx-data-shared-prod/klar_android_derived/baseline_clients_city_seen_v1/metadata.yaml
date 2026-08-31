@@ -13,6 +13,7 @@ description: |-
 owners:
 - wichan@mozilla.com
 labels:
+  sql_generator: baseline_clients_city_seen_v1
   incremental: true
   schedule: daily
   table_type: client_level

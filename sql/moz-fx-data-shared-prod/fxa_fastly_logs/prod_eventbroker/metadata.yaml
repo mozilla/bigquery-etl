@@ -6,6 +6,7 @@ owners:
 - bewu@mozilla.com
 - atoufali@mozilla.com
 labels:
+  sql_generator: fxa_fastly_logs
   owner1: bewu
   owner2: atoufali
 workgroup_access:

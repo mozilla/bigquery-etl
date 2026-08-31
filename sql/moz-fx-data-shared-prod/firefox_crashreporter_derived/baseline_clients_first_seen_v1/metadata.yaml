@@ -12,6 +12,7 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  sql_generator: glean_usage
   schedule: daily
   dag: bqetl_glean_usage
   owner1: ascholtz

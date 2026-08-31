@@ -6,6 +6,7 @@ description: |-
 owners:
 - kik@mozilla.com
 labels:
+  sql_generator: terms_of_use
   schedule: daily
   table_type: client_level
   dag: bqetl_terms_of_use

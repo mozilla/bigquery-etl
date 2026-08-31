@@ -9,6 +9,7 @@ description: |-
 owners:
 - lvargas@mozilla.com
 labels:
+  sql_generator: active_users_deletion_requests
   incremental: true
   owner1: lvargas
 scheduling:

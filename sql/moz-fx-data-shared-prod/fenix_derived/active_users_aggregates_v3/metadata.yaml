@@ -24,6 +24,7 @@ owners:
 - lvargas@mozilla.com
 - mozilla/kpi_table_reviewers
 labels:
+  sql_generator: active_users_aggregates_v3
   level: gold
   incremental: true
   change_controlled: true

@@ -9,6 +9,7 @@ owners:
 - rburwei@mozilla.com
 - dzeber@mozilla.com
 labels:
+  sql_generator: urlbar_events
   incremental: true
   schedule: daily
   table_type: client_level

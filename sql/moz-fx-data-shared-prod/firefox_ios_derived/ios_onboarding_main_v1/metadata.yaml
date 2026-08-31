@@ -4,6 +4,7 @@ description: |-
 owners:
 - rzhao@mozilla.org
 labels:
+  sql_generator: funnels
   incremental: true
   table_type: aggregate
   dag: bqetl_generated_funnels

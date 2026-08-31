@@ -6,6 +6,7 @@ owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
 labels:
+  sql_generator: glean_usage
   materialized_view: true
   dag: bqetl_materialized_view_refresh
   owner1: ascholtz

@@ -5,6 +5,7 @@ description: |-
 owners:
 - bewu@mozilla.com
 labels:
+  sql_generator: glean_usage
   incremental: true
   dag: bqetl_monitoring
   owner1: bewu

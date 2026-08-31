@@ -4,6 +4,7 @@ description: |-
 owners:
 - sync-team@mozilla.com
 labels:
+  sql_generator: rust_component_metrics
   incremental: true
   dag: bqetl_rust_component_metrics
   owner1: sync-team

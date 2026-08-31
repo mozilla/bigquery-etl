@@ -5,6 +5,7 @@ owners:
 - ascholtz@mozilla.com
 - mwilliams@mozilla.com
 labels:
+  sql_generator: experiment_monitoring
   table_type: aggregate
   dag: bqetl_experiments_daily
   owner1: ascholtz

@@ -6,6 +6,7 @@ owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
 labels:
+  sql_generator: glean_usage
   incremental: true
   dag: bqetl_monitoring
   owner1: ascholtz

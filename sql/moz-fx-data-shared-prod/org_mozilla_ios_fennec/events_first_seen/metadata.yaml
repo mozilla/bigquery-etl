@@ -5,6 +5,7 @@ owners:
 - kbammarito@mozilla.com
 - vsabino@mozilla.com
 labels:
+  sql_generator: glean_usage
   owner1: kbammarito
   owner2: vsabino
 workgroup_access:

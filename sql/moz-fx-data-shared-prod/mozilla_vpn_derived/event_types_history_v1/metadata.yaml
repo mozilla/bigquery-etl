@@ -4,6 +4,7 @@ description: |
 owners:
 - akomar@mozilla.com
 labels:
+  sql_generator: events_daily
   application: mozilla_vpn
   incremental: true
   schedule: daily

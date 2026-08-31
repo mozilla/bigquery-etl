@@ -2,6 +2,8 @@ friendly_name: Experiment Crash Rates Live
 description: |
   View for live experiment crash rates.
 owners: []
+labels:
+  sql_generator: experiment_monitoring
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

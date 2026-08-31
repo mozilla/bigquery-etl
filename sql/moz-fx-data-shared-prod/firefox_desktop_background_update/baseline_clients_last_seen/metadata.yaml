@@ -9,6 +9,7 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  sql_generator: glean_usage
   owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer

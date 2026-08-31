@@ -8,6 +8,7 @@ owners:
 - jrediger@mozilla.com
 - wstuckey@mozilla.com
 labels:
+  sql_generator: glean_usage
   owner1: jrediger
   owner2: wstuckey
 workgroup_access:

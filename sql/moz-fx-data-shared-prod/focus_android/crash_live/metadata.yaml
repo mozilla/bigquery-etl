@@ -12,6 +12,7 @@ description: |-
   Use `focus_android.crash` for analysis of complete days.
 owners: []
 labels:
+  sql_generator: firefox_crashes
   authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -6,7 +6,8 @@ description: |-
   However, there is a potential for duplicate entries in this dataset which is why once a day copy_deduplicate DAG performs de-duplication of this data
   and saves the result in the corresponding _stable namespace (which also acts as long term storage of this raw data).
   These BigEye checks add freshness and volume checks to these stable tables.
-
+labels:
+  sql_generator: stable_tables_monitoring
 monitoring:
   enabled: True
   collection: Operational Checks

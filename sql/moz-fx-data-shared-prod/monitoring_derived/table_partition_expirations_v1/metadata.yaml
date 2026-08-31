@@ -4,6 +4,7 @@ description: |-
 owners:
 - bewu@mozilla.cam
 labels:
+  sql_generator: table_partition_expirations
   incremental: true
   owner1: bewu
   dag: bqetl_monitoring

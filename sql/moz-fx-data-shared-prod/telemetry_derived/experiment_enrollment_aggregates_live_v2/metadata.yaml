@@ -2,6 +2,8 @@ friendly_name: Experiment Enrollment Aggregates Live
 description: |
   View for live experiment enrollment events. (glean only)
 owners: []
+labels:
+  sql_generator: experiment_monitoring
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

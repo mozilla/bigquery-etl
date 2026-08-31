@@ -4,6 +4,7 @@ description: |-
 owners:
 - project-nimbus@mozilla.com
 labels:
+  sql_generator: nimbus_feature_monitoring
   dag: bqetl_nimbus_feature_monitoring
   schedule: daily
   owner1: project-nimbus

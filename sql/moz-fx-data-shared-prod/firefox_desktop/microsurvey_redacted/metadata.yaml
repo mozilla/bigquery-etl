@@ -6,6 +6,7 @@ description: |-
   See the full (access-restricted) data in `firefox_desktop_stable.microsurvey_v1` and `firefox_desktop.microsurvey`.
 owners: []
 labels:
+  sql_generator: stable_views_redacted
   authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer

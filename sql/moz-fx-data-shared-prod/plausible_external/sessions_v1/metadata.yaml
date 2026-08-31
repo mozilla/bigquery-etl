@@ -26,9 +26,6 @@ labels:
   owner1: phlee
 scheduling:
   dag_name: bqetl_plausible
-  # The load writes its own partition decorator from --date, because it stages
-  # the parquet file and validates it before replacing the partition.
-  date_partition_parameter: null
   arguments: ["--date", "{{ds}}"]
 bigquery:
   time_partitioning:

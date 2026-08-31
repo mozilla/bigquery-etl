@@ -15,6 +15,7 @@ import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
+import click
 import pytest
 import yaml
 from sqlglot import exp, parse_one
@@ -100,12 +101,19 @@ def test_no_duplicate_projected_columns(table):
 
 
 @pytest.mark.parametrize("table", TABLES)
-def test_backfill_entrypoint_is_callable(table):
-    """`bqetl query backfill` resolves a module-level callable, not __main__."""
+def test_backfill_entrypoint_is_a_click_command(table):
+    """`main` must be a click.Command, not just any callable.
+
+    `bqetl query backfill` runs dates concurrently when depends_on_past is
+    false. _backfill_script passes arguments to a click.Command directly, but
+    reassigns the process-global sys.argv for any other callable -- where
+    concurrent dates race, so one date is loaded twice and another is skipped
+    with every task still reporting success.
+    """
     main = getattr(_load_query_module(table), "main", None)
-    assert callable(main), (
-        f"{table}: query.py must expose a module-level main() for "
-        "`bqetl query backfill --query-script-entrypoint main`."
+    assert isinstance(main, click.Command), (
+        f"{table}: main must be a click.Command so backfill arguments are "
+        "passed per-call instead of through the shared sys.argv."
     )
 
 

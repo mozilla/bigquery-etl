@@ -262,7 +262,8 @@ class ExternalDataSubscriptionMetadata:
     data_exchange_id: str = attr.ib()
     listing_id: str = attr.ib()
     # Linked (destination) dataset properties; sensible defaults when unset.
-    location: Optional[str] = attr.ib(None)  # defaults to "us"
+    # Location is intentionally not configurable here: it is fixed by
+    # cloudops-infra to a region with GCPv2 networking allocated.
     friendly_name: Optional[str] = attr.ib(None)
     description: Optional[str] = attr.ib(None)
     labels: Optional[Dict] = attr.ib(None)

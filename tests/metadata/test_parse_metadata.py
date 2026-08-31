@@ -162,7 +162,6 @@ class TestParseMetadata(object):
             "  source_project: '65960090760'\n"
             "  data_exchange_id: partner_exchange\n"
             "  listing_id: partner_listing\n"
-            "  location: us\n"
             "  friendly_name: PMG Analytics\n"
             "  description: Data shared with us by PMG.\n"
             "  labels:\n"
@@ -177,7 +176,6 @@ class TestParseMetadata(object):
             source_project="65960090760",
             data_exchange_id="partner_exchange",
             listing_id="partner_listing",
-            location="us",
             friendly_name="PMG Analytics",
             description="Data shared with us by PMG.",
             labels={"domain": "marketing"},

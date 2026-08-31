@@ -100,8 +100,6 @@ external_data_subscription:
   listing_id: mozilla_analytics_cross_channel                    # source listing ID
 
   # all optional:
-  location: us                    # location the linked dataset is created in
-                                  # (default: us)
   friendly_name: PMG Analytics    # linked dataset friendly name
                                   # (default: "<Dataset> (External via BigQuery Data Sharing)")
   description: Data shared with … # linked dataset description
@@ -114,6 +112,8 @@ The `source_project`, `data_exchange_id` and `listing_id` identify the partner's
 listing to subscribe to — the partner provides these values. Read access is
 granted through the dataset's own `workgroup_access` (the same field used by every
 other dataset), applied to the linked dataset by Terraform.
+
+The linked dataset's location is not configurable here due to https://mozilla-hub.atlassian.net/browse/MZCLD-2714
 
 ### Constraints (enforced by `bqetl metadata validate`)
 

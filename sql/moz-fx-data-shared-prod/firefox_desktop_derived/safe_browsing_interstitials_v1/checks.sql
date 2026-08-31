@@ -1,5 +1,11 @@
+-- Every column in the two checks below is a FULL OUTER JOIN key in query.sql.
+-- NULL never matches NULL in a join, so a null key leaves the displays half and
+-- the actions half of one group as two separate rows, which the uniqueness check
+-- reads as a duplicate. The query coalesces each key to '??'; not_null holds that
+-- line.
+
 #fail
-{{ not_null(["submission_date", "threat_type", "scope"], "submission_date = @submission_date") }}
+{{ not_null(["submission_date", "normalized_channel", "normalized_os", "country", "threat_type", "scope"], "submission_date = @submission_date") }}
 
 #fail
 {{ is_unique(["submission_date", "normalized_channel", "normalized_os", "country", "threat_type", "scope"], "submission_date = @submission_date") }}

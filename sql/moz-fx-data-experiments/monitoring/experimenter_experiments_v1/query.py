@@ -90,8 +90,11 @@ def main():
         args.project, args.destination_dataset, args.metric_config_table
     )
     for row in blob:
-        row["metric_config"] = metric_configs.get(row["normandy_slug"])[0]
-        row["metric_config_computed_at"] = metric_configs.get(row["normandy_slug"])[1]
+        # not every experiment has a metric config (and the config table read
+        # may have been skipped entirely), so default both fields to None
+        metric_config = metric_configs.get(row["normandy_slug"])
+        row["metric_config"] = metric_config[0] if metric_config else None
+        row["metric_config_computed_at"] = metric_config[1] if metric_config else None
 
     client = bigquery.Client(args.project)
     client.load_table_from_json(blob, destination_table, job_config=job_config).result()

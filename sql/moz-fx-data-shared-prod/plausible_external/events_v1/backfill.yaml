@@ -1,9 +1,10 @@
-2026-08-27:
+2026-08-31:
   start_date: 2026-07-30
-  end_date: 2026-08-26
-  reason: Initial load of all available Plausible exports (DENG-11380). The tables
-    were created empty by deploy; the vendor has since delivered every date from 2026-07-30
-    to 2026-08-26.
+  end_date: 2026-08-30
+  reason: Initial load of all available Plausible exports (DENG-11380). The vendor
+    has delivered every date from 2026-07-30 to 2026-08-30. The scheduled DAG has
+    loaded only 2026-08-25 and 2026-08-30, so this covers the full range; those two
+    partitions are replaced idempotently.
   watchers:
   - phlee@mozilla.com
   status: Initiate
@@ -15,5 +16,5 @@
   query_script_entrypoint: main
   query_script_date_arg: date
   query_script_args:
-  - --destination-table=moz-fx-data-shared-prod.backfills_staging_derived.plausible_external__events_v1_2026_08_27
+  - --destination-table=moz-fx-data-shared-prod.backfills_staging_derived.plausible_external__events_v1_2026_08_31
   - --billing-project=moz-fx-data-backfill-slots

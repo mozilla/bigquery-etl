@@ -30,8 +30,10 @@ import tempfile
 import uuid
 from argparse import ArgumentParser
 from datetime import datetime
+from functools import wraps
 from pathlib import Path
 
+import click
 import pyarrow as pa
 import pyarrow.parquet as pq
 from google.cloud import bigquery, storage  # type: ignore[attr-defined]
@@ -60,6 +62,17 @@ def parse_args(description, argv=None):
     parser.add_argument("--project", default=DEFAULT_PROJECT)
     parser.add_argument("--dataset", default=DEFAULT_DATASET)
     parser.add_argument(
+        "--billing-project",
+        default=None,
+        help=(
+            "Project the BigQuery jobs bill to. Defaults to --project. Set this "
+            "for a backfill so a long run uses the backfill slots instead of "
+            "competing with scheduled ETL for production slots; it is kept "
+            "separate from --project because that still locates the temp "
+            "dataset and the default destination."
+        ),
+    )
+    parser.add_argument(
         "--tmp-dataset",
         default=TMP_DATASET,
         help="Dataset to stage the raw parquet in before typing it.",
@@ -79,6 +92,32 @@ def parse_args(description, argv=None):
     args = parser.parse_args(argv)
     args.date = datetime.strptime(args.date, "%Y-%m-%d").date()
     return args
+
+
+def entrypoint(fn):
+    """Wrap a table's loader as a click command taking an explicit argv.
+
+    `bqetl query backfill` runs dates concurrently (ThreadPoolExecutor, default
+    parallelism 16) whenever depends_on_past is false, and _backfill_script has
+    two branches: a click.Command is called with its arguments, while any other
+    callable is invoked after the process-global sys.argv has been reassigned.
+
+    On that second branch, concurrent dates race -- one thread can overwrite
+    sys.argv before another reads it, so two threads load the same date and a
+    third date is silently skipped, with every task reporting success. Being a
+    click.Command keeps the arguments per-call, which is the only reason this
+    wrapper exists; the options themselves still live in parse_args.
+    """
+
+    @click.command(
+        context_settings={"ignore_unknown_options": True, "help_option_names": []}
+    )
+    @click.argument("argv", nargs=-1, type=click.UNPROCESSED)
+    @wraps(fn)
+    def command(argv):
+        return fn(parse_args(fn.__doc__, list(argv)))
+
+    return command
 
 
 def _require_source_blob(args, source_file):
@@ -276,7 +315,7 @@ def run(args, *, table, source_file, partition_field, select_sql, duplicate_key=
     destination = resolve_destination(args, table)
     blob = _require_source_blob(args, source_file)
 
-    bq_client = bigquery.Client(args.project)
+    bq_client = bigquery.Client(args.billing_project or args.project)
     tmp_table = (
         f"{args.project}.{args.tmp_dataset}"
         f".plausible_{table}_{uuid.uuid4().hex[:8]}"

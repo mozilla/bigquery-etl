@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from load import parse_args, run  # noqa: E402
+from load import entrypoint, run  # noqa: E402
 
 # Empty strings are normalized to NULL for the same reason as in events_v1: the
 # source parquet declares its string columns non-nullable, so "not collected" is
@@ -67,10 +67,11 @@ WHERE
 """
 
 
-def main():
+@entrypoint
+def main(args):
     """Load one day. Also the `bqetl query backfill` script entrypoint."""
     run(
-        parse_args(__doc__),
+        args,
         table="sessions_v1",
         source_file="sessions.parquet",
         # Sessions are filed by when they began, not when they were last

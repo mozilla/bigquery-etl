@@ -27,7 +27,6 @@ labels:
   dag: bqetl_plausible
 scheduling:
   dag_name: bqetl_plausible
-  date_partition_parameter: null
   arguments:
   - --date
   - '{{ds}}'

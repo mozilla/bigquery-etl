@@ -177,7 +177,8 @@ class TestValidateMetadata(object):
             is False
         )
 
-        # invalid: `_external` dataset that defines any table/view artifact
+        # invalid: `_external` dataset that defines any table/view artifact,
+        # including a schema-only table (metadata.yaml/schema.yaml, no query)
         for i, table in enumerate(
             (
                 "query.sql",
@@ -186,6 +187,8 @@ class TestValidateMetadata(object):
                 "materialized_view.sql",
                 "script.sql",
                 "init.sql",
+                "metadata.yaml",
+                "schema.yaml",
             )
         ):
             assert (

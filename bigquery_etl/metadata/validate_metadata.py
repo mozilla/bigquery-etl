@@ -513,6 +513,8 @@ def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_
       and
     * the dataset defines no tables/views: a subscription links a read-only
       dataset provisioned by BigQuery Sharing, so no ETL can be defined in it.
+      This includes schema-only tables (a `metadata.yaml`/`schema.yaml` with no
+      query), which deploy without a query file.
     """
     if not dataset_metadata.external_data_subscription:
         return True
@@ -529,6 +531,8 @@ def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_
         )
         is_valid = False
 
+    # a table/view lives in a subdirectory and is defined by any of these; the
+    # metadata/schema files catch schema-only tables that have no query file
     table_definition_files = sorted(
         definition_file
         for pattern in (
@@ -538,6 +542,8 @@ def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_
             "materialized_view.sql",
             "script.sql",
             "init.sql",
+            "metadata.yaml",
+            "schema.yaml",
         )
         for definition_file in Path(dataset_path).glob(f"*/{pattern}")
     )

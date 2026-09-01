@@ -121,9 +121,11 @@ The linked dataset's location is not configurable here due to https://mozilla-hu
   dataset whose name ends with `_external`, matching the repo convention for
   externally-sourced datasets (e.g. `acoustic_external`).
 - **No tables or views.** A subscription links a read-only dataset, so the dataset
-  directory must not define any table/view artifact (`query.sql`, `query.py`,
-  `view.sql`, `materialized_view.sql`, `script.sql`, `init.sql`). Build derived
-  tables or views in a separate dataset that reads from the linked one.
+  directory must not define any table/view artifact — a query/script/view file
+  (`query.sql`, `query.py`, `view.sql`, `materialized_view.sql`, `script.sql`,
+  `init.sql`) or a schema-only table (`metadata.yaml`/`schema.yaml` with no
+  query). Build derived tables or views in a separate dataset that reads from the
+  linked one.
 - **Access via `workgroup_access`.** Read access to the linked dataset is granted
   through the dataset's normal `workgroup_access` block (typically
   `roles/bigquery.dataViewer` for a Mozilla workgroup), not a subscription-specific

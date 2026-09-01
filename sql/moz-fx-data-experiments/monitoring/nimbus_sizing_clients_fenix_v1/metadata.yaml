@@ -1,0 +1,28 @@
+---
+friendly_name: Nimbus Population Sizing Client Pool (Fenix)
+description: |-
+  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Fenix
+  clients for Nimbus pre-launch population sizing.
+
+  Reads from fenix_derived.nimbus_recorded_targeting_context_v1 which already
+  extracts and types all targeting context fields. Deduplicates on client_id,
+  keeping the latest submission_date per client. Hash-based sampling mirrors
+  the same 0-99 bucket range used for Desktop.
+
+  Consumed by experiment_population_estimates_v1 to run per-experiment
+  COUNTIF queries without inline deduplication or date arithmetic.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  owner1: nimbus
+scheduling:
+  dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'fenix_derived', 'nimbus_recorded_targeting_context_v1']
+bigquery:
+  time_partitioning:
+    type: day
+    field: null
+    require_partition_filter: false
+    expiration_days: 14

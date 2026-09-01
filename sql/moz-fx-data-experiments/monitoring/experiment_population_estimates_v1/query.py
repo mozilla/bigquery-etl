@@ -3,20 +3,23 @@
 """Nimbus pre-launch population sizing ETL.
 
 Fetches Draft experiments from the Experimenter v8 API, executes their
-translated BigQuery SQL WHERE clauses against nimbus_targeting_context,
-and writes per-experiment eligible-client estimates to GCS and BigQuery.
+translated BigQuery SQL WHERE clauses against per-app pre-materialized
+client pool tables, and writes per-experiment eligible-client estimates
+to GCS and BigQuery.
+
+The per-app client pools (nimbus_sizing_clients_{desktop,fenix,ios}_v1)
+are populated earlier in the same DAG run. Each table contains a 7-day
+rolling window of deduplicated, 10%-sampled clients with all targeting
+context columns already typed and extracted, so this script only needs
+to generate and run COUNTIF queries.
 
 Supports Desktop (firefox_desktop), Fenix (fenix), and iOS (firefox_ios).
-Deduplicates on client_info.client_id (desktop) or client_id (mobile).
-profile_group_id support requires a separate ticket to add that field to
-nimbus_targeting_context first.
 """
 
 import json
 import logging
 from argparse import ArgumentParser
-from datetime import date, datetime, timedelta, timezone
-from typing import NamedTuple
+from datetime import date, datetime, timezone
 
 import requests
 from google.cloud import bigquery, storage  # type: ignore
@@ -27,37 +30,26 @@ logger = logging.getLogger(__name__)
 EXPERIMENTER_API_URL = (
     "https://experimenter.services.mozilla.com/api/v8/draft-experiments/"
 )
-NIMBUS_TARGETING_TABLE = (
-    "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context"
-)
-NIMBUS_TARGETING_TABLE_FENIX = (
-    "moz-fx-data-shared-prod.fenix_derived.nimbus_recorded_targeting_context_v1"
-)
-NIMBUS_TARGETING_TABLE_IOS = (
-    "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived"
-    ".nimbus_recorded_targeting_context_v1"
-)
 GCS_BUCKET = "mozanalysis"
 GCS_FOLDER = "population_sizing"
 # 10% sample -- multiply counts by 10 to estimate full population.
-# Desktop: sample_id in [0, 100) with sample_id < SAMPLE_ID_MAX.
-# Mobile: ABS(MOD(FARM_FINGERPRINT(client_id), 100)) < SAMPLE_ID_MAX mirrors
-# the same 0-99 bucket range so both branches scale together.
 SAMPLE_ID_MAX = 10
 
+_SIZING_TABLE_DESKTOP = (
+    "moz-fx-data-experiments.monitoring.nimbus_sizing_clients_desktop_v1"
+)
+_SIZING_TABLE_FENIX = (
+    "moz-fx-data-experiments.monitoring.nimbus_sizing_clients_fenix_v1"
+)
+_SIZING_TABLE_IOS = (
+    "moz-fx-data-experiments.monitoring.nimbus_sizing_clients_ios_v1"
+)
 
-class _AppConfig(NamedTuple):
-    table: str
-    is_mobile: bool
-
-
-# Single source of truth: table and query shape per appName.
-_APP_CONFIG: dict[str, _AppConfig] = {
-    "firefox_desktop": _AppConfig(NIMBUS_TARGETING_TABLE, False),
-    "fenix": _AppConfig(NIMBUS_TARGETING_TABLE_FENIX, True),
-    "firefox_ios": _AppConfig(NIMBUS_TARGETING_TABLE_IOS, True),
+_APP_SIZING_TABLE: dict[str, str] = {
+    "firefox_desktop": _SIZING_TABLE_DESKTOP,
+    "fenix": _SIZING_TABLE_FENIX,
+    "firefox_ios": _SIZING_TABLE_IOS,
 }
-
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, help="Execution date (YYYY-MM-DD)")
@@ -70,7 +62,7 @@ parser.add_argument("--gcs-folder", default=GCS_FOLDER)
 parser.add_argument(
     "--dry-run",
     action="store_true",
-    help="Print query without running",
+    help="Print queries without running",
 )
 
 
@@ -98,88 +90,29 @@ def _col_for_index(i: int) -> str:
     return f"exp_{i}"
 
 
-def build_query(
-    experiments: list,
-    submission_date: date,
-    app_name: str,
-    window_days: int = 7,
-) -> str:
-    """Build a single BigQuery query counting eligible clients per experiment.
+def build_query(experiments: list, app_name: str) -> str:
+    """Build a single BigQuery COUNTIF query against the per-app client pool.
+
+    The per-app sizing table is pre-materialized by an earlier DAG step,
+    so this function only needs to generate COUNTIF columns — no CTE,
+    deduplication, sampling, or date arithmetic required here.
 
     Uses indexed column aliases (exp_0, exp_1, ...) to avoid slug-to-column
     collisions. One COUNTIF per experiment in a single table scan.
-    clients CTE selects * so injected SQL can reference any ping field.
-    Desktop deduplicates on client_info.client_id with sample_id < SAMPLE_ID_MAX.
-    Mobile deduplicates on client_id with hash-based sampling using the same
-    0-99 bucket range so both branches scale with SAMPLE_ID_MAX.
     """
-    config = _APP_CONFIG[app_name]
-    table = config.table
-    is_mobile = config.is_mobile
-
-    window_start = submission_date - timedelta(days=window_days - 1)
-    window_end = submission_date
-
-    if is_mobile:
-        cte = f"""\
-WITH latest_per_client AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (
-      PARTITION BY client_id
-      ORDER BY submission_date DESC
-    ) AS rn
-  FROM `{table}`
-  WHERE submission_date BETWEEN '{window_start}' AND '{window_end}'
-    AND ABS(MOD(FARM_FINGERPRINT(client_id), 100)) < {SAMPLE_ID_MAX}
-    AND client_id IS NOT NULL
-),
-clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
-    else:
-        cte = f"""\
-WITH latest_per_client AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (
-      PARTITION BY client_info.client_id
-      ORDER BY submission_timestamp DESC
-    ) AS rn
-  FROM `{table}`
-  WHERE DATE(submission_timestamp) BETWEEN '{window_start}' AND '{window_end}'
-    AND sample_id < {SAMPLE_ID_MAX}
-    AND client_info.client_id IS NOT NULL
-),
-clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)"""
-
+    table = _APP_SIZING_TABLE[app_name]
     cols = [
         f"  COUNTIF(\n    {exp['targetingSql']['sql']}\n"
         f"  ) * {SAMPLE_ID_MAX} AS `{_col_for_index(i)}`"
         for i, exp in enumerate(experiments)
     ]
+    return "SELECT\n" + ",\n".join(cols) + f"\nFROM `{table}`"
 
-    return f"{cte}\nSELECT\n" + ",\n".join(cols) + "\nFROM clients"
 
-
-def _dry_run_sql(
-    sql: str,
-    project: str,
-    app_name: str,
-    submission_date: date,
-) -> bool:
-    """Return True if sql is a valid BigQuery expression, False otherwise.
-
-    Mobile derived tables require a partition filter (require_partition_filter=true),
-    so the probe includes submission_date to satisfy partition elimination.
-    """
-    config = _APP_CONFIG[app_name]
-    table = config.table
-    if config.is_mobile:
-        probe = (
-            f"SELECT COUNTIF({sql}) AS c FROM `{table}`"
-            f" WHERE submission_date = '{submission_date}' AND FALSE"
-        )
-    else:
-        probe = f"SELECT COUNTIF({sql}) AS c FROM `{table}` WHERE FALSE"
+def _dry_run_sql(sql: str, project: str, app_name: str) -> bool:
+    """Return True if sql is a valid BigQuery expression, False otherwise."""
+    table = _APP_SIZING_TABLE[app_name]
+    probe = f"SELECT COUNTIF({sql}) AS c FROM `{table}` WHERE FALSE"
     try:
         client = bigquery.Client(project=project)
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
@@ -199,7 +132,6 @@ def build_results(
     """Execute query and map results back to per-experiment result dicts.
 
     Uses positional index aliases (exp_0, exp_1, ...) to avoid slug collisions.
-    Inlines the BQ execution so callers don't deal with the intermediate rows.
     """
     client = bigquery.Client(project=project)
     rows = [dict(row) for row in client.query(query).result()]
@@ -225,10 +157,7 @@ def build_results(
 def write_to_gcs(results: dict, bucket_name: str, folder: str, run_date: str) -> None:
     """Write versioned sizing results to GCS for Experimenter to read.
 
-    Writes only experiments evaluated in this run. Experimenter stores the
-    computed_at date and decides whether to update its stored estimate.
-
-    Writes two files (matching the enrollment_funnel pattern):
+    Writes two files:
       - experiment_population_estimates_v1_{date}.json  -- dated archive
       - experiment_population_estimates_v1_latest.json  -- consumed by Experimenter
     """
@@ -254,10 +183,7 @@ def write_to_bigquery(
     table: str,
     submission_date: date,
 ) -> None:
-    """Write sizing results to BigQuery using WRITE_TRUNCATE on the date partition.
-
-    Truncates the day partition before writing so retries are idempotent.
-    """
+    """Write sizing results to BigQuery using WRITE_TRUNCATE on the date partition."""
     client = bigquery.Client(project=project)
     computed_at = datetime.now(timezone.utc)
     rows = [
@@ -273,7 +199,6 @@ def write_to_bigquery(
     if not rows:
         return
 
-    # Partition decorator must match computed_at's date so BQ accepts the rows.
     partition_decorator = computed_at.strftime("%Y%m%d")
     table_ref = f"{project}.{dataset}.{table}${partition_decorator}"
     job_config = bigquery.LoadJobConfig(
@@ -303,11 +228,10 @@ def main():
         logger.info("No experiments to process")
         return
 
-    # Group experiments by platform
     platform_groups: dict[str, list] = {}
     for exp in all_experiments:
         app_name = exp.get("appName", "firefox_desktop")
-        if app_name not in _APP_CONFIG:
+        if app_name not in _APP_SIZING_TABLE:
             logger.warning(
                 "Unknown appName %r for %s, skipping", app_name, exp["slug"]
             )
@@ -322,12 +246,7 @@ def main():
             valid_experiments = []
             for exp in experiments:
                 sql = exp["targetingSql"]["sql"]
-                if _dry_run_sql(
-                    sql,
-                    project=args.project,
-                    app_name=app_name,
-                    submission_date=run_date,
-                ):
+                if _dry_run_sql(sql, project=args.project, app_name=app_name):
                     valid_experiments.append(exp)
                 else:
                     logger.warning(
@@ -338,11 +257,7 @@ def main():
                 continue
 
             has_valid = True
-            query = build_query(
-                valid_experiments,
-                submission_date=run_date,
-                app_name=app_name,
-            )
+            query = build_query(valid_experiments, app_name=app_name)
 
             if args.dry_run:
                 print(f"-- {app_name}\n{query}")

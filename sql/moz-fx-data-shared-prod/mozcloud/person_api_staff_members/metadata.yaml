@@ -1,0 +1,23 @@
+friendly_name: Person API Staff Members
+description: |-
+  Mozilla staff members exported from mozilla-person-api (CIS) via the
+  moz-fx-platform-mgmt-global project. Each row represents one active Mozilla
+  staff member, including their email, name, title, team, manager, worker type,
+  cost center, GitHub and Slack identifiers, and LDAP and mozillians.org group
+  memberships. This is the same data as https://phonebook.mozilla.org/.
+owners:
+- jbuckley@mozilla.com
+- wdawson@mozilla.com
+labels:
+  owner1: jbuckley
+  owner2: wdawson
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:finops/billingetl-bq-scheduled
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:platform/backstage-gke
+  - workgroup:platform/platform-tf
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozcloud_workgroups_syndicate.person_api_staff_members

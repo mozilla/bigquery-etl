@@ -11,6 +11,7 @@ description: |-
 
   Use `{{ dataset }}.crash` for analysis of complete days.
 labels:
+  sql_generator: firefox_crashes
   authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer

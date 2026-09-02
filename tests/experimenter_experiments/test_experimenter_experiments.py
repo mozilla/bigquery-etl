@@ -100,3 +100,24 @@ class TestReadMetricConfigs:
         )
         assert metric_config["overrides"]["start_date"] == "2024-06-01"
         assert metric_config_computed_at == "2024-01-01T00:00:00+00:00"
+
+
+class TestAttachMetricConfigs:
+    def test_attaches_config_when_slug_present(self, query):
+        blob = [{"normandy_slug": "slug-a"}]
+        metric_configs = {"slug-a": ({"has_external_config": True}, "2024-01-01")}
+
+        query.attach_metric_configs(blob, metric_configs)
+
+        assert blob[0]["metric_config"] == {"has_external_config": True}
+        assert blob[0]["metric_config_computed_at"] == "2024-01-01"
+
+    def test_missing_slug_defaults_to_none(self, query):
+        # regression: a slug absent from metric_configs must not raise
+        # `'NoneType' object is not subscriptable`
+        blob = [{"normandy_slug": "no-config-slug"}]
+
+        query.attach_metric_configs(blob, {})
+
+        assert blob[0]["metric_config"] is None
+        assert blob[0]["metric_config_computed_at"] is None

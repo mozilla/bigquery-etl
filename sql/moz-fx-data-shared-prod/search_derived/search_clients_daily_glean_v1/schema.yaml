@@ -18,7 +18,7 @@ fields:
   mode: NULLABLE
 - name: partner_code
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
   description: The partner code reported by the search event, and part of this table's
     grain. Never null - searches whose partner code is absent or an empty string are
     reported as the literal "no_code".

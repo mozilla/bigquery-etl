@@ -1,23 +1,12 @@
 -- Query for search_derived.search_clients_daily_glean_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
-  COALESCE(
-        -- full datetime with offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),
-        -- date + offset (no time)
-    SAFE.PARSE_TIMESTAMP("%F%Ez", ts),
-        -- datetime with space before offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", REGEXP_REPLACE(ts, r"(\+|\-)(\d{2}):(\d{2})", "\\1\\2\\3"))
-  )
-);
-
-CREATE TEMP FUNCTION to_utc_string(ts STRING) AS (
-  FORMAT_TIMESTAMP(
-    '%F %T UTC',  -- desired output format
-    SAFE.PARSE_TIMESTAMP('%FT%H:%M:%E*S%Ez', ts),
-    'UTC'
-  )
+-- the date portion of a client-local timestamp string. Every value it reads carries a trailing
+-- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
+-- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
+-- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
+  SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
 
 WITH
@@ -165,7 +154,7 @@ sap_events_with_client_info_cte AS (
     END AS os_version_minor,
     client_info.windows_build_number,
     client_info.distribution.name AS distribution_id,
-    UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date))) AS profile_creation_date,
+    UNIX_DATE(local_date_of(client_info.first_run_date)) AS profile_creation_date,
     CAST(JSON_VALUE(metrics.string.region_home_region, '$') AS string) AS region_home_region,
     CAST(
       JSON_VALUE(metrics.boolean.usage_is_default_browser, '$') AS boolean
@@ -267,8 +256,10 @@ sap_aggregates_cte AS (
     normalized_engine,
     partner_code,
     source,
-    MAX(UNIX_DATE(DATE((ping_info.parsed_start_time)))) - MAX(
-      UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
+    -- start_time, not parsed_start_time: same instant, but DATE() of a TIMESTAMP is a UTC date,
+    -- which would put this term on a different calendar from the subtrahend
+    MAX(UNIX_DATE(local_date_of(ping_info.start_time))) - MAX(
+      UNIX_DATE(local_date_of(client_info.first_run_date))
     ) AS profile_age_in_days,
     COUNT(*) AS sap_counts_total,
     MAX(
@@ -379,7 +370,7 @@ serp_events_with_client_info_cte AS (
     END AS os_version_minor,
     windows_build_number,
     distribution_id,
-    UNIX_DATE(DATE(safe_parse_timestamp(first_run_date))) AS profile_creation_date,
+    UNIX_DATE(local_date_of(first_run_date)) AS profile_creation_date,
     region_home_region,
     usage_is_default_browser,
     search_engine_default_display_name,
@@ -462,8 +453,9 @@ serp_aggregates_base_cte AS (
     SUM(num_ads_visible) AS num_ads_visible,
     SUM(num_ads_blocked) AS num_ads_blocked,
     SUM(num_ads_notshowing) AS num_ads_notshowing,
-    MAX(UNIX_DATE(DATE(to_utc_string(subsession_start_time)))) - MAX(
-      UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
+    -- both terms are client-local dates -- see the SAP copy in sap_aggregates_cte for why
+    MAX(UNIX_DATE(local_date_of(subsession_start_time))) - MAX(
+      UNIX_DATE(local_date_of(first_run_date))
     ) AS profile_age_in_days,
     COUNT(*) AS serp_counts_total,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max

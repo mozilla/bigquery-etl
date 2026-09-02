@@ -1,20 +1,9 @@
-CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
-  COALESCE(
-        -- full datetime with offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),
-        -- date + offset (no time)
-    SAFE.PARSE_TIMESTAMP("%F%Ez", ts),
-        -- datetime with space before offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", REGEXP_REPLACE(ts, r"(\+|\-)(\d{2}):(\d{2})", "\\1\\2\\3"))
-  )
-);
-
-CREATE TEMP FUNCTION to_utc_string(ts STRING) AS (
-  FORMAT_TIMESTAMP(
-    '%F %T UTC',  -- desired output format
-    SAFE.PARSE_TIMESTAMP('%FT%H:%M:%E*S%Ez', ts),
-    'UTC'
-  )
+-- the date portion of a client-local timestamp string. Every value it reads carries a trailing
+-- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
+-- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
+-- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
+  SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
 
 -- serp_aggregates_base_cte
@@ -50,8 +39,9 @@ SELECT
   SUM(num_ads_visible) AS num_ads_visible,
   SUM(num_ads_blocked) AS num_ads_blocked,
   SUM(num_ads_notshowing) AS num_ads_notshowing,
-  MAX(UNIX_DATE(DATE(to_utc_string(subsession_start_time)))) - MAX(
-    UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
+  -- both terms are client-local dates -- see the SAP copy in sap_aggregates_cte for why
+  MAX(UNIX_DATE(local_date_of(subsession_start_time))) - MAX(
+    UNIX_DATE(local_date_of(first_run_date))
   ) AS profile_age_in_days,
   COUNT(*) AS serp_counts_total,
   MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max

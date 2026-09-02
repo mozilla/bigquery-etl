@@ -1,12 +1,9 @@
-CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
-  COALESCE(
-        -- full datetime with offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),
-        -- date + offset (no time)
-    SAFE.PARSE_TIMESTAMP("%F%Ez", ts),
-        -- datetime with space before offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", REGEXP_REPLACE(ts, r"(\+|\-)(\d{2}):(\d{2})", "\\1\\2\\3"))
-  )
+-- the date portion of a client-local timestamp string. Every value it reads carries a trailing
+-- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
+-- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
+-- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
+  SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
 
 -- sap_events_with_client_info_cte
@@ -59,7 +56,7 @@ SELECT
   END AS os_version_minor,
   client_info.windows_build_number,
   client_info.distribution.name AS distribution_id,
-  UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date))) AS profile_creation_date,
+  UNIX_DATE(local_date_of(client_info.first_run_date)) AS profile_creation_date,
   CAST(JSON_VALUE(metrics.string.region_home_region, '$') AS string) AS region_home_region,
   CAST(
     JSON_VALUE(metrics.boolean.usage_is_default_browser, '$') AS boolean

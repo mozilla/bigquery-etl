@@ -103,10 +103,22 @@ graph TD
 
 ## Helper functions
 
-Two temporary functions parse the string timestamps that Glean emits.
+One temporary function turns the string timestamps that Glean emits into dates.
 
-- `safe_parse_timestamp` accepts the several shapes `client_info.first_run_date` and `first_run_date` arrive in, including a date with an offset but no time, and a datetime with a space before the offset.
-- `to_utc_string` reformats a SERP `subsession_start_time` into a UTC string before it is turned back into a date.
+- `local_date_of` returns the date portion of a client-local timestamp string, `substr(ts, 1, 10)` parsed as `%F`. It is applied to `client_info.first_run_date` and `first_run_date`, to the SAP `ping_info.start_time`, and to the SERP `subsession_start_time`.
+
+Every one of those values is written on the client's own calendar with a trailing offset, so the date is what the client's clock said and nothing needs converting. That matters most for `profile_age_in_days`, which subtracts a first run date from an activity date: read one of them in UTC and the subtraction compares two different frames, which puts a client who installed today at an age of -1 for no reason.
+
+The SAP side reads `ping_info.start_time` rather than the `ping_info.parsed_start_time` sitting beside it. Glean ships both, and they differ in type, not in meaning:
+
+| column              | type        | example                         |
+| ------------------- | ----------- | ------------------------------- |
+| `start_time`        | `STRING`    | `2026-08-13T09:30:18.000+03:00` |
+| `parsed_start_time` | `TIMESTAMP` | `2026-08-13 06:30:18 UTC`       |
+
+They are the same moment. But a `TIMESTAMP` is an absolute instant carrying no timezone, so `date()` of one is always a UTC date and there is no way to recover the client's local date from it — `date(ts, tz)` would need a timezone name, and the row has only a numeric offset, inside the string. Only `start_time` still holds the offset, which is why the local date has to be read from it. The two dates disagree on 9.4% of events.
+
+Parsing no time component also means variable precision costs nothing. `subsession_start_time` arrives in four shapes, two of which have no seconds — `2026-08-12T17:10+05:30` — and a pattern written for the other two returns null on them silently.
 
 ## Tables (CTEs)
 
@@ -197,7 +209,7 @@ Each row represents aggregated search activity and engagement metrics for a spec
 
 The two sides do not compute the same measures.
 
-- SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`, and derives `profile_age_in_days` from `ping_info.parsed_start_time` against the first run date.
+- SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`, and derives `profile_age_in_days` from `ping_info.start_time` against the first run date.
 - SERP produces `serp_counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`. SERP derives `profile_age_in_days` from `subsession_start_time` against the first run date.
 
 #### SAP and SERP Final

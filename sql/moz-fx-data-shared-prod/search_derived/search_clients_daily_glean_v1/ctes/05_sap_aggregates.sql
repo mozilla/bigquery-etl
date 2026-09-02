@@ -1,12 +1,9 @@
-CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
-  COALESCE(
-        -- full datetime with offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),
-        -- date + offset (no time)
-    SAFE.PARSE_TIMESTAMP("%F%Ez", ts),
-        -- datetime with space before offset
-    SAFE.PARSE_TIMESTAMP("%F%T%Ez", REGEXP_REPLACE(ts, r"(\+|\-)(\d{2}):(\d{2})", "\\1\\2\\3"))
-  )
+-- the date portion of a client-local timestamp string. Every value it reads carries a trailing
+-- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
+-- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
+-- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
+  SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
 
 -- sap_aggregates_cte
@@ -17,8 +14,10 @@ SELECT
   normalized_engine,
   partner_code,
   source,
-  MAX(UNIX_DATE(DATE((ping_info.parsed_start_time)))) - MAX(
-    UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
+  -- start_time, not parsed_start_time: same instant, but DATE() of a TIMESTAMP is a UTC date,
+  -- which would put this term on a different calendar from the subtrahend
+  MAX(UNIX_DATE(local_date_of(ping_info.start_time))) - MAX(
+    UNIX_DATE(local_date_of(client_info.first_run_date))
   ) AS profile_age_in_days,
   COUNT(*) AS sap_counts_total,
   MAX(

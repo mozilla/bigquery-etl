@@ -30,16 +30,7 @@ SELECT
   normalized_os,
   os_version,
   normalized_os_version,
-  CASE
-    WHEN mozfun.norm.os(os) = "Windows"
-      THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
-    ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
-  END AS os_version_major,
-  CASE
-    WHEN mozfun.norm.os(os) = "Windows"
-      THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
-    ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS string)
-  END AS os_version_minor,
+  -- os_version_major and os_version_minor are derived in final_cte, from the coalesced inputs
   windows_build_number,
   distribution_id,
   UNIX_DATE(local_date_of(first_run_date)) AS profile_creation_date,

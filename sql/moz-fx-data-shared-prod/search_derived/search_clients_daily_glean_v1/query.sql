@@ -131,27 +131,7 @@ sap_events_with_client_info_cte AS (
     normalized_os,
     client_info.os_version,
     normalized_os_version,
-    -- must stay identical to the SERP copy so the two sides coalesce to one vocabulary.
-    -- on Windows both branches return the same release name, since windows_version_info
-    -- takes no major/minor argument -- inherited from v8 and preserved deliberately
-    CASE
-      WHEN mozfun.norm.os(client_info.os) = "Windows"
-        THEN mozfun.norm.windows_version_info(
-            client_info.os,
-            client_info.os_version,
-            client_info.windows_build_number
-          )
-      ELSE CAST(mozfun.norm.truncate_version(client_info.os_version, "major") AS STRING)
-    END AS os_version_major,
-    CASE
-      WHEN mozfun.norm.os(client_info.os) = "Windows"
-        THEN mozfun.norm.windows_version_info(
-            client_info.os,
-            client_info.os_version,
-            client_info.windows_build_number
-          )
-      ELSE CAST(mozfun.norm.truncate_version(client_info.os_version, "minor") AS STRING)
-    END AS os_version_minor,
+    -- os_version_major and os_version_minor are derived in final_cte, from the coalesced inputs
     client_info.windows_build_number,
     client_info.distribution.name AS distribution_id,
     UNIX_DATE(local_date_of(client_info.first_run_date)) AS profile_creation_date,
@@ -358,16 +338,7 @@ serp_events_with_client_info_cte AS (
     normalized_os,
     os_version,
     normalized_os_version,
-    CASE
-      WHEN mozfun.norm.os(os) = "Windows"
-        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
-      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
-    END AS os_version_major,
-    CASE
-      WHEN mozfun.norm.os(os) = "Windows"
-        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
-      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS string)
-    END AS os_version_minor,
+    -- os_version_major and os_version_minor are derived in final_cte, from the coalesced inputs
     windows_build_number,
     distribution_id,
     UNIX_DATE(local_date_of(first_run_date)) AS profile_creation_date,
@@ -565,8 +536,6 @@ join_sap_serp_cte AS (
       serp_final_cte.normalized_os_version,
       sap_final_cte.normalized_os_version
     ) AS normalized_os_version,
-    COALESCE(serp_final_cte.os_version_major, sap_final_cte.os_version_major) AS os_version_major,
-    COALESCE(serp_final_cte.os_version_minor, sap_final_cte.os_version_minor) AS os_version_minor,
     COALESCE(
       serp_final_cte.windows_build_number,
       sap_final_cte.windows_build_number
@@ -778,8 +747,19 @@ final_cte AS (
     serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
     has_adblocker_addon,
     policies_is_enterprise,
-    os_version_major,
-    os_version_minor,
+    -- keep these after the coalesce, so they read the same os, os_version and
+    -- windows_build_number the row publishes. NULL where that os_version does not parse.
+    -- major and minor are deliberately identical on Windows: both are the release name.
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
+    END AS os_version_major,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
+    END AS os_version_minor,
     profile_group_id,
     sap_provider_id, -- NEW
     sap_provider_name -- NEW

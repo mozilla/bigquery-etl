@@ -33,27 +33,7 @@ SELECT
   normalized_os,
   client_info.os_version,
   normalized_os_version,
-  -- must stay identical to the SERP copy so the two sides coalesce to one vocabulary.
-  -- on Windows both branches return the same release name, since windows_version_info
-  -- takes no major/minor argument -- inherited from v8 and preserved deliberately
-  CASE
-    WHEN mozfun.norm.os(client_info.os) = "Windows"
-      THEN mozfun.norm.windows_version_info(
-          client_info.os,
-          client_info.os_version,
-          client_info.windows_build_number
-        )
-    ELSE CAST(mozfun.norm.truncate_version(client_info.os_version, "major") AS STRING)
-  END AS os_version_major,
-  CASE
-    WHEN mozfun.norm.os(client_info.os) = "Windows"
-      THEN mozfun.norm.windows_version_info(
-          client_info.os,
-          client_info.os_version,
-          client_info.windows_build_number
-        )
-    ELSE CAST(mozfun.norm.truncate_version(client_info.os_version, "minor") AS STRING)
-  END AS os_version_minor,
+  -- os_version_major and os_version_minor are derived in final_cte, from the coalesced inputs
   client_info.windows_build_number,
   client_info.distribution.name AS distribution_id,
   UNIX_DATE(local_date_of(client_info.first_run_date)) AS profile_creation_date,

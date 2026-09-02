@@ -63,8 +63,19 @@ SELECT
   serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
   has_adblocker_addon,
   policies_is_enterprise,
-  os_version_major,
-  os_version_minor,
+  -- keep these after the coalesce, so they read the same os, os_version and
+  -- windows_build_number the row publishes. NULL where that os_version does not parse.
+  -- major and minor are deliberately identical on Windows: both are the release name.
+  CASE
+    WHEN mozfun.norm.os(os) = "Windows"
+      THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+    ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
+  END AS os_version_major,
+  CASE
+    WHEN mozfun.norm.os(os) = "Windows"
+      THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+    ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
+  END AS os_version_minor,
   profile_group_id,
   sap_provider_id, -- NEW
   sap_provider_name -- NEW

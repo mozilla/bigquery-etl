@@ -229,7 +229,7 @@ The two pipelines are combined with a `full outer join`, so a row survives if it
 
 - A search access point with no matching SERP impression keeps its `sap_counts_total` value. Driving the join from SERP alone would drop that activity entirely, since the SAP `source` and SERP `sap_source` vocabularies only partly overlap.
 - A SERP impression with no matching SAP event keeps its ad and engagement measures.
-- Two SERP-only columns are `null` on a sap-only row: `ad_click_target` and `ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`. `os_version_major` and `os_version_minor` used to be `null` here too; both pipelines now derive them, so they are coalesced like the other operating system columns.
+- Two SERP-only columns are `null` on a sap-only row: `ad_click_target` and `ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`.
 - Two SAP-only columns are `null` on a serp-only row: `sap_provider_id` and `sap_provider_name`. They are strings rather than counts, so there is nothing to zero-fill, and the SERP side has no raw provider extra to fall back to.
 
 #### Column precedence
@@ -241,6 +241,8 @@ The prefix on a column name says which side it can come from. A coalesced column
 Most prefixes are applied here, at the join, and the side-only column is coined unprefixed upstream. `sap_provider_id` and `sap_provider_name` are the exception: they carry the prefix from `sap_base` onward, because `provider_id` is already taken by the SERP normalized engine in this CTE and the unprefixed pair would collide with it.
 
 **Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
+
+**Anything derived from a published column is derived after the coalesce.** `os_version_major` and `os_version_minor` are computed in `final_cte` from the coalesced `os`, `os_version` and `windows_build_number`, so a row's derived value and the inputs it publishes always come from the same side. Deriving per side and coalescing the two results separately breaks that, because each column then picks its winner independently: a row can publish one side's `windows_build_number` beside a release name the other side computed without it, and nothing in the row says so.
 
 #### Counts and sums are zero, never null
 

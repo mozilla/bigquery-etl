@@ -1,0 +1,23 @@
+friendly_name: Column Classifications
+description: |-
+  An authorized view on top of the
+  `data_governance_metadata_derived.column_classifications_v1` table that
+  leaves out the sample values.
+
+  One row per classified column: the Mozilla data taxonomy label the model
+  chose, its confidence and reasoning, and the profiling statistics it was
+  shown.
+owners:
+- akomarzewski@mozilla.com
+- cmorales@mozilla.com
+labels:
+  authorized: true
+  owner1: akomarzewski
+  owner2: cmorales
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.data_governance_metadata_derived.column_classifications_v1

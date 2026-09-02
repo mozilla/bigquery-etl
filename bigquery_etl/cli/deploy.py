@@ -50,6 +50,7 @@ from bigquery_etl.util.target import (
     QUERY_SCRIPT,
     VIEW_FILE,
     Target,
+    collect_routine_dependencies,
     collect_target_dependencies,
     ensure_dataset_exists,
     prepare_target_files,
@@ -343,6 +344,22 @@ def deploy(
         include_materialized_views=isolated,
     )
 
+    # routine files being deployed; used both to collect their dependencies for
+    # --isolated and to group routines by source project for publishing below
+    deployed_routine_files: List[Path] = []
+    if routines:
+        deployed_routine_files = [
+            f
+            for f in paths_matching_name_pattern(
+                paths if paths else None,
+                sql_dir,
+                None,
+                list(ROUTINE_FILES),
+                file_regex=ROUTINE_FILE_RE,
+            )
+            if f.name in ROUTINE_FILES
+        ]
+
     # For --isolated, collect dependencies up front so we can feed any
     # discovered UDFs into the routine publish step below (otherwise the
     # schema-resolver dry-run sees a stale or missing target UDF). Stubs for
@@ -352,6 +369,10 @@ def deploy(
     if isolated and target and target.project_id not in project_ids:
         isolated_routine_deps = _collect_isolated_dependencies(
             artifacts, sql_dir, target
+        )
+
+        isolated_routine_deps.extend(
+            collect_routine_dependencies(set(deployed_routine_files))
         )
 
     # publish routines first since tables/views may depend on them
@@ -377,16 +398,8 @@ def deploy(
         # logic stays correct — refs to unpublished UDFs need to be qualified
         # with the *source* project they belong to.
         routines_by_source: Dict[str, Set[Path]] = defaultdict(set)
-        if routines:
-            for f in paths_matching_name_pattern(
-                paths if paths else None,
-                sql_dir,
-                None,
-                list(ROUTINE_FILES),
-                file_regex=ROUTINE_FILE_RE,
-            ):
-                if f.name in ROUTINE_FILES:
-                    routines_by_source[f.parent.parent.parent.name].add(f)
+        for f in deployed_routine_files:
+            routines_by_source[f.parent.parent.parent.name].add(f)
         for p in isolated_routine_deps:
             routines_by_source[p.parent.parent.parent.name].add(p)
 

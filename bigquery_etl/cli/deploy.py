@@ -50,6 +50,7 @@ from bigquery_etl.util.target import (
     QUERY_SCRIPT,
     VIEW_FILE,
     Target,
+    collect_routine_dependencies,
     collect_target_dependencies,
     ensure_dataset_exists,
     prepare_target_files,
@@ -353,6 +354,22 @@ def deploy(
         isolated_routine_deps = _collect_isolated_dependencies(
             artifacts, sql_dir, target
         )
+
+        if routines:
+            deployed_routines = {
+                f
+                for f in paths_matching_name_pattern(
+                    paths if paths else None,
+                    sql_dir,
+                    None,
+                    list(ROUTINE_FILES),
+                    file_regex=ROUTINE_FILE_RE,
+                )
+                if f.name in ROUTINE_FILES
+            }
+            isolated_routine_deps.extend(
+                collect_routine_dependencies(deployed_routines)
+            )
 
     # publish routines first since tables/views may depend on them
     routine_results = {}

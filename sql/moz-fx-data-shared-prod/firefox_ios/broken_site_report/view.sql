@@ -36,7 +36,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
-      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
+      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked
     ) AS `boolean`,
     STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
     STRUCT(
@@ -45,6 +46,7 @@ SELECT
       metrics.text2.broken_site_report_tab_info_useragent_string
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(metrics.object.broken_site_report_browser_info_experiments) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_description,
@@ -100,7 +102,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
-      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
+      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked
     ) AS `boolean`,
     STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
     STRUCT(
@@ -109,6 +112,7 @@ SELECT
       metrics.text2.broken_site_report_tab_info_useragent_string
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(metrics.object.broken_site_report_browser_info_experiments) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_description,
@@ -164,7 +168,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
-      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
+      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked
     ) AS `boolean`,
     STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
     STRUCT(
@@ -173,6 +178,7 @@ SELECT
       metrics.text2.broken_site_report_tab_info_useragent_string
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(metrics.object.broken_site_report_browser_info_experiments) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_description,

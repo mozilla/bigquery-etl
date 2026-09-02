@@ -2972,7 +2972,11 @@ SELECT
       metrics.counter.use_counter_page_document_parsehtmlunsafe,
       metrics.counter.use_counter_page_element_sethtmlunsafe,
       metrics.counter.use_counter_page_shadowroot_sethtml,
-      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe
+      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe,
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5968,7 +5972,11 @@ SELECT
       metrics.counter.use_counter_page_document_parsehtmlunsafe,
       metrics.counter.use_counter_page_element_sethtmlunsafe,
       metrics.counter.use_counter_page_shadowroot_sethtml,
-      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe
+      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe,
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8964,7 +8972,11 @@ SELECT
       metrics.counter.use_counter_page_document_parsehtmlunsafe,
       metrics.counter.use_counter_page_element_sethtmlunsafe,
       metrics.counter.use_counter_page_shadowroot_sethtml,
-      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe
+      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe,
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

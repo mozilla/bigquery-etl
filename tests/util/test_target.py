@@ -1220,3 +1220,31 @@ class TestShouldGrantImpersonationAccess:
         monkeypatch.setenv(ENV, "1")  # would grant for a human; ignored for agents
         target_module.set_grant_impersonation_access(None)
         assert _should_grant_impersonation_access("sa@p.iam") is False
+
+
+class TestCollectRoutineDependencies:
+    def _write_udf(self, sql_dir, dataset, name, body):
+        udf_dir = sql_dir / "proj" / dataset / name
+        udf_dir.mkdir(parents=True)
+        (udf_dir / "udf.sql").write_text(
+            f"CREATE OR REPLACE FUNCTION {dataset}.{name}() AS ({body});\n"
+        )
+        return udf_dir / "udf.sql"
+
+    def test_transitive_deps_excluding_inputs(self, tmp_path, monkeypatch):
+        from bigquery_etl.routine import parse_routine
+        from bigquery_etl.util.target import collect_routine_dependencies
+
+        sql_dir = tmp_path / "sql"
+        # udf_a -> udf_b -> udf_c
+        path_a = self._write_udf(sql_dir, "udf", "udf_a", "udf.udf_b()")
+        path_b = self._write_udf(sql_dir, "udf", "udf_b", "udf.udf_c()")
+        path_c = self._write_udf(sql_dir, "udf", "udf_c", "1")
+
+        raw = parse_routine.read_routine_dir(str(sql_dir))
+        monkeypatch.setattr(target_module, "read_routine_dir", lambda *a, **k: raw)
+
+        # deploying only udf_a should pull in b and c, not a itself
+        assert collect_routine_dependencies({path_a}) == {path_b, path_c}
+        # deploying a leaf pulls in nothing
+        assert collect_routine_dependencies({path_c}) == set()

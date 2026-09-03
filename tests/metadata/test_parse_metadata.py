@@ -4,6 +4,7 @@ import pytest
 
 from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
+    ExternalDataSubscriptionMetadata,
     ExternalSharingMetadata,
     Metadata,
     PartitionType,
@@ -119,6 +120,65 @@ class TestParseMetadata(object):
             exchange_display_name="Mozilla - Partner",
             exchange_description="Data for partner",
             restrict_export=True,
+        )
+
+    def test_invalid_external_data_subscription_resource_id(self):
+        for field in ("data_exchange_id", "listing_id"):
+            kwargs = {
+                "source_project": "65960090760",
+                "data_exchange_id": "partner_exchange",
+                "listing_id": "partner_listing",
+                field: "has-hyphen",
+            }
+            with pytest.raises(ValueError):
+                ExternalDataSubscriptionMetadata(**kwargs)
+
+    def test_external_data_subscription_rejects_unknown_key(self, tmp_path):
+        # an unknown key (e.g. a typo) must be a hard error, not silently dropped
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_data_subscription:\n"
+            "  source_project: '65960090760'\n"
+            "  data_exchange_id: partner_exchange\n"
+            "  listing_id: partner_listing\n"
+            "  listings_id: partner_listing\n"  # typo of listing_id
+        )
+        with pytest.raises(ValueError):
+            DatasetMetadata.from_file(tmp_path / "dataset_metadata.yaml")
+
+    def test_external_data_subscription_all_fields_round_trip(self, tmp_path):
+        # Guards against schema drift from the cloudops-infra subscription module:
+        # every key the module reads must map to a field here (unknown keys are
+        # now rejected, so a field missing here would break a valid config).
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_data_subscription:\n"
+            "  source_project: '65960090760'\n"
+            "  data_exchange_id: partner_exchange\n"
+            "  listing_id: partner_listing\n"
+            "  friendly_name: PMG Analytics\n"
+            "  description: Data shared with us by PMG.\n"
+            "  labels:\n"
+            "    domain: marketing\n"
+        )
+
+        subscription = DatasetMetadata.from_file(
+            tmp_path / "dataset_metadata.yaml"
+        ).external_data_subscription
+
+        assert subscription == ExternalDataSubscriptionMetadata(
+            source_project="65960090760",
+            data_exchange_id="partner_exchange",
+            listing_id="partner_listing",
+            friendly_name="PMG Analytics",
+            description="Data shared with us by PMG.",
+            labels={"domain": "marketing"},
         )
 
     def test_invalid_label(self):

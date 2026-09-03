@@ -56,5 +56,5 @@ Reference docs (`docs/reference/`) - read the relevant one when a change touches
 - `airflow_tags.md` - Airflow tags for filtering DAGs in the UI and conveying failure impact during triage.
 - `bigconfig.md` - Bigeye `bigConfig` for declaring which tables to monitor and what data-quality monitors/alerts apply.
 - `public_data.md` - marking datasets as public and how public data is exposed.
-- `external_sharing.md` - declaring external partner sharing of a `_shared` dataset via BigQuery Sharing (`external_sharing` in `dataset_metadata.yaml`); provisioned by Terraform in cloudops-infra.
+- `external_sharing.md` - BigQuery Sharing in both directions, provisioned by Terraform in cloudops-infra: sharing a `_shared` dataset out to partners (`external_sharing`) and subscribing to a partner's listing to link a read-only `_external` dataset in (`external_data_subscription`), both in `dataset_metadata.yaml`.
 - `stage-deploys-continuous-integration.md` - how CI deploys schema/view/UDF changes to the stage environment for validation.

@@ -8,9 +8,10 @@ description: |-
   clause as a COUNTIF against a per-app pre-materialized client pool, and
   writing results to GCS for Experimenter to display on the Audience page.
 
-  Per-app client pools (nimbus_sizing_clients_{desktop,fenix,ios}_v1) are
-  populated earlier in the same DAG run. Each covers a 7-day rolling window
-  of deduplicated, 10%-sampled clients (scaled x10 to estimate full population).
+  Per-app client pools (nimbus_sizing_clients_v1) are populated earlier in the
+  same DAG run via the experiment_monitoring sql_generator. Each covers a 7-day
+  rolling window of deduplicated, 10%-sampled clients (scaled x10 to estimate
+  full population).
 
   Results are also written to GCS at:
     gs://mozanalysis/population_sizing/experiment_population_estimates_v1_{date}.json
@@ -25,9 +26,9 @@ scheduling:
   dag_name: bqetl_experiments_daily
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
-    - ['moz-fx-data-experiments', 'monitoring', 'nimbus_sizing_clients_desktop_v1']
-    - ['moz-fx-data-experiments', 'monitoring', 'nimbus_sizing_clients_fenix_v1']
-    - ['moz-fx-data-experiments', 'monitoring', 'nimbus_sizing_clients_ios_v1']
+    - ['moz-fx-data-experiments', 'firefox_desktop_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-experiments', 'org_mozilla_fenix_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-experiments', 'org_mozilla_ios_firefox_derived', 'nimbus_sizing_clients_v1']
 bigquery:
   time_partitioning:
     type: day

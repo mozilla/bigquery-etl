@@ -194,3 +194,82 @@ fields:
   description: The date the browser profile was created, encoded as the number of days since the Unix epoch (January 1, 1970). This can be converted
     to a calendar date for profile cohort analysis.
   type: INT64
+- name: profile_group_id
+  description: A UUID that identifies a group of Firefox profiles belonging to the same user across installations. Used to associate activity
+    across multiple profiles on the same device or account.
+  type: STRING
+- name: sample_id
+  description: A stable integer bucket (0–99) derived from the client ID, used to sample a reproducible subset of the population for analysis
+    or experimentation.
+  type: INT64
+- name: sap
+  description: The count of Search Access Point (SAP) searches initiated by the user, where a SAP search is one that originates directly from
+    a Firefox-provided search entry point such as the address bar or search bar.
+  type: INT64
+- name: search_cohort
+  description: An identifier for the search experiment or cohort group the client was assigned to, used to track targeted search configuration
+    rollouts or experiments. Null for clients not enrolled in any cohort.
+  type: STRING
+- name: search_count
+  description: The total number of searches performed by the client, aggregated across all search access points and engines for the reporting
+    period.
+  type: INT64
+- name: search_with_ads
+  description: The count of search result pages that contained advertisements, as observed through SAP-tagged searches. This represents monetizable
+    search activity where ads were served alongside results.
+  type: INT64
+- name: search_with_ads_organic
+  description: The count of search result pages containing advertisements that originated from organic (non-SAP) navigation, such as follow-on
+    searches initiated outside of Firefox-provided entry points.
+  type: INT64
+- name: sessions_started_on_this_day
+  description: The number of browser sessions that were started by the client on the reporting day. A value of zero indicates the client was active
+    but did not start a new session on that day.
+  type: INT64
+- name: source
+  description: A string identifying the origin or entry point of a search event, such as the address bar, a suggestion, an in-content SAP, or
+    other Firefox UI surface. It may include partner and channel tagging information.
+  type: STRING
+- name: state
+  description: The two-letter US state abbreviation derived from the client's inferred geographic location. Null for clients whose location cannot
+    be resolved to a US state.
+  type: STRING
+- name: submission_date
+  description: The date on which the telemetry ping was received by Mozilla's data pipeline. Used as the primary partitioning and filtering dimension
+    for time-based analysis.
+- name: subsession_hours_sum
+  description: The total number of active browser hours accumulated across all subsessions within the reporting period. Represents the sum of
+    time the browser was open and active.
+  type: FLOAT64
+- name: tab_open_event_count_sum
+  description: The total number of tab-open events recorded for the client during the reporting period. Null when this metric was not collected
+    or is unavailable for the client.
+  type: INT64
+- name: tagged_follow_on
+  description: The count of follow-on searches that were tagged with a partner code, meaning they were triggered as a continuation of an initial
+    SAP search and are attributable to a search partner agreement.
+  type: INT64
+- name: tagged_sap
+  description: The count of SAP searches that carried a partner attribution tag, indicating they are attributable to a specific search partner
+    deal and are eligible for revenue reporting.
+  type: INT64
+- name: tagged_searches
+  description: The total count of searches — across all access points — that were tagged with a partner attribution code, combining tagged SAP
+    and tagged follow-on searches.
+  type: INT64
+- name: total_searches
+  description: The aggregate count of all searches performed by the client regardless of source, tag status, or engine. Serves as the broadest
+    measure of search volume for a client.
+  type: INT64
+- name: total_uri_count
+  description: The total number of URIs visited by the client during the reporting period, used as a proxy for overall browsing activity. Null
+    when this metric was not reported by the client.
+  type: INT64
+- name: unknown
+  description: The count of search events whose source or classification could not be determined and did not map to any known search access point
+    or category. A value of zero indicates all searches were successfully classified.
+  type: INT64
+- name: user_pref_browser_search_region
+  description: The region code stored in the client's browser search region preference, typically an ISO 3166-1 alpha-2 country code. This value
+    reflects the user's configured or detected region used to determine default search engine settings.
+  type: STRING

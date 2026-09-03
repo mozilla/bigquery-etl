@@ -1,0 +1,19 @@
+apps:
+  - name: desktop
+    friendly_name: Desktop
+    source_table: moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context
+    source_dataset: firefox_desktop
+    source_table_name: nimbus_targeting_context
+    is_desktop: true
+  - name: fenix
+    friendly_name: Fenix
+    source_table: moz-fx-data-shared-prod.fenix_derived.nimbus_recorded_targeting_context_v1
+    source_dataset: fenix_derived
+    source_table_name: nimbus_recorded_targeting_context_v1
+    is_desktop: false
+  - name: ios
+    friendly_name: Firefox for iOS
+    source_table: moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_recorded_targeting_context_v1
+    source_dataset: org_mozilla_ios_firefox_derived
+    source_table_name: nimbus_recorded_targeting_context_v1
+    is_desktop: false

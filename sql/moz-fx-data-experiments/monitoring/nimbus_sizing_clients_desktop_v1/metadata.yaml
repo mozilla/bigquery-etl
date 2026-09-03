@@ -1,12 +1,8 @@
 ---
 friendly_name: Nimbus Population Sizing Client Pool (Desktop)
 description: |-
-  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Firefox
-  Desktop clients for Nimbus pre-launch population sizing.
-
-  Deduplicates on client_info.client_id, keeping the latest ping per client.
-  Preserves the full metrics.* structure so population sizing COUNTIF queries
-  can reference any targeting context column without modification.
+  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Desktop
+  clients for Nimbus pre-launch population sizing.
 
   Consumed by experiment_population_estimates_v1 to run per-experiment
   COUNTIF queries without inline deduplication or date arithmetic.

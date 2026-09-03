@@ -1,0 +1,10 @@
+---
+friendly_name: Gecko Trace Traces
+description: |-
+  Trace patterns with total counts across all dates and Firefox applications.
+
+  This view sums daily hit counts and shows the first and latest dates for each trace.
+  The average duration uses a weighted average across days.
+
+owners:
+  - jjalkanen@mozilla.com

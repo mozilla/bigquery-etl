@@ -1,16 +1,16 @@
-{% if dataset == "firefox_desktop" %}
-{% set app_label = "Desktop" %}
-{% set source_dataset = "firefox_desktop" %}
-{% set source_table = "nimbus_targeting_context" %}
-{% elif dataset == "org_mozilla_fenix" %}
-{% set app_label = "Fenix" %}
-{% set source_dataset = "fenix_derived" %}
-{% set source_table = "nimbus_recorded_targeting_context_v1" %}
-{% else %}
-{% set app_label = "Firefox for iOS" %}
-{% set source_dataset = dataset + "_derived" %}
-{% set source_table = "nimbus_recorded_targeting_context_v1" %}
-{% endif %}
+{%- if dataset == "firefox_desktop" -%}
+{%- set app_label = "Desktop" -%}
+{%- set source_dataset = "firefox_desktop" -%}
+{%- set source_table = "nimbus_targeting_context" -%}
+{%- elif dataset == "org_mozilla_fenix" -%}
+{%- set app_label = "Fenix" -%}
+{%- set source_dataset = "fenix_derived" -%}
+{%- set source_table = "nimbus_recorded_targeting_context_v1" -%}
+{%- else -%}
+{%- set app_label = "Firefox for iOS" -%}
+{%- set source_dataset = dataset + "_derived" -%}
+{%- set source_table = "nimbus_recorded_targeting_context_v1" -%}
+{%- endif -%}
 ---
 friendly_name: Nimbus Population Sizing Client Pool ({{ app_label }})
 description: |-

@@ -1,4 +1,4 @@
-{% if dataset == "firefox_desktop" %}
+{%- if dataset == "firefox_desktop" -%}
 SELECT
   *
 FROM
@@ -11,12 +11,12 @@ WHERE
   AND client_info.client_id IS NOT NULL
 QUALIFY
   ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp DESC) = 1
-{% else %}
-{% if dataset == "org_mozilla_fenix" %}
-{% set source_dataset = "fenix_derived" %}
-{% else %}
-{% set source_dataset = dataset + "_derived" %}
-{% endif %}
+{%- else -%}
+{%- if dataset == "org_mozilla_fenix" -%}
+{%- set source_dataset = "fenix_derived" -%}
+{%- else -%}
+{%- set source_dataset = dataset + "_derived" -%}
+{%- endif -%}
 SELECT
   *
 FROM
@@ -29,4 +29,4 @@ WHERE
   AND client_id IS NOT NULL
 QUALIFY
   ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date DESC) = 1
-{% endif %}
+{%- endif %}

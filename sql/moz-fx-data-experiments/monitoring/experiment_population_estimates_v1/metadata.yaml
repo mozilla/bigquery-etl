@@ -1,23 +1,23 @@
 ---
 friendly_name: Nimbus Experiment Population Estimates
 description: |-
-  Per-experiment eligible-client estimates for Nimbus Draft experiments on Desktop.
+  Per-experiment eligible-client estimates for Nimbus Draft experiments.
 
   Populated daily by fetching experiments from the Experimenter v8 API where
   targetingSql.needsUpdate=true, running each experiment's translated SQL WHERE
-  clause against moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context
-  (7-day window, 10% sample x10), and writing results to GCS for Experimenter to
-  display on the Audience page.
+  clause as a COUNTIF against a per-app pre-materialized client pool, and
+  writing results to GCS for Experimenter to display on the Audience page.
 
-  Deduplicates on the experiment's randomization unit from the API:
-  normandy_id -> client_info.client_id,
-  group_id -> client_info.profile_group_id.
+  Per-app client pools (nimbus_sizing_clients_v1) are populated earlier in the
+  same DAG run via the experiment_monitoring sql_generator. Each covers a 7-day
+  rolling window of deduplicated, 10%-sampled clients (scaled x10 to estimate
+  full population).
 
   Results are also written to GCS at:
     gs://mozanalysis/population_sizing/experiment_population_estimates_v1_{date}.json
     gs://mozanalysis/population_sizing/experiment_population_estimates_v1_latest.json
 
-  Desktop only. Mobile apps will be added in a future iteration.
+  Supports Desktop (firefox_desktop), Fenix (fenix), and iOS (firefox_ios).
 owners:
   - ykhurana@mozilla.com
 labels:
@@ -26,7 +26,9 @@ scheduling:
   dag_name: bqetl_experiments_daily
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 'firefox_desktop', 'nimbus_targeting_context']
+    - ['moz-fx-data-experiments', 'firefox_desktop_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-experiments', 'org_mozilla_fenix_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-experiments', 'org_mozilla_ios_firefox_derived', 'nimbus_sizing_clients_v1']
 bigquery:
   time_partitioning:
     type: day

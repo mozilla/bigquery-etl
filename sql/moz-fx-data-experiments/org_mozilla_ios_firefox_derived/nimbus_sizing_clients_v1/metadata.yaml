@@ -1,0 +1,23 @@
+---
+friendly_name: Nimbus Population Sizing Client Pool (Firefox for iOS)
+description: |-
+  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Firefox for iOS
+  clients for Nimbus pre-launch population sizing.
+
+  Consumed by experiment_population_estimates_v1 to run per-experiment
+  COUNTIF queries without inline deduplication or date arithmetic.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  owner1: nimbus
+scheduling:
+  dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'org_mozilla_ios_firefox_derived', 'nimbus_recorded_targeting_context_v1']
+bigquery:
+  time_partitioning:
+    type: day
+    field: null
+    require_partition_filter: false
+    expiration_days: 14

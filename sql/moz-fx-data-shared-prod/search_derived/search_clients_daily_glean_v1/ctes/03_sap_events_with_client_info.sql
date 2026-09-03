@@ -1,0 +1,117 @@
+-- the date portion of a client-local timestamp string. Every value it reads carries a trailing
+-- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
+-- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
+-- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
+  SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
+);
+
+-- sap_events_with_client_info_cte
+-- the four grain keys and browser_version_info arrive resolved from sap_base_cte, so nothing is
+-- re-derived here
+SELECT
+  client_id,
+  submission_date,
+  normalized_engine,
+  sap_provider_id,
+  sap_provider_name,
+  partner_code,
+  source,
+  sample_id,
+  profile_group_id,
+  legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
+  normalized_country_code AS country,
+  normalized_app_name,
+  browser_version_info.version AS app_version,
+  browser_version_info.major_version AS app_major_version,
+  browser_version_info.minor_version AS app_minor_version,
+  browser_version_info.patch_revision AS app_patch_revision,
+  client_info.app_channel AS channel,
+  normalized_channel,
+  client_info.locale,
+  client_info.os,
+  normalized_os,
+  client_info.os_version,
+  normalized_os_version,
+  -- os_version_major and os_version_minor are derived in final_cte, from the coalesced inputs
+  client_info.windows_build_number,
+  client_info.distribution.name AS distribution_id,
+  UNIX_DATE(local_date_of(client_info.first_run_date)) AS profile_creation_date,
+  CAST(JSON_VALUE(metrics.string.region_home_region, '$') AS string) AS region_home_region,
+  CAST(
+    JSON_VALUE(metrics.boolean.usage_is_default_browser, '$') AS boolean
+  ) AS usage_is_default_browser,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_default_display_name, '$') AS string
+  ) AS search_engine_default_display_name,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_default_load_path, '$') AS string
+  ) AS search_engine_default_load_path,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_default_partner_code, '$') AS string
+  ) AS search_engine_default_partner_code,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_default_provider_id, '$') AS string
+  ) AS search_engine_default_provider_id,
+  CAST(
+    JSON_VALUE(metrics.url.search_engine_default_submission_url, '$') AS string
+  ) AS search_engine_default_submission_url,
+  CAST(
+    JSON_VALUE(metrics.boolean.search_engine_default_overridden_by_third_party, '$') AS boolean
+  ) AS search_engine_default_overridden_by_third_party,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_private_display_name, '$') AS string
+  ) AS search_engine_private_display_name,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_private_load_path, '$') AS string
+  ) AS search_engine_private_load_path,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_private_partner_code, '$') AS string
+  ) AS search_engine_private_partner_code,
+  CAST(
+    JSON_VALUE(metrics.string.search_engine_private_provider_id, '$') AS string
+  ) AS search_engine_private_provider_id,
+  CAST(
+    JSON_VALUE(metrics.url.search_engine_private_submission_url, '$') AS string
+  ) AS search_engine_private_submission_url,
+  CAST(
+    JSON_VALUE(metrics.boolean.search_engine_private_overridden_by_third_party, '$') AS boolean
+  ) AS search_engine_private_overridden_by_third_party,
+  CAST(
+    JSON_VALUE(event_extra.overridden_by_third_party, '$') AS boolean
+  ) AS overridden_by_third_party,
+  ping_info.start_time AS ping_start_time,
+  ping_info.end_time AS ping_end_time,
+  ping_info.seq AS ping_seq,
+  -- one element per enrollment. ORDER BY makes the element order reproducible, since
+  -- JSON_KEYS does not document a stable order
+  ARRAY(
+    SELECT AS STRUCT
+      k AS key,
+      STRUCT(
+        JSON_VALUE(experiments[k].branch) AS branch,
+        STRUCT(
+          JSON_VALUE(experiments[k].extra.type) AS type,
+          JSON_VALUE(experiments[k].extra.enrollment_id) AS enrollment_id
+        ) AS extra
+      ) AS value
+    FROM
+      UNNEST(JSON_KEYS(experiments, 1)) AS k
+    ORDER BY
+      k
+  ) AS experiments
+FROM
+  `search_derived.search_clients_daily_glean_v1.sap_base_cte`
+-- this is to get the last instance
+QUALIFY
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      client_id,
+      submission_date,
+      normalized_engine,
+      partner_code,
+      source
+    ORDER BY
+      event_timestamp DESC,
+      event_id -- deterministic tiebreaker (document_id plus event number) so sap passthroughs are reproducible on ties
+  ) = 1

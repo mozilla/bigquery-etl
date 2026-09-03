@@ -37,6 +37,7 @@ def generate_queries(project, path, write_dir):
 
         if args["per_app"]:
             # generate a separate query for each application dataset
+            destination_project = args.get("destination_project", project)
             for dataset in template_config["applications"]:
                 if "skip_applications" in args:
                     if any(fnmatchcase(dataset, skip_app) for skip_app in args["skip_applications"]):
@@ -45,13 +46,13 @@ def generate_queries(project, path, write_dir):
                 args["dataset"] = dataset
 
                 write_sql(
-                    write_dir / project,
-                    f"{project}.{dataset}_derived.{query}",
+                    write_dir / destination_project,
+                    f"{destination_project}.{dataset}_derived.{query}",
                     sql_template_file,
                     reformat(sql_template.render(**args)),
                 )
 
-                write_path = Path(write_dir) / project / (dataset + "_derived") / query
+                write_path = Path(write_dir) / destination_project / (dataset + "_derived") / query
                 (write_path / "metadata.yaml").write_text(
                     metadata_template.render(**args)
                 )

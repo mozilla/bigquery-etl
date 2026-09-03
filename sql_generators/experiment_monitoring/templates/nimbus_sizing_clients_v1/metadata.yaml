@@ -1,0 +1,36 @@
+{% if dataset == "firefox_desktop" %}
+{% set app_label = "Desktop" %}
+{% set source_dataset = "firefox_desktop" %}
+{% set source_table = "nimbus_targeting_context" %}
+{% elif dataset == "org_mozilla_fenix" %}
+{% set app_label = "Fenix" %}
+{% set source_dataset = "fenix_derived" %}
+{% set source_table = "nimbus_recorded_targeting_context_v1" %}
+{% else %}
+{% set app_label = "Firefox for iOS" %}
+{% set source_dataset = dataset + "_derived" %}
+{% set source_table = "nimbus_recorded_targeting_context_v1" %}
+{% endif %}
+---
+friendly_name: Nimbus Population Sizing Client Pool ({{ app_label }})
+description: |-
+  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled {{ app_label }}
+  clients for Nimbus pre-launch population sizing.
+
+  Consumed by experiment_population_estimates_v1 to run per-experiment
+  COUNTIF queries without inline deduplication or date arithmetic.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  owner1: nimbus
+scheduling:
+  dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{% raw %}{{ ds }}{% endraw %}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', '{{ source_dataset }}', '{{ source_table }}']
+bigquery:
+  time_partitioning:
+    type: day
+    field: null
+    require_partition_filter: false
+    expiration_days: 14

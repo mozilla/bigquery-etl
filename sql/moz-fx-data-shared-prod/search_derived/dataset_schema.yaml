@@ -92,8 +92,8 @@ fields:
     This URL is used to identify the search partner and attribution parameters.
   type: STRING
 - name: default_search_engine_submission_url
-  description: The submission URL for the default search engine as reported through an alternative telemetry path. This field is currently always
-    null and is retained for schema compatibility.
+  description: The submission URL for the default search engine as reported through an alternative telemetry path. This is the base URL used to
+    submit search queries to the engine, including any partner or channel-specific query parameters.
   type: STRING
 - name: device
   description: The device form factor of the client, either 'desktop' or 'mobile'. This distinguishes between browser usage on traditional computers
@@ -111,19 +111,24 @@ fields:
   description: A nested array of search activity broken down by search engine key, containing arrays of per-engine counts for total searches,
     tagged searches, searches with ads, and ad clicks.
   type: RECORD
-- name: engine_searches_key
-  description: The identifier of a search engine within the engine_searches nested structure, such as 'google-b-m' or 'none'. This key links search
-    activity counts to a specific search engine.
+  fields:
+  - name: key
+    description: The identifier of a search engine within the engine_searches nested structure, such as 'google-b-m' or 'none'. This key links
+      search activity counts to a specific search engine.
+    type: STRING
 - name: experiments
   description: A nested array of key-value pairs representing the Nimbus or legacy experiments the client was enrolled in at the time of data
     collection. The key is the experiment slug and the value is the branch name.
   type: RECORD
-- name: experiments_key
-  description: The slug identifier of an experiment that the client was enrolled in, such as a Nimbus experiment name. This key is used to look
-    up experiment enrollment within the experiments array.
-- name: experiments_value
-  description: The branch name of the experiment the client was assigned to, such as 'control', 'treatment', or 'rollout'. This indicates which
-    variant of the experiment the client experienced.
+  fields:
+  - name: key
+    description: The slug identifier of an experiment that the client was enrolled in, such as a Nimbus experiment name. This key is used to look
+      up experiment enrollment within the experiments array.
+    type: STRING
+  - name: value
+    description: The branch name of the experiment the client was assigned to, such as 'control', 'treatment', or 'rollout'. This indicates which
+      variant of the experiment the client experienced.
+    type: STRING
 - name: forecast_trained_at
   description: The UTC timestamp at which the forecasting model used to generate a prediction row was trained. This is used to identify the model
     version and training recency associated with a forecast.
@@ -175,9 +180,9 @@ fields:
 - name: os_version_major
   description: The major version number component of the client's operating system version. This is an integer extracted from the full OS version
     string for easier numeric filtering and aggregation.
+  type: INTEGER
 - name: os_version_minor
-  description: The minor version or descriptive label of the client's operating system, such as 'Windows 11', 'Windows 10', or a numeric minor
-    version string. This provides finer-grained OS segmentation beyond the major version.
+  description: The minor version component of the client's operating system version. E.g. for version "100.9.11", the minor is 9.
 - name: partner
   description: The name of the search partner associated with an agreement or revenue relationship, such as 'Google', 'DuckDuckGo', or 'Bing'.
     This identifies the commercial search partner for attribution and reporting.
@@ -237,6 +242,7 @@ fields:
 - name: submission_date
   description: The date on which the telemetry ping was received by Mozilla's data pipeline. Used as the primary partitioning and filtering dimension
     for time-based analysis.
+  type: DATE
 - name: subsession_hours_sum
   description: The total number of active browser hours accumulated across all subsessions within the reporting period. Represents the sum of
     time the browser was open and active.

@@ -1,7 +1,7 @@
 fields:
 - name: ad_content
-  description: The ad content parameter from UTM tracking, identifying the specific creative or ad variant that drove a visit (e.g., 'vpn', 'location-selector-promo').
-    Null when the visit was not attributed to a paid ad.
+  description: The ad content parameter from UTM tracking, identifying the specific creative or ad variant that drove a visit (e.g., 'vpn',
+    'location-selector-promo'). Null when the visit was not attributed to a paid ad.
   type: STRING
 - name: all_reported_install_targets
   description: An array of all install target event names reported during a session, capturing every download funnel event type (e.g., 'product_download',
@@ -66,8 +66,8 @@ fields:
     This field mirrors event_category and event_label in GA3-style event tracking.
   type: STRING
 - name: event_category
-  description: The category component of a Google Analytics event, classifying the type of interaction (e.g., 'scroll', 'product_download', 'newsletter_subscribe').
-    This field mirrors event_action and event_label in GA3-style event tracking.
+  description: The category component of a Google Analytics event, classifying the type of interaction (e.g., 'scroll', 'product_download',
+    'newsletter_subscribe'). This field mirrors event_action and event_label in GA3-style event tracking.
   type: STRING
 - name: event_date
   description: The calendar date on which the analytics event was recorded, used for partitioning and time-series analysis of event-level data.

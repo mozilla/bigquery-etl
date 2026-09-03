@@ -4,20 +4,22 @@ fields:
     'location-selector-promo'). Null when the visit was not attributed to a paid ad.
   type: STRING
 - name: all_reported_install_targets
-  description: An array of all install target event names reported during a session, capturing every download funnel event type (e.g., 'product_download',
-    'firefox_download') that occurred across the session.
+  description: An array of all install targets reported during a session. Values are channel identifiers such as 'desktop_release' or 'android_beta'
+    in ga_sessions_v1/v2, and download event names such as 'product_download' or 'firefox_download' in ga_sessions_v3.
   type: STRING
+  mode: REPEATED
 - name: all_reported_stub_session_ids
   description: An array of all stub installer session IDs reported during a session, used to link browser stub installer activity back to a web
     analytics session.
   type: STRING
+  mode: REPEATED
 - name: blog
   description: The name or slug of the Mozilla blog section associated with a page view, such as 'security', 'addons', or 'Future Releases'. The
     value 'other' indicates a blog page that does not map to a specific named section.
   type: STRING
 - name: bounces
-  description: The number of single-page sessions (bounces) attributed to a given page or session record. A value of 0 indicates the visitor navigated
-    to at least one additional page.
+  description: The number of single-page sessions (bounces) attributed to a given page or session record. A value of 0 indicates no bounces were
+    recorded for that row's context.
   type: INT64
 - name: browser
   description: The name of the web browser used by the visitor, such as 'Chrome', 'Firefox', or 'Safari'. Null when the browser cannot be identified
@@ -54,6 +56,7 @@ fields:
   description: An array of distinct UTM campaign values extracted from event parameters within a session, capturing all unique campaigns observed
     across events in that session.
   type: STRING
+  mode: REPEATED
 - name: downloads
   description: The total number of file download events recorded. A value of 0 indicates no downloads occurred.
   type: INT64
@@ -63,18 +66,21 @@ fields:
   type: INT64
 - name: event_action
   description: The action component of a Google Analytics event, describing what interaction occurred (e.g., 'session_start', 'cta_click', 'firefox_download').
-    This field mirrors event_category and event_label in GA3-style event tracking.
+    In GA3-sourced tables this is a distinct GA3 event dimension; in GA4-sourced tables it is populated from event_name, since GA4 has no separate
+    event action.
   type: STRING
 - name: event_category
   description: The category component of a Google Analytics event, classifying the type of interaction (e.g., 'scroll', 'product_download',
-    'newsletter_subscribe'). This field mirrors event_action and event_label in GA3-style event tracking.
+    'newsletter_subscribe'). In GA3-sourced tables this is a distinct GA3 event dimension; in GA4-sourced tables it is populated from event_name,
+    since GA4 has no separate event category.
   type: STRING
 - name: event_date
   description: The calendar date on which the analytics event was recorded, used for partitioning and time-series analysis of event-level data.
   type: DATE
 - name: event_label
   description: The label component of a Google Analytics event, providing additional context or description for the interaction (e.g., 'cta_click',
-    'vpn_download'). This field mirrors event_action and event_category in GA3-style event tracking.
+    'vpn_download'). In GA3-sourced tables this is a distinct GA3 event dimension; in GA4-sourced tables it is populated from event_name, since
+    GA4 has no separate event label.
   type: STRING
 - name: event_name
   description: The GA4 event name describing the type of user interaction recorded (e.g., 'page_view', 'session_start', 'first_visit', 'cta_click').
@@ -85,8 +91,7 @@ fields:
     within the aggregation period.
   type: INT64
 - name: firefox_desktop_downloads
-  description: The count of Firefox desktop download events attributed to the record. This field is currently unpopulated and will be null across
-    all rows.
+  description: The number of Firefox desktop download events recorded during the session.
   type: INT64
 - name: first_campaign_from_event_params
   description: The first UTM campaign value observed in event parameters within a session (e.g., '127', '(referral)', '(organic)'). Null when
@@ -108,6 +113,7 @@ fields:
   description: An array of all Google Click Identifiers (GCLIDs) observed across events in a session, used to associate a session with one or
     more Google Ads clicks.
   type: STRING
+  mode: REPEATED
 - name: had_download_event
   description: Indicates whether a download event of any kind was recorded. True means at least one download event occurred; false means no download
     event was observed.
@@ -129,8 +135,9 @@ fields:
     the visitor's browser is configured to use.
   type: STRING
 - name: last_reported_install_target
-  description: The most recent install target event name reported in a session, indicating the final download funnel event type observed (e.g.,
-    'product_download', 'firefox_download', 'firefox_mobile_download'). Null when no install target event was recorded.
+  description: The most recent install target reported during a session. Values are channel identifiers such as 'desktop_release' or 'android_beta'
+    in ga_sessions_v1/v2, and download event names such as 'product_download' or 'firefox_download' in ga_sessions_v3. Null when no install target
+    was reported.
   type: STRING
 - name: last_reported_stub_session_id
   description: The most recently reported stub installer session ID within a session, used to link the final stub installer interaction back to
@@ -161,8 +168,8 @@ fields:
     or when the device name cannot be resolved.
   type: STRING
 - name: newsletter_subscription
-  description: Indicates whether a newsletter subscription event occurred, represented as an integer flag. A value of 1 means a newsletter subscription
-    was recorded; 0 means no subscription occurred.
+  description: The number of newsletter subscription events recorded in the given aggregation context. A value of 0 indicates no subscription
+    events occurred.
   type: INT64
 - name: non_fx_downloads
   description: The count of non-Firefox product download events recorded. A value of 0 indicates no non-Firefox downloads occurred.
@@ -232,12 +239,11 @@ fields:
     visit to the site by a user.
   type: INT64
 - name: single_page_sessions
-  description: The number of sessions in which the user visited only one page before leaving (i.e., bounce sessions). A value of 0 indicates the
-    session included more than one page view.
+  description: The number of sessions in which the user visited only one page before leaving (i.e., bounce sessions). A value of 0 indicates no
+    single-page sessions were recorded for that row's context.
   type: INT64
 - name: social_share
-  description: Indicates whether a social sharing action was triggered during the session or page view, where 1 means a share occurred and 0 means
-    no share was recorded.
+  description: The number of social share events recorded in the given aggregation context. A value of 0 indicates no shares were recorded.
   type: INT64
 - name: source
   description: The referring source that drove traffic to the site, such as a search engine name or a referral domain (e.g., 'google', 'news.ycombinator.com').

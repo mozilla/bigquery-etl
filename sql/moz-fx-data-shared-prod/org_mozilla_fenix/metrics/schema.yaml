@@ -50100,9 +50100,6 @@ fields:
       description: 'Users action on blocked download, keyed by verdict type (0=Number
         of blocked downloads, 1=Confirm block, 2=Confirm unblock)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram DOWNLOADS_USER_ACTION_ON_BLOCKED_DOWNLOAD.
-
         '
     - name: urlclassifier_complete_remote_status2
       type: RECORD

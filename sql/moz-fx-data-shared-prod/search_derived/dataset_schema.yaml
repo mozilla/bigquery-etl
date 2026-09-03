@@ -1,0 +1,196 @@
+fields:
+- name: active_addons_count_mean
+  description: The mean number of active browser add-ons installed for a client over the aggregation period. A higher value indicates the client
+    has more extensions or plugins enabled on average.
+  type: FLOAT64
+- name: active_hours_sum
+  description: The total number of hours the browser was actively in use during the aggregation period. This is a sum across all sessions and
+    excludes idle time.
+  type: FLOAT64
+- name: ad_click
+  description: The count of ad clicks that originated from a Search Access Point (SAP) during the aggregation period. A value of 0 means no ads
+    were clicked.
+  type: INT64
+- name: ad_click_organic
+  description: The count of ad clicks that originated from organic (non-SAP) searches during the aggregation period. A value of 0 means no organic
+    ad clicks were recorded.
+  type: INT64
+- name: addon_version
+  description: The version string of the search-related browser add-on, if one is installed and active. This field is null for clients that do
+    not have the add-on installed.
+  type: STRING
+- name: app_name
+  description: The name of the Mozilla application submitting the data, such as Fenix, Fennec, or Firefox Preview. This identifies the specific
+    browser or product variant.
+  type: STRING
+- name: app_version
+  description: The version of the Mozilla application at the time of data collection, represented as a version number string. This can be used
+    to segment data by release version.
+  type: STRING
+- name: channel
+  description: The release channel of the Mozilla application, such as release, beta, esr, or aurora. This indicates which update channel the
+    client is subscribed to.
+  type: STRING
+- name: client_count
+  description: The number of distinct clients contributing to an aggregated row. A value of 1 indicates data from a single client, while higher
+    values reflect aggregations across multiple clients.
+  type: INT64
+- name: client_id
+  description: A unique identifier for a Firefox client installation, represented as a UUID. This is used to track activity for a specific browser
+    profile over time.
+  type: STRING
+- name: country
+  description: The two-letter ISO 3166-1 alpha-2 country code indicating the country from which the client submitted data. This is derived from
+    the client's IP address at the time of submission.
+  type: STRING
+- name: dau_engaged_w_sap
+  description: The count of daily active users who performed at least one search through a Search Access Point (SAP) on the given day. A value
+    of 0 indicates no users were engaged with SAP searches.
+  type: INT64
+- name: dau_w_engine_as_default
+  description: The count of daily active users who had a particular search engine set as their default on the given day. A value of 0 indicates
+    no users had that engine as their default.
+  type: INT64
+- name: days_clicked_ads_bytes
+  description: A bit-packed BYTES field representing the set of days within the analysis window on which the client clicked at least one search
+    ad. Each bit corresponds to a specific day, with a set bit indicating an ad click occurred.
+  type: BYTES
+- name: days_created_profile_bytes
+  description: A bit-packed BYTES field indicating the day or days within the analysis window on which the client's browser profile was created.
+    Each bit corresponds to a specific day in the window.
+  type: BYTES
+- name: days_searched_bytes
+  description: A bit-packed BYTES field representing the set of days within the analysis window on which the client performed at least one search.
+    Each bit corresponds to a specific day, with a set bit indicating a search occurred.
+  type: BYTES
+- name: days_searched_with_ads_bytes
+  description: A bit-packed BYTES field representing the set of days within the analysis window on which the client performed a search that returned
+    ad results. Each bit corresponds to a specific day, with a set bit indicating an ad-bearing search occurred.
+  type: BYTES
+- name: days_seen_bytes
+  description: A bit-packed BYTES field representing the set of days within the analysis window on which the client was active and submitted telemetry.
+    Each bit corresponds to a specific day, with a set bit indicating the client was seen.
+  type: BYTES
+- name: days_tagged_searched_bytes
+  description: A bit-packed BYTES field representing the set of days within the analysis window on which the client performed at least one tagged
+    (SAP-attributed) search. Each bit corresponds to a specific day, with a set bit indicating a tagged search occurred.
+  type: BYTES
+- name: default_private_search_engine
+  description: The identifier of the search engine set as the default for private browsing mode, such as 'ddg' for DuckDuckGo. This field is null
+    when no distinct private browsing default engine is configured.
+  type: STRING
+- name: default_search_engine
+  description: The identifier of the client's default search engine, such as 'google-b-m' or 'ddg'. This reflects the engine that will be used
+    when the client performs a search from the browser's address or search bar.
+  type: STRING
+- name: default_search_engine_data_load_path
+  description: The load path indicating how the default search engine was installed or configured, for example '[app]google' for a built-in engine
+    or '[addon]google@search.mozilla.org' for one installed via an add-on.
+  type: STRING
+- name: default_search_engine_data_submission_url
+  description: The base URL used to submit search queries to the default search engine, including any partner or channel-specific query parameters.
+    This URL is used to identify the search partner and attribution parameters.
+  type: STRING
+- name: default_search_engine_submission_url
+  description: The submission URL for the default search engine as reported through an alternative telemetry path. This field is currently always
+    null and is retained for schema compatibility.
+  type: STRING
+- name: device
+  description: The device form factor of the client, either 'desktop' or 'mobile'. This distinguishes between browser usage on traditional computers
+    versus mobile devices.
+  type: STRING
+- name: distribution_id
+  description: An identifier for the Firefox distribution or partner build, such as 'canonical-002' or 'mint-001'. This is null for standard Mozilla
+    builds with no third-party distribution agreement.
+  type: STRING
+- name: engine
+  description: The identifier of the search engine associated with a specific search event or aggregation, such as 'google', 'ddg', or 'custom'.
+    This identifies which engine was used to perform the search.
+  type: STRING
+- name: engine_searches
+  description: A nested array of search activity broken down by search engine key, containing arrays of per-engine counts for total searches,
+    tagged searches, searches with ads, and ad clicks.
+  type: RECORD
+- name: engine_searches_key
+  description: The identifier of a search engine within the engine_searches nested structure, such as 'google-b-m' or 'none'. This key links search
+    activity counts to a specific search engine.
+- name: experiments
+  description: A nested array of key-value pairs representing the Nimbus or legacy experiments the client was enrolled in at the time of data
+    collection. The key is the experiment slug and the value is the branch name.
+  type: RECORD
+- name: experiments_key
+  description: The slug identifier of an experiment that the client was enrolled in, such as a Nimbus experiment name. This key is used to look
+    up experiment enrollment within the experiments array.
+- name: experiments_value
+  description: The branch name of the experiment the client was assigned to, such as 'control', 'treatment', or 'rollout'. This indicates which
+    variant of the experiment the client experienced.
+- name: forecast_trained_at
+  description: The UTC timestamp at which the forecasting model used to generate a prediction row was trained. This is used to identify the model
+    version and training recency associated with a forecast.
+  type: TIMESTAMP
+- name: geo
+  description: A geographic grouping used for aggregation, representing either a specific country code (e.g., 'US', 'GB') or the category 'non-Tier1'
+    for countries outside the primary tier. This is used for high-level geographic segmentation.
+  type: STRING
+- name: is_default_browser
+  description: A boolean indicating whether Firefox is set as the operating system's default browser. True means Firefox is the default browser;
+    false means another browser is set as default.
+  type: BOOLEAN
+- name: is_sap_monetizable
+  description: A boolean indicating whether the client's search activity is eligible for monetization through a Search Access Point (SAP) partnership.
+    True means the client meets the criteria for SAP revenue attribution; false means it does not.
+  type: BOOLEAN
+- name: locale
+  description: The BCP 47 language and region tag representing the client's browser locale, such as 'en-US' or 'fr-FR'. This reflects the language
+    and regional settings configured in the browser.
+  type: STRING
+- name: max_concurrent_tab_count_max
+  description: The maximum number of browser tabs open simultaneously at any point during the aggregation period. This represents the peak tab
+    concurrency observed for the client.
+  type: INT64
+- name: normalized_app_name
+  description: A standardized form of the application name, consolidating variant-specific names into canonical groupings such as 'Fenix', 'Fennec',
+    or 'Focus'. This makes it easier to aggregate across related app variants.
+  type: STRING
+- name: normalized_default_search_engine
+  description: A standardized, human-readable label for the client's default search engine, such as 'Google', 'DuckDuckGo', or 'Bing'. Minor engine
+    variants are collapsed into their canonical names; null indicates an engine outside the recognized set.
+  type: STRING
+- name: normalized_engine
+  description: A standardized, human-readable label for a search engine, such as 'Google', 'DuckDuckGo', or 'Bing'. This collapses engine identifier
+    variants into their canonical partner name for reporting purposes.
+  type: STRING
+- name: organic
+  description: The count of organic searches — searches performed directly without attribution to a Search Access Point — during the aggregation
+    period. A value of 0 indicates no organic searches were recorded.
+  type: INT64
+- name: os
+  description: The operating system on which the browser is running, such as 'Windows', 'Mac', 'Linux', or 'Other'. This is used for platform-level
+    segmentation of search activity.
+  type: STRING
+- name: os_version
+  description: The full version string of the client's operating system, which may include major, minor, and patch components. The format varies
+    by platform.
+  type: STRING
+- name: os_version_major
+  description: The major version number component of the client's operating system version. This is an integer extracted from the full OS version
+    string for easier numeric filtering and aggregation.
+- name: os_version_minor
+  description: The minor version or descriptive label of the client's operating system, such as 'Windows 11', 'Windows 10', or a numeric minor
+    version string. This provides finer-grained OS segmentation beyond the major version.
+- name: partner
+  description: The name of the search partner associated with an agreement or revenue relationship, such as 'Google', 'DuckDuckGo', or 'Bing'.
+    This identifies the commercial search partner for attribution and reporting.
+  type: STRING
+- name: policies_is_enterprise
+  description: A boolean indicating whether the browser is running under enterprise policy management. True means enterprise policies are applied;
+    false means the browser is not enterprise-managed; null indicates the policy status is unknown.
+  type: BOOLEAN
+- name: profile_age_in_days
+  description: The age of the browser profile in days at the time of data collection, calculated as the number of days since the profile was created.
+    A value of 0 indicates a newly created profile.
+  type: INT64
+- name: profile_creation_date
+  description: The date the browser profile was created, encoded as the number of days since the Unix epoch (January 1, 1970). This can be converted
+    to a calendar date for profile cohort analysis.
+  type: INT64

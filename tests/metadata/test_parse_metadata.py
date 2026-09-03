@@ -30,23 +30,29 @@ class TestParseMetadata(object):
             Metadata("Test metadata", "test description", ["testexample.org"])
 
     def test_valid_external_sharing_subscribers(self):
+        # both group: emails and workgroup: identities are accepted
+        subscribers = [
+            "group:partner@example.org",
+            "group:other@example.org",
+            "workgroup:mozilla-confidential/data-viewers",
+        ]
         metadata = ExternalSharingMetadata(
             exchange="test_exchange",
             data_review="https://bugzilla.mozilla.org/1",
-            subscribers=["group:partner@example.org", "group:other@example.org"],
+            subscribers=subscribers,
         )
 
-        assert metadata.subscribers == [
-            "group:partner@example.org",
-            "group:other@example.org",
-        ]
+        assert metadata.subscribers == subscribers
 
     def test_invalid_external_sharing_subscribers(self):
-        # non-group:, workgroup:, and group: without an email are all rejected
+        # bare emails, group: without an email, and workgroups that aren't
+        # `<namespace>/<group>` are all rejected
         for bad in (
             ["partner@example.org"],
-            ["workgroup:mozilla/partner"],
             ["group:partner-data"],
+            ["workgroup:"],
+            ["workgroup:some-managed-workgroup"],  # missing /<group>
+            ["workgroup:not a workgroup"],
         ):
             with pytest.raises(ValueError):
                 ExternalSharingMetadata(

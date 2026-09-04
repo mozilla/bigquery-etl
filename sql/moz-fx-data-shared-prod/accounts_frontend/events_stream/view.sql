@@ -18,6 +18,7 @@ SELECT
       LAX_BOOL(event_extra.uvpa) AS `uvpa`
     ) AS `boolean`,
     STRUCT(
+      JSON_VALUE(event_extra.branch) AS `branch`,
       JSON_VALUE(event_extra.browser_family) AS `browser_family`,
       JSON_VALUE(event_extra.browser_major) AS `browser_major`,
       JSON_VALUE(event_extra.cg) AS `cg`,

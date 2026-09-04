@@ -1648,8 +1648,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The number of times we''ve had the opportunity to change content
-        process priority due to a tab switch or a tab being opened. This metric was
-        generated to correspond to the Legacy Telemetry scalar dom.contentprocess.os_priority_change_considered.
+        process priority due to a tab switch or a tab being opened.
 
         '
     - name: dom_contentprocess_os_priority_lowered
@@ -1657,7 +1656,6 @@ fields:
       mode: NULLABLE
       description: 'The number of times a content process has had its OS priority
         lowered due to only containing background tabs without audible media playing.
-        This metric was generated to correspond to the Legacy Telemetry scalar dom.contentprocess.os_priority_lowered.
 
         '
     - name: dom_contentprocess_os_priority_raised
@@ -1665,8 +1663,7 @@ fields:
       mode: NULLABLE
       description: 'The number of times a content process has had its OS priority
         raised due to containing at least one foregrounded tab, or a tab with audible
-        media has started playing in it. This metric was generated to correspond to
-        the Legacy Telemetry scalar dom.contentprocess.os_priority_raised.
+        media has started playing in it.
 
         '
     - name: dom_slow_script_notice_count
@@ -2899,9 +2896,6 @@ fields:
       description: 'Number of push messages that were successfully decrypted and delivered
         to a ServiceWorker when required.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        PUSH_API_NOTIFY.
-
         '
     - name: web_push_declarative
       type: INTEGER
@@ -3936,9 +3930,6 @@ fields:
       description: 'The decrease in the length of the URL when strip on share is used,
         only if at least one parameter is stripped
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram STRIP_ON_SHARE_LENGTH_DECREASE.
-
         '
     - name: contentblocking_strip_on_share_params_removed
       type: RECORD
@@ -3959,9 +3950,6 @@ fields:
           mode: NULLABLE
       description: 'The number of query parameters removed, if any, when strip on
         share is used
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        STRIP_ON_SHARE_PARAMS_REMOVED.
 
         '
     - name: contentblocking_tracking_protection_shield
@@ -19331,6 +19319,46 @@ fields:
         this metric is here to record missing cases where we didn''t recover.
 
         '
+    - name: browser_thumbnails_capture_attempted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Increments on every BrowserThumbnails.requestScreenshot() call,
+
+        labeled by the trigger that fired it. Total gives the per-session
+
+        capture rate; the label breakdown shows where the pressure originates
+
+        so regressions can be attributed to a specific trigger source.
+
+        '
+    - name: browser_thumbnails_capture_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Outcome of each capture attempt that reached the request path.
+
+        `succeeded` = engine returned a bitmap and the ContentAction.UpdateThumbnailAction
+
+        was dispatched. `null_bitmap` = engine returned no bitmap (typically the
+
+        compositor detach race). `low_memory` = the isLowOnMemory() gate skipped
+
+        the request before it reached the engine.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -27400,10 +27428,10 @@ fields:
     - name: preferences_user_theme
       type: STRING
       mode: NULLABLE
-      description: 'The theme the user has enabled. "light," "dark," "system," or
-        "battery"
+      description: 'The theme the user has enabled. "light," "dark," "oled," "system,"
+        or
 
-        default: "system" for API 28+, else "light"
+        "battery" default: "system" for API 28+, else "light"
 
         '
     - name: region_home_region
@@ -38209,6 +38237,59 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'The time taken to execute a write query on the places store.
+
+        '
+    - name: browser_thumbnails_capture_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Wall-clock time from EngineView.captureThumbnail(...) call to
+        its
+
+        onFinish callback. Includes engine compositor readback but not the
+
+        subsequent disk write. Long tails typically indicate the compositor
+
+        is struggling or the surface is mid-teardown.
+
+        '
+    - name: browser_thumbnails_disk_write_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Wall-clock time from ThumbnailsMiddleware dispatching a
+
+        ThumbnailStorage.saveThumbnail(...) job to that job''s completion.
+
+        Includes any queue-wait on ThumbnailStorage''s worker pool plus the
+
+        actual disk write. Reveals disk pressure and I/O queue length.
 
         '
   - name: url2

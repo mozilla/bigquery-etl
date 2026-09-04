@@ -1217,7 +1217,9 @@ SELECT
       metrics.labeled_counter.cache_schema_init_error,
       metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
-      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered
+      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
+      metrics.labeled_counter.browser_thumbnails_capture_attempted,
+      metrics.labeled_counter.browser_thumbnails_capture_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1863,7 +1865,9 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
       metrics.timing_distribution.longfox_game_played_length,
-      metrics.timing_distribution.glean_migration_migration_duration
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.browser_thumbnails_capture_duration,
+      metrics.timing_distribution.browser_thumbnails_disk_write_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3508,7 +3512,9 @@ SELECT
       metrics.labeled_counter.cache_schema_init_error,
       metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
-      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered
+      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
+      metrics.labeled_counter.browser_thumbnails_capture_attempted,
+      metrics.labeled_counter.browser_thumbnails_capture_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4154,7 +4160,9 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
       metrics.timing_distribution.longfox_game_played_length,
-      metrics.timing_distribution.glean_migration_migration_duration
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.browser_thumbnails_capture_duration,
+      metrics.timing_distribution.browser_thumbnails_disk_write_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5819,7 +5827,9 @@ SELECT
       metrics.labeled_counter.cache_schema_init_error,
       metrics.labeled_counter.firefox_ai_runtime_onnx_native_availability,
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
-      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered
+      metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
+      metrics.labeled_counter.browser_thumbnails_capture_attempted,
+      metrics.labeled_counter.browser_thumbnails_capture_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6465,7 +6475,9 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
       metrics.timing_distribution.longfox_game_played_length,
-      metrics.timing_distribution.glean_migration_migration_duration
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.browser_thumbnails_capture_duration,
+      metrics.timing_distribution.browser_thumbnails_disk_write_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

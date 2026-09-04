@@ -687,6 +687,15 @@ fields:
         "slug":"some-experiment", "kind":"nimbusExperiment"}]`
 
         '
+    - name: broken_site_report_tab_info_antitracking_btp_purge_history
+      type: JSON
+      mode: NULLABLE
+      description: 'List of recently purged bounce chain entries where the reported
+        site appears in the chain (as the purged site, initial host, final host, or
+        a bounce host). Each entry contains the purged host and the bounce chain context
+        (initial host, final host, bounce hosts).
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE

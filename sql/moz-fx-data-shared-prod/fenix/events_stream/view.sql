@@ -308,6 +308,7 @@ SELECT
       LAX_INT64(event_extra.words_removed) AS `words_removed`
     ) AS `quantity`,
     STRUCT(
+      JSON_VALUE(event_extra.account_state) AS `account_state`,
       JSON_VALUE(event_extra.acFieldName) AS `acFieldName`,
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.action_uuid) AS `action_uuid`,
@@ -601,6 +602,7 @@ SELECT
       JSON_VALUE(event_extra.prompt_was_displayed) AS `prompt_was_displayed`,
       JSON_VALUE(event_extra.provider) AS `provider`,
       JSON_VALUE(event_extra.provider_key) AS `provider_key`,
+      JSON_VALUE(event_extra.proxy_state) AS `proxy_state`,
       JSON_VALUE(event_extra.psi_full_avg10) AS `psi_full_avg10`,
       JSON_VALUE(event_extra.psi_full_avg60) AS `psi_full_avg60`,
       JSON_VALUE(event_extra.psi_some_avg10) AS `psi_some_avg10`,
@@ -640,6 +642,7 @@ SELECT
       JSON_VALUE(event_extra.sequence_position) AS `sequence_position`,
       JSON_VALUE(event_extra.server_content_process_stack) AS `server_content_process_stack`,
       JSON_VALUE(event_extra.server_stack) AS `server_stack`,
+      JSON_VALUE(event_extra.service_state) AS `service_state`,
       JSON_VALUE(event_extra.session_id) AS `session_id`,
       JSON_VALUE(event_extra.session_start_time) AS `session_start_time`,
       JSON_VALUE(event_extra.setting) AS `setting`,

@@ -74,7 +74,8 @@ SELECT
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
       metrics.object.broken_site_report_browser_info_addons,
-      metrics.object.broken_site_report_browser_info_experiments
+      metrics.object.broken_site_report_browser_info_experiments,
+      metrics.object.broken_site_report_tab_info_antitracking_btp_purge_history
     ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
@@ -173,7 +174,8 @@ SELECT
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
       metrics.object.broken_site_report_browser_info_addons,
-      metrics.object.broken_site_report_browser_info_experiments
+      metrics.object.broken_site_report_browser_info_experiments,
+      metrics.object.broken_site_report_tab_info_antitracking_btp_purge_history
     ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
@@ -272,7 +274,8 @@ SELECT
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
       metrics.object.broken_site_report_browser_info_addons,
-      metrics.object.broken_site_report_browser_info_experiments
+      metrics.object.broken_site_report_browser_info_experiments,
+      metrics.object.broken_site_report_tab_info_antitracking_btp_purge_history
     ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
@@ -371,7 +374,8 @@ SELECT
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
       metrics.object.broken_site_report_browser_info_addons,
-      metrics.object.broken_site_report_browser_info_experiments
+      metrics.object.broken_site_report_browser_info_experiments,
+      metrics.object.broken_site_report_tab_info_antitracking_btp_purge_history
     ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
@@ -470,7 +474,8 @@ SELECT
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
       metrics.object.broken_site_report_browser_info_addons,
-      metrics.object.broken_site_report_browser_info_experiments
+      metrics.object.broken_site_report_browser_info_experiments,
+      metrics.object.broken_site_report_tab_info_antitracking_btp_purge_history
     ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,

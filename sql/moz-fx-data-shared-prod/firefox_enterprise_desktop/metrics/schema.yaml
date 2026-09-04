@@ -1641,8 +1641,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The number of times we''ve had the opportunity to change content
-        process priority due to a tab switch or a tab being opened. This metric was
-        generated to correspond to the Legacy Telemetry scalar dom.contentprocess.os_priority_change_considered.
+        process priority due to a tab switch or a tab being opened.
 
         '
     - name: dom_contentprocess_os_priority_lowered
@@ -1650,7 +1649,6 @@ fields:
       mode: NULLABLE
       description: 'The number of times a content process has had its OS priority
         lowered due to only containing background tabs without audible media playing.
-        This metric was generated to correspond to the Legacy Telemetry scalar dom.contentprocess.os_priority_lowered.
 
         '
     - name: dom_contentprocess_os_priority_raised
@@ -1658,8 +1656,7 @@ fields:
       mode: NULLABLE
       description: 'The number of times a content process has had its OS priority
         raised due to containing at least one foregrounded tab, or a tab with audible
-        media has started playing in it. This metric was generated to correspond to
-        the Legacy Telemetry scalar dom.contentprocess.os_priority_raised.
+        media has started playing in it.
 
         '
     - name: dom_slow_script_notice_count
@@ -2793,9 +2790,6 @@ fields:
       description: 'Number of push messages that were successfully decrypted and delivered
         to a ServiceWorker when required.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        PUSH_API_NOTIFY.
-
         '
     - name: web_push_declarative
       type: INTEGER
@@ -3751,9 +3745,6 @@ fields:
       description: 'The decrease in the length of the URL when strip on share is used,
         only if at least one parameter is stripped
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram STRIP_ON_SHARE_LENGTH_DECREASE.
-
         '
     - name: contentblocking_strip_on_share_params_removed
       type: RECORD
@@ -3774,9 +3765,6 @@ fields:
           mode: NULLABLE
       description: 'The number of query parameters removed, if any, when strip on
         share is used
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        STRIP_ON_SHARE_PARAMS_REMOVED.
 
         '
     - name: contentblocking_tracking_protection_shield

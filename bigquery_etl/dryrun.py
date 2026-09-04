@@ -148,14 +148,18 @@ class DryRun:
         self.project = project
         self.dataset = dataset
         self.table = table
+        self.billing_project = billing_project
         # if using cloud function and billing project isn't set, randomly select project to use
-        self.billing_project = (
-            billing_project
-            if billing_project or not use_cloud_function
-            else random.choice(
-                ConfigLoader.get("dry_run", "default_projects", fallback=[None])
+        if not self.billing_project:
+            self.billing_project = (
+                random.choice(
+                    ConfigLoader.get(
+                        "dry_run", "cloud_function_billing_projects", fallback=[None]
+                    )
+                )
+                if use_cloud_function
+                else ConfigLoader.get("dry_run", "default_billing_project")
             )
-        )
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
@@ -474,17 +478,15 @@ class DryRun:
                 )
                 result = json.load(r)
             else:
-                # Prefer billing project if provided, otherwise use the project from the SQL file
-                self.client.project = (
-                    self.billing_project if self.billing_project else project
-                )
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,
                     default_dataset=f"{project}.{dataset}",
                     query_parameters=query_parameters,
                 )
-                job = self.client.query(sql, job_config=job_config)
+                job = self.client.query(
+                    sql, job_config=job_config, project=self.billing_project
+                )
                 try:
                     dataset_labels = self.client.get_dataset(job.default_dataset).labels
                 except Exception as e:

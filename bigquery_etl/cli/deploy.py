@@ -1208,6 +1208,7 @@ def _update_table_schema(file_path: Path, options: dict):
             tmp_dataset="tmp",  # Default dataset for temporary tables during schema updates
             tmp_tables={},
             use_cloud_function=options["use_cloud_function"],
+            billing_project=(project_id if not options["use_cloud_function"] else None),
             respect_dryrun_skip=options["respect_dryrun_skip"],
             is_init=False,
             credentials=options["credentials"],
@@ -1270,17 +1271,21 @@ def _deploy_table_artifact(file_path: Path, options: dict):
         if not options["table_force"] and str(file_path).endswith(".sql"):
             client = bigquery.Client(credentials=options["credentials"])
             try:
+                table_name = file_path.parent.name
+                dataset_name = file_path.parent.parent.name
+                project_name = file_path.parent.parent.parent.name
                 query_schema = Schema.from_query_file(
                     file_path,
                     use_cloud_function=options["use_cloud_function"],
+                    billing_project=(
+                        project_name if not options["use_cloud_function"] else None
+                    ),
                     respect_skip=options["respect_dryrun_skip"],
                     sql_dir=options["sql_dir"],
                     client=client,
                     id_token=options["id_token"],
                 )
                 if not existing_schema.equal(query_schema):
-                    dataset_name = file_path.parent.parent.name
-                    table_name = file_path.parent.name
                     raise FailedDeployException(
                         f"Query {file_path} does not match schema in {schema_path}. "
                         f"Run `./bqetl query schema update {dataset_name}.{table_name}`"

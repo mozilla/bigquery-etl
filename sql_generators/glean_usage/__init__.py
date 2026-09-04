@@ -4,7 +4,6 @@ from functools import cache, partial
 from pathlib import Path
 
 import click
-from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import (
     is_valid_project,
@@ -13,6 +12,7 @@ from bigquery_etl.cli.utils import (
 )
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.util.process_pool import process_pool
 from sql_generators.glean_usage import (
     baseline_clients_daily,
     baseline_clients_first_seen,
@@ -212,7 +212,7 @@ def generate(
         for table in GLEAN_TABLES
     ]
 
-    with ProcessingPool(parallelism) as pool:
+    with process_pool(parallelism, "glean_usage") as pool:
         pool.map(
             lambda f: f(),
             generate_per_app_id + generate_per_app + generate_across_apps,

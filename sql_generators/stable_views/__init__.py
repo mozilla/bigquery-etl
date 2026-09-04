@@ -16,12 +16,12 @@ from pathlib import Path
 
 import click
 import yaml
-from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
+from bigquery_etl.util.process_pool import process_pool
 
 BOT_GENERATED = (
     'LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated'
@@ -494,7 +494,7 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
 
     id_token = get_id_token()
 
-    with ProcessingPool(parallelism) as pool:
+    with process_pool(parallelism, "stable_views") as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,

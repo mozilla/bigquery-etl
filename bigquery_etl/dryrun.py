@@ -35,6 +35,7 @@ import yaml
 from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
+from google.cloud.exceptions import Forbidden, NotFound
 from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
@@ -488,14 +489,15 @@ class DryRun:
                 try:
                     dataset_labels = self.client.get_dataset(job.default_dataset).labels
                 except Exception as e:
-                    # Most users do not have bigquery.datasets.get permission in
-                    # moz-fx-data-shared-prod
-                    # This should not prevent the dry run from running since the dataset
-                    # labels are usually not required
-                    if "Permission bigquery.datasets.get denied on dataset" in str(e):
-                        dataset_labels = []
-                    else:
-                        raise e
+                    # `Forbidden` exceptions are to be expected because most users don't have
+                    # bigquery.datasets.get permission in moz-fx-data-shared-prod.
+                    # `NotFound` exceptions are to be expected for datasets that haven't been deployed yet.
+                    # Print a warning about other exceptions, but don't prevent the dryrun from completing.
+                    if not isinstance(e, (Forbidden, NotFound)):
+                        print(
+                            f"Error getting labels for dataset `{job.default_dataset}`: {e}"
+                        )
+                    dataset_labels = {}
 
                 result = {
                     "valid": True,

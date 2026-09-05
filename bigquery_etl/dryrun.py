@@ -497,7 +497,7 @@ class DryRun:
                         print(
                             f"Error getting labels for dataset `{job.default_dataset}`: {e}"
                         )
-                    dataset_labels = []
+                    dataset_labels = {}
 
                 result = {
                     "valid": True,

@@ -14,7 +14,7 @@ scheduling:
   - --destination-project=moz-fx-data-shared-prod
   - --destination-dataset=braze_external
   - --destination-table=braze_currents_firefox_state_changes_v1
-  - --source-bucket=moz-fx-data-marketing-prod-braze-firefox
+  - --source-bucket=moz-fx-data-marketing-prod-braze-firefox-dual-region
   - --source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071
   - --event-type=users.behaviors.subscriptiongroup.StateChange
 bigquery: null

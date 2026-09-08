@@ -7,3 +7,5 @@ description: |-
 owners:
 - cbeck@mozilla.com
 - phlee@mozilla.com
+labels:
+  authorized: true

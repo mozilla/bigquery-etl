@@ -133,10 +133,6 @@ def process_pool(parallelism: int, task_count: int):
     were created before the start method was set, or with a different
     initializer.
     """
-    if sys.platform == "darwin":
-        mp.set_start_method("spawn", force=True)
-        multiprocessing.set_start_method("spawn", force=True)
-
     nodes = min(parallelism, task_count)
     if nodes <= 1:
         # A single task isn't worth the few seconds a spawned worker spends
@@ -144,6 +140,10 @@ def process_pool(parallelism: int, task_count: int):
         # failures with a normal traceback for debugging.
         yield _SerialPool()
         return
+
+    if sys.platform == "darwin":
+        mp.set_start_method("spawn", force=True)
+        multiprocessing.set_start_method("spawn", force=True)
 
     pool = ProcessingPool(
         nodes,

@@ -1,4 +1,5 @@
 import logging
+import multiprocessing
 import os
 import sys
 
@@ -86,6 +87,15 @@ class TestProcessPool:
                 assert mp.get_start_method() == "spawn"
             else:
                 assert mp.get_start_method() == start_method
+
+    def test_start_method_untouched_without_workers(self):
+        # the serial path spawns nothing, so it must not reconfigure the
+        # start method for the rest of the process
+        start_method = mp.get_start_method()
+        stdlib_start_method = multiprocessing.get_start_method()
+        with process_pool(8, 1):
+            assert mp.get_start_method() == start_method
+            assert multiprocessing.get_start_method() == stdlib_start_method
 
     def test_pools_are_not_shared(self):
         # pools with the same worker count must stay separate, otherwise a

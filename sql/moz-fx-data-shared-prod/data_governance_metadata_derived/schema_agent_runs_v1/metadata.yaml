@@ -1,0 +1,23 @@
+friendly_name: Agent Runs
+description: |-
+  One row per LLM agent run executed by the schema enrichment tooling. Written
+  by BQObservabilitySink in mozilla/data-shared-llm-agents; tracks the prompt, model,
+  token usage, cost, and outcome of each agent invocation.
+
+  Not scheduled; populated at runtime by the agent application.
+
+  Source:
+  https://github.com/mozilla/data-shared-llm-agents/blob/main/packages/observability/src/data_agents_observability/sink.py
+owners:
+- cbeck@mozilla.com
+- phlee@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: started_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - agent_name
+    - status

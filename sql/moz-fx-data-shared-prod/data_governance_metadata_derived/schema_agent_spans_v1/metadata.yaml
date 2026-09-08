@@ -1,0 +1,24 @@
+friendly_name: Agent Spans
+description: |-
+  One row per LLM call or tool invocation within an agent run for the schema enrichment agent.
+  Written by BQObservabilitySink in data-shared-llm-agents. Provides granular observability
+  into individual steps: tool names, LLM turn durations, and JSON-encoded attributes;
+  including token counts and output previews.
+
+  Not scheduled; populated at runtime. Foreign key: run_id joins to agent_runs_v1.
+
+  Source:
+  https://github.com/mozilla/data-shared-llm-agents/blob/main/packages/observability/src/data_agents_observability/sink.py
+owners:
+- cbeck@mozilla.com
+- phlee@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: start_time
+    require_partition_filter: false
+    expiration_days: 180
+  clustering:
+    fields:
+    - span_kind
+    - span_name

@@ -1,0 +1,41 @@
+fields:
+- name: span_id
+  type: STRING
+  mode: REQUIRED
+  description: Unique identifier for the span.
+- name: run_id
+  type: STRING
+  mode: REQUIRED
+  description: Foreign key to agent_runs_v1.run_id.
+- name: parent_span_id
+  type: STRING
+  mode: NULLABLE
+  description: Parent span identifier for nested spans; null for top-level spans.
+- name: span_kind
+  type: STRING
+  mode: REQUIRED
+  description: Category of span; one of llm, tool, or node.
+- name: span_name
+  type: STRING
+  mode: REQUIRED
+  description: Name of the LLM step, tool call, or pipeline node.
+- name: started_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: UTC timestamp when the span started. This is the table's partition column.
+- name: finished_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: UTC timestamp when the span ended.
+- name: duration_seconds
+  type: FLOAT
+  mode: REQUIRED
+  description: Wall-clock duration of the span in seconds.
+- name: status
+  type: STRING
+  mode: NULLABLE
+  description: Span status; null when not explicitly set.
+- name: attributes_json
+  type: STRING
+  mode: NULLABLE
+  description: JSON-encoded span attributes such as token counts, tool arguments, or content previews.

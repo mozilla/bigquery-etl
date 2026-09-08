@@ -9,10 +9,11 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING, depth INT64>> AS (
       depth
     FROM
       (
-        -- One row per key
+        -- One row per key. Shallowest wins, then first occurrence, so a key
+        -- repeated at the same depth still resolves the same way every run.
         SELECT
           key,
-          ANY_VALUE(value HAVING MIN depth) AS value,
+          ARRAY_AGG(value ORDER BY depth, off LIMIT 1)[SAFE_OFFSET(0)] AS value,
           MIN(depth) AS depth
         FROM
           (
@@ -21,7 +22,8 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING, depth INT64>> AS (
             SELECT
               LOWER(TRIM(REGEXP_EXTRACT(kv, r'^([^=]+)'))) AS key,
               REGEXP_EXTRACT(kv, r'^[^=]+=(.*)$') AS value,
-              lvl.depth AS depth
+              lvl.depth AS depth,
+              off
             FROM
               UNNEST(
                 [
@@ -36,19 +38,21 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING, depth INT64>> AS (
                   )
                 ]
               ) AS lvl,
-              UNNEST(REGEXP_EXTRACT_ALL(IFNULL(lvl.s, ''), r'[^?&]+')) AS kv
+              UNNEST(REGEXP_EXTRACT_ALL(IFNULL(lvl.s, ''), r'[^?&#]+')) AS kv
+              WITH OFFSET AS off
             WHERE
               REGEXP_CONTAINS(kv, r'=')
             UNION ALL
             -- depth 1: a query string nested in one value, the partner preload surface.
-            -- Per-value, not whole-string: decoding first loses the leading nested key,
-            -- and the encoded-value guard stops base64 click ids being re-split.
+            -- Per-value, not whole-string: decoding first loses the leading nested key.
             SELECT
               LOWER(TRIM(REGEXP_EXTRACT(nested_kv, r'^([^=]+)'))) AS key,
               REGEXP_EXTRACT(nested_kv, r'^[^=]+=(.*)$') AS value,
-              1 AS depth
+              1 AS depth,
+              off
             FROM
-              UNNEST(REGEXP_EXTRACT_ALL(IFNULL(url, ''), r'[^?&]+')) AS kv,
+              UNNEST(REGEXP_EXTRACT_ALL(IFNULL(url, ''), r'[^?&#]+')) AS kv
+              WITH OFFSET AS off,
               UNNEST(
                 REGEXP_EXTRACT_ALL(
                   REGEXP_REPLACE(
@@ -60,12 +64,14 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING, depth INT64>> AS (
                     r'(?i)%26',
                     '&'
                   ),
-                  r'[^?&]+'
+                  r'[^?&#]+'
                 )
               ) AS nested_kv
             WHERE
               REGEXP_CONTAINS(kv, r'(?i)%3D|%26')
-              AND REGEXP_CONTAINS(nested_kv, r'=')
+              -- Require a non-'=' after the separator, so encoded base64
+              -- padding ('%3D%3D') does not fabricate a key.
+              AND REGEXP_CONTAINS(nested_kv, r'^[^=]+=[^=]')
             UNION ALL
             -- depth 0, keyless: some referrers are a bare click id with no 'key='
             -- at all. The token is the signal, so it is emitted as the key with a
@@ -74,9 +80,11 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING, depth INT64>> AS (
             SELECT
               LOWER(TRIM(kv)) AS key,
               CAST(NULL AS STRING) AS value,
-              0 AS depth
+              0 AS depth,
+              off
             FROM
-              UNNEST(REGEXP_EXTRACT_ALL(IFNULL(url, ''), r'[^?&]+')) AS kv
+              UNNEST(REGEXP_EXTRACT_ALL(IFNULL(url, ''), r'[^?&#]+')) AS kv
+              WITH OFFSET AS off
             WHERE
               NOT REGEXP_CONTAINS(kv, r'=')
               AND REGEXP_CONTAINS(kv, r'_')
@@ -84,7 +92,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING, depth INT64>> AS (
         WHERE
           -- Drop junk keys from splitting a non-query-string. A keyless token is the
           -- signal itself, so it is kept whole and the 60-char cap does not apply.
-          REGEXP_CONTAINS(key, r'^[a-z0-9_.\-]{2,60}$')
+          REGEXP_CONTAINS(key, r'^[a-z0-9_.\-]{1,60}$')
           OR (value IS NULL AND REGEXP_CONTAINS(key, r'^[a-z0-9_.\-]{2,300}$'))
         GROUP BY
           key
@@ -198,6 +206,35 @@ SELECT
   mozfun.assert.equals(
     '{clid}',
     mozfun.map.get_key(utils.extract_params_from_url('clid%3D%7Bclid%7D'), 'clid')
+  ),
+  -- encoded base64 padding is not a nested pair, so no key is fabricated
+  mozfun.assert.equals(1, ARRAY_LENGTH(utils.extract_params_from_url('clid=YWJjZA%3D%3D'))),
+  mozfun.assert.equals(
+    'YWJjZA==',
+    mozfun.map.get_key(utils.extract_params_from_url('clid=YWJjZA%3D%3D'), 'clid')
+  ),
+  -- a fragment ends the preceding value rather than being absorbed into it
+  mozfun.assert.equals(
+    'y',
+    mozfun.map.get_key(
+      utils.extract_params_from_url('https://example.com/store?utm_source=x&utm_term=y#section'),
+      'utm_term'
+    )
+  ),
+  -- parameters after a fragment are still returned
+  mozfun.assert.equals(
+    'abc',
+    mozfun.map.get_key(utils.extract_params_from_url('utm_source=x&ie=utf-8#sbfbu=1&pi=abc'), 'pi')
+  ),
+  -- a key repeated at the same depth resolves to the first occurrence
+  mozfun.assert.equals(
+    'a',
+    mozfun.map.get_key(utils.extract_params_from_url('utm_source=a&utm_source=b'), 'utm_source')
+  ),
+  -- single-character keys are kept
+  mozfun.assert.equals(
+    '1',
+    mozfun.map.get_key(utils.extract_params_from_url('q=1&utm_source=x'), 'q')
   ),
   -- bare tokens are not query strings and correctly yield nothing
   -- a keyless token is only kept when it carries an underscore, so a bare package

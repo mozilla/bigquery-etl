@@ -39,6 +39,7 @@ from ..schema import SCHEMA_FILE, Schema
 from ..view import View
 from . import extract_from_query_path
 from .common import (
+    IMPERSONATE_ENV_VAR,
     get_bqetl_project_root,
     get_unimpersonated_credentials,
     is_running_under_coding_agent,
@@ -1377,7 +1378,7 @@ def ensure_dataset_exists(
     # When impersonating, the SA is the writer but isn't an owner, so it can't
     # write into this human-owned dataset. Ask whether to grant it access —
     # granting makes the dataset readable by everyone who can impersonate the SA.
-    impersonated_sa = os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT")
+    impersonated_sa = os.environ.get(IMPERSONATE_ENV_VAR)
     if impersonated_sa and _should_grant_impersonation_access(impersonated_sa):
         access_entries.append(
             bigquery.AccessEntry(

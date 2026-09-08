@@ -206,6 +206,7 @@ SELECT
       LAX_INT64(event_extra.output_tokens) AS `output_tokens`,
       LAX_INT64(event_extra.pc_negotiation_count) AS `pc_negotiation_count`,
       LAX_INT64(event_extra.played_time) AS `played_time`,
+      LAX_INT64(event_extra.restore_version) AS `restore_version`,
       LAX_INT64(event_extra.saved_count) AS `saved_count`,
       LAX_INT64(event_extra.seq) AS `seq`,
       LAX_INT64(event_extra.session_duration) AS `session_duration`,

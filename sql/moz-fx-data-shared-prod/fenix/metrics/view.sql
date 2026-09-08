@@ -133,7 +133,8 @@ SELECT
       metrics.boolean.browser_global_ai_control_is_blocking,
       metrics.boolean.network_apple_fast_datapath_used,
       metrics.boolean.preferences_google_lens_enabled,
-      metrics.boolean.pkcs11_fips_enabled
+      metrics.boolean.pkcs11_fips_enabled,
+      metrics.boolean.networking_cookie_file_present
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1867,7 +1868,8 @@ SELECT
       metrics.timing_distribution.longfox_game_played_length,
       metrics.timing_distribution.glean_migration_migration_duration,
       metrics.timing_distribution.browser_thumbnails_capture_duration,
-      metrics.timing_distribution.browser_thumbnails_disk_write_duration
+      metrics.timing_distribution.browser_thumbnails_disk_write_duration,
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2428,7 +2430,8 @@ SELECT
       metrics.boolean.browser_global_ai_control_is_blocking,
       metrics.boolean.network_apple_fast_datapath_used,
       metrics.boolean.preferences_google_lens_enabled,
-      metrics.boolean.pkcs11_fips_enabled
+      metrics.boolean.pkcs11_fips_enabled,
+      metrics.boolean.networking_cookie_file_present
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -4162,7 +4165,8 @@ SELECT
       metrics.timing_distribution.longfox_game_played_length,
       metrics.timing_distribution.glean_migration_migration_duration,
       metrics.timing_distribution.browser_thumbnails_capture_duration,
-      metrics.timing_distribution.browser_thumbnails_disk_write_duration
+      metrics.timing_distribution.browser_thumbnails_disk_write_duration,
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4743,7 +4747,8 @@ SELECT
       metrics.boolean.browser_global_ai_control_is_blocking,
       metrics.boolean.network_apple_fast_datapath_used,
       metrics.boolean.preferences_google_lens_enabled,
-      metrics.boolean.pkcs11_fips_enabled
+      metrics.boolean.pkcs11_fips_enabled,
+      metrics.boolean.networking_cookie_file_present
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -6477,7 +6482,8 @@ SELECT
       metrics.timing_distribution.longfox_game_played_length,
       metrics.timing_distribution.glean_migration_migration_duration,
       metrics.timing_distribution.browser_thumbnails_capture_duration,
-      metrics.timing_distribution.browser_thumbnails_disk_write_duration
+      metrics.timing_distribution.browser_thumbnails_disk_write_duration,
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

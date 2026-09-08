@@ -78,7 +78,8 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.network_apple_fast_datapath_used,
-      metrics.boolean.pkcs11_fips_enabled
+      metrics.boolean.pkcs11_fips_enabled,
+      metrics.boolean.networking_cookie_file_present
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -1686,7 +1687,8 @@ SELECT
       metrics.timing_distribution.network_ssl_token_cache_load_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time,
-      metrics.timing_distribution.glean_migration_migration_duration
+      metrics.timing_distribution.glean_migration_migration_duration,
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

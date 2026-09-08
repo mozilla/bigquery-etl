@@ -1310,6 +1310,20 @@ fields:
       description: 'Records if the user currently has Smart Window enabled.
 
         '
+    - name: networking_cookie_file_present
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this profile holds at least one cookie set by a file://
+        URL document.
+
+        '
+    - name: profiles_active
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the selectable profiles feature has been activated by
+        the user creating profiles. Set during initialization.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -9511,9 +9525,6 @@ fields:
         = The classified email tracker is in content category and loaded under a known
         email webapp.)
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram EMAIL_TRACKER_COUNT.
-
         '
     - name: contentblocking_fingerprinters_blocked_count
       type: RECORD
@@ -11361,9 +11372,6 @@ fields:
         mode: NULLABLE
       description: 'Webkit/Blink filesystem used
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        BLINK_FILESYSTEM_USED.
-
         '
     - name: dom_innerwindows_with_mutation_listeners
       type: RECORD
@@ -11423,9 +11431,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'HTMLInputElement.webkitdirectory attribute used
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        WEBKIT_DIRECTORY_USED.
 
         '
     - name: dom_xmlhttprequest_async_or_sync
@@ -13848,6 +13853,48 @@ fields:
         schema upgrades, cache setup, or quota loading. Labeled by the initialization
         context that failed. See bug 2065480. Note in some cases we recover from corruption:
         this metric is here to record missing cases where we didn''t recover.
+
+        '
+    - name: urlbar_zeroprefix2_abandonment
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times the zero-prefix results view was abandoned,
+        labeled by the search access point it was shown for.
+
+        '
+    - name: urlbar_zeroprefix2_engagement
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times a result was picked in the zero-prefix results
+        view, labeled by the search access point it was shown for.
+
+        '
+    - name: urlbar_zeroprefix2_exposure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times the zero-prefix results view was shown to
+        the user, labeled by the search access point it was shown for.
 
         '
   - name: memory_distribution
@@ -37479,6 +37526,51 @@ fields:
       description: 'The duration for one full migration run at startup.
 
         '
+    - name: http_altsvc_h3_expired_staleness
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'When an expired HTTP/3 Alt-Svc mapping is discarded on lookup,
+        how long past its expiry (TTL) it was, i.e. how stale the discarded mapping
+        was.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -38399,6 +38491,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Number of Local Mode mappings currently used when opening DevTools.
+
+        '
+    - name: profiles_profile_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of selectable profiles in the current profile group.
+        Updated during initialization and whenever the database changes.
 
         '
   - name: labeled_boolean

@@ -1176,6 +1176,13 @@ fields:
       description: 'True if Rosetta translation is being used.
 
         '
+    - name: networking_cookie_file_present
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this profile holds at least one cookie set by a file://
+        URL document.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -13922,9 +13929,6 @@ fields:
         = The classified email tracker is in content category and loaded under a known
         email webapp.)
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram EMAIL_TRACKER_COUNT.
-
         '
     - name: contentblocking_fingerprinters_blocked_count
       type: RECORD
@@ -14378,9 +14382,6 @@ fields:
         mode: NULLABLE
       description: 'Webkit/Blink filesystem used
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        BLINK_FILESYSTEM_USED.
-
         '
     - name: dom_contentprocess_launch_is_sync
       type: RECORD
@@ -14472,9 +14473,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'HTMLInputElement.webkitdirectory attribute used
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        WEBKIT_DIRECTORY_USED.
 
         '
     - name: dom_xmlhttprequest_async_or_sync
@@ -21614,6 +21612,48 @@ fields:
         schema upgrades, cache setup, or quota loading. Labeled by the initialization
         context that failed. See bug 2065480. Note in some cases we recover from corruption:
         this metric is here to record missing cases where we didn''t recover.
+
+        '
+    - name: urlbar_zeroprefix2_abandonment
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times the zero-prefix results view was abandoned,
+        labeled by the search access point it was shown for.
+
+        '
+    - name: urlbar_zeroprefix2_engagement
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times a result was picked in the zero-prefix results
+        view, labeled by the search access point it was shown for.
+
+        '
+    - name: urlbar_zeroprefix2_exposure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times the zero-prefix results view was shown to
+        the user, labeled by the search access point it was shown for.
 
         '
   - name: labeled_custom_distribution
@@ -29764,7 +29804,9 @@ fields:
     - name: browser_backup_location_on_device
       type: INTEGER
       mode: NULLABLE
-      description: '1 = the default location, 2 = a non-default location
+      description: '1 = the default location, 2 = a non-default location. Left unset
+        if no default location can be resolved on this device, in which case there
+        is nothing to compare the configured location against.
 
         '
     - name: browser_backup_misc_data_size
@@ -40931,6 +40973,28 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time that the user has the Taskbar Tab focused.
+
+        '
+    - name: http_altsvc_h3_expired_staleness
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'When an expired HTTP/3 Alt-Svc mapping is discarded on lookup,
+        how long past its expiry (TTL) it was, i.e. how stale the discarded mapping
+        was.
 
         '
   - name: url2

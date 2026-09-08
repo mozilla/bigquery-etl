@@ -97,6 +97,7 @@ SELECT
       JSON_VALUE(event_extra.changed_to) AS `changed_to`,
       JSON_VALUE(event_extra.conflict_slug) AS `conflict_slug`,
       JSON_VALUE(event_extra.connection_type) AS `connection_type`,
+      JSON_VALUE(event_extra.dashboard_state) AS `dashboard_state`,
       JSON_VALUE(event_extra.device_language) AS `device_language`,
       JSON_VALUE(event_extra.disabled_engines) AS `disabled_engines`,
       JSON_VALUE(event_extra.duration) AS `duration`,

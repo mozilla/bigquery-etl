@@ -356,6 +356,13 @@ fields:
         a silent install
 
         '
+    - name: profiles_active
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the selectable profiles feature has been activated by
+        the user creating profiles. Set during initialization.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -460,6 +467,13 @@ fields:
       description: 'This records the number of known profiles after startup completes.
         This includes any profiles that were created during startup. This metric was
         generated to correspond to the Legacy Telemetry scalar startup.profile_count.
+
+        '
+    - name: profiles_profile_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of selectable profiles in the current profile group.
+        Updated during initialization and whenever the database changes.
 
         '
   - name: string

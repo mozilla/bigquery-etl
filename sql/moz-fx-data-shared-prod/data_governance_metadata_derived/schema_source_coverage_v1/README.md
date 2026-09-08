@@ -77,8 +77,8 @@ WHERE dataset = 'my_dataset'
 ## Partitioning & retention
 
 - **Partitioned** by `scan_timestamp` (TIMESTAMP, daily granularity).
-- **Retained** for **180 days** — set as the default partition expiration on the
-  table outside this script. Old scans expire automatically; only the most recent
+- **Retained** for **180 days** via `expiration_days` in this table's
+  `metadata.yaml`. Old scans expire automatically; only the most recent
   scan per dataset is operationally relevant.
 
 ## Key columns

@@ -1,0 +1,9 @@
+friendly_name: Schema Source Coverage
+description: |-
+  One row per resolved source table per scanned bqetl table. Records whether
+  a schema.yaml is defined for each table and whether its upstream source
+  schema is fully described. Query the latest scan per dataset using
+  MAX(scan_timestamp).
+owners:
+- cbeck@mozilla.com
+- phlee@mozilla.com

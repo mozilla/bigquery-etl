@@ -1,0 +1,10 @@
+friendly_name: Person API Staff Members
+description: |-
+  Mozilla staff members exported from mozilla-person-api (CIS) via the
+  moz-fx-platform-mgmt-global project. Each row represents one active Mozilla
+  staff member, including their email, name, title, team, manager, worker type,
+  cost center, GitHub and Slack identifiers, and LDAP and mozillians.org group
+  memberships. This is the same data as https://phonebook.mozilla.org/.
+owners:
+- jbuckley@mozilla.com
+- wdawson@mozilla.com

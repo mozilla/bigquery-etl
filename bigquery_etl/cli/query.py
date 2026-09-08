@@ -2559,6 +2559,7 @@ def _update_query_schema(
     id_token=None,
     use_dataset_schema=False,
     use_global_schema=False,
+    billing_project=None,
 ):
     """
     Update the schema of a specific query file.
@@ -2651,6 +2652,7 @@ def _update_query_schema(
             query_file_path,
             content=sql_content,
             use_cloud_function=use_cloud_function,
+            billing_project=billing_project,
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,
             credentials=credentials,
@@ -2731,6 +2733,7 @@ def _update_query_schema(
         table_name,
         partitioned_by=partitioned_by,
         use_cloud_function=use_cloud_function,
+        billing_project=billing_project,
         respect_skip=respect_dryrun_skip,
         credentials=credentials,
         id_token=id_token,

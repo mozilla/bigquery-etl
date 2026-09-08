@@ -15,7 +15,7 @@ owners:
 bigquery:
   time_partitioning:
     type: day
-    field: start_time
+    field: started_at
     require_partition_filter: false
     expiration_days: 180
   clustering:

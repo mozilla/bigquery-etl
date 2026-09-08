@@ -17,14 +17,13 @@ description: |-
   https://github.com/mozilla/data-shared-llm-agents/blob/main/agents/schema_enricher/src/schema_enricher/scanner.py
 owners:
 - cbeck@mozilla.com
-- gkatre@mozilla.com
 - phlee@mozilla.com
 bigquery:
   time_partitioning:
     type: day
     field: scan_timestamp
     require_partition_filter: false
-    expiration_days: 90
+    expiration_days: 180
   clustering:
     fields:
     - project

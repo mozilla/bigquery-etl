@@ -4,7 +4,7 @@ description: |-
   Written by BQObservabilitySink in data-shared-llm-agents. Provides granular observability
   into individual steps: tool names, LLM turn durations, and JSON-encoded attributes;
   including token counts and output previews.
-
+  Not scheduled; populated at runtime. Foreign key: run_id joins to schema_agent_runs_v1.
   Not scheduled; populated at runtime. Foreign key: run_id joins to agent_runs_v1.
 
   Source:

@@ -296,7 +296,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
-  default_projects:  # projects to use for query dry run jobs
+  default_billing_project: mozdata  # billing project to use for authenticated query dry run jobs
+  cloud_function_billing_projects:  # billing projects to use for query dry run jobs from the cloud function
   - moz-fx-data-backfill-10
   - moz-fx-data-backfill-11
   - moz-fx-data-backfill-12

@@ -35,6 +35,7 @@ import yaml
 from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
+from google.cloud.exceptions import Forbidden, NotFound
 from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
@@ -148,14 +149,18 @@ class DryRun:
         self.project = project
         self.dataset = dataset
         self.table = table
+        self.billing_project = billing_project
         # if using cloud function and billing project isn't set, randomly select project to use
-        self.billing_project = (
-            billing_project
-            if billing_project or not use_cloud_function
-            else random.choice(
-                ConfigLoader.get("dry_run", "default_projects", fallback=[None])
+        if not self.billing_project:
+            self.billing_project = (
+                random.choice(
+                    ConfigLoader.get(
+                        "dry_run", "cloud_function_billing_projects", fallback=[None]
+                    )
+                )
+                if use_cloud_function
+                else ConfigLoader.get("dry_run", "default_billing_project")
             )
-        )
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
@@ -474,28 +479,27 @@ class DryRun:
                 )
                 result = json.load(r)
             else:
-                # Prefer billing project if provided, otherwise use the project from the SQL file
-                self.client.project = (
-                    self.billing_project if self.billing_project else project
-                )
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,
                     default_dataset=f"{project}.{dataset}",
                     query_parameters=query_parameters,
                 )
-                job = self.client.query(sql, job_config=job_config)
+                job = self.client.query(
+                    sql, job_config=job_config, project=self.billing_project
+                )
                 try:
                     dataset_labels = self.client.get_dataset(job.default_dataset).labels
                 except Exception as e:
-                    # Most users do not have bigquery.datasets.get permission in
-                    # moz-fx-data-shared-prod
-                    # This should not prevent the dry run from running since the dataset
-                    # labels are usually not required
-                    if "Permission bigquery.datasets.get denied on dataset" in str(e):
-                        dataset_labels = []
-                    else:
-                        raise e
+                    # `Forbidden` exceptions are to be expected because most users don't have
+                    # bigquery.datasets.get permission in moz-fx-data-shared-prod.
+                    # `NotFound` exceptions are to be expected for datasets that haven't been deployed yet.
+                    # Print a warning about other exceptions, but don't prevent the dryrun from completing.
+                    if not isinstance(e, (Forbidden, NotFound)):
+                        print(
+                            f"Error getting labels for dataset `{job.default_dataset}`: {e}"
+                        )
+                    dataset_labels = {}
 
                 result = {
                     "valid": True,

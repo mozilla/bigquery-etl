@@ -9,11 +9,8 @@ from google.auth import impersonated_credentials
 from pathos.helpers import mp
 from pathos.multiprocessing import ProcessingPool
 
-from bigquery_etl.util.process_pool import (
-    IMPERSONATE_ENV_VAR,
-    init_worker,
-    process_pool,
-)
+from bigquery_etl.util.common import IMPERSONATE_ENV_VAR
+from bigquery_etl.util.process_pool import init_worker, process_pool
 
 # pathos keeps its pools in a module-level dict keyed by the pool id
 POOL_STATE = pathos.multiprocessing._ProcessPool__STATE
@@ -48,6 +45,39 @@ class TestProcessPool:
         with process_pool(8, 1) as pool:
             assert not isinstance(pool, ProcessingPool)
             assert pool.map(square, [1, 2, 3]) == [1, 4, 9]
+
+    @pytest.mark.parametrize(
+        "call",
+        [
+            lambda pool: pool.map(square, [1, 2, 3]),
+            lambda pool: list(pool.imap(square, [1, 2, 3])),
+            lambda pool: sorted(pool.uimap(square, [1, 2, 3])),
+            lambda pool: pool.amap(square, [1, 2, 3]).get(),
+            lambda pool: pool.pipe(square, 3),
+            lambda pool: pool.apipe(square, 3).get(),
+        ],
+        ids=["map", "imap", "uimap", "amap", "pipe", "apipe"],
+    )
+    def test_serial_pool_matches_real_pool(self, call):
+        # the serial stand-in is only used when there's at most one task, the
+        # path least likely to be hit while developing, so it has to behave
+        # like the pool it replaces
+        with process_pool(8, 1) as serial:
+            serial_result = call(serial)
+        with process_pool(2, 4) as pool:
+            assert call(pool) == serial_result
+
+    def test_serial_pool_names_missing_method(self):
+        with process_pool(8, 1) as pool:
+            with pytest.raises(AttributeError, match="does not implement 'starmap'"):
+                pool.starmap
+
+    def test_serial_pool_amap_defers_exception(self):
+        with process_pool(8, 1) as pool:
+            result = pool.amap(square, ["not a number"])
+            assert not result.successful()
+            with pytest.raises(TypeError):
+                result.get()
 
     def test_start_method(self):
         start_method = mp.get_start_method()

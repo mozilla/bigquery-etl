@@ -10,15 +10,82 @@ from uuid import uuid4
 from pathos.helpers import mp
 from pathos.multiprocessing import ProcessingPool
 
-IMPERSONATE_ENV_VAR = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+
+class _SerialResult:
+    """Stand-in for the async result `amap` and `apipe` return."""
+
+    def __init__(self, func):
+        self._value = None
+        self._exception = None
+        try:
+            self._value = func()
+        except Exception as e:
+            # Async maps report failures from `get()`, not from the call that
+            # dispatched the work, so hold the exception until then.
+            self._exception = e
+
+    def get(self, timeout=None):
+        """Return the result, or raise the exception the work raised."""
+        if self._exception is not None:
+            raise self._exception
+        return self._value
+
+    def ready(self):
+        """Return whether the work is done, which it always is here."""
+        return True
+
+    def wait(self, timeout=None):
+        """Do nothing, since the work already ran."""
+
+    def successful(self):
+        """Return whether the work completed without raising."""
+        return self._exception is None
 
 
 class _SerialPool:
-    """Stand-in for a pool when there isn't enough work to justify one."""
+    """Stand-in for a pool when there isn't enough work to justify one.
+
+    Implements the map and pipe interfaces of `ProcessingPool` so that callers
+    behave the same either way. Note that `ProcessingPool` has no `starmap`;
+    pass tuples to `map` and unpack them in the mapped function.
+    """
 
     def map(self, func, *iterables):
         """Apply `func` in this process, matching `ProcessingPool.map`."""
         return list(map(func, *iterables))
+
+    def imap(self, func, *iterables):
+        """Apply `func` lazily, matching `ProcessingPool.imap`."""
+        return map(func, *iterables)
+
+    def uimap(self, func, *iterables):
+        """Apply `func` lazily, matching `ProcessingPool.uimap`.
+
+        Results stay in order, which callers of an unordered map must tolerate
+        anyway.
+        """
+        return map(func, *iterables)
+
+    def amap(self, func, *iterables):
+        """Apply `func` now, returning a result object like `ProcessingPool.amap`."""
+        return _SerialResult(lambda: list(map(func, *iterables)))
+
+    def pipe(self, func, *args, **kwargs):
+        """Call `func` in this process, matching `ProcessingPool.pipe`."""
+        return func(*args, **kwargs)
+
+    def apipe(self, func, *args, **kwargs):
+        """Call `func` now, returning a result object like `ProcessingPool.apipe`."""
+        return _SerialResult(lambda: func(*args, **kwargs))
+
+    def __getattr__(self, name):
+        """Fail with the name of the method that this stand-in is missing."""
+        raise AttributeError(
+            f"{type(self).__name__} does not implement '{name}'. It stands in for "
+            "a process pool when there is at most one task, so anything a caller "
+            "uses has to be implemented here too. Add it to "
+            f"{__name__}.{type(self).__name__}."
+        )
 
 
 def init_worker(log_level: int):
@@ -30,10 +97,8 @@ def init_worker(log_level: int):
     """
     # Imported here so `bigquery_etl.util.common` isn't pulled in by callers
     # that only need the pool.
-    from bigquery_etl.util.common import enable_impersonation
+    from bigquery_etl.util.common import IMPERSONATE_ENV_VAR, enable_impersonation
 
-    # The env var is inherited across spawn, and `--no-impersonate` unsets it,
-    # so it reflects whether this invocation wants impersonation.
     service_account = os.environ.get(IMPERSONATE_ENV_VAR)
     if service_account:
         enable_impersonation(service_account)
@@ -41,7 +106,7 @@ def init_worker(log_level: int):
 
 
 @contextmanager
-def process_pool(parallelism: int, task_count: int, pool_id: str = None):
+def process_pool(parallelism: int, task_count: int):
     """Create a pathos process pool for `task_count` tasks.
 
     Created as a workaround for process pools crashing and getting stuck on macOS
@@ -62,10 +127,11 @@ def process_pool(parallelism: int, task_count: int, pool_id: str = None):
     point's `__main__`, so a script that creates the pool at module level
     instead of under `if __name__ == "__main__":` will deadlock.
 
-    pathos caches its pools, keyed by `pool_id`. Each call gets a unique id so
-    that pools are never shared: reusing one would run the tasks on workers
-    that were created before the start method was set, or with a different
-    initializer. Pass `pool_id` only to reuse a pool on purpose.
+    pathos caches its pools in a module global keyed by an id. Each call here
+    gets a unique id and drops the pool on the way out, so pools are never
+    shared between call sites: a shared pool would run tasks on workers that
+    were created before the start method was set, or with a different
+    initializer.
     """
     if sys.platform == "darwin":
         mp.set_start_method("spawn", force=True)
@@ -73,12 +139,15 @@ def process_pool(parallelism: int, task_count: int, pool_id: str = None):
 
     nodes = min(parallelism, task_count)
     if nodes <= 1:
+        # A single task isn't worth the few seconds a spawned worker spends
+        # re-importing the CLI. Staying in-process also means `-p 1` reports
+        # failures with a normal traceback for debugging.
         yield _SerialPool()
         return
 
     pool = ProcessingPool(
         nodes,
-        id=pool_id if pool_id is not None else uuid4().hex,
+        id=uuid4().hex,
         initializer=init_worker,
         initargs=(logging.root.level,),
     )

@@ -867,6 +867,15 @@ def collect_target_dependencies(
     return artifact_dependencies
 
 
+def collect_routine_dependencies(routine_files: Set[Path]) -> Set[Path]:
+    """Transitively collect routine paths referenced by `routine_files`.
+
+    Returns the referenced routine paths (transitive), excluding the inputs.
+    """
+    routine_names = [f"{f.parent.parent.name}.{f.parent.name}" for f in routine_files]
+    return _udf_dep_paths(routine_names) - set(routine_files)
+
+
 def target_ref_for_source(
     target: "Target",
     target_project: str,

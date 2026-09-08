@@ -6,7 +6,7 @@ fields:
 - name: run_id
   type: STRING
   mode: REQUIRED
-  description: Foreign key to agent_runs_v1.run_id.
+  description: Foreign key to schema_agent_runs_v1.run_id.
 - name: parent_span_id
   type: STRING
   mode: NULLABLE

@@ -57,8 +57,11 @@ new_profiles AS (
     -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
     -- outright rather than flagged. Reads clients_first_seen_v2 directly, so the UDF is called
     -- here rather than using the is_suspicious_automation column on telemetry.clients_first_seen.
+    -- clients_first_seen_v2.normalized_os is only partly normalized (rows sourced from
+    -- clients_daily carry the raw environment.system.os.name), so normalize before comparing,
+    -- matching how this query emits the column above.
     AND NOT `moz-fx-data-shared-prod`.udf.is_suspicious_automation(
-      cfs.normalized_os,
+      mozfun.norm.os(cfs.normalized_os),
       cfs.app_version,
       cfs.startup_profile_selection_reason,
       cfs.first_seen_date

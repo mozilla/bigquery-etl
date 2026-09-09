@@ -63,8 +63,10 @@ cohorts_in_range AS (
     -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
     -- outright rather than flagged. Unlike the desktop_retention_clients tables this one has no
     -- 27-day lag, so it has carried the segment since 2026-08-28 and needs a backfill.
+    -- clients_first_seen_v2.normalized_os is only partly normalized (rows sourced from
+    -- clients_daily carry the raw environment.system.os.name), so normalize before comparing.
     AND NOT `moz-fx-data-shared-prod`.udf.is_suspicious_automation(
-      normalized_os,
+      mozfun.norm.os(normalized_os),
       app_version,
       startup_profile_selection_reason,
       first_seen_date

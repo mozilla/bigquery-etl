@@ -26,9 +26,9 @@ scheduling:
   dag_name: bqetl_experiments_daily
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
-    - ['moz-fx-data-experiments', 'firefox_desktop_derived', 'nimbus_sizing_clients_v1']
-    - ['moz-fx-data-experiments', 'org_mozilla_fenix_derived', 'nimbus_sizing_clients_v1']
-    - ['moz-fx-data-experiments', 'org_mozilla_ios_firefox_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-shared-prod', 'firefox_desktop_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-shared-prod', 'org_mozilla_fenix_derived', 'nimbus_sizing_clients_v1']
+    - ['moz-fx-data-shared-prod', 'org_mozilla_ios_firefox_derived', 'nimbus_sizing_clients_v1']
 bigquery:
   time_partitioning:
     type: day

@@ -36,9 +36,9 @@ GCS_FOLDER = "population_sizing"
 SAMPLE_ID_MAX = 10
 
 _APP_SIZING_TABLE: dict[str, str] = {
-    "firefox_desktop": "moz-fx-data-experiments.firefox_desktop_derived.nimbus_sizing_clients_v1",
-    "fenix": "moz-fx-data-experiments.org_mozilla_fenix_derived.nimbus_sizing_clients_v1",
-    "firefox_ios": "moz-fx-data-experiments.org_mozilla_ios_firefox_derived.nimbus_sizing_clients_v1",
+    "firefox_desktop": "moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_sizing_clients_v1",
+    "fenix": "moz-fx-data-shared-prod.org_mozilla_fenix_derived.nimbus_sizing_clients_v1",
+    "firefox_ios": "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_sizing_clients_v1",
 }
 
 parser = ArgumentParser(description=__doc__)

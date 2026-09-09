@@ -65,7 +65,6 @@ queries:
       - "telemetry"   # DENG-8649 - source crash data from Glean
   nimbus_sizing_clients_v1:
     per_app: true
-    destination_project: moz-fx-data-experiments
     skip_applications:
       - org_mozilla_firefox_beta
       - org_mozilla_firefox

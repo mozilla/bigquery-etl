@@ -1,0 +1,7 @@
+---
+# One row, dated this run's partition. The client's earlier completion is absent
+# rather than collapsed: taking the earliest across days is the consumer's job,
+# done by MIN(completed_date) in retention_clients.
+- client_id: client-f
+  completed_date: 2026-09-03
+  sample_id: 42

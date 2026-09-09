@@ -1,0 +1,42 @@
+friendly_name: Onboarding Completed Clients
+description: |-
+  One row per Fenix client per day on which they fired the Glean
+  `onboarding.completed` event. A client who fired it on more than one day has a
+  row for each, so `client_id` is not unique here — collapse on it before
+  joining. `fenix.onboarding_completed_clients` exposes this table unchanged;
+  `fenix.retention_clients` takes `MIN(completed_date)` per client.
+
+  The table holds no rows before 2025-01-01, so a client whose completions all
+  fall before that date does not appear here.
+owners:
+- kbammarito@mozilla.com
+labels:
+  application: fenix
+  incremental: true
+  schedule: daily
+  table_type: client_level
+# No shredder_mitigation label. Mitigation preserves pre-deletion history for
+# aggregate tables; this one is client-level and shredder deletes from it
+# directly.
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  task_group: fenix
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: completed_date
+    require_partition_filter: false
+    # Deliberate: null keeps past partitions permanent, and it holds the
+    # backfill retention limit at 775 days rather than lowering it.
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+require_column_descriptions: true
+monitoring:
+  enabled: true
+  collection: Operational Checks
+  partition_column: completed_date
+  volume:
+    blocking: false

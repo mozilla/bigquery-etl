@@ -1,0 +1,22 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Unique ID for the client installation. Not unique in this table: a client
+    has one row per day on which they fired the event.
+- name: completed_date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    Date the completion was reported: the ping's submission date, not the date
+    the event itself occurred. A delayed ping therefore dates the completion
+    later than it happened. Not the client's first completion either — one who
+    fired the event on more than one day has a row for each.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    A number, 0-99, that samples by client_id and allows filtering data for
+    analysis. It is a pipeline-generated artifact that should match between
+    pings. Clustering field here; not part of the grain.

@@ -44,6 +44,17 @@ attribution AS (
     paid_vs_organic_gclid,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
+),
+-- The source is one row per client per completion day. Collapsing to the earliest
+-- per client is what keeps the join below from fanning out.
+onboarding_completions AS (
+  SELECT
+    client_id,
+    MIN(completed_date) AS first_completed_date,
+  FROM
+    `moz-fx-data-shared-prod.fenix.onboarding_completed_clients`
+  GROUP BY
+    client_id
 )
 SELECT
   active_users.submission_date AS submission_date,
@@ -119,6 +130,14 @@ SELECT
   clients_daily.device_model,
   clients_daily.normalized_os AS os,
   clients_daily.normalized_os_version AS os_version,
+  -- Read from active_users, the day-27 row, so the flag is as-of day 27 rather
+  -- than day 0; clients_daily would give day-0 status. Stays last and
+  -- unconditional: mobile_retention_clients unions the products by position.
+  IF(
+    onboarding_completions.first_completed_date <= active_users.submission_date,
+    TRUE,
+    NULL
+  ) AS onboarding_completed_by_day_27,
 FROM
   `moz-fx-data-shared-prod.fenix.baseline_clients_daily` AS clients_daily
 INNER JOIN
@@ -131,5 +150,11 @@ LEFT JOIN
   ON clients_daily.client_id = attribution.client_id
   AND clients_daily.sample_id = attribution.sample_id
   AND clients_daily.normalized_channel = attribution.normalized_channel
+-- client_id alone, unlike the attribution join above: completions are one row per
+-- client across all fenix channels, and sample_id there is MIN over the client's
+-- events, so matching on it could only drop rows.
+LEFT JOIN
+  onboarding_completions
+  ON clients_daily.client_id = onboarding_completions.client_id
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

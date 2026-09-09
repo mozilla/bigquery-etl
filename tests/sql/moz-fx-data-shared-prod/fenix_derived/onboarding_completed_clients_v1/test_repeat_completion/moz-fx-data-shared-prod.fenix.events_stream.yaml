@@ -1,0 +1,14 @@
+---
+# The same client completing on two different days. The run for 2026-09-03 must
+# write only that day's row: the 2026-09-02 event belongs to its own partition,
+# written by its own run, and this run neither reads nor carries it forward.
+- submission_timestamp: 2026-09-02 09:00:00
+  client_id: client-f
+  sample_id: 42
+  event_category: onboarding
+  event_name: completed
+- submission_timestamp: 2026-09-03 09:00:00
+  client_id: client-f
+  sample_id: 42
+  event_category: onboarding
+  event_name: completed

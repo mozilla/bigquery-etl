@@ -1,6 +1,7 @@
 from pathlib import Path
+from textwrap import dedent
 
-from bigquery_etl.config import _ConfigLoader
+from bigquery_etl.config import BQETL_PROJECT_CONFIG, _ConfigLoader
 
 TEST_DIR = Path(__file__).parent
 
@@ -27,11 +28,29 @@ class TestConfig:
         assert config_loader.get("non_existing", fallback=[]) == []
         assert config_loader.get("dry_run", "foo", fallback=123) == 123
 
-    def test_config_loader_multiple_files(self):
-        config_loader = _ConfigLoader(
-            TEST_DIR / "data" / "bqetl_project.yaml",
-            TEST_DIR / "data" / "bqetl_project_2.yaml",
-        )
+    def test_config_loader_multiple_files(self, monkeypatch, tmp_path):
+        monkeypatch.setattr("bigquery_etl.config.ROOT", TEST_DIR / "data")
+        monkeypatch.chdir(tmp_path)
+        local_config_file = tmp_path / BQETL_PROJECT_CONFIG
+        local_config_file.write_text(dedent("""
+            default:
+              another_setting: true
+
+            dry_run:
+              function: override
+              skip:
+              - sql/moz-fx-data-shared-prod/test_derived/yet_another_query_v1/query.sql
+
+            another_section:
+              foo: bar
+        """))
+
+        config_loader = _ConfigLoader()
+
+        assert config_loader.config_files == [
+            TEST_DIR / "data" / BQETL_PROJECT_CONFIG,
+            local_config_file,
+        ]
 
         assert (
             config_loader.get("default", "test_project")

@@ -2,8 +2,13 @@ friendly_name: Search Clients Daily
 description: |
   A daily aggregate of desktop searches, one row per (client_id, submission_date, normalized_engine, partner_code, source).
 
-  Combines the SAP and SERP pipelines with a full outer join, so a row is emitted when either
-  side has activity. Columns present on both sides prefer the SERP value.
+  Combines the SAP and SERP pipelines and the Glean legacy-parity counters with full outer
+  joins, so a row is emitted when any of the three has activity. Columns present on more than
+  one side prefer SERP, then SAP.
+
+  The seven legacy_ columns are a second measurement of the same searches, taken from the
+  browser.search.content / withads / adclicks labeled counters rather than from SERP
+  impressions.
 
   The Glean-based replacement for `search_clients_daily_v8`.
 

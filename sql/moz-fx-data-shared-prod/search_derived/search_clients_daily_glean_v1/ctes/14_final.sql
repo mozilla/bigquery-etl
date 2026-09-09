@@ -78,6 +78,13 @@ SELECT
   END AS os_version_minor,
   profile_group_id,
   sap_provider_id, -- NEW
-  sap_provider_name -- NEW
+  sap_provider_name, -- NEW
+  legacy_tagged_sap, -- NEW
+  legacy_tagged_follow_on, -- NEW
+  legacy_organic, -- NEW
+  legacy_search_with_ads_tagged, -- NEW
+  legacy_search_with_ads_organic, -- NEW
+  legacy_ad_click_tagged, -- NEW
+  legacy_ad_click_organic -- NEW
 FROM
   `search_derived.search_clients_daily_glean_v1.join_sap_serp_cte`

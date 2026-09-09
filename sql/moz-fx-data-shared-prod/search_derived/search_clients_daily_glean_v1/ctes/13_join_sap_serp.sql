@@ -2,16 +2,37 @@
 SELECT
   -- columns present on both sides are COALESCEd with serp taking precedence;
   -- a serp_ or sap_ prefix means the value comes from that side only
-  COALESCE(serp_final_cte.client_id, sap_final_cte.client_id) AS client_id,
-  COALESCE(serp_final_cte.submission_date, sap_final_cte.submission_date) AS submission_date,
-  COALESCE(serp_final_cte.provider_id, sap_final_cte.normalized_engine) AS provider_id,
+  -- the grain keys coalesce all THREE sides. legacy_cte joins FULL OUTER, so a legacy key
+  -- matching neither pipeline is kept, and without it here that row would publish a NULL
+  -- grain beside populated counters -- every such row collapsing onto one tuple and
+  -- breaking grain uniqueness. legacy_cte.partner_code is 'unknown_code' rather than NULL on
+  -- orphan ad rows, so no grain key becomes nullable.
+  COALESCE(serp_final_cte.client_id, sap_final_cte.client_id, legacy_cte.client_id) AS client_id,
+  COALESCE(
+    serp_final_cte.submission_date,
+    sap_final_cte.submission_date,
+    legacy_cte.submission_date
+  ) AS submission_date,
+  COALESCE(
+    serp_final_cte.provider_id,
+    sap_final_cte.normalized_engine,
+    legacy_cte.normalized_engine
+  ) AS provider_id,
   -- sap-only, so no COALESCE and no SERP counterpart to fall back to: SERP carries a single
   -- provider extra, already normalized into provider_id above. NULL on a serp-only row.
   sap_final_cte.sap_provider_id,
   sap_final_cte.sap_provider_name,
-  COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code) AS partner_code,
-  COALESCE(serp_final_cte.search_access_point, sap_final_cte.source) AS search_access_point,
-  COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id) AS sample_id,
+  COALESCE(
+    serp_final_cte.partner_code,
+    sap_final_cte.partner_code,
+    legacy_cte.partner_code
+  ) AS partner_code,
+  COALESCE(
+    serp_final_cte.search_access_point,
+    sap_final_cte.source,
+    legacy_cte.search_access_point
+  ) AS search_access_point,
+  COALESCE(serp_final_cte.sample_id, sap_final_cte.sample_id, legacy_cte.sample_id) AS sample_id,
   COALESCE(
     serp_final_cte.legacy_telemetry_client_id,
     sap_final_cte.legacy_telemetry_client_id
@@ -161,7 +182,16 @@ SELECT
     serp_final_cte.max_concurrent_tab_count_max,
     CAST(sap_final_cte.concurrent_tab_count_max AS INT64),
     0
-  ) AS max_concurrent_tab_count_max
+  ) AS max_concurrent_tab_count_max,
+  -- legacy-parity counters. 0 not NULL when the metrics ping carried nothing for this
+  -- key, matching the convention used for the serp-only counts above.
+  COALESCE(legacy_cte.legacy_tagged_sap, 0) AS legacy_tagged_sap,
+  COALESCE(legacy_cte.legacy_tagged_follow_on, 0) AS legacy_tagged_follow_on,
+  COALESCE(legacy_cte.legacy_organic, 0) AS legacy_organic,
+  COALESCE(legacy_cte.legacy_search_with_ads_tagged, 0) AS legacy_search_with_ads_tagged,
+  COALESCE(legacy_cte.legacy_search_with_ads_organic, 0) AS legacy_search_with_ads_organic,
+  COALESCE(legacy_cte.legacy_ad_click_tagged, 0) AS legacy_ad_click_tagged,
+  COALESCE(legacy_cte.legacy_ad_click_organic, 0) AS legacy_ad_click_organic,
 FROM
   `search_derived.search_clients_daily_glean_v1.serp_final_cte`
   -- FULL OUTER so sap activity with no matching SERP impression is kept.
@@ -187,3 +217,23 @@ FULL OUTER JOIN
   )
   -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
   AND sap_final_cte.partner_code = serp_final_cte.partner_code
+  -- FULL OUTER again, not LEFT: a client can increment browser.search.adclicks on a page
+  -- whose SERP impression never registered, and that population is the reason these counters
+  -- are carried at all. Plain equality on all five keys, with no both-NULL branch -- every
+  -- legacy key is non-null by construction, so a branch could only create fan-out.
+FULL OUTER JOIN
+  `search_derived.search_clients_daily_glean_v1.legacy_parity_counters_cte` AS legacy_cte
+  ON legacy_cte.client_id = COALESCE(serp_final_cte.client_id, sap_final_cte.client_id)
+  AND legacy_cte.submission_date = COALESCE(
+    serp_final_cte.submission_date,
+    sap_final_cte.submission_date
+  )
+  AND legacy_cte.normalized_engine = COALESCE(
+    serp_final_cte.provider_id,
+    sap_final_cte.normalized_engine
+  )
+  AND legacy_cte.search_access_point = COALESCE(
+    serp_final_cte.search_access_point,
+    sap_final_cte.source
+  )
+  AND legacy_cte.partner_code = COALESCE(serp_final_cte.partner_code, sap_final_cte.partner_code)

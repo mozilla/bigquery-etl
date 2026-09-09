@@ -11,6 +11,8 @@ graph TD
     %% OTHER
     adblocker("clients with adblocker<br/>---<br/>group by:<br/>client_id<br/>submission_date")
 
+    legacy("legacy_parity_counters<br/>---<br/>group by:<br/>client_id<br/>submission_date<br/>normalized_engine<br/>partner_code<br/>search_access_point")
+
     %% SAP
     subgraph SG1["SAP: Customer Enrichment Pipeline"]
     sap_base("sap_base<br/>---<br/>grain keys resolved once:<br/>normalized_engine<br/>partner_code<br/>source")
@@ -78,13 +80,15 @@ graph TD
 
     %% FINALS
 
-    join_sap_serp("join_sap_serp<br/>---<br/>serp_final full outer join sap_final on:<br/>client_id<br/>submission_date<br/>engine<br/>partner_code<br/>source<br/>---<br/>shared columns coalesced serp first")
+    join_sap_serp("join_sap_serp<br/>---<br/>serp_final full outer join sap_final<br/>full outer join legacy_parity_counters on:<br/>client_id<br/>submission_date<br/>engine<br/>partner_code<br/>source<br/>---<br/>shared columns coalesced serp first<br/>grain keys coalesced serp, sap, legacy")
 
     final("final<br/>---<br/>renames to the output schema<br/>no further aggregation")
 
     sap_final --> join_sap_serp
 
     serp_final --> join_sap_serp
+
+    legacy -->|"full outer join on the five grain keys"| join_sap_serp
 
     join_sap_serp -->|"merge SAP and SERP records into one record"| final
 
@@ -95,7 +99,7 @@ graph TD
     classDef finalStyle fill:#81c784,stroke:#66bb6a,stroke-width:2px,color:#fff
 
 
-    class sap_base,sap_events_info,adblocker,sap_enterprise,serp_base,serp_events_info,serp_enterprise,sap_agg,serp_agg_base,serp_agg cteStyle
+    class sap_base,sap_events_info,adblocker,legacy,sap_enterprise,serp_base,serp_events_info,serp_enterprise,sap_agg,serp_agg_base,serp_agg cteStyle
     class sap_full_events,serp_full_events joinStyle
     class sap_final,serp_final intermediateStyle
     class join_sap_serp,final finalStyle
@@ -137,6 +141,50 @@ The CTE:
 - groups by `client_id` and `date(submission_timestamp)` (aliased as `submission_date`)
 
 Because the join onto the SAP and SERP pipelines is a `left join`, a client that never appears here would otherwise be `null`. Both enrichment CTEs wrap the column in `coalesce(..., false)` so a client with no ad blocker reports a confident `false`, matching v8.
+
+### Legacy parity counters
+
+These are the six `legacy_` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `search_access_point`** — the table's own output grain, which is why they join at `join_sap_serp_cte` rather than into either pipeline.
+
+Comes from `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`, the same partition the adblocker CTE already scans. The column sets are disjoint, so this is a second scan and is billed as one.
+
+They produce seven columns: `legacy_tagged_sap`, `legacy_tagged_follow_on`, `legacy_organic`, `legacy_search_with_ads_tagged`, `legacy_search_with_ads_organic`, `legacy_ad_click_tagged` and `legacy_ad_click_organic`.
+
+#### Provenance
+
+They are recorded on the network-observation path, in `SearchSERPTelemetry.observeActivity`, which does not depend on the preconditions of the SERP page scan.
+
+They are native Glean metrics, not a Legacy Telemetry mirror, so they are unaffected by its removal. The `legacy_` prefix refers to v8 parity, not to the collection mechanism.
+
+#### Shape
+
+Each family is a separate labeled counter per access point — 17 access points times three families, 51 metrics. `legacy_raw_cte` collects them into one array of `(access_point, family, counter)` structs and `legacy_exploded_cte` unnests it, so the three families become one long row set keyed by access point instead of 51 near-identical `unnest`es.
+
+The label on each counter carries the rest of the key, colon-separated:
+
+| segment | `content`                            | `withads` and `adclicks` |
+| ------- | ------------------------------------ | ------------------------ |
+| 0       | provider                             | provider                 |
+| 1       | `tagged`, `tagged-follow-on`, `organic` | same                  |
+| 2       | partner code                         | absent                   |
+
+Segment 0 goes through `udf.normalize_search_engine`, the same normalization the SAP side applies, so the join key cannot drift.
+
+#### Partner code attribution on the ads families
+
+Only `content` labels carry a partner code, so `legacy_content_agg_cte` groups at the full grain while `legacy_ads_agg_cte` groups one key coarser. `legacy_ranked_cte` ranks each key's partner codes by content volume, and only rank 1 receives the ad counts; every other partner code row gets `0`, so a plain `sum` over the table does not double-count. Ties are broken on `partner_code`, so a backfill reproduces the same winner.
+
+Ad activity on a key with no content row keeps the sentinel `partner_code` value `unknown_code`. That value cannot come from either pipeline, both of which resolve to `no_code` or a real code, so those rows are always legacy-only. They are rare.
+
+`follow_on_from_refine_on_incontent_search`, `follow_on_from_refine_on_serp` and `opened_in_new_tab` have no counter, so the seven columns are always `0` on those access points.
+
+#### How they compare to v8 and to the SERP columns
+
+Each counter has a v8 counterpart — `legacy_tagged_sap` against `tagged_sap`, `legacy_organic` against `organic`, `legacy_search_with_ads_tagged` against `search_with_ads`, `legacy_ad_click_tagged` against `ad_click`, and the organic pairs — and tracks it closely. `legacy_organic` is the exception; see the known gap below.
+
+Two of them differ from their SERP-derived neighbours for definitional reasons rather than coverage. `legacy_search_with_ads_*` counts a SERP with ads when the ad was **served**, observed on the network, where `serp_with_ads_*_count` requires the ad to have been **visible**, so the SERP column is lower by design. `legacy_ad_click_*` counts a click by matching the outgoing request URL against ad-server patterns, and runs materially above `serp_ad_clicks_tagged_count`.
+
+**Known gap on `legacy_organic`.** It runs below v8's `organic` and the residual is not root-caused, so prefer v8 for organic levels until it is. The rest of the family is close. Part of the gap is structural: some v8 organic rows carry no access-point suffix, and a per-access-point counter has nowhere to put them. The remainder is spread proportionally across access points, which is the shape of a coverage difference rather than a definitional one.
 
 ### Enterprise
 
@@ -225,22 +273,26 @@ This is the `join_sap_serp_cte`. The grain is **one row per `client_id`, `submis
 
 #### Full outer join, not serp-driven
 
-The two pipelines are combined with a `full outer join`, so a row survives if it appears on either side.
+Three sides are combined with `full outer join`s, so a row survives if it appears on any of them.
 
 - A search access point with no matching SERP impression keeps its `sap_counts_total` value. Driving the join from SERP alone would drop that activity entirely, since the SAP `source` and SERP `sap_source` vocabularies only partly overlap.
 - A SERP impression with no matching SAP event keeps its ad and engagement measures.
+- A legacy parity key with no match on either pipeline keeps its counters. A client can increment `browser.search.adclicks` on a page whose SERP impression never registered, so such keys occur.
 - Two SERP-only columns are `null` on a sap-only row: `ad_click_target` and `ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`.
 - Two SAP-only columns are `null` on a serp-only row: `sap_provider_id` and `sap_provider_name`. They are strings rather than counts, so there is nothing to zero-fill, and the SERP side has no raw provider extra to fall back to.
+- On a legacy-only row every column that is not a grain key or a legacy counter is `null`, including `has_adblocker_addon`, which is `false` rather than `null` everywhere else.
 
 #### Column precedence
 
 Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max`.
 
-The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_` or `sap_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total`, `sap_provider_id` and `sap_provider_name` from SAP, and `serp_counts_total`, `serp_ad_click_target`, `serp_ad_blocker_inferred` and the SERP ad and engagement counts from SERP.
+The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_`, `sap_` or `legacy_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total`, `sap_provider_id` and `sap_provider_name` from SAP, `serp_counts_total`, `serp_ad_click_target`, `serp_ad_blocker_inferred` and the SERP ad and engagement counts from SERP, and the seven `legacy_` counters from the metrics ping. The `legacy_` ones keep their prefix in the output, as do `serp_counts_total` and the `sap_provider` pair; every other prefix is stripped in `final_cte`. The prefix distinguishes each counter from the SERP-derived measure of the same events, which is published under its own name.
 
 Most prefixes are applied here, at the join, and the side-only column is coined unprefixed upstream. `sap_provider_id` and `sap_provider_name` are the exception: they carry the prefix from `sap_base` onward, because `provider_id` is already taken by the SERP normalized engine in this CTE and the unprefixed pair would collide with it.
 
 **Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
+
+**The five grain keys and `sample_id` coalesce all three sides**, SERP then SAP then legacy, for the same reason. A legacy-only row is reachable by construction — `legacy_parity_counters_cte` assigns the sentinel `unknown_code` to orphan ad rows, a value neither pipeline can produce — so leaving legacy out of the coalesce would publish rows with a wholly `null` grain and populated counters, all of them colliding on one grain tuple. No key becomes nullable in the process: legacy's `partner_code` is the sentinel rather than `null`, and its `submission_date` and `search_access_point` come from the partition filter and a fixed list.
 
 **Anything derived from a published column is derived after the coalesce.** `os_version_major` and `os_version_minor` are computed in `final_cte` from the coalesced `os`, `os_version` and `windows_build_number`, so a row's derived value and the inputs it publishes always come from the same side. Deriving per side and coalescing the two results separately breaks that, because each column then picks its winner independently: a row can publish one side's `windows_build_number` beside a release name the other side computed without it, and nothing in the row says so.
 
@@ -253,12 +305,14 @@ The trade-off is that a zero no longer distinguishes "no activity" from "the oth
 - `max_concurrent_tab_count_max`, the one shared measure that zero-fills, takes a third `coalesce` argument.
 - `sap_counts_total` is zero on a serp-only row.
 - The fifteen SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six `num_*` measures.
+- The seven `legacy_` counters are zero where the metrics ping carried nothing for that key, which is every row whose key exists on a pipeline but not in the counters.
 
 Five columns are deliberately left alone. `profile_age_in_days` is not a count, and a zero would read as a profile created that day rather than as a missing value. `ad_click_target` is a string and `ad_blocker_inferred` is a boolean, so neither has a meaningful zero. `sap_provider_id` and `sap_provider_name` are strings for the same reason, and are the only two of the five that are `null` on a serp-only row rather than a sap-only one.
 
 #### Two constraints worth knowing before editing this CTE
 
 - **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each nullable key is spelled out as an equality plus an explicit both-`null` match. `partner_code` is the exception: it is never `null`, so a plain `=` is enough.
+- **The legacy join uses plain equality on all five keys**, with no both-`null` branches at all. Every key it joins on is non-`null` by construction, so a both-`null` branch could not match anything real and would only risk a cartesian product within a `null` group. Its right-hand side is the already-coalesced SAP-and-SERP key, `coalesce(serp, sap)`, not either side alone.
 - **One `coalesce` needs an explicit cast.** `sap_aggregates_cte` casts its integer counter to `float64`, so combining it with the SERP side would widen the result and break the `INTEGER` type declared in `schema.yaml`. `max_concurrent_tab_count_max` therefore casts the SAP side back to `int64` inside the `coalesce`.
 
 ### Final
@@ -272,6 +326,7 @@ A few output columns are worth calling out.
 - `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - The ad measures are renamed so each name states which half it counts, rather than leaving the tagged half as the unmarked default the way v8 did. v8's `ad_click` is `ad_click_total`, `ad_clicks_tagged` is `ad_click_tagged`, and `search_with_ads` is `search_with_ads_tagged`. The organic counterparts, `ad_click_organic` and `search_with_ads_organic`, keep their v8 names. So the tagged and organic pairs now read `ad_click_tagged`/`ad_click_organic` and `search_with_ads_tagged`/`search_with_ads_organic`, with `ad_click_total` counting every ad click regardless of `is_tagged`. Note that `ad_click_total` is not guaranteed to equal `ad_click_tagged` plus `ad_click_organic`: the two halves are split on `is_tagged is true` and `is_tagged is false`, both of which exclude `null`, while the total sums every row. They agree only where `is_tagged` is never `null`.
 - `experiments` prefers the SERP passthrough, which arrives as a repeated field and is never `null`. Because `coalesce` returns the first non-`null` argument and an empty array is not `null`, the SAP side is only reached on sap-only rows. The SAP side builds the same shape from JSON, one element per enrollment, ordered by experiment slug.
+- The seven `legacy_` columns measure the same events as SERP-derived columns already in the table: `legacy_tagged_sap` against `tagged_serp`, `legacy_ad_click_tagged` against `ad_click_tagged`, `legacy_search_with_ads_tagged` against `search_with_ads_tagged`, and the organic counterparts. The two sets are collected by different mechanisms and do not agree. See the legacy parity counters section above.
 
 v9 is **not** a column-for-column match of v8 and is not intended to be. Every column carries real data; nothing is emitted as a placeholder `null` purely to preserve the v8 shape. Nineteen v8 columns that had no Glean source are therefore absent from both the query and `schema.yaml`: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, `is_sap_monetizable`, and the thirteen `scalar_parent_urlbar_searchmode_*` columns.
 

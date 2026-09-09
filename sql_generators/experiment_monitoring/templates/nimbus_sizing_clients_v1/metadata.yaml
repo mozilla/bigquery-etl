@@ -25,7 +25,6 @@ labels:
   owner1: nimbus
 scheduling:
   dag_name: bqetl_experiments_daily
-  arguments: ["--date", "{% raw %}{{ ds }}{% endraw %}"]
   referenced_tables:
     - ['moz-fx-data-shared-prod', '{{ source_dataset }}', '{{ source_table }}']
 bigquery:

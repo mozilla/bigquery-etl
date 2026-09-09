@@ -58,8 +58,8 @@ new_profiles AS (
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
     -- outright rather than flagged. Its 0.016% day-1 return rate would otherwise flatten
-    -- Linux retention curves. See `moz-fx-data-shared-prod.udf.is_suspicious_automation` for the signature.
-    AND NOT cfs.is_suspicious_automation
+    -- Linux retention curves. See `moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation` for the signature.
+    AND NOT cfs.is_desktop_argument_profile_automation
 ),
 clients_data AS (
   SELECT

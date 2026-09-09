@@ -3,9 +3,9 @@ description: |-
   Desktop Retention data at the client level, including attribution information
 
   From first_seen_date 2026-08-27 onward, profiles created by the automated segment tracked in
-  DENG-11590 are excluded (see udf.is_suspicious_automation). Counts here are therefore not
-  comparable to unfiltered sources such as telemetry.clients_first_seen, where the same profiles
-  are flagged via is_suspicious_automation rather than removed.
+  DENG-11590 are excluded (see udf.is_desktop_argument_profile_automation). Counts here are
+  therefore not comparable to unfiltered sources such as telemetry.clients_first_seen, where
+  the same profiles are flagged via is_desktop_argument_profile_automation rather than removed.
 owners:
 - mhirose@mozilla.com
 labels:

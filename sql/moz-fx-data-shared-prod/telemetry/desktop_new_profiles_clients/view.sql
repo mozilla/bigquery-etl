@@ -22,11 +22,11 @@ SELECT
   ) AS is_desktop,
   -- Flags the automated segment tracked in DENG-11590. Exposed as a flag rather than filtered
   -- out here so consumers can choose; dashboard-feeding tables exclude it at the source.
-  `moz-fx-data-shared-prod`.udf.is_suspicious_automation(
+  `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
     normalized_os,
     app_version,
     startup_profile_selection_reason,
     first_seen_date
-  ) AS is_suspicious_automation
+  ) AS is_desktop_argument_profile_automation
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` AS a

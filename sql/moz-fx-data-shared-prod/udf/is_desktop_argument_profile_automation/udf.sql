@@ -14,7 +14,7 @@
 -- CAVEAT: this predicate will begin over-catching once real Linux users roll onto 151.0, since
 -- legitimate `-profile` users on that version become indistinguishable from the segment.
 -- Revisit when 151.0 reaches broad release on Linux.
-CREATE OR REPLACE FUNCTION udf.is_suspicious_automation(
+CREATE OR REPLACE FUNCTION udf.is_desktop_argument_profile_automation(
   normalized_os STRING,
   app_version STRING,
   startup_profile_selection_reason STRING,
@@ -34,31 +34,56 @@ SELECT
   -- The DENG-11590 segment.
   mozfun.assert.equals(
     TRUE,
-    udf.is_suspicious_automation('Linux', '151.0', 'argument-profile', DATE '2026-09-06')
+    udf.is_desktop_argument_profile_automation(
+      'Linux',
+      '151.0',
+      'argument-profile',
+      DATE '2026-09-06'
+    )
   ),
   -- Legitimate Linux `-profile` users on other versions are the ~20k/day baseline.
   mozfun.assert.equals(
     FALSE,
-    udf.is_suspicious_automation('Linux', '140.11.0', 'argument-profile', DATE '2026-09-06')
+    udf.is_desktop_argument_profile_automation(
+      'Linux',
+      '140.11.0',
+      'argument-profile',
+      DATE '2026-09-06'
+    )
   ),
   -- 151.0 without the `-profile` argument is an ordinary new profile.
   mozfun.assert.equals(
     FALSE,
-    udf.is_suspicious_automation('Linux', '151.0', 'firstrun-created-default', DATE '2026-09-06')
+    udf.is_desktop_argument_profile_automation(
+      'Linux',
+      '151.0',
+      'firstrun-created-default',
+      DATE '2026-09-06'
+    )
   ),
   -- The segment is Linux-only; Windows/Mac 151.0 is unaffected.
   mozfun.assert.equals(
     FALSE,
-    udf.is_suspicious_automation('Windows', '151.0', 'argument-profile', DATE '2026-09-06')
+    udf.is_desktop_argument_profile_automation(
+      'Windows',
+      '151.0',
+      'argument-profile',
+      DATE '2026-09-06'
+    )
   ),
   -- Before onset, do not rewrite history.
   mozfun.assert.equals(
     FALSE,
-    udf.is_suspicious_automation('Linux', '151.0', 'argument-profile', DATE '2026-08-26')
+    udf.is_desktop_argument_profile_automation(
+      'Linux',
+      '151.0',
+      'argument-profile',
+      DATE '2026-08-26'
+    )
   ),
-  -- NULLs must not propagate; callers filter on `NOT is_suspicious_automation(...)`.
+  -- NULLs must not propagate; callers filter on `NOT is_desktop_argument_profile_automation(...)`.
   mozfun.assert.equals(
     FALSE,
-    udf.is_suspicious_automation('Linux', '151.0', NULL, DATE '2026-09-06')
+    udf.is_desktop_argument_profile_automation('Linux', '151.0', NULL, DATE '2026-09-06')
   ),
-  mozfun.assert.equals(FALSE, udf.is_suspicious_automation(NULL, NULL, NULL, NULL));
+  mozfun.assert.equals(FALSE, udf.is_desktop_argument_profile_automation(NULL, NULL, NULL, NULL));

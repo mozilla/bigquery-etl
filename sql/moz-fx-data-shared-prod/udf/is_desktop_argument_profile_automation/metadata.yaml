@@ -1,0 +1,17 @@
+friendly_name: Is Desktop Argument Profile Automation
+description: |-
+  Identifies Firefox Desktop profiles created by the specific automated segment tracked in
+  DENG-11590: Linux containers running a pinned Firefox 151.0, launched with `-profile`.
+
+  The name is deliberately narrow. This is one hardcoded signature, not a general automation
+  or bot heuristic — it does not cover Windows or Mac automation, BrowserStack (see `is_desktop`
+  on `telemetry.clients_first_seen`), MozillaOnline, or any future segment. A new segment should
+  get its own predicate rather than an edit to this one, so that the meaning of existing
+  columns and filtered tables stays stable.
+
+  Used two ways, per the decision recorded in DENG-11590: dashboard-feeding tables filter these
+  profiles out entirely, while other tables expose the result as an
+  `is_desktop_argument_profile_automation` flag so the volume stays countable.
+
+  Returns FALSE rather than NULL for unknown inputs, so
+  `NOT udf.is_desktop_argument_profile_automation(...)` is safe to use directly as a filter.

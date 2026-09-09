@@ -65,7 +65,7 @@ cohorts_in_range AS (
     -- 27-day lag, so it has carried the segment since 2026-08-28 and needs a backfill.
     -- clients_first_seen_v2.normalized_os is only partly normalized (rows sourced from
     -- clients_daily carry the raw environment.system.os.name), so normalize before comparing.
-    AND NOT `moz-fx-data-shared-prod`.udf.is_suspicious_automation(
+    AND NOT `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
       mozfun.norm.os(normalized_os),
       app_version,
       startup_profile_selection_reason,

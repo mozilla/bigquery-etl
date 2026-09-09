@@ -28,8 +28,8 @@ WITH clients_first_seen AS (
   WHERE
     cfs.first_seen_date = @submission_date
     -- This table feeds dashboards directly, so the DENG-11590 automated segment is excluded
-    -- outright rather than flagged. See `moz-fx-data-shared-prod.udf.is_suspicious_automation` for the signature.
-    AND NOT cfs.is_suspicious_automation
+    -- outright rather than flagged. See `moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation` for the signature.
+    AND NOT cfs.is_desktop_argument_profile_automation
 ),
 active_users AS (
   SELECT

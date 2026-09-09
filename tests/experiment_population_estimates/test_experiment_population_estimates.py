@@ -3,7 +3,6 @@
 import importlib.util
 import json
 import os
-from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -33,7 +32,7 @@ MOCK_EXPERIMENTS = [
     {
         "slug": "my-experiment",
         "targetingSql": {
-            "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 120",
+            "sql": "firefox_version >= 120",
             "warnings": [],
             "needsUpdate": True,
         },
@@ -41,10 +40,7 @@ MOCK_EXPERIMENTS = [
     {
         "slug": "another-experiment",
         "targetingSql": {
-            "sql": (
-                "metrics.string.nimbus_targeting_context_locale IN ('en-US')"
-                " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 115"
-            ),
+            "sql": "locale IN ('en-US') AND firefox_version >= 115",
             "warnings": ["activeRollouts"],
             "needsUpdate": True,
         },
@@ -58,7 +54,7 @@ MOCK_API_RESPONSE = [
     {
         "slug": "stale-experiment",
         "targetingSql": {
-            "sql": "metrics.quantity.nimbus_targeting_context_firefox_version >= 100",
+            "sql": "firefox_version >= 100",
             "warnings": [],
             "needsUpdate": False,
         },
@@ -75,8 +71,6 @@ MOCK_API_RESPONSE = [
         },
     },
 ]
-
-_RUN_DATE = date(2026, 7, 27)
 
 
 class TestFetchExperiments:
@@ -140,22 +134,39 @@ class TestBuildQuery:
         assert "WITH latest_per_client" not in query
         assert "clients AS" not in query
 
-    def test_uses_pre_materialized_desktop_table(self):
-        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
-        assert _APP_SIZING_TABLE["firefox_desktop"] in query
+    @pytest.mark.parametrize(
+        "app_name, expected_table",
+        [
+            (
+                "firefox_desktop",
+                "moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_sizing_clients_v1",
+            ),
+            (
+                "fenix",
+                "moz-fx-data-shared-prod.org_mozilla_fenix_derived.nimbus_sizing_clients_v1",
+            ),
+            (
+                "firefox_ios",
+                "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_sizing_clients_v1",
+            ),
+        ],
+    )
+    def test_uses_pre_materialized_table(self, app_name, expected_table):
+        query = build_query(MOCK_EXPERIMENTS, app_name)
+        assert expected_table in query
+        assert "mozdata" not in query
 
-    def test_uses_pre_materialized_fenix_table(self):
-        query = build_query(MOCK_EXPERIMENTS, "fenix")
-        assert _APP_SIZING_TABLE["fenix"] in query
-
-    def test_uses_pre_materialized_ios_table(self):
-        query = build_query(MOCK_EXPERIMENTS, "firefox_ios")
-        assert _APP_SIZING_TABLE["firefox_ios"] in query
+    def test_unknown_app_raises(self):
+        with pytest.raises(KeyError):
+            build_query(MOCK_EXPERIMENTS, "unknown_app")
 
     def test_generated_sql_is_syntactically_plausible(self):
+        """Spot-check that generated SQL doesn't contain known invalid patterns."""
         query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
         assert " = NULL" not in query
         assert "JSON_ARRAY_LENGTH(" not in query
+        assert "= FALSE" not in query
+        assert "= TRUE" not in query
 
     def test_full_query_matches_expected(self):
         """Assert the complete generated SQL for a known input."""
@@ -170,8 +181,13 @@ class TestBuildQuery:
             },
         ]
         query = build_query(experiments, "firefox_desktop")
-        table = _APP_SIZING_TABLE["firefox_desktop"]
-        expected = f"SELECT\n  COUNTIF(\n    os_version >= 120\n  ) * 10 AS `exp_0`\nFROM `{table}`"
+        expected = (
+            "SELECT\n"
+            "  COUNTIF(\n"
+            "    os_version >= 120\n"
+            "  ) * 10 AS `exp_0`\n"
+            "FROM `moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_sizing_clients_v1`"
+        )
         assert query == expected
 
 

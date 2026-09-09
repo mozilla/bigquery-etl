@@ -12,10 +12,10 @@ from google.cloud import bigquery
 from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
-from .. import ConfigLoader
 from ..cli.query import render_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..config import ConfigLoader
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata

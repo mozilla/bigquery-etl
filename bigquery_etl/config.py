@@ -29,8 +29,8 @@ class _ConfigLoader:
 
         working_directory = Path.cwd()
         if not working_directory.is_relative_to(ROOT):
-            for dir in (working_directory, *working_directory.parents):
-                possible_config_file = dir / BQETL_PROJECT_CONFIG
+            for directory in (working_directory, *working_directory.parents):
+                possible_config_file = directory / BQETL_PROJECT_CONFIG
                 if possible_config_file.exists():
                     config_files.append(possible_config_file)
                     break

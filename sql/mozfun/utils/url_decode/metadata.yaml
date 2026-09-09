@@ -1,0 +1,4 @@
+description: |-
+  Percent-decodes a string. A stray '%' is kept as it arrived, and '+' is
+  not treated as a space.
+friendly_name: URL Decode

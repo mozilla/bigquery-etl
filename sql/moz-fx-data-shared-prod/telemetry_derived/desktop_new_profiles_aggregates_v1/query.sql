@@ -28,8 +28,15 @@ WITH clients_first_seen AS (
   WHERE
     cfs.first_seen_date = @submission_date
     -- This table feeds dashboards directly, so the DENG-11590 automated segment is excluded
-    -- outright rather than flagged. See `moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation` for the signature.
-    AND NOT cfs.is_desktop_argument_profile_automation
+    -- outright rather than flagged. The UDF is called here rather than reading a flag column so
+    -- that telemetry.clients_first_seen stays unchanged; the flag lives on
+    -- telemetry.desktop_new_profiles_clients instead.
+    AND NOT `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
+      cfs.normalized_os,
+      cfs.app_version,
+      cfs.startup_profile_selection_reason,
+      cfs.first_seen_date
+    )
 ),
 active_users AS (
   SELECT

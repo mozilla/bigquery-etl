@@ -54,6 +54,15 @@ new_profiles AS (
     AND cfs.client_id = au.client_id
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
+    -- outright rather than flagged. Reads clients_first_seen_v2 directly, so the UDF is called
+    -- here rather than using the is_suspicious_automation column on telemetry.clients_first_seen.
+    AND NOT `moz-fx-data-shared-prod`.udf.is_suspicious_automation(
+      cfs.normalized_os,
+      cfs.app_version,
+      cfs.startup_profile_selection_reason,
+      cfs.first_seen_date
+    )
 ),
 clients_data AS (
   SELECT

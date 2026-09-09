@@ -60,6 +60,15 @@ cohorts_in_range AS (
     first_seen_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
+    -- outright rather than flagged. Unlike the desktop_retention_clients tables this one has no
+    -- 27-day lag, so it has carried the segment since 2026-08-28 and needs a backfill.
+    AND NOT `moz-fx-data-shared-prod`.udf.is_suspicious_automation(
+      normalized_os,
+      app_version,
+      startup_profile_selection_reason,
+      first_seen_date
+    )
 ),
 activity_cohort_match AS (
   SELECT

@@ -10,9 +10,7 @@ from sql_generators.terms_of_use.terms_of_use import generate_terms_of_use
 TEST_DIR = Path(__file__).parent
 TEST_CONFIG_FILE = "test_config.yaml"
 
-CONFIG_LOADER = _ConfigLoader()
-CONFIG_LOADER.set_project_dir(TEST_DIR)
-CONFIG_LOADER.set_config_file(TEST_CONFIG_FILE)
+CONFIG_LOADER = _ConfigLoader(TEST_DIR / TEST_CONFIG_FILE)
 
 CONFIG_MOCK_RESPONSE = CONFIG_LOADER.get("generate", "terms_of_use")
 

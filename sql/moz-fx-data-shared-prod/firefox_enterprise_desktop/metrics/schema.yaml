@@ -1183,6 +1183,32 @@ fields:
         URL document.
 
         '
+    - name: profiles_active
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the selectable profiles feature has been activated by
+        the user creating profiles. Set during initialization.
+
+        '
+    - name: profiles_path_in_profiles_ini
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the current profile''s directory is listed in profiles.ini.
+
+        '
+    - name: profiles_store_id_in_profiles_ini
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the current profile''s store ID is listed in profiles.ini.
+
+        '
+    - name: profiles_store_id_mismatch
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the store ID from ProfilesDatastoreService differs from
+        the store ID on the current profile in profiles.ini.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -30151,6 +30177,13 @@ fields:
       description: 'Count of currently installed web apps. Note that Firefox does
         not detect unpinning or deleting the shortcut outside of Firefox, so this
         could include web apps that the user has no way to access; see bug 1990342.
+
+        '
+    - name: profiles_profile_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of selectable profiles in the current profile group.
+        Updated during initialization and whenever the database changes.
 
         '
   - name: rate

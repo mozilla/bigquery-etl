@@ -1324,6 +1324,25 @@ fields:
         the user creating profiles. Set during initialization.
 
         '
+    - name: profiles_path_in_profiles_ini
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the current profile''s directory is listed in profiles.ini.
+
+        '
+    - name: profiles_store_id_in_profiles_ini
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the current profile''s store ID is listed in profiles.ini.
+
+        '
+    - name: profiles_store_id_mismatch
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the store ID from ProfilesDatastoreService differs from
+        the store ID on the current profile in profiles.ini.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

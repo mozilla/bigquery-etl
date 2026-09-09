@@ -363,6 +363,25 @@ fields:
         the user creating profiles. Set during initialization.
 
         '
+    - name: profiles_path_in_profiles_ini
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the current profile''s directory is listed in profiles.ini.
+
+        '
+    - name: profiles_store_id_in_profiles_ini
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the current profile''s store ID is listed in profiles.ini.
+
+        '
+    - name: profiles_store_id_mismatch
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the store ID from ProfilesDatastoreService differs from
+        the store ID on the current profile in profiles.ini.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -553,6 +572,17 @@ fields:
         \ of a dedicated profiles build skipped over the old default\n    profile\
         \ and created a new profile.\n  restart-claimed-default:\n    A first run\
         \ of a dedicate"
+    - name: startup_profiles_ini_status
+      type: STRING
+      mode: NULLABLE
+      description: "Records the status of parsing the profiles.ini file during startup:\n\
+        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Parsing the\
+        \ ini file completely failed, normally this would indicate\n    an out of\
+        \ memory issue.\n  ini-error:\n    The ini parser recorded some kind of failure\
+        \ during parsing\n  missing-name:\n    A profile section was missing the name\n\
+        \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
+        \    A profile section's path was invalid\nNote that if multiple profile sections\
+        \ contain errors then only the last will be reported.\n"
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -603,6 +633,17 @@ fields:
         loaded.
 
         Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: profiles_other_profiles
+      type: JSON
+      mode: NULLABLE
+      description: 'Data about other profile directories found on disk, recorded during
+        the first startup of a new profile.
 
         '
 - name: normalized_app_name

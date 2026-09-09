@@ -79,7 +79,10 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.network_apple_fast_datapath_used,
       metrics.boolean.pkcs11_fips_enabled,
-      metrics.boolean.networking_cookie_file_present
+      metrics.boolean.networking_cookie_file_present,
+      metrics.boolean.profiles_path_in_profiles_ini,
+      metrics.boolean.profiles_store_id_in_profiles_ini,
+      metrics.boolean.profiles_store_id_mismatch
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -2099,7 +2102,10 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.network_apple_fast_datapath_used,
       metrics.boolean.pkcs11_fips_enabled,
-      metrics.boolean.networking_cookie_file_present
+      metrics.boolean.networking_cookie_file_present,
+      metrics.boolean.profiles_path_in_profiles_ini,
+      metrics.boolean.profiles_store_id_in_profiles_ini,
+      metrics.boolean.profiles_store_id_mismatch
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -4119,7 +4125,10 @@ SELECT
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
       metrics.boolean.network_apple_fast_datapath_used,
       metrics.boolean.pkcs11_fips_enabled,
-      metrics.boolean.networking_cookie_file_present
+      metrics.boolean.networking_cookie_file_present,
+      metrics.boolean.profiles_path_in_profiles_ini,
+      metrics.boolean.profiles_store_id_in_profiles_ini,
+      metrics.boolean.profiles_store_id_mismatch
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,

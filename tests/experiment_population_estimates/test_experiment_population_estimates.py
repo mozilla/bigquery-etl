@@ -23,6 +23,7 @@ _spec.loader.exec_module(_mod)  # type: ignore[union-attr]
 
 GCS_FOLDER = _mod.GCS_FOLDER
 _col_for_index = _mod._col_for_index
+_APP_SIZING_TABLE = _mod._APP_SIZING_TABLE
 build_query = _mod.build_query
 build_results = _mod.build_results
 fetch_experiments = _mod.fetch_experiments
@@ -123,49 +124,38 @@ class TestColForIndex:
 
 
 class TestBuildQuery:
-    def test_contains_cte(self):
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "WITH latest_per_client AS" in query
-        assert "clients AS (SELECT * EXCEPT (rn)" in query
-
-    def test_contains_sample_id_filter(self):
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "sample_id < 10" in query
-
     def test_uses_indexed_column_aliases(self):
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
         assert "`exp_0`" in query
         assert "`exp_1`" in query
 
     def test_uses_countif_not_count_distinct(self):
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
         assert "COUNTIF(" in query
         assert "COUNT(DISTINCT" not in query
 
-    def test_always_uses_client_id(self):
-        """profile_group_id not yet in nimbus_targeting_context — always client_id."""
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert "client_info.client_id" in query
-        assert "profile_group_id" not in query
+    def test_no_cte(self):
+        """Dedup/sampling is pre-materialized — build_query should not contain a CTE."""
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
+        assert "WITH latest_per_client" not in query
+        assert "clients AS" not in query
 
-    def test_uses_moz_fx_data_shared_prod_table(self):
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
-        assert (
-            "moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context" in query
-        )
-        assert "mozdata" not in query
+    def test_uses_pre_materialized_desktop_table(self):
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
+        assert _APP_SIZING_TABLE["firefox_desktop"] in query
 
-    def test_submission_date_controls_window(self):
-        query = build_query(MOCK_EXPERIMENTS, date(2026, 7, 27))
-        assert "2026-07-27" in query
+    def test_uses_pre_materialized_fenix_table(self):
+        query = build_query(MOCK_EXPERIMENTS, "fenix")
+        assert _APP_SIZING_TABLE["fenix"] in query
+
+    def test_uses_pre_materialized_ios_table(self):
+        query = build_query(MOCK_EXPERIMENTS, "firefox_ios")
+        assert _APP_SIZING_TABLE["firefox_ios"] in query
 
     def test_generated_sql_is_syntactically_plausible(self):
-        """Spot-check that generated SQL doesn't contain known invalid patterns."""
-        query = build_query(MOCK_EXPERIMENTS, _RUN_DATE)
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
         assert " = NULL" not in query
         assert "JSON_ARRAY_LENGTH(" not in query
-        assert "= FALSE" not in query
-        assert "= TRUE" not in query
 
     def test_full_query_matches_expected(self):
         """Assert the complete generated SQL for a known input."""
@@ -173,42 +163,15 @@ class TestBuildQuery:
             {
                 "slug": "release-channel-experiment",
                 "targetingSql": {
-                    "sql": (
-                        "JSON_VALUE(metrics.object.nimbus_targeting_context_browser_settings,"
-                        " '$.update.channel') = 'release'"
-                        " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 120"
-                    ),
+                    "sql": "os_version >= 120",
                     "warnings": [],
                     "needsUpdate": True,
                 },
             },
         ]
-        query = build_query(experiments, date(2026, 7, 27))
-        _sql = (
-            "JSON_VALUE(metrics.object.nimbus_targeting_context_browser_settings,"
-            " '$.update.channel') = 'release'"
-            " AND metrics.quantity.nimbus_targeting_context_firefox_version >= 120"
-        )
-        expected = "\n".join(
-            [
-                "WITH latest_per_client AS (",
-                "  SELECT",
-                "    *,",
-                "    ROW_NUMBER() OVER (",
-                "      PARTITION BY client_info.client_id",
-                "      ORDER BY submission_timestamp DESC",
-                "    ) AS rn",
-                "  FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context`",
-                "  WHERE DATE(submission_timestamp) BETWEEN '2026-07-21' AND '2026-07-27'",
-                "    AND sample_id < 10",
-                "    AND client_info.client_id IS NOT NULL",
-                "),",
-                "clients AS (SELECT * EXCEPT (rn) FROM latest_per_client WHERE rn = 1)",
-                "SELECT",
-                f"  COUNTIF(\n    {_sql}\n  ) * 10 AS `exp_0`",
-                "FROM clients",
-            ]
-        )
+        query = build_query(experiments, "firefox_desktop")
+        table = _APP_SIZING_TABLE["firefox_desktop"]
+        expected = f"SELECT\n  COUNTIF(\n    os_version >= 120\n  ) * 10 AS `exp_0`\nFROM `{table}`"
         assert query == expected
 
 

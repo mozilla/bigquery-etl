@@ -76,7 +76,9 @@ class _ConfigLoader:
         config: dict = {}
 
         if not self.config_files:
-            raise Exception(f"No `{BQETL_PROJECT_CONFIG}` config file was found")
+            raise FileNotFoundError(
+                f"No `{BQETL_PROJECT_CONFIG}` config file was found"
+            )
 
         for config_file in self.config_files:
             extra_config: dict = yaml.safe_load(config_file.read_text())

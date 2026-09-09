@@ -291,6 +291,7 @@ SELECT
       LAX_INT64(event_extra.position) AS `position`,
       LAX_INT64(event_extra.preselected) AS `preselected`,
       LAX_INT64(event_extra.previous) AS `previous`,
+      LAX_INT64(event_extra.profile_count) AS `profile_count`,
       LAX_INT64(event_extra.prompts) AS `prompts`,
       LAX_INT64(event_extra.recovery_count) AS `recovery_count`,
       LAX_INT64(event_extra.rendered_frames) AS `rendered_frames`,

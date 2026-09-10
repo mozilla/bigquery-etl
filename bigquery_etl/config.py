@@ -37,9 +37,7 @@ class _ConfigLoader:
 
         return config_files
 
-    def _update_config(
-        self, config: dict, extra_config: dict, path_keys: list[str]
-    ) -> None:
+    def _update_config(self, config: dict, extra_config: dict, path_keys: list) -> None:
         for extra_key, extra_value in extra_config.items():
             current_value = config.get(extra_key)
             if current_value is None:

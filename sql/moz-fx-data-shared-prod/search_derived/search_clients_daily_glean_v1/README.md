@@ -311,8 +311,7 @@ Five columns are deliberately left alone. `profile_age_in_days` is not a count, 
 
 #### Two constraints worth knowing before editing this CTE
 
-- **The join keys cannot use `is not distinct from`.** BigQuery requires at least one literal `=` in a `full outer join` ON clause, so each nullable key is spelled out as an equality plus an explicit both-`null` match. `partner_code` is the exception: it is never `null`, so a plain `=` is enough.
-- **The legacy join uses plain equality on all five keys**, with no both-`null` branches at all. Every key it joins on is non-`null` by construction, so a both-`null` branch could not match anything real and would only risk a cartesian product within a `null` group. Its right-hand side is the already-coalesced SAP-and-SERP key, `coalesce(serp, sap)`, not either side alone.
+- **Both joins use plain equality on every key**, with no both-`null` branches. No grain key is ever `null`, and two `null`s are not a key match: a both-`null` branch would pair every `null`-keyed row on one side with every `null`-keyed row on the other, a cartesian product where plain equality leaves them one-sided instead. Note also that BigQuery requires at least one literal `=` in a `full outer join` ON clause, so `is not distinct from` on its own is rejected whatever the null semantics. The legacy join's right-hand side is the already-coalesced SAP-and-SERP key, `coalesce(serp, sap)`, not either side alone.
 - **One `coalesce` needs an explicit cast.** `sap_aggregates_cte` casts its integer counter to `float64`, so combining it with the SERP side would widen the result and break the `INTEGER` type declared in `schema.yaml`. `max_concurrent_tab_count_max` therefore casts the SAP side back to `int64` inside the `coalesce`.
 
 ### Final

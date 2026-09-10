@@ -1003,27 +1003,15 @@ join_sap_serp_cte AS (
   FROM
     serp_final_cte
     -- FULL OUTER so sap activity with no matching SERP impression is kept.
-    -- BigQuery requires a literal `=` in a FULL OUTER JOIN's ON clause, so each key is written
-    -- as equality plus an explicit both-NULL match rather than IS NOT DISTINCT FROM.
+    -- Plain equality on all five keys. No grain key is ever NULL, and two NULLs are not a key
+    -- match: a both-NULL branch pairs every null-keyed row on one side with every null-keyed row
+    -- on the other, a cartesian product where plain equality leaves them one-sided instead.
   FULL OUTER JOIN
     sap_final_cte
-    ON (
-      sap_final_cte.client_id = serp_final_cte.client_id
-      OR (sap_final_cte.client_id IS NULL AND serp_final_cte.client_id IS NULL)
-    )
-    AND (
-      sap_final_cte.submission_date = serp_final_cte.submission_date
-      OR (sap_final_cte.submission_date IS NULL AND serp_final_cte.submission_date IS NULL)
-    )
-    AND (
-      sap_final_cte.normalized_engine = serp_final_cte.provider_id
-      OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.provider_id IS NULL)
-    )
-    AND (
-      sap_final_cte.source = serp_final_cte.search_access_point
-      OR (sap_final_cte.source IS NULL AND serp_final_cte.search_access_point IS NULL)
-    )
-    -- partner_code needs no both-NULL branch: both sides coalesce it to 'no_code'
+    ON sap_final_cte.client_id = serp_final_cte.client_id
+    AND sap_final_cte.submission_date = serp_final_cte.submission_date
+    AND sap_final_cte.normalized_engine = serp_final_cte.provider_id
+    AND sap_final_cte.source = serp_final_cte.search_access_point
     AND sap_final_cte.partner_code = serp_final_cte.partner_code
     -- FULL OUTER again, not LEFT: a client can increment browser.search.adclicks on a page
     -- whose SERP impression never registered, and that population is the reason these counters

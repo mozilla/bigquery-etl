@@ -14,6 +14,31 @@ WITH widget_events AS (
     AND event.category = 'newtab'
     AND event.name IN ('widgets_impression', 'widgets_user_event', 'widgets_enabled')
     AND mozfun.map.get_key(event.extra, 'widget_name') IS NOT NULL
+    -- DENG-11596: the crossword widget emitted a `widgets_user_event` on every
+    -- keystroke and cursor move, plus echoes of context menu actions. These are not
+    -- genuine user actions, so they are excluded from all interaction counts.
+    -- Expressed as an allowlist of known-bad action values so that newly introduced
+    -- action values default to being counted. See DENG-11450 for the criteria.
+    AND NOT (
+      event.category = 'newtab'
+      AND event.name = 'widgets_user_event'
+      AND mozfun.map.get_key(event.extra, 'widget_name') = 'crossword'
+      AND mozfun.map.get_key(event.extra, 'user_action') = 'interaction'
+      AND mozfun.map.get_key(event.extra, 'action_value') IN (
+        -- keystroke and cursor noise
+        'input_letter',
+        'cell_click',
+        'backspace',
+        'next_clue_button',
+        'previous_clue_button',
+        'review_clue_selected',
+        -- context menu echoes
+        'all_clues_opened',
+        'all_clues_closed',
+        'reveal_grid_requested',
+        'reveal_grid_completed'
+      )
+    )
 ),
 aggregated AS (
   SELECT

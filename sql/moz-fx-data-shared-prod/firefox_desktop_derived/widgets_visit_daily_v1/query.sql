@@ -50,6 +50,31 @@ WITH events_unnested AS (
     AND category = 'newtab'
     -- include `opened` so that is_default_ui can be derived per visit
     AND name IN ('opened', 'widgets_impression', 'widgets_user_event', 'widgets_enabled')
+    -- DENG-11596: the crossword widget emitted a `widgets_user_event` on every
+    -- keystroke and cursor move, plus echoes of context menu actions. These are not
+    -- genuine user actions, so they are excluded from all interaction counts.
+    -- Expressed as an allowlist of known-bad action values so that newly introduced
+    -- action values default to being counted. See DENG-11450 for the criteria.
+    AND NOT (
+      category = 'newtab'
+      AND name = 'widgets_user_event'
+      AND mozfun.map.get_key(extra, 'widget_name') = 'crossword'
+      AND mozfun.map.get_key(extra, 'user_action') = 'interaction'
+      AND mozfun.map.get_key(extra, 'action_value') IN (
+        -- keystroke and cursor noise
+        'input_letter',
+        'cell_click',
+        'backspace',
+        'next_clue_button',
+        'previous_clue_button',
+        'review_clue_selected',
+        -- context menu echoes
+        'all_clues_opened',
+        'all_clues_closed',
+        'reveal_grid_requested',
+        'reveal_grid_completed'
+      )
+    )
 ),
 visit_aggregations AS (
   SELECT

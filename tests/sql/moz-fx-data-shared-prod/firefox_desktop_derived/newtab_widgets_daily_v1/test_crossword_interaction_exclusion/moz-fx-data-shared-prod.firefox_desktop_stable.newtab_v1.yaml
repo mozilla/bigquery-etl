@@ -1,0 +1,81 @@
+---
+# DENG-11596: verifies that crossword keystroke/cursor noise and context menu echo
+# events are excluded, while genuine crossword actions, crossword `interaction`
+# events with retained action values, events with no action_value, and identical
+# `interaction` events on other widgets are all still counted.
+- submission_timestamp: 2026-05-04 12:00:00 UTC
+  client_info:
+    client_id: client_id_1
+  events:
+    - category: newtab
+      name: widgets_impression
+      extra:
+        - key: widget_name
+          value: crossword
+      # EXCLUDED: keystroke and cursor noise
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: input_letter
+      # EXCLUDED: context menu echo
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: all_clues_opened
+      # RETAINED: `interaction` with an action value that is not on the bad list
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: hint_revealed
+      # RETAINED: no action_value at all - must not be dropped by the predicate.
+      # Also counts toward widget_link_click_count.
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: learn_more
+      # RETAINED: genuine crossword action
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: puzzle_completed
+        - key: action_value
+          value: "0"
+      # RETAINED: identical bad action value on a different widget is unaffected
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: lists
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: input_letter
+      # RETAINED: counts toward widget_utility_action_count
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: widget_name
+          value: lists
+        - key: user_action
+          value: list_create

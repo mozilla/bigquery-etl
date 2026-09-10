@@ -144,7 +144,7 @@ Because the join onto the SAP and SERP pipelines is a `left join`, a client that
 
 ### Legacy parity counters
 
-These are the six `legacy_` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `search_access_point`** — the table's own output grain, which is why they join at `join_sap_serp_cte` rather than into either pipeline.
+These are the eight `legacy_` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `search_access_point`** — the table's own output grain, which is why they join at `join_sap_serp_cte` rather than into either pipeline.
 
 Comes from `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`, the same partition the adblocker CTE already scans. The column sets are disjoint, so this is a second scan and is billed as one.
 
@@ -177,6 +177,21 @@ Only `content` labels carry a partner code, so `legacy_content_agg_cte` groups a
 Ad activity on a key with no content row keeps the sentinel `partner_code` value `unknown_code`. That value cannot come from either pipeline, both of which resolve to `no_code` or a real code, so those rows are always legacy-only. They are rare.
 
 `follow_on_from_refine_on_incontent_search`, `follow_on_from_refine_on_serp` and `opened_in_new_tab` have no counter, so the seven columns are always `0` on those access points.
+
+#### Client dimensions on legacy-only rows
+
+A key that appears only in the counters has no SAP event and no SERP impression to describe the client, so without this it would publish measures with no `country`, `locale`, operating system, `channel` or anything else. That is not a rare corner: legacy-only keys are roughly a quarter of the table's rows.
+
+`legacy_with_client_info_cte` supplies them. It reads `legacy_raw_cte` — the same read the counters use, not a second scan of `metrics_v1` — and reduces it to one row per `client_id` and `submission_date`, keeping the latest ping by `ping_info.seq` with `document_id` as a deterministic tiebreaker. Client-day is the finest grain available, because the metrics ping carries no engine or access point and its counters are interval totals rather than timestamped events. `legacy_parity_counters_cte` then left-joins it, and `clients_with_adblocker_addons_cte`, on `(client_id, submission_date)` — the same shape the two `_is_enterprise_cte`s use. Both are left joins, so a counter key survives even where no metrics-ping row describes the client.
+
+These values are only ever reached where both pipelines are absent, since `join_sap_serp_cte` coalesces SERP, then SAP, then legacy. Where a pipeline has the row, the pipeline's value wins.
+
+Two columns cannot be filled this way and are `null` on a legacy-only row:
+
+- `is_default_browser`, because `usage.is_default_browser` is not sent in the metrics ping.
+- `overridden_by_third_party`, because it is a per-search event extra and has no value at client-day grain.
+
+Two paths differ from the SAP side, which reads the same metrics from the events ping: the submission URLs are under `metrics.url2` rather than `metrics.url`, and `profile_group_id` is spelled `legacy_telemetry_profile_group_id`. `browser_engagement_max_concurrent_tab_count` is already `int64` here, so the legacy arm of that `coalesce` needs no cast where the SAP arm does.
 
 #### How they compare to v8 and to the SERP columns
 
@@ -280,7 +295,7 @@ Three sides are combined with `full outer join`s, so a row survives if it appear
 - A legacy parity key with no match on either pipeline keeps its counters. A client can increment `browser.search.adclicks` on a page whose SERP impression never registered, so such keys occur.
 - Two SERP-only columns are `null` on a sap-only row: `ad_click_target` and `ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`.
 - Two SAP-only columns are `null` on a serp-only row: `sap_provider_id` and `sap_provider_name`. They are strings rather than counts, so there is nothing to zero-fill, and the SERP side has no raw provider extra to fall back to.
-- On a legacy-only row every client dimension is `null`, including `has_adblocker_addon`, which is `false` rather than `null` everywhere else. The measures do not follow that pattern: `sap_counts_total`, the fifteen SERP-only counts and `max_concurrent_tab_count_max` are zero-filled, so those rows publish `0` rather than a visible `null` and a reader cannot tell the zero from a measured one.
+- A legacy-only row carries its client dimensions from the metrics ping, via `legacy_with_client_info_cte` — see "Client dimensions on legacy-only rows" above. Two are `null` there and nowhere else: `is_default_browser` and `overridden_by_third_party`. The SERP-only and SAP-only measures still zero-fill on these rows, as they do on any row missing that side.
 
 #### Column precedence
 

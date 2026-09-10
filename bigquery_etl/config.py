@@ -64,7 +64,9 @@ class _ConfigLoader:
                     self._update_config(current_value, extra_value, current_path_keys)
             elif current_type is list:
                 if extra_value:
-                    current_value.extend(extra_value)
+                    current_value.extend(
+                        [item for item in extra_value if item not in current_value]
+                    )
             else:
                 config[extra_key] = extra_value
 

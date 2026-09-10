@@ -26,15 +26,15 @@ span_event_hashes AS (
     rs.trace_id,
     rs.span_id,
     offset AS event_offset,
-    COALESCE(JSON_VALUE(e, '$.attributes["source.file"]'), '') AS source_file,
-    SAFE_CAST(JSON_VALUE(e, '$.attributes["source.line"]') AS INT64) AS source_line,
+    COALESCE(JSON_VALUE(e, '$.attributes."source.file"'), '') AS source_file,
+    SAFE_CAST(JSON_VALUE(e, '$.attributes."source.line"') AS INT64) AS source_line,
     COALESCE(JSON_VALUE(e, '$.attributes.result'), '') AS result,
     TO_BASE64(
       SHA256(
         CONCAT(
-          COALESCE(JSON_VALUE(e, '$.attributes["source.file"]'), ''),
+          COALESCE(JSON_VALUE(e, '$.attributes."source.file"'), ''),
           '\x00',
-          COALESCE(JSON_VALUE(e, '$.attributes["source.line"]'), ''),
+          COALESCE(JSON_VALUE(e, '$.attributes."source.line"'), ''),
           '\x00',
           COALESCE(JSON_VALUE(e, '$.attributes.result'), '')
         )

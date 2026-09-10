@@ -11,7 +11,9 @@ raw_spans AS (
   FROM
     `{{ target_project }}.{{ app_id }}_stable.{{ ping_name }}_v1`
   CROSS JOIN
-    UNNEST(JSON_QUERY_ARRAY(resource_spans)) AS resource_span
+    UNNEST(
+      JSON_QUERY_ARRAY(metrics.object.gecko_trace_traces_data, '$.resource_spans')
+    ) AS resource_span
   CROSS JOIN
     UNNEST(JSON_QUERY_ARRAY(resource_span, '$.scope_spans')) AS scope_span
   CROSS JOIN

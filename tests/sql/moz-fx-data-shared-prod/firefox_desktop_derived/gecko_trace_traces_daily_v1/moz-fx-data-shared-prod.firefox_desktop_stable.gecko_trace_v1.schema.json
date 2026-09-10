@@ -6,7 +6,21 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "resource_spans",
-    "type": "STRING"
+    "name": "metrics",
+    "type": "RECORD",
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "object",
+        "type": "RECORD",
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "gecko_trace_traces_data",
+            "type": "JSON"
+          }
+        ]
+      }
+    ]
   }
 ]

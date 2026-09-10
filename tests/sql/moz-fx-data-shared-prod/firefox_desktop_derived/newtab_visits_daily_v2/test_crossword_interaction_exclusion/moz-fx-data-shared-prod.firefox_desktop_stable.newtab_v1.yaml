@@ -70,7 +70,19 @@
           value: interaction
         - key: action_value
           value: play_started
-      # RETAINED: no action_value at all - must not be dropped by the predicate
+      # RETAINED: crossword `interaction` with no action_value key at all. Guards
+      # against NULL propagation - the predicate must treat this as a genuine event
+      # rather than evaluating to NULL and silently dropping it.
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+      # RETAINED: genuine action with no action_value
     - category: newtab
       name: widgets_user_event
       extra:

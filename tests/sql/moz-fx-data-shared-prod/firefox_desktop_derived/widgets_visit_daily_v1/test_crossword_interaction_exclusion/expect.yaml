@@ -1,14 +1,15 @@
 ---
-# crossword: 3 of the 7 user events are excluded (input_letter, cell_click,
-# reveal_grid_completed). The 4 retained events are the `interaction` with
-# play_started, puzzle_completed, learn_more and change_size.
+# crossword: 3 of the 8 user events are excluded (input_letter, cell_click,
+# reveal_grid_completed). The 5 retained events are the `interaction` with
+# play_started, the `interaction` with no action_value, puzzle_completed,
+# learn_more and change_size.
 - submission_date: 2026-05-04
   client_id: client_id_1
   newtab_visit_id: visit_id_1
   widget_name: crossword
   widget_size: large
   impression_count: 1
-  user_event_count: 4
+  user_event_count: 5
   change_size_or_learn_more_count: 2
   enabled_count: 0
   disabled_count: 0
@@ -31,7 +32,7 @@
   is_default_ui: true
   user_action_counts:
     - user_action: interaction
-      count: 1
+      count: 2
     - user_action: puzzle_completed
       count: 1
     - user_action: learn_more

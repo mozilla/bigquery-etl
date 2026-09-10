@@ -4001,9 +4001,6 @@ fields:
         was disabled on this page by the user, 2 = shield shown because some content
         was blocked)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram TRACKING_PROTECTION_SHIELD.
-
         '
     - name: cookie_purging_origins_purged
       type: RECORD
@@ -13682,9 +13679,6 @@ fields:
         mode: NULLABLE
       description: 'True if tracking protection is enabled globally at startup.
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        TRACKING_PROTECTION_ENABLED.
-
         '
     - name: contentblocking_tracking_protection_pbm_disabled
       type: RECORD
@@ -13698,9 +13692,6 @@ fields:
         mode: NULLABLE
       description: 'True if tracking protection in Private Browsing mode is disabled
         at startup.
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        TRACKING_PROTECTION_PBM_DISABLED.
 
         '
     - name: crash_metrics_crash_count
@@ -19263,11 +19254,11 @@ fields:
         we were online at page load: the captive-portal reading was stale and the
         authoritative re-check came back offline/captive or timed out, so no CTA was
         shown. Connectivity dropping *after* the CTA was shown is a different thing
-        and is counted by search_cta_click_aborted, not here. not_top_level means
-        the error document was not the top-level document (a DNS failure inside an
-        embedded document on a page that loaded fine), so no CTA was offered; it is
-        evaluated before the failed URL is looked at, which is why such a load can
-        never appear under keywords_found, no_path or no_mean'
+        and is counted by search_cta_click_aborted, not here. decision_timed_out means
+        the decision did not finish inside browser.netError.searchCTA.decisionTimeoutMs,
+        the deadline the page waits out before rendering without a CTA, so it was
+        abandoned and no CTA was shown. It absorbs most of what used to be counted
+        under connectivity_unconfirmed. The stale-re'
     - name: cache_schema_init_error
       type: RECORD
       mode: REPEATED

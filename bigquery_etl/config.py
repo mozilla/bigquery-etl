@@ -47,7 +47,7 @@ class _ConfigLoader:
                 continue
 
             current_path_keys = path_keys + [extra_key]
-            current_path = ".".join(current_path_keys)
+            current_path = ".".join(str(key) for key in current_path_keys)
             current_type = type(current_value)
             extra_type = type(extra_value)
 

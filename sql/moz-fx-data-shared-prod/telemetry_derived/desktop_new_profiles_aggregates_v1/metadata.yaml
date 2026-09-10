@@ -2,6 +2,13 @@ friendly_name: Desktop New Profiles Aggregates
 description: |-
   This table aggregates the number of new profiles on a given day as well as recording if new profiles are DAU
   for desktop client_ids
+
+  From first_seen_date 2026-08-27 onward, profiles created by the automated segment tracked in
+  DENG-11590 are excluded (see udf.is_desktop_argument_profile_automation). At its peak this
+  segment was ~83% of all desktop new profiles, so counts here are not comparable to unfiltered
+  sources such as telemetry.clients_first_seen, which is deliberately left unchanged. The same
+  profiles are flagged rather than removed on telemetry.desktop_new_profiles_clients, via
+  is_desktop_argument_profile_automation.
 owners:
 - mhirose@mozilla.com
 labels:

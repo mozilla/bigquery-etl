@@ -24,7 +24,7 @@ SELECT
   END AS normalized_engine, -- this is "engine" in v8
   -- the two raw extras behind normalized_engine, kept so consumers can see what the engine
   -- CASE collapsed. prefixed here rather than at the join, unlike the README convention:
-  -- by join_sap_serp_cte provider_id already means the SERP normalized engine, so an
+  -- by join_sources_cte provider_id already means the SERP normalized engine, so an
   -- unprefixed sap provider_id would collide with it
   JSON_VALUE(event_extra.provider_id) AS sap_provider_id,
   JSON_VALUE(event_extra.provider_name) AS sap_provider_name,

@@ -1,10 +1,10 @@
--- join_sap_serp_cte
+-- join_sources_cte
 SELECT
-  -- columns present on both sides are COALESCEd with serp taking precedence;
-  -- a serp_ or sap_ prefix means the value comes from that side only
-  -- the grain keys coalesce all THREE sides. legacy_cte joins FULL OUTER, so a legacy key
-  -- matching neither pipeline is kept, and without it here that row would publish a NULL
-  -- grain beside populated counters -- every such row collapsing onto one tuple and
+  -- columns present on more than one side are COALESCEd in the order serp, sap, legacy;
+  -- a serp_, sap_ or legacy_ prefix means the value comes from that side only
+  -- on the grain keys that last argument is load-bearing. legacy_cte joins FULL OUTER, so a
+  -- legacy key matching neither pipeline is kept, and without it here that row would publish a
+  -- NULL grain beside populated counters -- every such row collapsing onto one tuple and
   -- breaking grain uniqueness. legacy_cte.partner_code is 'unknown_code' rather than NULL on
   -- orphan ad rows, so no grain key becomes nullable.
   COALESCE(serp_final_cte.client_id, sap_final_cte.client_id, legacy_cte.client_id) AS client_id,

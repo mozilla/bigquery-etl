@@ -87,4 +87,4 @@ SELECT
   legacy_ad_click_tagged, -- NEW
   legacy_ad_click_organic -- NEW
 FROM
-  `search_derived.search_clients_daily_glean_v1.join_sap_serp_cte`
+  `search_derived.search_clients_daily_glean_v1.join_sources_cte`

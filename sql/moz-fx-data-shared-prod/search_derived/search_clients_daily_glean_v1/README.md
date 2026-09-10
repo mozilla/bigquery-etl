@@ -80,17 +80,17 @@ graph TD
 
     %% FINALS
 
-    join_sap_serp("join_sap_serp<br/>---<br/>serp_final full outer join sap_final<br/>full outer join legacy_parity_counters on:<br/>client_id<br/>submission_date<br/>engine<br/>partner_code<br/>source<br/>---<br/>shared columns coalesced serp first<br/>grain keys coalesced serp, sap, legacy")
+    join_sources("join_sources<br/>---<br/>serp_final full outer join sap_final<br/>full outer join legacy_parity_counters on:<br/>client_id<br/>submission_date<br/>engine<br/>partner_code<br/>source<br/>---<br/>shared columns coalesced serp first<br/>grain keys coalesced serp, sap, legacy")
 
     final("final<br/>---<br/>renames to the output schema<br/>no further aggregation")
 
-    sap_final --> join_sap_serp
+    sap_final --> join_sources
 
-    serp_final --> join_sap_serp
+    serp_final --> join_sources
 
-    legacy -->|"full outer join on the five grain keys"| join_sap_serp
+    legacy -->|"full outer join on the five grain keys"| join_sources
 
-    join_sap_serp -->|"merge SAP and SERP records into one record"| final
+    join_sources -->|"merge the three sources into one record"| final
 
     %% Styling to match dbt docs
     classDef cteStyle fill:#5c9fd6,stroke:#4a7fb8,stroke-width:2px,color:#fff
@@ -102,7 +102,7 @@ graph TD
     class sap_base,sap_events_info,adblocker,legacy,sap_enterprise,serp_base,serp_events_info,serp_enterprise,sap_agg,serp_agg_base,serp_agg cteStyle
     class sap_full_events,serp_full_events joinStyle
     class sap_final,serp_final intermediateStyle
-    class join_sap_serp,final finalStyle
+    class join_sources,final finalStyle
 ```
 
 ## Helper functions
@@ -144,7 +144,7 @@ Because the join onto the SAP and SERP pipelines is a `left join`, a client that
 
 ### Legacy parity counters
 
-These are the eight `legacy_` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `search_access_point`** — the table's own output grain, which is why they join at `join_sap_serp_cte` rather than into either pipeline.
+These are the eight `legacy_` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `search_access_point`** — the table's own output grain, which is why they join at `join_sources_cte` rather than into either pipeline.
 
 Comes from `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`, the same partition the adblocker CTE already scans. The column sets are disjoint, so this is a second scan and is billed as one.
 
@@ -158,7 +158,7 @@ They are native Glean metrics, not a Legacy Telemetry mirror, so they are unaffe
 
 #### Shape
 
-Each family is a separate labeled counter per access point — 17 access points times three families, 51 metrics. `legacy_raw_cte` collects them into one array of `(access_point, family, counter)` structs and `legacy_exploded_cte` unnests it, so the three families become one long row set keyed by access point instead of 51 near-identical `unnest`es.
+Each family is a separate labeled counter per access point — 17 access points times three families, 51 metrics. `legacy_base_cte` collects them into one array of `(access_point, family, counter)` structs and `legacy_exploded_cte` unnests it, so the three families become one long row set keyed by access point instead of 51 near-identical `unnest`es.
 
 The label on each counter carries the rest of the key, colon-separated:
 
@@ -182,9 +182,9 @@ Ad activity on a key with no content row keeps the sentinel `partner_code` value
 
 A key that appears only in the counters has no SAP event and no SERP impression to describe the client, so without this it would publish measures with no `country`, `locale`, operating system, `channel` or anything else. That is not a rare corner: legacy-only keys are roughly a quarter of the table's rows.
 
-`legacy_with_client_info_cte` supplies them. It reads `legacy_raw_cte` — the same read the counters use, not a second scan of `metrics_v1` — and reduces it to one row per `client_id` and `submission_date`, keeping the latest ping by `ping_info.seq` with `document_id` as a deterministic tiebreaker. Client-day is the finest grain available, because the metrics ping carries no engine or access point and its counters are interval totals rather than timestamped events. `legacy_parity_counters_cte` then left-joins it, and `clients_with_adblocker_addons_cte`, on `(client_id, submission_date)` — the same shape the two `_is_enterprise_cte`s use. Both are left joins, so a counter key survives even where no metrics-ping row describes the client.
+`legacy_with_client_info_cte` supplies them. It reads `legacy_base_cte` — the same read the counters use, not a second scan of `metrics_v1` — and reduces it to one row per `client_id` and `submission_date`, keeping the latest ping by `ping_info.seq` with `document_id` as a deterministic tiebreaker. Client-day is the finest grain available, because the metrics ping carries no engine or access point and its counters are interval totals rather than timestamped events. `legacy_parity_counters_cte` then left-joins it, and `clients_with_adblocker_addons_cte`, on `(client_id, submission_date)` — the same shape the two `_is_enterprise_cte`s use. Both are left joins, so a counter key survives even where no metrics-ping row describes the client.
 
-These values are only ever reached where both pipelines are absent, since `join_sap_serp_cte` coalesces SERP, then SAP, then legacy. Where a pipeline has the row, the pipeline's value wins.
+These values are only ever reached where both pipelines are absent, since `join_sources_cte` coalesces SERP, then SAP, then legacy. Where a pipeline has the row, the pipeline's value wins.
 
 Two columns cannot be filled this way and are `null` on a legacy-only row:
 
@@ -228,9 +228,9 @@ SERP's comes from `mozdata.firefox_desktop.serp_events`, read by `serp_base`, wh
 
 The engine is normalized on both sides through `udf.normalize_search_engine`. On the SAP side the input is `provider_id`, except where `provider_id` is `other`, in which case `provider_name` is normalized instead. On the SERP side the input is `search_engine`.
 
-`sap_base` also projects those two raw extras as `sap_provider_id` and `sap_provider_name`, and they reach the output under those names, so a consumer can see what the engine `case` collapsed — in particular which provider an `other` row actually was. They are prefixed at `sap_base` rather than at the join, which is the one departure from the prefix convention described below: by `join_sap_serp_cte` the name `provider_id` already means the SERP normalized engine, so an unprefixed SAP `provider_id` would collide with it. There is no SERP counterpart to coalesce with, because SERP carries a single provider extra that `serp_base` normalizes into `provider_id` and does not keep raw.
+`sap_base` also projects those two raw extras as `sap_provider_id` and `sap_provider_name`, and they reach the output under those names, so a consumer can see what the engine `case` collapsed — in particular which provider an `other` row actually was. They are prefixed at `sap_base` rather than at the join, which is the one departure from the prefix convention described below: by `join_sources_cte` the name `provider_id` already means the SERP normalized engine, so an unprefixed SAP `provider_id` would collide with it. There is no SERP counterpart to coalesce with, because SERP carries a single provider extra that `serp_base` normalizes into `provider_id` and does not keep raw.
 
-`partner_code` is a grain key, so two searches on the same engine and source with different partner codes on the same day produce two rows, one per code. It is never `null`: both sides derive it as `coalesce(nullif(partner_code, ''), 'no_code')`, so an empty string and an absent key both become the literal `no_code`. This is required rather than cosmetic — `partner_code` keys all four internal joins, the two `_aggregates` left joins and both full outer joins in `join_sap_serp_cte`, and BigQuery's equality never matches `null` to `null`, so a nullable key would silently lose every affected row's aggregates. It also means consumers can split on `partner_code` with `=` and `!=` without a `null` bucket escaping both sides. The expression appears twice, once in `sap_base` and once in `serp_base`. The two are not textually identical, because SAP has to read the value out of JSON with `json_value` first; what must hold is that both produce the same string for the same input, or the join misses.
+`partner_code` is a grain key, so two searches on the same engine and source with different partner codes on the same day produce two rows, one per code. It is never `null`: both sides derive it as `coalesce(nullif(partner_code, ''), 'no_code')`, so an empty string and an absent key both become the literal `no_code`. This is required rather than cosmetic — `partner_code` keys all four internal joins, the two `_aggregates` left joins and both full outer joins in `join_sources_cte`, and BigQuery's equality never matches `null` to `null`, so a nullable key would silently lose every affected row's aggregates. It also means consumers can split on `partner_code` with `=` and `!=` without a `null` bucket escaping both sides. The expression appears twice, once in `sap_base` and once in `serp_base`. The two are not textually identical, because SAP has to read the value out of JSON with `json_value` first; what must hold is that both produce the same string for the same input, or the join misses.
 
 SAP `source` values are rewritten onto the SERP vocabulary, which the SERP side reads from `sap_source`. `abouthome` becomes `about_home`, `newtab` becomes `about_newtab`, and every remaining hyphen becomes an underscore, so `urlbar-handoff`, `urlbar-searchmode` and `urlbar-persisted` become `urlbar_handoff`, `urlbar_searchmode` and `urlbar_persisted`. A `null` source stays `null`. The expression appears once, in `sap_base`.
 
@@ -282,9 +282,9 @@ The two sides do not compute the same measures.
 
 SAP joins using `client_id, submission_date, normalized_engine, partner_code, source`. SERP joins using `client_id, submission_date, provider_id, partner_code, search_access_point`.
 
-### Join SAP and SERP
+### Join the sources
 
-This is the `join_sap_serp_cte`. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point**, carrying both the SAP and the SERP measures for that combination.
+This is the `join_sources_cte`. The grain is **one row per `client_id`, `submission_date`, engine, `partner_code` and access point**, carrying the SAP, SERP and legacy measures for that combination.
 
 #### Full outer join, not serp-driven
 
@@ -299,7 +299,7 @@ Three sides are combined with `full outer join`s, so a row survives if it appear
 
 #### Column precedence
 
-Every column present on both sides is combined with `coalesce(serp, sap)`. SERP takes precedence and SAP fills in only where the SERP value is `null`. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max`.
+Every column present on more than one side is combined with a `coalesce` in the order SERP, SAP, legacy. SERP takes precedence, SAP fills in where the SERP value is `null`, and legacy fills in where neither pipeline carries the row at all. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max` — of which only the second takes a legacy argument.
 
 The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_`, `sap_` or `legacy_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total`, `sap_provider_id` and `sap_provider_name` from SAP, `serp_counts_total`, `serp_ad_click_target`, `serp_ad_blocker_inferred` and the SERP ad and engagement counts from SERP, and the seven `legacy_` counters from the metrics ping. The `legacy_` ones keep their prefix in the output, as do `serp_counts_total` and the `sap_provider` pair; every other prefix is stripped in `final_cte`. The prefix distinguishes each counter from the SERP-derived measure of the same events, which is published under its own name.
 
@@ -307,13 +307,13 @@ Every prefix is applied here, at the join, and the side-only column is coined un
 
 **Coalescing the join keys is load-bearing, not cosmetic.** The final CTE reads every identity column from the SERP side, so without the `coalesce` a sap-only row would emit a `null` `submission_date`, `client_id`, `source`, `country` and `sample_id`. `submission_date` is the fatal one: the table is day-partitioned on it with `require_partition_filter: true`, so those rows would land in the `__NULL__` partition and be unreachable to any query that filters by date — which is every query. `sample_id` matters too, since it is the clustering field.
 
-**The five grain keys and `sample_id` coalesce all three sides**, SERP then SAP then legacy, for the same reason. A legacy-only row is reachable by construction — `legacy_parity_counters_cte` assigns the sentinel `unknown_code` to orphan ad rows, a value neither pipeline can produce — so leaving legacy out of the coalesce would publish rows with a wholly `null` grain and populated counters, all of them colliding on one grain tuple. No key becomes nullable in the process: legacy's `partner_code` is the sentinel rather than `null`, and its `submission_date` and `search_access_point` come from the partition filter and a fixed list.
+**On the five grain keys and `sample_id`, the legacy argument is load-bearing for a second reason.** A legacy-only row is reachable by construction — `legacy_parity_counters_cte` assigns the sentinel `unknown_code` to orphan ad rows, a value neither pipeline can produce — so leaving legacy out of the coalesce would publish rows with a wholly `null` grain and populated counters, all of them colliding on one grain tuple. No key becomes nullable in the process: legacy's `partner_code` is the sentinel rather than `null`, and its `submission_date` and `search_access_point` come from the partition filter and a fixed list.
 
 **Anything derived from a published column is derived after the coalesce.** `os_version_major` and `os_version_minor` are computed in `final_cte` from the coalesced `os`, `os_version` and `windows_build_number`, so a row's derived value and the inputs it publishes always come from the same side. Deriving per side and coalescing the two results separately breaks that, because each column then picks its winner independently: a row can publish one side's `windows_build_number` beside a release name the other side computed without it, and nothing in the row says so.
 
 #### Counts and sums are zero, never null
 
-Every count and sum in this CTE falls back to `0`. A row that reaches this CTE from one side only has no counterpart on the other side for that client, date, engine, partner code and access point, so zero is the count rather than an unknown.
+Every count and sum in this CTE falls back to `0`. A row that reaches this CTE from one source only has no counterpart on the others for that client, date, engine, partner code and access point, so zero is the count rather than an unknown.
 
 The trade-off is that a zero no longer distinguishes "no activity" from "the other side's data is missing or late". Conditions where SAP is recorded but not SERP are mostly on engines where we have not instrumented SERP metrics at all. If needed, look at the search provider to check uncertainty.
 
@@ -331,7 +331,7 @@ Five columns are deliberately left alone. `profile_age_in_days` is not a count, 
 
 ### Final
 
-This is `final_cte`. It renames the joined columns to the output schema and performs no further aggregation or filtering, so the row count matches `join_sap_serp_cte` exactly. There is no `where` clause, which is what allows SAP-only rows to reach the table.
+This is `final_cte`. It renames the joined columns to the output schema and performs no further aggregation or filtering, so the row count matches `join_sources_cte` exactly. There is no `where` clause, which is what allows SAP-only rows to reach the table.
 
 A few output columns are worth calling out.
 
@@ -355,6 +355,6 @@ One output carries a tie that BigQuery does not break. It matches `search_client
 Four outputs were non-deterministic and have been made reproducible:
 
 - `ad_click_target` (`string_agg`): `order by ad_component.component`. `distinct` fixes the set; the `order by` fixes the concatenation order.
-- `experiments` on the SAP side (`sap_events_with_client_info_cte`): the array is built by iterating `json_keys(experiments, 1)`, whose order BigQuery does not document as stable, so the element order is pinned with `order by k` on the experiment slug. The SERP side is a passthrough of `ping_info.experiments` and keeps whatever order the ping carried; the two conventions never mix, because the `coalesce` in `join_sap_serp_cte` takes one side's array whole.
+- `experiments` on the SAP side (`sap_events_with_client_info_cte`): the array is built by iterating `json_keys(experiments, 1)`, whose order BigQuery does not document as stable, so the element order is pinned with `order by k` on the experiment slug. The SERP side is a passthrough of `ping_info.experiments` and keeps whatever order the ping carried; the two conventions never mix, because the `coalesce` in `join_sources_cte` takes one side's array whole.
 - SERP passthrough columns (`serp_events_with_client_info_cte`): the `qualify row_number() over (... order by event_timestamp desc)` picked an arbitrary row when two events for the same client, date, engine, and access point shared an `event_timestamp`. `impression_id` is now a secondary sort key; it is unique in `serp_events_v2`, so the surviving row is fully determined.
 - SAP passthrough columns (`sap_events_with_client_info_cte`): the same problem, and the exact mirror of the case above. `event_timestamp` on `events_stream_v1` is itself derived — it prefers a `glean_timestamp` extra and otherwise falls back to `ping_info.parsed_start_time` plus the event's millisecond offset — so two `sap.counts` events in one ping tie whenever they land in the same millisecond. `event_id` is now a secondary sort key; it is `document_id` plus the event's position in the ping, so it is unique per event and the surviving row is fully determined.

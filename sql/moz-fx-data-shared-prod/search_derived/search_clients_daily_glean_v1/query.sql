@@ -16,7 +16,7 @@ CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
 --
 -- The three families are UNPIVOTed into one long row set keyed by access point so the
 -- 17 columns per family do not become 51 near-identical UNNESTs.
-WITH legacy_raw_cte AS (
+WITH legacy_base_cte AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
@@ -229,7 +229,7 @@ WITH legacy_raw_cte AS (
     DATE(submission_timestamp) = @submission_date
 ),
 -- one row per client-day, carrying the client dimensions for keys neither pipeline sees.
--- Reads legacy_raw_cte rather than the source. Client-day is the finest grain available: the
+-- Reads legacy_base_cte rather than the source. Client-day is the finest grain available: the
 -- metrics ping has no engine or access point, and the counters it reports are interval totals
 -- rather than timestamped events, so there is nothing finer to key on.
 -- The latest ping wins. ping_seq is a per-client monotonic counter for this ping type, so it
@@ -279,7 +279,7 @@ legacy_with_client_info_cte AS (
     policies_is_enterprise,
     max_concurrent_tab_count_max
   FROM
-    legacy_raw_cte
+    legacy_base_cte
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -292,9 +292,9 @@ legacy_with_client_info_cte AS (
 ),
 legacy_exploded_cte AS (
   SELECT
-    legacy_raw_cte.client_id,
-    legacy_raw_cte.submission_date,
-    legacy_raw_cte.sample_id,
+    legacy_base_cte.client_id,
+    legacy_base_cte.submission_date,
+    legacy_base_cte.sample_id,
     f.ap AS search_access_point,
     f.fam AS family,
     -- segment 1: provider, normalized the same way the SAP side normalizes it so the
@@ -316,8 +316,8 @@ legacy_exploded_cte AS (
     ) AS partner_code,
     kv.value AS n
   FROM
-    legacy_raw_cte,
-    UNNEST(legacy_raw_cte.families) AS f,
+    legacy_base_cte,
+    UNNEST(legacy_base_cte.families) AS f,
     UNNEST(f.kv) AS kv
 ),
 -- content carries partner_code, so it aggregates at the full grain directly
@@ -503,7 +503,7 @@ sap_base_cte AS (
     END AS normalized_engine, -- this is "engine" in v8
     -- the two raw extras behind normalized_engine, kept so consumers can see what the engine
     -- CASE collapsed. prefixed here rather than at the join, unlike the README convention:
-    -- by join_sap_serp_cte provider_id already means the SERP normalized engine, so an
+    -- by join_sources_cte provider_id already means the SERP normalized engine, so an
     -- unprefixed sap provider_id would collide with it
     JSON_VALUE(event_extra.provider_id) AS sap_provider_id,
     JSON_VALUE(event_extra.provider_name) AS sap_provider_name,
@@ -927,13 +927,13 @@ serp_final_cte AS (
     serp_aggregates_cte
     USING (client_id, submission_date, provider_id, partner_code, search_access_point)
 ),
-join_sap_serp_cte AS (
+join_sources_cte AS (
   SELECT
-    -- columns present on both sides are COALESCEd with serp taking precedence;
-    -- a serp_ or sap_ prefix means the value comes from that side only
-    -- the grain keys coalesce all THREE sides. legacy_cte joins FULL OUTER, so a legacy key
-    -- matching neither pipeline is kept, and without it here that row would publish a NULL
-    -- grain beside populated counters -- every such row collapsing onto one tuple and
+    -- columns present on more than one side are COALESCEd in the order serp, sap, legacy;
+    -- a serp_, sap_ or legacy_ prefix means the value comes from that side only
+    -- on the grain keys that last argument is load-bearing. legacy_cte joins FULL OUTER, so a
+    -- legacy key matching neither pipeline is kept, and without it here that row would publish a
+    -- NULL grain beside populated counters -- every such row collapsing onto one tuple and
     -- breaking grain uniqueness. legacy_cte.partner_code is 'unknown_code' rather than NULL on
     -- orphan ad rows, so no grain key becomes nullable.
     COALESCE(serp_final_cte.client_id, sap_final_cte.client_id, legacy_cte.client_id) AS client_id,
@@ -1311,7 +1311,7 @@ final_cte AS (
     legacy_ad_click_tagged, -- NEW
     legacy_ad_click_organic -- NEW
   FROM
-    join_sap_serp_cte
+    join_sources_cte
 )
 SELECT
   *

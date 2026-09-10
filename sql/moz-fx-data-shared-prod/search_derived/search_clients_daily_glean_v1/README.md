@@ -1,4 +1,4 @@
-[DENG-8178 for search_clients_daily_v9](https://mozilla-hub.atlassian.net/browse/DENG-8178)
+[DENG-8178](https://mozilla-hub.atlassian.net/browse/DENG-8178)
 
 A daily aggregate of desktop searches, one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `source`.
 
@@ -190,7 +190,7 @@ Two of them differ from their SERP-derived neighbours for definitional reasons r
 
 These are the `_is_enterprise_cte`s. The grain is **one row per `client_id` and `submission_date`**. Each row represents a specific client's enterprise policy status for a specific day, taken as the statistical mode (most common value) across that day's events. **Note:** If a client had multiple events on the same day, they would still only get one row in this result set, showing the mode of their enterprise status for that day (ties broken toward the latest `event_timestamp`). This matches v8.
 
-Both CTEs require `document_id is not null`, and the SAP one additionally restricts to `event = 'sap.counts'`.
+Both CTEs require `document_id is not null`. The SAP one also sees only `event = 'sap.counts'`, but that filter lives in `sap_base` and is inherited rather than applied here.
 
 #### Aggregation
 
@@ -215,7 +215,7 @@ The engine is normalized on both sides through `udf.normalize_search_engine`. On
 
 `sap_base` also projects those two raw extras as `sap_provider_id` and `sap_provider_name`, and they reach the output under those names, so a consumer can see what the engine `case` collapsed — in particular which provider an `other` row actually was. They are prefixed at `sap_base` rather than at the join, which is the one departure from the prefix convention described below: by `join_sap_serp_cte` the name `provider_id` already means the SERP normalized engine, so an unprefixed SAP `provider_id` would collide with it. There is no SERP counterpart to coalesce with, because SERP carries a single provider extra that `serp_base` normalizes into `provider_id` and does not keep raw.
 
-`partner_code` is a grain key, so two searches on the same engine and source with different partner codes on the same day produce two rows, one per code. It is never `null`: both sides derive it as `coalesce(nullif(partner_code, ''), 'no_code')`, so an empty string and an absent key both become the literal `no_code`. This is required rather than cosmetic — `partner_code` is a key in all three internal joins, and BigQuery's equality never matches `null` to `null`, so a nullable key would silently lose every affected row's aggregates. It also means consumers can split on `partner_code` with `=` and `!=` without a `null` bucket escaping both sides. The expression appears twice, once in `sap_base` and once in `serp_base`, and the two must stay byte-identical or the join misses.
+`partner_code` is a grain key, so two searches on the same engine and source with different partner codes on the same day produce two rows, one per code. It is never `null`: both sides derive it as `coalesce(nullif(partner_code, ''), 'no_code')`, so an empty string and an absent key both become the literal `no_code`. This is required rather than cosmetic — `partner_code` keys all four internal joins, the two `_aggregates` left joins and both full outer joins in `join_sap_serp_cte`, and BigQuery's equality never matches `null` to `null`, so a nullable key would silently lose every affected row's aggregates. It also means consumers can split on `partner_code` with `=` and `!=` without a `null` bucket escaping both sides. The expression appears twice, once in `sap_base` and once in `serp_base`. The two are not textually identical, because SAP has to read the value out of JSON with `json_value` first; what must hold is that both produce the same string for the same input, or the join misses.
 
 SAP `source` values are rewritten onto the SERP vocabulary, which the SERP side reads from `sap_source`. `abouthome` becomes `about_home`, `newtab` becomes `about_newtab`, and every remaining hyphen becomes an underscore, so `urlbar-handoff`, `urlbar-searchmode` and `urlbar-persisted` become `urlbar_handoff`, `urlbar_searchmode` and `urlbar_persisted`. A `null` source stays `null`. The expression appears once, in `sap_base`.
 
@@ -258,7 +258,7 @@ Each row represents aggregated search activity and engagement metrics for a spec
 The two sides do not compute the same measures.
 
 - SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`, and derives `profile_age_in_days` from `ping_info.start_time` against the first run date.
-- SERP produces `serp_counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`. SERP derives `profile_age_in_days` from `subsession_start_time` against the first run date.
+- SERP produces `counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. All of them are coined here without the `serp_` prefix and pick it up at the join. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`. SERP derives `profile_age_in_days` from `subsession_start_time` against the first run date.
 
 #### SAP and SERP Final
 
@@ -280,7 +280,7 @@ Three sides are combined with `full outer join`s, so a row survives if it appear
 - A legacy parity key with no match on either pipeline keeps its counters. A client can increment `browser.search.adclicks` on a page whose SERP impression never registered, so such keys occur.
 - Two SERP-only columns are `null` on a sap-only row: `ad_click_target` and `ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`.
 - Two SAP-only columns are `null` on a serp-only row: `sap_provider_id` and `sap_provider_name`. They are strings rather than counts, so there is nothing to zero-fill, and the SERP side has no raw provider extra to fall back to.
-- On a legacy-only row every column that is not a grain key or a legacy counter is `null`, including `has_adblocker_addon`, which is `false` rather than `null` everywhere else.
+- On a legacy-only row every client dimension is `null`, including `has_adblocker_addon`, which is `false` rather than `null` everywhere else. The measures do not follow that pattern: `sap_counts_total`, the fifteen SERP-only counts and `max_concurrent_tab_count_max` are zero-filled, so those rows publish `0` rather than a visible `null` and a reader cannot tell the zero from a measured one.
 
 #### Column precedence
 
@@ -320,14 +320,16 @@ This is `final_cte`. It renames the joined columns to the output schema and perf
 
 A few output columns are worth calling out.
 
-- `normalized_engine` is the only engine column. v8's `engine` is dropped. In v8 `engine` held the raw engine string and `normalized_engine` was always null; in v9 the engine is normalized through `udf.normalize_search_engine` on both pipelines, so the two columns would have held the same value.
+- `normalized_engine` is the only engine column. v8's `engine` is dropped. In v8 `engine` held the raw engine string and `normalized_engine` was always null; in glean_v1 the engine is normalized through `udf.normalize_search_engine` on both pipelines, so the two columns would have held the same value.
 - `sap_provider_id` and `sap_provider_name` are the raw SAP extras behind `normalized_engine`, kept so the normalization is auditable — `normalized_engine` buckets many raw providers into one value, and where `sap_provider_id` is `other` it is `sap_provider_name` that determined the bucket. Both keep their prefix in the output and are `null` on serp-only rows. They have no v8 counterpart.
-- `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so v9 had no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
+- `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so glean_v1 has no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
+- `sap_counts_total` is not v8's `sap`, despite measuring the same activity. v8's was a `sum` of the legacy `search_counts.count` counter; this is a `count(*)` over `sap.counts` events, at a grain that also includes `partner_code`. Summing this column will not reproduce v8's `sap`.
+- `ping_start_time` and `ping_end_time` are raw client-local strings, not timestamps, and the two sides fill them from different fields — `ping_info.start_time` and `ping_info.end_time` on SAP, `subsession_start_time` and `subsession_end_time` on SERP. The format is not uniform either: the SERP field arrives in four shapes, two of them with no seconds component, so a pattern written for the other two returns `null` on them silently. Anyone parsing these downstream meets both traps this table already hit — that silent null, and the local-offset conversion behind the `first_run_date` off-by-one.
 - The ad measures are renamed so each name states which half it counts, rather than leaving the tagged half as the unmarked default the way v8 did. v8's `ad_click` is `ad_click_total`, `ad_clicks_tagged` is `ad_click_tagged`, and `search_with_ads` is `search_with_ads_tagged`. The organic counterparts, `ad_click_organic` and `search_with_ads_organic`, keep their v8 names. So the tagged and organic pairs now read `ad_click_tagged`/`ad_click_organic` and `search_with_ads_tagged`/`search_with_ads_organic`, with `ad_click_total` counting every ad click regardless of `is_tagged`. Note that `ad_click_total` is not guaranteed to equal `ad_click_tagged` plus `ad_click_organic`: the two halves are split on `is_tagged is true` and `is_tagged is false`, both of which exclude `null`, while the total sums every row. They agree only where `is_tagged` is never `null`.
 - `experiments` prefers the SERP passthrough, which arrives as a repeated field and is never `null`. Because `coalesce` returns the first non-`null` argument and an empty array is not `null`, the SAP side is only reached on sap-only rows. The SAP side builds the same shape from JSON, one element per enrollment, ordered by experiment slug.
 - The seven `legacy_` columns measure the same events as SERP-derived columns already in the table: `legacy_tagged_sap` against `tagged_serp`, `legacy_ad_click_tagged` against `ad_click_tagged`, `legacy_search_with_ads_tagged` against `search_with_ads_tagged`, and the organic counterparts. The two sets are collected by different mechanisms and do not agree. See the legacy parity counters section above.
 
-v9 is **not** a column-for-column match of v8 and is not intended to be. Every column carries real data; nothing is emitted as a placeholder `null` purely to preserve the v8 shape. Nineteen v8 columns that had no Glean source are therefore absent from both the query and `schema.yaml`: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, `is_sap_monetizable`, and the thirteen `scalar_parent_urlbar_searchmode_*` columns.
+glean_v1 is **not** a column-for-column match of v8 and is not intended to be. Every column carries real data; nothing is emitted as a placeholder `null` purely to preserve the v8 shape. Nineteen v8 columns that had no Glean source are therefore absent from both the query and `schema.yaml`: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, `is_sap_monetizable`, and the thirteen `scalar_parent_urlbar_searchmode_*` columns.
 
 ## Determinism and reproducibility
 

@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "metrics",
+    "type": "RECORD",
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "object",
+        "type": "RECORD",
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "gecko_trace_traces_data",
+            "type": "JSON"
+          }
+        ]
+      }
+    ]
+  }
+]

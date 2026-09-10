@@ -1,0 +1,29 @@
+---
+friendly_name: Gecko Trace Events
+description: |-
+  Event types from Gecko traces, one row per event signature.
+
+  The event signature is a hash of (source_file, source_line, result).
+  It is stable within a Firefox release and changes when the source moves.
+  The stable_event_id is a UUID that is set when a signature is first seen.
+  A mapper can point a new signature at an existing stable_event_id.
+
+  This table has no counts. Daily counts are in gecko_trace_events_daily_v1.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
+
+bigquery:
+  clustering:
+    fields:
+      - event_signature

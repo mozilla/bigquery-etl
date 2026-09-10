@@ -15,9 +15,7 @@ from sql_generators.mobile_kpi_support_metrics.mobile_kpi_support_metrics import
 TEST_DIR = Path(__file__).parent
 TEST_CONFIG_FILE = "test_config.yaml"
 
-CONFIG_LOADER = _ConfigLoader()
-CONFIG_LOADER.set_project_dir(TEST_DIR)
-CONFIG_LOADER.set_config_file(TEST_CONFIG_FILE)
+CONFIG_LOADER = _ConfigLoader(TEST_DIR / TEST_CONFIG_FILE)
 
 
 class MobileTestProducts(Enum):

@@ -456,7 +456,8 @@ def validate_exclusion_list_expiration_days(metadata, path):
 def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
     """Validate external_sharing config on a dataset.
 
-    Subscriber identities are validated at parse time (must be `group:`).
+    Subscriber identities are validated at parse time (must be `group:` or
+    `workgroup:`).
     Enforces that:
     * only `_shared` datasets may be shared (they are published to the
       user-facing project and the BigQuery Sharing listing points there), and
@@ -498,6 +499,67 @@ def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
                 )
             )
             is_valid = False
+
+    return is_valid
+
+
+def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_path):
+    """Validate external_data_subscription config on a dataset.
+
+    The source exchange/listing ID charset is validated at parse time. Read
+    access to the linked dataset is granted via the dataset's own
+    `workgroup_access`. Enforces that:
+    * only `_external` datasets may subscribe to external data (the linked
+      dataset is externally-sourced, matching the repo's `_external` convention),
+      and
+    * the dataset defines no tables/views: a subscription links a read-only
+      dataset provisioned by BigQuery Sharing, so no ETL can be defined in it.
+      This includes schema-only tables (a `metadata.yaml`/`schema.yaml` with no
+      query), which deploy without a query file.
+    """
+    if not dataset_metadata.external_data_subscription:
+        return True
+
+    is_valid = True
+
+    if not dataset_name.endswith("_external"):
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but is not suffixed with '_external'.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    # a table/view lives in a subdirectory and is defined by any of these; the
+    # metadata/schema files catch schema-only tables that have no query file
+    table_definition_files = sorted(
+        definition_file
+        for pattern in (
+            "query.sql",
+            "query.py",
+            "view.sql",
+            "materialized_view.sql",
+            "script.sql",
+            "init.sql",
+            "metadata.yaml",
+            "schema.yaml",
+        )
+        for definition_file in Path(dataset_path).glob(f"*/{pattern}")
+    )
+    for definition_file in table_definition_files:
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but defines "
+                f"'{definition_file.parent.name}/{definition_file.name}'. A "
+                "subscription links a read-only dataset; it cannot contain tables "
+                "or views.",
+                fg="red",
+            )
+        )
+        is_valid = False
 
     return is_valid
 
@@ -778,6 +840,11 @@ def validate_datasets(target):
                         failed = True
 
                     if not validate_external_sharing(
+                        dataset_name, dataset_metadata, root
+                    ):
+                        failed = True
+
+                    if not validate_external_data_subscription(
                         dataset_name, dataset_metadata, root
                     ):
                         failed = True

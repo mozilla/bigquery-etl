@@ -39,6 +39,7 @@ from ..schema import SCHEMA_FILE, Schema
 from ..view import View
 from . import extract_from_query_path
 from .common import (
+    IMPERSONATE_ENV_VAR,
     get_bqetl_project_root,
     get_unimpersonated_credentials,
     is_running_under_coding_agent,
@@ -253,11 +254,17 @@ def render_artifact_template(
 
 
 def _get_targets_file() -> Path:
-    """Return the path to the targets config file (always in bigquery-etl)."""
+    """Return the path to the targets config file."""
     targets_file_name = ConfigLoader.get(
         "default", "targets", fallback=DEFAULT_TARGETS_FILENAME
     )
-    return ConfigLoader.project_dir / targets_file_name
+    local_project_root = get_bqetl_project_root()
+    if (
+        local_project_root
+        and (local_targets_file := local_project_root / targets_file_name).exists()
+    ):
+        return local_targets_file
+    return ROOT / targets_file_name
 
 
 @cache
@@ -867,6 +874,15 @@ def collect_target_dependencies(
     return artifact_dependencies
 
 
+def collect_routine_dependencies(routine_files: Set[Path]) -> Set[Path]:
+    """Transitively collect routine paths referenced by `routine_files`.
+
+    Returns the referenced routine paths (transitive), excluding the inputs.
+    """
+    routine_names = [f"{f.parent.parent.name}.{f.parent.name}" for f in routine_files]
+    return _udf_dep_paths(routine_names) - set(routine_files)
+
+
 def target_ref_for_source(
     target: "Target",
     target_project: str,
@@ -1368,7 +1384,7 @@ def ensure_dataset_exists(
     # When impersonating, the SA is the writer but isn't an owner, so it can't
     # write into this human-owned dataset. Ask whether to grant it access —
     # granting makes the dataset readable by everyone who can impersonate the SA.
-    impersonated_sa = os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT")
+    impersonated_sa = os.environ.get(IMPERSONATE_ENV_VAR)
     if impersonated_sa and _should_grant_impersonation_access(impersonated_sa):
         access_entries.append(
             bigquery.AccessEntry(

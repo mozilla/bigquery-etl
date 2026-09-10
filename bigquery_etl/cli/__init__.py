@@ -3,7 +3,6 @@
 import logging
 import os
 import warnings
-from pathlib import Path
 
 import rich_click as click
 
@@ -26,7 +25,6 @@ from ..cli.stage import stage
 from ..cli.static import static_
 from ..cli.target import target
 from ..cli.view import view
-from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
 from ..data_governance.cli import data_governance
 from ..dependency import dependency
@@ -34,7 +32,11 @@ from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
-from ..util.common import enable_impersonation, set_resolved_target_project
+from ..util.common import (
+    IMPERSONATE_ENV_VAR,
+    enable_impersonation,
+    set_resolved_target_project,
+)
 from ..util.target import (
     get_default_target_name,
     get_target,
@@ -129,9 +131,8 @@ def cli(prog_name=None):
         # --no-impersonate opts out for this process, even if the env var was
         # exported externally. The agent gate refuses write/deploy/backfill
         # without impersonation.
-        env_var = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
         if no_impersonate:
-            os.environ.pop(env_var, None)
+            os.environ.pop(IMPERSONATE_ENV_VAR, None)
 
         try:
             if not target and not no_target:
@@ -152,11 +153,11 @@ def cli(prog_name=None):
             # Impersonate the target's SA (explicit env var wins): env var for
             # `bq`/`gcloud` shell-outs, enable_impersonation for Python clients.
             if not no_impersonate:
-                sa = os.environ.get(env_var) or (
+                sa = os.environ.get(IMPERSONATE_ENV_VAR) or (
                     parsed_target.impersonate_service_account if parsed_target else None
                 )
                 if sa:
-                    os.environ[env_var] = sa
+                    os.environ[IMPERSONATE_ENV_VAR] = sa
                     enable_impersonation(sa)
                     click.echo(f"ℹ️  Impersonating service account: {sa}")
         except Exception as e:
@@ -170,5 +171,4 @@ def cli(prog_name=None):
 
 
 if __name__ == "__main__":
-    ConfigLoader.set_project_dir(Path().absolute())
     cli()

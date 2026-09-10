@@ -220,14 +220,21 @@ class ExternalSharingMetadata:
 
     @subscribers.validator
     def validate_subscribers(self, attribute, value):
-        """Check that each subscriber is a group: email identity."""
+        """Check that each subscriber is a group: email or workgroup: identity."""
         for subscriber in value:
-            if not subscriber.startswith("group:") or not is_email(
+            is_group = subscriber.startswith("group:") and is_email(
                 subscriber[len("group:") :]
-            ):
+            )
+            # workgroups are `<namespace>/<group>` (e.g.
+            # workgroup:braze/data-viewers); fail fast here instead of at
+            # `terraform apply` in cloudops-infra
+            is_workgroup = bool(
+                re.fullmatch(r"workgroup:[a-z0-9-]+/[a-z0-9-]+", subscriber)
+            )
+            if not (is_group or is_workgroup):
                 raise ValueError(
-                    f"Invalid external_sharing subscriber {subscriber!r}: "
-                    "must be a 'group:<email>' identity."
+                    f"Invalid external_sharing subscriber {subscriber!r}: must be "
+                    "a 'group:<email>' or 'workgroup:<name>' identity."
                 )
 
     @listing_id.validator
@@ -242,6 +249,44 @@ class ExternalSharingMetadata:
             raise ValueError(
                 f"Invalid external_sharing {attribute.name} {value!r}: must "
                 "contain only letters, numbers and underscores."
+            )
+
+
+@attr.s(auto_attribs=True)
+class ExternalDataSubscriptionMetadata:
+    """Metadata to configure subscribing to data an external partner shares with us.
+
+    This is the inbound counterpart of `ExternalSharingMetadata`: instead of
+    Mozilla sharing a dataset out, a partner shares a BigQuery Sharing
+    (Analytics Hub) listing with us. Subscribing to it links a read-only dataset
+    into our project. Provisioned from this config by Terraform in cloudops-infra.
+    """
+
+    # Source project (id or number), exchange and listing identifying the
+    # partner's listing to subscribe to. Read access to the linked dataset is
+    # granted via the dataset's own `workgroup_access` (not configured here).
+    source_project: str
+    data_exchange_id: str = attr.ib()
+    listing_id: str = attr.ib()
+    # Linked (destination) dataset properties; sensible defaults when unset.
+    # Location is intentionally not configurable here: it is fixed by
+    # cloudops-infra to a region with GCPv2 networking allocated.
+    friendly_name: Optional[str] = attr.ib(None)
+    description: Optional[str] = attr.ib(None)
+    labels: Optional[Dict] = attr.ib(None)
+
+    @data_exchange_id.validator
+    @listing_id.validator
+    def validate_resource_id(self, attribute, value):
+        """Check resource IDs contain only letters, numbers and underscores.
+
+        BigQuery Sharing restricts exchange/listing IDs to this set; validating
+        here fails fast instead of at `terraform apply` in cloudops-infra.
+        """
+        if not re.fullmatch(r"[A-Za-z0-9_]+", value):
+            raise ValueError(
+                f"Invalid external_data_subscription {attribute.name} {value!r}: "
+                "must contain only letters, numbers and underscores."
             )
 
 
@@ -562,6 +607,26 @@ def _structure_external_sharing(value):
     return cattrs.BaseConverter().structure(value, ExternalSharingMetadata)
 
 
+def _structure_external_data_subscription(value):
+    """Structure a raw dict into ExternalDataSubscriptionMetadata for attrs.
+
+    Rejects unrecognized keys so a typo is a hard error rather than silently
+    dropped and then missing from the resources Terraform provisions.
+    """
+    if value is None or isinstance(value, ExternalDataSubscriptionMetadata):
+        return value
+    if isinstance(value, dict):
+        unknown = set(value) - {
+            field.name for field in attr.fields(ExternalDataSubscriptionMetadata)
+        }
+        if unknown:
+            raise ValueError(
+                "Unknown external_data_subscription key(s): "
+                + ", ".join(sorted(unknown))
+            )
+    return cattrs.BaseConverter().structure(value, ExternalDataSubscriptionMetadata)
+
+
 @attr.s(auto_attribs=True)
 class DatasetMetadata:
     """
@@ -584,6 +649,12 @@ class DatasetMetadata:
     # datasets. Provisioned from this config by Terraform in cloudops-infra.
     external_sharing: Optional[ExternalSharingMetadata] = attr.ib(
         None, converter=_structure_external_sharing
+    )
+    # Subscription to data an external partner shares with us via BigQuery
+    # Sharing; only valid on `_external` datasets. Provisioned from this config
+    # by Terraform in cloudops-infra.
+    external_data_subscription: Optional[ExternalDataSubscriptionMetadata] = attr.ib(
+        None, converter=_structure_external_data_subscription
     )
 
     def __attrs_post_init__(self):

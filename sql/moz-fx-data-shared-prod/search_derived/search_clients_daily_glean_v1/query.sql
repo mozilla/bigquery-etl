@@ -718,20 +718,20 @@ serp_aggregates_base_cte AS (
     -- leaves the row count alone, so the COUNT(*) and SUMs below stay correct; a
     -- CROSS JOIN UNNEST(ad_components) here would multiply rows and corrupt them
     ARRAY_CONCAT_AGG(ad_components) AS ad_components_all,
-    LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
+    LOGICAL_AND(ad_blocker_inferred) AS ad_blocker_inferred,
     COUNTIF(
       (is_tagged IS TRUE)
       AND search_access_point IN (
         'follow_on_from_refine_on_incontent_search',
         'follow_on_from_refine_on_serp'
       )
-    ) AS serp_follow_on_searches_tagged_count,
-    COUNTIF(is_tagged IS TRUE) AS serp_searches_tagged_count,
-    COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS serp_with_ads_tagged_count,
-    COUNTIF(is_tagged IS FALSE) AS serp_searches_organic_count,
-    COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS serp_with_ads_organic_count,
-    SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS serp_ad_clicks_tagged_count,
-    SUM(CASE WHEN is_tagged IS FALSE THEN num_ad_clicks ELSE 0 END) AS serp_ad_clicks_organic_count,
+    ) AS follow_on_searches_tagged_count,
+    COUNTIF(is_tagged IS TRUE) AS searches_tagged_count,
+    COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS with_ads_tagged_count,
+    COUNTIF(is_tagged IS FALSE) AS searches_organic_count,
+    COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS with_ads_organic_count,
+    SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_tagged_count,
+    SUM(CASE WHEN is_tagged IS FALSE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_organic_count,
     SUM(num_ad_clicks) AS num_ad_clicks,
     SUM(num_non_ad_link_clicks) AS num_non_ad_link_clicks,
     SUM(num_other_engagements) AS num_other_engagements,
@@ -743,7 +743,7 @@ serp_aggregates_base_cte AS (
     MAX(UNIX_DATE(local_date_of(subsession_start_time))) - MAX(
       UNIX_DATE(local_date_of(first_run_date))
     ) AS profile_age_in_days,
-    COUNT(*) AS serp_counts_total,
+    COUNT(*) AS counts_total,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
     serp_base_cte
@@ -776,14 +776,14 @@ serp_final_cte AS (
   SELECT
     serp_events_clients_ad_enterprise_cte.*,
     serp_aggregates_cte.ad_click_target,
-    serp_aggregates_cte.serp_ad_blocker_inferred,
-    serp_aggregates_cte.serp_follow_on_searches_tagged_count,
-    serp_aggregates_cte.serp_searches_tagged_count,
-    serp_aggregates_cte.serp_searches_organic_count,
-    serp_aggregates_cte.serp_with_ads_organic_count,
-    serp_aggregates_cte.serp_with_ads_tagged_count,
-    serp_aggregates_cte.serp_ad_clicks_tagged_count,
-    serp_aggregates_cte.serp_ad_clicks_organic_count,
+    serp_aggregates_cte.ad_blocker_inferred,
+    serp_aggregates_cte.follow_on_searches_tagged_count,
+    serp_aggregates_cte.searches_tagged_count,
+    serp_aggregates_cte.searches_organic_count,
+    serp_aggregates_cte.with_ads_organic_count,
+    serp_aggregates_cte.with_ads_tagged_count,
+    serp_aggregates_cte.ad_clicks_tagged_count,
+    serp_aggregates_cte.ad_clicks_organic_count,
     serp_aggregates_cte.num_ad_clicks,
     serp_aggregates_cte.num_non_ad_link_clicks,
     serp_aggregates_cte.num_other_engagements,
@@ -792,7 +792,7 @@ serp_final_cte AS (
     serp_aggregates_cte.num_ads_blocked,
     serp_aggregates_cte.num_ads_notshowing,
     serp_aggregates_cte.profile_age_in_days,
-    serp_aggregates_cte.serp_counts_total,
+    serp_aggregates_cte.counts_total,
     serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
     serp_events_clients_ad_enterprise_cte
@@ -960,18 +960,18 @@ join_sap_serp_cte AS (
       sap_final_cte.policies_is_enterprise
     ) AS policies_is_enterprise,
     serp_final_cte.ad_click_target AS serp_ad_click_target,
-    serp_final_cte.serp_ad_blocker_inferred AS serp_ad_blocker_inferred,
+    serp_final_cte.ad_blocker_inferred AS serp_ad_blocker_inferred,
     -- serp-only counts: a sap-only row had no matching SERP rows for that key, so 0 not NULL
     COALESCE(
-      serp_final_cte.serp_follow_on_searches_tagged_count,
+      serp_final_cte.follow_on_searches_tagged_count,
       0
     ) AS serp_follow_on_searches_tagged_count,
-    COALESCE(serp_final_cte.serp_searches_tagged_count, 0) AS serp_searches_tagged_count,
-    COALESCE(serp_final_cte.serp_searches_organic_count, 0) AS serp_searches_organic_count,
-    COALESCE(serp_final_cte.serp_with_ads_organic_count, 0) AS serp_with_ads_organic_count,
-    COALESCE(serp_final_cte.serp_with_ads_tagged_count, 0) AS serp_with_ads_tagged_count,
-    COALESCE(serp_final_cte.serp_ad_clicks_tagged_count, 0) AS serp_ad_clicks_tagged_count,
-    COALESCE(serp_final_cte.serp_ad_clicks_organic_count, 0) AS serp_ad_clicks_organic_count,
+    COALESCE(serp_final_cte.searches_tagged_count, 0) AS serp_searches_tagged_count,
+    COALESCE(serp_final_cte.searches_organic_count, 0) AS serp_searches_organic_count,
+    COALESCE(serp_final_cte.with_ads_organic_count, 0) AS serp_with_ads_organic_count,
+    COALESCE(serp_final_cte.with_ads_tagged_count, 0) AS serp_with_ads_tagged_count,
+    COALESCE(serp_final_cte.ad_clicks_tagged_count, 0) AS serp_ad_clicks_tagged_count,
+    COALESCE(serp_final_cte.ad_clicks_organic_count, 0) AS serp_ad_clicks_organic_count,
     COALESCE(serp_final_cte.num_ad_clicks, 0) AS serp_num_ad_clicks,
     COALESCE(serp_final_cte.num_non_ad_link_clicks, 0) AS serp_num_non_ad_link_clicks,
     COALESCE(serp_final_cte.num_other_engagements, 0) AS serp_num_other_engagements,
@@ -983,7 +983,7 @@ join_sap_serp_cte AS (
       serp_final_cte.profile_age_in_days,
       sap_final_cte.profile_age_in_days
     ) AS profile_age_in_days,
-    COALESCE(serp_final_cte.serp_counts_total, 0) AS serp_counts_total,
+    COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
     -- falls back to 0, not NULL, when neither side reported it. sap_aggregates_cte casts
     -- this integer counter to float64, so cast back to INT64 to keep the declared INTEGER type
     COALESCE(

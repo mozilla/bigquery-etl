@@ -152,18 +152,18 @@ SELECT
     sap_final_cte.policies_is_enterprise
   ) AS policies_is_enterprise,
   serp_final_cte.ad_click_target AS serp_ad_click_target,
-  serp_final_cte.serp_ad_blocker_inferred AS serp_ad_blocker_inferred,
+  serp_final_cte.ad_blocker_inferred AS serp_ad_blocker_inferred,
   -- serp-only counts: a sap-only row had no matching SERP rows for that key, so 0 not NULL
   COALESCE(
-    serp_final_cte.serp_follow_on_searches_tagged_count,
+    serp_final_cte.follow_on_searches_tagged_count,
     0
   ) AS serp_follow_on_searches_tagged_count,
-  COALESCE(serp_final_cte.serp_searches_tagged_count, 0) AS serp_searches_tagged_count,
-  COALESCE(serp_final_cte.serp_searches_organic_count, 0) AS serp_searches_organic_count,
-  COALESCE(serp_final_cte.serp_with_ads_organic_count, 0) AS serp_with_ads_organic_count,
-  COALESCE(serp_final_cte.serp_with_ads_tagged_count, 0) AS serp_with_ads_tagged_count,
-  COALESCE(serp_final_cte.serp_ad_clicks_tagged_count, 0) AS serp_ad_clicks_tagged_count,
-  COALESCE(serp_final_cte.serp_ad_clicks_organic_count, 0) AS serp_ad_clicks_organic_count,
+  COALESCE(serp_final_cte.searches_tagged_count, 0) AS serp_searches_tagged_count,
+  COALESCE(serp_final_cte.searches_organic_count, 0) AS serp_searches_organic_count,
+  COALESCE(serp_final_cte.with_ads_organic_count, 0) AS serp_with_ads_organic_count,
+  COALESCE(serp_final_cte.with_ads_tagged_count, 0) AS serp_with_ads_tagged_count,
+  COALESCE(serp_final_cte.ad_clicks_tagged_count, 0) AS serp_ad_clicks_tagged_count,
+  COALESCE(serp_final_cte.ad_clicks_organic_count, 0) AS serp_ad_clicks_organic_count,
   COALESCE(serp_final_cte.num_ad_clicks, 0) AS serp_num_ad_clicks,
   COALESCE(serp_final_cte.num_non_ad_link_clicks, 0) AS serp_num_non_ad_link_clicks,
   COALESCE(serp_final_cte.num_other_engagements, 0) AS serp_num_other_engagements,
@@ -175,7 +175,7 @@ SELECT
     serp_final_cte.profile_age_in_days,
     sap_final_cte.profile_age_in_days
   ) AS profile_age_in_days,
-  COALESCE(serp_final_cte.serp_counts_total, 0) AS serp_counts_total,
+  COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
   -- falls back to 0, not NULL, when neither side reported it. sap_aggregates_cte casts
   -- this integer counter to float64, so cast back to INT64 to keep the declared INTEGER type
   COALESCE(

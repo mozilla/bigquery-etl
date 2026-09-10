@@ -18,20 +18,20 @@ SELECT
   -- leaves the row count alone, so the COUNT(*) and SUMs below stay correct; a
   -- CROSS JOIN UNNEST(ad_components) here would multiply rows and corrupt them
   ARRAY_CONCAT_AGG(ad_components) AS ad_components_all,
-  LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
+  LOGICAL_AND(ad_blocker_inferred) AS ad_blocker_inferred,
   COUNTIF(
     (is_tagged IS TRUE)
     AND search_access_point IN (
       'follow_on_from_refine_on_incontent_search',
       'follow_on_from_refine_on_serp'
     )
-  ) AS serp_follow_on_searches_tagged_count,
-  COUNTIF(is_tagged IS TRUE) AS serp_searches_tagged_count,
-  COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS serp_with_ads_tagged_count,
-  COUNTIF(is_tagged IS FALSE) AS serp_searches_organic_count,
-  COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS serp_with_ads_organic_count,
-  SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS serp_ad_clicks_tagged_count,
-  SUM(CASE WHEN is_tagged IS FALSE THEN num_ad_clicks ELSE 0 END) AS serp_ad_clicks_organic_count,
+  ) AS follow_on_searches_tagged_count,
+  COUNTIF(is_tagged IS TRUE) AS searches_tagged_count,
+  COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS with_ads_tagged_count,
+  COUNTIF(is_tagged IS FALSE) AS searches_organic_count,
+  COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS with_ads_organic_count,
+  SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_tagged_count,
+  SUM(CASE WHEN is_tagged IS FALSE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_organic_count,
   SUM(num_ad_clicks) AS num_ad_clicks,
   SUM(num_non_ad_link_clicks) AS num_non_ad_link_clicks,
   SUM(num_other_engagements) AS num_other_engagements,
@@ -43,7 +43,7 @@ SELECT
   MAX(UNIX_DATE(local_date_of(subsession_start_time))) - MAX(
     UNIX_DATE(local_date_of(first_run_date))
   ) AS profile_age_in_days,
-  COUNT(*) AS serp_counts_total,
+  COUNT(*) AS counts_total,
   MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
 FROM
   `search_derived.search_clients_daily_glean_v1.serp_base_cte`

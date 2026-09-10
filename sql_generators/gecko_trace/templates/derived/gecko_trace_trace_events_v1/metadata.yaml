@@ -1,11 +1,12 @@
 ---
 friendly_name: Gecko Trace Events Bridge
 description: |-
-  Links between traces and events.
+  Ordered events of each trace pattern.
 
-  Each row has one (stable_trace_id, stable_event_id) pair.
-  Use this table to find all traces that went through a specific event,
-  or all events in a specific trace.
+  Each row has one (trace_signature, event_position, event_signature).
+  Rows are written once, when a trace signature is first seen.
+  Join gecko_trace_traces_v1 and gecko_trace_events_v1 to get stable ids
+  and source locations.
 
 owners:
   - jjalkanen@mozilla.com
@@ -18,10 +19,9 @@ scheduling:
   dag_name: bqetl_gecko_trace
   task_group: {{ app_id }}
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
 
 bigquery:
   clustering:
     fields:
-      - stable_trace_id
-      - stable_event_id
+      - trace_signature

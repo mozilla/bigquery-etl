@@ -65,13 +65,6 @@ def generate_derived(output_dir, target_project):
                     output_table_dir / "schema.yaml",
                 )
 
-            if (template_dir / "backfill.yaml").exists():
-                with open(output_table_dir / "backfill.yaml", "w") as f:
-                    rendered_backfill = env.get_template(
-                        table_name + "/backfill.yaml"
-                    ).render(app_id=app_id)
-                    f.write(rendered_backfill)
-
 
 def generate_aggregates(output_dir, target_project):
     """Generate aggregate view SQL queries for gecko trace data."""
@@ -95,9 +88,7 @@ def generate_aggregates(output_dir, target_project):
         )
 
         template_dir = TEMPLATES / "aggregates" / view
-        output_view_dir = (
-            output_dir / target_project / "gecko_trace_aggregates" / view
-        )
+        output_view_dir = output_dir / target_project / "gecko_trace_aggregates" / view
         if (template_dir / "metadata.yaml").exists():
             shutil.copyfile(
                 template_dir / "metadata.yaml",

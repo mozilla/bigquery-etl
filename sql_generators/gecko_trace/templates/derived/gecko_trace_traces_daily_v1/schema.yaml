@@ -1,0 +1,18 @@
+---
+fields:
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+    description: Date when the pings were received on the server side.
+  - name: trace_signature
+    type: STRING
+    mode: NULLABLE
+    description: FK to gecko_trace_traces_v1. Signature of the trace pattern.
+  - name: hit_count
+    type: INT64
+    mode: NULLABLE
+    description: Number of times this trace pattern occurred on submission_date.
+  - name: avg_duration_nano
+    type: FLOAT64
+    mode: NULLABLE
+    description: Average duration of this trace pattern in nanoseconds on submission_date.

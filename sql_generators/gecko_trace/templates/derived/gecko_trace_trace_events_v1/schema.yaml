@@ -1,22 +1,14 @@
 ---
 fields:
-  - name: submission_date
-    type: DATE
-    mode: NULLABLE
-    description: Date this row was first inserted.
-  - name: stable_trace_id
+  - name: trace_signature
     type: STRING
     mode: NULLABLE
-    description: FK to gecko_trace_traces_v1. Stable UUID of the trace pattern.
-  - name: stable_event_id
-    type: STRING
-    mode: NULLABLE
-    description: FK to gecko_trace_events_v1. Stable UUID of the event type.
-  - name: hit_count
-    type: INT64
-    mode: NULLABLE
-    description: Number of times this event occurred in this trace pattern.
+    description: FK to gecko_trace_traces_v1. Signature of the trace pattern.
   - name: event_position
     type: INT64
     mode: NULLABLE
-    description: Position of this event in the trace's Merkle chain (1-based, first to last).
+    description: Position of this event in the trace (1-based, root to leaf).
+  - name: event_signature
+    type: STRING
+    mode: NULLABLE
+    description: FK to gecko_trace_events_v1. Signature of the event at this position.

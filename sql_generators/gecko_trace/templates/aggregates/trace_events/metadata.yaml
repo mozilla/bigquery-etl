@@ -1,9 +1,11 @@
 ---
-friendly_name: Gecko Trace Event Links
+friendly_name: Gecko Trace Events Bridge
 description: |-
-  Links between traces and events across all Firefox applications.
+  Ordered events of each trace pattern across all Firefox applications.
 
-  This view sums daily hit counts for each (trace, event) pair.
+  Each row has one position in one trace signature, with the stable ids and
+  the source location of the event at that position. Use this view to
+  reconstruct the source locations of a stable_trace_id.
 
 owners:
   - jjalkanen@mozilla.com

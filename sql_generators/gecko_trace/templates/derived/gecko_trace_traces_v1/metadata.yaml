@@ -1,11 +1,15 @@
 ---
 friendly_name: Gecko Trace Traces
 description: |-
-  Daily counts of trace patterns from Gecko traces.
+  Trace patterns from Gecko traces, one row per trace signature.
 
-  Each row has one trace signature and the count for one day.
-  The stable_trace_id is a UUID. It does not change after the first insert.
-  A re-run of the same day overwrites the counts. It does not add to them.
+  The trace signature is a hash of the event signatures in root-to-leaf order.
+  It is stable within a Firefox release and changes when any event moves.
+  The trace_key is a hash of the stable_event_ids in the same order.
+  A new signature with a known trace_key gets the existing stable_trace_id.
+  Otherwise it gets a new UUID.
+
+  This table has no counts. Daily counts are in gecko_trace_traces_daily_v1.
 
 owners:
   - jjalkanen@mozilla.com
@@ -18,7 +22,7 @@ scheduling:
   dag_name: bqetl_gecko_trace
   task_group: {{ app_id }}
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
 
 bigquery:
   clustering:

@@ -1,9 +1,10 @@
 ---
 friendly_name: Gecko Trace Events
 description: |-
-  Event types with total counts across all dates and Firefox applications.
+  Event types across all Firefox applications, one row per (app_id, event_signature).
 
-  This view sums daily hit counts and shows the first and latest dates for each event.
+  Each row maps an event signature to its stable_event_id and source location,
+  with the first and last dates it was seen. For counts use events_daily.
 
 owners:
   - jjalkanen@mozilla.com

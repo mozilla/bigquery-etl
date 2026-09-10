@@ -254,11 +254,17 @@ def render_artifact_template(
 
 
 def _get_targets_file() -> Path:
-    """Return the path to the targets config file (always in bigquery-etl)."""
+    """Return the path to the targets config file."""
     targets_file_name = ConfigLoader.get(
         "default", "targets", fallback=DEFAULT_TARGETS_FILENAME
     )
-    return ConfigLoader.project_dir / targets_file_name
+    local_project_root = get_bqetl_project_root()
+    if (
+        local_project_root
+        and (local_targets_file := local_project_root / targets_file_name).exists()
+    ):
+        return local_targets_file
+    return ROOT / targets_file_name
 
 
 @cache

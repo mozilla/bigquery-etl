@@ -37,9 +37,7 @@ class _ConfigLoader:
 
         return config_files
 
-    def _update_config(
-        self, config: dict, extra_config: dict, path_keys: list[str]
-    ) -> None:
+    def _update_config(self, config: dict, extra_config: dict, path_keys: list) -> None:
         for extra_key, extra_value in extra_config.items():
             current_value = config.get(extra_key)
             if current_value is None:
@@ -47,7 +45,6 @@ class _ConfigLoader:
                 continue
 
             current_path_keys = path_keys + [extra_key]
-            current_path = ".".join(current_path_keys)
             current_type = type(current_value)
             extra_type = type(extra_value)
 
@@ -56,6 +53,7 @@ class _ConfigLoader:
                 and current_type is not extra_type
                 and extra_value is not None
             ):
+                current_path = ".".join(str(key) for key in current_path_keys)
                 raise Exception(
                     f"Type mismatch for `{current_path}` config: {current_type} vs {extra_type}"
                 )

@@ -7,6 +7,7 @@ on:
     types:
       - opened
       - synchronize
+      - ready_for_review
   workflow_run:
     workflows: ["Fork PR Gate"]
     types: [completed]
@@ -333,6 +334,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
+          DRAFT: ${{ github.event.pull_request.draft }}
         run: |
           set +e
           advisory=$(PATH=".venv/bin:$PATH" \
@@ -340,7 +342,10 @@ jobs:
           code=$?
           set -e
           echo "$advisory"
-          if [ "$code" -eq 2 ] && [ -n "$PR" ]; then
+          # Detection always runs (visible above), but hold off on requesting
+          # review / commenting while the PR is a draft — the ready_for_review
+          # trigger re-runs this and posts once it's marked ready.
+          if [ "$code" -eq 2 ] && [ -n "$PR" ] && [ "$DRAFT" != "true" ]; then
             gh api --method POST \
               "repos/$REPO/pulls/$PR/requested_reviewers" \
               -f "team_reviewers[]=dataplatform-wg" \
@@ -357,6 +362,8 @@ jobs:
               echo "This is advisory and does not block merge. A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
             } | gh pr comment "$PR" -R "$REPO" --body-file - \
               || echo "Could not post comment (fork PR token is read-only?)"
+          elif [ "$code" -eq 2 ] && [ "$DRAFT" = "true" ]; then
+            echo "::notice::Sensitive-data flow(s) detected; PR is a draft, deferring @mozilla/dataplatform-wg review request until it's marked ready."
           elif [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
             echo "::warning::sensitivity check errored (exit $code); skipping"
           fi

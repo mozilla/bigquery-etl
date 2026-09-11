@@ -79,6 +79,7 @@ class DatasetAccess:
     """Effective read access for a dataset, from its dataset_metadata.yaml."""
 
     def __init__(self, readers: Set[str], base_acl: str):
+        """Hold a dataset's read-role members and its base ACL archetype."""
         self.readers = readers
         self.base_acl = base_acl
 

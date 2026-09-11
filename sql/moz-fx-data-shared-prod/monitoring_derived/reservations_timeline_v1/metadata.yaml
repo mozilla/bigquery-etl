@@ -1,0 +1,34 @@
+friendly_name: Reservations Timeline
+description: |-
+  Mirror of `moz-fx-bigquery-reserv-global.region-us.INFORMATION_SCHEMA.RESERVATIONS_TIMELINE`
+  from the admin project, for moz-confidential viewers.
+  Columns, order, and nested structs match the source view, so the source
+  documentation describes this table as-is.
+  
+  See for more details: https://docs.cloud.google.com/bigquery/docs/information-schema-reservation-timeline
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: bewu
+scheduling:
+  dag_name: bqetl_monitoring_hourly
+  # Rows show up in the source view about 90 seconds after the minute they
+  # describe, and per_second_details is filled in about 5 minutes after that.
+  # Each run rewrites a whole day partition, so the only hour that can't be
+  # repaired by a later run is the last one of the day. Target the day
+  # containing (run time - 2 hours) instead of the default (run time - 1 hour)
+  # so each day partition gets a final rewrite at 01:00 the next day.
+  date_partition_parameter: null
+  destination_table: reservations_timeline_v1${{ (logical_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}
+  parameters:
+  - submission_date:DATE:{{ (logical_date - macros.timedelta(hours=1)).strftime("%Y-%m-%d") }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: period_start
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - reservation_name

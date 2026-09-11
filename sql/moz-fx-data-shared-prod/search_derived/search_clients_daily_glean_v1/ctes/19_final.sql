@@ -51,8 +51,8 @@ SELECT
   serp_num_ad_clicks AS ad_click_total,
   serp_ad_clicks_tagged_count AS ad_click_tagged,
   serp_ad_clicks_organic_count AS ad_click_organic,
-  serp_with_ads_tagged_count AS search_with_ads_tagged,
-  serp_with_ads_organic_count AS search_with_ads_organic,
+  serp_searches_with_ads_tagged_count,
+  serp_searches_with_ads_organic_count,
   serp_ad_blocker_inferred,
   serp_num_non_ad_link_clicks, -- NEW
   serp_num_other_engagements, -- NEW

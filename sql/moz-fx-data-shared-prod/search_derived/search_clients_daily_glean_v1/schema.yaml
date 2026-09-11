@@ -245,13 +245,13 @@ fields:
   mode: NULLABLE
   description: The number of ad clicks on this key's organic SERP impressions. Zero,
     not null, on a row with no SERP activity.
-- name: search_with_ads_tagged
+- name: serp_searches_with_ads_tagged_count
   type: INTEGER
   mode: NULLABLE
   description: The number of this key's tagged SERP impressions that had at least
     one ad visible. Counts impressions rather than ads. Zero, not null, on a row with
     no SERP activity.
-- name: search_with_ads_organic
+- name: serp_searches_with_ads_organic_count
   type: INTEGER
   mode: NULLABLE
   description: The number of this key's organic SERP impressions that had at least

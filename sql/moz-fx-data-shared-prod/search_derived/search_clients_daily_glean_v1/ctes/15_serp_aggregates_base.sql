@@ -27,9 +27,9 @@ SELECT
     )
   ) AS follow_on_searches_tagged_count,
   COUNTIF(is_tagged IS TRUE) AS searches_tagged_count,
-  COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS with_ads_tagged_count,
+  COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS searches_with_ads_tagged_count,
   COUNTIF(is_tagged IS FALSE) AS searches_organic_count,
-  COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS with_ads_organic_count,
+  COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS searches_with_ads_organic_count,
   SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_tagged_count,
   SUM(CASE WHEN is_tagged IS FALSE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_organic_count,
   SUM(num_ad_clicks) AS num_ad_clicks,

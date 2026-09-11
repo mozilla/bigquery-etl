@@ -798,7 +798,6 @@ serp_events_with_client_info_cte AS (
     search_engine_private_provider_id,
     search_engine_private_submission_url,
     search_engine_private_overridden_by_third_party,
-    CAST(overridden_by_third_party AS boolean) AS overridden_by_third_party,
     subsession_start_time AS ping_start_time,
     subsession_end_time AS ping_end_time,
     subsession_counter AS ping_seq,
@@ -1108,12 +1107,9 @@ join_sources_cte AS (
       sap_final_cte.search_engine_private_overridden_by_third_party,
       legacy_cte.search_engine_private_overridden_by_third_party
     ) AS default_private_search_engine_overridden,
-    -- no legacy fallback: this is a per-search event extra, so it has no value at the client-day
-    -- grain the metrics ping reports. NULL on a legacy-only row.
-    COALESCE(
-      serp_final_cte.overridden_by_third_party,
-      sap_final_cte.overridden_by_third_party
-    ) AS overridden_by_third_party,
+    -- sap-only: a per-search event extra, so it has no value at the client-day grain the metrics
+    -- ping reports. NULL on a serp-only or legacy-only row.
+    sap_final_cte.overridden_by_third_party AS sap_overridden_by_third_party,
     COALESCE(
       serp_final_cte.ping_start_time,
       sap_final_cte.ping_start_time,
@@ -1263,7 +1259,6 @@ final_cte AS (
     ping_start_time, -- NEW
     ping_end_time, -- NEW
     ping_seq, -- NEW
-    overridden_by_third_party, -- NEW
     max_concurrent_tab_count_max,
     experiments,
     profile_age_in_days,
@@ -1303,6 +1298,7 @@ final_cte AS (
     profile_group_id,
     sap_provider_id, -- NEW
     sap_provider_name, -- NEW
+    sap_overridden_by_third_party, -- NEW
     legacy_tagged_sap, -- NEW
     legacy_tagged_follow_on, -- NEW
     legacy_organic, -- NEW

@@ -179,12 +179,9 @@ SELECT
     sap_final_cte.search_engine_private_overridden_by_third_party,
     legacy_cte.search_engine_private_overridden_by_third_party
   ) AS default_private_search_engine_overridden,
-  -- no legacy fallback: this is a per-search event extra, so it has no value at the client-day
-  -- grain the metrics ping reports. NULL on a legacy-only row.
-  COALESCE(
-    serp_final_cte.overridden_by_third_party,
-    sap_final_cte.overridden_by_third_party
-  ) AS overridden_by_third_party,
+  -- sap-only: a per-search event extra, so it has no value at the client-day grain the metrics
+  -- ping reports. NULL on a serp-only or legacy-only row.
+  sap_final_cte.overridden_by_third_party AS sap_overridden_by_third_party,
   COALESCE(
     serp_final_cte.ping_start_time,
     sap_final_cte.ping_start_time,

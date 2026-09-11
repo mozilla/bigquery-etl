@@ -39,7 +39,6 @@ SELECT
   ping_start_time, -- NEW
   ping_end_time, -- NEW
   ping_seq, -- NEW
-  overridden_by_third_party, -- NEW
   max_concurrent_tab_count_max,
   experiments,
   profile_age_in_days,
@@ -79,6 +78,7 @@ SELECT
   profile_group_id,
   sap_provider_id, -- NEW
   sap_provider_name, -- NEW
+  sap_overridden_by_third_party, -- NEW
   legacy_tagged_sap, -- NEW
   legacy_tagged_follow_on, -- NEW
   legacy_organic, -- NEW

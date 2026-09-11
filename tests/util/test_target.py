@@ -81,8 +81,8 @@ class TestTarget:
         "bigquery_etl.util.target._get_git_context",
         return_value={"branch": "main", "commit": "abc123de"},
     )
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_success(self, mock_config_loader, _mock_git, _mock_account):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_success(self, _mock_targets_file, _mock_git, _mock_account):
         """Test successfully getting a target with git info."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -95,8 +95,7 @@ prod:
   project_id: test-project-prod
 """)
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             target = get_target("dev")
 
@@ -112,8 +111,8 @@ prod:
         "bigquery_etl.util.target._get_git_context",
         return_value={"branch": "unknown", "commit": "unknown"},
     )
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_no_git_repo(self, mock_config_loader, _mock_git, _mock_account):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_no_git_repo(self, _mock_targets_file, _mock_git, _mock_account):
         """Test getting a target when not in a git repo."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -124,8 +123,7 @@ dev:
   dataset_prefix: dev_{{ git.branch }}_{{ git.commit }}_
 """)
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             target = get_target("dev")
 
@@ -133,8 +131,8 @@ dev:
             assert target.project_id == "test-project-dev"
             assert target.dataset_prefix == "dev_unknown_unknown_"
 
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_not_found(self, mock_config_loader):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_not_found(self, _mock_targets_file):
         """Test getting a target that doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -144,20 +142,19 @@ dev:
   project_id: test-project-dev
 """)
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             with pytest.raises(Exception, match="Couldn't find target `nonexistent`"):
                 get_target("nonexistent")
 
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_file_not_found(self, mock_config_loader):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_file_not_found(self, _mock_targets_file):
         """Test getting a target when targets file doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
+            targets_file = tmpdir_path / "bqetl_targets.yaml"
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             with pytest.raises(Exception, match="Targets file not found"):
                 get_target("dev")
@@ -524,11 +521,13 @@ def mock_git(monkeypatch):
 @pytest.fixture
 def mock_config_loader(monkeypatch, tmp_path):
     """Patch ConfigLoader to use a temp directory for targets file."""
+
+    def _mock_get_targets_file():
+        return tmp_path / "bqetl_targets.yaml"
+
     monkeypatch.setattr(
-        "bigquery_etl.util.target.ConfigLoader.get",
-        lambda *a, **kw: "bqetl_targets.yaml",
+        "bigquery_etl.util.target._get_targets_file", _mock_get_targets_file
     )
-    monkeypatch.setattr("bigquery_etl.util.target.ConfigLoader.project_dir", tmp_path)
     return tmp_path
 
 

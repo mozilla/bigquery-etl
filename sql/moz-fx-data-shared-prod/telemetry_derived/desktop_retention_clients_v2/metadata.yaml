@@ -2,6 +2,12 @@ friendly_name: Desktop Retention V2 - Client Level
 description: |-
   Desktop Retention data at the client level.
   Includes attribution information, profile_group_id.
+
+  From first_seen_date 2026-08-27 onward, profiles created by the automated segment tracked in
+  DENG-11590 are excluded (see udf.is_desktop_argument_profile_automation). Counts here are
+  therefore not comparable to unfiltered sources such as telemetry.clients_first_seen, which
+  is deliberately left unchanged. The same profiles are flagged rather than removed on
+  telemetry.desktop_new_profiles_clients, via is_desktop_argument_profile_automation.
 owners:
 - mhirose@mozilla.com
 labels:

@@ -346,12 +346,19 @@ jobs:
           # review / commenting while the PR is a draft — the ready_for_review
           # trigger re-runs this and posts once it's marked ready.
           if [ "$code" -eq 2 ] && [ -n "$PR" ] && [ "$DRAFT" != "true" ]; then
+            # The @mozilla/dataplatform-wg mention in the comment below is the
+            # reliable notification. Also try to add the team to the Reviewers
+            # box, but this is best-effort: the repo-scoped Actions GITHUB_TOKEN
+            # can't resolve an org team as a reviewer (needs read:org, which the
+            # permissions: block can't grant), so it 422s — a PAT/App token
+            # secret with read:org would make it work.
             gh api --method POST \
               "repos/$REPO/pulls/$PR/requested_reviewers" \
               -f "team_reviewers[]=dataplatform-wg" \
-              || echo "Could not request review (fork PR token is read-only?)"
+              || echo "Note: could not add the team to the Reviewers box with the" \
+                      "Actions token; the @mention in the comment notifies them."
             {
-              echo "⚠️ **Sensitive-data flow detected** — requesting @mozilla/dataplatform-wg review."
+              echo "⚠️ **Sensitive-data flow detected** — cc @mozilla/dataplatform-wg, please review."
               echo
               echo "A changed query reads restricted / workgroup-gated data and writes it to a more broadly readable destination that no team owns:"
               echo
@@ -364,7 +371,7 @@ jobs:
             } | gh pr comment "$PR" -R "$REPO" --body-file - \
               || echo "Could not post comment (fork PR token is read-only?)"
           elif [ "$code" -eq 2 ] && [ "$DRAFT" = "true" ]; then
-            echo "::notice::Sensitive-data flow(s) detected; PR is a draft, deferring @mozilla/dataplatform-wg review request until it's marked ready."
+            echo "::notice::Sensitive-data flow(s) detected; PR is a draft, deferring @mozilla/dataplatform-wg review until it's marked ready."
           elif [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
             echo "::warning::sensitivity check errored (exit $code); skipping"
           fi

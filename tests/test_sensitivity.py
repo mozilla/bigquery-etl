@@ -312,6 +312,30 @@ class TestGatedDatasets:
 
         assert check_query(q, str(sql), gated_datasets=GATED) == []
 
+    def test_empty_readers_source_is_sensitive(self, tmp_path):
+        # `[]` readers means nobody is authorized -> strictly narrower than broad
+        acc = source_access(
+            str(tmp_path / "sql"),
+            PROJECT,
+            "telemetry_stable",
+            "account_ecosystem_v1",
+            GATED,
+        )
+        assert acc.readers == set()
+        assert acc.sensitive is True
+
+    def test_flags_empty_reader_table_written_to_broad_dest(self, tmp_path):
+        # regression: a `default: []` / empty-member gated table must be flagged
+        sql = tmp_path / "sql"
+        dest = _dataset(sql, "broad_derived", members=[BROAD])
+        q = _query(
+            dest, "out_v1", _select("telemetry_stable", table="account_ecosystem_v1")
+        )
+
+        findings = check_query(q, str(sql), gated_datasets=GATED)
+        assert len(findings) == 1
+        assert findings[0]["extra_readers"] == [BROAD]
+
 
 class TestSensitivityCommand:
     """`./bqetl data_governance sensitivity` CLI wrapper."""

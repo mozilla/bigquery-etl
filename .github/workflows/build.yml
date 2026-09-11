@@ -317,11 +317,47 @@ jobs:
       - *checkout-with-history
       - *setup-python
       - *restore-venv
+      # Resolve PR number / base SHA / draft across event types. On the
+      # workflow_run path (fork PRs, post gate-approval) github.event.pull_request
+      # is null, so resolve from the workflow_run payload / API instead — mirrors
+      # resolve-pr-base and Determine context elsewhere in this workflow.
+      - id: pr-context
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          PR_FROM_WR: ${{ github.event.workflow_run.pull_requests[0].number }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EVENT_DRAFT: ${{ github.event.pull_request.draft }}
+        run: |
+          set -euo pipefail
+          pr_number=""; base_sha=""; draft=""
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            pr_number="$EVENT_PR_NUMBER"
+            base_sha="$EVENT_BASE_SHA"
+            draft="$EVENT_DRAFT"
+          elif [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
+            pr_number="$PR_FROM_WR"
+            if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
+              pr_number=$(gh api "/repos/${REPO}/commits/${HEAD_SHA}/pulls" \
+                --jq '.[0].number' 2>/dev/null || echo "")
+            fi
+            if [[ -n "$pr_number" && "$pr_number" != "null" ]]; then
+              base_sha=$(gh api "/repos/${REPO}/pulls/${pr_number}" \
+                --jq '.base.sha' 2>/dev/null || echo "")
+              draft=$(gh api "/repos/${REPO}/pulls/${pr_number}" \
+                --jq '.draft' 2>/dev/null || echo "")
+            fi
+          fi
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+          echo "base_sha=${base_sha}" >> "$GITHUB_OUTPUT"
+          echo "draft=${draft}" >> "$GITHUB_OUTPUT"
       - id: changed-queries
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: sql/**/query.sql
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.pr-context.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       # A changed query reads sensitive (restricted/workgroup-gated) data and
       # writes to a more broadly readable destination that no team owns. This is
       # advisory: rather than block or make the author edit CODEOWNERS, it just
@@ -332,9 +368,9 @@ jobs:
         env:
           CHANGED_QUERIES: ${{ steps.changed-queries.outputs.all_changed_files }}
           GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
+          PR: ${{ steps.pr-context.outputs.pr_number }}
           REPO: ${{ github.repository }}
-          DRAFT: ${{ github.event.pull_request.draft }}
+          DRAFT: ${{ steps.pr-context.outputs.draft }}
         run: |
           set +e
           advisory=$(PATH=".venv/bin:$PATH" \
@@ -357,7 +393,12 @@ jobs:
               -f "team_reviewers[]=dataplatform-wg" \
               || echo "Note: could not add the team to the Reviewers box with the" \
                       "Actions token; the @mention in the comment notifies them."
+            # Upsert a single advisory comment (marker-keyed) so re-runs on each
+            # push update it in place instead of piling up duplicates.
+            marker='<!-- sensitive-data-flow -->'
+            body="$(mktemp)"
             {
+              echo "$marker"
               echo "⚠️ **Sensitive-data flow detected** — cc @mozilla/dataplatform-wg, please review."
               echo
               echo "A changed query reads restricted / workgroup-gated data and writes it to a more broadly readable destination that no team owns:"
@@ -368,8 +409,16 @@ jobs:
               echo
               echo "This is advisory and does not block merge."
               echo "A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
-            } | gh pr comment "$PR" -R "$REPO" --body-file - \
-              || echo "Could not post comment (fork PR token is read-only?)"
+            } > "$body"
+            existing=$(gh api "repos/$REPO/issues/$PR/comments" \
+              --jq "[.[] | select(.body | contains(\"$marker\"))][0].id" 2>/dev/null || echo "")
+            if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+              gh api --method PATCH "repos/$REPO/issues/comments/$existing" \
+                -F "body=@$body" >/dev/null || echo "Could not update existing comment"
+            else
+              gh pr comment "$PR" -R "$REPO" --body-file "$body" \
+                || echo "Could not post comment (fork PR token is read-only?)"
+            fi
           elif [ "$code" -eq 2 ] && [ "$DRAFT" = "true" ]; then
             echo "::notice::Sensitive-data flow(s) detected; PR is a draft, deferring @mozilla/dataplatform-wg review until it's marked ready."
           elif [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then

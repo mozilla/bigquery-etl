@@ -7,6 +7,8 @@ Only handles SQL (`query.sql`); `query.py` builds table names dynamically and
 can't be resolved statically.
 """
 
+import logging
+import os
 import re
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
@@ -22,6 +24,11 @@ from bigquery_etl.metadata.parse_metadata import (
     Metadata,
 )
 from bigquery_etl.util.common import render
+
+logger = logging.getLogger(__name__)
+
+# a parsed CODEOWNERS entry: a compiled matcher and the owners for that pattern
+CodeownersEntry = Tuple[pathspec.PathSpec, List[str]]
 
 
 def _config(key: str, default):
@@ -85,10 +92,14 @@ class DatasetAccess:
 
     @property
     def sensitive(self) -> bool:
-        """Restricted base ACL, or readers scoped to a non-broad workgroup."""
+        """Restricted base ACL, no authorized readers, or a non-broad workgroup."""
         if "restricted" in self.base_acl:
             return True
-        return bool(self.readers) and not self.readers <= BROAD_READERS
+        if not self.readers:
+            # empty readers == nobody authorized, strictly narrower than broad
+            # (note: `set() <= BROAD_READERS` is True, so this must be explicit)
+            return True
+        return not self.readers <= BROAD_READERS
 
 
 def dataset_access(sql_dir: str, project: str, dataset: str) -> Optional[DatasetAccess]:
@@ -185,23 +196,27 @@ def _resolve_ref(ref: str, default_project: str) -> Optional[Tuple[str, str, str
     return project, dataset, table
 
 
-def load_codeowners(codeowners_file: str) -> List[Tuple[str, List[str]]]:
-    """Parse CODEOWNERS into ordered (pattern, owners) entries."""
-    entries: List[Tuple[str, List[str]]] = []
+def load_codeowners(codeowners_file: str) -> List[CodeownersEntry]:
+    """Parse CODEOWNERS into ordered (compiled matcher, owners) entries.
+
+    The matcher is compiled once here rather than per path so that checking many
+    query files against the same patterns stays cheap.
+    """
+    entries: List[CodeownersEntry] = []
     for line in Path(codeowners_file).read_text().splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
         pattern, *owners = line.split()
-        entries.append((pattern, owners))
+        spec = pathspec.PathSpec.from_lines("gitwildmatch", [pattern])
+        entries.append((spec, owners))
     return entries
 
 
-def path_owners(rel_path: str, entries: List[Tuple[str, List[str]]]) -> List[str]:
+def path_owners(rel_path: str, entries: List[CodeownersEntry]) -> List[str]:
     """Owners for a repo-relative path, honoring CODEOWNERS last-match-wins."""
     owners: List[str] = []
-    for pattern, pattern_owners in entries:
-        spec = pathspec.PathSpec.from_lines("gitwildmatch", [pattern])
+    for spec, pattern_owners in entries:
         if spec.match_file(rel_path):
             owners = pattern_owners
     return owners
@@ -210,7 +225,7 @@ def path_owners(rel_path: str, entries: List[Tuple[str, List[str]]]) -> List[str
 def check_query(
     query_file: str,
     sql_dir: str,
-    codeowners: Optional[List[Tuple[str, List[str]]]] = None,
+    codeowners: Optional[List[CodeownersEntry]] = None,
     gated_datasets: Optional[Dict[str, Dict]] = None,
 ) -> List[Dict]:
     """Flag sensitive-source -> broader-destination flows for one query.sql.
@@ -219,6 +234,11 @@ def check_query(
     the destination's readers (i.e. the write widens access). When `codeowners`
     is given, each finding records whether the query path is owned (i.e. review
     is required).
+
+    A query whose destination access can't be resolved, or that can't be
+    rendered/parsed, is logged and skipped (returns []) — visible rather than
+    silently passing, since an un-analyzable query is exactly what a reviewer
+    should hear about for a guardrail.
     """
     query_file_path = Path(query_file)
     dest_table = query_file_path.parent.name
@@ -226,17 +246,29 @@ def check_query(
     dest_project = query_file_path.parent.parent.parent.name
     dest = effective_access(sql_dir, dest_project, dest_dataset, dest_table)
     if dest is None:
+        logger.warning(
+            "%s: destination %s.%s has no resolvable dataset_metadata.yaml; "
+            "skipping sensitivity analysis",
+            query_file_path,
+            dest_project,
+            dest_dataset,
+        )
         return []
 
     # query.sql is a Jinja template; render before parsing
     try:
         sql = render(query_file_path.name, template_folder=query_file_path.parent)
         refs = extract_table_references(sql)
-    except Exception:
+    except Exception as exc:
+        logger.warning(
+            "%s: could not render/parse for sensitivity analysis (%s); skipping",
+            query_file_path,
+            exc,
+        )
         return []
 
     owners = (
-        path_owners(str(query_file_path).lstrip("./"), codeowners)
+        path_owners(os.path.relpath(query_file_path), codeowners)
         if codeowners is not None
         else None
     )

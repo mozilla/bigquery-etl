@@ -48,6 +48,7 @@ class AttributionPings(Enum):
     first_session = "first_session"
     baseline = "baseline"
     play_store_attribution = "play_store_attribution"
+    adjust_attribution = "adjust_attribution"
 
 
 @dataclass
@@ -62,6 +63,35 @@ class AttributionFieldGroup:
 class AttributionFields:
     """Defines all possible AttributionFieldGroups."""
 
+    adjust_fields: list[dict[str, Any]] = [
+        {
+            "name": "adjust_ad_group",
+            "type": "STRING",
+            "description": "Adjust Ad Group the profile is attributed to.",
+        },
+        {
+            "name": "adjust_campaign",
+            "type": "STRING",
+            "description": "Adjust Campaign the profile is attributed to.",
+        },
+        {
+            "name": "adjust_creative",
+            "type": "STRING",
+            "description": "Adjust Creative the profile is attributed to.",
+        },
+        {
+            "name": "adjust_network",
+            "type": "STRING",
+            "description": "Adjust Network the profile is attributed to.",
+        },
+        {
+            "name": "adjust_attribution_timestamp",
+            "type": "TIMESTAMP",
+            "description": "Timestamp corresponding to the ping that contained the adjust attribution.",
+            "client_only": True,
+        },
+    ]
+
     install_source = AttributionFieldGroup(
         name="install_source",
         source_pings=[AttributionPings.metrics],
@@ -73,37 +103,21 @@ class AttributionFields:
             },
         ],
     )
+
     adjust = AttributionFieldGroup(
         name="adjust",
-        source_pings=[AttributionPings.metrics, AttributionPings.first_session],
-        fields=[
-            {
-                "name": "adjust_ad_group",
-                "type": "STRING",
-                "description": "Adjust Ad Group the profile is attributed to.",
-            },
-            {
-                "name": "adjust_campaign",
-                "type": "STRING",
-                "description": "Adjust Campaign the profile is attributed to.",
-            },
-            {
-                "name": "adjust_creative",
-                "type": "STRING",
-                "description": "Adjust Creative the profile is attributed to.",
-            },
-            {
-                "name": "adjust_network",
-                "type": "STRING",
-                "description": "Adjust Network the profile is attributed to.",
-            },
-            {
-                "name": "adjust_attribution_timestamp",
-                "type": "TIMESTAMP",
-                "description": "Timestamp corresponding to the ping that contained the adjust attribution.",
-                "client_only": True,
-            },
+        source_pings=[
+            AttributionPings.metrics,
+            AttributionPings.first_session,
         ],
+        fields=adjust_fields,
+    )
+    adjust_attribution = AttributionFieldGroup(
+        name="adjust_attribution",
+        source_pings=[
+            AttributionPings.adjust_attribution,
+        ],
+        fields=adjust_fields,
     )
     play_store = AttributionFieldGroup(
         name="play_store",
@@ -260,6 +274,7 @@ class MobileProducts(Enum):
             AttributionFields.meta,
             AttributionFields.install_source,
             AttributionFields.adjust,
+            AttributionFields.adjust_attribution,
             AttributionFields.distribution_id,
         ],
     )

@@ -26,6 +26,7 @@ from bigquery_etl.backfill.utils import (
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
+    get_scheduled_backfills,
     qualified_table_name_matching,
     query_supports_reinitialize,
 )
@@ -35,6 +36,7 @@ from bigquery_etl.cli.backfill import (
     _initiate_backfill,
     _reinitialize_into_staging,
     _resolve_backfill_table,
+    _staging_client_project,
     complete,
     create,
     info,
@@ -2429,6 +2431,260 @@ class TestBackfill:
         assert result.exception.__cause__ is permissions_error
         mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
 
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_copies_permissions_on_failure(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """A failed python-script backfill should still copy prod permissions to the staging table so it stays manageable."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is propagated
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # prod permissions were copied so the staging table stays manageable
+        mock_copy_perms.assert_called_once_with(
+            mock_client(), prod_table, staging_table
+        )
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_deletes_staging_on_permission_copy_failure(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """If permission copying fails after a python-script backfill failure, the staging table is deleted and the original failure is still raised."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+        mock_copy_perms.side_effect = Exception("IAM policy denied")
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is still raised
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # the staging table is deleted because copying its permissions failed
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_skips_permission_copy_when_staging_missing(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """If a python-script backfill fails before creating its staging table, there are no permissions to copy."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        def get_table(name, *args, **kwargs):
+            if name == staging_table:
+                raise NotFound("staging table not found")
+            if name == prod_table:
+                return MagicMock()
+            raise AssertionError(f"unexpected get_table call: {name}")
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.side_effect = get_table
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is propagated unobscured
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # no staging table exists, so no permissions copy and no delete are attempted
+        mock_copy_perms.assert_not_called()
+        mock_client().delete_table.assert_not_called()
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_permission_copy_failure_raises_once(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """When only the permissions copy fails, it raises directly and isn't retried against the deleted staging table."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        permissions_error = Exception("IAM policy denied")
+        mock_copy_perms.side_effect = permissions_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the permissions error surfaces since the backfill itself succeeded
+        assert result.exit_code == 1
+        assert "Failed to copy permissions" in str(result.exception)
+        assert result.exception.__cause__ is permissions_error
+        # copying is attempted once, not retried against the table cleanup just deleted
+        mock_copy_perms.assert_called_once_with(
+            mock_client(), prod_table, staging_table
+        )
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
     @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_from_entry_should_fail(
         self, mock_client, runner
@@ -3978,7 +4234,7 @@ class TestBackfillTargetSupport:
         )
 
     def test_staging_name_without_destination_project_should_default_to_prod(self):
-        """get_backfill_staging_qualified_table_name without a destination should default to the prod backfill project."""
+        """get_backfill_staging_qualified_table_name without a destination should default to the prod staging project."""
         name = get_backfill_staging_qualified_table_name(
             self.PROD_TABLE, date(2021, 5, 3)
         )
@@ -4072,3 +4328,241 @@ class TestBackfillTargetSupport:
             # the staging existence check used the target project, not prod
             checked_staging = mock_table_exists.call_args_list[0].args[1]
             assert checked_staging.startswith("sandbox.backfills_staging_derived.")
+
+
+class TestBackfillNonSharedProdProject:
+    """Backfills for queries outside moz-fx-data-shared-prod.
+
+    Staging and backup tables stay in the staging project no matter which project
+    the query is in, so everything lives in one place.
+    """
+
+    EXPERIMENTS_TABLE = "moz-fx-data-experiments.monitoring.analysis_results_v1"
+
+    def _write_backfill_entry(self, project, status="Complete"):
+        table_dir = f"sql/{project}/monitoring/analysis_results_v1"
+        os.makedirs(table_dir)
+        with open(f"{table_dir}/query.sql", "w") as f:
+            f.write("SELECT 1")
+        with open(f"{table_dir}/metadata.yaml", "w") as f:
+            f.write(yaml.dump(TABLE_METADATA_CONF))
+        with open(f"{table_dir}/{BACKFILL_FILE}", "w") as f:
+            f.write(
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-01-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                f"  status: {status}\n"
+            )
+
+    def test_staging_name_for_non_shared_prod_table_should_use_staging_project(self):
+        """Staging tables for a non-shared-prod query still live in the staging project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.EXPERIMENTS_TABLE, date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "moz_fx_data_experiments__monitoring__analysis_results_v1_2021_05_03"
+        )
+
+    def test_backup_name_for_non_shared_prod_table_should_use_staging_project(self):
+        """Backup tables for a non-shared-prod query still live in the staging project."""
+        name = get_backfill_backup_table_name(self.EXPERIMENTS_TABLE, date(2021, 5, 3))
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "moz_fx_data_experiments__monitoring__analysis_results_v1_backup_2021_05_03"
+        )
+
+    def test_staging_name_for_shared_prod_table_should_not_be_prefixed(self):
+        """Tables in the staging project keep their existing unprefixed names."""
+        name = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-shared-prod.test_derived.test_table_v1", date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "test_derived__test_table_v1_2021_05_03"
+        )
+
+    def test_backup_name_for_shared_prod_table_should_not_be_prefixed(self):
+        """Backups in the staging project keep their existing unprefixed names."""
+        name = get_backfill_backup_table_name(
+            "moz-fx-data-shared-prod.test_derived.test_table_v1", date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "test_derived__test_table_v1_backup_2021_05_03"
+        )
+
+    def test_staging_names_for_same_table_in_different_projects_should_differ(self):
+        """The prefix is what keeps same-named tables from colliding in one dataset."""
+        shared_prod = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-shared-prod.monitoring.analysis_results_v1", date(2021, 5, 3)
+        )
+        experiments = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-experiments.monitoring.analysis_results_v1", date(2021, 5, 3)
+        )
+        assert shared_prod != experiments
+
+    def test_staging_client_project_without_target_should_be_staging_project(self):
+        """Without a target the client runs in the staging project, not the query's project."""
+        assert _staging_client_project(None) == BACKFILL_DESTINATION_PROJECT
+
+    def test_staging_client_project_with_target_should_be_target_project(self):
+        """A target redirects the client to the target project."""
+        target = Target(name="dev", project_id="sandbox")
+        assert _staging_client_project(target) == "sandbox"
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_should_use_staging_project_for_client(
+        self, mock_client, mock_table_exists
+    ):
+        """The staging existence check runs in the staging project, not the query's project."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+
+            # staging exists, backup does not -> eligible to complete
+            mock_table_exists.side_effect = [True, False]
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-experiments",
+                self.EXPERIMENTS_TABLE,
+                status=BackfillStatus.COMPLETE.value,
+            )
+
+            assert self.EXPERIMENTS_TABLE in result
+            assert (
+                mock_client.call_args.kwargs["project"] == BACKFILL_DESTINATION_PROJECT
+            )
+            checked_staging = mock_table_exists.call_args_list[0].args[1]
+            assert checked_staging.startswith(
+                f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            )
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_without_project_should_scan_all_projects(
+        self, mock_client, mock_table_exists
+    ):
+        """project=None scans every project so non-shared-prod entries are picked up."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            # no staging table exists yet -> both entries are eligible to initiate
+            mock_table_exists.return_value = False
+
+            result = get_scheduled_backfills(
+                "sql",
+                None,
+                status=BackfillStatus.INITIATE.value,
+            )
+
+            assert set(result) == {
+                self.EXPERIMENTS_TABLE,
+                "moz-fx-data-shared-prod.monitoring.analysis_results_v1",
+            }
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_with_project_should_restrict_scan(
+        self, mock_client, mock_table_exists
+    ):
+        """Passing a project restricts the scan to that project."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            mock_table_exists.return_value = False
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-experiments",
+                status=BackfillStatus.INITIATE.value,
+            )
+
+            assert set(result) == {self.EXPERIMENTS_TABLE}
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_scheduled_json_should_include_staging_and_backup_tables(
+        self, mock_client, mock_table_exists
+    ):
+        """The JSON output carries the table names so consumers don't rebuild them."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            mock_table_exists.return_value = False
+
+            result = runner.invoke(
+                scheduled,
+                ["--status=Initiate", "--json_path=out.json"],
+            )
+
+            assert result.exit_code == 0
+
+            entries = {
+                e["qualified_table_name"]: e
+                for e in json.loads(Path("out.json").read_text())
+            }
+
+            staging_prefix = (
+                f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            )
+
+            experiments = entries[self.EXPERIMENTS_TABLE]
+            assert experiments["staging_table"] == (
+                f"{staging_prefix}moz_fx_data_experiments__monitoring"
+                "__analysis_results_v1_2021_05_03"
+            )
+            assert experiments["backup_table"] == (
+                f"{staging_prefix}moz_fx_data_experiments__monitoring"
+                "__analysis_results_v1_backup_2021_05_03"
+            )
+
+            shared_prod = entries[
+                "moz-fx-data-shared-prod.monitoring.analysis_results_v1"
+            ]
+            assert shared_prod["staging_table"] == (
+                f"{staging_prefix}monitoring__analysis_results_v1_2021_05_03"
+            )
+            assert shared_prod["backup_table"] == (
+                f"{staging_prefix}monitoring__analysis_results_v1_backup_2021_05_03"
+            )
+
+    def test_info_without_project_should_scan_all_projects(self):
+        """info with no project lists entries from every project."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+            self._write_backfill_entry("moz-fx-data-shared-prod")
+
+            result = runner.invoke(info, [])
+
+            assert result.exit_code == 0
+            assert self.EXPERIMENTS_TABLE in result.output
+            assert "moz-fx-data-shared-prod.monitoring.analysis_results_v1" in (
+                result.output
+            )
+            assert "total of 2 backfill(s)" in result.output
+
+    def test_info_with_project_should_restrict_to_that_project(self):
+        """info with a project only lists that project's entries."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+            self._write_backfill_entry("moz-fx-data-shared-prod")
+
+            result = runner.invoke(info, ["--project-id=moz-fx-data-experiments"])
+
+            assert result.exit_code == 0
+            assert self.EXPERIMENTS_TABLE in result.output
+            assert "moz-fx-data-shared-prod.monitoring.analysis_results_v1" not in (
+                result.output
+            )
+            assert "total of 1 backfill(s)" in result.output

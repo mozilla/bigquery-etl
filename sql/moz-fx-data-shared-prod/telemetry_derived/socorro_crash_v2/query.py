@@ -15,6 +15,10 @@ THIS_DIR = os.path.dirname(__file__)
 DEFAULT_SCHEMA = os.path.join(THIS_DIR, "schema.yaml")
 TRANSFORM_SQL = os.path.join(THIS_DIR, "transform.sql")
 
+# Top-level INT64 fields loaded as STRING that get SAFE_CAST in transform.sql to handle overflow.
+# Does not work on nested fields
+LOOSE_INT_FIELDS = {"install_age", "last_crash", "uptime"}
+
 
 def load_source_schema():
     """Build the schema to load the raw JSON with.
@@ -27,10 +31,17 @@ def load_source_schema():
     # include tags in schema.yaml are resolved
     fields = Schema.from_schema_file(Path(DEFAULT_SCHEMA)).schema["fields"]
     return [
-        bigquery.SchemaField.from_api_repr(_unwrap(field))
+        bigquery.SchemaField.from_api_repr(_loosen(_unwrap(field)))
         for field in fields
         if field["name"] != "crash_date"
     ]
+
+
+def _loosen(field):
+    """Load a LOOSE_INT_FIELDS field as STRING so the load doesn't reject it."""
+    if field["name"] in LOOSE_INT_FIELDS:
+        return {**field, "type": "STRING"}
+    return field
 
 
 def _unwrap(field):
@@ -125,9 +136,10 @@ def main(
             raise click.ClickException(f"No source objects found under {source_uri}")
         print(f"Source objects present under {source_uri}")
 
+    tmp_table = f"tmp.socorro_crash_{uuid.uuid4().hex[:8]}"
+
     try:
         # Load the raw JSON into a temp table using the natural (unwrapped) schema.
-        tmp_table = f"tmp.socorro_crash_{uuid.uuid4().hex[:8]}"
         load_result = client.load_table_from_uri(
             source_uri,
             tmp_table,
@@ -155,18 +167,21 @@ def main(
                 f"{validate_result.total_bytes_processed} bytes. "
                 f"Skipping write to {partition}."
             )
-            return
-
-        # Transform into the destination shape and write the partition.
-        query_result = client.query(
-            query,
-            job_config=bigquery.QueryJobConfig(
-                destination=partition,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            ),
-        ).result()
-        print(f"Wrote {query_result.total_rows} rows into {partition}")
-    finally:
+        else:
+            # Transform into the destination shape and write the partition.
+            query_result = client.query(
+                query,
+                job_config=bigquery.QueryJobConfig(
+                    destination=partition,
+                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                ),
+            ).result()
+            print(f"Wrote {query_result.total_rows} rows into {partition}")
+    except Exception:
+        # Keep the temp table so a failed transform can be debugged against the data it ran on
+        print(f"Failed; not cleaning up {tmp_table}")
+        raise
+    else:
         client.delete_table(tmp_table, not_found_ok=True)
 
 

@@ -1,0 +1,36 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING"
+  },
+  {
+    "name": "client_info",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "metrics",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "string",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "referrals_code",
+            "type": "STRING"
+          }
+        ]
+      }
+    ]
+  }
+]

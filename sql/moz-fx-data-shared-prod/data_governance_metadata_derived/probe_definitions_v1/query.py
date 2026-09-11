@@ -8,6 +8,10 @@ Reads the latest ``lineage_mapping_v1`` partition, groups by
 * the Glean Dictionary JSON API, for Glean pings, or
 * the closest upstream ``_stable`` table's DataHub schema, for Legacy Telemetry.
 
+Glean rows additionally carry ``data_sensitivity`` and ``send_in_pings``, merged
+in from probe-info (the app's own metrics plus its libraries'), and ``tags``,
+which the Dictionary response already provides.
+
 Writes one row per probe to ``probe_definitions_v1``, overwriting the run's
 ``fetched_at`` date partition.
 
@@ -17,8 +21,10 @@ so this script depends only on ``google.cloud.bigquery`` + ``requests``.
 
 Behavioral parity with the agent's probe_fetcher:
 
-* ``fetch_glean_probes`` and ``fetch_legacy_probes`` are byte-equivalent to
-  the agent's helpers (same URLs, same GraphQL, same response mapping).
+* ``fetch_legacy_probes`` matches the agent's helper on the GraphQL query and on
+  the probe name, description, and type mapping, and adds the sensitivity fields
+  below as empty. ``fetch_glean_probes`` matches on the same three and populates
+  them, which the column classification pipeline needs.
 * The 500-probe cap (``_MAX_UNFILTERED_PROBES``) and column-name fuzzy
   filtering from ``fetch_probe_definitions`` are intentionally **not**
   replicated. Those exist to keep LLM context small at agent read time; the
@@ -29,8 +35,10 @@ Behavioral parity with the agent's probe_fetcher:
 
 Requires DATAHUB_GMS_TOKEN in the environment for the legacy-telemetry path.
 """
+
 import argparse
 import datetime
+import functools
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -44,6 +52,13 @@ logger = logging.getLogger(__name__)
 _DATAHUB_URL = "https://mozilla.acryl.io/api/graphql"
 _GLEAN_DICT_URL = (
     "https://dictionary.telemetry.mozilla.org/data/{app}/pings/{ping}.json"
+)
+# probe-info carries data_sensitivity, which the Dictionary per-ping endpoint
+# omits. Slugs are dashed here and underscored in _GLEAN_DICT_URL.
+_PROBE_INFO_URL = "https://probeinfo.telemetry.mozilla.org/glean/{app}/metrics"
+_PROBE_INFO_REPOS_URL = "https://probeinfo.telemetry.mozilla.org/glean/repositories"
+_PROBE_INFO_APP_LISTINGS_URL = (
+    "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 )
 
 _SCHEMA_FIELDS_QUERY = """
@@ -67,6 +82,9 @@ _PROBE_DEFINITIONS_SCHEMA = [
     bigquery.SchemaField("probe_description", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("probe_type", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("fetched_at", "DATE", mode="REQUIRED"),
+    bigquery.SchemaField("data_sensitivity", "STRING", mode="REPEATED"),
+    bigquery.SchemaField("send_in_pings", "STRING", mode="REPEATED"),
+    bigquery.SchemaField("tags", "STRING", mode="REPEATED"),
 ]
 
 
@@ -88,12 +106,141 @@ def _datahub_graphql(query: str, variables: dict, token: str) -> dict:
     return body["data"]
 
 
+def _get_json(url: str, description: str, missing_ok: bool = False) -> Any:
+    """GET and parse JSON, returning None for a 404 when ``missing_ok``.
+
+    Every other failure raises. A timeout or 5xx is indistinguishable from an
+    empty result once it has been turned into one, and the run would go on to
+    write a partition whose fields are silently missing.
+    """
+    try:
+        response = requests.get(url, timeout=30)
+        if missing_ok and response.status_code == 404:
+            logger.warning(f"{description} not found: {url}")
+            return None
+        response.raise_for_status()
+        return response.json()
+    except (requests.RequestException, ValueError) as e:
+        raise RuntimeError(f"Could not fetch {description} from {url}") from e
+
+
+_CATALOG_CACHE: dict[str, Any] = {}
+
+
+def _fetch_catalog(url: str, description: str) -> list[dict[str, Any]]:
+    """Fetch a probe-info catalog endpoint, caching only successful results."""
+    if url not in _CATALOG_CACHE:
+        data = _get_json(url, description)
+        if not data:
+            raise RuntimeError(f"{description} is empty: {url}")
+        _CATALOG_CACHE[url] = data
+    return _CATALOG_CACHE[url]
+
+
+@functools.lru_cache(maxsize=None)
+def _fetch_metrics_map(slug: str) -> dict[str, dict[str, Any]]:
+    """Fetch one probe-info metrics file, mapping metric name to latest history.
+
+    A 404 yields an empty map, since a repository without a metrics file is a
+    data gap rather than an outage. Cached per slug so a shared library is
+    fetched once; treat the result as read-only.
+    """
+    metrics = _get_json(
+        _PROBE_INFO_URL.format(app=slug), f"probe-info {slug}", missing_ok=True
+    )
+    if not metrics:
+        return {}
+
+    result = {}
+    for name, definition in metrics.items():
+        history = (definition or {}).get("history") or []
+        if history:
+            result[name] = history[-1]
+    return result
+
+
+def _repository_slugs(app: str) -> tuple[str, ...]:
+    """Map a Glean Dictionary app name to its probe-info repository names.
+
+    app-listings maps one ``app_name`` to a ``v1_name`` per channel and per
+    platform: ``mozilla_vpn`` has one each for desktop, Android and iOS, plus the
+    iOS network extension.
+    Metrics can be unique to one of them, so read all of them, as
+    ``glean_usage`` does for its per-app artifacts. Release entries come first so
+    their definitions win, treating an absent ``app_channel`` as release.
+    """
+    listings = [
+        listing
+        for listing in _fetch_catalog(
+            _PROBE_INFO_APP_LISTINGS_URL, "probe-info app listings"
+        )
+        if listing.get("app_name") == app and listing.get("v1_name")
+    ]
+    if not listings:
+        logger.warning(f"No probe-info app listing for Glean app {app!r}")
+        return (app.replace("_", "-"),)
+
+    slugs: list[str] = []
+    for listing in sorted(
+        listings, key=lambda entry: (entry.get("app_channel") or "release") != "release"
+    ):
+        if listing["v1_name"] not in slugs:
+            slugs.append(listing["v1_name"])
+    return tuple(slugs)
+
+
+def _metric_sources(app: str) -> tuple[str, ...]:
+    """Return the probe-info slugs to read for an app: the app plus its libraries."""
+    repositories = _fetch_catalog(_PROBE_INFO_REPOS_URL, "probe-info repositories")
+
+    by_name = {repo["name"]: repo for repo in repositories if repo.get("name")}
+    slug_by_library = {
+        library_name: name
+        for name, repo in by_name.items()
+        for library_name in repo.get("library_names") or []
+    }
+
+    sources: list[str] = []
+    queue = list(_repository_slugs(app))
+    while queue:
+        slug = queue.pop(0)
+        if slug in sources:
+            continue
+        sources.append(slug)
+        for dependency in (by_name.get(slug) or {}).get("dependencies") or []:
+            if dependency in slug_by_library:
+                queue.append(slug_by_library[dependency])
+            elif dependency in by_name:
+                queue.append(dependency)
+            else:
+                logger.warning(f"Unknown probe-info dependency {dependency!r}")
+    return tuple(sources)
+
+
+@functools.lru_cache(maxsize=None)
+def fetch_probe_info(app: str) -> dict[str, dict[str, Any]]:
+    """Fetch probe-info metric definitions for a Glean app, keyed by metric name.
+
+    ``app`` is the Glean Dictionary app name (e.g. ``firefox_desktop``). Merges
+    the app's own metrics with its libraries', app winning on conflict. Read-only.
+    """
+    merged: dict[str, dict[str, Any]] = {}
+    for slug in _metric_sources(app):
+        for name, definition in _fetch_metrics_map(slug).items():
+            merged.setdefault(name, definition)
+    return merged
+
+
 def fetch_glean_probes(source_ping: str) -> list[dict[str, Any]]:
     """Fetch probe definitions for a Glean ping from the Glean Dictionary.
 
     ``source_ping`` is expected in ``app.ping`` form (e.g. ``fenix.baseline``).
     Returns an empty list for 404s (typically: Glean Dictionary doesn't have an
     entry for that app/ping pair).
+
+    ``data_sensitivity`` and ``send_in_pings`` come from probe-info, matched on
+    the dotted metric name, falling back to the Dictionary's ``pings``; ``tags``
+    comes from the Dictionary.
     """
     if "." not in source_ping:
         logger.warning(
@@ -107,14 +254,21 @@ def fetch_glean_probes(source_ping: str) -> list[dict[str, Any]]:
         logger.warning(f"Glean Dictionary entry not found: {url}")
         return []
     response.raise_for_status()
-    return [
-        {
-            "probe_name": m.get("name"),
-            "probe_description": m.get("description"),
-            "probe_type": m.get("type"),
-        }
-        for m in response.json().get("metrics", [])
-    ]
+    probe_info = fetch_probe_info(app)
+    probes = []
+    for m in response.json().get("metrics", []):
+        info = probe_info.get(m.get("name")) or {}
+        probes.append(
+            {
+                "probe_name": m.get("name"),
+                "probe_description": m.get("description"),
+                "probe_type": m.get("type"),
+                "data_sensitivity": info.get("data_sensitivity") or [],
+                "send_in_pings": info.get("send_in_pings") or m.get("pings") or [],
+                "tags": m.get("tags") or [],
+            }
+        )
+    return probes
 
 
 def fetch_legacy_probes(stable_urn: str, token: str) -> list[dict[str, Any]]:
@@ -128,6 +282,9 @@ def fetch_legacy_probes(stable_urn: str, token: str) -> list[dict[str, Any]]:
             "probe_name": f.get("fieldPath"),
             "probe_description": f.get("description"),
             "probe_type": f.get("nativeDataType"),
+            "data_sensitivity": [],
+            "send_in_pings": [],
+            "tags": [],
         }
         for f in schema["fields"]
     ]
@@ -213,6 +370,10 @@ def fetch_for_ping(
             "probe_description": p.get("probe_description"),
             "probe_type": p.get("probe_type"),
             "fetched_at": fetched_at,
+            # REPEATED fields reject a JSON null, so always emit a list.
+            "data_sensitivity": p.get("data_sensitivity") or [],
+            "send_in_pings": p.get("send_in_pings") or [],
+            "tags": p.get("tags") or [],
         }
         for p in probes
     ]
@@ -331,6 +492,19 @@ def main() -> None:
         for ping in pings:
             logger.info(f"  would fetch {ping['ping_platform']}/{ping['source_ping']}")
         return
+
+    # Fill the probe-info caches one app at a time before fanning out. lru_cache
+    # does not coalesce in-flight calls, so concurrent workers on one app can race
+    # a transient failure against a success, giving two pings different
+    # sensitivity for the same probe and caching whichever finished last. Doing it
+    # here also fails a catalog outage before anything is written.
+    glean_apps = {
+        ping["source_ping"].split(".", 1)[0]
+        for ping in pings
+        if ping["ping_platform"] == "glean" and "." in ping["source_ping"]
+    }
+    for app in sorted(glean_apps):
+        fetch_probe_info(app)
 
     rows: list[dict[str, Any]] = []
     hard_failures = 0

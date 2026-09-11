@@ -2,4 +2,5 @@ friendly_name: Experiment Crash Rates Live
 description: >
   View for live experiment crash rates.
 labels:
+  sql_generator: experiment_monitoring
   incremental: false

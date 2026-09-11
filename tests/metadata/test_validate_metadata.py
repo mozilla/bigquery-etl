@@ -1,9 +1,16 @@
 from datetime import date
 
-from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
+from bigquery_etl.metadata.parse_metadata import (
+    DatasetMetadata,
+    ExternalDataSubscriptionMetadata,
+    ExternalSharingMetadata,
+    Metadata,
+)
 from bigquery_etl.metadata.validate_metadata import (
     validate_dataset_classification,
     validate_deprecation,
+    validate_external_data_subscription,
+    validate_external_sharing,
     validate_public_data,
 )
 
@@ -42,6 +49,156 @@ class TestValidateMetadata(object):
             validate_public_data(metadata_invalid_public, "test/path/metadata.yaml")
             is False
         )
+
+    def test_validate_external_sharing(self, tmp_path):
+        external_sharing = ExternalSharingMetadata(
+            exchange="test_exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=["group:partner@example.org"],
+        )
+
+        def _dataset_metadata(external_sharing=None):
+            return DatasetMetadata(
+                friendly_name="test",
+                description="test",
+                dataset_base_acl="view",
+                user_facing=True,
+                external_sharing=external_sharing,
+            )
+
+        def _dataset_dir(name, authorized_view=True, view_metadata=True):
+            dataset_dir = tmp_path / name
+            view_dir = dataset_dir / "my_view"
+            view_dir.mkdir(parents=True)
+            (view_dir / "view.sql").write_text("SELECT 1\n")
+            if view_metadata:
+                metadata = (
+                    "friendly_name: v\ndescription: v\nowners:\n  - t@example.org\n"
+                )
+                if authorized_view:
+                    metadata += "labels:\n  authorized: true\n"
+                (view_dir / "metadata.yaml").write_text(metadata)
+            return str(dataset_dir)
+
+        # no external_sharing configured -> always valid
+        assert validate_external_sharing(
+            "some_dataset", _dataset_metadata(), _dataset_dir("some_dataset")
+        )
+
+        # valid: `_shared` dataset with an authorized view
+        assert validate_external_sharing(
+            "foo_shared",
+            _dataset_metadata(external_sharing),
+            _dataset_dir("foo_shared"),
+        )
+
+        # invalid: `_shared` dataset with a view missing the authorized label
+        assert (
+            validate_external_sharing(
+                "bar_shared",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("bar_shared", authorized_view=False),
+            )
+            is False
+        )
+
+        # invalid: a view.sql with no metadata.yaml at all
+        assert (
+            validate_external_sharing(
+                "baz_shared",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("baz_shared", view_metadata=False),
+            )
+            is False
+        )
+
+        # invalid: dataset not suffixed with _shared
+        assert (
+            validate_external_sharing(
+                "foo_shared_derived",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("foo_shared_derived"),
+            )
+            is False
+        )
+        assert (
+            validate_external_sharing(
+                "foo_derived",
+                _dataset_metadata(external_sharing),
+                _dataset_dir("foo_derived"),
+            )
+            is False
+        )
+
+    def test_validate_external_data_subscription(self, tmp_path):
+        external_data_subscription = ExternalDataSubscriptionMetadata(
+            source_project="65960090760",
+            data_exchange_id="partner_exchange",
+            listing_id="partner_listing",
+        )
+
+        def _dataset_metadata(external_data_subscription=None):
+            return DatasetMetadata(
+                friendly_name="test",
+                description="test",
+                dataset_base_acl="view",
+                user_facing=True,
+                external_data_subscription=external_data_subscription,
+            )
+
+        def _dataset_dir(name, table=None):
+            dataset_dir = tmp_path / name
+            dataset_dir.mkdir(parents=True)
+            if table:
+                table_dir = dataset_dir / "my_table"
+                table_dir.mkdir()
+                (table_dir / table).write_text("SELECT 1\n")
+            return str(dataset_dir)
+
+        # no external_data_subscription configured -> always valid
+        assert validate_external_data_subscription(
+            "some_dataset", _dataset_metadata(), _dataset_dir("some_dataset")
+        )
+
+        # valid: `_external` dataset with no tables/views defined
+        assert validate_external_data_subscription(
+            "pmg_external",
+            _dataset_metadata(external_data_subscription),
+            _dataset_dir("pmg_external"),
+        )
+
+        # invalid: dataset not suffixed with _external
+        assert (
+            validate_external_data_subscription(
+                "pmg_derived",
+                _dataset_metadata(external_data_subscription),
+                _dataset_dir("pmg_derived"),
+            )
+            is False
+        )
+
+        # invalid: `_external` dataset that defines any table/view artifact,
+        # including a schema-only table (metadata.yaml/schema.yaml, no query)
+        for i, table in enumerate(
+            (
+                "query.sql",
+                "query.py",
+                "view.sql",
+                "materialized_view.sql",
+                "script.sql",
+                "init.sql",
+                "metadata.yaml",
+                "schema.yaml",
+            )
+        ):
+            assert (
+                validate_external_data_subscription(
+                    "pmg_external",
+                    _dataset_metadata(external_data_subscription),
+                    _dataset_dir(f"with_{i}_external", table=table),
+                )
+                is False
+            )
 
     def test_validate_deprecation(self):
         metadata_valid = Metadata(

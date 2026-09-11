@@ -16,12 +16,12 @@ from pathlib import Path
 
 import click
 import yaml
-from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
+from bigquery_etl.util.process_pool import process_pool
 
 BOT_GENERATED = (
     'LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated'
@@ -83,9 +83,7 @@ VIEW_METADATA_HEADER = """\
 ---
 """
 
-VIEW_METADATA_TEMPLATE = (
-    VIEW_METADATA_HEADER
-    + """\
+VIEW_METADATA_TEMPLATE = VIEW_METADATA_HEADER + """\
 friendly_name: Historical Pings for `{document_namespace}/{document_type}`
 description: |-
   A historical view of pings sent for the
@@ -98,7 +96,6 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 """
-)
 
 
 def write_dataset_metadata_if_not_exists(
@@ -380,7 +377,7 @@ def write_view_if_not_exists(
         document_namespace=schema.document_namespace,
         document_type=schema.document_type,
     )
-    labels = {}
+    labels: dict = {"sql_generator": "stable_views"}
     # Add a `legacy` label to stable views that select from legacy telemetry ping tables.
     if schema.bq_dataset_family == "telemetry":
         labels["legacy"] = True
@@ -393,17 +390,14 @@ def write_view_if_not_exists(
             existing_metadata = yaml.safe_load(f) or {}
         template_metadata = yaml.safe_load(metadata_content) or {}
         merged = {**template_metadata, **existing_metadata}
-        if labels:
-            merged["labels"] = {
-                **(merged.get("labels") or {}),
-                **labels,
-            }
+        merged["labels"] = {
+            **labels,
+            **(existing_metadata.get("labels") or {}),
+        }
         if merged != existing_metadata:
             should_write_metadata = True
-            metadata_content = VIEW_METADATA_HEADER + yaml.dump(
-                merged, sort_keys=False
-            )
-    elif labels:
+            metadata_content = VIEW_METADATA_HEADER + yaml.dump(merged, sort_keys=False)
+    else:
         metadata_content += yaml.dump({"labels": labels})
 
     if not metadata_file.exists() or should_write_metadata:
@@ -500,7 +494,7 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
 
     id_token = get_id_token()
 
-    with ProcessingPool(parallelism) as pool:
+    with process_pool(parallelism, task_count=len(schemas)) as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,

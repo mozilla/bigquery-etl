@@ -9,6 +9,7 @@ owners:
   - jrediger@mozilla.com
   - wstuckey@mozilla.com
 labels:
+  sql_generator: glean_usage
   incremental: true
   schedule: daily
   table_type: client_level

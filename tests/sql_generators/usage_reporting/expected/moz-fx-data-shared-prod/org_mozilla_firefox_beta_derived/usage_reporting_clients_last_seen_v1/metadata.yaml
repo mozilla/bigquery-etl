@@ -7,6 +7,7 @@ description: |-
 owners:
   - kik@mozilla.com
 labels:
+  sql_generator: usage_reporting
   incremental: true
   schedule: daily
 scheduling:

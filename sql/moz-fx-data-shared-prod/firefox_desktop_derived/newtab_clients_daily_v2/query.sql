@@ -75,6 +75,7 @@ SELECT
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision)) AS geo_subdivision,
   ANY_VALUE(experiments) AS experiments,
   LOGICAL_OR(newtab_weather_enabled) AS newtab_weather_enabled,
+  LOGICAL_OR(newtab_scroll) AS newtab_scroll,
   `moz-fx-data-shared-prod.udf.mode_last`(
     ARRAY_AGG(default_search_engine)
   ) AS default_search_engine,

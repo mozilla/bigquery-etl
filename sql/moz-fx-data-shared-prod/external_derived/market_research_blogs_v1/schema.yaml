@@ -1,0 +1,34 @@
+fields:
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser or product name, e.g. Chrome, Firefox.
+- name: release_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the blog post was published.
+- name: scraped_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the record was scraped by release_scraping.
+- name: source_url
+  type: STRING
+  mode: NULLABLE
+  description: URL of the blog post that was scraped.
+- name: source_type
+  type: STRING
+  mode: NULLABLE
+  description: Kind of record. Always "blog_post" for this table.
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: Title of the blog post.
+- name: raw_text
+  type: STRING
+  mode: NULLABLE
+  description: Plain text scraped from the blog post page.
+- name: blob_name
+  type: STRING
+  mode: NULLABLE
+  description: Full GCS object path this row was loaded from, for traceability
+    back to the source file.

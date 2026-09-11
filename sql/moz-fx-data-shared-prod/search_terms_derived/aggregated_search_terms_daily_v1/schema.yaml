@@ -1,0 +1,51 @@
+fields:
+- name: search_terms
+  type: STRING
+  mode: NULLABLE
+  description: The sanitized search query string entered by the user, sourced from the `sanitized_query`
+    field of the suggest impression data.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: submission_date
+- name: impressions
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: impressions
+- name: clicks
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: clicks
+- name: client_days
+  type: INT64
+  mode: NULLABLE
+  description: The count of distinct `context_id` values (i.e., unique clients) that generated impressions
+    for this search term on the given submission date. Provides an estimate of how many individual users
+    searched for the term that day.
+- name: advertiser
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: advertiser
+    append: Null when the query could not be matched to a known suggestion keyword.
+- name: iab_category
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: iab_category
+    append: Null when the query could not be matched to a known suggestion keyword.
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: title
+    append: Null when the query could not be matched to a known suggestion keyword.

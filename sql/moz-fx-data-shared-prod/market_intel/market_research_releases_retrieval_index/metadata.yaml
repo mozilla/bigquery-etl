@@ -1,0 +1,35 @@
+friendly_name: Market Research Browser Releases Retrieval Index
+description: |-
+  AI-enriched retrieval view over the scraped browser release-note corpus, containing
+  embeddings and semantic features to support grounded question answering and
+  VECTOR_SEARCH over Mozilla's market-intel corpus.
+
+  Grain: one row per (browser, version, source_type). `scraped_date` is the partition
+  column of the underlying table and records the scrape on which the release was first
+  observed and indexed — it is NOT part of the grain.
+
+  LLM generated fields:
+  - release_summary_llm
+  - release_category_llm
+  - release_topics_llm
+  - release_entities_llm
+  - embedding based on [browser, version, raw_text]
+
+  Read-time filtering (applied by this view, not stored in the underlying table)
+  - Only rows where `metadata.embedding_succeeded` are exposed, so this view is safe to
+    use directly as a VECTOR_SEARCH base without a further embedding NULL check.
+  - No product normalization and no recency decay are applied. Vendor release notes are
+    reference documents whose relevance does not decay on a fixed schedule, so a
+    read-time `recency_score` would be misleading; filter on `release_date` or
+    `scraped_date` explicitly when you want recent releases.
+
+  Usage
+  - The underlying table requires a partition filter. Always include
+    `WHERE scraped_date >= ...` (or an equivalent range) when querying this view,
+    otherwise BigQuery will reject the query.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lmcfall@mozilla.com

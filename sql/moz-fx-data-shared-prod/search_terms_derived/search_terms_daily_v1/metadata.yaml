@@ -12,8 +12,8 @@ description: |-
   under-reported, since the trailing 7-day threshold window extends past the
   oldest available source data. Partitions from 2026-07-14 onward are complete.
 owners:
-  - ctroy@mozilla.com
-  - rburwei@mozilla.com
+  - najiang@mozilla.com
+  - csadilek@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

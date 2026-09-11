@@ -1,0 +1,103 @@
+---
+# The `referrals` ping carries the code BARE (the client strips the `fxrefer`
+# prefix when it extracts it), so the accepted shape is 17 chars of Crockford
+# base32 — digits and upper-case letters only.
+#
+# c-d1/c-d2 share a code, and c-d1 appears twice to stand in for a retried
+# upload: COUNT(DISTINCT client_id) must still report 2, not 3.
+- submission_timestamp: '2026-07-24 10:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-d1
+  metrics:
+    string:
+      browser_referral_code: '177HGE4JW5KB6FVW2'
+- submission_timestamp: '2026-07-24 11:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-d2
+  metrics:
+    string:
+      browser_referral_code: '177HGE4JW5KB6FVW2'
+- submission_timestamp: '2026-07-24 23:30:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-d1
+  metrics:
+    string:
+      browser_referral_code: '177HGE4JW5KB6FVW2'
+# c-d3 bare and c-d4 still prefixed: the defensive `^fxrefer` strip must fold
+# both onto the same code, so a client-side change that stops stripping the
+# prefix does not silently drop every row.
+- submission_timestamp: '2026-07-24 12:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-d3
+  metrics:
+    string:
+      browser_referral_code: '2ABCDEFGH1JK2MNP3'
+- submission_timestamp: '2026-07-24 12:30:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-d4
+  metrics:
+    string:
+      browser_referral_code: 'fxrefer2ABCDEFGH1JK2MNP3'
+# --- everything below must be rejected ---
+# no referral code
+- submission_timestamp: '2026-07-24 13:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-r1
+  metrics:
+    string:
+      browser_referral_code: '(not set)'
+# unrelated value that merely starts with `fxrefer` -> strips to the junk code
+# `al-2026`, which a length-agnostic match would have emitted
+- submission_timestamp: '2026-07-24 13:10:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-r2
+  metrics:
+    string:
+      browser_referral_code: 'fxreferral-2026'
+# legacy colon form: strips to `:177HGE4JW5KB6FVW2`, wrong charset and length
+- submission_timestamp: '2026-07-24 13:20:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-r3
+  metrics:
+    string:
+      browser_referral_code: 'fxrefer:177HGE4JW5KB6FVW2'
+# right charset, wrong length (15)
+- submission_timestamp: '2026-07-24 13:30:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-r4
+  metrics:
+    string:
+      browser_referral_code: '177HGE4JW5KB6FV'
+# right length, lower case -> outside Crockford base32
+- submission_timestamp: '2026-07-24 13:40:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-r5
+  metrics:
+    string:
+      browser_referral_code: '177hge4jw5kb6fvw2'
+# ping with no code at all
+- submission_timestamp: '2026-07-24 13:50:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-r6
+  metrics:
+    string:
+      browser_referral_code: null
+# valid code, but outside the requested partition
+- submission_timestamp: '2026-07-23 22:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-o1
+  metrics:
+    string:
+      browser_referral_code: '3ZZZZZZZZZZZZZZZZ'

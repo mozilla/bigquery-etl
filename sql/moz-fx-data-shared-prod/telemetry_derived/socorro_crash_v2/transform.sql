@@ -55,7 +55,9 @@ SELECT
   graphics_critical_error,
   graphics_startup_test,
   hang_type,
-  install_age,
+  -- Loaded as STRING (see LOOSE_INT_FIELDS in query.py); values that do not fit
+  -- in INT64 become NULL rather than failing the load.
+  SAFE_CAST(install_age AS INT64) AS install_age,
   ipc_channel_error,
   ipc_fatal_error_msg,
   ipc_fatal_error_protocol,
@@ -113,7 +115,7 @@ SELECT
         json_dump.write_combine_size
     )
   ) AS json_dump,
-  last_crash,
+  SAFE_CAST(last_crash AS INT64) AS last_crash,
   memory_measures,
   IF(
     memory_report IS NULL,
@@ -151,7 +153,7 @@ SELECT
   topmost_filenames,
   total_physical_memory,
   total_virtual_memory,
-  uptime,
+  SAFE_CAST(uptime AS INT64) AS uptime,
   user_comments,
   useragent_locale,
   uuid,

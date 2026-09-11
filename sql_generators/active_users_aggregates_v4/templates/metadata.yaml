@@ -13,7 +13,7 @@ description: |-
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
-  
+
   The label "shredder mitigation" indicates that this table is set up for
   managed backfill with shredder mitigation, as described in
   https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill.
@@ -24,6 +24,7 @@ owners:
   - lvargas@mozilla.com
   - mozilla/kpi_table_reviewers
 labels:
+  sql_generator: active_users_aggregates_v4
   level: gold
   incremental: true
   change_controlled: true

@@ -15,6 +15,7 @@ SEARCH_PAGE = {
                 "summary": "Do the thing",
                 "status": {"name": "In Progress"},
                 "created": "2026-07-27T09:40:36.912-0400",
+                "updated": "2026-07-28T11:00:00.000-0400",
                 "resolutiondate": None,
             },
         }
@@ -41,6 +42,7 @@ def test_get_issues_maps_to_output_schema():
             "status": "In Progress",
             "created": "2026-07-27T13:40:36+00:00",
             "resolved": None,
+            "updated": "2026-07-28T15:00:00+00:00",
         }
     ]
 

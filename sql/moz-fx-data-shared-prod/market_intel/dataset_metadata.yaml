@@ -1,0 +1,19 @@
+friendly_name: Market Intel
+description: |-
+  Dataset to store user-facing views over the AI-enriched
+  market-intelligence retrieval tables in `market_intel_derived`.
+
+  Derived from the market-research corpus loaded into `external_derived` by
+  docker-etl's release_scraping job:
+   - Browser release notes (developer and user-facing)
+   - Browser vendor blog posts
+   - Competitor job postings
+
+  Views in this dataset expose only rows whose embedding succeeded, so they
+  are safe to use directly as a VECTOR_SEARCH base.
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

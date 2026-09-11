@@ -1,0 +1,18 @@
+---
+# One shared invite code used across platforms and channels. Desktop release
+# collapses together with the Fenix release row below; the nightly row stays
+# separate because normalized_channel is part of the grain.
+- submission_timestamp: '2026-08-17 10:00:00'
+  normalized_channel: release
+  client_info:
+    client_id: c-desktop-release
+  metrics:
+    string:
+      browser_referral_code: '1WYYSNCNGE6S7WKGF'
+- submission_timestamp: '2026-08-17 11:00:00'
+  normalized_channel: nightly
+  client_info:
+    client_id: c-desktop-nightly
+  metrics:
+    string:
+      browser_referral_code: '1WYYSNCNGE6S7WKGF'

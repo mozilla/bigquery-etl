@@ -2,7 +2,6 @@
 """clients_daily_scalar_aggregates query generator."""
 
 import argparse
-import sys
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
@@ -12,7 +11,12 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .client_side_sampled_metrics import get as get_sampled_metrics
-from .utils import get_schema, is_static_labeled_counter, ping_type_from_table
+from .utils import (
+    emit_query,
+    get_schema,
+    is_static_labeled_counter,
+    ping_type_from_table,
+)
 
 ATTRIBUTES = ",".join(
     [
@@ -153,7 +157,7 @@ def get_scalar_metrics(
 
 
 def main():
-    """Print a clients_daily_scalar_aggregates query to stdout."""
+    """Generate a clients_daily_scalar_aggregates query."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--no-parameterize",
@@ -165,6 +169,15 @@ def main():
         "--product",
         type=str,
         default="org_mozilla_fenix",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help=(
+            "Directory to write query.sql into. Created when the ping has probes "
+            "and removed when it has none. Defaults to writing to stdout."
+        ),
     )
     args = parser.parse_args()
 
@@ -206,10 +219,9 @@ def main():
             unlabeled_sampled_metric_names
         ).strip()
     if not unlabeled_metrics and not labeled_metrics:
-        print(header)
-        print("-- Empty query: no probes found!")
-        sys.exit(1)
-    print(
+        emit_query(None, args.output_dir, args.source_table)
+        return
+    emit_query(
         render_main(
             header=header,
             source_table=args.source_table,
@@ -224,7 +236,9 @@ def main():
             client_sampled_channel=CLIENT_SAMPLED_CHANNEL,
             client_sampled_os=CLIENT_SAMPLED_OS,
             client_sampled_max_sample_id=CLIENT_SAMPLED_MAX_SAMPLE_ID,
-        )
+        ),
+        args.output_dir,
+        args.source_table,
     )
 
 

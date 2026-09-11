@@ -4,6 +4,7 @@ description: |-
 owners:
 - lmcfall@mozilla.com
 labels:
+  sql_generator: use_counters
   incremental: true
   public_bigquery: true
   public_json: true

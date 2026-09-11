@@ -1,0 +1,13 @@
+# desktop release + Android release fold into one row; nightly stays separate
+- submission_date: "2026-08-17"
+  invite_code: "1WYYSNCNGE6S7WKGF"
+  install_count: 2
+  normalized_channel: "release"
+- submission_date: "2026-08-17"
+  invite_code: "1WYYSNCNGE6S7WKGF"
+  install_count: 1
+  normalized_channel: "nightly"
+- submission_date: "2026-08-17"
+  invite_code: "4QRSTVWXY0123456Z"
+  install_count: 1
+  normalized_channel: "release"

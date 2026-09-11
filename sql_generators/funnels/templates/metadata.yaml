@@ -3,6 +3,7 @@ friendly_name: {{ funnel_name }}
 owners: {{ owners }}
 {% endif %}
 labels:
+  sql_generator: funnels
   incremental: true
   table_type: aggregate
 

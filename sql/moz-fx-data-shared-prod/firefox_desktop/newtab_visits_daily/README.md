@@ -12,6 +12,6 @@ dataset’s grain is one row per
   - **App label:** Adds a constant column `app_name = 'Firefox Desktop'`.
 
 ## Derived fields in the view
-- **layout_type:** Computed using udf `mozfun.newtab.determine_grid_layout_v1(is_section, app_version, experiments)`. [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF.
-- **tiles_per_row:** Computed using udf `mozfun.newtab.determine_tiles_per_row_v1(layout_type,
-newtab_window_inner_width)`[README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_tiles_per_row_v1/README.md) for more information about the `determine_tiles_per_row` UDF.
+- **layout_type:** Computed using udf `mozfun.newtab.determine_grid_layout_v1(is_section, app_version, experiments)`. [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v2/README.md) for more information about the `determine_grid_layout` UDF.
+- **tiles_per_row:** Computed using udf `mozfun.newtab.determine_tiles_per_row_v2(layout_type,
+newtab_window_inner_width)`[README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_tiles_per_row_v2/README.md) for more information about the `determine_tiles_per_row` UDF.

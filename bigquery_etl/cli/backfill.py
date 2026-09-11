@@ -34,6 +34,7 @@ from ..backfill.shredder_mitigation import (
 )
 from ..backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
+    BACKFILL_DESTINATION_PROJECT,
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
@@ -86,16 +87,22 @@ def _get_target(ctx) -> Optional[Target]:
     return ctx.obj.get("target") if ctx.obj else None
 
 
-def _destination_project(
-    target: Optional[Target], default: Optional[str]
-) -> Optional[str]:
-    """Return the project backfills act in: the target project, else the default.
+def _destination_project(target: Optional[Target]) -> Optional[str]:
+    """Return the staging/backup destination project override, if any.
 
-    Pass default=None when used for the staging/backup destination_project (None
-    falls back to the production backfill project); pass the prod project_id when
-    used to pick the BigQuery client project.
+    Under --target, staging and backup tables go to the target project. Without a
+    target this is None, which uses the default (the staging project).
     """
-    return target.project_id if target else default
+    return target.project_id if target else None
+
+
+def _staging_client_project(target: Optional[Target]) -> str:
+    """Return the project the BigQuery client should run in.
+
+    Backfill jobs read and write staging and backup tables, which always live in the staging project
+    or the target project under --target, not necessarily in the project the query is in.
+    """
+    return _destination_project(target) or BACKFILL_DESTINATION_PROJECT
 
 
 def _resolve_backfill_table(
@@ -104,7 +111,7 @@ def _resolve_backfill_table(
     """Resolve the table a backfill operates on and where its staging table lives.
 
     Without a target this is a no-op: returns the source (production) table and
-    None (staging/backup default to the production backfill project).
+    None (staging/backup default to the staging project).
 
     With a target, the backfill is redirected into the target environment: the
     table being backfilled is the target-deployed equivalent, and staging/backup
@@ -569,19 +576,21 @@ def validate_multiple(
     ./bqetl backfill info moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
     \b
-    # Get info for all tables.
+    # Get info for all tables in all projects.
     ./bqetl backfill info
 
     \b
     # Get info from all tables with specific status.
     ./bqetl backfill info --status=Initiate
+
+    \b
+    # Restrict to a single project.
+    ./bqetl backfill info --project-id=moz-fx-data-shared-prod
     """,
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option(
-    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
-)
+@project_id_option()
 @click.option(
     "--status",
     type=click.Choice([s.value for s in BackfillStatus]),
@@ -629,15 +638,17 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
     ./bqetl backfill scheduled moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
     \b
-    # Get info for all tables.
+    # Get info for all tables in all projects.
     ./bqetl backfill scheduled
+
+    \b
+    # Restrict the scan to a single project.
+    ./bqetl backfill scheduled --project-id=moz-fx-data-shared-prod
     """,
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option(
-    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
-)
+@project_id_option()
 @click.option(
     "--status",
     type=click.Choice([s.value for s in BackfillStatus]),
@@ -673,7 +684,7 @@ def scheduled(
         status=status,
         ignore_old_entries=ignore_old_entries,
         ignore_missing_metadata=ignore_missing_metadata,
-        destination_project=_destination_project(target, None),
+        destination_project=_destination_project(target),
     )
 
     for qualified_table_name, entry in backfills.items():
@@ -682,11 +693,24 @@ def scheduled(
     click.echo(f"{len(backfills)} backfill(s) require processing.")
 
     if json_path is not None:
+        # staging_table/backup_table are emitted so consumers (the Airflow backfill
+        # DAGs) don't have to reproduce the naming scheme themselves.
+        staging_destination_project = _destination_project(target)
         formatted_backfills = [
             {
                 "qualified_table_name": qualified_table_name,
                 "entry_date": entry.entry_date.strftime("%Y-%m-%d"),
                 "watchers": entry.watchers,
+                "staging_table": get_backfill_staging_qualified_table_name(
+                    qualified_table_name,
+                    entry.entry_date,
+                    destination_project=staging_destination_project,
+                ),
+                "backup_table": get_backfill_backup_table_name(
+                    qualified_table_name,
+                    entry.entry_date,
+                    destination_project=staging_destination_project,
+                ),
             }
             for qualified_table_name, entry in backfills.items()
         ]
@@ -742,7 +766,7 @@ def initiate(
         project_id,
         qualified_table_name,
         status=BackfillStatus.INITIATE.value,
-        destination_project=_destination_project(target, None),
+        destination_project=_destination_project(target),
     )
 
     if not backfills_to_process_dict:
@@ -791,8 +815,7 @@ def initiate(
         / ("query.py" if is_python_script else "query.sql")
     )
 
-    effective_project = _destination_project(target, project_id)
-    client = bigquery.Client(project=effective_project)
+    client = bigquery.Client(project=_staging_client_project(target))
 
     if target is not None:
         # Permission mirroring from the production table is meaningless in a dev
@@ -881,37 +904,63 @@ def initiate(
                 f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
             )
 
-    if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
-        click.echo(
-            f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
-        )
+    try:
+        if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
+            click.echo(
+                f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+            )
 
+            _initiate_backfill(
+                ctx,
+                qualified_table_name,
+                backfill_staging_qualified_table_name,
+                entry_to_initiate,
+                parallelism,
+                dry_run=True,
+                billing_project=billing_project,
+                is_python_script=is_python_script,
+                query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
+                effective_table_name=effective_table_name,
+            )
+
+        click.echo(
+            f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
+        )
         _initiate_backfill(
             ctx,
             qualified_table_name,
             backfill_staging_qualified_table_name,
             entry_to_initiate,
             parallelism,
-            dry_run=True,
             billing_project=billing_project,
             is_python_script=is_python_script,
-            query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
             effective_table_name=effective_table_name,
         )
-
-    click.echo(
-        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
-    )
-    _initiate_backfill(
-        ctx,
-        qualified_table_name,
-        backfill_staging_qualified_table_name,
-        entry_to_initiate,
-        parallelism,
-        billing_project=billing_project,
-        is_python_script=is_python_script,
-        effective_table_name=effective_table_name,
-    )
+    except (Exception, SystemExit):
+        if is_python_script and copy_table_permissions:
+            # A python-script backfill creates its staging table in the script, so an exception
+            # causes the permissions copy to be skipped, leaving an undeletable table that
+            # needs to be fixed. The failure can also happen before the script created the
+            # staging table (e.g. during the dry run), in which case there's nothing to fix.
+            try:
+                client.get_table(backfill_staging_qualified_table_name)
+            except NotFound:
+                pass
+            except Exception as lookup_exc:
+                click.echo(
+                    f"Failed to check whether staging table "
+                    f"{backfill_staging_qualified_table_name} exists: {lookup_exc}"
+                )
+            else:
+                # Log rather than raise so the original failure below is what surfaces.
+                try:
+                    _copy_permissions_with_cleanup()
+                except Exception as cleanup_exc:
+                    click.echo(
+                        f"Failed to copy permissions to staging table "
+                        f"{backfill_staging_qualified_table_name} after backfill failure: {cleanup_exc}"
+                    )
+        raise
 
     if copy_table_permissions and is_python_script:
         _copy_permissions_with_cleanup()
@@ -1267,8 +1316,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         sys.exit(1)
 
     target = _get_target(ctx)
-    effective_project = _destination_project(target, project_id)
-    client = bigquery.Client(project=effective_project)
+    client = bigquery.Client(project=_staging_client_project(target))
 
     click.echo("Backfill processing (complete) started....")
 
@@ -1277,7 +1325,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         project_id,
         qualified_table_name,
         status=BackfillStatus.COMPLETE.value,
-        destination_project=_destination_project(target, None),
+        destination_project=_destination_project(target),
     )
 
     if not backfills_to_process_dict:

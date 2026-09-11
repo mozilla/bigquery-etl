@@ -17,6 +17,9 @@ fields:
 - name: count_errors
   type: INTEGER
   mode: NULLABLE
+- name: avg_sync_time
+  type: FLOAT
+  mode: NULLABLE
 - name: applied_count
   type: INTEGER
   mode: NULLABLE

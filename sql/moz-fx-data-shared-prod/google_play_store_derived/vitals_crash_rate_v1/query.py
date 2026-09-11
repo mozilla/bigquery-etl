@@ -153,7 +153,13 @@ def fetch_data(
         json=request_payload,
         timeout=timeout_seconds,
     )
-    response.raise_for_status()
+
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        raise requests.exceptions.HTTPError(
+            f"Request to: {response.url} failed with status {response.status_code}: {response.text}"
+        ) from err
 
     return response.json()
 

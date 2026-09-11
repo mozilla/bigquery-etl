@@ -1,0 +1,18 @@
+friendly_name: Sanitized Firefox Search Terms Straight from Search Requests
+description: |-
+  A sanitized variant of search terms submitted to Firefox.
+
+  Replaces merino_log_sanitized_v3. Where v3 was a table populated by a daily
+  sanitization job reading unsanitized logs out of a sequestered project, this
+  view reads terms that merino-fleece sanitized in-line, routed by Cloud Logging
+  sink into the merino tenant project. No unsanitized search terms are persisted.
+
+  This is not an authorized view: readers need access to the underlying dataset,
+  granted in webservices-infra/merino/tf/prod/bigquery.tf. See MZCLD-3566.
+owners:
+  - najiang@mozilla.com
+  - csadilek@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized

@@ -4,6 +4,8 @@ import pytest
 
 from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
+    ExternalDataSubscriptionMetadata,
+    ExternalSharingMetadata,
     Metadata,
     PartitionType,
 )
@@ -26,6 +28,164 @@ class TestParseMetadata(object):
     def test_invalid_owners(self):
         with pytest.raises(ValueError):
             Metadata("Test metadata", "test description", ["testexample.org"])
+
+    def test_valid_external_sharing_subscribers(self):
+        # both group: emails and workgroup: identities are accepted
+        subscribers = [
+            "group:partner@example.org",
+            "group:other@example.org",
+            "workgroup:mozilla-confidential/data-viewers",
+        ]
+        metadata = ExternalSharingMetadata(
+            exchange="test_exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=subscribers,
+        )
+
+        assert metadata.subscribers == subscribers
+
+    def test_invalid_external_sharing_subscribers(self):
+        # bare emails, group: without an email, and workgroups that aren't
+        # `<namespace>/<group>` are all rejected
+        for bad in (
+            ["partner@example.org"],
+            ["group:partner-data"],
+            ["workgroup:"],
+            ["workgroup:some-managed-workgroup"],  # missing /<group>
+            ["workgroup:not a workgroup"],
+        ):
+            with pytest.raises(ValueError):
+                ExternalSharingMetadata(
+                    exchange="test_exchange",
+                    data_review="https://bugzilla.mozilla.org/1",
+                    subscribers=bad,
+                )
+
+    def test_invalid_external_sharing_resource_id(self):
+        for field in ("exchange_id", "listing_id"):
+            with pytest.raises(ValueError):
+                ExternalSharingMetadata(
+                    exchange="test_exchange",
+                    data_review="https://bugzilla.mozilla.org/1",
+                    subscribers=["group:partner@example.org"],
+                    **{field: "has-hyphen"},
+                )
+
+    def test_external_sharing_rejects_unknown_key(self, tmp_path):
+        # an unknown key (e.g. a typo) must be a hard error, not silently dropped
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_sharing:\n"
+            "  exchange: X\n"
+            "  data_review: r\n"
+            "  restrict_exports: true\n"  # typo of restrict_export
+            "  subscribers:\n"
+            "    - group:partner@example.org\n"
+        )
+        with pytest.raises(ValueError):
+            DatasetMetadata.from_file(tmp_path / "dataset_metadata.yaml")
+
+    def test_external_sharing_all_fields_round_trip(self, tmp_path):
+        # Guards against schema drift from the cloudops-infra sharing module:
+        # every key the module reads must map to a field here (unknown keys are
+        # now rejected, so a field missing here would break a valid config).
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_sharing:\n"
+            "  exchange: Partner Exchange\n"
+            "  exchange_id: partner_exchange\n"
+            "  exchange_display_name: Mozilla - Partner\n"
+            "  exchange_description: Data for partner\n"
+            "  listing_id: partner_listing\n"
+            "  display_name: Mozilla - Partner Data\n"
+            "  listing_description: Custom listing description\n"
+            "  restrict_export: true\n"
+            "  data_review: https://bugzilla.mozilla.org/1\n"
+            "  subscribers:\n"
+            "    - group:partner@example.org\n"
+        )
+
+        sharing = DatasetMetadata.from_file(
+            tmp_path / "dataset_metadata.yaml"
+        ).external_sharing
+
+        assert sharing == ExternalSharingMetadata(
+            exchange="Partner Exchange",
+            data_review="https://bugzilla.mozilla.org/1",
+            subscribers=["group:partner@example.org"],
+            display_name="Mozilla - Partner Data",
+            listing_description="Custom listing description",
+            listing_id="partner_listing",
+            exchange_id="partner_exchange",
+            exchange_display_name="Mozilla - Partner",
+            exchange_description="Data for partner",
+            restrict_export=True,
+        )
+
+    def test_invalid_external_data_subscription_resource_id(self):
+        for field in ("data_exchange_id", "listing_id"):
+            kwargs = {
+                "source_project": "65960090760",
+                "data_exchange_id": "partner_exchange",
+                "listing_id": "partner_listing",
+                field: "has-hyphen",
+            }
+            with pytest.raises(ValueError):
+                ExternalDataSubscriptionMetadata(**kwargs)
+
+    def test_external_data_subscription_rejects_unknown_key(self, tmp_path):
+        # an unknown key (e.g. a typo) must be a hard error, not silently dropped
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_data_subscription:\n"
+            "  source_project: '65960090760'\n"
+            "  data_exchange_id: partner_exchange\n"
+            "  listing_id: partner_listing\n"
+            "  listings_id: partner_listing\n"  # typo of listing_id
+        )
+        with pytest.raises(ValueError):
+            DatasetMetadata.from_file(tmp_path / "dataset_metadata.yaml")
+
+    def test_external_data_subscription_all_fields_round_trip(self, tmp_path):
+        # Guards against schema drift from the cloudops-infra subscription module:
+        # every key the module reads must map to a field here (unknown keys are
+        # now rejected, so a field missing here would break a valid config).
+        (tmp_path / "dataset_metadata.yaml").write_text(
+            "friendly_name: T\n"
+            "description: T\n"
+            "dataset_base_acl: view\n"
+            "user_facing: true\n"
+            "external_data_subscription:\n"
+            "  source_project: '65960090760'\n"
+            "  data_exchange_id: partner_exchange\n"
+            "  listing_id: partner_listing\n"
+            "  friendly_name: PMG Analytics\n"
+            "  description: Data shared with us by PMG.\n"
+            "  labels:\n"
+            "    domain: marketing\n"
+        )
+
+        subscription = DatasetMetadata.from_file(
+            tmp_path / "dataset_metadata.yaml"
+        ).external_data_subscription
+
+        assert subscription == ExternalDataSubscriptionMetadata(
+            source_project="65960090760",
+            data_exchange_id="partner_exchange",
+            listing_id="partner_listing",
+            friendly_name="PMG Analytics",
+            description="Data shared with us by PMG.",
+            labels={"domain": "marketing"},
+        )
 
     def test_invalid_label(self):
         with pytest.raises(ValueError):

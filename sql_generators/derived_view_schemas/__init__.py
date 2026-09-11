@@ -4,10 +4,10 @@ from functools import partial
 from pathlib import Path
 
 import click
-from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.util.process_pool import process_pool
 
 NON_USER_FACING_DATASET_SUBSTRINGS = (
     "_derived",
@@ -125,6 +125,18 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
                 logging.info(f"Simple SELECT * view detected for {view_file}, copying reference schema directly")
                 try:
                     reference_schema = Schema.from_schema_file(reference_schema_file)
+                    # Views cannot have REQUIRED columns: BigQuery reports view
+                    # columns as NULLABLE and rejects a NULLABLE->REQUIRED update
+                    # on deploy. Coerce REQUIRED to NULLABLE (leaving REPEATED
+                    # intact) so the generated schema matches the deployable view.
+                    def _nullable_required_modes(fields):
+                        for field in fields:
+                            if field.get("mode") == "REQUIRED":
+                                field["mode"] = "NULLABLE"
+                            if field.get("fields"):
+                                _nullable_required_modes(field["fields"])
+
+                    _nullable_required_modes(reference_schema.schema.get("fields", []))
                     reference_schema.to_yaml_file(view_directory / SCHEMA_FILE)
                     return
                 except Exception as e:
@@ -239,7 +251,7 @@ def generate(target_project, output_dir, parallelism, use_cloud_function):
             if path.is_dir() and (path / VIEW_FILE).exists()
         ]
 
-    with ProcessingPool(parallelism) as pool:
+    with process_pool(parallelism, task_count=len(view_directories)) as pool:
         pool.map(
             partial(_generate_view_schema, Path(output_dir), id_token=id_token),
             view_directories,

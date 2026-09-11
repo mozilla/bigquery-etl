@@ -7,7 +7,11 @@
 --   html NOT LIKE '%REDIRECT%' -- exclude decommissioned redirect articles
 --   products NOT LIKE '%thunderbird%' -- Thunderbird support handled separately
 --
--- Full recompute over a trailing 1-year window each run (no date partition).
+-- Full recompute each run over a fixed window starting 2024-01-01 (no date
+-- partition parameter). Days before an article's own first approved revision
+-- produce no row, because `daily_freshness_per_article` requires
+-- reviewed_date <= event_date. Votes cast before the window start are folded
+-- into `historical_helpfulness` so the running totals stay all-time cumulative.
 WITH articles AS (
   SELECT
     *
@@ -20,7 +24,45 @@ WITH articles AS (
     AND html NOT LIKE '%REDIRECT%'
     AND products NOT LIKE '%thunderbird%'
 ),
--- Daily date spine x each article, covering the trailing year.
+-- All-time daily vote totals per article (no date bound).
+daily_votes AS (
+  SELECT
+    DATE(vote_created_date) AS vote_date,
+    document_id,
+    url,
+    locale,
+    SUM(CAST(helpful AS INT64)) AS helpful_votes,
+    COUNT(*) AS total_votes
+  FROM
+    `moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details`
+  GROUP BY
+    vote_date,
+    document_id,
+    url,
+    locale
+),
+-- First event_date in the table. Single source of truth for the spine start and
+-- the pre-window vote seed below.
+window_start AS (
+  SELECT
+    DATE '2024-01-01' AS start_date
+),
+-- Vote totals accrued before the window start, used to seed running totals so
+-- they remain all-time cumulative. Derived from `daily_votes` to avoid a second
+-- scan of the source table.
+historical_helpfulness AS (
+  SELECT
+    document_id,
+    SUM(helpful_votes) AS historical_helpful_votes,
+    SUM(total_votes) AS historical_total_votes
+  FROM
+    daily_votes
+  WHERE
+    vote_date < (SELECT start_date FROM window_start)
+  GROUP BY
+    document_id
+),
+-- Daily date spine x each article, from the window start through yesterday.
 dates AS (
   SELECT
     document_id,
@@ -30,7 +72,7 @@ dates AS (
   CROSS JOIN
     UNNEST(
       GENERATE_DATE_ARRAY(
-        DATE(CURRENT_DATE - INTERVAL 1 YEAR),
+        (SELECT start_date FROM window_start),
         DATE(CURRENT_DATE - INTERVAL 1 DAY),
         INTERVAL 1 DAY
       )
@@ -83,20 +125,9 @@ daily_freshness_per_article AS (
         r.locale
     )
 ),
--- Vote totals accrued before the trailing-year window, used to seed running totals.
-historical_helpfulness AS (
-  SELECT
-    document_id,
-    SUM(CAST(helpful AS INT64)) AS historical_helpful_votes,
-    COUNT(*) AS historical_total_votes
-  FROM
-    `moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details`
-  WHERE
-    DATE(vote_created_date) < DATE(CURRENT_DATE - INTERVAL 1 YEAR)
-  GROUP BY
-    document_id
-),
 -- For each day, the daily and running cumulative helpfulness votes per article.
+-- Running totals are all-time: in-window votes accumulate on top of the
+-- pre-window seed.
 daily_helpfulness_per_article AS (
   SELECT
     dates.event_date,
@@ -120,25 +151,8 @@ daily_helpfulness_per_article AS (
   FROM
     dates
   LEFT JOIN
-    (
-      SELECT
-        DATE(vote_created_date) AS vote_created_date,
-        document_id,
-        url,
-        locale,
-        SUM(CAST(helpful AS INT64)) AS helpful_votes,
-        COUNT(*) AS total_votes
-      FROM
-        `moz-fx-data-shared-prod.sumo_syndicate.metrics_kb_votes_details`
-      WHERE
-        DATE(vote_created_date) >= DATE(CURRENT_DATE - INTERVAL 1 YEAR)
-      GROUP BY
-        vote_created_date,
-        document_id,
-        url,
-        locale
-    ) help
-    ON dates.event_date = help.vote_created_date
+    daily_votes help
+    ON dates.event_date = help.vote_date
     AND dates.document_id = help.document_id
   LEFT JOIN
     historical_helpfulness hh

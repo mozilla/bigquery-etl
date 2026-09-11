@@ -1,0 +1,27 @@
+friendly_name: Classification Column Profiles
+description: |-
+  Interim copy of column_profiles_v1, written by the column classification
+  pipeline for the datasets it classifies. Identical in schema to the upstream
+  table: the fields are pulled from its schema.yaml, so the two cannot drift.
+
+  It exists because the upstream profiler overwrites its whole profiled_at
+  partition on every run, so profiling our datasets into the shared table would
+  erase the profiles written for the datasets it covers. This copy is deleted
+  once the profiler supports additive writes, at which point the classification
+  pipeline reads column_profiles_v1 directly.
+labels:
+  incremental: true
+owners:
+- akomarzewski@mozilla.com
+- cmorales@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: profiled_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - source_dataset
+    - source_table
+    - column_name

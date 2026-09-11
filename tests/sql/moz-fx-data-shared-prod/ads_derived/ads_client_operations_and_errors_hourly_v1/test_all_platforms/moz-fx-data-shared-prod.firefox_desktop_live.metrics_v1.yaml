@@ -1,0 +1,66 @@
+# Desktop - 2 pings in the same hour, same dimensions, so they roll up into 1 output row.
+# Unlike mobile, desktop takes normalized_os from the top-level column rather than
+# client_info.os, and all channels share this one table.
+# Ping 1: ops (request_ads=2, record_click=1) + http_cache_outcome hit and trim_failed
+# Ping 2: ops (request_ads=3) + http_cache_outcome trim_failed
+# 'trim_failed' is a desktop-only label, so this is the only fixture that exercises it.
+# Schema stub row (2025-01-14): filtered out by WHERE clause, but ensures all
+# labeled_string and labeled_counter fields exist in the inferred schema.
+- submission_timestamp: "2025-01-14 10:00:00 UTC"
+  normalized_country_code: US
+  normalized_channel: nightly
+  normalized_os: Windows
+  client_info:
+    app_display_version: "135.0a1"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 1
+    labeled_string:
+      ads_client_client_error:
+        - key: new
+          value: stub
+      ads_client_build_cache_error:
+        - key: builder_error
+          value: stub
+      ads_client_deserialization_error:
+        - key: invalid_ad_item
+          value: stub
+      ads_client_http_cache_outcome:
+        - key: hit
+          value: stub
+- submission_timestamp: "2025-01-15 10:05:00 UTC"
+  normalized_country_code: US
+  normalized_channel: nightly
+  normalized_os: Windows
+  client_info:
+    app_display_version: "135.0a1"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: request_ads
+          value: 2
+        - key: record_click
+          value: 1
+    labeled_string:
+      ads_client_http_cache_outcome:
+        - key: hit
+          value: cached
+        - key: trim_failed
+          value: some_error
+- submission_timestamp: "2025-01-15 10:40:00 UTC"
+  normalized_country_code: US
+  normalized_channel: nightly
+  normalized_os: Windows
+  client_info:
+    app_display_version: "135.0a1"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: request_ads
+          value: 3
+    labeled_string:
+      ads_client_http_cache_outcome:
+        - key: trim_failed
+          value: some_error

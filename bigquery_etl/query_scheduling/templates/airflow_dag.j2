@@ -228,6 +228,9 @@ with DAG(
             image='us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
+            {%+ if task.description_markdown -%}
+            doc_md={{ task.description_markdown | format_repr }},
+            {%+ endif -%}
             {%+ if task.container_resources -%}
             container_resources=k8s.V1ResourceRequirements(
                 {%+ if task.container_resources.requests -%}
@@ -278,6 +281,9 @@ with DAG(
             {%+ endif -%}
             is_dq_check_fail = {{ task.is_dq_check_fail }},
             owner='{{ task.owner }}',
+            {%+ if task.description_markdown -%}
+            doc_md={{ task.description_markdown | format_repr }},
+            {%+ endif -%}
             {%+ if task.email | length > 0 -%}
             email={{ task.email | sort }},
             {%+ endif -%}
@@ -324,6 +330,9 @@ with DAG(
             table_id='{{ task.project }}.{{ task.dataset }}.{{ task.table }}_{{ task.version }}',
             warehouse_id='{{ bigeye_warehouse_id }}',
             owner='{{ task.owner }}',
+            {%+ if task.description_markdown -%}
+            doc_md={{ task.description_markdown | format_repr }},
+            {%+ endif -%}
             {%+ if task.email | length > 0 -%}
             email={{ task.email | sort }},
             {%+ endif -%}
@@ -374,6 +383,9 @@ with DAG(
             project_id='{{ task.project }}',
             {%+ endif -%}
             owner='{{ task.owner }}',
+            {%+ if task.description_markdown -%}
+            doc_md={{ task.description_markdown | format_repr }},
+            {%+ endif -%}
             {%+ if task.email | length > 0 -%}
             email={{ task.email | sort }},
             {%+ endif -%}

@@ -1,11 +1,28 @@
+2026-08-24:
+  start_date: 2026-08-07
+  end_date: 2026-08-23
+  reason: Backfill desktop's ads_client history now that Firefox desktop is a source
+    (bug 2058567); volumes are thin (1-2 pings/day) so this is cheap. Range starts
+    at the metric's actual landing date in Nightly.
+  watchers:
+  - ahanot@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false
+
 2026-04-01:
   start_date: 2026-02-01
   end_date: 2026-03-31
-  reason: Backfill existing data to support dashboard development for ads client operations and errors monitoring.
+  reason: Backfill existing data to support dashboard development for ads client operations
+    and errors monitoring.
   watchers:
   - ahanot@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
   ignore_date_partition_offset: false

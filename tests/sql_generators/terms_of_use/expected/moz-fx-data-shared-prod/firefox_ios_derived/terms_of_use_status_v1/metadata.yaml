@@ -8,6 +8,7 @@ description: |-
 owners:
   - kik@mozilla.com
 labels:
+  sql_generator: terms_of_use
   incremental: false
   schedule: daily
   table_type: client_level

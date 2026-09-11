@@ -261,29 +261,24 @@ def _run_check(
     )
     result_split_by_marker = _render_result_split_by_marker(marker, rendered_result)
     checks = sqlparse.split(result_split_by_marker)
-    seek_location = 0
     check_failed = False
 
-    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        for rendered_check in checks:
-            # since the last check will end with ; the last entry will be empty string.
-            if len(rendered_check) == 0:
-                continue
-            rendered_check = rendered_check.strip()
-            query_stream.write(rendered_check)
-            query_stream.seek(seek_location)
-            seek_location += len(rendered_check)
+    for rendered_check in checks:
+        # since the last check will end with ; the last entry will be empty string.
+        if len(rendered_check) == 0:
+            continue
+        rendered_check = rendered_check.strip()
 
-            # run the query as shell command so that passed parameters can be used as is
-            try:
-                subprocess.check_output(
-                    ["bq", "query"] + query_arguments,
-                    stdin=query_stream,
-                    encoding="UTF-8",
-                )
-            except CalledProcessError as e:
-                print(_parse_check_output(e.output))
-                check_failed = True
+        # run the query as shell command so that passed parameters can be used as is
+        try:
+            subprocess.check_output(
+                ["bq", "query"] + query_arguments,
+                input=rendered_check,
+                encoding="UTF-8",
+            )
+        except CalledProcessError as e:
+            print(_parse_check_output(e.output))
+            check_failed = True
 
     if check_failed:
         sys.exit(1)

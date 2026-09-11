@@ -4,7 +4,8 @@ description: |-
   Exports a current-state enrollment funnel snapshot for each live recipe to GCS
   for use by Experimenter visualization and alerting. Covers firefox_desktop,
   firefox_ios, and fenix. For each client-recipe pair, uses the client's most
-  recent evaluation. Groups by (app_name, slug, branch, status, reason, conflict_slug)
+  recent evaluation, considering only evaluations from the last 90 days (matching
+  the window of recipes included). Groups by (app_name, slug, branch, status, reason, conflict_slug)
   with an estimated client count (1% sample scaled by 100). Does not create any BigQuery artifacts.
 owners:
   - ykhurana@mozilla.com

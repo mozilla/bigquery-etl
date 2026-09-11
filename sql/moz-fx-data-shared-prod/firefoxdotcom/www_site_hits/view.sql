@@ -5,3 +5,6 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1`
+WHERE
+  -- Excluding events from the testing phase.
+  `date` >= "2025-07-16"

@@ -1,87 +1,80 @@
 -- Daily count of Firefox first_run installs per referral (invite) code.
 --
--- The invite code arrives as `fxrefer:<code>` and is expected to be 17 chars
--- after the prefix is stripped (Website team, 2026-07-24). The prefix strip is
--- length-agnostic; a checks.sql warn flags any drift from 17 chars.
+-- Source: the dedicated Glean `referrals` ping, sent once on first run by a
+-- profile carrying referral attribution data — `browser.referral_code` on
+-- desktop (bug 2055255), `referrals.code` on Android (bug 2062793).
 --
--- DESKTOP source = GA4 / download-attribution path (cross-platform: Windows + Mac).
---   Do NOT use `telemetry.install` — it is the Windows-only installer ping and
---   silently drops Mac/Linux. The GA4/dltoken path is the cross-platform source.
+-- Do NOT try to read the code from GA4 `utm_content` or from
+-- `attribution.content`. Firefox strips it out of regular attribution data by
+-- design — that is the point of bug 2055255 — so an earlier version of this
+-- query which used that path returned zero rows every day from launch
+-- (DENG-11237).
 --
--- Proven chain (validated 2026-07 against test code TESTCODE01):
---   GA4 (utm_content=fxrefer:) -> dl_token_ga_attribution_lookup_v2 (on dl_token)
---     -> baseline_clients_first_seen_v1 -> installed client.
---   This is the `firefox_desktop_derived.cfs_ga4_attr_v1` join pattern.
---
--- STATUS:
---   * Desktop source is LOCKED — the GA4 / download-attribution path is the
---     accepted permanent source (confirmed in DENG-11237, 2026-07-24).
---   * Fenix (Android) half is BLOCKED pending the Play Store attribution
---     mechanism/field from Nathan (see commented UNION ALL below).
---   * US-only MVP; Linux/iOS/EU/UK are unattributable, so counts undercount by design.
-WITH stub_attr AS (
-  -- dl_token -> GA identifiers, one row per dl_token
+-- See metadata.yaml for the grain, channel and dedupe notes.
+WITH referred_clients AS (
+  -- One row per referred client per platform, un-aggregated, so the aggregation
+  -- below collapses desktop and Android together within a channel. Desktop and
+  -- Fenix client_id namespaces are disjoint, so the distinct count never
+  -- double-counts across platforms.
   SELECT
-    dl_token,
-    ga_client_id,
-    stub_session_id,
+    metrics.string.browser_referral_code AS raw_code,
+    normalized_channel,
+    client_info.client_id AS client_id,
   FROM
-    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v2`
+    `moz-fx-data-shared-prod.firefox_desktop.referrals`
   WHERE
-    COALESCE(ga_client_id, '') <> ''
-    AND COALESCE(stub_session_id, '') <> ''
-    AND COALESCE(dl_token, '') <> ''
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY dl_token ORDER BY first_seen_date ASC) = 1
+    DATE(submission_timestamp) = @submission_date
+  UNION ALL
+  SELECT
+    metrics.string.referrals_code AS raw_code,
+    normalized_channel,
+    client_info.client_id AS client_id,
+  FROM
+    `moz-fx-data-shared-prod.fenix.referrals`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
 ),
-ga4 AS (
-  -- GA4 session carrying the referral code in utm_content
+codes AS (
+  -- Stripped after the UNION rather than in each branch above, so the prefix is
+  -- removed in exactly one place and the value validated below is the same value
+  -- that gets emitted.
+  --
+  -- The ping already carries the code bare (the client strips `fxrefer` when it
+  -- extracts it), so this is belt-and-braces: if a client-side change ever stops
+  -- stripping it, rows keep flowing instead of silently vanishing.
   SELECT
-    ga_client_id,
-    stub_session_id,
-    COALESCE(manual_content, first_content_from_event_params) AS content,
+    REGEXP_REPLACE(raw_code, r'^fxrefer', '') AS invite_code,
+    normalized_channel,
+    client_id,
   FROM
-    `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined`
-  LEFT JOIN
-    UNNEST(all_reported_stub_session_ids) AS stub_session_id
-  WHERE
-    -- download precedes first-run; look back so the session is in range
-    session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND session_date <= @submission_date
-    AND (manual_content LIKE 'fxrefer:%' OR first_content_from_event_params LIKE 'fxrefer:%')
-),
-desktop AS (
-  SELECT
-    REGEXP_REPLACE(ga4.content, r'^fxrefer:', '') AS invite_code,
-    COUNT(DISTINCT cfs.client_id) AS install_count,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS cfs
-  LEFT JOIN
-    stub_attr
-    ON JSON_VALUE(cfs.attribution_ext.dltoken) = stub_attr.dl_token
-  LEFT JOIN
-    ga4
-    ON stub_attr.ga_client_id = ga4.ga_client_id
-    AND stub_attr.stub_session_id = ga4.stub_session_id
-  WHERE
-    cfs.submission_date = @submission_date -- required partition filter
-    AND cfs.first_seen_date = @submission_date -- clients first seen today
-    AND ga4.content LIKE 'fxrefer:%' -- referred clients only
-  GROUP BY
-    invite_code
+    referred_clients
 )
--- FENIX (Android) — BLOCKED. Once Nathan defines the field/ping, add:
---   UNION ALL
---   SELECT
---     REGEXP_REPLACE(play_store_attribution_content, r'^fxrefer:', '') AS invite_code,
---     COUNT(DISTINCT client_id) AS install_count
---   FROM `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
---   WHERE first_seen_date = @submission_date
---     AND play_store_attribution_content LIKE 'fxrefer:%'
---   GROUP BY invite_code
+-- normalized_channel is last to match the destination table, which already
+-- exists as (submission_date, invite_code, install_count).
 SELECT
   @submission_date AS submission_date,
   invite_code,
-  install_count,
+  COUNT(DISTINCT client_id) AS install_count,
+  normalized_channel,
 FROM
-  desktop
+  codes
+WHERE
+  -- Drop anything that is not a well-formed code. The ping is a free-form string
+  -- metric, so a malformed value is possible in practice: a client-side bug, a
+  -- hand-edited attribution code, or a truncated value all arrive here as data.
+  -- Nothing downstream validates the code before firefox.com ingests the CSV, so
+  -- this is the only gate.
+  --
+  -- Expected shape is literally 17 chars of [A-Z0-9] — this is deliberately a
+  -- little looser than Crockford base32, which also excludes I/L/O/U; the extra
+  -- strictness would buy nothing and would break if the generator changed.
+  --
+  -- Upper case only is correct: codes are guaranteed upper case by the Websites
+  -- team (Steve Jalim, 2026-08-18). Crockford itself is case-insensitive, so if
+  -- that guarantee is ever dropped, normalise with UPPER() here rather than
+  -- widening the charset — the CSV is matched against Springfield's stored
+  -- codes, so case has to end up consistent with those.
+  REGEXP_CONTAINS(invite_code, r'^[A-Z0-9]{17}$')
+GROUP BY
+  invite_code,
+  normalized_channel

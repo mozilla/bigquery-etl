@@ -19,6 +19,7 @@ owners:
   - mozilla/kpi_table_reviewers
   - kik@mozilla.com
 labels:
+  sql_generator: mobile_kpi_support_metrics
   schedule: daily
   incremental: true
   shredder_mitigation: false

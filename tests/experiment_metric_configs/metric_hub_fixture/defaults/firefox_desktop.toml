@@ -1,0 +1,19 @@
+[metrics]
+weekly = ["good_metric", "bad_metric"]
+
+[metrics.good_metric]
+select_expression = "1"
+data_source = "test_source"
+friendly_name = "Good Metric"
+description = "Resolves fine."
+
+[metrics.good_metric.statistics.binomial]
+
+[metrics.bad_metric]
+select_expression = "1"
+data_source = "test_source"
+friendly_name = "Bad Metric"
+description = "Has no statistical treatment; must fail to resolve."
+
+[data_sources.test_source]
+from_expression = "test.test_source"

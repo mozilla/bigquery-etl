@@ -133,6 +133,7 @@ labels:
 ```
 
 - Queries that only select from legacy telemetry data should be assigned a `legacy: true` label.
+- Queries that are output from code in `sql_generators/` should be assigned a `sql_generator` label set to the name of the generator.
 - only labels where value types are eithers integers or strings are published, all other values types are being skipped
 
 ### Dynamic Schemas
@@ -173,6 +174,7 @@ Without this flag, `--skip-existing` will skip schema updates for queries that a
 - For each view, a `metadata.yaml` file may be created in the same directory.
 - This file contains a description, owners, and labels (see the query metadata example above).
 - Views that only select from legacy telemetry data should be assigned a `legacy: true` label.
+- Views that are output from code in `sql_generators/` should be assigned a `sql_generator` label set to the name of the generator.
 
 ## UDFs
 

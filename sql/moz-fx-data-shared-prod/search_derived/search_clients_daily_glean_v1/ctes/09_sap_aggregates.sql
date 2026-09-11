@@ -1,7 +1,7 @@
 -- the date portion of a client-local timestamp string. Every value it reads carries a trailing
 -- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
--- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
--- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+-- part of the world, which would publish a profile_creation_date one day before the client's own
+-- first run. Parsing no time also absorbs the shapes that carry no seconds component.
 CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
   SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
@@ -14,11 +14,6 @@ SELECT
   normalized_engine,
   partner_code,
   source,
-  -- start_time, not parsed_start_time: same instant, but DATE() of a TIMESTAMP is a UTC date,
-  -- which would put this term on a different calendar from the subtrahend
-  MAX(UNIX_DATE(local_date_of(ping_info.start_time))) - MAX(
-    UNIX_DATE(local_date_of(client_info.first_run_date))
-  ) AS profile_age_in_days,
   COUNT(*) AS sap_counts_total,
   MAX(
     CAST(

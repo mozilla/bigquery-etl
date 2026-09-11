@@ -17,7 +17,6 @@ SELECT
   serp_aggregates_cte.num_ads_visible,
   serp_aggregates_cte.num_ads_blocked,
   serp_aggregates_cte.num_ads_notshowing,
-  serp_aggregates_cte.profile_age_in_days,
   serp_aggregates_cte.counts_total,
   serp_aggregates_cte.max_concurrent_tab_count_max
 FROM

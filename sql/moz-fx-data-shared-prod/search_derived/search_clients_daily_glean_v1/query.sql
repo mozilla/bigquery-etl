@@ -3,8 +3,8 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 -- the date portion of a client-local timestamp string. Every value it reads carries a trailing
 -- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
--- part of the world, and profile_age_in_days subtracts two of these, so both terms have to be on
--- the same calendar. Parsing no time also absorbs the shapes that carry no seconds component.
+-- part of the world, which would publish a profile_creation_date one day before the client's own
+-- first run. Parsing no time also absorbs the shapes that carry no seconds component.
 CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
   SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
@@ -675,11 +675,6 @@ sap_aggregates_cte AS (
     normalized_engine,
     partner_code,
     source,
-    -- start_time, not parsed_start_time: same instant, but DATE() of a TIMESTAMP is a UTC date,
-    -- which would put this term on a different calendar from the subtrahend
-    MAX(UNIX_DATE(local_date_of(ping_info.start_time))) - MAX(
-      UNIX_DATE(local_date_of(client_info.first_run_date))
-    ) AS profile_age_in_days,
     COUNT(*) AS sap_counts_total,
     MAX(
       CAST(
@@ -702,7 +697,6 @@ sap_aggregates_cte AS (
 sap_final_cte AS (
   SELECT
     sap_events_clients_ad_enterprise_cte.*,
-    sap_aggregates_cte.profile_age_in_days,
     sap_aggregates_cte.sap_counts_total,
     sap_aggregates_cte.concurrent_tab_count_max
   FROM
@@ -861,10 +855,6 @@ serp_aggregates_base_cte AS (
     SUM(num_ads_visible) AS num_ads_visible,
     SUM(num_ads_blocked) AS num_ads_blocked,
     SUM(num_ads_notshowing) AS num_ads_notshowing,
-    -- both terms are client-local dates -- see the SAP copy in sap_aggregates_cte for why
-    MAX(UNIX_DATE(local_date_of(subsession_start_time))) - MAX(
-      UNIX_DATE(local_date_of(first_run_date))
-    ) AS profile_age_in_days,
     COUNT(*) AS counts_total,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
@@ -913,7 +903,6 @@ serp_final_cte AS (
     serp_aggregates_cte.num_ads_visible,
     serp_aggregates_cte.num_ads_blocked,
     serp_aggregates_cte.num_ads_notshowing,
-    serp_aggregates_cte.profile_age_in_days,
     serp_aggregates_cte.counts_total,
     serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
@@ -1157,10 +1146,6 @@ join_sources_cte AS (
     COALESCE(serp_final_cte.num_ads_visible, 0) AS serp_num_ads_visible,
     COALESCE(serp_final_cte.num_ads_blocked, 0) AS serp_num_ads_blocked,
     COALESCE(serp_final_cte.num_ads_notshowing, 0) AS serp_num_ads_notshowing,
-    COALESCE(
-      serp_final_cte.profile_age_in_days,
-      sap_final_cte.profile_age_in_days
-    ) AS profile_age_in_days,
     COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
     -- falls back to 0, not NULL, when no side reported it. sap_aggregates_cte casts this integer
     -- counter to float64, so cast back to INT64 to keep the declared INTEGER type; the metrics
@@ -1262,7 +1247,11 @@ final_cte AS (
     ping_seq, -- NEW
     max_concurrent_tab_count_max,
     experiments,
-    profile_age_in_days,
+    -- days from the first run to the day this row reports into, derived from the
+    -- profile_creation_date the row publishes so the two columns cannot disagree.
+    -- submission_date is UTC against a client-local creation date, so the count can sit a day
+    -- either side of the client's own.
+    UNIX_DATE(submission_date) - profile_creation_date AS profile_age_in_days,
     serp_searches_organic_count,
     serp_searches_tagged_count AS tagged_serp,
     serp_follow_on_searches_tagged_count AS tagged_follow_on,

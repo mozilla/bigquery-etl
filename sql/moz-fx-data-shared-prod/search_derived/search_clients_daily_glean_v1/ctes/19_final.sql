@@ -45,7 +45,11 @@ SELECT
   ping_seq, -- NEW
   max_concurrent_tab_count_max,
   experiments,
-  profile_age_in_days,
+  -- days from the first run to the day this row reports into, derived from the
+  -- profile_creation_date the row publishes so the two columns cannot disagree.
+  -- submission_date is UTC against a client-local creation date, so the count can sit a day
+  -- either side of the client's own.
+  UNIX_DATE(submission_date) - profile_creation_date AS profile_age_in_days,
   serp_searches_organic_count,
   serp_searches_tagged_count AS tagged_serp,
   serp_follow_on_searches_tagged_count AS tagged_follow_on,

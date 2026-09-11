@@ -230,10 +230,6 @@ SELECT
   COALESCE(serp_final_cte.num_ads_visible, 0) AS serp_num_ads_visible,
   COALESCE(serp_final_cte.num_ads_blocked, 0) AS serp_num_ads_blocked,
   COALESCE(serp_final_cte.num_ads_notshowing, 0) AS serp_num_ads_notshowing,
-  COALESCE(
-    serp_final_cte.profile_age_in_days,
-    sap_final_cte.profile_age_in_days
-  ) AS profile_age_in_days,
   COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
   -- falls back to 0, not NULL, when no side reported it. sap_aggregates_cte casts this integer
   -- counter to float64, so cast back to INT64 to keep the declared INTEGER type; the metrics

@@ -190,10 +190,12 @@ fields:
 - name: profile_age_in_days
   type: INTEGER
   mode: NULLABLE
-  description: The number of days between the profile's first run and the start of
-    the ping interval covering this day's activity. Can be negative, because both
-    dates are client-reported and a device whose clock was wrong at install can report
-    a first run later than the activity.
+  description: The number of days between the profile's first run and this row's submission_date,
+    derived from the profile_creation_date this row publishes, so the two columns always
+    agree. submission_date is UTC while the first run is recorded on the client's own
+    calendar, so the count can sit a day either side of the client's. Can be negative,
+    because the first run is client-reported and a device whose clock was wrong at
+    install can report one later than the day it reports into.
 - name: serp_searches_organic_count
   type: INTEGER
   mode: NULLABLE

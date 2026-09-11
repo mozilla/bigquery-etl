@@ -109,20 +109,18 @@ graph TD
 
 One temporary function turns the string timestamps that Glean emits into dates.
 
-- `local_date_of` returns the date portion of a client-local timestamp string, `substr(ts, 1, 10)` parsed as `%F`. It is applied to `client_info.first_run_date` and `first_run_date`, to the SAP `ping_info.start_time`, and to the SERP `subsession_start_time`.
+- `local_date_of` returns the date portion of a client-local timestamp string, `substr(ts, 1, 10)` parsed as `%F`. It is applied to the first run date on each of the three sides — `client_info.first_run_date` on SAP, `first_run_date` on SERP and in the legacy counters — and to nothing else, `profile_creation_date` being the only date this query derives from a string.
 
-Every one of those values is written on the client's own calendar with a trailing offset, so the date is what the client's clock said and nothing needs converting. That matters most for `profile_age_in_days`, which subtracts a first run date from an activity date: read one of them in UTC and the subtraction compares two different frames, which puts a client who installed today at an age of -1 for no reason.
+The first run date is written on the client's own calendar with a trailing offset, so the date is what the client's clock said and nothing needs converting. Converting to UTC instead moves it back a day for every client east of UTC, publishing a `profile_creation_date` one day before the first run the client reported — and `profile_age_in_days`, derived from that column, would inherit the shift.
 
-The SAP side reads `ping_info.start_time` rather than the `ping_info.parsed_start_time` sitting beside it. Glean ships both, and they differ in type, not in meaning:
+The SAP side publishes `ping_start_time` from `ping_info.start_time` rather than from the `ping_info.parsed_start_time` sitting beside it. Glean ships both, and they differ in type, not in meaning:
 
 | column              | type        | example                         |
 | ------------------- | ----------- | ------------------------------- |
 | `start_time`        | `STRING`    | `2026-08-13T09:30:18.000+03:00` |
 | `parsed_start_time` | `TIMESTAMP` | `2026-08-13 06:30:18 UTC`       |
 
-They are the same moment. But a `TIMESTAMP` is an absolute instant carrying no timezone, so `date()` of one is always a UTC date and there is no way to recover the client's local date from it — `date(ts, tz)` would need a timezone name, and the row has only a numeric offset, inside the string. Only `start_time` still holds the offset, which is why the local date has to be read from it. The two dates disagree on 9.4% of events.
-
-Parsing no time component also means variable precision costs nothing. `subsession_start_time` arrives in four shapes, two of which have no seconds — `2026-08-12T17:10+05:30` — and a pattern written for the other two returns null on them silently.
+They are the same moment. But a `TIMESTAMP` is an absolute instant carrying no timezone, so `date()` of one is always a UTC date and there is no way to recover the client's local date from it — `date(ts, tz)` would need a timezone name, and the row has only a numeric offset, inside the string. Only `start_time` still holds the offset, so it is the one that lets a consumer read the client's own clock.
 
 ## Tables (CTEs)
 
@@ -272,8 +270,8 @@ Each row represents aggregated search activity and engagement metrics for a spec
 
 The two sides do not compute the same measures.
 
-- SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`, and derives `profile_age_in_days` from `ping_info.start_time` against the first run date.
-- SERP produces `counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. All of them are coined here without the `serp_` prefix and pick it up at the join. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`. SERP derives `profile_age_in_days` from `subsession_start_time` against the first run date.
+- SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`.
+- SERP produces `counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. All of them are coined here without the `serp_` prefix and pick it up at the join. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`.
 
 #### SAP and SERP Final
 
@@ -299,7 +297,7 @@ Three sides are combined with `full outer join`s, so a row survives if it appear
 
 #### Column precedence
 
-Every column present on more than one side is combined with a `coalesce` in the order SERP, SAP, legacy. SERP takes precedence, SAP fills in where the SERP value is `null`, and legacy fills in where neither pipeline carries the row at all. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the two shared measures, `profile_age_in_days` and `max_concurrent_tab_count_max` — of which only the second takes a legacy argument.
+Every column present on more than one side is combined with a `coalesce` in the order SERP, SAP, legacy. SERP takes precedence, SAP fills in where the SERP value is `null`, and legacy fills in where neither pipeline carries the row at all. `experiments` is the one exception: SERP arrives as a repeated field and is never `null`, so an empty SERP array would always beat a populated SAP one. It is wrapped in `if(array_length(...) = 0, null, ...)` first, which makes the precedence "whichever side recorded enrollments" rather than "whichever side exists". This applies to the join keys, to the client dimensions such as `country`, `locale` and the operating system columns, to the default and private search engine columns, and to the one shared measure, `max_concurrent_tab_count_max`.
 
 The prefix on a column name says which side it can come from. A coalesced column has no prefix. A `serp_`, `sap_` or `legacy_` prefix that survives into this CTE means the value exists on that side only — `sap_counts_total`, `sap_provider_id`, `sap_provider_name` and `sap_overridden_by_third_party` from SAP, `serp_counts_total`, `serp_ad_click_target`, `serp_ad_blocker_inferred` and the SERP ad and engagement counts from SERP, and the seven `legacy_` counters from the metrics ping.
 
@@ -313,6 +311,8 @@ Every prefix is applied here, at the join, and the side-only column is coined un
 
 **Anything derived from a published column is derived after the coalesce.** `os_version_major` and `os_version_minor` are computed in `final_cte` from the coalesced `os`, `os_version` and `windows_build_number`, so a row's derived value and the inputs it publishes always come from the same side. Deriving per side and coalescing the two results separately breaks that, because each column then picks its winner independently: a row can publish one side's `windows_build_number` beside a release name the other side computed without it, and nothing in the row says so.
 
+`profile_age_in_days` follows the same rule. It is `unix_date(submission_date) - profile_creation_date`, computed in `final_cte` from the creation date the row publishes, so a row cannot report an age that its own creation date contradicts. The two dates sit on different calendars, `submission_date` being UTC while the first run is recorded on the client's own clock, so the count can be a day either side of the client's — and a client that installs just after local midnight east of UTC can register activity in the previous UTC partition, which reads as an age of -1. Each side computing it instead would subtract a first run date chosen by a different rule from the one the row publishes — an aggregate over the day's events rather than the single winning event — and the two columns would then disagree by however far apart those two dates are.
+
 #### Counts and sums are zero, never null
 
 Every count and sum in this CTE falls back to `0`. A row that reaches this CTE from one source only has no counterpart on the others for that client, date, engine, partner code and access point, so zero is the count rather than an unknown.
@@ -324,7 +324,7 @@ The trade-off is that a zero no longer distinguishes "no activity" from "the oth
 - The fifteen SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six `num_*` measures.
 - The seven `legacy_` counters are zero where the metrics ping carried nothing for that key, which is every row whose key exists on a pipeline but not in the counters.
 
-Six columns are deliberately left alone. `profile_age_in_days` is not a count, and a zero would read as a profile created that day rather than as a missing value. `serp_ad_click_target` is a string and `serp_ad_blocker_inferred` is a boolean, so neither has a meaningful zero. `sap_provider_id`, `sap_provider_name` and `sap_overridden_by_third_party` are the same for strings and booleans, and are the three of the six that are `null` on a serp-only row rather than a sap-only one.
+Five columns are deliberately left alone. `serp_ad_click_target` is a string and `serp_ad_blocker_inferred` is a boolean, so neither has a meaningful zero. `sap_provider_id`, `sap_provider_name` and `sap_overridden_by_third_party` are the same for strings and booleans, and are the three of the five that are `null` on a serp-only row rather than a sap-only one.
 
 #### Two constraints worth knowing before editing this CTE
 

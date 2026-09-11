@@ -222,7 +222,7 @@ fields:
   mode: NULLABLE
   description: The number of SERP impressions for this key, tagged and organic together.
     Zero, not null, on a row with no SERP activity.
-- name: ad_click_target
+- name: serp_ad_click_target
   type: STRING
   mode: NULLABLE
   description: The distinct ad components the client clicked on this key's SERP impressions,
@@ -257,39 +257,39 @@ fields:
   description: The number of this key's organic SERP impressions that had at least
     one ad visible. Counts impressions rather than ads. Zero, not null, on a row with
     no SERP activity.
-- name: ad_blocker_inferred
+- name: serp_ad_blocker_inferred
   type: BOOLEAN
   mode: NULLABLE
   description: True where an ad blocker was inferred on every one of this key's SERP
     impressions. Inferred from the page itself, so it is independent of has_adblocker_addon,
     which reports an installed add-on. Null on a row with no SERP activity.
-- name: num_non_ad_link_clicks
+- name: serp_num_non_ad_link_clicks
   type: INTEGER
   mode: NULLABLE
   description: The number of clicks on non-ad links across this key's SERP impressions.
     Zero, not null, on a row with no SERP activity.
-- name: num_other_engagements
+- name: serp_num_other_engagements
   type: INTEGER
   mode: NULLABLE
   description: The number of engagements with the results page that were neither an
     ad click nor a non-ad link click, across this key's SERP impressions. Zero, not
     null, on a row with no SERP activity.
-- name: num_ads_loaded
+- name: serp_num_ads_loaded
   type: INTEGER
   mode: NULLABLE
   description: The number of ads loaded across this key's SERP impressions, whether
     or not they were shown. Zero, not null, on a row with no SERP activity.
-- name: num_ads_visible
+- name: serp_num_ads_visible
   type: INTEGER
   mode: NULLABLE
   description: The number of ads visible to the client across this key's SERP impressions.
     Zero, not null, on a row with no SERP activity.
-- name: num_ads_blocked
+- name: serp_num_ads_blocked
   type: INTEGER
   mode: NULLABLE
   description: The number of ads blocked across this key's SERP impressions. Zero,
     not null, on a row with no SERP activity.
-- name: num_ads_notshowing
+- name: serp_num_ads_notshowing
   type: INTEGER
   mode: NULLABLE
   description: The number of ads that loaded but were not shown across this key's
@@ -300,7 +300,7 @@ fields:
   mode: NULLABLE
   description: Whether the client had at least one enabled ad-blocking add-on installed
     on this day. False rather than null where the client reported no such add-on,
-    matching v8. Reports an installed add-on, where ad_blocker_inferred is inferred
+    matching v8. Reports an installed add-on, where serp_ad_blocker_inferred is inferred
     from the results page.
 - name: policies_is_enterprise
   type: BOOLEAN

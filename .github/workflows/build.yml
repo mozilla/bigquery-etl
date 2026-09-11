@@ -308,7 +308,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
     if: |
-      (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
+      (needs.decide-runs.outputs.validate-bqetl == 'true' ||
+       needs.decide-runs.outputs.validate-sql == 'true' ||
+       needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read

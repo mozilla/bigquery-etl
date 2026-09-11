@@ -1,0 +1,27 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_category",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

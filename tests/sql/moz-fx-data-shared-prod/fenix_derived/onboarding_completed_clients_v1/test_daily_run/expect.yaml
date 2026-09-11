@@ -1,0 +1,9 @@
+---
+# Every output row carries @submission_date as completed_date, and client-b's two
+# events that day collapse into one row.
+- client_id: client-b
+  completed_date: 2026-09-03
+  sample_id: 17
+- client_id: client-d
+  completed_date: 2026-09-03
+  sample_id: 8

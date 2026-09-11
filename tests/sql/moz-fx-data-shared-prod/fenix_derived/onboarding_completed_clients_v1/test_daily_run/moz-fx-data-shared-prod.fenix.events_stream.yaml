@@ -1,0 +1,36 @@
+---
+# Completions arriving on @submission_date. B fires twice and must collapse into
+# one output row; D fires once.
+- submission_timestamp: 2026-09-03 03:10:00
+  client_id: client-b
+  sample_id: 17
+  event_category: onboarding
+  event_name: completed
+- submission_timestamp: 2026-09-03 21:55:00
+  client_id: client-b
+  sample_id: 17
+  event_category: onboarding
+  event_name: completed
+- submission_timestamp: 2026-09-03 11:02:00
+  client_id: client-d
+  sample_id: 8
+  event_category: onboarding
+  event_name: completed
+# A different onboarding event: excluded by the event_name filter.
+- submission_timestamp: 2026-09-03 12:00:00
+  client_id: client-e
+  sample_id: 55
+  event_category: onboarding
+  event_name: terms_of_service_accepted
+# Null client_id: excluded by the client_id IS NOT NULL filter.
+- submission_timestamp: 2026-09-03 13:00:00
+  sample_id: 61
+  event_category: onboarding
+  event_name: completed
+# A `completed` event from another category: excluded by the event_category
+# filter, which nothing else here exercises.
+- submission_timestamp: 2026-09-03 14:00:00
+  client_id: client-g
+  sample_id: 12
+  event_category: onboarding_v2
+  event_name: completed

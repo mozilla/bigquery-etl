@@ -87,6 +87,10 @@ SELECT
   clients_daily.device_model,
   clients_daily.normalized_os AS os,
   clients_daily.normalized_os_version AS os_version,
+  -- Read from active_users, the day-27 row, so the flag is as-of day 27 rather
+  -- than day 0; clients_daily would give day-0 status. Stays last and
+  -- unconditional: mobile_retention_clients unions the products by position.
+  CAST(NULL AS BOOLEAN) AS onboarding_completed_by_day_27,
 FROM
   `moz-fx-data-shared-prod.focus_android.baseline_clients_daily` AS clients_daily
 INNER JOIN

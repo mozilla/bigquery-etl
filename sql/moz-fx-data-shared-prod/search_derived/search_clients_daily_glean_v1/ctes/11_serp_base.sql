@@ -10,9 +10,6 @@
 --
 -- search_engine stays. normalize_search_engine collapses many raw strings into buckets, so the
 -- raw engine is a different fact rather than the same fact in another spelling.
---
--- Numbered 06a rather than 07 so it sorts ahead of serp_is_enterprise, its first consumer,
--- without renumbering every later file.
 SELECT
   * EXCEPT (glean_client_id, partner_code, sap_source),
   glean_client_id AS client_id,

@@ -9,9 +9,6 @@
 -- list, so reading four fields off it in sap_events_with_client_info_cte would otherwise mean
 -- four calls per row. The name matches the SERP side, where serp_events_v2 stores the same
 -- struct, so both consumers read browser_version_info.version and friends identically.
---
--- Numbered 01a rather than 02 so it sorts ahead of sap_is_enterprise, its first consumer,
--- without renumbering every later file.
 SELECT
   *,
   DATE(submission_timestamp) AS submission_date,

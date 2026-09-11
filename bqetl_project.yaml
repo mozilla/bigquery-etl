@@ -753,3 +753,93 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_first_seen_v1
+
+sensitivity:
+  # Configuration for the sensitive-data-flow check (bigquery_etl/sensitivity.py),
+  # which flags queries that read narrowly-gated data and write it somewhere more
+  # broadly readable.
+
+  # Roles that grant the ability to read row-level data.
+  read_roles:
+  - roles/bigquery.dataViewer
+  broad_readers:
+  - workgroup:mozilla-confidential/data-viewers
+  safe_projects:
+  - mozfun
+  ingestion_suffixes:
+  - _stable
+  - _live
+  codeowners_file: CODEOWNERS
+
+  # Datasets/tables whose read access is narrower than the broad_readers above.
+  # Omitted/empty means restricted (no broad read access).
+  gated_datasets:
+    moz-fx-data-shared-prod:
+      ads_backend_live: &ads_backend
+        default: [workgroup:ads/data-viewers]
+      ads_backend_stable: *ads_backend
+
+      contextual_services_live: &contextual_services
+        default: [workgroup:contextual-services/data-viewers]
+        tables:
+          quicksuggest_impression:
+          - workgroup:contextual-services/data-viewers
+          - workgroup:search-terms/sanitized-writer
+          - workgroup:search-terms/unsanitized
+      contextual_services_stable: *contextual_services
+
+      firefox_enterprise_desktop_live: &firefox_enterprise_desktop
+        default: [workgroup:fx-enterprise/data-viewers]
+      firefox_enterprise_desktop_stable: *firefox_enterprise_desktop
+
+      search_terms:
+        default: []
+      search_terms_derived:
+        default: []
+
+      telemetry_live: &telemetry
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          xfocsp_error_report: []
+          account_ecosystem: []
+      telemetry_stable: *telemetry
+
+      firefox_desktop_live: &firefox_desktop
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          microsurvey: [workgroup:microsurvey/data-viewers]
+          fx_accounts: [workgroup:client-association/data-viewers]
+          quick_suggest: [workgroup:contextual-services/data-viewers]
+          top_sites: [workgroup:contextual-services/data-viewers]
+          serp_categorization: [workgroup:revenue/cat2]
+          user_characteristics: [workgroup:user-characteristics/data-viewers]
+      firefox_desktop_stable: *firefox_desktop
+
+      org_mozilla_firefox_live: &glean_client
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          fx_accounts: [workgroup:client-association/data-viewers]
+          fx_suggest: [workgroup:contextual-services/data-viewers]
+          topsites_impression: [workgroup:contextual-services/data-viewers]
+          client_deduplication: []
+          user_characteristics: [workgroup:user-characteristics/data-viewers]
+      org_mozilla_firefox_stable: *glean_client
+      org_mozilla_firefox_beta_live: *glean_client
+      org_mozilla_firefox_beta_stable: *glean_client
+      org_mozilla_fenix_live: *glean_client
+      org_mozilla_fenix_stable: *glean_client
+      org_mozilla_fenix_nightly_live: *glean_client
+      org_mozilla_fenix_nightly_stable: *glean_client
+      org_mozilla_fennec_aurora_live: *glean_client
+      org_mozilla_fennec_aurora_stable: *glean_client
+
+      org_mozilla_ios_firefox_live: &ios_client
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          fx_accounts: [workgroup:client-association/data-viewers]
+          topsites_impression: [workgroup:contextual-services/data-viewers]
+      org_mozilla_ios_firefox_stable: *ios_client
+      org_mozilla_ios_firefoxbeta_live: *ios_client
+      org_mozilla_ios_firefoxbeta_stable: *ios_client
+      org_mozilla_ios_fennec_live: *ios_client
+      org_mozilla_ios_fennec_stable: *ios_client

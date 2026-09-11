@@ -303,6 +303,66 @@ jobs:
           PATH=".venv/bin:$PATH" script/bqetl format --check \
           $(git ls-tree -d HEAD --name-only)
 
+  flag-sensitive-flows:
+    name: Flag sensitive data flows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # to request @mozilla/dataplatform-wg review
+    environment: *build-env
+    needs: [build, decide-runs]
+    if: needs.decide-runs.outputs.validate-sql == 'true'
+    steps:
+      - *checkout-with-history
+      - *setup-python
+      - *restore-venv
+      - id: changed-queries
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
+        with:
+          files: sql/**/query.sql
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+      # A changed query reads sensitive (restricted/workgroup-gated) data and
+      # writes to a more broadly readable destination that no team owns. This is
+      # advisory: rather than block or make the author edit CODEOWNERS, it just
+      # requests Data Platform review and posts a comment. Flows on paths already
+      # owned by a team are left to that team's normal review.
+      - name: Flag sensitive-data flows widening read access
+        if: steps.changed-queries.outputs.any_changed == 'true'
+        env:
+          CHANGED_QUERIES: ${{ steps.changed-queries.outputs.all_changed_files }}
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set +e
+          advisory=$(PATH=".venv/bin:$PATH" \
+            script/bqetl data_governance sensitivity $CHANGED_QUERIES)
+          code=$?
+          set -e
+          echo "$advisory"
+          if [ "$code" -eq 2 ] && [ -n "$PR" ]; then
+            gh api --method POST \
+              "repos/$REPO/pulls/$PR/requested_reviewers" \
+              -f "team_reviewers[]=dataplatform-wg" \
+              || echo "Could not request review (fork PR token is read-only?)"
+            {
+              echo "⚠️ **Sensitive-data flow detected** — requesting @mozilla/dataplatform-wg review."
+              echo
+              echo "A changed query reads restricted / workgroup-gated data and writes it to a more broadly readable destination that no team owns:"
+              echo
+              echo '```'
+              echo "$advisory"
+              echo '```'
+              echo
+              echo "This is advisory and does not block merge. A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
+            } | gh pr comment "$PR" -R "$REPO" --body-file - \
+              || echo "Could not post comment (fork PR token is read-only?)"
+          elif [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            echo "::warning::sensitivity check errored (exit $code); skipping"
+          fi
+          # advisory only — never block the merge
+          exit 0
+
   test-bqetl:
     name: Test bqetl
     runs-on: ubuntu-latest

@@ -1,0 +1,49 @@
+friendly_name: BigQuery ETL Table Metadata
+description: |-
+  Daily snapshot of the metadata bigquery-etl declares for every table and view.
+  One row per `sql/<project>/<dataset>/<table>/metadata.yaml`, including
+  unscheduled ones, carrying ownership, the authored labels, the scheduling DAG
+  with its `impact/tier_*` tag and schedule, and the merged PR that last changed
+  it.
+
+  "Entity" throughout these descriptions means one such metadata.yaml directory:
+  the pairing of what the repo defines (a query, view or script) with the object
+  it produces in BigQuery. It does not refer to a DAG.
+
+  Built from three sources: the repo checkout inside the bigquery-etl Docker
+  image (metadata.yaml and dags.yaml), INFORMATION_SCHEMA.TABLES for the real
+  BigQuery object type, and `git log` for the change history. The two external
+  lookups each have a status column -- `table_type_status` and
+  `last_changed_status` -- so "we looked and it is not there" is never confused
+  with "we could not look".
+
+  This is the *declared* config; for runtime DAG state see the
+  `monitoring_derived.airflow_dag_*` tables, and for the labels actually applied
+  to deployed tables see `monitoring_derived.bigquery_tables_inventory_v1`.
+
+  UDFs and stored procedures are excluded: they are routines rather than tables,
+  are never scheduled, and conventionally declare no owners, so including them
+  would distort ownership-coverage denominators.
+
+  Rows whose metadata.yaml fails to parse are still emitted, with
+  `metadata_parse_error` set, `owner_count` 0 and other metadata columns null,
+  so coverage denominators stay correct.
+labels:
+  incremental: true
+  schedule: daily
+  owner1: gkatre
+owners:
+- gkatre@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 365
+  clustering:
+    fields:
+    - dataset_id
+    - dag_name

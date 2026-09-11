@@ -359,7 +359,8 @@ jobs:
               echo "$advisory"
               echo '```'
               echo
-              echo "This is advisory and does not block merge. A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
+              echo "This is advisory and does not block merge."
+              echo "A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
             } | gh pr comment "$PR" -R "$REPO" --body-file - \
               || echo "Could not post comment (fork PR token is read-only?)"
           elif [ "$code" -eq 2 ] && [ "$DRAFT" = "true" ]; then

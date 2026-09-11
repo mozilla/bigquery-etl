@@ -1,0 +1,32 @@
+friendly_name: Dataset Workgroup Access
+description: |-
+  Per-dataset inventory of dataset-level BigQuery Data Viewer
+  (roles/bigquery.dataViewer) group grants for every dataset in
+  moz-fx-data-shared-prod. One row per dataset, listing the Google groups (and
+  parsed workgroup names) with read access and a flag for whether the
+  mozilla-confidential data-viewers workgroup is among them.
+
+  Dataset-level grants apply to every table in the dataset. The companion
+  table_workgroup_access_v1 records only the access set directly on a table that
+  is not already granted here, so effective read access for a table is the union
+  of its dataset's row here and its own row there.
+
+  Produced weekly by a self-contained Python job that reads each dataset's
+  access entries. Each run overwrites its own collected_at date partition.
+labels:
+  incremental: true
+owners:
+- cmorales@mozilla.com
+scheduling:
+  dag_name: bqetl_data_governance_metadata
+  arguments: [
+    "--date", "{{ ds }}",
+  ]
+bigquery:
+  time_partitioning:
+    type: day
+    field: collected_at
+    require_partition_filter: false
+  clustering:
+    fields:
+    - source_dataset

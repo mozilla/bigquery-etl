@@ -1,0 +1,33 @@
+fields:
+- name: source_project
+  type: STRING
+  mode: REQUIRED
+  description: GCP project of the inventoried dataset (moz-fx-data-shared-prod).
+- name: source_dataset
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset name (without project).
+- name: mozilla_confidential
+  type: BOOL
+  mode: REQUIRED
+  description: >-
+    True when the gcp-wg-mozilla-confidential--data-viewers group holds
+    dataset-level BigQuery Data Viewer on this dataset.
+- name: google_groups
+  type: STRING
+  mode: REPEATED
+  description: >-
+    Raw Google group emails (groupByEmail access entries; user and
+    service-account entries excluded) that hold dataset-level
+    roles/bigquery.dataViewer, stored by BigQuery as the legacy READER role.
+- name: workgroups
+  type: STRING
+  mode: REPEATED
+  description: >-
+    google_groups parsed to workgroup names, e.g.
+    gcp-wg-ads--data-viewers@firefox.gcp.mozilla.com -> ads/data-viewers.
+    Groups that are not gcp-wg workgroup groups are omitted.
+- name: collected_at
+  type: DATE
+  mode: REQUIRED
+  description: Run date of the access-inventory job. This is the table's partition column.

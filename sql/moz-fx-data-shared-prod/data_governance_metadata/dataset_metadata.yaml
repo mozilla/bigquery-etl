@@ -1,0 +1,11 @@
+friendly_name: Data Governance Metadata
+description: |-
+  Metadata views supporting Mozilla data governance. Access is restricted to
+  the dataplatform/data-governance-developers workgroup.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/data-governance-developers

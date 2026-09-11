@@ -212,6 +212,7 @@ SELECT
       LAX_INT64(event_extra.pc_negotiation_count) AS `pc_negotiation_count`,
       LAX_INT64(event_extra.played_time) AS `played_time`,
       LAX_INT64(event_extra.position) AS `position`,
+      LAX_INT64(event_extra.profile_count) AS `profile_count`,
       LAX_INT64(event_extra.pss) AS `pss`,
       LAX_INT64(event_extra.restore_version) AS `restore_version`,
       LAX_INT64(event_extra.rss) AS `rss`,

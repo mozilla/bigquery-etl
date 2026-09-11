@@ -189,7 +189,7 @@ These values are only ever reached where both pipelines are absent, since `join_
 Two columns cannot be filled this way and are `null` on a legacy-only row:
 
 - `is_default_browser`, because `usage.is_default_browser` is not sent in the metrics ping.
-- `overridden_by_third_party`, because it is a per-search event extra and has no value at client-day grain.
+- `sap_overridden_by_third_party`, because it is a per-search event extra and has no value at client-day grain. It is taken from the SAP side alone, so it is also `null` on a serp-only row.
 
 Two paths differ from the SAP side, which reads the same metrics from the events ping: the submission URLs are under `metrics.url2` rather than `metrics.url`, and `profile_group_id` is spelled `legacy_telemetry_profile_group_id`. `browser_engagement_max_concurrent_tab_count` is already `int64` here, so the legacy arm of that `coalesce` needs no cast where the SAP arm does.
 

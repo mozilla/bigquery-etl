@@ -6,7 +6,11 @@ SELECT
   search_access_point AS source,
   partner_code, -- NEW
   country,
-  normalized_app_name,
+  -- neither serp_events nor the metrics ping populates normalized_app_name, and the SAP side's
+  -- normalization returns one value for every row, so the literal is the whole of what this
+  -- column can say. Set here rather than per side: a coalesce over three arms, one of them live,
+  -- left it NULL wherever the SAP side was absent.
+  'Firefox' AS normalized_app_name,
   app_version,
   app_major_version,
   app_minor_version,

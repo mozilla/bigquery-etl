@@ -30,9 +30,6 @@ WITH legacy_base_cte AS (
     -- under metrics.url2 rather than metrics.url, and profile_group_id is spelled
     -- legacy_telemetry_profile_group_id.
     normalized_country_code AS country,
-    -- the metrics ping leaves normalized_app_name NULL on every row, and this table reads one
-    -- app, so the literal is what the SAP side's normalization of the same clients returns
-    'Firefox' AS normalized_app_name,
     normalized_channel,
     normalized_os,
     normalized_os_version,
@@ -245,7 +242,6 @@ legacy_with_client_info_cte AS (
     legacy_telemetry_client_id,
     profile_group_id,
     country,
-    normalized_app_name,
     browser_version_info.version AS app_version,
     browser_version_info.major_version AS app_major_version,
     browser_version_info.minor_version AS app_minor_version,
@@ -563,7 +559,6 @@ sap_events_with_client_info_cte AS (
     profile_group_id,
     legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
     normalized_country_code AS country,
-    normalized_app_name,
     browser_version_info.version AS app_version,
     browser_version_info.major_version AS app_major_version,
     browser_version_info.minor_version AS app_minor_version,
@@ -770,7 +765,6 @@ serp_events_with_client_info_cte AS (
     profile_group_id,
     legacy_telemetry_client_id,
     normalized_country_code AS country,
-    normalized_app_name,
     browser_version_info.version AS app_version,
     browser_version_info.major_version AS app_major_version,
     browser_version_info.minor_version AS app_minor_version,
@@ -975,11 +969,6 @@ join_sources_cte AS (
       legacy_cte.profile_group_id
     ) AS profile_group_id,
     COALESCE(serp_final_cte.country, sap_final_cte.country, legacy_cte.country) AS country,
-    COALESCE(
-      serp_final_cte.normalized_app_name,
-      sap_final_cte.normalized_app_name,
-      legacy_cte.normalized_app_name
-    ) AS normalized_app_name,
     COALESCE(
       serp_final_cte.app_version,
       sap_final_cte.app_version,
@@ -1234,7 +1223,11 @@ final_cte AS (
     search_access_point AS source,
     partner_code, -- NEW
     country,
-    normalized_app_name,
+    -- neither serp_events nor the metrics ping populates normalized_app_name, and the SAP side's
+    -- normalization returns one value for every row, so the literal is the whole of what this
+    -- column can say. Set here rather than per side: a coalesce over three arms, one of them
+    -- live, left it NULL wherever the SAP side was absent.
+    'Firefox' AS normalized_app_name,
     app_version,
     app_major_version,
     app_minor_version,

@@ -21,7 +21,6 @@ SELECT
   profile_group_id,
   legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
   normalized_country_code AS country,
-  normalized_app_name,
   browser_version_info.version AS app_version,
   browser_version_info.major_version AS app_major_version,
   browser_version_info.minor_version AS app_minor_version,

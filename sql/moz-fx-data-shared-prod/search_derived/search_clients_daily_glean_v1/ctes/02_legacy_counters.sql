@@ -19,7 +19,6 @@ WITH legacy_with_client_info_cte AS (
     legacy_telemetry_client_id,
     profile_group_id,
     country,
-    normalized_app_name,
     browser_version_info.version AS app_version,
     browser_version_info.major_version AS app_major_version,
     browser_version_info.minor_version AS app_minor_version,

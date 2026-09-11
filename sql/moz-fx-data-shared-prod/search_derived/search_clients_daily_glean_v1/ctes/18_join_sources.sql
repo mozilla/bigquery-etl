@@ -46,11 +46,6 @@ SELECT
   ) AS profile_group_id,
   COALESCE(serp_final_cte.country, sap_final_cte.country, legacy_cte.country) AS country,
   COALESCE(
-    serp_final_cte.normalized_app_name,
-    sap_final_cte.normalized_app_name,
-    legacy_cte.normalized_app_name
-  ) AS normalized_app_name,
-  COALESCE(
     serp_final_cte.app_version,
     sap_final_cte.app_version,
     legacy_cte.app_version

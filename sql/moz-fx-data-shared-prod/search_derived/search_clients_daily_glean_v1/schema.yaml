@@ -16,6 +16,8 @@ fields:
 - name: source
   type: STRING
   mode: NULLABLE
+  description: The source for the searches. Note that sources differ between SAP and
+    SERP. See the Glean dictionary for details.
 - name: partner_code
   type: STRING
   mode: NULLABLE
@@ -61,9 +63,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
-- name: user_pref_browser_search_region
+- name: home_region
   type: STRING
   mode: NULLABLE
+  description: The region code of the user as identified by the client.
 - name: os
   type: STRING
   mode: NULLABLE
@@ -98,9 +101,11 @@ fields:
 - name: profile_creation_date
   type: INTEGER
   mode: NULLABLE
-- name: default_search_engine
+- name: default_search_engine_display_name
   type: STRING
   mode: NULLABLE
+  description: The display name of the default search engine. This should not be relied
+    upon to identify users with application provided engines - use the provider id.
 - name: default_search_engine_data_load_path
   type: STRING
   mode: NULLABLE
@@ -113,12 +118,17 @@ fields:
 - name: default_search_engine_provider_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for application provided engines. For third-party
+    engines, this will be "other".
 - name: default_search_engine_overridden
   type: BOOLEAN
   mode: NULLABLE
-- name: default_private_search_engine
+- name: default_private_search_engine_display_name
   type: STRING
   mode: NULLABLE
+  description: The display name of the default private search engine. This should
+    not be relied upon to identify users with application provided engines - use the
+    provider id.
 - name: default_private_search_engine_data_load_path
   type: STRING
   mode: NULLABLE
@@ -131,6 +141,8 @@ fields:
 - name: default_private_search_engine_provider_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for application provided engines. For third-party
+    engines, this will be "other".
 - name: default_private_search_engine_overridden
   type: BOOLEAN
   mode: NULLABLE
@@ -181,66 +193,124 @@ fields:
 - name: profile_age_in_days
   type: INTEGER
   mode: NULLABLE
-- name: organic
+  description: The number of days between the profile's first run and the start of
+    the ping interval covering this day's activity. Can be negative, because both
+    dates are client-reported and a device whose clock was wrong at install can report
+    a first run later than the activity.
+- name: serp_searches_organic_count
   type: INTEGER
   mode: NULLABLE
+  description: The number of organic SERP impressions for this key, meaning those
+    carrying no partner code. Zero, not null, on a row with no SERP activity.
 - name: tagged_serp
   type: INTEGER
   mode: NULLABLE
+  description: The number of tagged SERP impressions for this key, meaning those carrying
+    a partner code. Zero, not null, on a row with no SERP activity.
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
+  description: The number of tagged SERP impressions reached by refining a search
+    from the results page rather than from a browser search access point. Because
+    the access point is part of this table's grain, this equals tagged_serp on a row
+    whose source is a follow-on access point and is zero on every other row.
 - name: sap_counts_total
   type: INTEGER
   mode: NULLABLE
+  description: The number of search access point events for this key. This is a count
+    of events, not a sum of a counter, so it does not reproduce the v8 column named
+    "sap". Zero, not null, on a row with no SAP activity.
 - name: serp_counts_total
   type: INTEGER
   mode: NULLABLE
+  description: The number of SERP impressions for this key, tagged and organic together.
+    Zero, not null, on a row with no SERP activity.
 - name: ad_click_target
   type: STRING
   mode: NULLABLE
+  description: The distinct ad components the client clicked on this key's SERP impressions,
+    comma separated and ordered by component name. Null where there were no ad clicks
+    and on a row with no SERP activity.
 - name: ad_click_total
   type: INTEGER
   mode: NULLABLE
+  description: The number of ad clicks on this key's SERP impressions, tagged and
+    organic together. Not guaranteed to equal ad_click_tagged plus ad_click_organic,
+    because those two split on a flag that can be null while this counts every impression.
+    Zero, not null, on a row with no SERP activity.
 - name: ad_click_tagged
   type: INTEGER
   mode: NULLABLE
+  description: The number of ad clicks on this key's tagged SERP impressions. Zero,
+    not null, on a row with no SERP activity.
 - name: ad_click_organic
   type: INTEGER
   mode: NULLABLE
+  description: The number of ad clicks on this key's organic SERP impressions. Zero,
+    not null, on a row with no SERP activity.
 - name: search_with_ads_tagged
   type: INTEGER
   mode: NULLABLE
+  description: The number of this key's tagged SERP impressions that had at least
+    one ad visible. Counts impressions rather than ads. Zero, not null, on a row with
+    no SERP activity.
 - name: search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
+  description: The number of this key's organic SERP impressions that had at least
+    one ad visible. Counts impressions rather than ads. Zero, not null, on a row with
+    no SERP activity.
 - name: ad_blocker_inferred
   type: BOOLEAN
   mode: NULLABLE
+  description: True where an ad blocker was inferred on every one of this key's SERP
+    impressions. Inferred from the page itself, so it is independent of has_adblocker_addon,
+    which reports an installed add-on. Null on a row with no SERP activity.
 - name: num_non_ad_link_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The number of clicks on non-ad links across this key's SERP impressions.
+    Zero, not null, on a row with no SERP activity.
 - name: num_other_engagements
   type: INTEGER
   mode: NULLABLE
+  description: The number of engagements with the results page that were neither an
+    ad click nor a non-ad link click, across this key's SERP impressions. Zero, not
+    null, on a row with no SERP activity.
 - name: num_ads_loaded
   type: INTEGER
   mode: NULLABLE
+  description: The number of ads loaded across this key's SERP impressions, whether
+    or not they were shown. Zero, not null, on a row with no SERP activity.
 - name: num_ads_visible
   type: INTEGER
   mode: NULLABLE
+  description: The number of ads visible to the client across this key's SERP impressions.
+    Zero, not null, on a row with no SERP activity.
 - name: num_ads_blocked
   type: INTEGER
   mode: NULLABLE
+  description: The number of ads blocked across this key's SERP impressions. Zero,
+    not null, on a row with no SERP activity.
 - name: num_ads_notshowing
   type: INTEGER
   mode: NULLABLE
+  description: The number of ads that loaded but were not shown across this key's
+    SERP impressions, for reasons other than blocking. Zero, not null, on a row with
+    no SERP activity.
 - name: has_adblocker_addon
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the client had at least one enabled ad-blocking add-on installed
+    on this day. False rather than null where the client reported no such add-on,
+    matching v8. Reports an installed add-on, where ad_blocker_inferred is inferred
+    from the results page.
 - name: policies_is_enterprise
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the client was under enterprise policy on this day, taken as
+    the most common value across the day's events with ties broken toward the latest
+    event.
 - name: os_version_major
   type: STRING
   mode: NULLABLE

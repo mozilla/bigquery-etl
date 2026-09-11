@@ -1238,7 +1238,7 @@ final_cte AS (
     windows_build_number, -- NEW
     distribution_id,
     locale,
-    region_home_region AS user_pref_browser_search_region,
+    region_home_region AS home_region,
     os,
     normalized_os, -- NEW
     os_version,
@@ -1247,13 +1247,13 @@ final_cte AS (
     normalized_channel, -- NEW
     usage_is_default_browser AS is_default_browser,
     profile_creation_date,
-    default_search_engine_display_name AS default_search_engine,
+    default_search_engine_display_name,
     default_search_engine_load_path AS default_search_engine_data_load_path,
     default_search_engine_submission_url AS default_search_engine_data_submission_url,
     default_search_engine_partner_code, -- NEW
     default_search_engine_provider_id, -- NEW
     default_search_engine_overridden, -- NEW
-    default_private_search_engine_display_name AS default_private_search_engine,
+    default_private_search_engine_display_name,
     default_private_search_engine_load_path AS default_private_search_engine_data_load_path,
     default_private_search_engine_submission_url AS default_private_search_engine_data_submission_url,
     default_private_search_engine_partner_code, -- NEW
@@ -1267,7 +1267,7 @@ final_cte AS (
     max_concurrent_tab_count_max,
     experiments,
     profile_age_in_days,
-    serp_searches_organic_count AS organic,
+    serp_searches_organic_count,
     serp_searches_tagged_count AS tagged_serp,
     serp_follow_on_searches_tagged_count AS tagged_follow_on,
     sap_counts_total,

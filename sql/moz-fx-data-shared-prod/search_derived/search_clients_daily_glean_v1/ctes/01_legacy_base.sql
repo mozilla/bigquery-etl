@@ -22,7 +22,9 @@ WITH legacy_base_cte AS (
     -- under metrics.url2 rather than metrics.url, and profile_group_id is spelled
     -- legacy_telemetry_profile_group_id.
     normalized_country_code AS country,
-    normalized_app_name,
+    -- the metrics ping leaves normalized_app_name NULL on every row, and this table reads one
+    -- app, so the literal is what the SAP side's normalization of the same clients returns
+    'Firefox' AS normalized_app_name,
     normalized_channel,
     normalized_os,
     normalized_os_version,

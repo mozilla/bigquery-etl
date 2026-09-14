@@ -9,7 +9,7 @@ description: |-
   The table holds no rows before 2025-01-01, so a client whose completions all
   fall before that date does not appear here.
 owners:
-- kbammarito@mozilla.com
+  - kbammarito@mozilla.com
 labels:
   application: fenix
   incremental: true
@@ -32,11 +32,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - sample_id
+      - sample_id
 require_column_descriptions: true
-monitoring:
-  enabled: true
-  collection: Operational Checks
-  partition_column: completed_date
-  volume:
-    blocking: false

@@ -20,6 +20,6 @@ def timeline_to_counts(timeline_df):
     for row in timeline_df.itertuples(index=False):
         item = item_index[row.corpus_item_id]
         counts[item, row.bucket, 0] = row.clicks
-        counts[item, row.bucket, 1] = row.impressions
+        counts[item, row.bucket, 1] = row.adjusted_impressions
 
     return corpus_item_ids, counts

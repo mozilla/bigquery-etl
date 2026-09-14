@@ -408,8 +408,9 @@ fields:
     - name: urlbar_pref_suggest_topsites
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether topsite results are enabled in the urlbar. Corresponds
-        to the value of the `browser.urlbar.suggest.topsites` pref.
+      description: 'Whether topsite results are enabled in the urlbar.
+
+        Corresponds to the value of the `browser.urlbar.suggest.topsites` pref.
 
         '
     - name: urlbar_pref_quicksuggest_data_collection
@@ -456,8 +457,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether sponsored quick suggest results are shown in the urlbar.
-        Corresponds to the value of the `browser.urlbar.suggest.quicksuggest.sponsored`
-        pref.
+
+        Corresponds to the value of the
+
+        `browser.urlbar.suggest.quicksuggest.sponsored` pref.
 
         '
     - name: policies_is_enterprise
@@ -495,28 +498,42 @@ fields:
     - name: urlbar_pref_suggest_online_available
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether online Suggest is available to the user. Corresponds to
-        the Nimbus variable `quickSuggestOnlineAvailable` and its fallback pref `browser.urlbar.quicksuggest.online.available`.
-        NOTE: "Online Suggest" in this context means the new version of online Suggest
-        introduced in 146 with Terms of Use and OHTTP.
+      description: 'Whether online Suggest is available to the user.
+
+        Corresponds to the Nimbus variable `quickSuggestOnlineAvailable` and its
+
+        fallback pref `browser.urlbar.quicksuggest.online.available`.
+
+        NOTE: "Online Suggest" in this context means the new version of online
+
+        Suggest introduced in 146 with Terms of Use and OHTTP.
 
         '
     - name: urlbar_pref_suggest_online_enabled
       type: BOOLEAN
       mode: NULLABLE
       description: 'This pref is true for all users by default! You probably want
-        to use this in conjunction with pref_suggest_online_available and/or restrict
-        your analysis to user populations where you know online Suggest is available.
-        Corresponds to `browser.urlbar.quicksuggest.online.enabled`. NOTE: "Online
-        Suggest" in this context means the new version of online Suggest introduced
-        in 146 with Terms of Use and OHTTP.
+        to use this
+
+        in conjunction with pref_suggest_online_available and/or restrict your
+
+        analysis to user populations where you know online Suggest is available.
+
+        Corresponds to `browser.urlbar.quicksuggest.online.enabled`.
+
+        NOTE: "Online Suggest" in this context means the new version of online
+
+        Suggest introduced in 146 with Terms of Use and OHTTP.
 
         '
     - name: urlbar_pref_suggest_all
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether Suggest results are shown in the urlbar. Corresponds to
-        the value of the `browser.urlbar.suggest.quicksuggest.all` pref.
+      description: 'Whether Suggest results are shown in the urlbar.
+
+        Corresponds to the value of the
+
+        `browser.urlbar.suggest.quicksuggest.all` pref.
 
         '
   - name: quantity
@@ -526,8 +543,9 @@ fields:
     - name: urlbar_pref_max_results
       type: INTEGER
       mode: NULLABLE
-      description: 'Maximum results to show in the Address Bar. Corresponds to the
-        value of the `browser.urlbar.maxRichResults` pref.
+      description: 'Maximum results to show in the Address Bar.
+
+        Corresponds to the value of the `browser.urlbar.maxRichResults` pref.
 
         '
     - name: browser_engagement_max_concurrent_tab_count
@@ -628,9 +646,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -664,9 +682,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -848,7 +866,7 @@ fields:
         \  The engine has the same name as an application provided engine.\n  The\
         \ engine matches one of a specific list of well known search engines.\nIf\
         \ this string is an empty string (`\"\"`), this means that one or both of\n\
-        the preferences `browser.search.separatePrivateDefault` and\n`browser.search.separatePrivateDefault.ui.enabled`\
+        the preferences `browser.search.separatePrivateDefault.enabled` and\n`browser.search.separatePrivateDefault.featureGate`\
         \ are set to false.\nIt is possible that the user selects the same private\
         \ engine as for the\ndefault engine, and hence both versions of these fields\
         \ will be filled in.\n"

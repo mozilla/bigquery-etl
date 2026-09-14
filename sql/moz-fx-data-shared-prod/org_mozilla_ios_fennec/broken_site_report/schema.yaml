@@ -524,6 +524,23 @@ fields:
         protection" opt-in.
 
         '
+    - name: broken_site_report_browser_info_prefs_ad_blocker_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the built-in ad blocker is on: the `blockAds` pref and
+        the
+
+        `adBlocker` Nimbus feature flag together. iOS-only, since ad blocking is
+
+        an extension on desktop and Android and shows up in browser_info.addons
+
+        there. The app-wide setting, sent even when the reported URL is not the
+
+        current tab''s page. Like `block_list` and `etp_category` it reads a pref,
+
+        so it does not say whether blocking was in force on the page itself.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -491,9 +491,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -527,9 +527,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -720,7 +720,7 @@ fields:
         \  The engine has the same name as an application provided engine.\n  The\
         \ engine matches one of a specific list of well known search engines.\nIf\
         \ this string is an empty string (`\"\"`), this means that one or both of\n\
-        the preferences `browser.search.separatePrivateDefault` and\n`browser.search.separatePrivateDefault.ui.enabled`\
+        the preferences `browser.search.separatePrivateDefault.enabled` and\n`browser.search.separatePrivateDefault.featureGate`\
         \ are set to false.\nIt is possible that the user selects the same private\
         \ engine as for the\ndefault engine, and hence both versions of these fields\
         \ will be filled in.\n"

@@ -22459,6 +22459,52 @@ fields:
         the rate.
 
         '
+    - name: use_counter_doc_speechrecognition_available
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called SpeechRecognition.available.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_speechrecognition_install
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called SpeechRecognition.install. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_speechrecognition_start
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called SpeechRecognition.start. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_speechrecognition_available
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called SpeechRecognition.available. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_speechrecognition_install
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called SpeechRecognition.install. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_speechrecognition_start
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called SpeechRecognition.start. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

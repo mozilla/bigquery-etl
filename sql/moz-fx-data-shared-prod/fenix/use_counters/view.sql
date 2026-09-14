@@ -2979,7 +2979,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
       metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
-      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_doc_speechrecognition_available,
+      metrics.counter.use_counter_doc_speechrecognition_install,
+      metrics.counter.use_counter_doc_speechrecognition_start,
+      metrics.counter.use_counter_page_speechrecognition_available,
+      metrics.counter.use_counter_page_speechrecognition_install,
+      metrics.counter.use_counter_page_speechrecognition_start
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5982,7 +5988,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
       metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
-      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_doc_speechrecognition_available,
+      metrics.counter.use_counter_doc_speechrecognition_install,
+      metrics.counter.use_counter_doc_speechrecognition_start,
+      metrics.counter.use_counter_page_speechrecognition_available,
+      metrics.counter.use_counter_page_speechrecognition_install,
+      metrics.counter.use_counter_page_speechrecognition_start
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8985,7 +8997,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
       metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
-      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_doc_speechrecognition_available,
+      metrics.counter.use_counter_doc_speechrecognition_install,
+      metrics.counter.use_counter_doc_speechrecognition_start,
+      metrics.counter.use_counter_page_speechrecognition_available,
+      metrics.counter.use_counter_page_speechrecognition_install,
+      metrics.counter.use_counter_page_speechrecognition_start
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11988,7 +12006,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
       metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
-      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_doc_speechrecognition_available,
+      metrics.counter.use_counter_doc_speechrecognition_install,
+      metrics.counter.use_counter_doc_speechrecognition_start,
+      metrics.counter.use_counter_page_speechrecognition_available,
+      metrics.counter.use_counter_page_speechrecognition_install,
+      metrics.counter.use_counter_page_speechrecognition_start
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14991,7 +15015,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block,
       metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline,
       metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block,
-      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline,
+      metrics.counter.use_counter_doc_speechrecognition_available,
+      metrics.counter.use_counter_doc_speechrecognition_install,
+      metrics.counter.use_counter_doc_speechrecognition_start,
+      metrics.counter.use_counter_page_speechrecognition_available,
+      metrics.counter.use_counter_page_speechrecognition_install,
+      metrics.counter.use_counter_page_speechrecognition_start
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

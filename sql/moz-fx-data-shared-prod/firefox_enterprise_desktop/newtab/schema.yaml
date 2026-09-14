@@ -618,9 +618,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 

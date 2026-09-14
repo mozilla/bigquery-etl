@@ -735,15 +735,13 @@ fields:
     - name: contentblocking_cryptomining_blocking_enabled
       type: BOOLEAN
       mode: NULLABLE
-      description: 'True if cryptominer blocking is enabled globally at startup. This
-        metric was generated to correspond to the Legacy Telemetry scalar contentblocking.cryptomining_blocking_enabled.
+      description: 'True if cryptominer blocking is enabled globally at startup.
 
         '
     - name: contentblocking_fingerprinting_blocking_enabled
       type: BOOLEAN
       mode: NULLABLE
       description: 'True if fingerprinter blocking is enabled globally at startup.
-        This metric was generated to correspond to the Legacy Telemetry scalar contentblocking.fingerprinting_blocking_enabled.
 
         '
     - name: policies_is_enterprise
@@ -1179,43 +1177,60 @@ fields:
     - name: urlbar_pref_suggest_all
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether Suggest results are shown in the urlbar. Corresponds to
-        the value of the `browser.urlbar.suggest.quicksuggest.all` pref.
+      description: 'Whether Suggest results are shown in the urlbar.
+
+        Corresponds to the value of the
+
+        `browser.urlbar.suggest.quicksuggest.all` pref.
 
         '
     - name: urlbar_pref_suggest_online_available
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether online Suggest is available to the user. Corresponds to
-        the Nimbus variable `quickSuggestOnlineAvailable` and its fallback pref `browser.urlbar.quicksuggest.online.available`.
-        NOTE: "Online Suggest" in this context means the new version of online Suggest
-        introduced in 146 with Terms of Use and OHTTP.
+      description: 'Whether online Suggest is available to the user.
+
+        Corresponds to the Nimbus variable `quickSuggestOnlineAvailable` and its
+
+        fallback pref `browser.urlbar.quicksuggest.online.available`.
+
+        NOTE: "Online Suggest" in this context means the new version of online
+
+        Suggest introduced in 146 with Terms of Use and OHTTP.
 
         '
     - name: urlbar_pref_suggest_online_enabled
       type: BOOLEAN
       mode: NULLABLE
       description: 'This pref is true for all users by default! You probably want
-        to use this in conjunction with pref_suggest_online_available and/or restrict
-        your analysis to user populations where you know online Suggest is available.
-        Corresponds to `browser.urlbar.quicksuggest.online.enabled`. NOTE: "Online
-        Suggest" in this context means the new version of online Suggest introduced
-        in 146 with Terms of Use and OHTTP.
+        to use this
+
+        in conjunction with pref_suggest_online_available and/or restrict your
+
+        analysis to user populations where you know online Suggest is available.
+
+        Corresponds to `browser.urlbar.quicksuggest.online.enabled`.
+
+        NOTE: "Online Suggest" in this context means the new version of online
+
+        Suggest introduced in 146 with Terms of Use and OHTTP.
 
         '
     - name: urlbar_pref_suggest_sponsored
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether sponsored quick suggest results are shown in the urlbar.
-        Corresponds to the value of the `browser.urlbar.suggest.quicksuggest.sponsored`
-        pref.
+
+        Corresponds to the value of the
+
+        `browser.urlbar.suggest.quicksuggest.sponsored` pref.
 
         '
     - name: urlbar_pref_suggest_topsites
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether topsite results are enabled in the urlbar. Corresponds
-        to the value of the `browser.urlbar.suggest.topsites` pref.
+      description: 'Whether topsite results are enabled in the urlbar.
+
+        Corresponds to the value of the `browser.urlbar.suggest.topsites` pref.
 
         '
     - name: extensions_allow_execute_script_in_moz_extension
@@ -1992,8 +2007,7 @@ fields:
     - name: contentblocking_trackers_blocked_count
       type: INTEGER
       mode: NULLABLE
-      description: 'A count of the number of tracking events blocked. This metric
-        was generated to correspond to the Legacy Telemetry scalar contentblocking.trackers_blocked_count.
+      description: 'A count of the number of tracking events blocked.
 
         '
     - name: networking_cookie_count_invalid_first_party_partitioned_in_db
@@ -2233,9 +2247,14 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'A uint recording the deletion count for autofilled string in the
-        urlbar. This occurs when the user deletes whole autofilled string by BACKSPACE
-        or DELETE key while the autofilled string is selected. This metric was generated
-        to correspond to the Legacy Telemetry scalar urlbar.autofill_deletion.
+
+        urlbar. This occurs when the user deletes whole autofilled string by
+
+        BACKSPACE or DELETE key while the autofilled string is selected.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.autofill_deletion.
 
         '
     - name: urlbar_engagement_count
@@ -2288,10 +2307,18 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The count of the number of times search terms were removed from
-        the urlbar due to a shown PopupNotification. This event can happen when a
-        user loads a SERP and a PopupNotification is shown, as well as when a user
-        switches away from a tab on a SERP showing a PopupNotification and switches
-        back to it. This metric was generated to correspond to the Legacy Telemetry
+        the
+
+        urlbar due to a shown PopupNotification. This event can happen when
+
+        a user loads a SERP and a PopupNotification is shown, as well as
+
+        when a user switches away from a tab on a SERP showing a
+
+        PopupNotification and switches back to it.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
         scalar urlbar.persistedsearchterms.revert_by_popup_count.
 
         '
@@ -2299,18 +2326,28 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The count of the number of times search terms persisted in the
-        Urlbar. This gets recorded after a user loads a SERP that persists search
-        terms, or switches back to an existing tab that should be showing the persisted
-        search terms in the Urlbar, regardless of whether PopupNotification cleared
-        the search terms from the Urlbar. This metric was generated to correspond
-        to the Legacy Telemetry scalar urlbar.persistedsearchterms.view_count.
+
+        Urlbar. This gets recorded after a user loads a SERP that persists
+
+        search terms, or switches back to an existing tab that should be
+
+        showing the persisted search terms in the Urlbar, regardless of
+
+        whether PopupNotification cleared the search terms from the Urlbar.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.persistedsearchterms.view_count.
 
         '
     - name: urlbar_trending_block
       type: INTEGER
       mode: NULLABLE
-      description: 'User has blocked seeing trending results. This metric was generated
-        to correspond to the Legacy Telemetry scalar urlbar.trending.block.
+      description: 'User has blocked seeing trending results.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.trending.block.
 
         '
     - name: urlbar_zeroprefix_abandonment
@@ -2502,8 +2539,11 @@ fields:
     - name: urlbar_unifiedsearchbutton_opened
       type: INTEGER
       mode: NULLABLE
-      description: 'Counts how many times Unified Search Button popup is opened. This
-        metric was generated to correspond to the Legacy Telemetry scalar urlbar.unifiedsearchbutton.opened.
+      description: 'Counts how many times Unified Search Button popup is opened.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.unifiedsearchbutton.opened.
 
         '
     - name: update_no_window_auto_restarts
@@ -2538,9 +2578,6 @@ fields:
       description: 'Tracking whether a DedicatedWorker spawn gets queued due to hitting
         max workers per domain limit.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        DEDICATED_WORKER_SPAWN_GETS_QUEUED.
-
         '
     - name: workers_service_worker_spawn_gets_queued
       type: INTEGER
@@ -2548,18 +2585,12 @@ fields:
       description: 'Tracking whether a ServiceWorker spawn gets queued due to hitting
         max workers per domain limit.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        SERVICE_WORKER_SPAWN_GETS_QUEUED.
-
         '
     - name: workers_shared_worker_spawn_gets_queued
       type: INTEGER
       mode: NULLABLE
       description: 'Tracking whether a SharedWorker spawn gets queued due to hitting
         max workers per domain limit.
-
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        SHARED_WORKER_SPAWN_GETS_QUEUED.
 
         '
     - name: update_cannot_stage_external
@@ -3737,6 +3768,26 @@ fields:
       mode: NULLABLE
       description: 'Number of times stylesheets have been selected and opened in the
         debugger.
+
+        '
+    - name: devtools_styleeditor_stylesheets_links_opened_in_style_editor_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times stylesheets link from another panel opens the
+        stylesheet in the style editor.
+
+        '
+    - name: devtools_styleeditor_stylesheets_stylesheets_edited_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of unique stylesheets edited in the style editor.
+
+        '
+    - name: devtools_styleeditor_stylesheets_stylesheets_opened_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times stylesheets have been selected and opened in the
+        style editor.
 
         '
   - name: labeled_counter
@@ -6438,9 +6489,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from about:home,
-        broken down by the originating action. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.engagement.navigation.about_home.
+      description: 'The count of URI loads triggered in a subsession from about:home,
+
+        broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.about_home.
 
         '
     - name: browser_engagement_navigation_about_newtab
@@ -6453,9 +6508,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from about:newtab,
-        broken down by the originating action. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.engagement.navigation.about_newtab.
+      description: 'The count of URI loads triggered in a subsession from about:newtab,
+
+        broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.about_newtab.
 
         '
     - name: browser_engagement_navigation_contextmenu
@@ -6468,9 +6527,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the contextmenu,
-        broken down by the originating action. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.engagement.navigation.contextmenu.
+      description: 'The count of URI loads triggered in a subsession from the contextmenu,
+
+        broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.contextmenu.
 
         '
     - name: browser_engagement_navigation_searchbar
@@ -6483,9 +6546,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the searchbar,
-        broken down by the originating action. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.engagement.navigation.searchbar.
+      description: 'The count of URI loads triggered in a subsession from the searchbar,
+
+        broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.searchbar.
 
         '
     - name: browser_engagement_navigation_urlbar
@@ -6498,9 +6565,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the urlbar,
-        broken down by the originating action. This metric was generated to correspond
-        to the Legacy Telemetry scalar browser.engagement.navigation.urlbar.
+      description: 'The count of URI loads triggered in a subsession from the urlbar,
+
+        broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.urlbar.
 
         '
     - name: browser_engagement_navigation_urlbar_handoff
@@ -6513,9 +6584,14 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the urlbar
-        via handoff, broken down by the originating action. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.engagement.navigation.urlbar_handoff.
+      description: 'The count of URI loads triggered in a subsession from the urlbar
+        via
+
+        handoff, broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.urlbar_handoff.
 
         '
     - name: browser_engagement_navigation_urlbar_persisted
@@ -6529,9 +6605,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The count of URI loads triggered in a subsession from the urlbar
-        after the search term was shown in the urlbar, broken down by the originating
-        action. This metric was generated to correspond to the Legacy Telemetry scalar
-        browser.engagement.navigation.urlbar_persisted.
+
+        after the search term was shown in the urlbar, broken down by the
+
+        originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.urlbar_persisted.
 
         '
     - name: browser_engagement_navigation_urlbar_searchmode
@@ -6544,9 +6625,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the urlbar''s
-        search mode, broken down by the originating action. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.engagement.navigation.urlbar_searchmode.
+      description: 'The count of URI loads triggered in a subsession from the urlbar''s
+
+        search mode, broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.urlbar_searchmode.
 
         '
     - name: browser_engagement_navigation_webextension
@@ -6559,8 +6644,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from a webextension.
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.navigation.webextension.
+      description: 'The count of URI loads triggered in a subsession from a webextension.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.engagement.navigation.webextension.
 
         '
     - name: browser_search_adclicks_about_home
@@ -6573,10 +6661,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from about:home. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.about_home.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from about:home. The key format is \u2018<provider>:<tagged|organic>\u2019\
+        . See\nhttps://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.about_home.\n"
     - name: browser_search_adclicks_about_newtab
       type: RECORD
       mode: REPEATED
@@ -6587,10 +6675,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from about:newtab. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.about_newtab.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from about:newtab. The key format is \u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.about_newtab.\n"
     - name: browser_search_adclicks_contextmenu
       type: RECORD
       mode: REPEATED
@@ -6601,10 +6689,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from the context menu. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.contextmenu.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from the context menu. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        . See\nhttps://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.contextmenu.\n"
     - name: browser_search_adclicks_reload
       type: RECORD
       mode: REPEATED
@@ -6615,10 +6703,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was loaded\
-        \ by reloading the page. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.reload.\n"
+      description: "Records clicks of adverts on SERP pages where the search was loaded\n\
+        by reloading the page. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.reload.\n"
     - name: browser_search_adclicks_searchbar
       type: RECORD
       mode: REPEATED
@@ -6629,10 +6717,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from the search bar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.searchbar.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from the search bar. The key format is \u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.searchbar.\n"
     - name: browser_search_adclicks_system
       type: RECORD
       mode: REPEATED
@@ -6643,10 +6731,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from the system, e.g. command line. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.system.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from the system, e.g. command line. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.system.\n"
     - name: browser_search_adclicks_tabhistory
       type: RECORD
       mode: REPEATED
@@ -6657,10 +6745,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was loaded\
-        \ from the tab history. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.tabhistory.\n"
+      description: "Records clicks of adverts on SERP pages where the search was loaded\n\
+        from the tab history. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.tabhistory.\n"
     - name: browser_search_adclicks_unknown
       type: RECORD
       mode: REPEATED
@@ -6671,10 +6759,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from a place not categorized by the other scalars. The key format is \u2018\
-        <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.unknown.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from a place not categorized by the other scalars. The key format is\n\u2018\
+        <provider>:<tagged|organic>\u2019\nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.unknown.\n"
     - name: browser_search_adclicks_urlbar
       type: RECORD
       mode: REPEATED
@@ -6685,10 +6773,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.urlbar.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
+        . See\nhttps://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.urlbar.\n"
     - name: browser_search_adclicks_urlbar_handoff
       type: RECORD
       mode: REPEATED
@@ -6699,9 +6787,14 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the urlbar
-        via handoff, broken down by the originating action. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.search.adclicks.urlbar_handoff.
+      description: 'The count of URI loads triggered in a subsession from the urlbar
+        via
+
+        handoff, broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.adclicks.urlbar_handoff.
 
         '
     - name: browser_search_adclicks_urlbar_persisted
@@ -6714,10 +6807,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from the urlbar after the search term was shown in the urlbar. The key format\
-        \ is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.urlbar_persisted.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from the urlbar after the search term was shown in the urlbar. The\nkey format\
+        \ is \u2018<provider>:<tagged|organic>\u2019\nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.urlbar_persisted.\n"
     - name: browser_search_adclicks_urlbar_searchmode
       type: RECORD
       mode: REPEATED
@@ -6728,10 +6821,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from the urlbar in search mode. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.urlbar_searchmode.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from the urlbar in search mode. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.urlbar_searchmode.\n"
     - name: browser_search_adclicks_webextension
       type: RECORD
       mode: REPEATED
@@ -6742,10 +6835,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages where the search was started\
-        \ from a webextension. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.webextension.\n"
+      description: "Records clicks of adverts on SERP pages where the search was started\n\
+        from a webextension. The key format is \u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.adclicks.webextension.\n"
     - name: browser_search_content_about_home
       type: RECORD
       mode: REPEATED
@@ -6757,9 +6850,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the about:home. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the about:home. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.about_home.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.about_home.
 
         '
     - name: browser_search_content_about_newtab
@@ -6773,9 +6873,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the about:newtab. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the about:newtab. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.about_newtab.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.about_newtab.
 
         '
     - name: browser_search_content_contextmenu
@@ -6789,9 +6896,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the context menu. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the context menu. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.contextmenu.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.contextmenu.
 
         '
     - name: browser_search_content_reload
@@ -6805,9 +6919,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was loaded
-        by reloading the page. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        by reloading the page. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.reload.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.reload.
 
         '
     - name: browser_search_content_searchbar
@@ -6821,9 +6942,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the search bar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the search bar. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.searchbar.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.searchbar.
 
         '
     - name: browser_search_content_system
@@ -6837,9 +6965,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the system, e.g. command line. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the system, e.g. command line. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.system.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.system.
 
         '
     - name: browser_search_content_tabhistory
@@ -6853,9 +6988,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was loaded
-        from the tab history. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        from the tab history. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.tabhistory.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.tabhistory.
 
         '
     - name: browser_search_content_unknown
@@ -6869,10 +7011,18 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was started
-        from a place that could not be determined or not categorized by the other
-        scalars. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        from a place that could not be determined or not categorized by the
+
+        other scalars. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.unknown.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.unknown.
 
         '
     - name: browser_search_content_urlbar
@@ -6886,9 +7036,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the urlbar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the urlbar. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.urlbar.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.urlbar.
 
         '
     - name: browser_search_content_urlbar_handoff
@@ -6901,9 +7058,14 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the urlbar
-        via handoff, broken down by the originating action. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.search.content.urlbar_handoff.
+      description: 'The count of URI loads triggered in a subsession from the urlbar
+        via
+
+        handoff, broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.urlbar_handoff.
 
         '
     - name: browser_search_content_urlbar_persisted
@@ -6917,10 +7079,18 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the urlbar after the search term was shown in the urlbar.
-        The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the urlbar after the search term was shown in
+
+        the urlbar. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.urlbar_persisted.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.urlbar_persisted.
 
         '
     - name: browser_search_content_urlbar_searchmode
@@ -6934,9 +7104,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from the urlbar in search mode. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from the urlbar in search mode. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.urlbar_searchmode.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.urlbar_searchmode.
 
         '
     - name: browser_search_content_webextension
@@ -6950,9 +7127,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content searches where the search was most
-        likely started from a webextension. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
+        likely started from a webextension. The key format is
+
+        <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+
         See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.search.content.webextension.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.content.webextension.
 
         '
     - name: browser_search_withads_about_home
@@ -6966,9 +7150,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from about:home. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.about_home.\n"
+        \ search\nwas started from about:home. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.about_home.\n"
     - name: browser_search_withads_about_newtab
       type: RECORD
       mode: REPEATED
@@ -6980,9 +7164,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from about:newtab. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.about_newtab.\n"
+        \ search\nwas started from about:newtab. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.about_newtab.\n"
     - name: browser_search_withads_contextmenu
       type: RECORD
       mode: REPEATED
@@ -6994,9 +7178,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from the context menu. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.contextmenu.\n"
+        \ search\nwas started from the context menu. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.contextmenu.\n"
     - name: browser_search_withads_reload
       type: RECORD
       mode: REPEATED
@@ -7008,9 +7192,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was loaded by reloading the page. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.reload.\n"
+        \ search\nwas loaded by reloading the page. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.reload.\n"
     - name: browser_search_withads_searchbar
       type: RECORD
       mode: REPEATED
@@ -7022,9 +7206,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from the search bar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.searchbar.\n"
+        \ search\nwas started from the search bar. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.searchbar.\n"
     - name: browser_search_withads_system
       type: RECORD
       mode: REPEATED
@@ -7036,9 +7220,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from the system, e.g. command line. The key format is\
-        \ \u2018<provider>:<tagged|organic>\u2019. See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.system.\n"
+        \ search\nwas started from the system, e.g. command line. The key format is\n\
+        \u2018<provider>:<tagged|organic>\u2019.\nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.system.\n"
     - name: browser_search_withads_tabhistory
       type: RECORD
       mode: REPEATED
@@ -7050,9 +7234,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was loaded from the tab history. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.tabhistory.\n"
+        \ search\nwas loaded from the tab history. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.tabhistory.\n"
     - name: browser_search_withads_unknown
       type: RECORD
       mode: REPEATED
@@ -7064,9 +7248,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from a place not categorized by the other scalars. The\
-        \ key format is \u2018<provider>:<tagged|organic>\u2019. See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.unknown.\n"
+        \ search\nwas started from a place not categorized by the other scalars. The\n\
+        key format is \u2018<provider>:<tagged|organic>\u2019. See\nhttps://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.unknown.\n"
     - name: browser_search_withads_urlbar
       type: RECORD
       mode: REPEATED
@@ -7078,9 +7262,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.urlbar.\n"
+        \ search\nwas started from the urlbar. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        \nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.urlbar.\n"
     - name: browser_search_withads_urlbar_handoff
       type: RECORD
       mode: REPEATED
@@ -7091,9 +7275,14 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the urlbar
-        via handoff, broken down by the originating action. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.search.withads.urlbar_handoff.
+      description: 'The count of URI loads triggered in a subsession from the urlbar
+        via
+
+        handoff, broken down by the originating action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar browser.search.withads.urlbar_handoff.
 
         '
     - name: browser_search_withads_urlbar_persisted
@@ -7107,9 +7296,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from the urlbar after the search term was shown in the\
-        \ urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.urlbar_persisted.\n"
+        \ search\nwas started from the urlbar after the search term was shown in the\n\
+        urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.urlbar_persisted.\n"
     - name: browser_search_withads_urlbar_searchmode
       type: RECORD
       mode: REPEATED
@@ -7121,9 +7310,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from the urlbar in search mode. The key format is \u2018\
-        <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.urlbar_searchmode.\n"
+        \ search\nwas started from the urlbar in search mode. The key format is\n\u2018\
+        <provider>:<tagged|organic>\u2019\nSee https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.urlbar_searchmode.\n"
     - name: browser_search_withads_webextension
       type: RECORD
       mode: REPEATED
@@ -7135,9 +7324,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
-        \ search was started from a webextension. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
-        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.webextension.\n"
+        \ search\nwas started from a webextension. The key format is\n\u2018<provider>:<tagged|organic>\u2019\
+        . See\nhttps://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n\
+        This metric was generated to correspond to the Legacy Telemetry\nscalar browser.search.withads.webextension.\n"
     - name: browser_ui_interaction_app_menu
       type: RECORD
       mode: REPEATED
@@ -7524,9 +7713,13 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'For each successful scoring, count whether the relevance score
-        gets boosted or decreased over the original score. Note that given how the
-        score is calculated, it''s practically impossible to have the two scores tied.
-        If that''s the case anyhow, it will increment the "boosted" counter.
+        gets
+
+        boosted or decreased over the original score. Note that given how the
+
+        score is calculated, it''s practically impossible to have the two scores
+
+        tied. If that''s the case anyhow, it will increment the "boosted" counter.
 
         '
     - name: suggest_relevance_status
@@ -7540,6 +7733,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Count the successful / failed attempts of relevance scoring in
+
         Firefox Suggest.
 
         '
@@ -7554,8 +7748,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecing the Search Bookmarks menu item in the Library menu.
-        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.bookmarkmenu.
+
+        search mode after selecing the Search Bookmarks menu item in the
+
+        Library menu.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.bookmarkmenu.
 
         '
     - name: urlbar_searchmode_handoff
@@ -7569,8 +7769,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after being handed off from the search bar on the new tab page.
-        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.handoff.
+
+        search mode after being handed off from the search bar on the new
+
+        tab page.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.handoff.
 
         '
     - name: urlbar_searchmode_historymenu
@@ -7584,8 +7790,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecing the Search History menu item in a History menu.
-        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.historymenu.
+
+        search mode after selecing the Search History menu item in a History
+
+        menu.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.historymenu.
 
         '
     - name: urlbar_searchmode_keywordoffer
@@ -7599,10 +7811,18 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a keyword offer result. The scalar key for local
-        search modes entered using a restrict keyword will be suffixed with "keyword".
-        For example: tabs_keyword, bookmarks_keyword, history_keyword, and actions_keyword.
-        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.keywordoffer.
+
+        search mode after selecting a keyword offer result. The scalar key
+
+        for local search modes entered using a restrict keyword will be
+
+        suffixed with "keyword". For example: tabs_keyword,
+
+        bookmarks_keyword, history_keyword, and actions_keyword.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.keywordoffer.
 
         '
     - name: urlbar_searchmode_oneoff
@@ -7616,8 +7836,12 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a one-off. This metric was generated to correspond
-        to the Legacy Telemetry scalar urlbar.searchmode.oneoff.
+
+        search mode after selecting a one-off.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.oneoff.
 
         '
     - name: urlbar_searchmode_other
@@ -7631,9 +7855,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode from an unknown entry point. If values appear for this probe in
-        Telemetry, we should review the entry points to search mode. This metric was
-        generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.other.
+
+        search mode from an unknown entry point. If values appear for this
+
+        probe in Telemetry, we should review the entry points to search
+
+        mode.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.other.
 
         '
     - name: urlbar_searchmode_searchbutton
@@ -7647,8 +7878,12 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode by unified search button. This metric was generated to correspond
-        to the Legacy Telemetry scalar urlbar.searchmode.searchbutton.
+
+        search mode by unified search button.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.searchbutton.
 
         '
     - name: urlbar_searchmode_shortcut
@@ -7662,8 +7897,12 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after pressing a keyboard shortcut. This metric was generated
-        to correspond to the Legacy Telemetry scalar urlbar.searchmode.shortcut.
+
+        search mode after pressing a keyboard shortcut.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.shortcut.
 
         '
     - name: urlbar_searchmode_tabmenu
@@ -7677,9 +7916,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting the Search Tabs menu item in the Tab Overflow
-        menu. This metric was generated to correspond to the Legacy Telemetry scalar
-        urlbar.searchmode.tabmenu.
+
+        search mode after selecting the Search Tabs menu item in the Tab
+
+        Overflow menu.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.tabmenu.
 
         '
     - name: urlbar_searchmode_tabtosearch
@@ -7693,8 +7937,12 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a tab-to-search result. This metric was generated
-        to correspond to the Legacy Telemetry scalar urlbar.searchmode.tabtosearch.
+
+        search mode after selecting a tab-to-search result.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.tabtosearch.
 
         '
     - name: urlbar_searchmode_tabtosearch_onboard
@@ -7708,8 +7956,12 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a tab-to-search onboarding result. This metric
-        was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.tabtosearch_onboard.
+
+        search mode after selecting a tab-to-search onboarding result.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.tabtosearch_onboard.
 
         '
     - name: urlbar_searchmode_topsites_newtab
@@ -7723,8 +7975,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a search shortcut Top Site on the New Tab Page.
-        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.topsites_newtab.
+
+        search mode after selecting a search shortcut Top Site on the New
+
+        Tab Page.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.topsites_newtab.
 
         '
     - name: urlbar_searchmode_topsites_urlbar
@@ -7738,8 +7996,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a search shortcut Top Site in the Urlbar. This
-        metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.topsites_urlbar.
+
+        search mode after selecting a search shortcut Top Site in the
+
+        Urlbar.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.topsites_urlbar.
 
         '
     - name: urlbar_searchmode_touchbar
@@ -7753,8 +8017,14 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after selecting a search shortcut on the macOS Touch Bar. This
-        metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.touchbar.
+
+        search mode after selecting a search shortcut on the macOS Touch
+
+        Bar.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.touchbar.
 
         '
     - name: urlbar_searchmode_typed
@@ -7768,12 +8038,22 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode after typing an alias. The scalar keys for local search modes
-        entered by typing a restrict keyword will be suffixed with "keyword". For
-        example: tabs_keyword, bookmarks_keyword, history_keyword, and actions_keyword.
-        If instead search mode was entered by typing a restrict symbol the key will
-        be suffixed with "symbol" (e.g. typing "%" will generate "tabs_symbol"). This
-        metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.typed.
+
+        search mode after typing an alias. The scalar keys for local search
+
+        modes entered by typing a restrict keyword will be suffixed with
+
+        "keyword". For example: tabs_keyword, bookmarks_keyword,
+
+        history_keyword, and actions_keyword. If instead search mode was
+
+        entered by typing a restrict symbol the key will be suffixed with
+
+        "symbol" (e.g. typing "%" will generate "tabs_symbol").
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.typed.
 
         '
     - name: browser_ui_customized_widgets
@@ -8945,9 +9225,15 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times quickaction results were selected. The key
-        is the in the form "actionkey-N" where N is the number of characters the user
-        typed to be shown the action. This metric was generated to correspond to the
-        Legacy Telemetry scalar quickaction.picked.
+        is
+
+        the in the form "actionkey-N" where N is the number of characters
+
+        the user typed to be shown the action.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar quickaction.picked.
 
         '
     - name: networking_https_record_state
@@ -9018,10 +9304,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times Unified Search Button items were selected.
-        The key is followings. * builtin_search: Builtin search engine. * addon_search:
-        Addon search engine. * local_search: Local search engine such as Bookmarks.
-        * settings: Settings menu. This metric was generated to correspond to the
-        Legacy Telemetry scalar urlbar.unifiedsearchbutton.picked.
+
+        The key is followings.
+
+        * builtin_search: Builtin search engine.
+
+        * addon_search: Addon search engine.
+
+        * local_search: Local search engine such as Bookmarks.
+
+        * settings: Settings menu.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.unifiedsearchbutton.picked.
 
         '
     - name: javascript_gc_budget_was_increased
@@ -11090,17 +11386,30 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'This is deprecated metric that should not be incoporated into
-        dashboards. Use the `sap.counts` event instead.
+        dashboards.
 
-        This metric has been added to Glean to aid transition of histograms and allow
-        the legacy telemetry SEARCH_COUNTS to continue to be recorded.
+        Use the `sap.counts` event instead.
 
-        Records search counts for search access points. The format is: <engine-name>.<search-access-point>.
-        For the urlbar when in search mode, the format is <engine name>.urlbar-searchmode.
-        For the urlbar when an internal @engine shortcut is used, the format is: <engine-name>.alias.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        SEARCH_COUNTS.
+        This metric has been added to Glean to aid transition of
+
+        histograms and allow the legacy telemetry SEARCH_COUNTS to continue to be
+
+        recorded.
+
+
+        Records search counts for search access points. The format is:
+
+        <engine-name>.<search-access-point>. For the urlbar when in search mode,
+
+        the format is <engine name>.urlbar-searchmode. For the urlbar when an
+
+        internal @engine shortcut is used, the format is: <engine-name>.alias.
+
+
+        This metric was generated to correspond to the Legacy Telemetry count
+
+        histogram SEARCH_COUNTS.
 
         '
     - name: searchbar_selected_result_method
@@ -11114,12 +11423,17 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The input method the user used to select a result in the searchbar.
-        ''enter'' => The user hit the Enter key without choosing a result in the popup.
-        ''enterSelection'' => The user chose a result and then hit the Enter key.
-        ''click'' => The user clicked a result with the mouse.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram FX_SEARCHBAR_SELECTED_RESULT_METHOD.
+        ''enter'' => The user hit the Enter key without choosing a result in the
+
+        popup. ''enterSelection'' => The user chose a result and then hit the Enter
+
+        key. ''click'' => The user clicked a result with the mouse.
+
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        categorical histogram FX_SEARCHBAR_SELECTED_RESULT_METHOD.
 
         '
     - name: creditcard_detected_cc_number_fields_count
@@ -12060,7 +12374,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The count of URI loads triggered in a subsession from the context
-        menu''s visual search menuitem, broken down by the originating action.
+        menu''s
+
+        visual search menuitem, broken down by the originating action.
 
         '
     - name: browser_search_adclicks_contextmenu_visual
@@ -12074,8 +12390,11 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records clicks of adverts on visual-search SERP pages where the
-        search was started from the context menu. The key format is the same as for
-        the `contextmenu` labeled counter.
+        search was
+
+        started from the context menu. The key format is the same as for the
+
+        `contextmenu` labeled counter.
 
         '
     - name: browser_search_content_contextmenu_visual
@@ -12089,8 +12408,11 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts for in-content visual searches where the search
-        was most likely started from the context menu. The key format is the same
-        as for the `contextmenu` labeled counter.
+        was most
+
+        likely started from the context menu. The key format is the same as for
+
+        the `contextmenu` labeled counter.
 
         '
     - name: browser_search_withads_contextmenu_visual
@@ -12104,8 +12426,11 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records counts of visual-search SERP pages with adverts displayed
-        where the search was started from the context menu. The key format is the
-        same as for the `contextmenu` labeled counter.
+        where
+
+        the search was started from the context menu. The key format is the same
+
+        as for the `contextmenu` labeled counter.
 
         '
     - name: sap_impression_counts_contextmenu_visual
@@ -12119,9 +12444,11 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Count of impressions of the visual search context menu item. The
-        counter''s label is the engine''s identifier if the engine is known at the
-        time of impression and it''s an app-provided engine. Otherwise the label is
-        "none".
+        counter''s
+
+        label is the engine''s identifier if the engine is known at the time of
+
+        impression and it''s an app-provided engine. Otherwise the label is "none".
 
         '
     - name: fog_subdir_entry_err
@@ -12618,7 +12945,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the smartbar,
+      description: 'The count of URI loads triggered in a subsession from the smartbar,
+
         broken down by the originating action.
 
         '
@@ -12632,8 +12960,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the AI window
-        assistant search handoff button.
+      description: 'The count of URI loads triggered in a subsession from the AI window
+        assistant
+
+        search handoff button.
 
         '
     - name: browser_search_adclicks_smartbar
@@ -12944,7 +13274,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
-        search mode through the messaging system.
+        search mode
+
+        through the messaging system.
 
         '
     - name: browser_set_default_pdf_handler_modern_settings_result
@@ -13000,8 +13332,10 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times a blocked autofill result was reintegrated
-        (unblocked) because the user picked the same URL as a non-autofill history
-        result.
+
+        (unblocked) because the user picked the same URL as a non-autofill
+
+        history result.
 
         '
     - name: nimbus_qa_prefs_pref_type_errors
@@ -13402,9 +13736,13 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times the user dismissed a heuristic autofill
-        result via the urlbar input''s right-click context menu. Labeled by which
-        menu item was used: `dismiss` only blocks the autofill pairing, `forget` also
-        removes the page from history.
+        result
+
+        via the urlbar input''s right-click context menu. Labeled by which
+
+        menu item was used: `dismiss` only blocks the autofill pairing,
+
+        `forget` also removes the page from history.
 
         '
     - name: tls_handshake_completed
@@ -13798,8 +14136,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the New Tab
-        search bar, broken down by the originating action.
+      description: 'The count of URI loads triggered in a subsession from the New
+        Tab search
+
+        bar, broken down by the originating action.
 
         '
     - name: firefox_ai_runtime_onnx_native_availability
@@ -13844,8 +14184,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'The count URI loads triggered in a subsession from the search
-        CTA on a network error page, broken down by the originating action.
+      description: 'The count of URI loads triggered in a subsession from the search
+        CTA on
+
+        a network error page, broken down by the originating action.
 
         '
     - name: quotamanager_storage_sqlite_corruption_unrecovered
@@ -13879,6 +14221,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times the zero-prefix results view was abandoned,
+
         labeled by the search access point it was shown for.
 
         '
@@ -13893,6 +14236,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times a result was picked in the zero-prefix results
+
         view, labeled by the search access point it was shown for.
 
         '
@@ -13907,7 +14251,58 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts how many times the zero-prefix results view was shown to
-        the user, labeled by the search access point it was shown for.
+        the
+
+        user, labeled by the search access point it was shown for.
+
+        '
+    - name: browser_engagement_navigation_newtab_search_widget
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count URI loads triggered in a subsession from a search widget
+        on
+
+        about:newtab, broken down by the originating action.
+
+        '
+    - name: network_ssl_token_resumption_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The session resumption outcome of a connection that had at least
+        one cached token to try. Recorded once per connection. ''rejected'' means
+        the TLS stack refused every token. ''not_resumed'' means a token was accepted
+        by the stack and sent, but the server declined it. ''resumed'' means the server
+        accepted it.
+
+        '
+    - name: geolocation_network_provider
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which network geolocation service each request from the NetworkGeolocationProvider
+        was sent to, determined from the host of the configured geo.provider.network.url.  "other"
+        means the URL had a host that is not one of the services listed here, and
+        "unknown" means it had no host that could be parsed.
 
         '
   - name: memory_distribution
@@ -15909,9 +16304,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -15938,9 +16333,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -15974,9 +16369,9 @@ fields:
 
         If this string is an empty string (`""`), this means that one or both of
 
-        the preferences `browser.search.separatePrivateDefault` and
+        the preferences `browser.search.separatePrivateDefault.enabled` and
 
-        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+        `browser.search.separatePrivateDefault.featureGate` are set to false.
 
         It is possible that the user selects the same private engine as for the
 
@@ -29073,9 +29468,6 @@ fields:
       description: 'Time (ms) for spawning a service worker in an isolated content
         process.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_ISOLATED_LAUNCH_TIME.
-
         '
     - name: service_worker_launch_time
       type: RECORD
@@ -29120,9 +29512,6 @@ fields:
       description: 'Time (ms) for spawning a service worker in the remote content
         process.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_LAUNCH_TIME_2.
-
         '
     - name: service_worker_registration_loading
       type: RECORD
@@ -29166,9 +29555,6 @@ fields:
           mode: NULLABLE
       description: 'Tracking how ServiceWorkerRegistrar loads data before the first
         content is shown.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_REGISTRATION_LOADING.
 
         '
     - name: networking_prclose_tcp_blocking_time_connectivity_change
@@ -34277,8 +34663,10 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Time for first autocomplete result if > 50ms (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_AUTOCOMPLETE_1ST_RESULT_TIME_MS.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        exponential histogram PLACES_AUTOCOMPLETE_1ST_RESULT_TIME_MS.
 
         '
     - name: urlbar_autocomplete_sixth_result_time
@@ -34323,8 +34711,10 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Time for the 6 first autocomplete results (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_AUTOCOMPLETE_6_FIRST_RESULTS_TIME_MS.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        exponential histogram PLACES_AUTOCOMPLETE_6_FIRST_RESULTS_TIME_MS.
 
         '
     - name: screenwakelock_held_duration
@@ -37960,8 +38350,7 @@ fields:
       mode: NULLABLE
       description: 'This scalar reports the value of the content blocking category
         pref (0 = "standard", 1 = "strict", 2 = "custom", 3 = some other value, this
-        is not supported). This metric was generated to correspond to the Legacy Telemetry
-        scalar contentblocking.category.
+        is not supported).
 
         '
     - name: policies_count
@@ -38467,8 +38856,9 @@ fields:
     - name: urlbar_pref_max_results
       type: INTEGER
       mode: NULLABLE
-      description: 'Maximum results to show in the Address Bar. Corresponds to the
-        value of the `browser.urlbar.maxRichResults` pref.
+      description: 'Maximum results to show in the Address Bar.
+
+        Corresponds to the value of the `browser.urlbar.maxRichResults` pref.
 
         '
     - name: data_storage_site_integrity_service_state
@@ -49667,7 +50057,7 @@ fields:
         \  The engine has the same name as an application provided engine.\n  The\
         \ engine matches one of a specific list of well known search engines.\nIf\
         \ this string is an empty string (`\"\"`), this means that one or both of\n\
-        the preferences `browser.search.separatePrivateDefault` and\n`browser.search.separatePrivateDefault.ui.enabled`\
+        the preferences `browser.search.separatePrivateDefault.enabled` and\n`browser.search.separatePrivateDefault.featureGate`\
         \ are set to false.\nIt is possible that the user selects the same private\
         \ engine as for the\ndefault engine, and hence both versions of these fields\
         \ will be filled in.\n"
@@ -50162,7 +50552,9 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A uint recording the number of times the address bar handleCommand
-        fallback path is hit.
+        fallback
+
+        path is hit.
 
         '
     - name: web_notification_show_safe_browsing_block
@@ -50222,14 +50614,26 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'A rate recording the fraction of search-mode engagements whose
-        typed string parses as a URL (per nsIURIFixup, the same check the heuristic
-        providers use to decide whether a string should navigate). The denominator
-        is search-mode engagements whose heuristic result is a search result (i.e.
-        cases where changing the behavior to navigate instead of search could actually
-        take effect); the numerator is those whose query is URL-like. Local search
-        modes (bookmarks, history, tabs, actions) have no heuristic result and are
-        therefore excluded. Used to evaluate whether the address bar should navigate
-        to such strings instead of searching them while in search mode (bug 1930861).
+        typed
+
+        string parses as a URL (per nsIURIFixup, the same check the heuristic
+
+        providers use to decide whether a string should navigate). The
+
+        denominator is search-mode engagements whose heuristic result is a
+
+        search result (i.e. cases where changing the behavior to navigate
+
+        instead of search could actually take effect); the numerator is those
+
+        whose query is URL-like. Local search modes (bookmarks, history, tabs,
+
+        actions) have no heuristic result and are therefore excluded. Used to
+
+        evaluate whether the address bar should navigate to such strings
+
+        instead of searching them while in search mode (bug 1930861).
+
         Temporary decision-making probe.
 
         '
@@ -52768,9 +53172,6 @@ fields:
       description: 'Time (in ms) measured between when the fetch handler finished
         executing and when we reset the network channel.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_EVENT_CHANNEL_RESET_MS_2.
-
         '
     - name: service_worker_fetch_event_dispatch
       type: RECORD
@@ -52821,9 +53222,6 @@ fields:
             mode: NULLABLE
       description: 'Time (in ms) measured between when the fetch event is dispatched
         by the Service Worker and before we execute the event listeners.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_EVENT_DISPATCH_MS_2.
 
         '
     - name: service_worker_fetch_event_finish_synthesized_response
@@ -52876,9 +53274,6 @@ fields:
       description: 'Time (in ms) measured between when the respondWith promise resolves
         and when we provide the response through the intercepted channel.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_EVENT_FINISH_SYNTHESIZED_RESPONSE_MS_2.
-
         '
     - name: service_worker_fetch_interception_duration
       type: RECORD
@@ -52930,9 +53325,6 @@ fields:
       description: 'Time delta (ms) between when a network request is intercepted
         in the parent process and the service worker provides a response.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_INTERCEPTION_DURATION_MS_2.
-
         '
     - name: workers_sync_worker_operation
       type: RECORD
@@ -52983,9 +53375,6 @@ fields:
             mode: NULLABLE
       description: 'Tracking how long a Worker thread is blocked when a sync operation
         is executed on the main-thread.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SYNC_WORKER_OPERATION.
 
         '
     - name: devtools_cold_toolbox_open_delay
@@ -54664,9 +55053,13 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Duration from when the client sends a request to Merino to when
-        the client receives a response, labeled by response status code. Labels are
-        dynamic. For non-OHTTP requests, labels are simply the numeric status code,
-        e.g., "200". For OHTTP requests, labels are `${status}_ohttp`, e.g., "200_ohttp".
+        the client
+
+        receives a response, labeled by response status code. Labels are dynamic.
+
+        For non-OHTTP requests, labels are simply the numeric status code, e.g.,
+
+        "200". For OHTTP requests, labels are `${status}_ohttp`, e.g., "200_ohttp".
 
         '
     - name: xpi_database_rebuilds
@@ -56249,11 +56642,19 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Time elapsed between a backspace-induced autofill block and the
-        user re-integrating the same destination by picking it as a non-autofill history
-        result in the same session. Only samples re-integrations of blocks that were
-        set via consecutive backspaces on an autofilled value, blocks set via the
-        result menu Dismiss action do not contribute samples. Labeled by whether the
-        cleared block was at the origin or page-URL level.
+        user
+
+        re-integrating the same destination by picking it as a non-autofill
+
+        history result in the same session. Only samples re-integrations of
+
+        blocks that were set via consecutive backspaces on an autofilled
+
+        value, blocks set via the result menu Dismiss action do not
+
+        contribute samples. Labeled by whether the cleared block was at the
+
+        origin or page-URL level.
 
         '
     - name: dns_https_rr_lookup_time
@@ -57799,9 +58200,6 @@ fields:
             mode: NULLABLE
       description: 'The sampled number of simultaneous running ServiceWorkers in a
         session, sampled once each 10 seconds (lazily on state change)
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        SERVICE_WORKER_RUNNING.
 
         '
     - name: http3_connection_close_code

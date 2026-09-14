@@ -559,15 +559,13 @@ fields:
     - name: contentblocking_cryptomining_blocking_enabled
       type: BOOLEAN
       mode: NULLABLE
-      description: 'True if cryptominer blocking is enabled globally at startup. This
-        metric was generated to correspond to the Legacy Telemetry scalar contentblocking.cryptomining_blocking_enabled.
+      description: 'True if cryptominer blocking is enabled globally at startup.
 
         '
     - name: contentblocking_fingerprinting_blocking_enabled
       type: BOOLEAN
       mode: NULLABLE
       description: 'True if fingerprinter blocking is enabled globally at startup.
-        This metric was generated to correspond to the Legacy Telemetry scalar contentblocking.fingerprinting_blocking_enabled.
 
         '
     - name: policies_is_enterprise
@@ -1446,8 +1444,7 @@ fields:
     - name: contentblocking_trackers_blocked_count
       type: INTEGER
       mode: NULLABLE
-      description: 'A count of the number of tracking events blocked. This metric
-        was generated to correspond to the Legacy Telemetry scalar contentblocking.trackers_blocked_count.
+      description: 'A count of the number of tracking events blocked.
 
         '
     - name: networking_cookie_count_invalid_first_party_partitioned_in_db
@@ -1762,9 +1759,6 @@ fields:
       description: 'Tracking whether a DedicatedWorker spawn gets queued due to hitting
         max workers per domain limit.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        DEDICATED_WORKER_SPAWN_GETS_QUEUED.
-
         '
     - name: workers_service_worker_spawn_gets_queued
       type: INTEGER
@@ -1772,18 +1766,12 @@ fields:
       description: 'Tracking whether a ServiceWorker spawn gets queued due to hitting
         max workers per domain limit.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        SERVICE_WORKER_SPAWN_GETS_QUEUED.
-
         '
     - name: workers_shared_worker_spawn_gets_queued
       type: INTEGER
       mode: NULLABLE
       description: 'Tracking whether a SharedWorker spawn gets queued due to hitting
         max workers per domain limit.
-
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        SHARED_WORKER_SPAWN_GETS_QUEUED.
 
         '
     - name: update_cannot_stage_external
@@ -2758,6 +2746,26 @@ fields:
       mode: NULLABLE
       description: 'Number of times stylesheets have been selected and opened in the
         debugger.
+
+        '
+    - name: devtools_styleeditor_stylesheets_links_opened_in_style_editor_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times stylesheets link from another panel opens the
+        stylesheet in the style editor.
+
+        '
+    - name: devtools_styleeditor_stylesheets_stylesheets_edited_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of unique stylesheets edited in the style editor.
+
+        '
+    - name: devtools_styleeditor_stylesheets_stylesheets_opened_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times stylesheets have been selected and opened in the
+        style editor.
 
         '
   - name: datetime
@@ -9163,6 +9171,39 @@ fields:
         this metric is here to record missing cases where we didn''t recover.
 
         '
+    - name: network_ssl_token_resumption_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The session resumption outcome of a connection that had at least
+        one cached token to try. Recorded once per connection. ''rejected'' means
+        the TLS stack refused every token. ''not_resumed'' means a token was accepted
+        by the stack and sent, but the server declined it. ''resumed'' means the server
+        accepted it.
+
+        '
+    - name: geolocation_network_provider
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which network geolocation service each request from the NetworkGeolocationProvider
+        was sent to, determined from the host of the configured geo.provider.network.url.  "other"
+        means the URL had a host that is not one of the services listed here, and
+        "unknown" means it had no host that could be parsed.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -10808,8 +10849,7 @@ fields:
       mode: NULLABLE
       description: 'This scalar reports the value of the content blocking category
         pref (0 = "standard", 1 = "strict", 2 = "custom", 3 = some other value, this
-        is not supported). This metric was generated to correspond to the Legacy Telemetry
-        scalar contentblocking.category.
+        is not supported).
 
         '
     - name: policies_count
@@ -33437,9 +33477,6 @@ fields:
       description: 'Time (ms) for spawning a service worker in an isolated content
         process.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_ISOLATED_LAUNCH_TIME.
-
         '
     - name: service_worker_launch_time
       type: RECORD
@@ -33484,9 +33521,6 @@ fields:
       description: 'Time (ms) for spawning a service worker in the remote content
         process.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_LAUNCH_TIME_2.
-
         '
     - name: service_worker_registration_loading
       type: RECORD
@@ -33530,9 +33564,6 @@ fields:
           mode: NULLABLE
       description: 'Tracking how ServiceWorkerRegistrar loads data before the first
         content is shown.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_REGISTRATION_LOADING.
 
         '
     - name: networking_prclose_tcp_blocking_time_connectivity_change
@@ -41964,9 +41995,6 @@ fields:
       description: 'Time (in ms) measured between when the fetch handler finished
         executing and when we reset the network channel.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_EVENT_CHANNEL_RESET_MS_2.
-
         '
     - name: service_worker_fetch_event_dispatch
       type: RECORD
@@ -42017,9 +42045,6 @@ fields:
             mode: NULLABLE
       description: 'Time (in ms) measured between when the fetch event is dispatched
         by the Service Worker and before we execute the event listeners.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_EVENT_DISPATCH_MS_2.
 
         '
     - name: service_worker_fetch_event_finish_synthesized_response
@@ -42072,9 +42097,6 @@ fields:
       description: 'Time (in ms) measured between when the respondWith promise resolves
         and when we provide the response through the intercepted channel.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_EVENT_FINISH_SYNTHESIZED_RESPONSE_MS_2.
-
         '
     - name: service_worker_fetch_interception_duration
       type: RECORD
@@ -42126,9 +42148,6 @@ fields:
       description: 'Time delta (ms) between when a network request is intercepted
         in the parent process and the service worker provides a response.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SERVICE_WORKER_FETCH_INTERCEPTION_DURATION_MS_2.
-
         '
     - name: workers_sync_worker_operation
       type: RECORD
@@ -42179,9 +42198,6 @@ fields:
             mode: NULLABLE
       description: 'Tracking how long a Worker thread is blocked when a sync operation
         is executed on the main-thread.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SYNC_WORKER_OPERATION.
 
         '
     - name: devtools_cold_toolbox_open_delay
@@ -46278,9 +46294,6 @@ fields:
             mode: NULLABLE
       description: 'The sampled number of simultaneous running ServiceWorkers in a
         session, sampled once each 10 seconds (lazily on state change)
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        SERVICE_WORKER_RUNNING.
 
         '
     - name: http3_connection_close_code

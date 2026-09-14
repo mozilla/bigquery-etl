@@ -37,7 +37,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
       metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
-      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked
+      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked,
+      metrics.boolean.broken_site_report_browser_info_prefs_ad_blocker_enabled
     ) AS `boolean`,
     STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
     STRUCT(
@@ -103,7 +104,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
       metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
-      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked
+      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked,
+      metrics.boolean.broken_site_report_browser_info_prefs_ad_blocker_enabled
     ) AS `boolean`,
     STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
     STRUCT(
@@ -169,7 +171,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
       metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
-      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked
+      metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked,
+      metrics.boolean.broken_site_report_browser_info_prefs_ad_blocker_enabled
     ) AS `boolean`,
     STRUCT(metrics.quantity.broken_site_report_browser_info_system_memory) AS `quantity`,
     STRUCT(

@@ -421,7 +421,10 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_disabled_count,
       metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_enabled_count,
       metrics.counter.devtools_debugger_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
+      metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1223,7 +1226,9 @@ SELECT
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
       metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
       metrics.labeled_counter.browser_thumbnails_capture_attempted,
-      metrics.labeled_counter.browser_thumbnails_capture_result
+      metrics.labeled_counter.browser_thumbnails_capture_result,
+      metrics.labeled_counter.network_ssl_token_resumption_outcome,
+      metrics.labeled_counter.geolocation_network_provider
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2721,7 +2726,10 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_disabled_count,
       metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_enabled_count,
       metrics.counter.devtools_debugger_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
+      metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3523,7 +3531,9 @@ SELECT
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
       metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
       metrics.labeled_counter.browser_thumbnails_capture_attempted,
-      metrics.labeled_counter.browser_thumbnails_capture_result
+      metrics.labeled_counter.browser_thumbnails_capture_result,
+      metrics.labeled_counter.network_ssl_token_resumption_outcome,
+      metrics.labeled_counter.geolocation_network_provider
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5041,7 +5051,10 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_disabled_count,
       metrics.counter.devtools_debugger_stylesheets_stylesheet_pref_enabled_count,
       metrics.counter.devtools_debugger_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
+      metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5843,7 +5856,9 @@ SELECT
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
       metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
       metrics.labeled_counter.browser_thumbnails_capture_attempted,
-      metrics.labeled_counter.browser_thumbnails_capture_result
+      metrics.labeled_counter.browser_thumbnails_capture_result,
+      metrics.labeled_counter.network_ssl_token_resumption_outcome,
+      metrics.labeled_counter.geolocation_network_provider
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

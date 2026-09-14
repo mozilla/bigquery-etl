@@ -205,36 +205,68 @@ fields:
   - name: button
     type: FLOAT
     mode: NULLABLE
+    description: The button clicked in the downgrade dialog
   - name: has_sync
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether this profile is signed into sync
   - name: last_build_id
     type: STRING
     mode: NULLABLE
+    description: The previous build ID that used this profile
   - name: last_version
     type: STRING
     mode: NULLABLE
+    description: The previous version that used this profile
   - name: has_restart_pid_parameter
     type: BOOLEAN
     mode: NULLABLE
+    description: No longer used
   - name: is_background_task_mode
     type: BOOLEAN
     mode: NULLABLE
+    description: No longer used
   - name: is_background_task_mode_requested
     type: BOOLEAN
     mode: NULLABLE
+    description: No longer used
   - name: is_msix
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether this application was installed from MSIX
   - name: is_restart_pid_failure
     type: BOOLEAN
     mode: NULLABLE
+    description: No longer used
   - name: is_restart_pid_not_integer
     type: BOOLEAN
     mode: NULLABLE
+    description: No longer used
   - name: is_restart_pid_wait_timeout
     type: BOOLEAN
     mode: NULLABLE
+    description: No longer used
+  - name: days_since_lock
+    type: FLOAT
+    mode: NULLABLE
+    description: The number of days since the profile was last started
+  - name: is_different_install
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the profile was previously used by a different install
+  - name: is_new_install
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the application was installed since the profile was last
+      used
+  - name: is_new_update
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the application was updated since the profile was last used
+  - name: profile_selection_reason
+    type: STRING
+    mode: NULLABLE
+    description: How the profile manager picked a profile to use during startup
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

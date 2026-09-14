@@ -97,6 +97,8 @@ dry_run:
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
+  # dry run SA can't read the slot reservation admin project
+  - sql/moz-fx-data-shared-prod/monitoring_derived/reservations_timeline_v1/query.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
   - sql/moz-fx-data-shared-prod/app_store_v2_syndicate/apple_store_territory_report/view.sql

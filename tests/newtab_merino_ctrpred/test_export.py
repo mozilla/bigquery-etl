@@ -54,3 +54,25 @@ def test_apply_ctrpred_postprocessing_replaces_treatment_rows(monkeypatch):
     assert treatment["report_count"] == 2
     assert result[1]["click_count"] == 8
     assert result[1]["impression_count"] == 100
+
+
+def test_apply_ctrpred_postprocessing_safely_returns_original_rows(monkeypatch):
+    artifact = [{"region": merino.CTR_PRED_TREATMENT_REGION}]
+
+    def fail(*args):
+        raise RuntimeError("test failure")
+
+    monkeypatch.setattr(merino, "apply_ctrpred_postprocessing", fail)
+
+    assert merino.apply_ctrpred_postprocessing_safely(artifact, client=None) is artifact
+
+
+def test_apply_ctrpred_postprocessing_skips_empty_treatment(monkeypatch):
+    artifact = [{"region": "GB"}]
+
+    def fail(*args):
+        raise AssertionError("timeline query should not run")
+
+    monkeypatch.setattr(merino, "query_timeline_data", fail)
+
+    assert merino.apply_ctrpred_postprocessing(artifact, client=None) is artifact

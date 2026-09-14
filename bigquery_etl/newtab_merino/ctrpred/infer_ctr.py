@@ -181,20 +181,44 @@ def predict_log_odds(
     x = mu[:, 0].copy()  # [a]
     P = np.full(n_articles, config.initial_variance)  # [a]
     previous_mu = mu[:, 0]  # [a]
+    failed = np.zeros(n_articles, dtype=bool)  # [a]
 
     for t in range(N_BUCKETS):  # scalar t = 0, ..., n - 1
         x_pred = mu[:, t] + config.phi * (x - previous_mu)  # [a]
         P_pred = config.phi**2 * P + config.process_variance  # [a]
-        x, P = _laplace_poisson_update(  # [a], [a]
-            clicks[:, t], exposure[:, t], x_pred, P_pred, config.newton_steps
-        )
+        healthy = ~failed  # [a]
+        if healthy.any():
+            try:
+                x[healthy], P[healthy] = _laplace_poisson_update(
+                    clicks[healthy, t],
+                    exposure[healthy, t],
+                    x_pred[healthy],
+                    P_pred[healthy],
+                    config.newton_steps,
+                )
+            except RuntimeError:
+                # A numerical problem for one article should not discard the
+                # predictions for the rest of the batch.
+                for article in np.flatnonzero(healthy):
+                    try:
+                        x[article], P[article] = _laplace_poisson_update(
+                            clicks[article : article + 1, t],
+                            exposure[article : article + 1, t],
+                            x_pred[article : article + 1],
+                            P_pred[article : article + 1],
+                            config.newton_steps,
+                        )
+                    except RuntimeError:
+                        failed[article] = True
+                        x[article] = np.nan
+                        P[article] = np.nan
         previous_mu = mu[:, t]  # [a]
 
     # This is x^- for the next bucket: the prediction before its clicks exist.
     x_pred = mu[:, -1] + config.phi * (x - previous_mu)  # [a]
     P_pred = config.phi**2 * P + config.process_variance  # [a]
 
-    available = A[:, -1] > 0  # [a]
+    available = (A[:, -1] > 0) & ~failed  # [a]
     x_pred = np.where(available, x_pred, np.nan)  # [a]
     P_pred = np.where(available, P_pred, np.nan)  # [a]
     return LogOddsPrediction(x_pred, P_pred, available)

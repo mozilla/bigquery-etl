@@ -45,10 +45,20 @@ parser.add_argument("--quote-currency", default="USD")
 parser.add_argument("--price", default="mid", choices=["bid", "ask", "mid"])
 args = parser.parse_args()
 
+
+# The exchange_rates_url is redirecting without forwarding the query string, which yields a 400.
+# See Bug https://bugzilla.mozilla.org/show_bug.cgi?id=2071847
+# Since the code 302 is temporary, resolve the redirect first and use the URL that answers.
+exchange_rates_url = "https://fxds-hcc.oanda.com/api/data/update/"
+target = requests.get(exchange_rates_url)
+if target.url != exchange_rates_url:
+    exchange_rates_url = target.url
+    print(f"API redirected to use {exchange_rates_url}")
+
 quotes = set()
 for base_currency in args.base_currencies:
     response = requests.get(
-        "https://fxds-hcc.oanda.com/api/data/update/",
+        exchange_rates_url,
         params={
             "source": "OANDA",
             "adjustment": "0",

@@ -21,6 +21,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 CTR_PRED_TREATMENT_REGION = "GB-ctrpred_engb-treatment"
+CTR_PRED_SOURCE_TABLE = "newtab_merino_extract_v3"
 
 
 @click.command()
@@ -104,7 +105,8 @@ def export_newtab_merino_table_to_gcs(
         # Convert the content to a JSON array
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
 
-        json_array = apply_ctrpred_postprocessing(json_array, client)
+        if source_table == CTR_PRED_SOURCE_TABLE:
+            json_array = apply_ctrpred_postprocessing(json_array, client)
 
         json_data = json.dumps(json_array, indent=1)
 

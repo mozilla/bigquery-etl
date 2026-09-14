@@ -76,7 +76,7 @@ def test_apply_ctrpred_postprocessing_safely_returns_original_rows(monkeypatch):
 
 
 def test_apply_ctrpred_postprocessing_skips_empty_treatment(monkeypatch):
-    artifact = [{"region": "GB"}]
+    artifact = [{"click_count": 1}]
 
     def fail(*args):
         raise AssertionError("timeline query should not run")

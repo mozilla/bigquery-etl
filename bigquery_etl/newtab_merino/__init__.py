@@ -157,7 +157,7 @@ def floor_to_ten_minutes(timestamp):
 def apply_ctrpred_postprocessing(json_array, client, end_time):
     """Replace CTR prediction treatment rows in a Merino artifact."""
     replacement_rows = [
-        row for row in json_array if row["region"] == CTR_PRED_TREATMENT_REGION
+        row for row in json_array if row.get("region") == CTR_PRED_TREATMENT_REGION
     ]
     if not replacement_rows:
         return json_array

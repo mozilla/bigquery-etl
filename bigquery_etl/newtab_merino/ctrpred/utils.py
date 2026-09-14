@@ -36,7 +36,7 @@ def replace_ctrpred_treatment_rows(json_array, replacement_keys, pseudo_counts):
     }
 
     for row in json_array:
-        key = (row["corpus_item_id"], row["region"])
+        key = (row.get("corpus_item_id"), row.get("region"))
         if key not in replacements:
             continue
 

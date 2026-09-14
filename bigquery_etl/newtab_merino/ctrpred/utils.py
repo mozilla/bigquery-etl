@@ -44,7 +44,7 @@ def replace_ctrpred_treatment_rows(json_array, replacement_keys, pseudo_counts):
         if not np.isfinite(clicks) or not np.isfinite(impressions):
             continue
 
-        row["click_count"] = float(clicks)
-        row["impression_count"] = float(impressions)
+        row["click_count"] = int(round(clicks))
+        row["impression_count"] = int(round(impressions))
 
     return json_array

@@ -7,7 +7,7 @@
     from 2026-09-10.
   watchers:
   - phlee@mozilla.com
-  status: Complete
+  status: Initiate
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

@@ -106,7 +106,7 @@ def export_newtab_merino_table_to_gcs(
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
 
         if source_table == CTR_PRED_SOURCE_TABLE:
-            json_array = apply_ctrpred_postprocessing(json_array, client)
+            json_array = apply_ctrpred_postprocessing_safely(json_array, client)
 
         json_data = json.dumps(json_array, indent=1)
 
@@ -149,6 +149,9 @@ def apply_ctrpred_postprocessing(json_array, client):
     replacement_rows = [
         row for row in json_array if row["region"] == CTR_PRED_TREATMENT_REGION
     ]
+    if not replacement_rows:
+        return json_array
+
     replacement_item_ids = [row["corpus_item_id"] for row in replacement_rows]
 
     timeline_df = query_timeline_data(
@@ -176,6 +179,15 @@ def apply_ctrpred_postprocessing(json_array, client):
         GB_CTRPRED_CONFIG.pseudo_counts,
     )
     return replace_ctrpred_treatment_rows(json_array, replacement_keys, pseudo_counts)
+
+
+def apply_ctrpred_postprocessing_safely(json_array, client):
+    """Apply CTR prediction, falling back to the original artifact on failure."""
+    try:
+        return apply_ctrpred_postprocessing(json_array, client)
+    except Exception as err:
+        log.exception("CTR prediction postprocessing failed: %s", err)
+        return json_array
 
 
 def delete_old_files(bucket, prefix, days_old):

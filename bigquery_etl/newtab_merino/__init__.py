@@ -3,7 +3,6 @@
 import json
 import logging
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 import rich_click as click
 from google.cloud import storage  # type: ignore
@@ -53,17 +52,6 @@ CTR_PRED_TREATMENT_REGION = "GB-ctrpred_engb-treatment"
     type=int,
     help="Number of days after which files in GCS should be deleted.",
 )
-@click.option(
-    "--local-output-path",
-    default=None,
-    type=click.Path(path_type=Path),
-    help="Write a local JSON artifact instead of using GCS.",
-)
-@click.option(
-    "--billing-project",
-    default=None,
-    help="BigQuery job project, useful for local inspection runs.",
-)
 def export_newtab_merino_table_to_gcs(
     source_project: str,
     source_dataset: str,
@@ -71,24 +59,13 @@ def export_newtab_merino_table_to_gcs(
     destination_bucket: tuple,
     destination_prefix: str,
     deletion_days_old: int,
-    local_output_path: Path | None,
-    billing_project: str | None,
 ):
     """Use bigquery client to export data from BigQuery to GCS."""
-    client = bigquery.Client(billing_project or source_project)
+    client = bigquery.Client(source_project)
     error_counter = 0
     threshold = 1
 
     try:
-        if local_output_path is not None:
-            # Local inspection mode avoids creating temporary or final objects in GCS.
-            source = f"{source_project}.{source_dataset}.{source_table}"
-            json_array = [dict(row) for row in client.list_rows(source)]
-            json_array = apply_ctrpred_postprocessing(json_array, client)
-            local_output_path.write_text(json.dumps(json_array, indent=1))
-            log.info(f"Local artifact written to {local_output_path}")
-            return
-
         # Generate the current timestamp
         timestamp = datetime.utcnow().strftime("%Y%m%d%H%M")
 
@@ -196,9 +173,7 @@ def apply_ctrpred_postprocessing(json_array, client):
         log_odds.variance,
         GB_CTRPRED_CONFIG.pseudo_counts,
     )
-    return replace_ctrpred_treatment_rows(
-        json_array, replacement_keys, pseudo_counts
-    )
+    return replace_ctrpred_treatment_rows(json_array, replacement_keys, pseudo_counts)
 
 
 def delete_old_files(bucket, prefix, days_old):

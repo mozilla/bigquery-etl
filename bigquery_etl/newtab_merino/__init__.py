@@ -92,6 +92,15 @@ def export_newtab_merino_table_to_gcs(
 
         # Convert the content to a JSON array
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
+
+        # TODO: Add the ctrpred treatment post-processing here. The transformation
+        # should happen after reading the extracted rows and before serializing the
+        # final JSON sent to Merino.
+        #
+        # timeline_df = query_timeline_data(client)
+        # transformed_df = ctr_pred_transform(timeline_df)
+        # json_array = replace_ctrpred_treatment_rows(json_array, transformed_df)
+
         json_data = json.dumps(json_array, indent=1)
 
         # Write to all destination buckets

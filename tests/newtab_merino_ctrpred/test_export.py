@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 import bigquery_etl.newtab_merino as merino
+from bigquery_etl.newtab_merino.ctrpred.config import GB_CTRPRED_CONFIG
 
 
 def test_apply_ctrpred_postprocessing_replaces_treatment_rows(monkeypatch):
@@ -38,9 +39,9 @@ def test_apply_ctrpred_postprocessing_replaces_treatment_rows(monkeypatch):
         assert corpus_item_ids == ["item-a"]
         assert end_time == pd.Timestamp("2026-09-14T20:00:00Z").to_pydatetime()
         assert (region, experiment_slug, experiment_branch) == (
-            "GB",
-            "ctrpred_engb",
-            "treatment",
+            GB_CTRPRED_CONFIG.region,
+            GB_CTRPRED_CONFIG.experiment_slug,
+            GB_CTRPRED_CONFIG.experiment_branch,
         )
         return timeline
 

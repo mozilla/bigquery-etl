@@ -10,11 +10,24 @@ from bigquery_etl.newtab_merino.ctrpred.pseudo_counts import PseudoCountConfig
 
 @dataclass(frozen=True)
 class CtrPredConfig:
+    """Model and pseudo count settings for a CTR prediction experiment."""
+
+    region: str
+    experiment_slug: str
+    experiment_branch: str
     actr: ActrSsmConfig
     pseudo_counts: PseudoCountConfig
 
+    @property
+    def artifact_region(self):
+        """Return the region key used in the engagement artifact."""
+        return f"{self.region}-{self.experiment_slug}-{self.experiment_branch}"
+
 
 GB_CTRPRED_CONFIG = CtrPredConfig(
+    region="GB",
+    experiment_slug="ctrpred_engb",
+    experiment_branch="treatment",
     actr=ActrSsmConfig(
         global_ctr=0.00549142617968888,
         hourly_ctr=np.array(

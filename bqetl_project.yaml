@@ -759,9 +759,13 @@ sensitivity:
   # which flags queries that read narrowly-gated data and write it somewhere more
   # broadly readable.
 
-  # Roles that grant the ability to read row-level data.
+  # Roles that grant the ability to read row-level data. dataEditor/dataOwner are
+  # rare in workgroup_access here but also confer read, so count them as readers
+  # (omitting them would understate a source's readers -> false positives).
   read_roles:
   - roles/bigquery.dataViewer
+  - roles/bigquery.dataEditor
+  - roles/bigquery.dataOwner
   broad_readers:
   - workgroup:mozilla-confidential/data-viewers
   safe_projects:

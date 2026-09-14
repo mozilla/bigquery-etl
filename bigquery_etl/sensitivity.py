@@ -37,8 +37,18 @@ def _config(key: str, default):
     return value if value is not None else default
 
 
-# roles that grant the ability to read row-level data
-READ_ROLES = set(_config("read_roles", ["roles/bigquery.dataViewer"]))
+# roles that grant the ability to read row-level data (dataEditor/dataOwner also
+# confer read, so they count as readers even though they're rare here)
+READ_ROLES = set(
+    _config(
+        "read_roles",
+        [
+            "roles/bigquery.dataViewer",
+            "roles/bigquery.dataEditor",
+            "roles/bigquery.dataOwner",
+        ],
+    )
+)
 # the org-wide "everyone with confidential access" reader; anything scoped only
 # to this (or broader) is not considered sensitive
 BROAD_READERS = set(

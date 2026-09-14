@@ -1,4 +1,8 @@
-"""Configuration for the GB CTR prediction export."""
+"""Configuration for the GB CTR prediction export.
+
+The model constants are pinned here for the experiment. If CTR prediction is
+rolled out, replace these code constants with a versioned or queried source.
+"""
 
 from dataclasses import dataclass
 

@@ -39,6 +39,7 @@ class TestConfig:
             dry_run:
               function: override
               skip:
+              - sql/moz-fx-data-shared-prod/test_derived/another_query_v1/query.sql
               - sql/moz-fx-data-shared-prod/test_derived/yet_another_query_v1/query.sql
 
             another_section:

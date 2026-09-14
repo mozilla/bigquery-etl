@@ -1,0 +1,11 @@
+friendly_name: Newtab Is Noise Widget Event
+description: |-
+  Identifies crossword widget events that were mistakenly emitted as genuine user
+  actions - a `widgets_user_event` on every keystroke and cursor move, plus echoes of
+  context menu actions.
+
+  Returns TRUE for events that should be excluded from interaction counts. The action
+  values are enumerated as a denylist so that newly introduced action values default to
+  being counted. Never returns NULL, so it is safe to use in a `WHERE NOT ...` filter.
+
+  See DENG-11450 for how the criteria were established and DENG-11596 for the ETL fix.

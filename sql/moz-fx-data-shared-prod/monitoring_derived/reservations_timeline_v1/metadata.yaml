@@ -14,6 +14,7 @@ owners:
 labels:
   incremental: true
   owner1: bewu
+  schedule: hourly
 scheduling:
   dag_name: bqetl_monitoring_hourly
   # Rows show up in the source view about 90 seconds after the minute they

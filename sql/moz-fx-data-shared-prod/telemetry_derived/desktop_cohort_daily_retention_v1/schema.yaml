@@ -186,10 +186,6 @@ fields:
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: num_clients_active_on_day
 - mode: NULLABLE
-  name: num_clients_dau_on_day
-  type: INTEGER
-  description: Count of cohort clients who qualified as DAU (visited at least 1 URI and had an interaction) on the submission_date.
-- mode: NULLABLE
   name: num_clients_active_atleastonce_in_last_7_days
   type: INTEGER
   description: Count of cohort clients who were active at least once during the 7 days ending on submission_date.
@@ -215,3 +211,7 @@ fields:
   type: INTEGER
   description: Count of cohort clients who qualified as DAU at least once during the 27-day window after first_seen_date and are measured on day 27,
     qualifying as DAU-based repeat first-month users.
+- mode: NULLABLE
+  name: num_clients_dau_on_day
+  type: INTEGER
+  description: Count of cohort clients who qualified as DAU (visited at least 1 URI and had an interaction) on the submission_date.

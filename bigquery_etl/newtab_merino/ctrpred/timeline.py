@@ -1,5 +1,7 @@
 """Read the treatment timeline used by the CTR state-space model."""
 
+from google.cloud import bigquery
+
 
 TIMELINE_QUERY = """
 WITH
@@ -8,12 +10,10 @@ WITH
       TIMESTAMP_SECONDS(DIV(UNIX_SECONDS(CURRENT_TIMESTAMP()), 600) * 600) AS end_time
   ),
   treatment_items AS (
-    SELECT DISTINCT
+    SELECT
       corpus_item_id
     FROM
-      `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_extract_v3`
-    WHERE
-      region = 'GB-ctrpred_engb-treatment'
+      UNNEST(@corpus_item_ids) AS corpus_item_id
   ),
   bucket_times AS (
     SELECT
@@ -58,9 +58,9 @@ WITH
         metrics.string.newtab_content_surface_id,
         NULL,
         metrics.string.newtab_content_country
-      ) = 'GB'
-      AND metrics.string.newtab_content_experiment_name = 'ctrpred_engb'
-      AND metrics.string.newtab_content_experiment_branch = 'treatment'
+      ) = @region
+      AND metrics.string.newtab_content_experiment_name = @experiment_slug
+      AND metrics.string.newtab_content_experiment_branch = @experiment_branch
   ),
   deduplicated_pings AS (
     SELECT
@@ -128,13 +128,13 @@ WITH
     LEFT JOIN
       propensity_weights wt_country_exact
     ON
-      wt_country_exact.country = 'GB'
+      wt_country_exact.country = @region
       AND SAFE_CAST(wt_country_exact.position AS INT64) = e.position
       AND wt_country_exact.tile_format = e.tile_format
     LEFT JOIN
       propensity_weights wt_country_any
     ON
-      wt_country_any.country = 'GB'
+      wt_country_any.country = @region
       AND SAFE_CAST(wt_country_any.position AS INT64) = e.position
       AND wt_country_any.tile_format = 'any'
     LEFT JOIN
@@ -174,6 +174,20 @@ ORDER BY
 """
 
 
-def query_timeline_data(client):
+def query_timeline_data(
+    client, corpus_item_ids, region, experiment_slug, experiment_branch
+):
     """Return treatment clicks and adjusted impressions for 144 buckets."""
-    return client.query(TIMELINE_QUERY).to_dataframe()
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ArrayQueryParameter("corpus_item_ids", "STRING", corpus_item_ids),
+            bigquery.ScalarQueryParameter("region", "STRING", region),
+            bigquery.ScalarQueryParameter(
+                "experiment_slug", "STRING", experiment_slug
+            ),
+            bigquery.ScalarQueryParameter(
+                "experiment_branch", "STRING", experiment_branch
+            ),
+        ]
+    )
+    return client.query(TIMELINE_QUERY, job_config=job_config).to_dataframe()

@@ -33,9 +33,10 @@ def test_apply_ctrpred_postprocessing_replaces_treatment_rows(monkeypatch):
     )
 
     def fake_query_timeline_data(
-        client, corpus_item_ids, region, experiment_slug, experiment_branch
+        client, corpus_item_ids, end_time, region, experiment_slug, experiment_branch
     ):
         assert corpus_item_ids == ["item-a"]
+        assert end_time == pd.Timestamp("2026-09-14T20:00:00Z").to_pydatetime()
         assert (region, experiment_slug, experiment_branch) == (
             "GB",
             "ctrpred_engb",
@@ -45,7 +46,10 @@ def test_apply_ctrpred_postprocessing_replaces_treatment_rows(monkeypatch):
 
     monkeypatch.setattr(merino, "query_timeline_data", fake_query_timeline_data)
 
-    result = merino.apply_ctrpred_postprocessing(artifact, client=None)
+    end_time = pd.Timestamp("2026-09-14T20:00:00Z").to_pydatetime()
+    result = merino.apply_ctrpred_postprocessing(
+        artifact, client=None, end_time=end_time
+    )
 
     treatment = result[0]
     assert np.isfinite(treatment["click_count"])
@@ -64,7 +68,10 @@ def test_apply_ctrpred_postprocessing_safely_returns_original_rows(monkeypatch):
 
     monkeypatch.setattr(merino, "apply_ctrpred_postprocessing", fail)
 
-    assert merino.apply_ctrpred_postprocessing_safely(artifact, client=None) is artifact
+    assert (
+        merino.apply_ctrpred_postprocessing_safely(artifact, client=None, end_time=None)
+        is artifact
+    )
 
 
 def test_apply_ctrpred_postprocessing_skips_empty_treatment(monkeypatch):
@@ -75,4 +82,7 @@ def test_apply_ctrpred_postprocessing_skips_empty_treatment(monkeypatch):
 
     monkeypatch.setattr(merino, "query_timeline_data", fail)
 
-    assert merino.apply_ctrpred_postprocessing(artifact, client=None) is artifact
+    assert (
+        merino.apply_ctrpred_postprocessing(artifact, client=None, end_time=None)
+        is artifact
+    )

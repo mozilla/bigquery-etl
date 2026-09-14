@@ -106,7 +106,10 @@ def export_newtab_merino_table_to_gcs(
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
 
         if source_table == CTR_PRED_SOURCE_TABLE:
-            json_array = apply_ctrpred_postprocessing_safely(json_array, client)
+            end_time = floor_to_ten_minutes(datetime.now(timezone.utc))
+            json_array = apply_ctrpred_postprocessing_safely(
+                json_array, client, end_time
+            )
 
         json_data = json.dumps(json_array, indent=1)
 
@@ -144,7 +147,14 @@ def export_newtab_merino_table_to_gcs(
             )
 
 
-def apply_ctrpred_postprocessing(json_array, client):
+def floor_to_ten_minutes(timestamp):
+    """Floor a timestamp to the start of its ten-minute interval."""
+    return timestamp.replace(
+        minute=timestamp.minute // 10 * 10, second=0, microsecond=0
+    )
+
+
+def apply_ctrpred_postprocessing(json_array, client, end_time):
     """Replace CTR prediction treatment rows in a Merino artifact."""
     replacement_rows = [
         row for row in json_array if row["region"] == CTR_PRED_TREATMENT_REGION
@@ -157,6 +167,7 @@ def apply_ctrpred_postprocessing(json_array, client):
     timeline_df = query_timeline_data(
         client,
         replacement_item_ids,
+        end_time,
         region="GB",
         experiment_slug="ctrpred_engb",
         experiment_branch="treatment",
@@ -166,8 +177,7 @@ def apply_ctrpred_postprocessing(json_array, client):
         (corpus_item_id, CTR_PRED_TREATMENT_REGION)
         for corpus_item_id in replacement_item_ids
     ]
-    now = datetime.now(timezone.utc)
-    forecast_slot = now.hour * 6 + now.minute // 10
+    forecast_slot = end_time.hour * 6 + end_time.minute // 10
     log_odds = predict_log_odds(
         replacement_timelines,
         forecast_slot,
@@ -181,10 +191,10 @@ def apply_ctrpred_postprocessing(json_array, client):
     return replace_ctrpred_treatment_rows(json_array, replacement_keys, pseudo_counts)
 
 
-def apply_ctrpred_postprocessing_safely(json_array, client):
+def apply_ctrpred_postprocessing_safely(json_array, client, end_time):
     """Apply CTR prediction, falling back to the original artifact on failure."""
     try:
-        return apply_ctrpred_postprocessing(json_array, client)
+        return apply_ctrpred_postprocessing(json_array, client, end_time)
     except Exception as err:
         log.exception("CTR prediction postprocessing failed: %s", err)
         return json_array

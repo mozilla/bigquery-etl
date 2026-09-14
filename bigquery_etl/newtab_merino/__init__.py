@@ -8,8 +8,19 @@ import rich_click as click
 from google.cloud import storage  # type: ignore
 from google.cloud import bigquery
 
+from bigquery_etl.newtab_merino.ctrpred.config import GB_CTRPRED_CONFIG
+from bigquery_etl.newtab_merino.ctrpred.infer_ctr import predict_log_odds
+from bigquery_etl.newtab_merino.ctrpred.pseudo_counts import log_odds_to_pseudo_counts
+from bigquery_etl.newtab_merino.ctrpred.timeline import query_timeline_data
+from bigquery_etl.newtab_merino.ctrpred.utils import (
+    build_model_input,
+    replace_ctrpred_treatment_rows,
+)
+
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+CTR_PRED_TREATMENT_REGION = "GB-ctrpred_engb-treatment"
 
 
 @click.command()
@@ -93,13 +104,38 @@ def export_newtab_merino_table_to_gcs(
         # Convert the content to a JSON array
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
 
-        # TODO: Add the ctrpred treatment post-processing here. The transformation
-        # should happen after reading the extracted rows and before serializing the
-        # final JSON sent to Merino.
-        #
-        # timeline_df = query_timeline_data(client)
-        # transformed_df = ctr_pred_transform(timeline_df)
-        # json_array = replace_ctrpred_treatment_rows(json_array, transformed_df)
+        replacement_rows = [
+            row for row in json_array if row["region"] == CTR_PRED_TREATMENT_REGION
+        ]
+        replacement_item_ids = [row["corpus_item_id"] for row in replacement_rows]
+
+        timeline_df = query_timeline_data(
+            client,
+            replacement_item_ids,
+            region="GB",
+            experiment_slug="ctrpred_engb",
+            experiment_branch="treatment",
+        )
+        replacement_item_ids, replacement_timelines = build_model_input(timeline_df)
+        replacement_keys = [
+            (corpus_item_id, CTR_PRED_TREATMENT_REGION)
+            for corpus_item_id in replacement_item_ids
+        ]
+        now = datetime.now(timezone.utc)
+        forecast_slot = now.hour * 6 + now.minute // 10
+        log_odds = predict_log_odds(
+            replacement_timelines,
+            forecast_slot,
+            GB_CTRPRED_CONFIG.actr,
+        )
+        pseudo_counts = log_odds_to_pseudo_counts(
+            log_odds.mean,
+            log_odds.variance,
+            GB_CTRPRED_CONFIG.pseudo_counts,
+        )
+        json_array = replace_ctrpred_treatment_rows(
+            json_array, replacement_keys, pseudo_counts
+        )
 
         json_data = json.dumps(json_array, indent=1)
 

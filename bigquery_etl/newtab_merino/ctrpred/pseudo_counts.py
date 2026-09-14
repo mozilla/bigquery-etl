@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 import numpy as np
 
-
 P_EPS = 1e-9
 
 # Dimension key:
@@ -22,7 +21,6 @@ class PseudoCountConfig:
 class PseudoCounts:
     clicks: np.ndarray  # [a]
     impressions: np.ndarray  # [a]
-    available: np.ndarray  # [a]
 
 
 def _sigmoid(x: np.ndarray) -> np.ndarray:
@@ -37,15 +35,13 @@ def _sigmoid(x: np.ndarray) -> np.ndarray:
 def log_odds_to_pseudo_counts(
     mean: np.ndarray,
     variance: np.ndarray,
-    available: np.ndarray,
     config: PseudoCountConfig = PseudoCountConfig(),
 ) -> PseudoCounts:
     """Moment-match log-odds forecasts to Beta clicks and impressions."""
 
     mean = np.asarray(mean, dtype=float)  # [a]
     variance = np.asarray(variance, dtype=float)  # [a]
-    available = np.asarray(available, dtype=bool)  # [a]
-    assert mean.ndim == 1 and mean.shape == variance.shape == available.shape
+    assert mean.ndim == 1 and mean.shape == variance.shape
     assert config.min_strength > 0
     assert config.max_strength >= config.min_strength
     assert config.strength_multiplier > 0
@@ -53,7 +49,7 @@ def log_odds_to_pseudo_counts(
     # The latent state is Gaussian in log-odds.  The sigmoid maps its mean to
     # CTR, and the delta method maps its variance into CTR space.
     p = np.clip(_sigmoid(mean), P_EPS, 1.0 - P_EPS)  # [a]
-    valid = available & np.isfinite(variance) & (variance > 0)  # [a]
+    valid = np.isfinite(mean) & np.isfinite(variance) & (variance > 0)  # [a]
     var_p = (p * (1.0 - p)) ** 2 * variance  # [a]
 
     # A Beta distribution with mean p and total concentration k has variance
@@ -70,4 +66,4 @@ def log_odds_to_pseudo_counts(
 
     pseudo_impressions = np.where(valid, k, np.nan)  # [a]
     pseudo_clicks = np.where(valid, p * k, np.nan)  # [a]
-    return PseudoCounts(pseudo_clicks, pseudo_impressions, valid)
+    return PseudoCounts(pseudo_clicks, pseudo_impressions)

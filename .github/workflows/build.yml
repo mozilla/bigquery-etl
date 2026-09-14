@@ -424,8 +424,7 @@ jobs:
           elif [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
             echo "::warning::sensitivity check errored (exit $code); skipping"
           fi
-          # advisory only — never block the merge
-          exit 0
+          exit $code
 
   test-bqetl:
     name: Test bqetl

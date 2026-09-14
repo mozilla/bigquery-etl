@@ -1,0 +1,42 @@
+friendly_name: Reservations Timeline
+description: |-
+  Mirror of `moz-fx-bigquery-reserv-global.region-us.INFORMATION_SCHEMA.RESERVATIONS_TIMELINE`
+  from the admin project, for moz-confidential viewers.
+  Columns, order, and nested structs match the source view, so the source
+  documentation describes this table as-is.
+
+  This table cannot be backfilled using bqetl due to the submission_date configuration, so
+  write historical data into it directly if needed.
+
+  See for more details: https://docs.cloud.google.com/bigquery/docs/information-schema-reservation-timeline
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: bewu
+  schedule: hourly
+  dag: bqetl_monitoring_hourly
+scheduling:
+  dag_name: bqetl_monitoring_hourly
+  date_partition_parameter: null
+  destination_table: reservations_timeline_v1${{ (logical_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+  - submission_date:DATE:{{ (logical_date - macros.timedelta(hours=1)).strftime("%Y-%m-%d")
+    }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: period_start
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - reservation_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-bigquery-reserv-global.region-us.INFORMATION_SCHEMA.RESERVATIONS_TIMELINE

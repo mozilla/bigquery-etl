@@ -27,6 +27,21 @@ WITH
     CROSS JOIN
       UNNEST(GENERATE_ARRAY(0, 143)) AS bucket
   ),
+  propensity_weights AS (
+    SELECT
+      country,
+      position,
+      tile_format,
+      weight
+    FROM
+      `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v2`
+    WHERE
+      layout = 'SECTION_GRID'
+      AND section_position IS NULL
+      AND snapshot_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 14 DAY)
+    QUALIFY
+      snapshot_date = MAX(snapshot_date) OVER ()
+  ),
   pings AS (
     SELECT
       submission_timestamp,
@@ -72,6 +87,11 @@ WITH
         ),
         10
       ) AS bucket,
+      SAFE_CAST(mozfun.map.get_key(event.extra, 'position') AS INT64) AS position,
+      mozfun.map.get_key(event.extra, 'format') AS tile_format,
+      SAFE_CAST(
+        mozfun.map.get_key(event.extra, 'section_position') AS INT64
+      ) AS section_position,
       event.name AS event_name
     FROM
       deduplicated_pings dp
@@ -86,18 +106,62 @@ WITH
     WHERE
       event.category IN ('pocket', 'newtab_content')
       AND event.name IN ('impression', 'click')
+  ),
+  weighted_events AS (
+    SELECT
+      e.corpus_item_id,
+      e.bucket,
+      e.event_name,
+      IF(
+        e.section_position IS NULL,
+        1.0,
+        1.0 / COALESCE(
+          wt_country_exact.weight,
+          wt_global_exact.weight,
+          wt_country_any.weight,
+          wt_global_any.weight,
+          1.0
+        )
+      ) AS impression_weight
+    FROM
+      events e
+    LEFT JOIN
+      propensity_weights wt_country_exact
+    ON
+      wt_country_exact.country = 'GB'
+      AND SAFE_CAST(wt_country_exact.position AS INT64) = e.position
+      AND wt_country_exact.tile_format = e.tile_format
+    LEFT JOIN
+      propensity_weights wt_country_any
+    ON
+      wt_country_any.country = 'GB'
+      AND SAFE_CAST(wt_country_any.position AS INT64) = e.position
+      AND wt_country_any.tile_format = 'any'
+    LEFT JOIN
+      propensity_weights wt_global_exact
+    ON
+      wt_global_exact.country IS NULL
+      AND SAFE_CAST(wt_global_exact.position AS INT64) = e.position
+      AND wt_global_exact.tile_format = e.tile_format
+    LEFT JOIN
+      propensity_weights wt_global_any
+    ON
+      wt_global_any.country IS NULL
+      AND SAFE_CAST(wt_global_any.position AS INT64) = e.position
+      AND wt_global_any.tile_format = 'any'
   )
 SELECT
   ti.corpus_item_id,
   bt.bucket,
   COUNTIF(e.event_name = 'click') AS clicks,
-  COUNTIF(e.event_name = 'impression') AS impressions
+  SUM(IF(e.event_name = 'impression', e.impression_weight, 0.0))
+    AS adjusted_impressions
 FROM
   treatment_items ti
 CROSS JOIN
   bucket_times bt
 LEFT JOIN
-  events e
+  weighted_events e
 ON
   e.corpus_item_id = ti.corpus_item_id
   AND e.bucket = bt.bucket
@@ -111,5 +175,5 @@ ORDER BY
 
 
 def query_timeline_data(client):
-    """Return treatment clicks and impressions for the last 144 buckets."""
+    """Return treatment clicks and adjusted impressions for 144 buckets."""
     return client.query(TIMELINE_QUERY).to_dataframe()

@@ -4,10 +4,6 @@ from google.cloud import bigquery
 
 TIMELINE_QUERY = """
 WITH
-  bounds AS (
-    SELECT
-      TIMESTAMP_SECONDS(DIV(UNIX_SECONDS(CURRENT_TIMESTAMP()), 600) * 600) AS end_time
-  ),
   treatment_items AS (
     SELECT
       corpus_item_id
@@ -18,12 +14,10 @@ WITH
     SELECT
       bucket,
       TIMESTAMP_ADD(
-        TIMESTAMP_SUB(bounds.end_time, INTERVAL 24 HOUR),
+        TIMESTAMP_SUB(@end_time, INTERVAL 24 HOUR),
         INTERVAL (bucket * 10) MINUTE
       ) AS bucket_time
     FROM
-      bounds
-    CROSS JOIN
       UNNEST(GENERATE_ARRAY(0, 143)) AS bucket
   ),
   propensity_weights AS (
@@ -48,11 +42,9 @@ WITH
       events
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
-    CROSS JOIN
-      bounds
     WHERE
-      submission_timestamp >= TIMESTAMP_SUB(bounds.end_time, INTERVAL 24 HOUR)
-      AND submission_timestamp < bounds.end_time
+      submission_timestamp >= TIMESTAMP_SUB(@end_time, INTERVAL 24 HOUR)
+      AND submission_timestamp < @end_time
       AND mozfun.newtab.surface_id_country(
         metrics.string.newtab_content_surface_id,
         NULL,
@@ -79,10 +71,10 @@ WITH
     SELECT
       mozfun.map.get_key(event.extra, 'corpus_item_id') AS corpus_item_id,
       DIV(
-        TIMESTAMP_DIFF(
-          TIMESTAMP_SECONDS(DIV(UNIX_SECONDS(dp.submission_timestamp), 600) * 600),
-          TIMESTAMP_SUB(b.end_time, INTERVAL 24 HOUR),
-          MINUTE
+          TIMESTAMP_DIFF(
+            TIMESTAMP_SECONDS(DIV(UNIX_SECONDS(dp.submission_timestamp), 600) * 600),
+            TIMESTAMP_SUB(@end_time, INTERVAL 24 HOUR),
+            MINUTE
         ),
         10
       ) AS bucket,
@@ -94,8 +86,6 @@ WITH
       event.name AS event_name
     FROM
       deduplicated_pings dp
-    CROSS JOIN
-      bounds b
     CROSS JOIN
       UNNEST(dp.events) AS event
     INNER JOIN
@@ -174,12 +164,13 @@ ORDER BY
 
 
 def query_timeline_data(
-    client, corpus_item_ids, region, experiment_slug, experiment_branch
+    client, corpus_item_ids, end_time, region, experiment_slug, experiment_branch
 ):
     """Return treatment clicks and adjusted impressions for 144 buckets."""
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ArrayQueryParameter("corpus_item_ids", "STRING", corpus_item_ids),
+            bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", end_time),
             bigquery.ScalarQueryParameter("region", "STRING", region),
             bigquery.ScalarQueryParameter("experiment_slug", "STRING", experiment_slug),
             bigquery.ScalarQueryParameter(

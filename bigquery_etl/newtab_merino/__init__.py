@@ -3,6 +3,7 @@
 import json
 import logging
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import rich_click as click
 from google.cloud import storage  # type: ignore
@@ -52,6 +53,17 @@ CTR_PRED_TREATMENT_REGION = "GB-ctrpred_engb-treatment"
     type=int,
     help="Number of days after which files in GCS should be deleted.",
 )
+@click.option(
+    "--local-output-path",
+    default=None,
+    type=click.Path(path_type=Path),
+    help="Write a local JSON artifact instead of using GCS.",
+)
+@click.option(
+    "--billing-project",
+    default=None,
+    help="BigQuery job project, useful for local inspection runs.",
+)
 def export_newtab_merino_table_to_gcs(
     source_project: str,
     source_dataset: str,
@@ -59,13 +71,24 @@ def export_newtab_merino_table_to_gcs(
     destination_bucket: tuple,
     destination_prefix: str,
     deletion_days_old: int,
+    local_output_path: Path | None,
+    billing_project: str | None,
 ):
     """Use bigquery client to export data from BigQuery to GCS."""
-    client = bigquery.Client(source_project)
+    client = bigquery.Client(billing_project or source_project)
     error_counter = 0
     threshold = 1
 
     try:
+        if local_output_path is not None:
+            # Local inspection mode avoids creating temporary or final objects in GCS.
+            source = f"{source_project}.{source_dataset}.{source_table}"
+            json_array = [dict(row) for row in client.list_rows(source)]
+            json_array = apply_ctrpred_postprocessing(json_array, client)
+            local_output_path.write_text(json.dumps(json_array, indent=1))
+            log.info(f"Local artifact written to {local_output_path}")
+            return
+
         # Generate the current timestamp
         timestamp = datetime.utcnow().strftime("%Y%m%d%H%M")
 
@@ -104,38 +127,7 @@ def export_newtab_merino_table_to_gcs(
         # Convert the content to a JSON array
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
 
-        replacement_rows = [
-            row for row in json_array if row["region"] == CTR_PRED_TREATMENT_REGION
-        ]
-        replacement_item_ids = [row["corpus_item_id"] for row in replacement_rows]
-
-        timeline_df = query_timeline_data(
-            client,
-            replacement_item_ids,
-            region="GB",
-            experiment_slug="ctrpred_engb",
-            experiment_branch="treatment",
-        )
-        replacement_item_ids, replacement_timelines = build_model_input(timeline_df)
-        replacement_keys = [
-            (corpus_item_id, CTR_PRED_TREATMENT_REGION)
-            for corpus_item_id in replacement_item_ids
-        ]
-        now = datetime.now(timezone.utc)
-        forecast_slot = now.hour * 6 + now.minute // 10
-        log_odds = predict_log_odds(
-            replacement_timelines,
-            forecast_slot,
-            GB_CTRPRED_CONFIG.actr,
-        )
-        pseudo_counts = log_odds_to_pseudo_counts(
-            log_odds.mean,
-            log_odds.variance,
-            GB_CTRPRED_CONFIG.pseudo_counts,
-        )
-        json_array = replace_ctrpred_treatment_rows(
-            json_array, replacement_keys, pseudo_counts
-        )
+        json_array = apply_ctrpred_postprocessing(json_array, client)
 
         json_data = json.dumps(json_array, indent=1)
 
@@ -171,6 +163,42 @@ def export_newtab_merino_table_to_gcs(
             raise Exception(
                 f"More than the accepted threshold of {threshold} operations failed."
             )
+
+
+def apply_ctrpred_postprocessing(json_array, client):
+    """Replace CTR prediction treatment rows in a Merino artifact."""
+    replacement_rows = [
+        row for row in json_array if row["region"] == CTR_PRED_TREATMENT_REGION
+    ]
+    replacement_item_ids = [row["corpus_item_id"] for row in replacement_rows]
+
+    timeline_df = query_timeline_data(
+        client,
+        replacement_item_ids,
+        region="GB",
+        experiment_slug="ctrpred_engb",
+        experiment_branch="treatment",
+    )
+    replacement_item_ids, replacement_timelines = build_model_input(timeline_df)
+    replacement_keys = [
+        (corpus_item_id, CTR_PRED_TREATMENT_REGION)
+        for corpus_item_id in replacement_item_ids
+    ]
+    now = datetime.now(timezone.utc)
+    forecast_slot = now.hour * 6 + now.minute // 10
+    log_odds = predict_log_odds(
+        replacement_timelines,
+        forecast_slot,
+        GB_CTRPRED_CONFIG.actr,
+    )
+    pseudo_counts = log_odds_to_pseudo_counts(
+        log_odds.mean,
+        log_odds.variance,
+        GB_CTRPRED_CONFIG.pseudo_counts,
+    )
+    return replace_ctrpred_treatment_rows(
+        json_array, replacement_keys, pseudo_counts
+    )
 
 
 def delete_old_files(bucket, prefix, days_old):

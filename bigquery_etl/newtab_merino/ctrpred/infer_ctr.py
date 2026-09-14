@@ -55,6 +55,7 @@ def _poisson_log_posterior(
     x_pred: np.ndarray,
     P_pred: np.ndarray,
 ) -> np.ndarray:
+    """Evaluate the Poisson log posterior for each article."""
     log_p = -np.logaddexp(0.0, -x)  # [a]
     return (  # [a]
         -0.5 * (x - x_pred) ** 2 / P_pred
@@ -70,6 +71,7 @@ def _laplace_poisson_update(
     P_pred: np.ndarray,
     newton_steps: int,
 ) -> tuple[np.ndarray, np.ndarray]:
+    """Find the posterior mode and local variance with Newton's method."""
     x = x_pred.copy()  # [a]
     active = exposure > 0  # [a]
 

@@ -20,7 +20,7 @@ from bigquery_etl.newtab_merino.ctrpred.utils import (
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-CTR_PRED_TREATMENT_REGION = "GB-ctrpred_engb-treatment"
+CTR_PRED_TREATMENT_REGION = GB_CTRPRED_CONFIG.artifact_region
 CTR_PRED_SOURCE_TABLE = "newtab_merino_extract_v3"
 
 
@@ -168,9 +168,9 @@ def apply_ctrpred_postprocessing(json_array, client, end_time):
         client,
         replacement_item_ids,
         end_time,
-        region="GB",
-        experiment_slug="ctrpred_engb",
-        experiment_branch="treatment",
+        region=GB_CTRPRED_CONFIG.region,
+        experiment_slug=GB_CTRPRED_CONFIG.experiment_slug,
+        experiment_branch=GB_CTRPRED_CONFIG.experiment_branch,
     )
     replacement_item_ids, replacement_timelines = build_model_input(timeline_df)
     replacement_keys = [

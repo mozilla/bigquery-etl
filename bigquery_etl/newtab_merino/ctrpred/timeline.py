@@ -2,7 +2,6 @@
 
 from google.cloud import bigquery
 
-
 TIMELINE_QUERY = """
 WITH
   bounds AS (
@@ -182,9 +181,7 @@ def query_timeline_data(
         query_parameters=[
             bigquery.ArrayQueryParameter("corpus_item_ids", "STRING", corpus_item_ids),
             bigquery.ScalarQueryParameter("region", "STRING", region),
-            bigquery.ScalarQueryParameter(
-                "experiment_slug", "STRING", experiment_slug
-            ),
+            bigquery.ScalarQueryParameter("experiment_slug", "STRING", experiment_slug),
             bigquery.ScalarQueryParameter(
                 "experiment_branch", "STRING", experiment_branch
             ),

@@ -1,0 +1,9 @@
+friendly_name: Normalize Search Engine Glean
+description: |
+  Return normalized engine name for recognized engines, for Glean data only This is a stub implementation for use with tests; real implementation is in private-bigquery-etl
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope

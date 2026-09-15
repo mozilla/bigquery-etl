@@ -1,11 +1,46 @@
-"""Queue for balancing jobs across billing projects."""
+"""Ways of getting a BigQuery client.
+
+`ClientQueue` shares a fixed set of clients across threads in one process,
+balancing work over billing projects. `get_client` is for the other shape:
+worker *processes*, which can't share a client at all (the HTTP session isn't
+fork safe and doesn't pickle), so each caches its own.
+"""
 
 import asyncio
+import os
 from contextlib import contextmanager
 from queue import Queue
+from typing import Dict, Optional, Tuple
 
 from google.cloud import bigquery
 from requests import adapters
+
+# Keyed by (pid, project, id(credentials)). The pid keeps a forked child from
+# picking up the parent's client, whose HTTP session is not fork safe.
+#
+# id() is safe as part of the key only because entries are never evicted and a
+# bigquery.Client holds a strong reference to its own credentials: the object
+# an entry was keyed on therefore outlives the entry, so its address can't be
+# freed and reused by a different credentials object. Adding eviction here
+# would reintroduce that collision.
+_clients: Dict[Tuple[int, Optional[str], int], bigquery.Client] = {}
+
+
+def get_client(credentials=None, project=None) -> bigquery.Client:
+    """Return a BigQuery client, reused for the life of this process.
+
+    Constructing a client costs a few hundred milliseconds of credential setup,
+    and the first request on a fresh client also pays a TLS handshake. The
+    deploy paths walk thousands of artifacts spread over a pool of worker
+    processes, so each worker reuses one client rather than building one per
+    artifact.
+    """
+    key = (os.getpid(), project, id(credentials))
+    client = _clients.get(key)
+    if client is None:
+        client = bigquery.Client(credentials=credentials, project=project)
+        _clients[key] = client
+    return client
 
 
 class ClientQueue:

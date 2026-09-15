@@ -33,6 +33,21 @@ CREATE_VIEW_PATTERN = re.compile(
 )
 
 
+def _field_descriptions(schema: Schema, prefix: str = "") -> dict:
+    """Map dotted field path to description, recursing into nested records.
+
+    Empty descriptions are normalised to None so that a field BigQuery reports
+    as `""` compares equal to one that has no description.
+    """
+    descriptions = {}
+    for field in schema.schema.get("fields", []):
+        path = f"{prefix}{field['name']}"
+        descriptions[path] = field.get("description") or None
+        if field.get("fields"):
+            descriptions.update(_field_descriptions(Schema(field), prefix=f"{path}."))
+    return descriptions
+
+
 @attr.s(auto_attribs=True)
 class View:
     """Representation of a SQL view stored in a view.sql file."""
@@ -196,6 +211,15 @@ class View:
     @cached_property
     def dryrun_schema(self):
         """Derive view schema from a dry run result."""
+        return self._dryrun_schema()
+
+    def _dryrun_schema(self, client=None, use_cloud_function=True):
+        """Derive view schema from a dry run, optionally on a caller's client.
+
+        Dry running straight against BigQuery rather than through the dry-run
+        cloud function measured about 40% faster per view, but needs the caller
+        to have BigQuery access, so it stays opt-in.
+        """
         try:
             # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
             # view-creation-permission-denied errors, and we have to apply a `WHERE`
@@ -214,7 +238,11 @@ class View:
                 WHERE {schema_query_filter}
                 """)
             return Schema.from_query_file(
-                Path(self.path), content=schema_query, id_token=self.id_token
+                Path(self.path),
+                content=schema_query,
+                id_token=self.id_token,
+                use_cloud_function=use_cloud_function,
+                client=client,
             )
         except Exception as e:
             print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
@@ -285,8 +313,19 @@ class View:
             return self.view_identifier.replace(self.project, target_project, 1)
         return self.view_identifier
 
-    def has_changes(self, target_project=None, credentials=None):
-        """Determine whether there are any changes that would be published."""
+    def has_changes(
+        self,
+        target_project=None,
+        credentials=None,
+        client=None,
+        use_cloud_function=True,
+    ):
+        """Determine whether there are any changes that would be published.
+
+        `use_cloud_function` only affects the dry run used to compare schemas
+        for views without a schema.yaml; `client` is always used for the
+        metadata lookups.
+        """
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             return False
 
@@ -296,10 +335,11 @@ class View:
             # view would be skipped because --target-project is set
             return False
 
-        if credentials:
-            client = bigquery.Client(credentials=credentials)
-        else:
-            client = bigquery.Client()
+        if client is None:
+            if credentials:
+                client = bigquery.Client(credentials=credentials)
+            else:
+                client = bigquery.Client()
         target_view_id = self.target_view_identifier(target_project)
         try:
             table = client.get_table(target_view_id)
@@ -336,19 +376,75 @@ class View:
                     f"view {target_view_id} will change: friendly_name does not match"
                 )
                 return True
-            if self.labels != table.labels:
-                print(f"view {target_view_id} will change: labels do not match")
+        # publish writes labels whether or not there is a metadata.yaml (the
+        # managed label is added by the caller), so this comparison can't live
+        # under the metadata check above.
+        if self.labels != table.labels:
+            print(f"view {target_view_id} will change: labels do not match")
+            return True
+
+        # BigQuery caches a view's schema when the view is created, so an
+        # upstream table gaining a column leaves the deployed view stale until
+        # it is recreated. Refreshing that is a requirement, so every view needs
+        # its schema compared one way or another.
+        live_schema = Schema.from_bigquery_schema(table.schema)
+
+        if self.configured_schema is None:
+            # No schema.yaml to compare against, so dry run the view to find
+            # out what its query produces now. This is the expensive path; views
+            # with a schema.yaml avoid it below.
+            dryrun_schema = self._dryrun_schema(
+                client=client, use_cloud_function=use_cloud_function
+            )
+            if dryrun_schema is None:
+                # Dry run failed or was skipped. Republish rather than risk
+                # leaving a stale schema in place.
+                print(
+                    f"view {target_view_id} will change: "
+                    "could not dry run to compare schema"
+                )
+                return True
+            if not dryrun_schema.equal(live_schema):
+                print(f"view {target_view_id} will change: schema does not match")
+                return True
+        else:
+            # A generated schema.yaml tracks its upstream table's schema.yaml,
+            # so comparing against it catches the same upstream drift without
+            # paying for a dry run.
+            if not self.configured_schema.equal(live_schema):
+                print(f"view {target_view_id} will change: schema does not match")
                 return True
 
-        table_schema = Schema.from_bigquery_schema(table.schema)
-
-        if self.schema is not None and not self.schema.equal(table_schema):
-            print(f"view {target_view_id} will change: schema does not match")
-            return True
+            # `equal` ignores descriptions, so compare them separately. This is
+            # how the schemas written by `generate derived_view_schemas` reach
+            # BigQuery. CREATE OR REPLACE VIEW clears every column description,
+            # and publish then merges schema.yaml's descriptions onto the
+            # result, so after publishing a field's description is whatever
+            # schema.yaml says, or nothing if schema.yaml doesn't describe it.
+            # Fields schema.yaml doesn't mention are left cleared
+            # (add_missing_fields=False), so only compare fields the live view
+            # actually has.
+            try:
+                live_descriptions = _field_descriptions(live_schema)
+                configured_descriptions = _field_descriptions(self.configured_schema)
+                published_descriptions = {
+                    path: configured_descriptions.get(path)
+                    for path in live_descriptions
+                }
+                descriptions_changed = published_descriptions != live_descriptions
+            except Exception as e:
+                print(f"Could not compare field descriptions for {target_view_id}: {e}")
+                descriptions_changed = True
+            if descriptions_changed:
+                print(
+                    f"view {target_view_id} will change: "
+                    "field descriptions do not match"
+                )
+                return True
 
         return False
 
-    def publish(self, target_project=None, dry_run=False, client=None, force=False):
+    def publish(self, target_project=None, dry_run=False, client=None):
         """
         Publish this view to BigQuery.
 
@@ -426,7 +522,9 @@ class View:
                             add_missing_fields=False,
                             ignore_missing_fields=True,
                         )
-                        table = live_schema.deploy(target_view)
+                        table = live_schema.deploy(
+                            target_view, client=client, table=table
+                        )
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

@@ -17,7 +17,7 @@ def test_build_model_input_packs_all_buckets_in_item_order():
                 "corpus_item_id": "item-b",
                 "bucket": 0,
                 "clicks": 2,
-                "adjusted_impressions": 10.0,
+                "adjusted_impressions": 0.0,
             },
             {
                 "corpus_item_id": "item-a",
@@ -32,7 +32,7 @@ def test_build_model_input_packs_all_buckets_in_item_order():
 
     assert item_ids.tolist() == ["item-b", "item-a"]
     assert counts.shape == (2, 144, 2)
-    assert counts[0, 0].tolist() == [2.0, 10.0]
+    assert counts[0, 0].tolist() == [2.0, 2.0]
     assert counts[1, 143].tolist() == [1.0, 5.0]
     assert (counts.sum(axis=(1, 2)) > 0).all()
 

@@ -184,8 +184,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'A count incremented upon a SERP categorization event being recorded
-        without a corresponding impression event being recorded. This metric effectively
-        counts missing impressions due to issues with the domain-to-categories map.
+
+        without a corresponding impression event being recorded. This metric
+
+        effectively counts missing impressions due to issues with the
+
+        domain-to-categories map.
 
         '
   - name: labeled_counter
@@ -260,8 +264,12 @@ fields:
       type: JSON
       mode: NULLABLE
       description: 'Whether the client is enrolled in a specified experiment and if
-        so, which branch the client is assigned to. The target experiment is specified
-        in the Nimbus config by creating a "targetExperiment" key and setting its
+        so, which
+
+        branch the client is assigned to. The target experiment is specified in
+
+        the Nimbus config by creating a "targetExperiment" key and setting its
+
         value to the experiment''s slug (and ensuring the featureId is "search").
 
         '

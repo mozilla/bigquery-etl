@@ -414,13 +414,13 @@ fields:
         \ object was generated,\n  xulLoadDurationMS: number of milliseconds it took\
         \ to load xul.dll,\n  sanitizationFailures: number of dropped events due to\
         \ failures in path sanitization,\n  trustTestFailures: number of dropped events\
-        \ due to failures computing trust levels,\n  events: [{ // Array of module\
-        \ load events for this process. The entries of this array are ordered to be\
-        \ in sync with the combinedStacks.stacks array (see below).\n    processUptimeMS:\
-        \ number of milliseconds between process creation and when this event was\
-        \ generated,\n    loadDurationMS: number of milliseconds of time spent loading\
-        \ this module,\n    threadID: numeric id of the thread that loaded the module,\n\
-        \    "
+        \ due to failures computing trust levels,\n  unverifiableLoads: number of\
+        \ module loads in child processes where the DLL blocklist hook reached the\
+        \ load but failed to duplicate the section handle,\n  rejectedSections: number\
+        \ of module section handles a child process sent that the parent refused as\
+        \ invalid module section handles,\n  events: [{ // Array of module load events\
+        \ for this process. The entries of this array are ordered to be in sync with\
+        \ the comb"
   - name: quantity
     type: RECORD
     mode: NULLABLE

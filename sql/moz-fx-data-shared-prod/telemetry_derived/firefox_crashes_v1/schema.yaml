@@ -325,6 +325,8 @@ fields:
       type: STRING
     - name: crash_useragent_locale
       type: STRING
+    - name: crash_shutting_down_threads
+      type: STRING
     - mode: NULLABLE
       name: crash_cause
       type: STRING

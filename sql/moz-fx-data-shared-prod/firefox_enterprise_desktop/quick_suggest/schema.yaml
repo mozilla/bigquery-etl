@@ -315,14 +315,18 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether this quicksuggest-impression ping was for an item that
-        was clicked.
+        was
+
+        clicked.
 
         '
     - name: quick_suggest_suggested_index_relative_to_group
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether `suggested_index` is relative to the "Firefox Suggest"
-        group. If false, it is relative to the entire list of suggestions.
+        group. If
+
+        false, it is relative to the entire list of suggestions.
 
         '
   - name: labeled_counter
@@ -428,7 +432,9 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Records the home region of the user as determined by `Region.sys.mjs`
-        and the `browser.search.region` pref.
+        and
+
+        the `browser.search.region` pref.
 
         '
     - name: quick_suggest_iab_category
@@ -441,21 +447,29 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Whether this was a best/top match or not. Either "best-match"
-        or "firefox-suggest".
+        or
+
+        "firefox-suggest".
 
         '
     - name: quick_suggest_ping_type
       type: STRING
       mode: NULLABLE
       description: 'The ping''s type. In other situations might be designated by an
-        event''s name or an interaction field. E.g. "quicksuggest-impression", "quicksuggest-block",
-        "quicksuggest-click".
+        event''s
+
+        name or an interaction field. E.g. "quicksuggest-impression",
+
+        "quicksuggest-block", "quicksuggest-click".
 
         '
     - name: quick_suggest_request_id
       type: STRING
       mode: NULLABLE
-      description: 'A request identifier for each API request to [Merino](https://mozilla-services.github.io/merino/).
+      description: 'A request identifier for each API request to
+
+        [Merino](https://mozilla-services.github.io/merino/).
+
         Only present for suggestions provided by Merino.
 
         '
@@ -469,10 +483,16 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'A stringified integer value that is the intended index of the
-        suggestion being interacted with. If `suggested_index_relative_to_group` is
-        true, the index is relative to the "Firefox Suggest" group; otherwise the
-        index is relative to the entire list of suggestions. Non-negative values (starting
+        suggestion
+
+        being interacted with. If `suggested_index_relative_to_group` is true, the
+
+        index is relative to the "Firefox Suggest" group; otherwise the index is
+
+        relative to the entire list of suggestions. Non-negative values (starting
+
         at 0) are relative to the start/top of the group/list; negative values are
+
         relative to the end/bottom of the group/list.
 
         '

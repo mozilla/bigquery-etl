@@ -156,6 +156,7 @@ SELECT
       LAX_BOOL(event_extra.user_triggered) AS `user_triggered`,
       LAX_BOOL(event_extra.userAction) AS `userAction`,
       LAX_BOOL(event_extra.vulnerable) AS `vulnerable`,
+      LAX_BOOL(event_extra.waited_out) AS `waited_out`,
       LAX_BOOL(event_extra.warning) AS `warning`,
       LAX_BOOL(event_extra.wasActive) AS `wasActive`,
       LAX_BOOL(event_extra.webVTTSubtitles) AS `webVTTSubtitles`

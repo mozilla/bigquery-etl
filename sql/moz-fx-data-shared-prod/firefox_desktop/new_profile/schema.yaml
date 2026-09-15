@@ -495,6 +495,20 @@ fields:
         Updated during initialization and whenever the database changes.
 
         '
+    - name: profiles_days_since_install
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of days between now and the most recent installation
+        of Firefox, as recorded in installation_telemetry.json (Windows only).
+
+        '
+    - name: profiles_days_since_update
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of days between now and the most recent update of Firefox,
+        as recorded in update_telemetry.json.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

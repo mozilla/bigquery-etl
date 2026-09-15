@@ -162,7 +162,8 @@ SELECT
       metrics.string.crash_linux_lsb_description,
       metrics.string.crash_os,
       metrics.string.crash_os_version,
-      metrics.string.crash_useragent_locale
+      metrics.string.crash_useragent_locale,
+      metrics.string.crash_shutting_down_threads
     ) AS `string`,
     STRUCT(
       STRUCT(
@@ -426,7 +427,8 @@ SELECT
       metrics.string.crash_linux_lsb_description,
       metrics.string.crash_os,
       metrics.string.crash_os_version,
-      metrics.string.crash_useragent_locale
+      metrics.string.crash_useragent_locale,
+      metrics.string.crash_shutting_down_threads
     ) AS `string`,
     STRUCT(
       STRUCT(
@@ -690,7 +692,8 @@ SELECT
       metrics.string.crash_linux_lsb_description,
       metrics.string.crash_os,
       metrics.string.crash_os_version,
-      metrics.string.crash_useragent_locale
+      metrics.string.crash_useragent_locale,
+      metrics.string.crash_shutting_down_threads
     ) AS `string`,
     STRUCT(
       STRUCT(

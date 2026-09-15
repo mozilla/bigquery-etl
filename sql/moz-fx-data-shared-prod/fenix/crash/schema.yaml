@@ -613,6 +613,15 @@ fields:
       type: STRING
       mode: NULLABLE
       description: User-agent locale.
+    - name: crash_shutting_down_threads
+      type: STRING
+      mode: NULLABLE
+      description: 'JSON array of the nsThread::Shutdown handshakes still in flight
+        when the process crashed during shutdown. Each entry has the joining and closing
+        thread TID and name, the handshake phase ("Joining", "Recv" or "Ack") and
+        when that phase was entered, in seconds since the Epoch. A single entry of
+        {"error": "contended"} means the thread list was locked and could not be read
+        without blocking.'
   - name: timespan
     type: RECORD
     mode: NULLABLE

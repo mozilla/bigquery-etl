@@ -211,6 +211,11 @@ fields:
   type: INTEGER
   description: Count of cohort clients who qualified as DAU at least once during the 27-day window after first_seen_date and are measured on day 27,
     qualifying as DAU-based repeat first-month users.
+# Keep num_clients_dau_on_day last: it must match the deployed table's field order.
+# `backfill initiate` deploys the backfill staging table from this file, and the swap
+# copies partitions into production by column position. Positions 32-38 are all
+# INTEGER, so a reorder here would not fail loudly - it could land seven metrics in
+# the wrong columns. Do not re-sort to group the num_clients_dau_* fields. See DENG-11590.
 - mode: NULLABLE
   name: num_clients_dau_on_day
   type: INTEGER

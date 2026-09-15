@@ -340,7 +340,7 @@ unioned_pings AS (
         metrics.string.crash_os,
         metrics.string.crash_os_version,
         metrics.string.crash_useragent_locale,
-        CAST(NULL AS STRING) AS `crash_shutting_down_threads`,
+        metrics.string.crash_shutting_down_threads,
         metrics.string.crash_cause
       ) AS `string`,
       metrics.timespan,
@@ -433,7 +433,7 @@ unioned_pings AS (
         metrics.string.crash_os,
         metrics.string.crash_os_version,
         metrics.string.crash_useragent_locale,
-        CAST(NULL AS STRING) AS `crash_shutting_down_threads`,
+        metrics.string.crash_shutting_down_threads,
         metrics.string.crash_cause
       ) AS `string`,
       metrics.timespan,
@@ -526,7 +526,7 @@ unioned_pings AS (
         metrics.string.crash_os,
         metrics.string.crash_os_version,
         metrics.string.crash_useragent_locale,
-        CAST(NULL AS STRING) AS `crash_shutting_down_threads`,
+        metrics.string.crash_shutting_down_threads,
         metrics.string.crash_cause
       ) AS `string`,
       metrics.timespan,

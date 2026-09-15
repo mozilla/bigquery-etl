@@ -128,10 +128,6 @@ SELECT
   ) AS num_clients_active_on_day,
   COUNTIF(
     (active_client_id IS NOT NULL)
-    AND (dau_clients_days_since_seen = 0)
-  ) AS num_clients_dau_on_day,
-  COUNTIF(
-    (active_client_id IS NOT NULL)
     AND (
       COALESCE(
         BIT_COUNT(
@@ -183,7 +179,14 @@ SELECT
         FALSE
       )
     )
-  ) AS num_clients_dau_repeat_first_month_users
+  ) AS num_clients_dau_repeat_first_month_users,
+  -- Kept last to match the deployed table's field order. The backfill swap copies
+  -- partitions into the production table, so the query, schema.yaml and the deployed
+  -- table must agree on column positions. See DENG-11590.
+  COUNTIF(
+    (active_client_id IS NOT NULL)
+    AND (dau_clients_days_since_seen = 0)
+  ) AS num_clients_dau_on_day
 FROM
   activity_cohort_match
 GROUP BY

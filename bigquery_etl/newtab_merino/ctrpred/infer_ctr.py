@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 import numpy as np
 
-
 N_BUCKETS = 144
 BUCKETS_PER_HOUR = 6
 P_EPS = 1e-9
@@ -18,6 +17,8 @@ P_EPS = 1e-9
 
 @dataclass(frozen=True)
 class ActrSsmConfig:
+    """Parameters for the seasonal ACTR state-space model."""
+
     global_ctr: float  # scalar
     hourly_ctr: np.ndarray  # [h]
     item_prior_exposure: float  # scalar
@@ -29,6 +30,8 @@ class ActrSsmConfig:
 
 @dataclass(frozen=True)
 class LogOddsPrediction:
+    """Predicted log-odds values and their posterior variances."""
+
     mean: np.ndarray  # [a]
     variance: np.ndarray  # [a]
     available: np.ndarray  # [a]
@@ -58,9 +61,7 @@ def _poisson_log_posterior(
     """Evaluate the Poisson log posterior for each article."""
     log_p = -np.logaddexp(0.0, -x)  # [a]
     return (  # [a]
-        -0.5 * (x - x_pred) ** 2 / P_pred
-        + clicks * log_p
-        - exposure * np.exp(log_p)
+        -0.5 * (x - x_pred) ** 2 / P_pred + clicks * log_p - exposure * np.exp(log_p)
     )
 
 
@@ -81,16 +82,13 @@ def _laplace_poisson_update(
 
         p = _sigmoid(x)  # [a]
         g = -(x - x_pred) / P_pred + (clicks - exposure * p) * (1.0 - p)  # [a]
-        precision = (  # [a]
-            1.0 / P_pred
-            + p * (1.0 - p) * (clicks + exposure * (1.0 - 2.0 * p))
+        precision = 1.0 / P_pred + p * (1.0 - p) * (  # [a]
+            clicks + exposure * (1.0 - 2.0 * p)
         )
         fisher_precision = 1.0 / P_pred + exposure * p * (1.0 - p) ** 2  # [a]
         step = g / np.where(precision > 0, precision, fisher_precision)  # [a]
         step = np.clip(step, -5.0, 5.0)  # [a]
-        before = _poisson_log_posterior(  # [a]
-            x, clicks, exposure, x_pred, P_pred
-        )
+        before = _poisson_log_posterior(x, clicks, exposure, x_pred, P_pred)  # [a]
 
         accepted = ~active  # [a]
         candidate = x + step  # [a]
@@ -114,9 +112,8 @@ def _laplace_poisson_update(
             raise RuntimeError("Poisson posterior mode did not converge")
 
     p = _sigmoid(x)  # [a]
-    precision = (  # [a]
-        1.0 / P_pred
-        + p * (1.0 - p) * (clicks + exposure * (1.0 - 2.0 * p))
+    precision = 1.0 / P_pred + p * (1.0 - p) * (  # [a]
+        clicks + exposure * (1.0 - 2.0 * p)
     )
     if (precision <= 0).any() or not np.isfinite(precision).all():
         raise RuntimeError("Poisson posterior has invalid local curvature")
@@ -135,14 +132,15 @@ def predict_log_odds(
     one of the 144 ten-minute buckets immediately before ``forecast_slot``.
     ``forecast_slot`` is the UTC ten-minute slot of day, in ``[0, 143]``.
     """
-
     counts = np.asarray(counts, dtype=float)  # [a, n, 2]
     hourly_ctr = np.asarray(config.hourly_ctr, dtype=float)  # [h]
     assert counts.ndim == 3 and counts.shape[1:] == (N_BUCKETS, 2)
     assert np.isfinite(counts).all() and (counts >= 0).all()
     assert (counts[:, :, 0] == np.floor(counts[:, :, 0])).all()
     assert not ((counts[:, :, 1] == 0) & (counts[:, :, 0] > 0)).any()
-    assert isinstance(forecast_slot, (int, np.integer)) and 0 <= forecast_slot < N_BUCKETS
+    assert (
+        isinstance(forecast_slot, (int, np.integer)) and 0 <= forecast_slot < N_BUCKETS
+    )
     assert hourly_ctr.shape == (24,) and ((0 < hourly_ctr) & (hourly_ctr < 1)).all()
     assert 0 < config.global_ctr < 1 and config.item_prior_exposure > 0
     assert 0 <= config.phi <= 1 and config.process_variance >= 0

@@ -1,11 +1,14 @@
 """bigquery-etl CLI data_governance command."""
 
+import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import rich_click as click
 
 from ..cli.utils import sql_dir_option
+from ..sensitivity import CODEOWNERS_FILE, check_paths, format_findings
 from ..util.common import block_coding_agents
 from .classification import runner, upstream
 from .classification.config import (
@@ -17,6 +20,10 @@ from .classification.config import (
     validate_bq_identifier,
 )
 from .classification.runner import TargetKey
+
+# exit code CI keys on to request review; distinct from a tool crash (exit 1) so
+# the job knows to request DPE review rather than fail.
+SENSITIVITY_UNGATED_EXIT_CODE = 2
 
 
 def _parse_target(value: str) -> TargetKey:
@@ -299,3 +306,50 @@ def classify(
         targets,
         refresh=refresh,
     )
+
+
+@data_governance.command()
+@click.argument("paths", nargs=-1, required=True, type=click.Path())
+@sql_dir_option
+@click.option(
+    "--codeowners",
+    default=CODEOWNERS_FILE,
+    help="CODEOWNERS file used to decide whether a flagged flow is already "
+    "owned/reviewed.",
+)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    default=False,
+    help="Emit findings as JSON instead of the human-readable advisory.",
+)
+def sensitivity(paths, sql_dir, codeowners, as_json):
+    """Flag queries that read sensitive data and write it somewhere broader.
+
+    Scans the given query.sql files (or directories of them) for flows where a
+    restricted / narrowly workgroup-gated source is written to a more broadly
+    readable destination that the source's readers don't already cover.
+
+    Advisory and read-only: exits 2 when there are ungated flows so CI can
+    request @mozilla/dataplatform-wg review; it never blocks a merge.
+    """
+    findings = check_paths(list(paths), sql_dir, codeowners_file=codeowners)
+    ungated = [f for f in findings if f.get("gated") is False]
+
+    if as_json:
+        click.echo(json.dumps(findings, indent=2))
+    elif findings:
+        click.echo(format_findings(findings))
+
+    if ungated:
+        n = len({(f["source"], f["query"]) for f in ungated})
+        click.echo(
+            f"::warning::{n} sensitive-data flow(s) widen read access beyond the "
+            "source's authorized readers and aren't owned by any team. Requesting "
+            "@mozilla/dataplatform-wg review (advisory — this check does not "
+            "block).",
+            err=True,
+        )
+        sys.exit(SENSITIVITY_UNGATED_EXIT_CODE)
+    click.echo("no ungated sensitive-data flows", err=True)

@@ -21,6 +21,12 @@
   more than 50 rows per group, so it is NULL for sparse city/hour cells.
 
   "avg_dns_failure_time"
+
+  Removing "avg_dns_success_time" due to the same reason stated above.
+  Bug https://bugzilla.mozilla.org/show_bug.cgi?id=2071849
+  Bug https://bugzilla.mozilla.org/show_bug.cgi?id=2071850
+
+  "avg_dns_success_time"
 */
 {{ not_null(columns=[
   "country",
@@ -32,7 +38,6 @@
   "proportion_unreachable",
   "proportion_terminated",
   "proportion_channel_open",
-  "avg_dns_success_time",
   "missing_dns_success",
   "missing_dns_failure",
   "ssl_error_prop",

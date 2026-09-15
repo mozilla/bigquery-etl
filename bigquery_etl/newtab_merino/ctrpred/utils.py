@@ -19,7 +19,7 @@ def build_model_input(timeline_df):
     for row in timeline_df.itertuples(index=False):
         item = item_index[row.corpus_item_id]
         counts[item, row.bucket, 0] = row.clicks
-        counts[item, row.bucket, 1] = row.adjusted_impressions
+        counts[item, row.bucket, 1] = max(row.adjusted_impressions, row.clicks)
 
     return corpus_item_ids, counts
 

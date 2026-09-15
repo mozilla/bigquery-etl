@@ -20,3 +20,11 @@ fields:
     A number, 0-99, that samples by client_id and allows filtering data for
     analysis. It is a pipeline-generated artifact that should match between
     pings. Clustering field here; not part of the grain.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    App display version the client was running at the completion, read from the
+    earliest completion event on this row's date. Distinct from the app_version
+    on retention_clients, which is the version as of that row's metric date and
+    so moves as the client upgrades. Null where the event carried no version.

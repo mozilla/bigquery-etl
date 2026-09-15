@@ -23,5 +23,22 @@
     "name": "event_name",
     "type": "STRING",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "event_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_info",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "app_display_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
   }
 ]

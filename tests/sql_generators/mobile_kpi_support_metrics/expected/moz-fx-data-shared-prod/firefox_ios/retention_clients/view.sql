@@ -100,9 +100,13 @@ SELECT
   clients_daily.normalized_os AS os,
   clients_daily.normalized_os_version AS os_version,
   -- Read from active_users, the day-27 row, so the flag is as-of day 27 rather
-  -- than day 0; clients_daily would give day-0 status. Stays last and
-  -- unconditional: mobile_retention_clients unions the products by position.
+  -- than day 0; clients_daily would give day-0 status. This and the version
+  -- below stay last, in this order, and unconditional in every product branch:
+  -- mobile_retention_clients unions the products by position.
   CAST(NULL AS BOOLEAN) AS onboarding_completed_by_day_27,
+  -- The version at the client's earliest completion, distinct from app_version
+  -- above, which is as of the metric date.
+  CAST(NULL AS STRING) AS app_version_at_onboarding_completion,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily
 INNER JOIN

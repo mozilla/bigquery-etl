@@ -107,9 +107,7 @@ def export_newtab_merino_table_to_gcs(
 
         if source_table == CTR_PRED_SOURCE_TABLE:
             end_time = floor_to_ten_minutes(datetime.now(timezone.utc))
-            json_array = apply_ctrpred_postprocessing_safely(
-                json_array, client, end_time
-            )
+            json_array = apply_ctrpred_postprocessing(json_array, client, end_time)
 
         json_data = json.dumps(json_array, indent=1)
 
@@ -162,39 +160,36 @@ def apply_ctrpred_postprocessing(json_array, client, end_time):
     if not replacement_rows:
         return json_array
 
-    replacement_item_ids = [row["corpus_item_id"] for row in replacement_rows]
-
-    timeline_df = query_timeline_data(
-        client,
-        replacement_item_ids,
-        end_time,
-        region=GB_CTRPRED_CONFIG.region,
-        experiment_slug=GB_CTRPRED_CONFIG.experiment_slug,
-        experiment_branch=GB_CTRPRED_CONFIG.experiment_branch,
-    )
-    replacement_item_ids, replacement_timelines = build_model_input(timeline_df)
-    replacement_keys = [
-        (corpus_item_id, CTR_PRED_TREATMENT_REGION)
-        for corpus_item_id in replacement_item_ids
-    ]
-    forecast_slot = end_time.hour * 6 + end_time.minute // 10
-    log_odds = predict_log_odds(
-        replacement_timelines,
-        forecast_slot,
-        GB_CTRPRED_CONFIG.actr,
-    )
-    pseudo_counts = log_odds_to_pseudo_counts(
-        log_odds.mean,
-        log_odds.variance,
-        GB_CTRPRED_CONFIG.pseudo_counts,
-    )
-    return replace_ctrpred_treatment_rows(json_array, replacement_keys, pseudo_counts)
-
-
-def apply_ctrpred_postprocessing_safely(json_array, client, end_time):
-    """Apply CTR prediction, falling back to the original artifact on failure."""
     try:
-        return apply_ctrpred_postprocessing(json_array, client, end_time)
+        replacement_item_ids = [row["corpus_item_id"] for row in replacement_rows]
+
+        timeline_df = query_timeline_data(
+            client,
+            replacement_item_ids,
+            end_time,
+            region=GB_CTRPRED_CONFIG.region,
+            experiment_slug=GB_CTRPRED_CONFIG.experiment_slug,
+            experiment_branch=GB_CTRPRED_CONFIG.experiment_branch,
+        )
+        replacement_item_ids, replacement_timelines = build_model_input(timeline_df)
+        replacement_keys = [
+            (corpus_item_id, CTR_PRED_TREATMENT_REGION)
+            for corpus_item_id in replacement_item_ids
+        ]
+        forecast_slot = end_time.hour * 6 + end_time.minute // 10
+        log_odds = predict_log_odds(
+            replacement_timelines,
+            forecast_slot,
+            GB_CTRPRED_CONFIG.actr,
+        )
+        pseudo_counts = log_odds_to_pseudo_counts(
+            log_odds.mean,
+            log_odds.variance,
+            GB_CTRPRED_CONFIG.pseudo_counts,
+        )
+        return replace_ctrpred_treatment_rows(
+            json_array, replacement_keys, pseudo_counts
+        )
     except Exception as err:
         log.exception("CTR prediction postprocessing failed: %s", err)
         return json_array

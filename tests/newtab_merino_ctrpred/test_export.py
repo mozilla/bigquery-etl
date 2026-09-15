@@ -61,16 +61,16 @@ def test_apply_ctrpred_postprocessing_replaces_treatment_rows(monkeypatch):
     assert result[1]["impression_count"] == 100
 
 
-def test_apply_ctrpred_postprocessing_safely_returns_original_rows(monkeypatch):
+def test_apply_ctrpred_postprocessing_returns_original_rows_on_failure(monkeypatch):
     artifact = [{"region": merino.CTR_PRED_TREATMENT_REGION}]
 
     def fail(*args):
         raise RuntimeError("test failure")
 
-    monkeypatch.setattr(merino, "apply_ctrpred_postprocessing", fail)
+    monkeypatch.setattr(merino, "query_timeline_data", fail)
 
     assert (
-        merino.apply_ctrpred_postprocessing_safely(artifact, client=None, end_time=None)
+        merino.apply_ctrpred_postprocessing(artifact, client=None, end_time=None)
         is artifact
     )
 

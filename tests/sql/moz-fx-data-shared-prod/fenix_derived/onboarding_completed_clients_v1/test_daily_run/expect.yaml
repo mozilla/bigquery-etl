@@ -1,0 +1,22 @@
+---
+# Every output row carries @submission_date as completed_date, and client-b's two
+# events that day collapse into one row. app_version comes from each client's
+# earliest dated event: 141.0 over 142.0 for b, 138.0 over the undated 200.0 for
+# h. For i, whose only event carried no version, app_version is absent rather
+# than null: the harness omits null columns from a result row, so naming the key
+# here would fail the comparison.
+- client_id: client-b
+  completed_date: 2026-09-03
+  sample_id: 17
+  app_version: '141.0'
+- client_id: client-d
+  completed_date: 2026-09-03
+  sample_id: 8
+  app_version: '139.0'
+- client_id: client-h
+  completed_date: 2026-09-03
+  sample_id: 23
+  app_version: '138.0'
+- client_id: client-i
+  completed_date: 2026-09-03
+  sample_id: 31

@@ -4,12 +4,10 @@
   reason: DENG-11590 - remove automated new profiles (Linux/151.0/argument-profile)
     from cohorts. This table has no lag, so cohorts have been affected since 2026-08-28.
     Filter added in https://github.com/mozilla/bigquery-etl/pull/9854, live for partitions
-    from 2026-09-10. Cancelled because the staging table was built in the schema.yaml field
-    order, which differs from the deployed table's, making the per-partition swap unsafe.
-    Superseded by a new entry once the column order fix is deployed. See DENG-11590.
+    from 2026-09-10.
   watchers:
   - phlee@mozilla.com
-  status: Cancelled
+  status: Initiate
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

@@ -12,6 +12,8 @@ P_EPS = 1e-9
 
 @dataclass(frozen=True)
 class PseudoCountConfig:
+    """Parameters controlling the strength of generated pseudo-counts."""
+
     strength_multiplier: float = 1.0  # scalar
     min_strength: float = 1.0  # scalar
     max_strength: float = 10_000_000.0  # scalar
@@ -19,6 +21,8 @@ class PseudoCountConfig:
 
 @dataclass(frozen=True)
 class PseudoCounts:
+    """Pseudo clicks and impressions corresponding to each prediction."""
+
     clicks: np.ndarray  # [a]
     impressions: np.ndarray  # [a]
 
@@ -38,7 +42,6 @@ def log_odds_to_pseudo_counts(
     config: PseudoCountConfig = PseudoCountConfig(),
 ) -> PseudoCounts:
     """Moment-match log-odds forecasts to Beta clicks and impressions."""
-
     mean = np.asarray(mean, dtype=float)  # [a]
     variance = np.asarray(variance, dtype=float)  # [a]
     assert mean.ndim == 1 and mean.shape == variance.shape

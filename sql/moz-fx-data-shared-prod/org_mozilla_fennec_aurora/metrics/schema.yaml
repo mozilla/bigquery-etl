@@ -11634,6 +11634,35 @@ fields:
         whether it closes them sooner. 0 means the connection saw no PTO.
 
         '
+    - name: media_speech_recognition_inference_realtime_factor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The mean of how much faster than real time the audio chunks in
+        a session were processed, as a multiple of real time times 100: 400 means
+        4x faster than real time. Under 100 means the recognizer fell behind. One
+        sample is recorded per session in the inference process.
+
+        The range reaches 100x because hardware that handles this model comfortably
+        sits well above 20x, which would otherwise pile every such session into the
+        top bucket and saturate the high percentiles. These bounds also put a bucket
+        boundary exactly at 100, so "fell behind real time" is a clean cut rather
+        than a threshold buried mid-bucket.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -19406,6 +19435,71 @@ fields:
         was sent to, determined from the host of the configured geo.provider.network.url.  "other"
         means the URL had a host that is not one of the services listed here, and
         "unknown" means it had no host that could be parsed.
+
+        '
+    - name: media_speech_recognition_availability
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times SpeechRecognition.available() resolved, keyed
+        by the AvailabilityStatus it resolved with. Shows how often pages find the
+        model missing rather than ready.
+
+        '
+    - name: media_speech_recognition_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of `error` events fired at a SpeechRecognition object,
+        keyed by error code. Only a subset of the codes defined by the spec is currently
+        reachable, so a count on any of the others is itself noteworthy.
+
+        This does not reconcile with the `error` outcomes of `session_ended`, by construction:
+        an error can be fired before the session reaches [[started]], and such a session
+        records neither `session_started` nor `session_ended`. This metric therefore
+        normally exceeds those outcomes, and `init_failure` accounts for the difference.
+
+        The codes the spec makes us fire are also coarser than the causes behind them
+        - four distinct causes all surface as `service-not-allowed` - so `init_failure`
+        is what tells those apart.
+
+        '
+    - name: media_speech_recognition_init_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Why a recognition session failed to start, recorded wherever the
+        cause is still known: the content process for the first three labels, the
+        inference process for the rest. The spec-mandated DOM error code is coarser
+        than this, so this is what tells apart the causes that share one: `concurrent_session`,
+        `language_not_supported`, `model_install_unavailable` and `backend_creation_failed`
+        all reach content as `service-not-allowed`, and every inference-process failure
+        below reaches it as `network`.
+
+        `language_not_supported` is recorded before the session reaches [[started]],
+        so it has no `session_started` and no `session_ended`; it is exactly the count
+        that makes `error` and `session_ended` disagree.
+
+        The labels name the step that failed rather than a category, so that a spike
+        says where init broke and not merely that it did.
 
         '
   - name: labeled_custom_distribution
@@ -38333,6 +38427,78 @@ fields:
       description: 'When an expired HTTP/3 Alt-Svc mapping is discarded on lookup,
         how long past its expiry (TTL) it was, i.e. how stale the discarded mapping
         was.
+
+        '
+    - name: media_speech_recognition_model_load_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How long the engine took to load the model, which reads the whole
+        GGUF into memory. Recorded in the inference process.
+
+        Only recorded when the load succeeds, so read it against `init_failure.model_load_failed`
+        rather than alone.
+
+        '
+    - name: media_speech_recognition_result_latency
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The mean end-to-end latency of results in a recognition session,
+        from the capture time of the audio each result covers to the moment the `result`
+        event is dispatched in the content process. One sample per session that produced
+        results.
+
+        '
+    - name: media_speech_recognition_session_init_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration between start() and the time the model is ready for
+        recognition.
+
+        Only recorded when init succeeds, so read it against the `init_failure` totals
+        rather than alone: a regression that turns slow inits into outright failures
+        makes this metric look better.
 
         '
   - name: url2

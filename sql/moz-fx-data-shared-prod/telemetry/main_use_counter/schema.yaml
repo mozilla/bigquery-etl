@@ -12408,6 +12408,30 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page called ShadowRoot.setHTMLUnsafe
+    - name: use_counter2_speechrecognition_available_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called SpeechRecognition.available
+    - name: use_counter2_speechrecognition_available_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called SpeechRecognition.available
+    - name: use_counter2_speechrecognition_install_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called SpeechRecognition.install
+    - name: use_counter2_speechrecognition_install_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called SpeechRecognition.install
+    - name: use_counter2_speechrecognition_start_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called SpeechRecognition.start
+    - name: use_counter2_speechrecognition_start_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called SpeechRecognition.start
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24678,6 +24702,30 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page called ShadowRoot.setHTMLUnsafe
+        - name: use_counter2_speechrecognition_available_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called SpeechRecognition.available
+        - name: use_counter2_speechrecognition_available_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called SpeechRecognition.available
+        - name: use_counter2_speechrecognition_install_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called SpeechRecognition.install
+        - name: use_counter2_speechrecognition_install_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called SpeechRecognition.install
+        - name: use_counter2_speechrecognition_start_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called SpeechRecognition.start
+        - name: use_counter2_speechrecognition_start_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called SpeechRecognition.start
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

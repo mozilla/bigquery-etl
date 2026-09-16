@@ -784,7 +784,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_rtt_var,
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
-      metrics.custom_distribution.networking_http_3_max_consecutive_ptos
+      metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1228,7 +1229,10 @@ SELECT
       metrics.labeled_counter.browser_thumbnails_capture_attempted,
       metrics.labeled_counter.browser_thumbnails_capture_result,
       metrics.labeled_counter.network_ssl_token_resumption_outcome,
-      metrics.labeled_counter.geolocation_network_provider
+      metrics.labeled_counter.geolocation_network_provider,
+      metrics.labeled_counter.media_speech_recognition_availability,
+      metrics.labeled_counter.media_speech_recognition_error,
+      metrics.labeled_counter.media_speech_recognition_init_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1877,7 +1881,10 @@ SELECT
       metrics.timing_distribution.glean_migration_migration_duration,
       metrics.timing_distribution.browser_thumbnails_capture_duration,
       metrics.timing_distribution.browser_thumbnails_disk_write_duration,
-      metrics.timing_distribution.http_altsvc_h3_expired_staleness
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness,
+      metrics.timing_distribution.media_speech_recognition_model_load_time,
+      metrics.timing_distribution.media_speech_recognition_result_latency,
+      metrics.timing_distribution.media_speech_recognition_session_init_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3089,7 +3096,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_rtt_var,
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
-      metrics.custom_distribution.networking_http_3_max_consecutive_ptos
+      metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3533,7 +3541,10 @@ SELECT
       metrics.labeled_counter.browser_thumbnails_capture_attempted,
       metrics.labeled_counter.browser_thumbnails_capture_result,
       metrics.labeled_counter.network_ssl_token_resumption_outcome,
-      metrics.labeled_counter.geolocation_network_provider
+      metrics.labeled_counter.geolocation_network_provider,
+      metrics.labeled_counter.media_speech_recognition_availability,
+      metrics.labeled_counter.media_speech_recognition_error,
+      metrics.labeled_counter.media_speech_recognition_init_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4182,7 +4193,10 @@ SELECT
       metrics.timing_distribution.glean_migration_migration_duration,
       metrics.timing_distribution.browser_thumbnails_capture_duration,
       metrics.timing_distribution.browser_thumbnails_disk_write_duration,
-      metrics.timing_distribution.http_altsvc_h3_expired_staleness
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness,
+      metrics.timing_distribution.media_speech_recognition_model_load_time,
+      metrics.timing_distribution.media_speech_recognition_result_latency,
+      metrics.timing_distribution.media_speech_recognition_session_init_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5414,7 +5428,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_rtt_var,
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
-      metrics.custom_distribution.networking_http_3_max_consecutive_ptos
+      metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5858,7 +5873,10 @@ SELECT
       metrics.labeled_counter.browser_thumbnails_capture_attempted,
       metrics.labeled_counter.browser_thumbnails_capture_result,
       metrics.labeled_counter.network_ssl_token_resumption_outcome,
-      metrics.labeled_counter.geolocation_network_provider
+      metrics.labeled_counter.geolocation_network_provider,
+      metrics.labeled_counter.media_speech_recognition_availability,
+      metrics.labeled_counter.media_speech_recognition_error,
+      metrics.labeled_counter.media_speech_recognition_init_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6507,7 +6525,10 @@ SELECT
       metrics.timing_distribution.glean_migration_migration_duration,
       metrics.timing_distribution.browser_thumbnails_capture_duration,
       metrics.timing_distribution.browser_thumbnails_disk_write_duration,
-      metrics.timing_distribution.http_altsvc_h3_expired_staleness
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness,
+      metrics.timing_distribution.media_speech_recognition_model_load_time,
+      metrics.timing_distribution.media_speech_recognition_result_latency,
+      metrics.timing_distribution.media_speech_recognition_session_init_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

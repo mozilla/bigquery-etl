@@ -763,7 +763,10 @@ SELECT
       metrics.labeled_counter.network_ssl_token_cache_db_errors,
       metrics.labeled_counter.quotamanager_storage_sqlite_corruption_unrecovered,
       metrics.labeled_counter.network_ssl_token_resumption_outcome,
-      metrics.labeled_counter.geolocation_network_provider
+      metrics.labeled_counter.geolocation_network_provider,
+      metrics.labeled_counter.media_speech_recognition_availability,
+      metrics.labeled_counter.media_speech_recognition_error,
+      metrics.labeled_counter.media_speech_recognition_init_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1298,7 +1301,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_rtt_var,
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
-      metrics.custom_distribution.networking_http_3_max_consecutive_ptos
+      metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1696,7 +1700,10 @@ SELECT
       metrics.timing_distribution.urlclassifier_check_channel_helper_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time,
       metrics.timing_distribution.glean_migration_migration_duration,
-      metrics.timing_distribution.http_altsvc_h3_expired_staleness
+      metrics.timing_distribution.http_altsvc_h3_expired_staleness,
+      metrics.timing_distribution.media_speech_recognition_model_load_time,
+      metrics.timing_distribution.media_speech_recognition_result_latency,
+      metrics.timing_distribution.media_speech_recognition_session_init_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

@@ -562,6 +562,13 @@ fields:
         either the feature is not enabled or the user has not created any profiles.
 
         '
+    - name: nimbus_targeting_context_allowed_notification_origins
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of origins the user has granted permission to send
+        notifications.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

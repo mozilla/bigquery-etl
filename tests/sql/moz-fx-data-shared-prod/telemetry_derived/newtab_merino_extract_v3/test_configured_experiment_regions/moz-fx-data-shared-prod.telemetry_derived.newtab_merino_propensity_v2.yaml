@@ -1,0 +1,8 @@
+---
+- snapshot_date: 2099-01-01
+  snapshot_at: 2099-01-01 00:00:00 UTC
+  layout: SECTION_GRID
+  position: 1
+  tile_format: small-card
+  impressions: 5
+  weight: 1.0

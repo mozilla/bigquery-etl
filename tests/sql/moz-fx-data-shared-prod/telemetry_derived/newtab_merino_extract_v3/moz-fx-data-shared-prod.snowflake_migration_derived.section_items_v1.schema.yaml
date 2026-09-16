@@ -1,0 +1,13 @@
+fields:
+- name: approved_corpus_item_external_id
+  type: STRING
+  mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+- name: source
+  type: STRING
+  mode: NULLABLE
+- name: happened_at
+  type: TIMESTAMP
+  mode: NULLABLE

@@ -979,6 +979,12 @@ def _render_and_rewrite(query_file: Path, rewrite: Callable[[str], str]) -> str:
     back would discard the init query permanently and silently hand the
     incremental query to anything that re-renders the deployed file with
     `is_init=True`.
+
+    So render both arms and only wrap when they actually differ. The decision is
+    made on the rendered output rather than a source-text heuristic: rendering is
+    cheap relative to `rewrite` (sqlglot parsing), it can't miss `is_init()`
+    branching pulled in via an {% include %} or macro, and it avoids the second
+    (expensive) rewrite when the arms are identical.
     """
 
     def _render(**kwargs) -> str:
@@ -989,22 +995,15 @@ def _render_and_rewrite(query_file: Path, rewrite: Callable[[str], str]) -> str:
             **kwargs,
         )
 
-    # Match `is_init` (not the exact `is_init()` spelling) so `is_init ()` or
-    # branching pulled in via an {% include %} still take the two-arm path; the
-    # equality check below keeps the fast, single-copy result when the mention
-    # doesn't actually change the output (e.g. it's only in a comment).
-    if "is_init" not in query_file.read_text():
-        return rewrite(_render())
-
-    init_sql = rewrite(_render(is_init=lambda: True))
-    query_sql = rewrite(_render(is_init=lambda: False))
-    if init_sql == query_sql:
-        return init_sql
+    init_render = _render(is_init=lambda: True)
+    query_render = _render(is_init=lambda: False)
+    if init_render == query_render:
+        return rewrite(query_render)
     return (
         "{% if is_init() %}\n"
-        f"{init_sql}\n"
+        f"{rewrite(init_render)}\n"
         "{% else %}\n"
-        f"{query_sql}\n"
+        f"{rewrite(query_render)}\n"
         "{% endif %}\n"
     )
 

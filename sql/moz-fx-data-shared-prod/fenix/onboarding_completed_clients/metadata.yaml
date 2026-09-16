@@ -8,9 +8,9 @@ description: |-
   Collapse on `client_id` before joining, or the join fans out.
   `fenix.retention_clients` takes `MIN(completed_date)` per client.
 
-  Coverage begins 2025-01-01; completions before that date are absent entirely.
-  The earliest date present for a client is therefore not necessarily their
-  first completion — one who completed before it and again after appears with
-  only the later one.
+  Coverage will begin 2025-01-01 when the table is backfilled; completions
+  before that date will be absent entirely. The earliest date present for a
+  client is therefore not necessarily their first completion — one who
+  completed before it and again after appears with only the later one.
 owners:
 - kbammarito@mozilla.com

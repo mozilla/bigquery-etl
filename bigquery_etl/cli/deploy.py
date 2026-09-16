@@ -1319,7 +1319,8 @@ def _deploy_view_artifact(file_path: Path, options: dict):
     id_token = options.get("id_token")
     view = View.from_file(file_path, id_token=id_token)
 
-    # Add managed label if requested
+    # Add managed label if requested. This has to happen before the
+    # has_changes check below
     if options.get("view_add_managed_label", False):
         view.labels["managed"] = ""
 
@@ -1329,10 +1330,26 @@ def _deploy_view_artifact(file_path: Path, options: dict):
         return
 
     client = get_client(credentials=options["credentials"])
+    target_project = options.get("view_target_project")
+
+    if not options["view_force"]:
+        # Read outside the try so a missing option raises a KeyError
+        use_cloud_function = options["use_cloud_function"]
+        try:
+            changed = view.has_changes(
+                target_project,
+                client=client,
+                use_cloud_function=use_cloud_function,
+            )
+        except Exception as e:
+            # The check is an optimization so a failure here just republishes
+            log.warning(f"Could not check {file_path} for changes, publishing: {e}")
+            changed = True
+        if not changed:
+            raise SkippedDeployException("no changes")
 
     success = view.publish(
-        target_project=options.get("view_target_project"),
-        force=options["view_force"],
+        target_project=target_project,
         client=client,
         dry_run=False,
     )

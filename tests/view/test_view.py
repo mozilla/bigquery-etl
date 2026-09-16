@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
+import yaml
 from click.testing import CliRunner
 from click.utils import strip_ansi
 from google.api_core.exceptions import NotFound
@@ -42,6 +43,33 @@ class TestView:
             / "view_with_metadata"
             / "view.sql"
         )
+
+    @pytest.fixture
+    def schema_view(self, tmp_path):
+        """A view with a checked-in schema.yaml."""
+        path = tmp_path / "moz-fx-data-test-project" / "test" / "schema_view"
+        path.mkdir(parents=True)
+        (path / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW\n"
+            "  `moz-fx-data-test-project.test.schema_view`\n"
+            "AS\n"
+            "SELECT\n"
+            "  1 AS a\n"
+        )
+        (path / "schema.yaml").write_text(
+            yaml.dump(
+                {
+                    "fields": [
+                        {
+                            "name": "a",
+                            "type": "INTEGER",
+                            "description": "aaaaa.",
+                        }
+                    ]
+                }
+            )
+        )
+        return View.from_file(path / "view.sql")
 
     def test_from_file(self, simple_view):
         assert simple_view.dataset == "test"
@@ -154,9 +182,11 @@ class TestView:
     @patch("bigquery_etl.dryrun.DryRun")
     @patch("google.cloud.bigquery.Client")
     def test_view_has_changes_no_changes(self, mock_client, mock_dryrun, simple_view):
+        """A view matching BigQuery in every compared attribute should report no changes."""
         deployed_view = Mock()
         deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
         deployed_view.schema = [SchemaField("a", "INT")]
+        deployed_view.labels = {}
         mock_client.return_value.get_table.return_value = deployed_view
         mock_dryrun.return_value.get_schema.return_value = {
             "fields": [{"name": "a", "type": "INT"}]
@@ -202,14 +232,155 @@ class TestView:
         assert metadata_view.has_changes()
         assert "friendly_name" in capsys.readouterr().out
 
-    @patch("bigquery_etl.dryrun.DryRun")
     @patch("google.cloud.bigquery.Client")
-    def test_view_has_changes_changed_schema(
-        self, mock_client, mock_dryrun, simple_view, capsys
+    def test_view_has_changes_changed_schema(self, mock_client, schema_view, capsys):
+        """A schema.yaml whose fields differ from the deployed view should report a change."""
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        deployed_view.schema = [
+            SchemaField("a", "INTEGER"),
+            SchemaField("b", "INTEGER"),
+        ]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert schema_view.has_changes()
+        assert "schema" in capsys.readouterr().out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_matching_schema(self, mock_client, schema_view):
+        """A schema.yaml matching the deployed view should report no change."""
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        deployed_view.schema = [
+            SchemaField.from_api_repr(
+                {
+                    "name": "a",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "aaaaa.",
+                }
+            )
+        ]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert not schema_view.has_changes()
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_missing_field_description(
+        self, mock_client, schema_view, capsys
     ):
+        """A description in schema.yaml absent from BigQuery should report a change."""
+        # This is how the schemas written by `generate derived_view_schemas`
+        # reach BigQuery, so skipping these views would drop descriptions.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        # from_api_repr, not the SchemaField constructor: a field parsed from a
+        # real API response with no description omits the key entirely, which
+        # is what lets the merge fill it in.
+        deployed_view.schema = [
+            SchemaField.from_api_repr(
+                {"name": "a", "type": "INTEGER", "mode": "NULLABLE"}
+            )
+        ]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert schema_view.has_changes()
+        assert "field descriptions" in capsys.readouterr().out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_differing_field_description(
+        self, mock_client, schema_view, capsys
+    ):
+        """A description differing from BigQuery's should report a change."""
+        # CREATE OR REPLACE VIEW clears every column description, so publish
+        # always reapplies schema.yaml's descriptions to the recreated view.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        deployed_view.schema = [
+            SchemaField.from_api_repr(
+                {
+                    "name": "a",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "stale",
+                }
+            )
+        ]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert schema_view.has_changes()
+        assert "field descriptions" in capsys.readouterr().out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_description_removed_from_schema_yaml(
+        self, mock_client, tmp_path, capsys
+    ):
+        """A description dropped from schema.yaml should report a change, since publish clears it."""
+        path = tmp_path / "moz-fx-data-test-project" / "test" / "schema_view"
+        path.mkdir(parents=True)
+        (path / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW\n"
+            "  `moz-fx-data-test-project.test.schema_view`\n"
+            "AS\nSELECT\n  1 AS a\n"
+        )
+        (path / "schema.yaml").write_text(
+            yaml.dump({"fields": [{"name": "a", "type": "INTEGER"}]})
+        )
+        view = View.from_file(path / "view.sql")
+
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", view.content)
+        deployed_view.schema = [
+            SchemaField.from_api_repr(
+                {
+                    "name": "a",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "will be cleared",
+                }
+            )
+        ]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert view.has_changes()
+        assert "field descriptions" in capsys.readouterr().out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_labels_without_metadata(
+        self, mock_client, simple_view, capsys
+    ):
+        """A label differing on a view with no metadata.yaml should report a change."""
+        # publish writes labels whether or not metadata.yaml exists, so this
+        # check must not be nested under the metadata comparison.
+        simple_view.labels["managed"] = ""
         deployed_view = Mock()
         deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
         deployed_view.schema = [SchemaField("a", "INT")]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert simple_view.metadata is None
+        assert simple_view.has_changes()
+        assert "labels" in capsys.readouterr().out
+
+    @patch("bigquery_etl.dryrun.DryRun")
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_upstream_drift_without_schema_file(
+        self, mock_client, mock_dryrun, simple_view, capsys
+    ):
+        """A view with no schema.yaml should dry run to detect upstream drift."""
+        # BigQuery caches a view's schema, so an upstream column addition leaves
+        # the deployed view stale until it is recreated. The dry run is the only
+        # way to see the schema the query produces now.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
+        deployed_view.schema = [SchemaField("a", "INT")]
+        deployed_view.labels = {}
         mock_client.return_value.get_table.return_value = deployed_view
         mock_dryrun.return_value.get_schema.return_value = {
             "fields": [{"name": "a", "type": "INT"}, {"name": "b", "type": "INT"}]
@@ -217,6 +388,45 @@ class TestView:
 
         assert simple_view.has_changes()
         assert "schema" in capsys.readouterr().out
+
+    @patch("bigquery_etl.dryrun.DryRun")
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_when_dry_run_fails(
+        self, mock_client, mock_dryrun, simple_view, capsys
+    ):
+        """A view whose dry run fails should report a change rather than be skipped."""
+        # Failing toward republish keeps a flaky dry run from silently leaving a
+        # stale schema deployed.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
+        deployed_view.schema = [SchemaField("a", "INT")]
+        deployed_view.labels = {}
+        mock_client.return_value.get_table.return_value = deployed_view
+        mock_dryrun.return_value.get_schema.side_effect = RuntimeError("boom")
+
+        assert simple_view.has_changes()
+        assert "could not dry run" in capsys.readouterr().out
+
+    @patch("bigquery_etl.view.Schema.from_query_file")
+    def test_dryrun_schema_uses_supplied_client_instead_of_cloud_function(
+        self, mock_from_query_file, simple_view
+    ):
+        """A supplied client should make the dry run go direct to BigQuery."""
+        client = Mock()
+        simple_view._dryrun_schema(client=client, use_cloud_function=False)
+        kwargs = mock_from_query_file.call_args.kwargs
+        assert kwargs["client"] is client
+        assert kwargs["use_cloud_function"] is False
+
+    @patch("bigquery_etl.view.Schema.from_query_file")
+    def test_dryrun_schema_without_client_uses_cloud_function(
+        self, mock_from_query_file, simple_view
+    ):
+        """The default should leave the dry run on the cloud function."""
+        simple_view._dryrun_schema()
+        kwargs = mock_from_query_file.call_args.kwargs
+        assert kwargs["client"] is None
+        assert kwargs["use_cloud_function"] is True
 
     @patch("bigquery_etl.cli.view.get_id_token")
     def test_collect_views_authorized_only(self, mock_get_id_token, runner):

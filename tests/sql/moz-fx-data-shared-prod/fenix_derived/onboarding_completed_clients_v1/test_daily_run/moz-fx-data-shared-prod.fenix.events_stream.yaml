@@ -20,6 +20,27 @@
   event_timestamp: 2026-09-03 21:54:40
   client_info:
     app_display_version: '142.0'
+# KEPT - c's two events share one event_timestamp, so submission_timestamp
+# breaks the tie and the first-arriving ping's 144.0 wins. The only entry
+# exercising that key, and it fails without it: on the version keys alone the
+# later ping's 143.0 would sort first.
+- submission_timestamp: 2026-09-03 06:05:00
+  client_id: client-c
+  sample_id: 5
+  event_category: onboarding
+  event_name: completed
+  event_timestamp: 2026-09-03 06:00:00
+  client_info:
+    app_display_version: '144.0'
+# KEPT, collapsed into c's single row. Same event_timestamp, later submission.
+- submission_timestamp: 2026-09-03 06:10:00
+  client_id: client-c
+  sample_id: 5
+  event_category: onboarding
+  event_name: completed
+  event_timestamp: 2026-09-03 06:00:00
+  client_info:
+    app_display_version: '143.0'
 # KEPT - d's only event, the plain single-event case.
 - submission_timestamp: 2026-09-03 11:02:00
   client_id: client-d
@@ -56,6 +77,28 @@
   event_timestamp: 2026-09-03 09:59:00
   client_info:
     app_display_version:
+# KEPT - k's two events share both timestamps, so only the version keys are
+# left. Version strings sort lexicographically, so '100.0' wins over '9.0':
+# these keys exist to make the pick deterministic, not to choose the newer
+# version. Removing them leaves the pick undefined rather than wrong, so this
+# case catches a changed backstop, not a deleted one.
+- submission_timestamp: 2026-09-03 07:00:00
+  client_id: client-k
+  sample_id: 77
+  event_category: onboarding
+  event_name: completed
+  event_timestamp: 2026-09-03 06:30:00
+  client_info:
+    app_display_version: '9.0'
+# KEPT, collapsed into k's single row. Same event_timestamp and submission.
+- submission_timestamp: 2026-09-03 07:00:00
+  client_id: client-k
+  sample_id: 77
+  event_category: onboarding
+  event_name: completed
+  event_timestamp: 2026-09-03 06:30:00
+  client_info:
+    app_display_version: '100.0'
 # DROPPED by the event_name filter: a different onboarding event.
 - submission_timestamp: 2026-09-03 12:00:00
   client_id: client-e

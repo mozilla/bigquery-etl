@@ -25,6 +25,7 @@ fields:
   mode: NULLABLE
   description: |-
     App display version the client was running at the completion, read from the
-    earliest completion event on this row's date. Distinct from the app_version
-    on retention_clients, which is the version as of that row's metric date and
-    so moves as the client upgrades. Null where the event carried no version.
+    earliest completion event among those reported on this row's date, with ties
+    going to the ping that arrived first. Distinct from the app_version on
+    retention_clients, which is the version as of that row's metric date and so
+    moves as the client upgrades. Null where the event carried no version.

@@ -1,14 +1,21 @@
 ---
-# Every output row carries @submission_date as completed_date, and client-b's two
-# events that day collapse into one row. app_version comes from each client's
+# Every output row carries @submission_date as completed_date, and each client's
+# same-day events collapse into one row. app_version comes from the client's
 # earliest dated event: 141.0 over 142.0 for b, 138.0 over the undated 200.0 for
-# h. For i, whose only event carried no version, app_version is absent rather
-# than null: the harness omits null columns from a result row, so naming the key
-# here would fail the comparison.
+# h. Where the earliest event is tied, submission order decides — c's 144.0
+# arrived before its 143.0 — and where submission order is tied too, the lower
+# version string does: k's 100.0 over its 9.0, lexicographic rather than newer.
+# For i, whose only event carried no version, app_version is absent rather than
+# null: the harness omits null columns from a result row, so naming the key here
+# would fail the comparison.
 - client_id: client-b
   completed_date: 2026-09-03
   sample_id: 17
   app_version: '141.0'
+- client_id: client-c
+  completed_date: 2026-09-03
+  sample_id: 5
+  app_version: '144.0'
 - client_id: client-d
   completed_date: 2026-09-03
   sample_id: 8
@@ -20,3 +27,7 @@
 - client_id: client-i
   completed_date: 2026-09-03
   sample_id: 31
+- client_id: client-k
+  completed_date: 2026-09-03
+  sample_id: 77
+  app_version: '100.0'

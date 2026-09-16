@@ -12,7 +12,7 @@ One row per Fenix client per day on which they fired the Glean `onboarding.compl
 
 `client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. Collapse on `client_id` first, and take `app_version` from the same row you take the date from. For example, `retention_clients` does this in its `onboarding_completions` CTE.
 
-`app_version` is the version the client was running at the completion, taken from the earliest completion event on that date, and `NULL` where the event carried none. It is the raw version string, so it sorts lexicographically — `'100.0'` orders below `'9.0'`. It is not the `app_version` on `retention_clients`, which is as of that row's metric date; and since `completed_date` is the reported day, a ping arriving after an upgrade carries the later day's version.
+`app_version` is the version the client was running at the completion, taken from the earliest completion event among those reported on that date, and `NULL` where the event carried none. Where two events share an event timestamp the version comes from whichever ping arrived first, and where those match too, the lower version string. It is the raw version string, so it sorts lexicographically — `'100.0'` orders below `'9.0'`. It is not the `app_version` on `retention_clients`, which is as of that row's metric date; and since `completed_date` is the reported day, a ping arriving after an upgrade carries the later day's version.
 
 ## Floor
 

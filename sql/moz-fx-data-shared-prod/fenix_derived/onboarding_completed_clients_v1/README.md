@@ -5,12 +5,12 @@
 One row per Fenix client per day on which they fired the Glean `onboarding.completed` event. A client who fired it on more than one day has a row for each.
 
 * **Grain:** `client_id`, `completed_date`
-* **Key fields:** `client_id`, `completed_date`, `app_version`, `sample_id` (a clustering field, not part of the grain)
+* **Key fields:** `client_id`, `completed_date`, `sample_id` (a clustering field, not part of the grain), `app_version`
 * **Source:** `fenix.events_stream`
 * **Filters:** `event_category = 'onboarding'`, `event_name = 'completed'`, and a non-null `client_id`
 * **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `onboarding_completed_by_day_27` and `app_version_at_onboarding_completion`
 
-`client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. `retention_clients` collapses it with `MIN(completed_date)` and `GROUP BY client_id` in its `onboarding_completions` CTE; any new consumer has to do the same.
+`client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. Collapse on `client_id` first, and take `app_version` from the same row you take the date from. For example, `retention_clients` does this in its `onboarding_completions` CTE.
 
 `app_version` is the version the client was running at the completion, taken from the earliest completion event on that date, and `NULL` where the event carried none. It is the raw version string, so it sorts lexicographically — `'100.0'` orders below `'9.0'`. It is not the `app_version` on `retention_clients`, which is as of that row's metric date; and since `completed_date` is the reported day, a ping arriving after an upgrade carries the later day's version.
 

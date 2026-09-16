@@ -40,8 +40,7 @@ onboarding_completions AS (
   SELECT
     client_id,
     MIN(completed_date) AS first_completed_date,
-    -- One row per client per completion day, so the earliest date picks exactly
-    -- one row and the version comes from it.
+    -- The earliest date identifies exactly one row, so the version comes from it.
     ANY_VALUE(app_version HAVING MIN completed_date) AS app_version_at_onboarding_completion,
   FROM
     `{{ project_id }}.{{ dataset }}.onboarding_completed_clients`
@@ -143,9 +142,8 @@ LEFT JOIN
   AND clients_daily.sample_id = attribution.sample_id
   AND clients_daily.normalized_channel = attribution.normalized_channel
 {% if app_name == "fenix" %}
--- client_id alone, unlike the attribution join above: completions are one row per
--- client across all fenix channels, and sample_id there is MIN over the client's
--- events, so matching on it could only drop rows.
+-- client_id alone, unlike the attribution join above: the CTE is already one row
+-- per client, and it carries no sample_id or channel to match on.
 LEFT JOIN
   onboarding_completions
   ON clients_daily.client_id = onboarding_completions.client_id

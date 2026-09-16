@@ -976,8 +976,10 @@ def _render_and_rewrite(query_file: Path, rewrite: Callable[[str], str]) -> str:
 
     Rendering resolves the template, and `is_init` defaults to False, so a plain
     render collapses `{% if is_init() %}` down to its `else` arm. Writing that
-    back would discard the init query permanently, and anything that re-renders
-    the deployed file with `is_init=True`."""
+    back would discard the init query permanently and silently hand the
+    incremental query to anything that re-renders the deployed file with
+    `is_init=True`.
+    """
 
     def _render(**kwargs) -> str:
         return render_template(
@@ -987,11 +989,17 @@ def _render_and_rewrite(query_file: Path, rewrite: Callable[[str], str]) -> str:
             **kwargs,
         )
 
-    if "is_init()" not in query_file.read_text():
+    # Match `is_init` (not the exact `is_init()` spelling) so `is_init ()` or
+    # branching pulled in via an {% include %} still take the two-arm path; the
+    # equality check below keeps the fast, single-copy result when the mention
+    # doesn't actually change the output (e.g. it's only in a comment).
+    if "is_init" not in query_file.read_text():
         return rewrite(_render())
 
     init_sql = rewrite(_render(is_init=lambda: True))
     query_sql = rewrite(_render(is_init=lambda: False))
+    if init_sql == query_sql:
+        return init_sql
     return (
         "{% if is_init() %}\n"
         f"{init_sql}\n"
@@ -1099,8 +1107,14 @@ def rewrite_for_defer(
             return None
         return info.source_project, info.source_dataset, info.source_table
 
+    # Scanned once here rather than inside `_rewrite`: neither depends on `sql`,
+    # and `_render_and_rewrite` may invoke the callback twice (once per is_init
+    # arm), which would otherwise double these (uncached) target scans.
+    deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
+    deployed_routines = get_deployed_routines_in_target(sql_dir, target_project)
+
     def _rewrite(sql: str) -> str:
-        for info in get_deployed_tables_in_target(sql_dir, target_project):
+        for info in deployed_tables:
             src = _validated_source(info)
             if src is None:
                 continue
@@ -1112,7 +1126,7 @@ def rewrite_for_defer(
 
         # Routine refs can be 2-part (dataset.name) or 3-part (project.dataset.name);
         # routine_usage_pattern handles both, gated on a `(` call site.
-        for info in get_deployed_routines_in_target(sql_dir, target_project):
+        for info in deployed_routines:
             src = _validated_source(info)
             if src is None:
                 continue

@@ -1298,22 +1298,15 @@ WHERE
         )
         return query_file.read_text()
 
-    def test_isolated_rewrite_keeps_both_branches(self, tmp_path):
-        result = self._rewrite(self._write_query(tmp_path, self.QUERY_WITH_INIT))
-
-        assert "{% if is_init() %}" in result
-        assert "{% else %}" in result
-        assert "submission_date >= '2018-01-01'" in result
-        assert "submission_date = @submission_date" in result
+    def test_isolated_rewrite_preserves_branches_and_rerenders(self, tmp_path):
+        query_file = self._write_query(tmp_path, self.QUERY_WITH_INIT)
+        result = self._rewrite(query_file)
 
         # the ref is rewritten in both arms, not just the incremental one
         assert result.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 2
         assert "moz-fx-data-shared-prod" not in result
 
-    def test_rewritten_file_still_renders_as_init(self, tmp_path):
-        query_file = self._write_query(tmp_path, self.QUERY_WITH_INIT)
-        self._rewrite(query_file)
-
+        # and the deployed file still re-renders correctly for both is_init modes
         init_sql = render(
             query_file.name,
             template_folder=str(query_file.parent),

@@ -26,11 +26,6 @@
   impression_count: 1
   click_count: 0
   report_count: 0
-- corpus_item_id: item-fr
-  region: FR-fixed-tile-in-fr-treatment
-  impression_count: 1
-  click_count: 0
-  report_count: 0
 - corpus_item_id: item-gb
   region: GB-ctrpred_engb-control
   impression_count: 1

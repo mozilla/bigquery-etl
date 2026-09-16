@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import bigeye_sdk
 import pytest
+from bigeye_sdk.controller.metric_suite_controller import _find_bigconfig_files
 from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
 from click.testing import CliRunner
 
@@ -63,6 +64,91 @@ class TestMonitoring:
 
                 mock_execute_bigconfig.assert_called_once()
                 assert (SQL_DIR / "bigconfig.yml").exists()
+
+    @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
+    @patch(
+        "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
+    )
+    def test_deploy_multiple_workspaces_loads_saved_metrics(
+        self, mock_metric_controller_init, mock_client_factory, runner
+    ):
+        """The global saved-metric definitions must load for every workspace.
+
+        Bigeye's YAML file index is process-global, so re-using the same
+        `sql/bigconfig.yml` path across `execute_bigconfig` calls raises
+        "Duplicate file found" and silently drops the
+        `saved_metric_definitions` for every workspace after the first.
+        """
+        with runner.isolated_filesystem():
+            test_query = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "incremental_query_v1"
+            )
+
+            default_workspace_dir = Path(
+                "sql/moz-fx-data-shared-prod/test/incremental_query_v1"
+            )
+            other_workspace_dir = Path(
+                "sql/moz-fx-data-shared-prod/test/other_query_v1"
+            )
+            for query_dir in (default_workspace_dir, other_workspace_dir):
+                os.makedirs(str(query_dir))
+                copy_tree(str(test_query), str(query_dir))
+
+            metadata_file = other_workspace_dir / "metadata.yaml"
+            metadata_file.write_text(
+                metadata_file.read_text().replace(
+                    "monitoring:\n  enabled: true",
+                    "monitoring:\n  enabled: true\n  workspace: 508",
+                )
+            )
+
+            # The hand-maintained global file holding the saved metric
+            # definitions that `saved_metric_id` references resolve against.
+            # `deploy` appends it to every workspace's deploy input path.
+            Path("sql/bigconfig.yml").write_text(
+                "type: BIGCONFIG_FILE\n"
+                "saved_metric_definitions:\n"
+                "  metrics:\n"
+                "    - saved_metric_id: is_not_null\n"
+                "      metric_type:\n"
+                "        predefined_metric: PERCENT_NULL\n"
+                "      threshold:\n"
+                "        type: CONSTANT\n"
+                "        upper_bound: 0\n"
+            )
+
+            mock_metric_controller_init.return_value = None
+            mock_client_factory.return_value = None
+
+            saved_metrics_per_workspace = []
+
+            def fake_execute_bigconfig(input_path, **kwargs):
+                """Load the deploy inputs the way the Bigeye SDK does."""
+                files = _find_bigconfig_files(input_paths=input_path, recursive=False)
+                saved_metrics_per_workspace.append(
+                    any(
+                        getattr(file, "saved_metric_definitions", None)
+                        for file in files
+                    )
+                )
+
+            with patch.object(
+                bigeye_sdk.controller.metric_suite_controller.MetricSuiteController,
+                "execute_bigconfig",
+                side_effect=fake_execute_bigconfig,
+            ):
+                result = runner.invoke(
+                    deploy, ["sql/moz-fx-data-shared-prod/test", "--dry-run"]
+                )
+
+                assert result.exit_code == 0, result.output
+                # One deploy per workspace, each with the saved metrics loaded.
+                assert saved_metrics_per_workspace == [True, True]
 
     @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
     @patch(

@@ -141,9 +141,15 @@ SELECT
     TRUE,
     NULL
   ) AS onboarding_completed_by_day_27,
-  -- The version at the client's earliest completion, distinct from app_version
-  -- above, which is as of the metric date.
-  onboarding_completions.app_version_at_onboarding_completion AS app_version_at_onboarding_completion,
+  -- The version at the client's earliest completion, limited to the same day-27
+  -- window as the flag above so the two agree on who completed. Distinct from
+  -- app_version above, which is as of the metric date. Null where the completion
+  -- fell outside the window, and also where the event carried no version.
+  IF(
+    onboarding_completions.first_completed_date <= active_users.submission_date,
+    onboarding_completions.app_version_at_onboarding_completion,
+    NULL
+  ) AS app_version_at_onboarding_completion,
 FROM
   `moz-fx-data-shared-prod.fenix.baseline_clients_daily` AS clients_daily
 INNER JOIN

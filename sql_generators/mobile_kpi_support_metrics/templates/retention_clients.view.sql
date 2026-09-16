@@ -122,10 +122,16 @@ SELECT
   {% else %}
   CAST(NULL AS BOOLEAN)
   {% endif %} AS onboarding_completed_by_day_27,
-  -- The version at the client's earliest completion, distinct from app_version
-  -- above, which is as of the metric date.
+  -- The version at the client's earliest completion, limited to the same day-27
+  -- window as the flag above so the two agree on who completed. Distinct from
+  -- app_version above, which is as of the metric date. Null where the completion
+  -- fell outside the window, and also where the event carried no version.
   {% if app_name == "fenix" %}
-  onboarding_completions.app_version_at_onboarding_completion
+  IF(
+    onboarding_completions.first_completed_date <= active_users.submission_date,
+    onboarding_completions.app_version_at_onboarding_completion,
+    NULL
+  )
   {% else %}
   CAST(NULL AS STRING)
   {% endif %} AS app_version_at_onboarding_completion,

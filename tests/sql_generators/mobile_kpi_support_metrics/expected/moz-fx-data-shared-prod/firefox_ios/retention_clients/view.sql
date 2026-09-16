@@ -104,8 +104,10 @@ SELECT
   -- below stay last, in this order, and unconditional in every product branch:
   -- mobile_retention_clients unions the products by position.
   CAST(NULL AS BOOLEAN) AS onboarding_completed_by_day_27,
-  -- The version at the client's earliest completion, distinct from app_version
-  -- above, which is as of the metric date.
+  -- The version at the client's earliest completion, limited to the same day-27
+  -- window as the flag above so the two agree on who completed. Distinct from
+  -- app_version above, which is as of the metric date. Null where the completion
+  -- fell outside the window, and also where the event carried no version.
   CAST(NULL AS STRING) AS app_version_at_onboarding_completion,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily

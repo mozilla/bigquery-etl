@@ -8,7 +8,7 @@ One row per Fenix client per day on which they fired the Glean `onboarding.compl
 * **Key fields:** `client_id`, `completed_date`, `sample_id` (a clustering field, not part of the grain), `app_version`
 * **Source:** `fenix.events_stream`
 * **Filters:** `event_category = 'onboarding'`, `event_name = 'completed'`, and a non-null `client_id`
-* **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `onboarding_completed_by_day_27` and `app_version_at_onboarding_completion`
+* **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `onboarding_completed_by_day_27` and `app_version_at_onboarding_completion`, both limited there to completions on or before the row's day-27 date
 
 `client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. Collapse on `client_id` first, and take `app_version` from the same row you take the date from. For example, `retention_clients` does this in its `onboarding_completions` CTE.
 

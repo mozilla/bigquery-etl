@@ -11,7 +11,6 @@ from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
 import rich_click as click
-from google.cloud import bigquery
 
 from ..cli.utils import (
     parallelism_option,
@@ -24,7 +23,7 @@ from ..config import ConfigLoader
 from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
-from ..util.client_queue import ClientQueue
+from ..util.client_queue import ClientQueue, get_client
 from ..util.common import block_coding_agents
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from ..view import View, broken_views
@@ -263,7 +262,7 @@ def publish(
 
 
 def _view_has_changes(target_project, credentials, view):
-    return view.has_changes(target_project, credentials)
+    return view.has_changes(target_project, client=get_client(credentials))
 
 
 def _publish_view_callback(
@@ -276,7 +275,7 @@ def _publish_view_callback(
     results,
 ):
     try:
-        client = bigquery.Client(credentials=credentials)
+        client = get_client(credentials)
         success = views_by_id[view_id].publish(target_project, dry_run, client)
         results[view_id] = success if success is not None else True
     except Exception:

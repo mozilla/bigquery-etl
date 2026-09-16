@@ -42,6 +42,7 @@ from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.routine.parse_routine import ROUTINE_FILES, RawRoutine
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
+from bigquery_etl.util.client_queue import get_client
 from bigquery_etl.util.common import block_coding_agents, get_bqetl_project_root, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.util.target import (
@@ -1271,7 +1272,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
 
         # validate schema matches query if not using --table-force
         if not options["table_force"] and str(file_path).endswith(".sql"):
-            client = bigquery.Client(credentials=options["credentials"])
+            client = get_client(credentials=options["credentials"])
             try:
                 table_name = file_path.parent.name
                 dataset_name = file_path.parent.parent.name
@@ -1309,6 +1310,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
         credentials=options["credentials"],
         id_token=options["id_token"],
         isolated=options.get("isolated", False),
+        client=get_client(credentials=options["credentials"]),
     )
 
 
@@ -1326,7 +1328,7 @@ def _deploy_view_artifact(file_path: Path, options: dict):
             raise FailedDeployException(f"View validation failed for {file_path}")
         return
 
-    client = bigquery.Client(credentials=options["credentials"])
+    client = get_client(credentials=options["credentials"])
 
     success = view.publish(
         target_project=options.get("view_target_project"),

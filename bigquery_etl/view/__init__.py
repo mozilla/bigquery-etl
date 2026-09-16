@@ -285,7 +285,7 @@ class View:
             return self.view_identifier.replace(self.project, target_project, 1)
         return self.view_identifier
 
-    def has_changes(self, target_project=None, credentials=None):
+    def has_changes(self, target_project=None, credentials=None, client=None):
         """Determine whether there are any changes that would be published."""
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             return False
@@ -296,10 +296,11 @@ class View:
             # view would be skipped because --target-project is set
             return False
 
-        if credentials:
-            client = bigquery.Client(credentials=credentials)
-        else:
-            client = bigquery.Client()
+        if client is None:
+            if credentials:
+                client = bigquery.Client(credentials=credentials)
+            else:
+                client = bigquery.Client()
         target_view_id = self.target_view_identifier(target_project)
         try:
             table = client.get_table(target_view_id)
@@ -426,7 +427,9 @@ class View:
                             add_missing_fields=False,
                             ignore_missing_fields=True,
                         )
-                        table = live_schema.deploy(target_view)
+                        table = live_schema.deploy(
+                            target_view, client=client, table=table
+                        )
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

@@ -6,8 +6,8 @@ description: |-
   joining. `fenix.onboarding_completed_clients` exposes this table unchanged;
   `fenix.retention_clients` takes `MIN(completed_date)` per client.
 
-  The table holds no rows before 2025-01-01, so a client whose completions all
-  fall before that date does not appear here.
+  Coverage will begin 2025-01-01, so a client whose completions all fall before
+  that date will not appear here.
 owners:
   - kbammarito@mozilla.com
 labels:
@@ -26,6 +26,7 @@ bigquery:
   time_partitioning:
     type: day
     field: completed_date
+    # Load-bearing: retention_clients reads the whole table with no date filter.
     require_partition_filter: false
     # Deliberate: null keeps past partitions permanent, and it holds the
     # backfill retention limit at 775 days rather than lowering it.

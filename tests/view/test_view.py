@@ -8,7 +8,7 @@ from click.utils import strip_ansi
 from google.api_core.exceptions import NotFound
 from google.cloud.bigquery import SchemaField
 
-from bigquery_etl.cli.view import _collect_views
+from bigquery_etl.cli.view import _collect_views, _list_managed_views
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.view import CREATE_VIEW_PATTERN, View
 
@@ -541,3 +541,77 @@ class TestView:
                     "Cannot use both --skip-authorized and --authorized-only"
                     in strip_ansi(result.output)
                 )
+
+
+class TestListManagedViews:
+    """Region-wide managed-view listing used by `bqetl view clean`."""
+
+    @staticmethod
+    def _row(table_id, table_schema, is_authorized=False):
+        row = Mock()
+        row.table_id = table_id
+        row.table_schema = table_schema
+        row.is_authorized = is_authorized
+        return row
+
+    def _client(self, rows):
+        client = Mock()
+        client.query.return_value.result.return_value = rows
+        return client
+
+    @property
+    def rows(self):
+        return [
+            self._row("p.telemetry.a", "telemetry"),
+            self._row("p.telemetry_derived.b", "telemetry_derived"),
+            self._row("p.telemetry.c", "telemetry", is_authorized=True),
+        ]
+
+    def test_queries_the_region_once(self):
+        """Listing should issue one region-scoped query instead of one per dataset."""
+        client = self._client(self.rows)
+        _list_managed_views(client, "my-project", "us", None, False)
+
+        assert client.query.call_count == 1
+        sql = client.query.call_args[0][0]
+        assert "`my-project.region-us.INFORMATION_SCHEMA.VIEWS`" in sql
+        assert "`my-project.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS`" in sql
+        assert 'STRUCT("managed", "")' in sql
+
+    def test_region_is_configurable(self):
+        """The region option should select which region-qualified schema is queried."""
+        client = self._client([])
+        _list_managed_views(client, "my-project", "eu", None, False)
+        assert "region-eu" in client.query.call_args[0][0]
+
+    def test_skip_authorized(self):
+        """skip_authorized should exclude views labeled authorized."""
+        result = _list_managed_views(self._client(self.rows), "p", "us", None, True)
+        assert result == {"p.telemetry.a", "p.telemetry_derived.b"}
+
+    def test_authorized_only(self):
+        """authorized_only should return only views labeled authorized."""
+        result = _list_managed_views(
+            self._client(self.rows), "p", "us", None, False, authorized_only=True
+        )
+        assert result == {"p.telemetry.c"}
+
+    def test_user_facing_only_excludes_suffixed_datasets(self):
+        """user_facing_only should exclude views in datasets with a non-user-facing suffix."""
+        result = _list_managed_views(
+            self._client(self.rows), "p", "us", None, True, user_facing_only=True
+        )
+        assert result == {"p.telemetry.a"}
+
+    def test_no_filters_returns_everything(self):
+        """No filters should return every managed view."""
+        result = _list_managed_views(self._client(self.rows), "p", "us", None, False)
+        assert len(result) == 3
+
+    def test_name_pattern_filters(self):
+        """A name pattern should filter to matching views."""
+        # Regression: this path used to raise AttributeError via sql_table_id.
+        result = _list_managed_views(
+            self._client(self.rows), "p", "us", "telemetry.a", False
+        )
+        assert result == {"p.telemetry.a"}

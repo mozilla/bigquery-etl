@@ -14,10 +14,12 @@ SELECT
   DATE(submission_timestamp) AS submission_date,
   CASE
     WHEN JSON_VALUE(event_extra.provider_id) = 'other'
-      THEN `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+      THEN `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
           JSON_VALUE(event_extra.provider_name)
         )
-    ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine`(JSON_VALUE(event_extra.provider_id))
+    ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
+        JSON_VALUE(event_extra.provider_id)
+      )
   END AS normalized_engine, -- this is "engine" in v8
   -- the two raw extras behind normalized_engine, kept so consumers can see what the engine
   -- CASE collapsed. prefixed here rather than at the join, unlike the README convention:

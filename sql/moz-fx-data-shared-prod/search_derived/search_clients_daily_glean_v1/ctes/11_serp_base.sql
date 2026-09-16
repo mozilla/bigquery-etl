@@ -8,12 +8,12 @@
 -- and leaving both makes every downstream reference ambiguous. BigQuery enforces that one case
 -- for us; the other two are the same hazard, hidden only by the names differing.
 --
--- search_engine stays. normalize_search_engine collapses many raw strings into buckets, so the
--- raw engine is a different fact rather than the same fact in another spelling.
+-- search_engine stays. normalize_search_engine_glean collapses many raw strings into buckets, so
+-- the raw engine is a different fact rather than the same fact in another spelling.
 SELECT
   * EXCEPT (glean_client_id, partner_code, sap_source),
   glean_client_id AS client_id,
-  `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+  `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
     search_engine
   ) AS provider_id, -- this is engine
   -- partner_code is a grain key, so it must never be NULL: an absent map key and an

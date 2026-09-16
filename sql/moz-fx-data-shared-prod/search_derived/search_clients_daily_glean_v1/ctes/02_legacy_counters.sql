@@ -74,7 +74,7 @@ legacy_exploded_cte AS (
     f.fam AS family,
     -- segment 1: provider, normalized the same way the SAP side normalizes it so the
     -- join key cannot drift
-    `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+    `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
       SPLIT(kv.key, ':')[SAFE_OFFSET(0)]
     ) AS normalized_engine,
     -- segment 2: the measure selector

@@ -297,7 +297,7 @@ legacy_exploded_cte AS (
     f.fam AS family,
     -- segment 1: provider, normalized the same way the SAP side normalizes it so the
     -- join key cannot drift
-    `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+    `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
       SPLIT(kv.key, ':')[SAFE_OFFSET(0)]
     ) AS normalized_engine,
     -- segment 2: the measure selector
@@ -492,10 +492,10 @@ sap_base_cte AS (
     DATE(submission_timestamp) AS submission_date,
     CASE
       WHEN JSON_VALUE(event_extra.provider_id) = 'other'
-        THEN `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+        THEN `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
             JSON_VALUE(event_extra.provider_name)
           )
-      ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+      ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
           JSON_VALUE(event_extra.provider_id)
         )
     END AS normalized_engine, -- this is "engine" in v8
@@ -711,13 +711,13 @@ sap_final_cte AS (
 -- the EXCEPT list is the raw form of every key resolved below, dropped so no consumer can key
 -- on it by accident -- the same silent-join-miss this base CTE exists to prevent. partner_code
 -- would have to be dropped regardless, since the derived column reuses the source name.
--- search_engine stays: normalize_search_engine collapses many raw strings into buckets, so the
--- raw engine is a different fact rather than the same one in another spelling.
+-- search_engine stays: normalize_search_engine_glean collapses many raw strings into buckets, so
+-- the raw engine is a different fact rather than the same one in another spelling.
 serp_base_cte AS (
   SELECT
     * EXCEPT (glean_client_id, partner_code, sap_source),
     glean_client_id AS client_id,
-    `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+    `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
       search_engine
     ) AS provider_id, -- this is engine
     -- partner_code is a grain key, so it must never be NULL: an absent map key and an

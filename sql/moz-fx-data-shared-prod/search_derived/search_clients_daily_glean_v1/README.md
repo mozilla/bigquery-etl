@@ -166,7 +166,7 @@ The label on each counter carries the rest of the key, colon-separated:
 | 1       | `tagged`, `tagged-follow-on`, `organic` | same                  |
 | 2       | partner code                         | absent                   |
 
-Segment 0 goes through `udf.normalize_search_engine`, the same normalization the SAP side applies, so the join key cannot drift.
+Segment 0 goes through `udf.normalize_search_engine_glean`, the same normalization the SAP side applies, so the join key cannot drift.
 
 #### Partner code attribution on the ads families
 
@@ -222,9 +222,9 @@ SAP's comes from `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_
 
 SERP's comes from `mozdata.firefox_desktop.serp_events`, read by `serp_base`, which every other SERP CTE reads in turn. The `mozdata` view rather than `serp_events_v2` because `serp_events_v2` does not carry the aggregated fields such as `num_ads_visible`; the view adds those and drops only `engagements` and `component_impressions`, so it is a superset of what any SERP CTE needs.
 
-`serp_base` resolves the three grain keys once and passes the rest of the row through with `select * except (glean_client_id, partner_code, sap_source)`. The excluded set is the raw form of each resolved key, dropped so that no consumer can key on it by accident — which would produce exactly the silent join miss this CTE exists to prevent. `partner_code` would have to go regardless, since the derived column reuses the source name and leaving both makes every downstream reference ambiguous; BigQuery enforces that one case, and the other two are the same hazard hidden only by the names differing. `search_engine` stays, because `normalize_search_engine` collapses many raw strings into buckets, making the raw engine a different fact rather than the same fact in another spelling. Every SERP CTE after the base then selects the keys as plain columns, which is what makes them impossible to drift apart.
+`serp_base` resolves the three grain keys once and passes the rest of the row through with `select * except (glean_client_id, partner_code, sap_source)`. The excluded set is the raw form of each resolved key, dropped so that no consumer can key on it by accident — which would produce exactly the silent join miss this CTE exists to prevent. `partner_code` would have to go regardless, since the derived column reuses the source name and leaving both makes every downstream reference ambiguous; BigQuery enforces that one case, and the other two are the same hazard hidden only by the names differing. `search_engine` stays, because `normalize_search_engine_glean` collapses many raw strings into buckets, making the raw engine a different fact rather than the same fact in another spelling. Every SERP CTE after the base then selects the keys as plain columns, which is what makes them impossible to drift apart.
 
-The engine is normalized on both sides through `udf.normalize_search_engine`. On the SAP side the input is `provider_id`, except where `provider_id` is `other`, in which case `provider_name` is normalized instead. On the SERP side the input is `search_engine`.
+The engine is normalized on both sides through `udf.normalize_search_engine_glean`. On the SAP side the input is `provider_id`, except where `provider_id` is `other`, in which case `provider_name` is normalized instead. On the SERP side the input is `search_engine`.
 
 `sap_base` also projects those two raw extras as `sap_provider_id` and `sap_provider_name`, and they reach the output under those names, so a consumer can see what the engine `case` collapsed — in particular which provider an `other` row actually was. They are prefixed at `sap_base` rather than at the join, which is the one departure from the prefix convention described below: by `join_sources_cte` the name `provider_id` already means the SERP normalized engine, so an unprefixed SAP `provider_id` would collide with it. There is no SERP counterpart to coalesce with, because SERP carries a single provider extra that `serp_base` normalizes into `provider_id` and does not keep raw.
 
@@ -337,7 +337,7 @@ This is `final_cte`. It renames the joined columns to the output schema and perf
 
 A few output columns are worth calling out.
 
-- `normalized_engine` is the only engine column. v8's `engine` is dropped. In v8 `engine` held the raw engine string and `normalized_engine` was always null; in glean_v1 the engine is normalized through `udf.normalize_search_engine` on both pipelines, so the two columns would have held the same value.
+- `normalized_engine` is the only engine column. v8's `engine` is dropped. In v8 `engine` held the raw engine string and `normalized_engine` was always null; in glean_v1 the engine is normalized through `udf.normalize_search_engine_glean` on both pipelines, so the two columns would have held the same value.
 - `sap_provider_id` and `sap_provider_name` are the raw SAP extras behind `normalized_engine`, kept so the normalization is auditable — `normalized_engine` buckets many raw providers into one value, and where `sap_provider_id` is `other` it is `sap_provider_name` that determined the bucket. Both keep their prefix in the output and are `null` on serp-only rows. They have no v8 counterpart.
 - `tagged_serp` is the only tagged count. v8's `tagged_sap` is dropped: SAP has no `is_tagged`, so glean_v1 has no independent SAP-side measure to put there and both columns would have carried the same `serp_searches_tagged_count` value.
 - `sap_counts_total` is not v8's `sap`, despite measuring the same activity. v8's was a `sum` of the legacy `search_counts.count` counter; this is a `count(*)` over `sap.counts` events, at a grain that also includes `partner_code`. Summing this column will not reproduce v8's `sap`.

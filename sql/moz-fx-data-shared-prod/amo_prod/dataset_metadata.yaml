@@ -1,7 +1,7 @@
 friendly_name: AMO Stats Prod
 description: |-
   Derived data used to power the AMO stats dashboards
-dataset_base_acl: stable
+dataset_base_acl: derived
 user_facing: true
 labels: {}
 workgroup_access:

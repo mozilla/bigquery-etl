@@ -18,7 +18,7 @@ One row per Fenix client per day on which they fired the Glean `onboarding.compl
 
 The table will be backfilled from 2025-01-01, so a client whose completions all fall before that date will have no row here.
 
-That matters downstream: on `retention_clients` those clients will read `NULL` rather than `FALSE`, indistinguishable from clients who never completed. Anyone segmenting retention on the flag should filter `first_seen_date >= '2025-01-01'` so the population is limited to clients whose whole life falls inside the window.
+That matters downstream: on `retention_clients` those clients will read `NULL` rather than `FALSE`, indistinguishable from clients who never completed — the flag is `TRUE` or `NULL` and never `FALSE`. Anyone segmenting retention on it should filter `first_seen_date >= '2025-01-01'` so the population is limited to clients whose whole life falls inside the window. That filter is also what a completion rate needs for its denominator: `COUNTIF(onboarding_completed_by_day_27) / COUNT(onboarding_completed_by_day_27)` returns exactly 1.0, since `COUNT` skips nulls and every non-completer is null, so the denominator has to come from `retention_clients`'s own rows instead. `WHERE NOT onboarding_completed_by_day_27` returns nothing, for the same reason.
 
 ## Runs
 

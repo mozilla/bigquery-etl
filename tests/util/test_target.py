@@ -1351,3 +1351,47 @@ WHERE
 
         assert "is_init" not in result
         assert result.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 1
+
+    def _rewrite_defer(self, query_file: Path, monkeypatch) -> str:
+        from bigquery_etl.util.target import (
+            DeployedTableInfo,
+            rewrite_for_defer,
+            target_ref_for_source,
+        )
+
+        target = Target(name="test", project_id="my-dev-project", dataset="anna_dev")
+        deployed = DeployedTableInfo(
+            *target_ref_for_source(target, "my-dev-project", *self.SOURCE),
+            source_project=self.SOURCE[0],
+            source_dataset=self.SOURCE[1],
+            source_table=self.SOURCE[2],
+        )
+        # feed the deployed-artifact scans directly so the test doesn't need the
+        # BigQuery client
+        monkeypatch.setattr(
+            target_module, "get_deployed_tables_in_target", lambda *a, **k: [deployed]
+        )
+        monkeypatch.setattr(
+            target_module, "get_deployed_routines_in_target", lambda *a, **k: []
+        )
+        rewrite_for_defer(
+            query_file,
+            str(query_file.parent.parent.parent.parent),
+            "my-dev-project",
+            target,
+        )
+        return query_file.read_text()
+
+    def test_defer_rewrite_keeps_both_branches(self, tmp_path, monkeypatch):
+        # the defer path (query initialize on a target) also routes through
+        # _render_and_rewrite, so it must preserve is_init() branching too
+        result = self._rewrite_defer(
+            self._write_query(tmp_path, self.QUERY_WITH_INIT), monkeypatch
+        )
+
+        assert "{% if is_init() %}" in result
+        assert "{% else %}" in result
+        assert "submission_date >= '2018-01-01'" in result
+        assert "submission_date = @submission_date" in result
+        assert result.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 2
+        assert "moz-fx-data-shared-prod" not in result

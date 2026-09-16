@@ -1,0 +1,24 @@
+---
+# The same client completing on two different days, run for 2026-09-03. Each
+# entry is marked with whether it reaches the output.
+#
+# DROPPED by the submission_date filter: this event belongs to 2026-09-02's own
+# partition, written by that day's run. This run neither reads it nor carries it
+# forward, so neither its date nor its 140.0 appears.
+- submission_timestamp: 2026-09-02 09:00:00
+  client_id: client-f
+  sample_id: 42
+  event_category: onboarding
+  event_name: completed
+  event_timestamp: 2026-09-02 08:59:20
+  client_info:
+    app_display_version: '140.0'
+# KEPT - the run's own day, supplying both the date and the 141.0.
+- submission_timestamp: 2026-09-03 09:00:00
+  client_id: client-f
+  sample_id: 42
+  event_category: onboarding
+  event_name: completed
+  event_timestamp: 2026-09-03 08:59:20
+  client_info:
+    app_display_version: '141.0'

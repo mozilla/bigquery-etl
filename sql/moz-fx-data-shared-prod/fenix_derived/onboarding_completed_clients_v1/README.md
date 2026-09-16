@@ -1,0 +1,25 @@
+# fenix_derived.onboarding_completed_clients_v1
+
+## Description
+
+One row per Fenix client per day on which they fired the Glean `onboarding.completed` event. A client who fired it on more than one day has a row for each.
+
+* **Grain:** `client_id`, `completed_date`
+* **Key fields:** `client_id`, `completed_date`, `sample_id` (a clustering field, not part of the grain), `app_version`
+* **Source:** `fenix.events_stream`
+* **Filters:** `event_category = 'onboarding'`, `event_name = 'completed'`, and a non-null `client_id`
+* **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `onboarding_completed_by_day_27` and `app_version_at_onboarding_completion`, both limited there to completions on or before the row's day-27 date
+
+`client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. Collapse on `client_id` first, and take `app_version` from the same row you take the date from. For example, `retention_clients` does this in its `onboarding_completions` CTE.
+
+`app_version` is the version the client was running at the completion, taken from the earliest completion event among those reported on that date, and `NULL` where the event carried none. Where two events share an event timestamp the version comes from whichever ping arrived first, and where those match too, the lower version string. It is the raw version string, so it sorts lexicographically — `'100.0'` orders below `'9.0'`. It is not the `app_version` on `retention_clients`, which is as of that row's metric date; and since `completed_date` is the reported day, a ping arriving after an upgrade carries the later day's version.
+
+## Floor
+
+The table will be backfilled from 2025-01-01, so a client whose completions all fall before that date will have no row here.
+
+That matters downstream: on `retention_clients` those clients will read `NULL` rather than `FALSE`, indistinguishable from clients who never completed. Anyone segmenting retention on the flag should filter `first_seen_date >= '2025-01-01'` so the population is limited to clients whose whole life falls inside the window.
+
+## Runs
+
+One scheduled run per day, writing that day's partition. Re-running a date rewrites that date and cannot reach any other day's rows; against unchanged source data it produces the same rows, and it is how rows that landed in the source after that day's run get picked up.

@@ -8,7 +8,7 @@ import sys
 from datetime import datetime, timezone
 from functools import cache
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple
+from typing import Callable, Dict, List, NamedTuple, Optional, Set, Tuple
 
 import attr
 import cattrs
@@ -971,6 +971,36 @@ def _substitute_3part_ref(
     return pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
 
 
+def _render_and_rewrite(query_file: Path, rewrite: Callable[[str], str]) -> str:
+    """Render `query_file` and apply `rewrite`, keeping `is_init()` branching intact.
+
+    Rendering resolves the template, and `is_init` defaults to False, so a plain
+    render collapses `{% if is_init() %}` down to its `else` arm. Writing that
+    back would discard the init query permanently, and anything that re-renders
+    the deployed file with `is_init=True`."""
+
+    def _render(**kwargs) -> str:
+        return render_template(
+            query_file.name,
+            template_folder=str(query_file.parent),
+            format=False,
+            **kwargs,
+        )
+
+    if "is_init()" not in query_file.read_text():
+        return rewrite(_render())
+
+    init_sql = rewrite(_render(is_init=lambda: True))
+    query_sql = rewrite(_render(is_init=lambda: False))
+    return (
+        "{% if is_init() %}\n"
+        f"{init_sql}\n"
+        "{% else %}\n"
+        f"{query_sql}\n"
+        "{% endif %}\n"
+    )
+
+
 def rewrite_for_isolated(
     query_file: Path,
     sql_dir: str,
@@ -984,54 +1014,54 @@ def rewrite_for_isolated(
     `deployed_source_identities` (the set of artifacts being deployed this
     run) are rewritten.
     """
-    sql = render_template(
-        query_file.name, template_folder=str(query_file.parent), format=False
-    )
 
     def _is_deployed(project: str, dataset: str, name: str) -> bool:
         if deployed_source_identities is None:
             return True
         return (project, dataset, name) in deployed_source_identities
 
-    # sqlglot extraction excludes struct field paths like `metadata.header.date`
-    # and CREATE-clause self-refs, so we don't need a known-projects heuristic
-    # or a target_project skip guard.
-    for ref in extract_table_references(sql):
-        parts = ref.split(".")
-        if len(parts) != 3 or parts[0] == target_project:
-            continue
-        src_project, src_dataset, src_table = parts
-        if not _is_deployed(src_project, src_dataset, src_table):
-            continue
-        sql = _substitute_3part_ref(
-            sql,
-            (src_project, src_dataset, src_table),
-            target_ref_for_source(
-                target, target_project, src_project, src_dataset, src_table
-            ),
-        )
+    def _rewrite(sql: str) -> str:
+        # sqlglot extraction excludes struct field paths like `metadata.header.date`
+        # and CREATE-clause self-refs, so we don't need a known-projects heuristic
+        # or a target_project skip guard.
+        for ref in extract_table_references(sql):
+            parts = ref.split(".")
+            if len(parts) != 3 or parts[0] == target_project:
+                continue
+            src_project, src_dataset, src_table = parts
+            if not _is_deployed(src_project, src_dataset, src_table):
+                continue
+            sql = _substitute_3part_ref(
+                sql,
+                (src_project, src_dataset, src_table),
+                target_ref_for_source(
+                    target, target_project, src_project, src_dataset, src_table
+                ),
+            )
 
-    # UDF call sites: walk known routines across all source projects and
-    # rewrite both 2-part (`udf.fn(`) and 3-part (`proj.udf.fn(`) usages via
-    # `routine_usage_pattern`. sqlglot's table extractor above doesn't classify
-    # function calls as `Table` expressions, so without this pass any
-    # `<src_project>.<ds>.<fn>(` would slip through. Skip routines whose
-    # project is the target project (already-target paths re-walked by
-    # `read_routine_dir` would otherwise double-prefix), and skip routines
-    # not in the deploy set (refs to prod-only routines stay at prod).
-    for routine_name, routine in read_routine_dir().items():
-        if routine.project == target_project:
-            continue
-        src_dataset, src_name = routine_name.split(".")
-        if not _is_deployed(routine.project, src_dataset, src_name):
-            continue
-        tgt = target_ref_for_source(
-            target, target_project, routine.project, src_dataset, src_name
-        )
-        udf_pattern = routine_usage_pattern(routine_name, routine.project)
-        sql = udf_pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
+        # UDF call sites: walk known routines across all source projects and
+        # rewrite both 2-part (`udf.fn(`) and 3-part (`proj.udf.fn(`) usages via
+        # `routine_usage_pattern`. sqlglot's table extractor above doesn't classify
+        # function calls as `Table` expressions, so without this pass any
+        # `<src_project>.<ds>.<fn>(` would slip through. Skip routines whose
+        # project is the target project (already-target paths re-walked by
+        # `read_routine_dir` would otherwise double-prefix), and skip routines
+        # not in the deploy set (refs to prod-only routines stay at prod).
+        for routine_name, routine in read_routine_dir().items():
+            if routine.project == target_project:
+                continue
+            src_dataset, src_name = routine_name.split(".")
+            if not _is_deployed(routine.project, src_dataset, src_name):
+                continue
+            tgt = target_ref_for_source(
+                target, target_project, routine.project, src_dataset, src_name
+            )
+            udf_pattern = routine_usage_pattern(routine_name, routine.project)
+            sql = udf_pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
 
-    query_file.write_text(sql)
+        return sql
+
+    query_file.write_text(_render_and_rewrite(query_file, _rewrite))
 
 
 def rewrite_for_defer(
@@ -1045,9 +1075,6 @@ def rewrite_for_defer(
     Used by --defer-to-target: prod refs that haven't been deployed to target
     pass through unchanged so the deploy still picks up production data.
     """
-    sql = render_template(
-        query_file.name, template_folder=str(query_file.parent), format=False
-    )
 
     def _validated_source(
         info: DeployedTableInfo,
@@ -1072,30 +1099,35 @@ def rewrite_for_defer(
             return None
         return info.source_project, info.source_dataset, info.source_table
 
-    for info in get_deployed_tables_in_target(sql_dir, target_project):
-        src = _validated_source(info)
-        if src is None:
-            continue
-        sql = _substitute_3part_ref(
-            sql,
-            src,
-            (target_project, info.target_dataset, info.target_table),
-        )
+    def _rewrite(sql: str) -> str:
+        for info in get_deployed_tables_in_target(sql_dir, target_project):
+            src = _validated_source(info)
+            if src is None:
+                continue
+            sql = _substitute_3part_ref(
+                sql,
+                src,
+                (target_project, info.target_dataset, info.target_table),
+            )
 
-    # Routine refs can be 2-part (dataset.name) or 3-part (project.dataset.name);
-    # routine_usage_pattern handles both, gated on a `(` call site.
-    for info in get_deployed_routines_in_target(sql_dir, target_project):
-        src = _validated_source(info)
-        if src is None:
-            continue
-        src_project, src_dataset, src_table = src
-        udf_pattern = routine_usage_pattern(f"{src_dataset}.{src_table}", src_project)
-        sql = udf_pattern.sub(
-            f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`",
-            sql,
-        )
+        # Routine refs can be 2-part (dataset.name) or 3-part (project.dataset.name);
+        # routine_usage_pattern handles both, gated on a `(` call site.
+        for info in get_deployed_routines_in_target(sql_dir, target_project):
+            src = _validated_source(info)
+            if src is None:
+                continue
+            src_project, src_dataset, src_table = src
+            udf_pattern = routine_usage_pattern(
+                f"{src_dataset}.{src_table}", src_project
+            )
+            sql = udf_pattern.sub(
+                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`",
+                sql,
+            )
 
-    query_file.write_text(sql)
+        return sql
+
+    query_file.write_text(_render_and_rewrite(query_file, _rewrite))
 
 
 def rewrite_query_references(

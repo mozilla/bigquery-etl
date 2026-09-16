@@ -37,5 +37,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
+  backfill_deng10432.sql:
+  - moz-fx-data-shared-prod.relay_backend_derived.events_stream_v1
   query.sql:
   - moz-fx-data-shared-prod.relay_backend.events

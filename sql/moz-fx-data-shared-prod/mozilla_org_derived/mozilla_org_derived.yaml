@@ -1,0 +1,152 @@
+fields:
+- name: event_date
+  description: The calendar date on which blog page view events were recorded on blog.mozilla.org.
+- name: date
+  type: DATE
+  description: The calendar date on which the visit-level goal events occurred on blog.mozilla.org.
+- name: visit_identifier
+  type: STRING
+  description: A unique identifier for the visit, formed by concatenating user_pseudo_id and ga_session_id. Used to join with blogs_sessions_v2
+    to attach session-level dimensions to goal events.
+- name: country
+  type: STRING
+  description: The country from which the What's New page visit was reported, determined by IP address.
+- name: device_category
+  type: STRING
+  description: The type of device used to view the What's New page, such as 'desktop' or 'mobile', as reported by GA4.
+- name: operating_system
+  type: STRING
+  description: The operating system of the device that viewed the What's New page (e.g., 'Windows', 'Macintosh', 'Linux').
+- name: ga_client_id
+  type: STRING
+  description: The Google Analytics client identifier, set via a cookie on mozilla.org, uniquely identifying a browser/device across all sessions
+    over time.
+- name: had_download_event
+  type: BOOLEAN
+  description: True when this GA client has ever had a Firefox download event across any of their sessions; false otherwise.
+- name: all_reported_install_targets
+  type: STRING
+  description: All install targets reported during this session. Useful when a single session triggered downloads for multiple Firefox products.
+- name: all_reported_stub_session_ids
+  type: STRING
+  description: All stub session IDs reported during this session. Can be used to join with dl_ga_triplets to retrieve download tokens for each
+    Windows stub installer run.
+- name: browser
+  type: STRING
+  description: The web browser used during this session (e.g., 'Firefox', 'Chrome', 'Safari', 'Edge').
+- name: browser_version
+  type: STRING
+  description: The version of the web browser used during this session.
+- name: campaign
+  type: STRING
+  description: The marketing campaign name associated with this session, set via the utm_campaign URL parameter (e.g., '127', '143', '(organic)',
+    '(referral)').
+- name: city
+  type: STRING
+  description: The city associated with this session, based on the user's IP address. Empty string when the city cannot be determined.
+- name: content
+  description: The ad content dimension associated with this session, set via utm_content to distinguish between ads or links within the same
+    campaign. Null for most sessions.
+- name: distinct_campaigns_from_event_params
+  type: STRING
+  description: All non-null campaign values reported in GA4 event_params across all events in this session.
+- name: firefox_desktop_downloads
+  type: INT64
+  description: The number of Firefox desktop download events recorded during this session. Null for sessions without download events in this table
+    version.
+- name: first_campaign_from_event_params
+  type: STRING
+  description: The first non-null campaign value encountered in GA4 event_params during this session, reflecting the earliest campaign attribution
+    seen for the visit.
+- name: ga_session_id
+  type: STRING
+  description: The Google Analytics session identifier, uniquely identifying a single continuous browsing session.
+- name: gclid
+  type: STRING
+  description: The last reported Google Click ID (gclid) for this session, uniquely identifying an ad click in Google Ads. Null for nearly all
+    sessions.
+- name: gclid_array
+  type: STRING
+  description: All Google Click IDs reported during this session. Can be used to trace back to Google Ads clicks when multiple gclids appear in
+    one session.
+- name: is_first_session
+  type: BOOLEAN
+  description: True when this is the first recorded session for this GA client; false for all subsequent sessions.
+- name: landing_screen
+  type: STRING
+  description: The first page URL visited during this session on mozilla.org. Most sessions have a single landing page, making this the most reliable
+    landing URL to use.
+- name: language
+  type: STRING
+  description: The language setting of the device used during this session, expressed as an IETF language code (e.g., 'en-us', 'zh-cn', 'pt-br').
+- name: last_reported_install_target
+  type: STRING
+  description: The last install target reported during this session, indicating which Firefox product the user downloaded (e.g., 'product_download',
+    'firefox_download', 'firefox_mobile_download'). Null when no download occurred.
+- name: last_reported_stub_session_id
+  type: STRING
+  description: The last reported Windows installer stub session ID for this session, which can be joined with dl_ga_triplets to retrieve download
+    tokens. Null for non-stub installs.
+- name: medium
+  type: STRING
+  description: The traffic medium associated with this session, such as 'organic', 'referral', 'firefox-desktop', or the utm_medium value. Null
+    for direct visits.
+- name: mobile_device_model
+  type: STRING
+  description: The model name of the mobile device used during this session (e.g., 'iPhone', 'Firefox for Android'). Null for desktop sessions.
+- name: mobile_device_string
+  type: STRING
+  description: The full branding, model, and marketing name string for the mobile device used during this session. Null for most sessions where
+    this is not a mobile device.
+- name: os
+  type: STRING
+  description: The operating system of the device used during this session (e.g., 'Windows', 'Linux', 'Android', 'Macintosh', 'iOS').
+- name: os_version
+  type: STRING
+  description: The specific version of the operating system used during this session (e.g., 'Windows 10', 'iOS 13'). Null when the OS version
+    cannot be determined.
+- name: pageviews
+  type: INT64
+  description: The total number of page view events recorded during this session.
+- name: region
+  type: STRING
+  description: The sub-national region (state, province, etc.) associated with this session, based on IP address.
+- name: session_date
+  type: DATE
+  description: The date of the session. For sessions that span midnight, the earlier date is used.
+- name: session_number
+  type: INT64
+  description: The sequential session count for this GA client, starting at 1 for the first session and incrementing by 1 for each subsequent
+    session.
+- name: source
+  type: STRING
+  description: The traffic source associated with this session, such as a search engine name, referring hostname, or utm_source value (e.g., 'update',
+    'google', 'toolbar'). Null for direct visits.
+- name: time_on_site
+  type: INT64
+  description: The duration in seconds between the first and last events of the session, representing time spent on the site.
+- name: manual_campaign_id
+  type: STRING
+  description: The manual campaign ID from collected_traffic_source during the session_start event, sourced from utm_id.
+- name: manual_campaign_name
+  description: The manual campaign name from collected_traffic_source during the session_start event, sourced from utm_campaign (e.g., '127',
+    '143', '(organic)').
+- name: manual_content
+  description: The manual ad content from collected_traffic_source during the session_start event, used to distinguish between ads within the
+    same campaign.
+- name: manual_medium
+  description: The manual traffic medium from collected_traffic_source during the session_start event (e.g., 'firefox-desktop', 'organic', 'referral',
+    'cpc').
+- name: manual_source
+  description: The manual traffic source from collected_traffic_source during the session_start event (e.g., 'update', 'google', 'toolbar').
+- name: manual_term
+  type: STRING
+  description: The manual search term from collected_traffic_source during the session_start event.
+- name: ad_content
+  type: STRING
+  description: The ad content dimension for the download event from collected_traffic_source, sourced from utm_content. Used to distinguish between
+    ads or links within the same campaign. Null for most sessions.
+- name: locale
+  type: STRING
+  description: The locale code parsed from the first path segment of the page URL (e.g., 'en-US', 'zh-CN', 'ru', 'de'), identifying the language/region
+    version of the page.

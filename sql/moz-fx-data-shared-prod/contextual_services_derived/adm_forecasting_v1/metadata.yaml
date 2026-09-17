@@ -6,11 +6,12 @@ owners:
 labels:
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_ctxsvc_derived
+# scheduling:
+#   dag_name: bqetl_ctxsvc_derived
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+deprecated: true

@@ -9,3 +9,4 @@ owners:
 - skahmann@mozilla.com
 - akommasani@mozilla.com
 - mozilla/request_payload_reviewers
+deprecated: true

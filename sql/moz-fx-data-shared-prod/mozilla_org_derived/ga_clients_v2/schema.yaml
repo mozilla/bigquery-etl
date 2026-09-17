@@ -2,7 +2,9 @@ fields:
   - name: ga_client_id
     mode: NULLABLE
     type: STRING
-    description: "Uniquely identifiers a GA client, using a cookie on moz.org."
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+      field: ga_client_id
   - name: first_seen_date
     mode: NULLABLE
     type: DATE
@@ -14,7 +16,9 @@ fields:
   - name: had_download_event
     mode: NULLABLE
     type: BOOLEAN
-    description: "Whether this GA client has ever had a download event."
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+      field: had_download_event
   - name: first_reported
     description: "First instances of fields for a GA client."
     type: RECORD

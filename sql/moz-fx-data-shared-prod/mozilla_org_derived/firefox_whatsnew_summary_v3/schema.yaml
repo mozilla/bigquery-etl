@@ -2,11 +2,15 @@ fields:
 - name: event_date
   mode: NULLABLE
   type: DATE
-  description: The date of the event
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: event_date
 - name: event_name
   mode: NULLABLE
   type: STRING
-  description: The name of the event
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: event_name
 - name: event_timestamp
   mode: NULLABLE
   type: INTEGER
@@ -14,11 +18,15 @@ fields:
 - name: ga_client_id
   type: STRING
   mode: NULLABLE
-  description: The google analytics user_pseudo_id (a unique identifier for a user based on cookies).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ga_client_id
 - name: ga_session_id
   type: STRING
   mode: NULLABLE
-  description: The google analytics session ID, parsed from event_params.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ga_session_id
 - name: platform
   type: STRING
   mode: NULLABLE
@@ -26,11 +34,15 @@ fields:
 - name: device_category
   type: STRING
   mode: NULLABLE
-  description: Device Category
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: device_category
 - name: operating_system
   type: STRING
   mode: NULLABLE
-  description: Device Operating System
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: operating_system
 - name: operating_system_version
   type: STRING
   mode: NULLABLE
@@ -100,15 +112,21 @@ fields:
 - name: traffic_source_name
   type: STRING
   mode: NULLABLE
-  description: Traffic Source Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: traffic_source_name
 - name: traffic_source_medium
   type: STRING
   mode: NULLABLE
-  description: Traffic Source Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: traffic_source_medium
 - name: traffic_source_source
   type: STRING
   mode: NULLABLE
-  description: Traffic Source Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: traffic_source_source
 - name: cts_manual_campaign_id
   type: STRING
   mode: NULLABLE
@@ -204,7 +222,9 @@ fields:
 - name: page_level_2
   type: STRING
   mode: NULLABLE
-  description: Level 2 parsed from page_location (URL of page viewed)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_level_2
 - name: oldversion
   type: STRING
   mode: NULLABLE

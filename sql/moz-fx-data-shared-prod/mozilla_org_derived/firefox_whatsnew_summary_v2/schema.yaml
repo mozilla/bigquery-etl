@@ -2,15 +2,21 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date of the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: date
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country - The country from which events were reported, based on IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale - Sourced from page path level 1 (e.g. en-US, zh-CN, etc)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: locale
 - mode: NULLABLE
   name: version
   type: STRING
@@ -34,8 +40,12 @@ fields:
 - mode: NULLABLE
   name: visits
   type: INT64
-  description: Visits - The number of unique visits, where a unique visit is the user_pseudo_id plus session ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: visits
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces - The number of unique visits where the session was considered a bounce
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: bounces

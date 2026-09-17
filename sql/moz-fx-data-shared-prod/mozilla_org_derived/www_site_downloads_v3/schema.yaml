@@ -2,67 +2,99 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date of the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: date
 - name: visit_identifier
   type: STRING
   mode: NULLABLE
-  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id and ga_session_id
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: visit_identifier
 - name: device_category
   type: STRING
   mode: NULLABLE
-  description: Device Category - The device category the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: device_category
 - name: operating_system
   type: STRING
   mode: NULLABLE
-  description: Operating System - The operating system the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: operating_system
 - name: language
   type: STRING
   mode: NULLABLE
-  description: Language - Language of visitor's device
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: language
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country - The country from which events were reported, based on IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: country
 - name: traffic_source_name
   type: STRING
   mode: NULLABLE
-  description: Traffic Source Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: traffic_source_name
 - name: traffic_source_medium
   type: STRING
   mode: NULLABLE
-  description: Traffic Source Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: traffic_source_medium
 - name: traffic_source_source
   type: STRING
   mode: NULLABLE
-  description: Traffic Source Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: traffic_source_source
 - name: manual_campaign_id
   type: STRING
   mode: NULLABLE
-  description: Manual Campaign ID  (comes from collected traffic source)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: manual_campaign_id
 - name: manual_term
   type: STRING
   mode: NULLABLE
-  description: Manual Term (comes from collected traffic source)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: manual_term
 - name: source
   type: STRING
   mode: NULLABLE
-  description: Source - Referring partner domain (comes from collected traffic source)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: source
 - name: medium
   type: STRING
   mode: NULLABLE
-  description: Medium - Category of the source, such as 'organic' for a search engine (comes from collected traffic source)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: medium
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: Campaign - Identifier for the marketing campaign (comes from collected traffic source)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: campaign
 - name: ad_content
   type: STRING
   mode: NULLABLE
-  description: Ad Content - Indicates the particular link within a campaign  (comes from collected traffic source)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ad_content
 - name: browser
   type: STRING
   mode: NULLABLE
-  description: Browser vistor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: browser
 - name: campaign_from_event_params
   type: STRING
   mode: NULLABLE
@@ -86,8 +118,12 @@ fields:
 - name: downloads
   type: INTEGER
   mode: NULLABLE
-  description: Downloads; in GA3, if someone downloaded multiple times in 1 session, it only counted 1x; but in GA4, all downloads count
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: downloads
 - name: non_fx_downloads
   type: INTEGER
   mode: NULLABLE
-  description: Non Firefox Downloads - Number of Firefox Desktop Downloads from a Non-Firefox Browser
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: non_fx_downloads

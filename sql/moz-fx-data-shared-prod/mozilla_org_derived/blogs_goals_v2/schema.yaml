@@ -2,20 +2,30 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date of the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: date
 - mode: NULLABLE
   name: visit_identifier
   type: STRING
-  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id and ga_session_id
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: visit_identifier
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads - The number of download click events for this visit and date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: downloads
 - mode: NULLABLE
   name: social_share
   type: INT64
-  description: Social Share - The number of social share events for this visit and date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: social_share
 - mode: NULLABLE
   name: newsletter_subscription
   type: INT64
-  description: Newsletter Subscription - The number of newsletter subscription events for this visit and date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: newsletter_subscription

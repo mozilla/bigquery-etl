@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date of the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: date
 - mode: NULLABLE
   name: site
   type: STRING
@@ -10,104 +12,156 @@ fields:
 - mode: NULLABLE
   name: device_category
   type: STRING
-  description: Device Category - The device category the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: device_category
 - mode: NULLABLE
   name: operating_system
   type: STRING
-  description: Operating System - The operating system the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: operating_system
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language - The language the visiting device was using when it visited the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: language
 - mode: NULLABLE
   name: landing_page
   type: STRING
-  description: Landing Page - The page path of the page view
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: landing_page
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale - Level 1 of the page path of the page view (i.e. en-US, de, etc)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: locale
 - mode: NULLABLE
   name: page_name
   type: STRING
-  description: Page Name - Consists of page levels 1 to 5 concatenated together
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_name
 - mode: NULLABLE
   name: page_level_1
   type: STRING
-  description: Page Level 1
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_level_1
 - mode: NULLABLE
   name: page_level_2
   type: STRING
-  description: Page Level 2
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_level_2
 - mode: NULLABLE
   name: page_level_3
   type: STRING
-  description: Page Level 3
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_level_3
 - mode: NULLABLE
   name: page_level_4
   type: STRING
-  description: Page Level 4
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_level_4
 - mode: NULLABLE
   name: page_level_5
   type: STRING
-  description: Page Level 5
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: page_level_5
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country - The country from which events were reported, based on IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source - Referring partner domain
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: source
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium - Category of the source, such as 'organic' for a search engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: medium
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign - Identifier for the marketing campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: campaign
 - mode: NULLABLE
   name: ad_content
   type: STRING
-  description: Ad Content - Indicates the particular link within a campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ad_content
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: Browser - The browser the visiting device used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: browser
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Sessions - The number of session entrances
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: sessions
 - mode: NULLABLE
   name: non_fx_sessions
   type: INT64
-  description: Non Firefox Sessions - The number of session entrances on a non-Firefox browser
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: non_fx_sessions
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads - The number of Firefox Desktop downloads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: downloads
 - mode: NULLABLE
   name: non_fx_downloads
   type: INT64
-  description: Non Firefox Downloads - The number of Firefox Desktop downloads from a non-Firefox browser
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: non_fx_downloads
 - mode: NULLABLE
   name: pageviews
   type: INT64
-  description: Page Views - The number of page views
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: pageviews
 - mode: NULLABLE
   name: unique_pageviews
   type: INT64
-  description: Unique Page Views - The number of unique page paths visited
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: unique_pageviews
 - mode: NULLABLE
   name: single_page_sessions
   type: INT64
-  description: Single Page Sessions - The number of sessions with a single page view
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: single_page_sessions
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces - The number of "bounce" sessions, sessions that had no engaged session event
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: bounces
 - mode: NULLABLE
   name: exits
   type: INT64
-  description: Exits - The number of sessions where this page was the last page viewed
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: exits

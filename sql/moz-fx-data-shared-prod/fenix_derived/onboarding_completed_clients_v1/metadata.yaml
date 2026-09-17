@@ -26,7 +26,8 @@ bigquery:
   time_partitioning:
     type: day
     field: completed_date
-    # Load-bearing: retention_clients reads the whole table with no date filter.
+    # Load-bearing: fenix.retention_clients reads the whole table with no date
+    # filter and collapses it to one row per client there.
     require_partition_filter: false
     # Deliberate: null keeps past partitions permanent, and it holds the
     # backfill retention limit at 775 days rather than lowering it.

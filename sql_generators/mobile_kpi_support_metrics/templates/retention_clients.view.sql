@@ -109,30 +109,32 @@ SELECT
   clients_daily.device_model,
   clients_daily.normalized_os AS os,
   clients_daily.normalized_os_version AS os_version,
+  {% if app_name == "fenix" %}
   -- Read from active_users, the day-27 row, so the flag is as-of day 27 rather
   -- than day 0; clients_daily would give day-0 status. This and the version
   -- below stay last, in this order, and unconditional in every product branch:
   -- mobile_retention_clients unions the products by position.
-  {% if app_name == "fenix" %}
   IF(
     onboarding_completions.first_completed_date <= active_users.submission_date,
     TRUE,
     NULL
   )
   {% else %}
+  -- Not populated for this product; kept for union compatibility with fenix.
   CAST(NULL AS BOOLEAN)
   {% endif %} AS onboarding_completed_by_day_27,
+  {% if app_name == "fenix" %}
   -- The version at the client's earliest completion, limited to the same day-27
   -- window as the flag above so the two agree on who completed. Distinct from
   -- app_version above, which is as of the metric date. Null where the completion
   -- fell outside the window, and also where the event carried no version.
-  {% if app_name == "fenix" %}
   IF(
     onboarding_completions.first_completed_date <= active_users.submission_date,
     onboarding_completions.app_version_at_onboarding_completion,
     NULL
   )
   {% else %}
+  -- Not populated for this product; kept for union compatibility with fenix.
   CAST(NULL AS STRING)
   {% endif %} AS app_version_at_onboarding_completion,
 FROM

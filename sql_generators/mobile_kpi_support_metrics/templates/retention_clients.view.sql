@@ -151,7 +151,8 @@ LEFT JOIN
   AND clients_daily.normalized_channel = attribution.normalized_channel
 {% if app_name == "fenix" %}
 -- client_id alone, unlike the attribution join above: the CTE is already one row
--- per client, and it carries no sample_id or channel to match on.
+-- per client, sample_id is derived from client_id and so would only repeat that
+-- match, and the source carries no channel column.
 LEFT JOIN
   onboarding_completions
   ON clients_daily.client_id = onboarding_completions.client_id

@@ -12432,6 +12432,161 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page called SpeechRecognition.start
+    - name: use_counter2_sanitizer_removeunsafe_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Sanitizer.removeUnsafe
+    - name: use_counter2_sanitizer_removeunsafe_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Sanitizer.removeUnsafe
+    - name: use_counter2_sanitizerconfigattributes_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer attributes configuration
+        key, via a dictionary or allowAttribute()
+    - name: use_counter2_sanitizerconfigattributes_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer attributes configuration key,
+        via a dictionary or allowAttribute()
+    - name: use_counter2_sanitizerconfigcomments_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer comments configuration key,
+        via a dictionary or setComments()
+    - name: use_counter2_sanitizerconfigcomments_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer comments configuration key, via
+        a dictionary or setComments()
+    - name: use_counter2_sanitizerconfigdataattributes_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer dataAttributes configuration
+        key, via a dictionary or setDataAttributes()
+    - name: use_counter2_sanitizerconfigdataattributes_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer dataAttributes configuration
+        key, via a dictionary or setDataAttributes()
+    - name: use_counter2_sanitizerconfigelementattributes_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer per-element attributes configuration
+        key
+    - name: use_counter2_sanitizerconfigelementattributes_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer per-element attributes configuration
+        key
+    - name: use_counter2_sanitizerconfigelementremoveattributes_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer per-element removeAttributes
+        configuration key
+    - name: use_counter2_sanitizerconfigelementremoveattributes_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer per-element removeAttributes
+        configuration key
+    - name: use_counter2_sanitizerconfigelements_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer elements configuration key,
+        via a dictionary or allowElement()
+    - name: use_counter2_sanitizerconfigelements_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer elements configuration key, via
+        a dictionary or allowElement()
+    - name: use_counter2_sanitizerconfigjavascripturls_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer javascriptURLs configuration
+        key, via a dictionary or setJavascriptURLs()
+    - name: use_counter2_sanitizerconfigjavascripturls_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer javascriptURLs configuration
+        key, via a dictionary or setJavascriptURLs()
+    - name: use_counter2_sanitizerconfigprocessinginstructions_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer processingInstructions configuration
+        key, via a dictionary or allowProcessingInstruction()
+    - name: use_counter2_sanitizerconfigprocessinginstructions_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer processingInstructions configuration
+        key, via a dictionary or allowProcessingInstruction()
+    - name: use_counter2_sanitizerconfigremoveattributes_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer removeAttributes configuration
+        key, via a dictionary or removeAttribute()
+    - name: use_counter2_sanitizerconfigremoveattributes_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer removeAttributes configuration
+        key, via a dictionary or removeAttribute()
+    - name: use_counter2_sanitizerconfigremoveelements_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer removeElements configuration
+        key, via a dictionary or removeElement()
+    - name: use_counter2_sanitizerconfigremoveelements_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer removeElements configuration
+        key, via a dictionary or removeElement()
+    - name: use_counter2_sanitizerconfigremoveprocessinginstructions_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer removeProcessingInstructions
+        configuration key, via a dictionary or removeProcessingInstruction()
+    - name: use_counter2_sanitizerconfigremoveprocessinginstructions_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer removeProcessingInstructions
+        configuration key, via a dictionary or removeProcessingInstruction()
+    - name: use_counter2_sanitizerconfigreplacewithchildrenelements_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses the Sanitizer replaceWithChildrenElements
+        configuration key, via a dictionary or replaceElementWithChildren()
+    - name: use_counter2_sanitizerconfigreplacewithchildrenelements_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses the Sanitizer replaceWithChildrenElements configuration
+        key, via a dictionary or replaceElementWithChildren()
+    - name: use_counter2_sanitizerdefaultconfig_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document sanitizes with the built-in default Sanitizer
+        configuration
+    - name: use_counter2_sanitizerdefaultconfig_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page sanitizes with the built-in default Sanitizer configuration
+    - name: use_counter2_sanitizeremptyconfig_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document supplies an empty Sanitizer configuration dictionary
+    - name: use_counter2_sanitizeremptyconfig_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page supplies an empty Sanitizer configuration dictionary
+    - name: use_counter2_sanitizerinvalidconfig_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document supplies a Sanitizer configuration that is rejected
+        as invalid
+    - name: use_counter2_sanitizerinvalidconfig_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page supplies a Sanitizer configuration that is rejected
+        as invalid
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24726,6 +24881,163 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page called SpeechRecognition.start
+        - name: use_counter2_sanitizer_removeunsafe_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Sanitizer.removeUnsafe
+        - name: use_counter2_sanitizer_removeunsafe_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Sanitizer.removeUnsafe
+        - name: use_counter2_sanitizerconfigattributes_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer attributes configuration
+            key, via a dictionary or allowAttribute()
+        - name: use_counter2_sanitizerconfigattributes_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer attributes configuration
+            key, via a dictionary or allowAttribute()
+        - name: use_counter2_sanitizerconfigcomments_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer comments configuration
+            key, via a dictionary or setComments()
+        - name: use_counter2_sanitizerconfigcomments_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer comments configuration key,
+            via a dictionary or setComments()
+        - name: use_counter2_sanitizerconfigdataattributes_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer dataAttributes configuration
+            key, via a dictionary or setDataAttributes()
+        - name: use_counter2_sanitizerconfigdataattributes_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer dataAttributes configuration
+            key, via a dictionary or setDataAttributes()
+        - name: use_counter2_sanitizerconfigelementattributes_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer per-element attributes
+            configuration key
+        - name: use_counter2_sanitizerconfigelementattributes_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer per-element attributes configuration
+            key
+        - name: use_counter2_sanitizerconfigelementremoveattributes_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer per-element removeAttributes
+            configuration key
+        - name: use_counter2_sanitizerconfigelementremoveattributes_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer per-element removeAttributes
+            configuration key
+        - name: use_counter2_sanitizerconfigelements_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer elements configuration
+            key, via a dictionary or allowElement()
+        - name: use_counter2_sanitizerconfigelements_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer elements configuration key,
+            via a dictionary or allowElement()
+        - name: use_counter2_sanitizerconfigjavascripturls_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer javascriptURLs configuration
+            key, via a dictionary or setJavascriptURLs()
+        - name: use_counter2_sanitizerconfigjavascripturls_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer javascriptURLs configuration
+            key, via a dictionary or setJavascriptURLs()
+        - name: use_counter2_sanitizerconfigprocessinginstructions_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer processingInstructions
+            configuration key, via a dictionary or allowProcessingInstruction()
+        - name: use_counter2_sanitizerconfigprocessinginstructions_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer processingInstructions configuration
+            key, via a dictionary or allowProcessingInstruction()
+        - name: use_counter2_sanitizerconfigremoveattributes_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer removeAttributes configuration
+            key, via a dictionary or removeAttribute()
+        - name: use_counter2_sanitizerconfigremoveattributes_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer removeAttributes configuration
+            key, via a dictionary or removeAttribute()
+        - name: use_counter2_sanitizerconfigremoveelements_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer removeElements configuration
+            key, via a dictionary or removeElement()
+        - name: use_counter2_sanitizerconfigremoveelements_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer removeElements configuration
+            key, via a dictionary or removeElement()
+        - name: use_counter2_sanitizerconfigremoveprocessinginstructions_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer removeProcessingInstructions
+            configuration key, via a dictionary or removeProcessingInstruction()
+        - name: use_counter2_sanitizerconfigremoveprocessinginstructions_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer removeProcessingInstructions
+            configuration key, via a dictionary or removeProcessingInstruction()
+        - name: use_counter2_sanitizerconfigreplacewithchildrenelements_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses the Sanitizer replaceWithChildrenElements
+            configuration key, via a dictionary or replaceElementWithChildren()
+        - name: use_counter2_sanitizerconfigreplacewithchildrenelements_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses the Sanitizer replaceWithChildrenElements
+            configuration key, via a dictionary or replaceElementWithChildren()
+        - name: use_counter2_sanitizerdefaultconfig_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document sanitizes with the built-in default Sanitizer
+            configuration
+        - name: use_counter2_sanitizerdefaultconfig_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page sanitizes with the built-in default Sanitizer
+            configuration
+        - name: use_counter2_sanitizeremptyconfig_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document supplies an empty Sanitizer configuration
+            dictionary
+        - name: use_counter2_sanitizeremptyconfig_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page supplies an empty Sanitizer configuration dictionary
+        - name: use_counter2_sanitizerinvalidconfig_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document supplies a Sanitizer configuration that
+            is rejected as invalid
+        - name: use_counter2_sanitizerinvalidconfig_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page supplies a Sanitizer configuration that is rejected
+            as invalid
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

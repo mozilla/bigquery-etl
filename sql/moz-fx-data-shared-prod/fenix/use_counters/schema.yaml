@@ -22513,6 +22513,262 @@ fields:
         rate.
 
         '
+    - name: use_counter_doc_sanitizer_config_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer attributes configuration
+        key, via a dictionary or allowAttribute(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_comments
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer comments configuration key,
+        via a dictionary or setComments(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_data_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer dataAttributes configuration
+        key, via a dictionary or setDataAttributes(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_element_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer per-element attributes configuration
+        key. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_element_remove_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer per-element removeAttributes
+        configuration key. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_elements
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer elements configuration key,
+        via a dictionary or allowElement(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_javascript_urls
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer javascriptURLs configuration
+        key, via a dictionary or setJavascriptURLs(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_processing_instructions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer processingInstructions configuration
+        key, via a dictionary or allowProcessingInstruction(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_remove_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer removeAttributes configuration
+        key, via a dictionary or removeAttribute(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_remove_elements
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer removeElements configuration
+        key, via a dictionary or removeElement(). Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_remove_processing_instructions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer removeProcessingInstructions
+        configuration key, via a dictionary or removeProcessingInstruction(). Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_config_replace_with_children_elements
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document uses the Sanitizer replaceWithChildrenElements
+        configuration key, via a dictionary or replaceElementWithChildren(). Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_default_config
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document sanitizes with the built-in default Sanitizer
+        configuration. Compare against `use.counter.content_documents_destroyed` to
+        calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_empty_config
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document supplies an empty Sanitizer configuration dictionary.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_sanitizer_invalid_config
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document supplies a Sanitizer configuration that is
+        rejected as invalid. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_sanitizer_removeunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Sanitizer.removeUnsafe. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer attributes configuration key,
+        via a dictionary or allowAttribute(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_comments
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer comments configuration key,
+        via a dictionary or setComments(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_data_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer dataAttributes configuration
+        key, via a dictionary or setDataAttributes(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_element_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer per-element attributes configuration
+        key. Compare against `use.counter.top_level_content_documents_destroyed` to
+        calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_element_remove_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer per-element removeAttributes
+        configuration key. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_elements
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer elements configuration key,
+        via a dictionary or allowElement(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_javascript_urls
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer javascriptURLs configuration
+        key, via a dictionary or setJavascriptURLs(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_processing_instructions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer processingInstructions configuration
+        key, via a dictionary or allowProcessingInstruction(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_remove_attributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer removeAttributes configuration
+        key, via a dictionary or removeAttribute(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_remove_elements
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer removeElements configuration
+        key, via a dictionary or removeElement(). Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_remove_processing_instructions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer removeProcessingInstructions
+        configuration key, via a dictionary or removeProcessingInstruction(). Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_sanitizer_config_replace_with_children_elements
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page uses the Sanitizer replaceWithChildrenElements
+        configuration key, via a dictionary or replaceElementWithChildren(). Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_sanitizer_default_config
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page sanitizes with the built-in default Sanitizer configuration.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_sanitizer_empty_config
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page supplies an empty Sanitizer configuration dictionary.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_sanitizer_invalid_config
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page supplies a Sanitizer configuration that is rejected
+        as invalid. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_sanitizer_removeunsafe
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Sanitizer.removeUnsafe. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

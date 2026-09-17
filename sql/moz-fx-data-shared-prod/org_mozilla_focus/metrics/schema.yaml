@@ -9269,6 +9269,24 @@ fields:
         says where init broke and not merely that it did.
 
         '
+    - name: webrtc_get_user_media_source_granted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the media source actually granted for a getUserMedia()
+        call, keyed by MediaSourceEnum value. Recorded once the request is granted,
+        using the concrete device that was allocated, so it reflects the true display
+        surface chosen for display-capture requests (screen, a specific window, or
+        a browser tab) rather than the pre-selection request hint that get_user_media_type
+        records.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -48598,6 +48616,52 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: Key Exchange Algorithm for TLS handshake
+    - name: dns_cache_miss_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Why a DNS lookup missed the in-memory cache and had to hit the
+        network, keyed by record family. Categories: absent (no entry), expired (entry
+        existed but its TTL had lapsed), refresh (entry still valid but bypassed,
+        e.g. a cache-bypass/refresh flag).
+
+        '
+    - name: dns_negative_eviction
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Negative (empty/NODATA or failed) DNS records evicted from the
+        cache on reaching network.dnsCacheEntries, keyed by record family. The category
+        is whether the record was still within its lifetime (premature) or had already
+        expired when evicted.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

@@ -766,7 +766,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_provider,
       metrics.labeled_counter.media_speech_recognition_availability,
       metrics.labeled_counter.media_speech_recognition_error,
-      metrics.labeled_counter.media_speech_recognition_init_failure
+      metrics.labeled_counter.media_speech_recognition_init_failure,
+      metrics.labeled_counter.webrtc_get_user_media_source_granted
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2010,7 +2011,9 @@ SELECT
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_https_rr_features_by_resolver,
       metrics.dual_labeled_counter.tls_handshake_result,
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver,
-      metrics.dual_labeled_counter.tls_key_exchange_algorithm
+      metrics.dual_labeled_counter.tls_key_exchange_algorithm,
+      metrics.dual_labeled_counter.dns_cache_miss_reason,
+      metrics.dual_labeled_counter.dns_negative_eviction
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

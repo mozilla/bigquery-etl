@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: event_date
   type: DATE
-  description: Event Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: event_date
 - name: page_title
   type: STRING
   mode: NULLABLE

@@ -2,60 +2,90 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: The date of the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: date
 - mode: NULLABLE
   name: device_category
   type: STRING
-  description: The device category the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: device_category
 - mode: NULLABLE
   name: operating_system
   type: STRING
-  description: The operating system the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: operating_system
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: The browser the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: browser
 - mode: NULLABLE
   name: language
   type: STRING
-  description: The language used by the visitor during the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: language
 - mode: NULLABLE
   name: country
   type: STRING
-  description: The country the visitor was from during the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: standardized_country_name
   type: STRING
-  description: The standardized name of the country the visitor was from during this visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: standardized_country_name
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: source
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: medium
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: campaign
 - mode: NULLABLE
   name: ad_content
   type: STRING
-  description: Advertising Content
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ad_content
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Sessions
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: sessions
 - mode: NULLABLE
   name: non_fx_sessions
   type: INT64
-  description: Non Firefox Sessions
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: non_fx_sessions
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: downloads
 - mode: NULLABLE
   name: non_fx_downloads
   type: INT64
-  description: Non Firefox Downloads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: non_fx_downloads

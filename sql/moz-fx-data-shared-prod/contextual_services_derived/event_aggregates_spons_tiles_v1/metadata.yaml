@@ -5,8 +5,8 @@ owners:
 - rburwei@mozilla.com
 labels:
   incremental: true
-  schedule: daily
-  dag: bqetl_ctxsvc_derived
+  # schedule: daily
+  # dag: bqetl_ctxsvc_derived
   owner1: rburwei
 # scheduling:
 #   dag_name: bqetl_ctxsvc_derived

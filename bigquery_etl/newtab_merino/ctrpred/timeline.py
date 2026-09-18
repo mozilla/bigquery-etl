@@ -2,6 +2,8 @@
 
 from google.cloud import bigquery
 
+TIMELINE_QUERY_TIMEOUT_SECONDS = 120
+
 TIMELINE_QUERY = """
 WITH
   treatment_items AS (
@@ -178,4 +180,5 @@ def query_timeline_data(
             ),
         ]
     )
-    return client.query(TIMELINE_QUERY, job_config=job_config).to_dataframe()
+    query_job = client.query(TIMELINE_QUERY, job_config=job_config)
+    return query_job.result(timeout=TIMELINE_QUERY_TIMEOUT_SECONDS).to_dataframe()

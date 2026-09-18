@@ -6,13 +6,16 @@ import pandas as pd
 
 from bigquery_etl.newtab_merino.ctrpred.timeline import (
     TIMELINE_QUERY,
+    TIMELINE_QUERY_TIMEOUT_SECONDS,
     query_timeline_data,
 )
 
 
 def test_query_timeline_data_binds_item_and_stratification_parameters():
     client = Mock()
-    client.query.return_value.to_dataframe.return_value = pd.DataFrame()
+    client.query.return_value.result.return_value.to_dataframe.return_value = (
+        pd.DataFrame()
+    )
 
     result = query_timeline_data(
         client,
@@ -26,6 +29,9 @@ def test_query_timeline_data_binds_item_and_stratification_parameters():
     assert result.empty
     (query,) = client.query.call_args.args
     job_config = client.query.call_args.kwargs["job_config"]
+    client.query.return_value.result.assert_called_once_with(
+        timeout=TIMELINE_QUERY_TIMEOUT_SECONDS
+    )
     parameters = {
         parameter.name: parameter for parameter in job_config.query_parameters
     }

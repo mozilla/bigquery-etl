@@ -16,6 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential/data-viewers
+  - workgroup:fxa/rp-active-accounts-stage
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-oauth-nonprod-stage-fxa-oauth', 'SELECT\n         uid,\n         scope,\n         service,\n         clientId,\n         firstAuthorizedTosAt,\n         lastAuthorizedTosAt\n       FROM\n         fxa_oauth.accountAuthorizations\n    ')

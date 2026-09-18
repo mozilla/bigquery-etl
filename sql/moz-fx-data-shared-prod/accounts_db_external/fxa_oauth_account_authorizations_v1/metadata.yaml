@@ -17,6 +17,7 @@ workgroup_access:
   members:
   - workgroup:accounts-confidential/data-viewers
   - workgroup:fxa/fraud-bot
+  - workgroup:fxa/rp-active-accounts-prod
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-oauth-prod-prod-fxa-oauth', 'SELECT\n         uid,\n         scope,\n         service,\n         clientId,\n         firstAuthorizedTosAt,\n         lastAuthorizedTosAt\n       FROM\n         fxa_oauth.accountAuthorizations\n    ')

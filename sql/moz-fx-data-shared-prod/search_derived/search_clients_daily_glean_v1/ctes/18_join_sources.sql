@@ -221,9 +221,9 @@ SELECT
     0
   ) AS serp_searches_with_ads_organic_count,
   COALESCE(serp_final_cte.searches_with_ads_tagged_count, 0) AS serp_searches_with_ads_tagged_count,
-  COALESCE(serp_final_cte.ad_clicks_tagged_count, 0) AS serp_ad_clicks_tagged_count,
-  COALESCE(serp_final_cte.ad_clicks_organic_count, 0) AS serp_ad_clicks_organic_count,
-  COALESCE(serp_final_cte.num_ad_clicks, 0) AS serp_num_ad_clicks,
+  COALESCE(serp_final_cte.ad_clicks_tagged_sum, 0) AS serp_ad_clicks_tagged_sum,
+  COALESCE(serp_final_cte.ad_clicks_organic_sum, 0) AS serp_ad_clicks_organic_sum,
+  COALESCE(serp_final_cte.ad_clicks_sum, 0) AS serp_ad_clicks_sum,
   COALESCE(serp_final_cte.non_ad_link_clicks_sum, 0) AS serp_non_ad_link_clicks_sum,
   COALESCE(serp_final_cte.other_engagements_sum, 0) AS serp_other_engagements_sum,
   COALESCE(serp_final_cte.ads_loaded_sum, 0) AS serp_ads_loaded_sum,

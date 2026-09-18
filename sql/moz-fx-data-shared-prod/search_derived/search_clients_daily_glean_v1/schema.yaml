@@ -201,17 +201,18 @@ fields:
   mode: NULLABLE
   description: The number of organic SERP impressions for this key, meaning those
     carrying no partner code. Zero, not null, on a row with no SERP activity.
-- name: tagged_serp
+- name: serp_searches_tagged_count
   type: INTEGER
   mode: NULLABLE
   description: The number of tagged SERP impressions for this key, meaning those carrying
     a partner code. Zero, not null, on a row with no SERP activity.
-- name: tagged_follow_on
+- name: serp_follow_on_searches_tagged_count
   type: INTEGER
   mode: NULLABLE
   description: The number of tagged SERP impressions reached by refining a search
     from the results page rather than from a browser search access point. Because
-    the access point is part of this table's grain, this equals tagged_serp on a row
+    the access point is part of this table's grain, this equals serp_searches_tagged_count
+    on a row
     whose source is a follow-on access point and is zero on every other row.
 - name: sap_counts_total
   type: INTEGER
@@ -230,19 +231,19 @@ fields:
   description: The distinct ad components the client clicked on this key's SERP impressions,
     comma separated and ordered by component name. Null where there were no ad clicks
     and on a row with no SERP activity.
-- name: ad_click_total
+- name: serp_ad_clicks_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ad clicks on this key's SERP impressions, tagged and
-    organic together. Not guaranteed to equal ad_click_tagged plus ad_click_organic,
+    organic together. Not guaranteed to equal serp_ad_clicks_tagged_sum plus serp_ad_clicks_organic_sum,
     because those two split on a flag that can be null while this counts every impression.
     Zero, not null, on a row with no SERP activity.
-- name: ad_click_tagged
+- name: serp_ad_clicks_tagged_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ad clicks on this key's tagged SERP impressions. Zero,
     not null, on a row with no SERP activity.
-- name: ad_click_organic
+- name: serp_ad_clicks_organic_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ad clicks on this key's organic SERP impressions. Zero,
@@ -349,7 +350,8 @@ fields:
   mode: NULLABLE
   description: Tagged SAP searches from the browser.search.content Glean labeled counter.
     Zero, not null, where the metrics ping carried nothing for this key. See the README's
-    legacy parity counters section for how this compares to v8 and to tagged_serp.
+    legacy parity counters section for how this compares to v8 and to
+    serp_searches_tagged_count.
 - name: legacy_tagged_follow_on
   type: INTEGER
   mode: NULLABLE

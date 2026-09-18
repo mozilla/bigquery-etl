@@ -1,0 +1,22 @@
+# req_2003's reporting_url has a Mozilla host on the /v1/st path, so it is excluded
+# and adds nothing to the "buy running shoes" group; req_2004 has a NULL
+# reporting_url and is retained.
+- submission_date: "2025-06-16"
+  query: "buy running shoes"
+  block_id: 1
+  impressions: 2
+  clicks: 1
+
+- submission_date: "2025-06-16"
+  query: "José Guadalupe Posada"
+  block_id: 0
+  impressions: 1
+  clicks: 0
+
+# req_2009's reporting_url is on a Mozilla host but not the /v1/st path, so it is
+# retained.
+- submission_date: "2025-06-16"
+  query: "moz other path"
+  block_id: 7
+  impressions: 1
+  clicks: 0

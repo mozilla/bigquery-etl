@@ -12,6 +12,7 @@ All of Mozilla has write access to `mozilla/bigquery-etl`. Clone this repository
 git clone git@github.com:mozilla/bigquery-etl.git
 cd bigquery-etl
 git checkout -b my-branch
+# ... make your changes, commit ...
 git push origin my-branch
 ```
 

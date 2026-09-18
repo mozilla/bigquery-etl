@@ -7,6 +7,8 @@ permissions: {}
 
 jobs:
   cleanup:
+    # Fork PRs don't have access to secrets and never create diff branches,
+    # so the no-op 401 on fork closures is expected and harmless.
     name: Delete diff branch in private-bigquery-etl
     runs-on: ubuntu-latest
     steps:

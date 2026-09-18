@@ -1,12 +1,18 @@
 name: Fork PR Notice
 
-# Fork pull requests are not supported here. This posts the an explanation that
-# fork PRs are not supported.
+# Fork pull requests are not supported here. This comments on them to explain
+# why no checks will run.
 on:
   pull_request_target:  # zizmor: ignore[dangerous-triggers]
-    types: [opened]
+    types: [opened, reopened, synchronize]
 
 permissions: {}
+
+# Two pushes in quick succession would otherwise both find no comment and both
+# post one.
+concurrency:
+  group: fork-pr-notice-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
 
 jobs:
   notice:
@@ -24,8 +30,22 @@ jobs:
           AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
           set -euo pipefail
+          marker='<!-- fork-pr-notice -->'
+
+          # Already told this author? Don't repeat it on every push. Paginated:
+          # on a long PR the notice falls off the first page, and missing it
+          # would post a duplicate.
+          existing=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.body | contains(\"$marker\")) | .id" \
+            2>/dev/null | head -n1) || true
+          if [ -n "$existing" ]; then
+            echo "Notice already posted on #$PR; nothing to do."
+            exit 0
+          fi
+
           body="$(mktemp)"
           {
+            echo "$marker"
             echo "Hi @${AUTHOR}, thanks for the contribution — a heads-up before you wait on CI:"
             echo "**this repository can't run checks on pull requests from forks**, so none will"
             echo "appear here."

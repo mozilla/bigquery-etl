@@ -22,3 +22,4 @@ bigquery:
     expiration_days: null
   clustering: null
 deprecated: true
+deletion_date: 2026-12-18

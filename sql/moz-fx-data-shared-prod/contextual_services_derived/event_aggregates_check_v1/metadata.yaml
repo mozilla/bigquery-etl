@@ -27,3 +27,4 @@ labels:
 #   - task_id: contextual_services_derived__event_aggregates_suggest__v1
 #     dag_name: bqetl_ctxsvc_derived
 deprecated: true
+deletion_date: 2026-12-18

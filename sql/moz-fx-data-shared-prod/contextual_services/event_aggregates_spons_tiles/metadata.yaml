@@ -5,10 +5,9 @@ owners:
 - rburwei@mozilla.com
 labels:
   owner1: rburwei
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:contextual-services/data-viewers
+workgroup_access: []
 references:
   view.sql:
   - moz-fx-data-shared-prod.contextual_services_derived.event_aggregates_spons_tiles_v1
+deprecated: true
+deletion_date: 2026-12-18

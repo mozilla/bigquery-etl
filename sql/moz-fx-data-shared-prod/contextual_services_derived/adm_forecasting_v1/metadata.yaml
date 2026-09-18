@@ -6,20 +6,14 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  dag: bqetl_ctxsvc_derived
   owner1: skahmann
-scheduling:
-  dag_name: bqetl_ctxsvc_derived
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:contextual-services/data-viewers
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-experiments.mozanalysis.enrollments_firefox_android_sponsored_shortcuts_experiment
@@ -27,3 +21,5 @@ references:
   - moz-fx-data-shared-prod.contextual_services.event_aggregates
   - moz-fx-data-shared-prod.telemetry.clients_daily
   - moz-fx-data-shared-prod.telemetry.unified_metrics
+deprecated: true
+deletion_date: 2026-12-18

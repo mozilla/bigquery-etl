@@ -8,15 +8,6 @@
   impression_count: 3
   click_count: 0
   report_count: 0
-- corpus_item_id: item-de
-  impression_count: 1
-  click_count: 0
-  report_count: 0
-- corpus_item_id: item-de
-  region: DE
-  impression_count: 1
-  click_count: 0
-  report_count: 0
 - corpus_item_id: item-fr
   impression_count: 1
   click_count: 0

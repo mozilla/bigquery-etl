@@ -312,7 +312,7 @@ jobs:
       pull-requests: write  # to request @mozilla/dataplatform-wg review
     environment: *build-env
     needs: [build, decide-runs]
-    if: needs.decide-runs.outputs.validate-sql == 'true'
+    if: needs.decide-runs.outputs.validate-sql == 'true' || github.event_name == 'pull_request'
     steps:
       - *checkout-with-history
       - *setup-python
@@ -386,6 +386,14 @@ jobs:
             echo "$advisory"
           fi
 
+          # Only detection (code 2) is advisory. A crash means the guardrail
+          # stopped running, which nothing else would surface now that the step
+          # otherwise stays green, so fail the job.
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            echo "::error::sensitivity check errored (exit $code)"
+            exit "$code"
+          fi
+
           # This check's own comment from an earlier push, if any. Paginated: on
           # a long PR the advisory falls off the first page, and missing it posts
           # a duplicate instead of updating in place.
@@ -452,23 +460,13 @@ jobs:
             fi
           elif [ "$code" -eq 2 ]; then
             echo "::notice::Sensitive-data flow(s) detected; deferring @mozilla/dataplatform-wg review (draft PR, or no PR to comment on)."
-          elif [ "$code" -eq 0 ] && [ -n "$existing" ]; then
-            # An earlier push flagged a flow this one no longer has: drop the
-            # advisory instead of leaving a stale review request on the PR.
-            # Deleting rather than editing keeps the re-flag path simple — the
-            # comment is just posted fresh if the flow comes back.
+          elif [ -n "$existing" ]; then
+            # An earlier push flagged a flow this one no longer has, so drop the
+            # stale advisory.
             gh api --method DELETE "repos/$REPO/issues/comments/$existing" \
               >/dev/null || echo "Could not delete the stale advisory comment"
-            # Withdraw the request this check made. Guarded on having commented,
-            # so it only undoes its own; a 422 means the team already reviewed.
-            gh api --method DELETE "repos/$REPO/pulls/$PR/requested_reviewers" \
-              -f "team_reviewers[]=dataplatform-wg" >/dev/null \
-              || echo "Note: could not withdraw the team review request."
-          elif [ "$code" -ne 0 ]; then
-            # crashed: leave any existing comment alone rather than retracting an
-            # advisory on the strength of a failed run
-            echo "::warning::sensitivity check errored (exit $code); skipping"
           fi
+          exit 0
   test-bqetl:
     name: Test bqetl
     runs-on: ubuntu-latest

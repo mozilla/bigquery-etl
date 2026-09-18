@@ -29,6 +29,11 @@ git clone git@github.com:mozilla/bigquery-etl.git
 cd bigquery-etl
 ```
 
+> **Work in a branch of this repository, not a fork.** All of Mozilla has write
+> access to `mozilla/bigquery-etl`, so clone it directly (as above), push your
+> branch here, and open the pull request from there. CI does not run on pull
+> requests from forks. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 2. Install the `bqetl` command line tool
 ```bash
 ./bqetl bootstrap

@@ -312,7 +312,7 @@ jobs:
       pull-requests: write  # to request @mozilla/dataplatform-wg review
     environment: *build-env
     needs: [build, decide-runs]
-    if: needs.decide-runs.outputs.validate-sql == 'true'
+    if: needs.decide-runs.outputs.validate-sql == 'true' || github.event_name == 'pull_request'
     steps:
       - *checkout-with-history
       - *setup-python
@@ -364,20 +364,58 @@ jobs:
       # requests Data Platform review and posts a comment. Flows on paths already
       # owned by a team are left to that team's normal review.
       - name: Flag sensitive-data flows widening read access
-        if: steps.changed-queries.outputs.any_changed == 'true'
         env:
+          ANY_CHANGED: ${{ steps.changed-queries.outputs.any_changed }}
           CHANGED_QUERIES: ${{ steps.changed-queries.outputs.all_changed_files }}
           GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr-context.outputs.pr_number }}
           REPO: ${{ github.repository }}
           DRAFT: ${{ steps.pr-context.outputs.draft }}
         run: |
+          # errexit off throughout: every API call here is best-effort, and the
+          # step reports through annotations and comments, not its exit status.
           set +e
-          advisory=$(PATH=".venv/bin:$PATH" \
-            script/bqetl data_governance sensitivity $CHANGED_QUERIES)
-          code=$?
-          set -e
-          echo "$advisory"
+          marker='<!-- sensitive-data-flow -->'
+
+          advisory=""
+          code=0
+          if [ "$ANY_CHANGED" = "true" ]; then
+            advisory=$(PATH=".venv/bin:$PATH" \
+              script/bqetl data_governance sensitivity $CHANGED_QUERIES)
+            code=$?
+            echo "$advisory"
+          fi
+
+          # Only detection (code 2) is advisory. A crash means the guardrail
+          # stopped running, which nothing else would surface now that the step
+          # otherwise stays green, so fail the job.
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            echo "::error::sensitivity check errored (exit $code)"
+            exit "$code"
+          fi
+
+          # This check's own comment from an earlier push, if any. Paginated: on
+          # a long PR the advisory falls off the first page, and missing it posts
+          # a duplicate instead of updating in place.
+          existing=""
+          if [ -n "$PR" ]; then
+            existing=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+              --jq ".[] | select(.body | contains(\"$marker\")) | .id" \
+              2>/dev/null | head -n1)
+          fi
+
+          if [ "$code" -eq 2 ]; then
+            # the job stays green, so the summary is what carries the finding
+            # where no comment gets posted (draft, merge queue, main push)
+            {
+              echo "### ⚠️ Sensitive-data flow detected"
+              echo
+              echo '```'
+              echo "$advisory"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
           # Detection always runs (visible above), but hold off on requesting
           # review / commenting while the PR is a draft — the ready_for_review
           # trigger re-runs this and posts once it's marked ready.
@@ -395,7 +433,6 @@ jobs:
                       "Actions token; the @mention in the comment notifies them."
             # Upsert a single advisory comment (marker-keyed) so re-runs on each
             # push update it in place instead of piling up duplicates.
-            marker='<!-- sensitive-data-flow -->'
             body="$(mktemp)"
             {
               echo "$marker"
@@ -407,25 +444,29 @@ jobs:
               echo "$advisory"
               echo '```'
               echo
+              echo "A source shown as \`unresolved\` has no \`dataset_metadata.yaml\` in this repo. It may be"
+              echo "defined outside bigquery-etl — in private-bigquery-etl, or in a project this repo does"
+              echo "not manage — in which case its access could not be read and it is flagged conservatively."
+              echo
               echo "This is advisory and does not block merge."
               echo "A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
             } > "$body"
-            existing=$(gh api "repos/$REPO/issues/$PR/comments" \
-              --jq "[.[] | select(.body | contains(\"$marker\"))][0].id" 2>/dev/null || echo "")
-            if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+            if [ -n "$existing" ]; then
               gh api --method PATCH "repos/$REPO/issues/comments/$existing" \
                 -F "body=@$body" >/dev/null || echo "Could not update existing comment"
             else
               gh pr comment "$PR" -R "$REPO" --body-file "$body" \
                 || echo "Could not post comment (fork PR token is read-only?)"
             fi
-          elif [ "$code" -eq 2 ] && [ "$DRAFT" = "true" ]; then
-            echo "::notice::Sensitive-data flow(s) detected; PR is a draft, deferring @mozilla/dataplatform-wg review until it's marked ready."
-          elif [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
-            echo "::warning::sensitivity check errored (exit $code); skipping"
+          elif [ "$code" -eq 2 ]; then
+            echo "::notice::Sensitive-data flow(s) detected; deferring @mozilla/dataplatform-wg review (draft PR, or no PR to comment on)."
+          elif [ -n "$existing" ]; then
+            # An earlier push flagged a flow this one no longer has, so drop the
+            # stale advisory.
+            gh api --method DELETE "repos/$REPO/issues/comments/$existing" \
+              >/dev/null || echo "Could not delete the stale advisory comment"
           fi
-          exit $code
-
+          exit 0
   test-bqetl:
     name: Test bqetl
     runs-on: ubuntu-latest

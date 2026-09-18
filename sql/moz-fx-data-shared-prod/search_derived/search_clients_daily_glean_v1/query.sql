@@ -851,7 +851,7 @@ serp_aggregates_base_cte AS (
     SUM(num_ad_clicks) AS num_ad_clicks,
     SUM(num_non_ad_link_clicks) AS non_ad_link_clicks_sum,
     SUM(num_other_engagements) AS other_engagements_sum,
-    SUM(num_ads_loaded) AS num_ads_loaded,
+    SUM(num_ads_loaded) AS ads_loaded_sum,
     SUM(num_ads_visible) AS num_ads_visible,
     SUM(num_ads_blocked) AS num_ads_blocked,
     SUM(num_ads_notshowing) AS num_ads_notshowing,
@@ -899,7 +899,7 @@ serp_final_cte AS (
     serp_aggregates_cte.num_ad_clicks,
     serp_aggregates_cte.non_ad_link_clicks_sum,
     serp_aggregates_cte.other_engagements_sum,
-    serp_aggregates_cte.num_ads_loaded,
+    serp_aggregates_cte.ads_loaded_sum,
     serp_aggregates_cte.num_ads_visible,
     serp_aggregates_cte.num_ads_blocked,
     serp_aggregates_cte.num_ads_notshowing,
@@ -1142,7 +1142,7 @@ join_sources_cte AS (
     COALESCE(serp_final_cte.num_ad_clicks, 0) AS serp_num_ad_clicks,
     COALESCE(serp_final_cte.non_ad_link_clicks_sum, 0) AS serp_non_ad_link_clicks_sum,
     COALESCE(serp_final_cte.other_engagements_sum, 0) AS serp_other_engagements_sum,
-    COALESCE(serp_final_cte.num_ads_loaded, 0) AS serp_num_ads_loaded,
+    COALESCE(serp_final_cte.ads_loaded_sum, 0) AS serp_ads_loaded_sum,
     COALESCE(serp_final_cte.num_ads_visible, 0) AS serp_num_ads_visible,
     COALESCE(serp_final_cte.num_ads_blocked, 0) AS serp_num_ads_blocked,
     COALESCE(serp_final_cte.num_ads_notshowing, 0) AS serp_num_ads_notshowing,
@@ -1266,7 +1266,7 @@ final_cte AS (
     serp_ad_blocker_inferred,
     serp_non_ad_link_clicks_sum, -- NEW
     serp_other_engagements_sum, -- NEW
-    serp_num_ads_loaded, -- NEW
+    serp_ads_loaded_sum, -- NEW
     serp_num_ads_visible, -- NEW
     serp_num_ads_blocked, -- NEW
     serp_num_ads_notshowing, -- NEW

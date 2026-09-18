@@ -276,7 +276,7 @@ fields:
   description: The number of engagements with the results page that were neither an
     ad click nor a non-ad link click, across this key's SERP impressions. Zero, not
     null, on a row with no SERP activity.
-- name: serp_num_ads_loaded
+- name: serp_ads_loaded_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ads loaded across this key's SERP impressions, whether

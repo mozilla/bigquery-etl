@@ -271,7 +271,7 @@ Each row represents aggregated search activity and engagement metrics for a spec
 The two sides do not compute the same measures.
 
 - SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`.
-- SERP produces `counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the `num_ads_*` family. All of them are coined here without the `serp_` prefix and pick it up at the join. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`.
+- SERP produces `counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the ads-loaded, ads-visible, ads-blocked and ads-notshowing sums. All of them are coined here without the `serp_` prefix and pick it up at the join. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`.
 
 #### SAP and SERP Final
 

@@ -64,7 +64,7 @@ SELECT
   serp_ad_blocker_inferred,
   serp_non_ad_link_clicks_sum, -- NEW
   serp_other_engagements_sum, -- NEW
-  serp_num_ads_loaded, -- NEW
+  serp_ads_loaded_sum, -- NEW
   serp_num_ads_visible, -- NEW
   serp_num_ads_blocked, -- NEW
   serp_num_ads_notshowing, -- NEW

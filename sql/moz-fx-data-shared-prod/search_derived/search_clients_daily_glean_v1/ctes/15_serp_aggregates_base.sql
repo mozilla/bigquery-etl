@@ -35,7 +35,7 @@ SELECT
   SUM(num_ad_clicks) AS num_ad_clicks,
   SUM(num_non_ad_link_clicks) AS non_ad_link_clicks_sum,
   SUM(num_other_engagements) AS other_engagements_sum,
-  SUM(num_ads_loaded) AS num_ads_loaded,
+  SUM(num_ads_loaded) AS ads_loaded_sum,
   SUM(num_ads_visible) AS num_ads_visible,
   SUM(num_ads_blocked) AS num_ads_blocked,
   SUM(num_ads_notshowing) AS num_ads_notshowing,

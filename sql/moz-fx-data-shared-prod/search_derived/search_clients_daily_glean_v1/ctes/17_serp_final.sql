@@ -14,9 +14,9 @@ SELECT
   serp_aggregates_cte.non_ad_link_clicks_sum,
   serp_aggregates_cte.other_engagements_sum,
   serp_aggregates_cte.ads_loaded_sum,
-  serp_aggregates_cte.num_ads_visible,
-  serp_aggregates_cte.num_ads_blocked,
-  serp_aggregates_cte.num_ads_notshowing,
+  serp_aggregates_cte.ads_visible_sum,
+  serp_aggregates_cte.ads_blocked_sum,
+  serp_aggregates_cte.ads_notshowing_sum,
   serp_aggregates_cte.counts_total,
   serp_aggregates_cte.max_concurrent_tab_count_max
 FROM

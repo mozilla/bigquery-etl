@@ -65,9 +65,9 @@ SELECT
   serp_non_ad_link_clicks_sum, -- NEW
   serp_other_engagements_sum, -- NEW
   serp_ads_loaded_sum, -- NEW
-  serp_num_ads_visible, -- NEW
-  serp_num_ads_blocked, -- NEW
-  serp_num_ads_notshowing, -- NEW
+  serp_ads_visible_sum, -- NEW
+  serp_ads_blocked_sum, -- NEW
+  serp_ads_notshowing_sum, -- NEW
   has_adblocker_addon,
   policies_is_enterprise,
   -- keep these after the coalesce, so they read the same os, os_version and

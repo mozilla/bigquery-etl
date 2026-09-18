@@ -852,9 +852,9 @@ serp_aggregates_base_cte AS (
     SUM(num_non_ad_link_clicks) AS non_ad_link_clicks_sum,
     SUM(num_other_engagements) AS other_engagements_sum,
     SUM(num_ads_loaded) AS ads_loaded_sum,
-    SUM(num_ads_visible) AS num_ads_visible,
-    SUM(num_ads_blocked) AS num_ads_blocked,
-    SUM(num_ads_notshowing) AS num_ads_notshowing,
+    SUM(num_ads_visible) AS ads_visible_sum,
+    SUM(num_ads_blocked) AS ads_blocked_sum,
+    SUM(num_ads_notshowing) AS ads_notshowing_sum,
     COUNT(*) AS counts_total,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
@@ -900,9 +900,9 @@ serp_final_cte AS (
     serp_aggregates_cte.non_ad_link_clicks_sum,
     serp_aggregates_cte.other_engagements_sum,
     serp_aggregates_cte.ads_loaded_sum,
-    serp_aggregates_cte.num_ads_visible,
-    serp_aggregates_cte.num_ads_blocked,
-    serp_aggregates_cte.num_ads_notshowing,
+    serp_aggregates_cte.ads_visible_sum,
+    serp_aggregates_cte.ads_blocked_sum,
+    serp_aggregates_cte.ads_notshowing_sum,
     serp_aggregates_cte.counts_total,
     serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
@@ -1143,9 +1143,9 @@ join_sources_cte AS (
     COALESCE(serp_final_cte.non_ad_link_clicks_sum, 0) AS serp_non_ad_link_clicks_sum,
     COALESCE(serp_final_cte.other_engagements_sum, 0) AS serp_other_engagements_sum,
     COALESCE(serp_final_cte.ads_loaded_sum, 0) AS serp_ads_loaded_sum,
-    COALESCE(serp_final_cte.num_ads_visible, 0) AS serp_num_ads_visible,
-    COALESCE(serp_final_cte.num_ads_blocked, 0) AS serp_num_ads_blocked,
-    COALESCE(serp_final_cte.num_ads_notshowing, 0) AS serp_num_ads_notshowing,
+    COALESCE(serp_final_cte.ads_visible_sum, 0) AS serp_ads_visible_sum,
+    COALESCE(serp_final_cte.ads_blocked_sum, 0) AS serp_ads_blocked_sum,
+    COALESCE(serp_final_cte.ads_notshowing_sum, 0) AS serp_ads_notshowing_sum,
     COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
     -- falls back to 0, not NULL, when no side reported it. sap_aggregates_cte casts this integer
     -- counter to float64, so cast back to INT64 to keep the declared INTEGER type; the metrics
@@ -1267,9 +1267,9 @@ final_cte AS (
     serp_non_ad_link_clicks_sum, -- NEW
     serp_other_engagements_sum, -- NEW
     serp_ads_loaded_sum, -- NEW
-    serp_num_ads_visible, -- NEW
-    serp_num_ads_blocked, -- NEW
-    serp_num_ads_notshowing, -- NEW
+    serp_ads_visible_sum, -- NEW
+    serp_ads_blocked_sum, -- NEW
+    serp_ads_notshowing_sum, -- NEW
     has_adblocker_addon,
     policies_is_enterprise,
     -- keep these after the coalesce, so they read the same os, os_version and

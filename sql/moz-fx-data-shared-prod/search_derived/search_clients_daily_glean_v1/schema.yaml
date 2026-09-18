@@ -281,17 +281,17 @@ fields:
   mode: NULLABLE
   description: The number of ads loaded across this key's SERP impressions, whether
     or not they were shown. Zero, not null, on a row with no SERP activity.
-- name: serp_num_ads_visible
+- name: serp_ads_visible_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ads visible to the client across this key's SERP impressions.
     Zero, not null, on a row with no SERP activity.
-- name: serp_num_ads_blocked
+- name: serp_ads_blocked_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ads blocked across this key's SERP impressions. Zero,
     not null, on a row with no SERP activity.
-- name: serp_num_ads_notshowing
+- name: serp_ads_notshowing_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of ads that loaded but were not shown across this key's

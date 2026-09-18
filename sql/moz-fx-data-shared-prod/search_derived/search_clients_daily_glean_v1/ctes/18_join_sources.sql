@@ -227,9 +227,9 @@ SELECT
   COALESCE(serp_final_cte.non_ad_link_clicks_sum, 0) AS serp_non_ad_link_clicks_sum,
   COALESCE(serp_final_cte.other_engagements_sum, 0) AS serp_other_engagements_sum,
   COALESCE(serp_final_cte.ads_loaded_sum, 0) AS serp_ads_loaded_sum,
-  COALESCE(serp_final_cte.num_ads_visible, 0) AS serp_num_ads_visible,
-  COALESCE(serp_final_cte.num_ads_blocked, 0) AS serp_num_ads_blocked,
-  COALESCE(serp_final_cte.num_ads_notshowing, 0) AS serp_num_ads_notshowing,
+  COALESCE(serp_final_cte.ads_visible_sum, 0) AS serp_ads_visible_sum,
+  COALESCE(serp_final_cte.ads_blocked_sum, 0) AS serp_ads_blocked_sum,
+  COALESCE(serp_final_cte.ads_notshowing_sum, 0) AS serp_ads_notshowing_sum,
   COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
   -- falls back to 0, not NULL, when no side reported it. sap_aggregates_cte casts this integer
   -- counter to float64, so cast back to INT64 to keep the declared INTEGER type; the metrics

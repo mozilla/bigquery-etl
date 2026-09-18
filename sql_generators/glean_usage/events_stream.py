@@ -16,6 +16,7 @@ from sql_generators.glean_usage.common import (
 
 TARGET_TABLE_ID = "events_stream_v1"
 PREFIX = "events_stream"
+DEFAULT_PING_EXPIRATION_DAYS = 775
 
 
 class EventsStreamTable(GleanTable):
@@ -175,7 +176,7 @@ def get_glean_dependency_v1_name(dependency: str) -> str:
 
 @cache
 def get_glean_app_ping_expiration_days(v1_name: str, ping: str = "events") -> int:
-    """Return the Glean app ping's configured expiration days, or 775 days if not configured."""
+    """Return the Glean app ping's configured expiration days, or DEFAULT_PING_EXPIRATION_DAYS if not configured."""
     repository = get_glean_app_repository(v1_name)
     return (
         (
@@ -189,7 +190,7 @@ def get_glean_app_ping_expiration_days(v1_name: str, ping: str = "events") -> in
             .get("expiration_policy", {})
             .get("delete_after_days")
         )
-        or 775
+        or DEFAULT_PING_EXPIRATION_DAYS
     )
 
 

@@ -265,7 +265,7 @@ fields:
   description: True where an ad blocker was inferred on every one of this key's SERP
     impressions. Inferred from the page itself, so it is independent of has_adblocker_addon,
     which reports an installed add-on. Null on a row with no SERP activity.
-- name: serp_num_non_ad_link_clicks
+- name: serp_non_ad_link_clicks_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of clicks on non-ad links across this key's SERP impressions.

@@ -321,7 +321,7 @@ The trade-off is that a zero no longer distinguishes "no activity" from "the oth
 
 - `max_concurrent_tab_count_max`, the one shared measure that zero-fills, takes a third `coalesce` argument.
 - `sap_counts_total` is zero on a serp-only row.
-- The fifteen SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six `num_*` measures.
+- The fifteen SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six per-impression engagement and ad sums.
 - The seven `legacy_` counters are zero where the metrics ping carried nothing for that key, which is every row whose key exists on a pipeline but not in the counters.
 
 Five columns are deliberately left alone. `serp_ad_click_target` is a string and `serp_ad_blocker_inferred` is a boolean, so neither has a meaningful zero. `sap_provider_id`, `sap_provider_name` and `sap_overridden_by_third_party` are the same for strings and booleans, and are the three of the five that are `null` on a serp-only row rather than a sap-only one.

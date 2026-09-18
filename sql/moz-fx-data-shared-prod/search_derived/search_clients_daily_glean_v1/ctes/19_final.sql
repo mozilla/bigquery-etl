@@ -62,7 +62,7 @@ SELECT
   serp_searches_with_ads_tagged_count,
   serp_searches_with_ads_organic_count,
   serp_ad_blocker_inferred,
-  serp_num_non_ad_link_clicks, -- NEW
+  serp_non_ad_link_clicks_sum, -- NEW
   serp_num_other_engagements, -- NEW
   serp_num_ads_loaded, -- NEW
   serp_num_ads_visible, -- NEW

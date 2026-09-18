@@ -33,7 +33,7 @@ SELECT
   SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_tagged_count,
   SUM(CASE WHEN is_tagged IS FALSE THEN num_ad_clicks ELSE 0 END) AS ad_clicks_organic_count,
   SUM(num_ad_clicks) AS num_ad_clicks,
-  SUM(num_non_ad_link_clicks) AS num_non_ad_link_clicks,
+  SUM(num_non_ad_link_clicks) AS non_ad_link_clicks_sum,
   SUM(num_other_engagements) AS num_other_engagements,
   SUM(num_ads_loaded) AS num_ads_loaded,
   SUM(num_ads_visible) AS num_ads_visible,

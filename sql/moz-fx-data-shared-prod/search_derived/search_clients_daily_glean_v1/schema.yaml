@@ -270,7 +270,7 @@ fields:
   mode: NULLABLE
   description: The number of clicks on non-ad links across this key's SERP impressions.
     Zero, not null, on a row with no SERP activity.
-- name: serp_num_other_engagements
+- name: serp_other_engagements_sum
   type: INTEGER
   mode: NULLABLE
   description: The number of engagements with the results page that were neither an

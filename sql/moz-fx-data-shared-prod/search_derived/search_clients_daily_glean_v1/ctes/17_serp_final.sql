@@ -12,7 +12,7 @@ SELECT
   serp_aggregates_cte.ad_clicks_organic_count,
   serp_aggregates_cte.num_ad_clicks,
   serp_aggregates_cte.non_ad_link_clicks_sum,
-  serp_aggregates_cte.num_other_engagements,
+  serp_aggregates_cte.other_engagements_sum,
   serp_aggregates_cte.num_ads_loaded,
   serp_aggregates_cte.num_ads_visible,
   serp_aggregates_cte.num_ads_blocked,

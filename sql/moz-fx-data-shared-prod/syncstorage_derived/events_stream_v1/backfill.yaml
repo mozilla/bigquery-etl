@@ -4,7 +4,7 @@
   reason: Correct Glean server `event_timestamp` values (DENG-10432).
   watchers:
   - srose@mozilla.com
-  status: Initiate
+  status: Complete
   custom_query_path: sql/moz-fx-data-shared-prod/syncstorage_derived/events_stream_v1/backfill_deng10432.sql
   shredder_mitigation: false
   override_retention_limit: false

@@ -32,7 +32,7 @@ SELECT
       metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
-    STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
+    STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
@@ -81,7 +81,7 @@ SELECT
       metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
-    STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
+    STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
@@ -130,7 +130,7 @@ SELECT
       metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
-    STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
+    STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
@@ -179,7 +179,7 @@ SELECT
       metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
-    STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
+    STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
@@ -228,7 +228,7 @@ SELECT
       metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
-    STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
+    STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`

@@ -455,6 +455,12 @@ fields:
         pings.
 
         '
+    - name: fx_suggest_suggestion_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The suggestion ID from MARS/Merino
+
+        '
   - name: boolean
     type: RECORD
     mode: NULLABLE

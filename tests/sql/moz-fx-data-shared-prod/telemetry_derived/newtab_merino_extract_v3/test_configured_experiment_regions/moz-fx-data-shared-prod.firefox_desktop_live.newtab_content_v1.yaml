@@ -1,0 +1,121 @@
+---
+- submission_timestamp: 2099-01-01 00:00:00 UTC
+  document_id: doc-gb-control
+  metrics:
+    string:
+      newtab_content_surface_id: NEW_TAB_EN_GB
+      newtab_content_country: GB
+      newtab_content_experiment_name: ctrpred_engb
+      newtab_content_experiment_branch: control
+  events:
+    - category: newtab_content
+      name: impression
+      extra:
+        - key: corpus_item_id
+          value: item-gb
+        - key: position
+          value: "1"
+        - key: format
+          value: small-card
+        - key: section_position
+          value: "0"
+- submission_timestamp: 2099-01-01 00:01:00 UTC
+  document_id: doc-gb-empty-branch
+  metrics:
+    string:
+      newtab_content_surface_id: NEW_TAB_EN_GB
+      newtab_content_country: GB
+      newtab_content_experiment_name: ctrpred_engb
+      newtab_content_experiment_branch: ""
+  events:
+    - category: newtab_content
+      name: impression
+      extra:
+        - key: corpus_item_id
+          value: item-gb
+        - key: position
+          value: "1"
+        - key: format
+          value: small-card
+        - key: section_position
+          value: "0"
+- submission_timestamp: 2099-01-01 00:01:30 UTC
+  document_id: doc-gb-treatment
+  metrics:
+    string:
+      newtab_content_surface_id: NEW_TAB_EN_GB
+      newtab_content_country: GB
+      newtab_content_experiment_name: ctrpred_engb
+      newtab_content_experiment_branch: treatment
+  events:
+    - category: newtab_content
+      name: impression
+      extra:
+        - key: corpus_item_id
+          value: item-gb
+        - key: position
+          value: "1"
+        - key: format
+          value: small-card
+        - key: section_position
+          value: "0"
+- submission_timestamp: 2099-01-01 00:02:00 UTC
+  document_id: doc-fr-treatment
+  metrics:
+    string:
+      newtab_content_surface_id: NEW_TAB_FR_FR
+      newtab_content_country: FR
+      newtab_content_experiment_name: fixed-tile-in-fr
+      newtab_content_experiment_branch: treatment
+  events:
+    - category: newtab_content
+      name: impression
+      extra:
+        - key: corpus_item_id
+          value: item-fr
+        - key: position
+          value: "1"
+        - key: format
+          value: small-card
+        - key: section_position
+          value: "0"
+- submission_timestamp: 2099-01-01 00:03:00 UTC
+  document_id: doc-de-retired-treatment
+  metrics:
+    string:
+      newtab_content_surface_id: NEW_TAB_DE_DE
+      newtab_content_country: DE
+      newtab_content_experiment_name: publisher-constraint-in-germany
+      newtab_content_experiment_branch: treatment
+  events:
+    - category: newtab_content
+      name: impression
+      extra:
+        - key: corpus_item_id
+          value: item-de
+        - key: position
+          value: "1"
+        - key: format
+          value: small-card
+        - key: section_position
+          value: "0"
+- submission_timestamp: 2099-01-01 00:04:00 UTC
+  document_id: doc-us-fr-treatment
+  metrics:
+    string:
+      newtab_content_surface_id: NEW_TAB_EN_US
+      newtab_content_country: US
+      newtab_content_experiment_name: fixed-tile-in-fr
+      newtab_content_experiment_branch: treatment
+  events:
+    - category: newtab_content
+      name: impression
+      extra:
+        - key: corpus_item_id
+          value: item-us
+        - key: position
+          value: "1"
+        - key: format
+          value: small-card
+        - key: section_position
+          value: "0"

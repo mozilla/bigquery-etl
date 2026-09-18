@@ -1,0 +1,80 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "document_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "events",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "category",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "extra",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "value",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "metrics",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "string",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "newtab_content_surface_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "newtab_content_country",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "newtab_content_experiment_branch",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "newtab_content_experiment_name",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  }
+]

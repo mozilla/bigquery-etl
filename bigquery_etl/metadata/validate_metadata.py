@@ -343,6 +343,19 @@ def validate_asset_level(query_dir, metadata):
             name.startswith("test_") for name in os.listdir(unittest_path)
         )
 
+        # `os.path.join("tests", query_dir)` collapses to `query_dir` when it is
+        # absolute (e.g. `--sql-dir=/tmp/workspace/private-generated-sql/sql`), so
+        # resolve the tests dir relative to the sql dir root instead.
+        if not results["unittests"]:
+            query_path = Path(query_dir)
+            if len(query_path.parents) >= 4:
+                new_unittest_path = (
+                    query_path.parents[3] / "tests" / Path(*query_path.parts[-4:])
+                )
+                results["unittests"] = new_unittest_path.exists() and any(
+                    name.startswith("test_") for name in os.listdir(new_unittest_path)
+                )
+
         # Check scheduler.
         results["scheduler"] = (
             metadata.scheduling is not None

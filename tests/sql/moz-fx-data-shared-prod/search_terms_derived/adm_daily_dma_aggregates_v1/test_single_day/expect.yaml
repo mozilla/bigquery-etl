@@ -25,3 +25,12 @@
   block_id: 2
   impressions: 1
   clicks: 0
+
+# req_1008 has a NULL reporting_url and is retained; req_1007's reporting_url has a
+# Mozilla host on the /v1/st path, so it is excluded and adds no row here.
+- submission_date: "2025-06-16"
+  dma: ""
+  query: "José Guadalupe Posada"
+  block_id: 0
+  impressions: 1
+  clicks: 0

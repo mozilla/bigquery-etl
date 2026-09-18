@@ -1,0 +1,6 @@
+description: >
+  Determine whether a Firefox Suggest interaction is for a Mozilla-supplied
+  (non-AMP) suggestion, based on its reporting_url: the /v1/st endpoint on
+  ads.mozilla.org or ads.allizom.org. Returns FALSE for a NULL, empty or
+  unparseable reporting_url.
+friendly_name: Is Mozilla-Supplied Suggestion

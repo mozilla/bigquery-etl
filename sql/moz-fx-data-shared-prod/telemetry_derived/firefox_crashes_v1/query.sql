@@ -291,12 +291,7 @@ unioned_pings AS (
     events,
     metadata,
     STRUCT(
-      STRUCT(
-        metrics.labeled_counter.glean_error_invalid_label,
-        metrics.labeled_counter.glean_error_invalid_overflow,
-        metrics.labeled_counter.glean_error_invalid_state,
-        metrics.labeled_counter.glean_error_invalid_value
-      ) AS `labeled_counter`,
+      metrics.labeled_counter,
       STRUCT(
         metrics.boolean.crash_startup,
         metrics.boolean.crash_is_garbage_collecting,
@@ -371,22 +366,7 @@ unioned_pings AS (
     normalized_country_code,
     normalized_os,
     normalized_os_version,
-    STRUCT(
-      ping_info.end_time,
-      ping_info.experiments,
-      ping_info.ping_type,
-      ping_info.reason,
-      ping_info.seq,
-      ping_info.start_time,
-      STRUCT(
-        ping_info.server_knobs_config.event_threshold,
-        ping_info.server_knobs_config.metrics_enabled,
-        ping_info.server_knobs_config.pings_enabled,
-        ping_info.server_knobs_config.session_sample_rate
-      ) AS `server_knobs_config`,
-      ping_info.parsed_start_time,
-      ping_info.parsed_end_time
-    ) AS `ping_info`,
+    ping_info,
     sample_id,
     submission_timestamp,
     app_version_major,

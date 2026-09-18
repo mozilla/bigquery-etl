@@ -75,6 +75,19 @@ def test_apply_ctrpred_postprocessing_returns_original_rows_on_failure(monkeypat
     )
 
 
+def test_apply_ctrpred_postprocessing_returns_original_rows_for_invalid_artifact(
+    monkeypatch,
+):
+    artifact = [None]
+
+    monkeypatch.setattr(merino, "query_timeline_data", lambda *args: None)
+
+    assert (
+        merino.apply_ctrpred_postprocessing(artifact, client=None, end_time=None)
+        is artifact
+    )
+
+
 def test_apply_ctrpred_postprocessing_skips_empty_treatment(monkeypatch):
     artifact = [{"click_count": 1}]
 

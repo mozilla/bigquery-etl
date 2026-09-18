@@ -1,0 +1,18 @@
+friendly_name: Ads Event Aggregates for Suggest
+description: |-
+  Aggregated event counts for suggest.
+
+  Migrated from `contextual_services.event_aggregates_suggest`, which reads the
+  legacy `contextual_services_derived.event_aggregates_suggest_v1` table.
+owners:
+- cmorales@mozilla.com
+- mozilla/ads_data_team
+labels:
+  owner1: cmorales
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:ads/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.ads_derived.event_aggregates_suggest_v1

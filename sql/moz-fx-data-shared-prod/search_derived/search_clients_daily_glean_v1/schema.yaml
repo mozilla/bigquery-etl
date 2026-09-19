@@ -345,26 +345,28 @@ fields:
     by a third party, as reported on the sap.counts event. Taken from the SAP side
     only, so it is null on rows built only from SERP impressions or from the legacy
     counters.
-- name: legacy_tagged_sap
+- name: legacy_searches_tagged_non_follow_on_sum
   type: INTEGER
   mode: NULLABLE
-  description: Tagged SAP searches from the browser.search.content Glean labeled counter.
-    Zero, not null, where the metrics ping carried nothing for this key. See the README's
-    legacy parity counters section for how this compares to v8 and to
-    serp_searches_tagged_count.
-- name: legacy_tagged_follow_on
+  description: Tagged searches from the browser.search.content Glean labeled counter,
+    excluding follow-on searches, which the counter labels as a separate tag type and
+    legacy_searches_tagged_follow_on_sum carries. The two ads families do not make that
+    split and include follow-on. Zero, not null, where the metrics ping carried nothing
+    for this key. See the README's legacy parity counters section for how this compares
+    to v8 and to serp_searches_tagged_count, which includes follow-on.
+- name: legacy_searches_tagged_follow_on_sum
   type: INTEGER
   mode: NULLABLE
   description: Tagged follow-on searches from the browser.search.content Glean labeled
     counter. Zero, not null, where the metrics ping carried nothing for this key.
-- name: legacy_organic
+- name: legacy_searches_organic_sum
   type: INTEGER
   mode: NULLABLE
   description: Organic, meaning non-partner, in-content searches from the browser.search.content
     Glean labeled counter. Runs below v8's organic column by a margin that is not yet
     root-caused - see the README's legacy parity counters section before using it for
     organic levels. Zero, not null, where the metrics ping carried nothing for this key.
-- name: legacy_search_with_ads_tagged
+- name: legacy_searches_with_ads_tagged_sum
   type: INTEGER
   mode: NULLABLE
   description: Tagged SERPs with ads from the browser.search.withads Glean labeled counter,
@@ -373,7 +375,7 @@ fields:
     highest-volume partner code and is zero on the others - a plain SUM is correct, a
     per-partner_code slice is not. Zero, not null, where the metrics ping carried nothing
     for this key.
-- name: legacy_search_with_ads_organic
+- name: legacy_searches_with_ads_organic_sum
   type: INTEGER
   mode: NULLABLE
   description: Organic SERPs with ads from the browser.search.withads Glean labeled counter,
@@ -381,7 +383,7 @@ fields:
     highest-volume partner code and zero on the others, as the withads labels carry no
     partner code - a plain SUM is correct, a per-partner_code slice is not. Zero, not null,
     where the metrics ping carried nothing for this key.
-- name: legacy_ad_click_tagged
+- name: legacy_ad_clicks_tagged_sum
   type: INTEGER
   mode: NULLABLE
   description: Tagged ad clicks from the browser.search.adclicks Glean labeled counter,
@@ -389,7 +391,7 @@ fields:
     follow-on. Attributed to the key's highest-volume partner code and zero on the others -
     a plain SUM is correct, a per-partner_code slice is not. Zero, not null, where the
     metrics ping carried nothing for this key.
-- name: legacy_ad_click_organic
+- name: legacy_ad_clicks_organic_sum
   type: INTEGER
   mode: NULLABLE
   description: Organic ad clicks from the browser.search.adclicks Glean labeled counter,

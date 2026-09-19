@@ -327,10 +327,10 @@ legacy_content_agg_cte AS (
     normalized_engine,
     partner_code,
     search_access_point,
-    SUM(IF(tag_type = 'tagged', n, 0)) AS legacy_tagged_sap,
-    SUM(IF(tag_type = 'tagged-follow-on', n, 0)) AS legacy_tagged_follow_on,
+    SUM(IF(tag_type = 'tagged', n, 0)) AS legacy_searches_tagged_non_follow_on_sum,
+    SUM(IF(tag_type = 'tagged-follow-on', n, 0)) AS legacy_searches_tagged_follow_on_sum,
     -- known gap against v8, documented in the README
-    SUM(IF(tag_type = 'organic', n, 0)) AS legacy_organic,
+    SUM(IF(tag_type = 'organic', n, 0)) AS legacy_searches_organic_sum,
     SUM(n) AS content_volume
   FROM
     legacy_exploded_cte
@@ -355,12 +355,14 @@ legacy_ads_agg_cte AS (
     -- v8's search_with_ads and ad_click both INCLUDE follow-on
     SUM(
       IF(family = 'withads' AND tag_type IN ('tagged', 'tagged-follow-on'), n, 0)
-    ) AS legacy_search_with_ads_tagged,
-    SUM(IF(family = 'withads' AND tag_type = 'organic', n, 0)) AS legacy_search_with_ads_organic,
+    ) AS legacy_searches_with_ads_tagged_sum,
+    SUM(
+      IF(family = 'withads' AND tag_type = 'organic', n, 0)
+    ) AS legacy_searches_with_ads_organic_sum,
     SUM(
       IF(family = 'adclicks' AND tag_type IN ('tagged', 'tagged-follow-on'), n, 0)
-    ) AS legacy_ad_click_tagged,
-    SUM(IF(family = 'adclicks' AND tag_type = 'organic', n, 0)) AS legacy_ad_click_organic
+    ) AS legacy_ad_clicks_tagged_sum,
+    SUM(IF(family = 'adclicks' AND tag_type = 'organic', n, 0)) AS legacy_ad_clicks_organic_sum
   FROM
     legacy_exploded_cte
   WHERE
@@ -401,23 +403,34 @@ legacy_counters_agg_cte AS (
     -- than being dropped, so totals reconcile. FULL OUTER below is what makes this reachable.
     COALESCE(r.partner_code, 'unknown_code') AS partner_code,
     COALESCE(r.search_access_point, a.search_access_point) AS search_access_point,
-    COALESCE(r.legacy_tagged_sap, 0) AS legacy_tagged_sap,
-    COALESCE(r.legacy_tagged_follow_on, 0) AS legacy_tagged_follow_on,
-    COALESCE(r.legacy_organic, 0) AS legacy_organic,
+    COALESCE(
+      r.legacy_searches_tagged_non_follow_on_sum,
+      0
+    ) AS legacy_searches_tagged_non_follow_on_sum,
+    COALESCE(r.legacy_searches_tagged_follow_on_sum, 0) AS legacy_searches_tagged_follow_on_sum,
+    COALESCE(r.legacy_searches_organic_sum, 0) AS legacy_searches_organic_sum,
     -- only rank 1 receives the ad counts; every other partner_code row gets 0, so a plain
     -- SUM over the table is correct by construction
     IF(
       COALESCE(r.rn, 1) = 1,
-      COALESCE(a.legacy_search_with_ads_tagged, 0),
+      COALESCE(a.legacy_searches_with_ads_tagged_sum, 0),
       0
-    ) AS legacy_search_with_ads_tagged,
+    ) AS legacy_searches_with_ads_tagged_sum,
     IF(
       COALESCE(r.rn, 1) = 1,
-      COALESCE(a.legacy_search_with_ads_organic, 0),
+      COALESCE(a.legacy_searches_with_ads_organic_sum, 0),
       0
-    ) AS legacy_search_with_ads_organic,
-    IF(COALESCE(r.rn, 1) = 1, COALESCE(a.legacy_ad_click_tagged, 0), 0) AS legacy_ad_click_tagged,
-    IF(COALESCE(r.rn, 1) = 1, COALESCE(a.legacy_ad_click_organic, 0), 0) AS legacy_ad_click_organic
+    ) AS legacy_searches_with_ads_organic_sum,
+    IF(
+      COALESCE(r.rn, 1) = 1,
+      COALESCE(a.legacy_ad_clicks_tagged_sum, 0),
+      0
+    ) AS legacy_ad_clicks_tagged_sum,
+    IF(
+      COALESCE(r.rn, 1) = 1,
+      COALESCE(a.legacy_ad_clicks_organic_sum, 0),
+      0
+    ) AS legacy_ad_clicks_organic_sum
   FROM
     legacy_ranked_cte AS r
   FULL OUTER JOIN
@@ -1158,13 +1171,25 @@ join_sources_cte AS (
     ) AS max_concurrent_tab_count_max,
     -- legacy-parity counters. 0 not NULL when the metrics ping carried nothing for this
     -- key, matching the convention used for the serp-only counts above.
-    COALESCE(legacy_cte.legacy_tagged_sap, 0) AS legacy_tagged_sap,
-    COALESCE(legacy_cte.legacy_tagged_follow_on, 0) AS legacy_tagged_follow_on,
-    COALESCE(legacy_cte.legacy_organic, 0) AS legacy_organic,
-    COALESCE(legacy_cte.legacy_search_with_ads_tagged, 0) AS legacy_search_with_ads_tagged,
-    COALESCE(legacy_cte.legacy_search_with_ads_organic, 0) AS legacy_search_with_ads_organic,
-    COALESCE(legacy_cte.legacy_ad_click_tagged, 0) AS legacy_ad_click_tagged,
-    COALESCE(legacy_cte.legacy_ad_click_organic, 0) AS legacy_ad_click_organic
+    COALESCE(
+      legacy_cte.legacy_searches_tagged_non_follow_on_sum,
+      0
+    ) AS legacy_searches_tagged_non_follow_on_sum,
+    COALESCE(
+      legacy_cte.legacy_searches_tagged_follow_on_sum,
+      0
+    ) AS legacy_searches_tagged_follow_on_sum,
+    COALESCE(legacy_cte.legacy_searches_organic_sum, 0) AS legacy_searches_organic_sum,
+    COALESCE(
+      legacy_cte.legacy_searches_with_ads_tagged_sum,
+      0
+    ) AS legacy_searches_with_ads_tagged_sum,
+    COALESCE(
+      legacy_cte.legacy_searches_with_ads_organic_sum,
+      0
+    ) AS legacy_searches_with_ads_organic_sum,
+    COALESCE(legacy_cte.legacy_ad_clicks_tagged_sum, 0) AS legacy_ad_clicks_tagged_sum,
+    COALESCE(legacy_cte.legacy_ad_clicks_organic_sum, 0) AS legacy_ad_clicks_organic_sum
   FROM
     serp_final_cte
     -- FULL OUTER so sap activity with no matching SERP impression is kept.
@@ -1289,13 +1314,13 @@ final_cte AS (
     sap_provider_id, -- NEW
     sap_provider_name, -- NEW
     sap_overridden_by_third_party, -- NEW
-    legacy_tagged_sap, -- NEW
-    legacy_tagged_follow_on, -- NEW
-    legacy_organic, -- NEW
-    legacy_search_with_ads_tagged, -- NEW
-    legacy_search_with_ads_organic, -- NEW
-    legacy_ad_click_tagged, -- NEW
-    legacy_ad_click_organic -- NEW
+    legacy_searches_tagged_non_follow_on_sum, -- NEW
+    legacy_searches_tagged_follow_on_sum, -- NEW
+    legacy_searches_organic_sum, -- NEW
+    legacy_searches_with_ads_tagged_sum, -- NEW
+    legacy_searches_with_ads_organic_sum, -- NEW
+    legacy_ad_clicks_tagged_sum, -- NEW
+    legacy_ad_clicks_organic_sum -- NEW
   FROM
     join_sources_cte
 )

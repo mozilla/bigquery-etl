@@ -242,13 +242,25 @@ SELECT
   ) AS max_concurrent_tab_count_max,
   -- legacy-parity counters. 0 not NULL when the metrics ping carried nothing for this
   -- key, matching the convention used for the serp-only counts above.
-  COALESCE(legacy_cte.legacy_tagged_sap, 0) AS legacy_tagged_sap,
-  COALESCE(legacy_cte.legacy_tagged_follow_on, 0) AS legacy_tagged_follow_on,
-  COALESCE(legacy_cte.legacy_organic, 0) AS legacy_organic,
-  COALESCE(legacy_cte.legacy_search_with_ads_tagged, 0) AS legacy_search_with_ads_tagged,
-  COALESCE(legacy_cte.legacy_search_with_ads_organic, 0) AS legacy_search_with_ads_organic,
-  COALESCE(legacy_cte.legacy_ad_click_tagged, 0) AS legacy_ad_click_tagged,
-  COALESCE(legacy_cte.legacy_ad_click_organic, 0) AS legacy_ad_click_organic,
+  COALESCE(
+    legacy_cte.legacy_searches_tagged_non_follow_on_sum,
+    0
+  ) AS legacy_searches_tagged_non_follow_on_sum,
+  COALESCE(
+    legacy_cte.legacy_searches_tagged_follow_on_sum,
+    0
+  ) AS legacy_searches_tagged_follow_on_sum,
+  COALESCE(legacy_cte.legacy_searches_organic_sum, 0) AS legacy_searches_organic_sum,
+  COALESCE(
+    legacy_cte.legacy_searches_with_ads_tagged_sum,
+    0
+  ) AS legacy_searches_with_ads_tagged_sum,
+  COALESCE(
+    legacy_cte.legacy_searches_with_ads_organic_sum,
+    0
+  ) AS legacy_searches_with_ads_organic_sum,
+  COALESCE(legacy_cte.legacy_ad_clicks_tagged_sum, 0) AS legacy_ad_clicks_tagged_sum,
+  COALESCE(legacy_cte.legacy_ad_clicks_organic_sum, 0) AS legacy_ad_clicks_organic_sum,
 FROM
   `search_derived.search_clients_daily_glean_v1.serp_final_cte`
   -- FULL OUTER so sap activity with no matching SERP impression is kept.

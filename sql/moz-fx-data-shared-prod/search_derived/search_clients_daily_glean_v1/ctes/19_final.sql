@@ -87,12 +87,12 @@ SELECT
   sap_provider_id, -- NEW
   sap_provider_name, -- NEW
   sap_overridden_by_third_party, -- NEW
-  legacy_tagged_sap, -- NEW
-  legacy_tagged_follow_on, -- NEW
-  legacy_organic, -- NEW
-  legacy_search_with_ads_tagged, -- NEW
-  legacy_search_with_ads_organic, -- NEW
-  legacy_ad_click_tagged, -- NEW
-  legacy_ad_click_organic -- NEW
+  legacy_searches_tagged_non_follow_on_sum, -- NEW
+  legacy_searches_tagged_follow_on_sum, -- NEW
+  legacy_searches_organic_sum, -- NEW
+  legacy_searches_with_ads_tagged_sum, -- NEW
+  legacy_searches_with_ads_organic_sum, -- NEW
+  legacy_ad_clicks_tagged_sum, -- NEW
+  legacy_ad_clicks_organic_sum -- NEW
 FROM
   `search_derived.search_clients_daily_glean_v1.join_sources_cte`

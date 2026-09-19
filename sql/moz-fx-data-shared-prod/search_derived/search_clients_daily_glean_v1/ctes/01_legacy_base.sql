@@ -5,7 +5,7 @@
 -- the source, the way sap_base_cte and serp_base_cte serve their own pipelines. What the counters
 -- measure, and how they compare to v8 and to the SERP-derived columns, is in the README.
 --
--- The three families are collected into one array of (access_point, family, counter) structs so
+-- The three families are collected into one array of (access_point, family, counters) structs so
 -- the 17 columns per family do not become 51 near-identical UNNESTs; legacy_exploded_cte in
 -- 02_legacy_counters.sql unnests it.
 WITH legacy_base_cte AS (
@@ -54,12 +54,12 @@ WITH legacy_base_cte AS (
     metrics.url2.search_engine_private_submission_url,
     metrics.boolean.search_engine_private_overridden_by_third_party,
     metrics.quantity.browser_engagement_max_concurrent_tab_count AS max_concurrent_tab_count_max,
-    -- (access_point, family, labeled_counter) triples
+    -- (access_point, family, counters) triples
     [
       STRUCT(
-        'urlbar' AS ap,
-        'content' AS fam,
-        metrics.labeled_counter.browser_search_content_urlbar AS kv
+        'urlbar' AS access_point,
+        'content' AS family,
+        metrics.labeled_counter.browser_search_content_urlbar AS counters
       ),
       STRUCT(
         'urlbar_handoff',
@@ -213,7 +213,7 @@ WITH legacy_base_cte AS (
         'adclicks',
         metrics.labeled_counter.browser_search_adclicks_smartwindow_assistant
       )
-    ] AS families
+    ] AS counter_sets
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
   WHERE

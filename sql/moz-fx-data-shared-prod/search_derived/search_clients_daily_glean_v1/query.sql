@@ -62,12 +62,12 @@ WITH legacy_base_cte AS (
     metrics.url2.search_engine_private_submission_url,
     metrics.boolean.search_engine_private_overridden_by_third_party,
     metrics.quantity.browser_engagement_max_concurrent_tab_count AS max_concurrent_tab_count_max,
-    -- (access_point, family, labeled_counter) triples
+    -- (access_point, family, counters) triples
     [
       STRUCT(
-        'urlbar' AS ap,
-        'content' AS fam,
-        metrics.labeled_counter.browser_search_content_urlbar AS kv
+        'urlbar' AS access_point,
+        'content' AS family,
+        metrics.labeled_counter.browser_search_content_urlbar AS counters
       ),
       STRUCT(
         'urlbar_handoff',
@@ -221,7 +221,7 @@ WITH legacy_base_cte AS (
         'adclicks',
         metrics.labeled_counter.browser_search_adclicks_smartwindow_assistant
       )
-    ] AS families
+    ] AS counter_sets
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
   WHERE
@@ -293,30 +293,30 @@ legacy_exploded_cte AS (
     legacy_base_cte.client_id,
     legacy_base_cte.submission_date,
     legacy_base_cte.sample_id,
-    f.ap AS search_access_point,
-    f.fam AS family,
+    counter_set.access_point AS search_access_point,
+    counter_set.family AS family,
     -- segment 1: provider, normalized the same way the SAP side normalizes it so the
     -- join key cannot drift
     `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
-      SPLIT(kv.key, ':')[SAFE_OFFSET(0)]
+      SPLIT(counter.key, ':')[SAFE_OFFSET(0)]
     ) AS normalized_engine,
     -- segment 2: the measure selector
-    SPLIT(kv.key, ':')[SAFE_OFFSET(1)] AS tag_type,
+    SPLIT(counter.key, ':')[SAFE_OFFSET(1)] AS tag_type,
     -- segment 3: partner code. Present on `content` ONLY -- the withads/adclicks keys
     -- are two-segment, so this is NULL for them and they take their partner code from
     -- the rank-1 attribution downstream. Do NOT coalesce the ads families to 'no_code'
     -- here: content rows carry a real code, so a 'no_code' ad row would match nothing
     -- and strand as an ad-only output row.
     IF(
-      f.fam = 'content',
-      COALESCE(NULLIF(SPLIT(kv.key, ':')[SAFE_OFFSET(2)], ''), 'no_code'),
+      counter_set.family = 'content',
+      COALESCE(NULLIF(SPLIT(counter.key, ':')[SAFE_OFFSET(2)], ''), 'no_code'),
       NULL
     ) AS partner_code,
-    kv.value AS n
+    counter.value AS n
   FROM
     legacy_base_cte,
-    UNNEST(legacy_base_cte.families) AS f,
-    UNNEST(f.kv) AS kv
+    UNNEST(legacy_base_cte.counter_sets) AS counter_set,
+    UNNEST(counter_set.counters) AS counter
 ),
 -- content carries partner_code, so it aggregates at the full grain directly
 legacy_content_agg_cte AS (
@@ -389,56 +389,68 @@ legacy_ranked_cte AS (
       ORDER BY
         content_volume DESC,
         partner_code ASC
-    ) AS rn
+    ) AS partner_code_rank
   FROM
     legacy_content_agg_cte
 ),
 legacy_counters_agg_cte AS (
   SELECT
-    COALESCE(r.client_id, a.client_id) AS client_id,
-    COALESCE(r.submission_date, a.submission_date) AS submission_date,
-    COALESCE(r.sample_id, a.sample_id) AS sample_id,
-    COALESCE(r.normalized_engine, a.normalized_engine) AS normalized_engine,
+    COALESCE(legacy_ranked_cte.client_id, legacy_ads_agg_cte.client_id) AS client_id,
+    COALESCE(
+      legacy_ranked_cte.submission_date,
+      legacy_ads_agg_cte.submission_date
+    ) AS submission_date,
+    COALESCE(legacy_ranked_cte.sample_id, legacy_ads_agg_cte.sample_id) AS sample_id,
+    COALESCE(
+      legacy_ranked_cte.normalized_engine,
+      legacy_ads_agg_cte.normalized_engine
+    ) AS normalized_engine,
     -- orphan ad rows -- ad activity on a key with no content row -- keep a sentinel rather
     -- than being dropped, so totals reconcile. FULL OUTER below is what makes this reachable.
-    COALESCE(r.partner_code, 'unknown_code') AS partner_code,
-    COALESCE(r.search_access_point, a.search_access_point) AS search_access_point,
+    COALESCE(legacy_ranked_cte.partner_code, 'unknown_code') AS partner_code,
     COALESCE(
-      r.legacy_searches_tagged_non_follow_on_sum,
+      legacy_ranked_cte.search_access_point,
+      legacy_ads_agg_cte.search_access_point
+    ) AS search_access_point,
+    COALESCE(
+      legacy_ranked_cte.legacy_searches_tagged_non_follow_on_sum,
       0
     ) AS legacy_searches_tagged_non_follow_on_sum,
-    COALESCE(r.legacy_searches_tagged_follow_on_sum, 0) AS legacy_searches_tagged_follow_on_sum,
-    COALESCE(r.legacy_searches_organic_sum, 0) AS legacy_searches_organic_sum,
+    COALESCE(
+      legacy_ranked_cte.legacy_searches_tagged_follow_on_sum,
+      0
+    ) AS legacy_searches_tagged_follow_on_sum,
+    COALESCE(legacy_ranked_cte.legacy_searches_organic_sum, 0) AS legacy_searches_organic_sum,
     -- only rank 1 receives the ad counts; every other partner_code row gets 0, so a plain
     -- SUM over the table is correct by construction
     IF(
-      COALESCE(r.rn, 1) = 1,
-      COALESCE(a.legacy_searches_with_ads_tagged_sum, 0),
+      COALESCE(legacy_ranked_cte.partner_code_rank, 1) = 1,
+      COALESCE(legacy_ads_agg_cte.legacy_searches_with_ads_tagged_sum, 0),
       0
     ) AS legacy_searches_with_ads_tagged_sum,
     IF(
-      COALESCE(r.rn, 1) = 1,
-      COALESCE(a.legacy_searches_with_ads_organic_sum, 0),
+      COALESCE(legacy_ranked_cte.partner_code_rank, 1) = 1,
+      COALESCE(legacy_ads_agg_cte.legacy_searches_with_ads_organic_sum, 0),
       0
     ) AS legacy_searches_with_ads_organic_sum,
     IF(
-      COALESCE(r.rn, 1) = 1,
-      COALESCE(a.legacy_ad_clicks_tagged_sum, 0),
+      COALESCE(legacy_ranked_cte.partner_code_rank, 1) = 1,
+      COALESCE(legacy_ads_agg_cte.legacy_ad_clicks_tagged_sum, 0),
       0
     ) AS legacy_ad_clicks_tagged_sum,
     IF(
-      COALESCE(r.rn, 1) = 1,
-      COALESCE(a.legacy_ad_clicks_organic_sum, 0),
+      COALESCE(legacy_ranked_cte.partner_code_rank, 1) = 1,
+      COALESCE(legacy_ads_agg_cte.legacy_ad_clicks_organic_sum, 0),
       0
     ) AS legacy_ad_clicks_organic_sum
   FROM
-    legacy_ranked_cte AS r
+    legacy_ranked_cte
   FULL OUTER JOIN
-    legacy_ads_agg_cte AS a
-    ON r.client_id = a.client_id
-    AND r.submission_date = a.submission_date
-    AND r.normalized_engine = a.normalized_engine
-    AND r.search_access_point = a.search_access_point
+    legacy_ads_agg_cte
+    ON legacy_ranked_cte.client_id = legacy_ads_agg_cte.client_id
+    AND legacy_ranked_cte.submission_date = legacy_ads_agg_cte.submission_date
+    AND legacy_ranked_cte.normalized_engine = legacy_ads_agg_cte.normalized_engine
+    AND legacy_ranked_cte.search_access_point = legacy_ads_agg_cte.search_access_point
 ),
 -- list of ad blocking addons produced using this logic: https://github.com/mozilla/search-adhoc-analysis/tree/master/monetization-blocking-addons
 adblocker_addons_cte AS (

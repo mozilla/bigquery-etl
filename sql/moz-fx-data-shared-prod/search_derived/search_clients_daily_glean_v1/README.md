@@ -156,7 +156,7 @@ They are native Glean metrics, not a Legacy Telemetry mirror, so they are unaffe
 
 #### Shape
 
-Each family is a separate labeled counter per access point — 17 access points times three families, 51 metrics. `legacy_base_cte` collects them into one array of `(access_point, family, counter)` structs and `legacy_exploded_cte` unnests it, so the three families become one long row set keyed by access point instead of 51 near-identical `unnest`es.
+Each family is a separate labeled counter per access point — 17 access points times three families, 51 metrics. `legacy_base_cte` collects them into `counter_sets`, one array of `(access_point, family, counters)` structs, and `legacy_exploded_cte` unnests it, so the three families become one long row set keyed by access point instead of 51 near-identical `unnest`es.
 
 The label on each counter carries the rest of the key, colon-separated:
 

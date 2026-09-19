@@ -1,11 +1,39 @@
-"""Queue for balancing jobs across billing projects."""
+"""Wrappers around a BigQuery client.
+
+`ClientQueue` shares a fixed set of clients across threads in one process,
+balancing work over billing projects.
+
+`get_client` is for worker processes, which can't share a client since the HTTP session isn't
+fork safe and doesn't pickle, so each caches its own.
+"""
 
 import asyncio
+import os
 from contextlib import contextmanager
+from functools import cache
 from queue import Queue
 
 from google.cloud import bigquery
 from requests import adapters
+
+
+@cache
+def _client(pid, credentials, project):
+    """Return a cached client.
+
+    Keyed by (pid, project, id(credentials)). Under spawn (macOS) a child process re-imports this
+    module and starts empty, but under fork (Linux) it inherits the parent's entries.
+    Keying on pid makes the child build its own client.
+    """
+    return bigquery.Client(credentials=credentials, project=project)
+
+
+def get_client(credentials=None, project=None) -> bigquery.Client:
+    """Return a BigQuery client, reused for the life of this process.
+
+    Reusing a client saves a few hundred milliseconds of credential setup during construction.
+    """
+    return _client(os.getpid(), credentials, project)
 
 
 class ClientQueue:

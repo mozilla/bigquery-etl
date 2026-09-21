@@ -3,9 +3,15 @@ description: |-
   The Safe Browsing interstitial funnel for Firefox Desktop: how often an
   about:blocked warning page is rendered, and what users then do with it.
 
-  One row per day, channel, OS, country, threat type (Malware / Phishing /
-  Unwanted / Harmful) and scope (top-level page or iframe), with display counts
-  from page.load_error and button-press counts from urlclassifier.ui_events.
+  One row per day, channel, OS, country, Firefox major version, threat type
+  (Malware / Phishing / Unwanted / Harmful) and scope (top-level page or
+  iframe), with display counts from page.load_error and button-press counts
+  from urlclassifier.ui_events.
+
+  Firefox 142 is the first version that records page.load_error for Safe
+  Browsing. Rows with app_version_major below 142 carry button presses with
+  displays of 0. Filter to 142 and above before forming any action/displays
+  ratio.
 
   KNOWN BIAS: displays count renders, not unique encounters. A blocked URL is
   never added to the classifier cache, so every reload and session restore

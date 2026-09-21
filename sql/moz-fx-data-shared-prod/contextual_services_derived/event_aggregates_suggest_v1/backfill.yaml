@@ -1,0 +1,10 @@
+2026-09-21:
+  start_date: 2026-09-01
+  end_date: 2026-09-20
+  reason: fixed logic https://github.com/mozilla/bigquery-etl/pull/9900
+  watchers:
+  - cmorales@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

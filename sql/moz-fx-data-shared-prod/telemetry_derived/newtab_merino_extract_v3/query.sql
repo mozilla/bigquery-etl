@@ -1,3 +1,10 @@
+-- Selects single- or double-adjusted exposure. When false, impression_count is adjusted for
+-- position bias only, exactly as before. When true, it is additionally divided by the
+-- time-of-day propensity weight from newtab_merino_hour_propensity_v1, making it a
+-- position-and-hour-free exposure. Flip only after the hour weight's acceptance tests pass:
+-- this changes impression_count semantics for every consumer, including the Thompson prior's
+-- concentration, the LIMIT 25000 row cap's ordering, and freshness thresholds in Merino.
+{% set apply_hour_propensity = false %}
 WITH experiment_configs AS (
   SELECT
     *
@@ -53,6 +60,9 @@ flattened_newtab_events AS (
   SELECT
     document_id,
     submission_timestamp,
+    {% if apply_hour_propensity %}
+      EXTRACT(HOUR FROM submission_timestamp) AS event_hour,
+    {% endif %}
     normalized_country_code,
     experiment_slug,
     experiment_branch,
@@ -83,6 +93,9 @@ raw_grouped_totals AS (
     position,
     format,
     section_position,
+    {% if apply_hour_propensity %}
+      event_hour,
+    {% endif %}
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS raw_impression_count,
     SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
     SUM(CASE WHEN event_name = 'report_content_submit' THEN 1 ELSE 0 END) AS report_count
@@ -96,7 +109,26 @@ raw_grouped_totals AS (
     position,
     format,
     section_position
+    {% if apply_hour_propensity %},
+      event_hour
+    {% endif %}
 ),
+{% if apply_hour_propensity %}
+  /* Time-of-day weights. Unlike the position weights these are not section-specific, so
+     they are applied to both branches below. */
+  hour_propensity_weights AS (
+    SELECT
+      country,
+      HOUR,
+      weight
+    FROM
+      `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_hour_propensity_v1`
+    WHERE
+      snapshot_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 14 DAY)
+    QUALIFY
+      snapshot_date = MAX(snapshot_date) OVER ()
+  ),
+{% endif %}
 propensity_weights AS (
   SELECT
     country,
@@ -128,7 +160,11 @@ section_events AS (
       wt_country_any.weight,
       wt_global_any.weight,
       1.0
-    ) AS adjusted_impression_count,
+    )
+    {% if apply_hour_propensity %}
+      -- then divide out time-of-day bias, preferring the country's own hour weight
+      /COALESCE(hwt_country.weight, hwt_global.weight, 1.0)
+    {% endif %} AS adjusted_impression_count,
     rw.report_count,
     rw.click_count
   FROM
@@ -153,24 +189,64 @@ section_events AS (
     ON wt_global_any.country IS NULL
     AND SAFE_CAST(wt_global_any.position AS INT64) = rw.position
     AND wt_global_any.tile_format = 'any'
+    {% if apply_hour_propensity %}
+      LEFT JOIN
+        hour_propensity_weights hwt_country
+        ON hwt_country.country = rw.normalized_country_code
+        AND hwt_country.hour = rw.event_hour
+      LEFT JOIN
+        hour_propensity_weights hwt_global
+        ON hwt_global.country IS NULL
+        AND hwt_global.hour = rw.event_hour
+    {% endif %}
   WHERE
     rw.section_position IS NOT NULL
 ),
 /* Separate non-section (grid) type events */
 non_section_events AS (
-  SELECT
-    normalized_country_code,
-    experiment_slug,
-    experiment_branch,
-    corpus_item_id,
-    raw_impression_count,
-    raw_impression_count AS adjusted_impression_count, -- pass through unchanged
-    report_count,
-    click_count
-  FROM
-    raw_grouped_totals
-  WHERE
-    section_position IS NULL
+  {% if apply_hour_propensity %}
+    SELECT
+      rw.normalized_country_code,
+      rw.experiment_slug,
+      rw.experiment_branch,
+      rw.corpus_item_id,
+      rw.raw_impression_count,
+      -- no position weight here: position bias is a section-grid phenomenon. Time-of-day
+      -- bias is not, so the hour weight does apply to this branch.
+      rw.raw_impression_count / COALESCE(
+        hwt_country.weight,
+        hwt_global.weight,
+        1.0
+      ) AS adjusted_impression_count,
+      rw.report_count,
+      rw.click_count
+    FROM
+      raw_grouped_totals rw
+    LEFT JOIN
+      hour_propensity_weights hwt_country
+      ON hwt_country.country = rw.normalized_country_code
+      AND hwt_country.hour = rw.event_hour
+    LEFT JOIN
+      hour_propensity_weights hwt_global
+      ON hwt_global.country IS NULL
+      AND hwt_global.hour = rw.event_hour
+    WHERE
+      rw.section_position IS NULL
+  {% else %}
+    SELECT
+      normalized_country_code,
+      experiment_slug,
+      experiment_branch,
+      corpus_item_id,
+      raw_impression_count,
+      raw_impression_count AS adjusted_impression_count, -- pass through unchanged
+      report_count,
+      click_count
+    FROM
+      raw_grouped_totals
+    WHERE
+      section_position IS NULL
+  {% endif %}
 ),
 /* Re-join events into single table */
 combined_events AS (

@@ -25,13 +25,6 @@ scheduling:
   # has no upstream date_partition_offset to inherit. Processing the previous day here reads a
   # SERP partition that exists.
   date_partition_offset: -1
-  external_downstream_tasks:
-  - task_id: wait_for_search_clients_daily
-    dag_name: jetstream
-    execution_delta: 1h
-  - task_id: wait_for_search_clients_daily
-    dag_name: operational_monitoring
-    execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day

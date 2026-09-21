@@ -184,10 +184,12 @@ A key that appears only in the counters has no SAP event and no SERP impression 
 
 These values are only ever reached where both pipelines are absent, since `join_sources_cte` coalesces SERP, then SAP, then legacy. Where a pipeline has the row, the pipeline's value wins.
 
-Two columns cannot be filled this way and are `null` on a legacy-only row:
+Two client dimensions cannot be filled this way and are `null` on a legacy-only row:
 
 - `is_default_browser`, because `usage.is_default_browser` is not sent in the metrics ping.
 - `sap_overridden_by_third_party`, because it is a per-search event extra and has no value at client-day grain. It is taken from the SAP side alone, so it is also `null` on a serp-only row.
+
+Four more columns are `null` on such a row for the ordinary reason that it has no SAP and no SERP side: `sap_provider_id` and `sap_provider_name` from SAP, `serp_ad_click_target` and `serp_ad_blocker_inferred` from SERP. So six columns are `null` on a legacy-only row in total — see "Full outer join, not serp-driven" below. Every other side-only column is a count and falls back to `0`.
 
 Two paths differ from the SAP side, which reads the same metrics from the events ping: the submission URLs are under `metrics.url2` rather than `metrics.url`, and `profile_group_id` is spelled `legacy_telemetry_profile_group_id`. `browser_engagement_max_concurrent_tab_count` is already `int64` here, so the legacy arm of that `coalesce` needs no cast where the SAP arm does.
 
@@ -300,7 +302,7 @@ Three sides are combined with `full outer join`s, so a row survives if it appear
 - A legacy parity key with no match on either pipeline keeps its counters. A client can increment `browser.search.adclicks` on a page whose SERP impression never registered, so such keys occur.
 - Two SERP-only columns are `null` on a sap-only row: `serp_ad_click_target` and `serp_ad_blocker_inferred`. Every other SERP-only measure is a count and falls back to `0`.
 - Three SAP-only columns are `null` on a serp-only row: `sap_provider_id`, `sap_provider_name` and `sap_overridden_by_third_party`. None is a count, so there is nothing to zero-fill. The first two have no SERP counterpart at all, the SERP side carrying a single provider extra that `serp_base` normalizes into `provider_id`. The third is a deliberate choice rather than an absence — see the note below.
-- A legacy-only row carries its client dimensions from the metrics ping, via `legacy_with_client_info_cte` — see "Client dimensions on legacy-only rows" above. One column is `null` there and nowhere else: `is_default_browser`. The SERP-only and SAP-only measures still zero-fill on these rows, as they do on any row missing that side.
+- A legacy-only row carries its client dimensions from the metrics ping, via `legacy_with_client_info_cte` — see "Client dimensions on legacy-only rows" above. One column is `null` there and nowhere else: `is_default_browser`. The other five `null` columns on such a row are the SAP-only and SERP-only ones named in the two bullets above, absent for the same reason they are on a one-sided row, which makes six in total. Every SERP-only and SAP-only count still zero-fills, as on any row missing that side.
 
 #### Column precedence
 

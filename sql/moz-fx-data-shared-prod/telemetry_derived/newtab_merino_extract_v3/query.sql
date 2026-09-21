@@ -1,15 +1,17 @@
--- Selects single- or double-adjusted exposure. When false, impression_count is adjusted for
--- position bias only, exactly as before. When true, it is additionally divided by the
--- time-of-day propensity weight from newtab_merino_hour_propensity_v1, making it a
--- position-and-hour-free exposure. Flip only after the hour weight's acceptance tests pass:
--- this changes impression_count semantics for every consumer, including the Thompson prior's
--- concentration, the LIMIT 25000 row cap's ordering, and freshness thresholds in Merino.
-{% set apply_hour_propensity = false %}
+-- Experiments whose engagement rows get position-AND-hour-adjusted exposure, instead of the
+-- position-only exposure every other row carries. Scoping it this way follows the same
+-- region-experiment pattern the CTR prediction test uses: the doubly-adjusted rows sit
+-- alongside the singly-adjusted global and per-country rows in one artifact, so the two can be
+-- compared on identical traffic without changing impression_count semantics for any other
+-- consumer -- the Thompson prior's concentration, the LIMIT 25000 row cap's ordering, and
+-- Merino's freshness thresholds all keep their current meaning everywhere else.
+-- An experiment only produces rows at all if it is also listed in experiment_configs below.
+{% set hour_propensity_experiments = ['ctrpred_engb'] %}
 WITH experiment_configs AS (
   SELECT
     *
   FROM
-    UNNEST([STRUCT('DE' AS region, 'publisher-constraint-in-germany' AS experiment_slug)])
+    UNNEST([STRUCT('GB' AS region, 'ctrpred_engb' AS experiment_slug)])
 ),
 private_pings AS (
   SELECT
@@ -60,7 +62,7 @@ flattened_newtab_events AS (
   SELECT
     document_id,
     submission_timestamp,
-    {% if apply_hour_propensity %}
+    {% if hour_propensity_experiments %}
       EXTRACT(HOUR FROM submission_timestamp) AS event_hour,
     {% endif %}
     normalized_country_code,
@@ -93,7 +95,7 @@ raw_grouped_totals AS (
     position,
     format,
     section_position,
-    {% if apply_hour_propensity %}
+    {% if hour_propensity_experiments %}
       event_hour,
     {% endif %}
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS raw_impression_count,
@@ -109,13 +111,11 @@ raw_grouped_totals AS (
     position,
     format,
     section_position
-    {% if apply_hour_propensity %},
+    {% if hour_propensity_experiments %},
       event_hour
     {% endif %}
 ),
-{% if apply_hour_propensity %}
-  /* Time-of-day weights. Unlike the position weights these are not section-specific, so
-     they are applied to both branches below. */
+{% if hour_propensity_experiments %}
   hour_propensity_weights AS (
     SELECT
       country,
@@ -160,13 +160,12 @@ section_events AS (
       wt_country_any.weight,
       wt_global_any.weight,
       1.0
-    )
-    {% if apply_hour_propensity %}
-      -- then divide out time-of-day bias, preferring the country's own hour weight
-      /COALESCE(hwt_country.weight, hwt_global.weight, 1.0)
-    {% endif %} AS adjusted_impression_count,
+    ) AS adjusted_impression_count,
     rw.report_count,
     rw.click_count
+    {% if hour_propensity_experiments %},
+      rw.event_hour
+    {% endif %}
   FROM
     raw_grouped_totals rw
   LEFT JOIN
@@ -189,64 +188,27 @@ section_events AS (
     ON wt_global_any.country IS NULL
     AND SAFE_CAST(wt_global_any.position AS INT64) = rw.position
     AND wt_global_any.tile_format = 'any'
-    {% if apply_hour_propensity %}
-      LEFT JOIN
-        hour_propensity_weights hwt_country
-        ON hwt_country.country = rw.normalized_country_code
-        AND hwt_country.hour = rw.event_hour
-      LEFT JOIN
-        hour_propensity_weights hwt_global
-        ON hwt_global.country IS NULL
-        AND hwt_global.hour = rw.event_hour
-    {% endif %}
   WHERE
     rw.section_position IS NOT NULL
 ),
 /* Separate non-section (grid) type events */
 non_section_events AS (
-  {% if apply_hour_propensity %}
-    SELECT
-      rw.normalized_country_code,
-      rw.experiment_slug,
-      rw.experiment_branch,
-      rw.corpus_item_id,
-      rw.raw_impression_count,
-      -- no position weight here: position bias is a section-grid phenomenon. Time-of-day
-      -- bias is not, so the hour weight does apply to this branch.
-      rw.raw_impression_count / COALESCE(
-        hwt_country.weight,
-        hwt_global.weight,
-        1.0
-      ) AS adjusted_impression_count,
-      rw.report_count,
-      rw.click_count
-    FROM
-      raw_grouped_totals rw
-    LEFT JOIN
-      hour_propensity_weights hwt_country
-      ON hwt_country.country = rw.normalized_country_code
-      AND hwt_country.hour = rw.event_hour
-    LEFT JOIN
-      hour_propensity_weights hwt_global
-      ON hwt_global.country IS NULL
-      AND hwt_global.hour = rw.event_hour
-    WHERE
-      rw.section_position IS NULL
-  {% else %}
-    SELECT
-      normalized_country_code,
-      experiment_slug,
-      experiment_branch,
-      corpus_item_id,
-      raw_impression_count,
-      raw_impression_count AS adjusted_impression_count, -- pass through unchanged
-      report_count,
-      click_count
-    FROM
-      raw_grouped_totals
-    WHERE
-      section_position IS NULL
-  {% endif %}
+  SELECT
+    normalized_country_code,
+    experiment_slug,
+    experiment_branch,
+    corpus_item_id,
+    raw_impression_count,
+    raw_impression_count AS adjusted_impression_count, -- pass through unchanged
+    report_count,
+    click_count
+    {% if hour_propensity_experiments %},
+      event_hour
+    {% endif %}
+  FROM
+    raw_grouped_totals
+  WHERE
+    section_position IS NULL
 ),
 /* Re-join events into single table */
 combined_events AS (
@@ -260,6 +222,30 @@ combined_events AS (
   FROM
     section_events
 ),
+{% if hour_propensity_experiments %}
+  /* Divide out time-of-day bias as well. Unlike position bias, which is a section-grid
+     phenomenon, this applies to every row -- non-section events included. Kept in a separate
+     column so only the experiments listed above consume it. */
+  hour_adjusted_events AS (
+    SELECT
+      ce.*,
+      ce.adjusted_impression_count / COALESCE(
+        hwt_country.weight,
+        hwt_global.weight,
+        1.0
+      ) AS hour_adjusted_impression_count
+    FROM
+      combined_events ce
+    LEFT JOIN
+      hour_propensity_weights hwt_country
+      ON hwt_country.country = ce.normalized_country_code
+      AND hwt_country.hour = ce.event_hour
+    LEFT JOIN
+      hour_propensity_weights hwt_global
+      ON hwt_global.country IS NULL
+      AND hwt_global.hour = ce.event_hour
+  ),
+{% endif %}
 /* Aggregate clicks, impressions, and reports by corpus_item_id and normalized_country_code. */
 aggregated_events AS (
   SELECT
@@ -268,10 +254,17 @@ aggregated_events AS (
     fe.experiment_slug,
     fe.experiment_branch,
     SAFE_CAST(SUM(adjusted_impression_count) AS INT64) AS impression_count,
+    {% if hour_propensity_experiments %}
+      SAFE_CAST(SUM(hour_adjusted_impression_count) AS INT64) AS hour_adjusted_impression_count,
+    {% endif %}
     SUM(click_count) AS click_count,
     SUM(report_count) AS report_count
   FROM
-    combined_events fe
+    {% if hour_propensity_experiments %}
+      hour_adjusted_events fe
+    {% else %}
+      combined_events fe
+    {% endif %}
   GROUP BY
     1,
     2,
@@ -327,7 +320,25 @@ experiment_region_aggregates AS (
   SELECT
     corpus_item_id,
     CONCAT(normalized_country_code, '-', experiment_slug, '-', experiment_branch) AS region,
-    SUM(impression_count) AS impression_count,
+    {% if hour_propensity_experiments %}
+      SUM(
+        IF(
+          experiment_slug IN UNNEST(
+            [
+              {% for slug in hour_propensity_experiments %}
+                '{{ slug }}'
+                {% if not loop.last %},
+                {% endif %}
+              {% endfor %}
+            ]
+          ),
+          hour_adjusted_impression_count,
+          impression_count
+        )
+      ) AS impression_count,
+    {% else %}
+      SUM(impression_count) AS impression_count,
+    {% endif %}
     SUM(click_count) AS click_count,
     SUM(report_count) AS report_count
   FROM

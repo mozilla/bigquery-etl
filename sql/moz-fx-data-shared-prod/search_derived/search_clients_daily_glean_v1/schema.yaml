@@ -298,6 +298,37 @@ fields:
   description: The number of ads that loaded but were not shown across this key's
     SERP impressions, for reasons other than blocking. Zero, not null, on a row with
     no SERP activity.
+- name: serp_abandonments_navigation_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned by navigating away,
+    meaning the impression saw no engagement before it stopped being tracked. Abandonment
+    and engagement are mutually exclusive per impression. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_abandonments_tab_close_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned by closing the tab,
+    with no engagement. Zero, not null, on a row with no SERP activity.
+- name: serp_abandonments_window_close_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned by closing the window,
+    with no engagement. Zero, not null, on a row with no SERP activity.
+- name: serp_abandonments_reason_absent_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned with the reason absent.
+    The client sends an empty reason for searchTermChanged and pageTypeChanged, which is
+    a distinct state from not having been abandoned at all. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_abandonments_other_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned for a reason outside
+    the four above, so that no abandonment is dropped from the counts. Zero against the
+    client's current vocabulary; a sustained non-zero value means a new reason is being
+    emitted and should get its own column.
 - name: has_adblocker_addon
   type: BOOLEAN
   mode: NULLABLE

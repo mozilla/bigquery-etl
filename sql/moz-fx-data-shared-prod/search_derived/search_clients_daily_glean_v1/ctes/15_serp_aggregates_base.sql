@@ -39,6 +39,23 @@ SELECT
   SUM(num_ads_visible) AS ads_visible_sum,
   SUM(num_ads_blocked) AS ads_blocked_sum,
   SUM(num_ads_notshowing) AS ads_notshowing_sum,
+  -- Abandonment: an impression with no engagement at teardown. serp_events_v2's validity
+  -- filter makes abandonment and engagement mutually exclusive per impression_id, so these
+  -- partition cleanly against the engagement counts.
+  --
+  -- Enumerated rather than pivoted, because abandon_reason has two falsy states meaning
+  -- opposite things: NULL is not abandoned, '' is abandoned with the reason absent, which
+  -- the client sends for searchTermChanged and pageTypeChanged.
+  COUNTIF(abandon_reason = 'navigation') AS abandonments_navigation_count,
+  COUNTIF(abandon_reason = 'tab_close') AS abandonments_tab_close_count,
+  COUNTIF(abandon_reason = 'window_close') AS abandonments_window_close_count,
+  COUNTIF(abandon_reason = '') AS abandonments_reason_absent_count,
+  -- catch-all, so no abandonment is ever dropped from the counts. Zero against today's
+  -- vocabulary; a non-zero value means the client emits a reason that wants its own column.
+  COUNTIF(
+    abandon_reason IS NOT NULL
+    AND abandon_reason NOT IN ('navigation', 'tab_close', 'window_close', '')
+  ) AS abandonments_other_count,
   COUNT(*) AS counts_total,
   MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
 FROM

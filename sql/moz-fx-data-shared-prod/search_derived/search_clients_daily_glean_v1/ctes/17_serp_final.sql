@@ -17,6 +17,11 @@ SELECT
   serp_aggregates_cte.ads_visible_sum,
   serp_aggregates_cte.ads_blocked_sum,
   serp_aggregates_cte.ads_notshowing_sum,
+  serp_aggregates_cte.abandonments_navigation_count,
+  serp_aggregates_cte.abandonments_tab_close_count,
+  serp_aggregates_cte.abandonments_window_close_count,
+  serp_aggregates_cte.abandonments_reason_absent_count,
+  serp_aggregates_cte.abandonments_other_count,
   serp_aggregates_cte.counts_total,
   serp_aggregates_cte.max_concurrent_tab_count_max
 FROM

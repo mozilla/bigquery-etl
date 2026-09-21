@@ -880,6 +880,23 @@ serp_aggregates_base_cte AS (
     SUM(num_ads_visible) AS ads_visible_sum,
     SUM(num_ads_blocked) AS ads_blocked_sum,
     SUM(num_ads_notshowing) AS ads_notshowing_sum,
+    -- Abandonment: an impression with no engagement at teardown. serp_events_v2's validity
+    -- filter makes abandonment and engagement mutually exclusive per impression_id, so these
+    -- partition cleanly against the engagement counts.
+    --
+    -- Enumerated rather than pivoted, because abandon_reason has two falsy states meaning
+    -- opposite things: NULL is not abandoned, '' is abandoned with the reason absent, which
+    -- the client sends for searchTermChanged and pageTypeChanged.
+    COUNTIF(abandon_reason = 'navigation') AS abandonments_navigation_count,
+    COUNTIF(abandon_reason = 'tab_close') AS abandonments_tab_close_count,
+    COUNTIF(abandon_reason = 'window_close') AS abandonments_window_close_count,
+    COUNTIF(abandon_reason = '') AS abandonments_reason_absent_count,
+    -- catch-all, so no abandonment is ever dropped from the counts. Zero against today's
+    -- vocabulary; a non-zero value means the client emits a reason that wants its own column.
+    COUNTIF(
+      abandon_reason IS NOT NULL
+      AND abandon_reason NOT IN ('navigation', 'tab_close', 'window_close', '')
+    ) AS abandonments_other_count,
     COUNT(*) AS counts_total,
     MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
@@ -928,6 +945,11 @@ serp_final_cte AS (
     serp_aggregates_cte.ads_visible_sum,
     serp_aggregates_cte.ads_blocked_sum,
     serp_aggregates_cte.ads_notshowing_sum,
+    serp_aggregates_cte.abandonments_navigation_count,
+    serp_aggregates_cte.abandonments_tab_close_count,
+    serp_aggregates_cte.abandonments_window_close_count,
+    serp_aggregates_cte.abandonments_reason_absent_count,
+    serp_aggregates_cte.abandonments_other_count,
     serp_aggregates_cte.counts_total,
     serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
@@ -1171,6 +1193,17 @@ join_sources_cte AS (
     COALESCE(serp_final_cte.ads_visible_sum, 0) AS serp_ads_visible_sum,
     COALESCE(serp_final_cte.ads_blocked_sum, 0) AS serp_ads_blocked_sum,
     COALESCE(serp_final_cte.ads_notshowing_sum, 0) AS serp_ads_notshowing_sum,
+    COALESCE(serp_final_cte.abandonments_navigation_count, 0) AS serp_abandonments_navigation_count,
+    COALESCE(serp_final_cte.abandonments_tab_close_count, 0) AS serp_abandonments_tab_close_count,
+    COALESCE(
+      serp_final_cte.abandonments_window_close_count,
+      0
+    ) AS serp_abandonments_window_close_count,
+    COALESCE(
+      serp_final_cte.abandonments_reason_absent_count,
+      0
+    ) AS serp_abandonments_reason_absent_count,
+    COALESCE(serp_final_cte.abandonments_other_count, 0) AS serp_abandonments_other_count,
     COALESCE(serp_final_cte.counts_total, 0) AS serp_counts_total,
     -- falls back to 0, not NULL, when no side reported it. sap_aggregates_cte casts this integer
     -- counter to float64, so cast back to INT64 to keep the declared INTEGER type; the metrics
@@ -1307,6 +1340,11 @@ final_cte AS (
     serp_ads_visible_sum, -- NEW
     serp_ads_blocked_sum, -- NEW
     serp_ads_notshowing_sum, -- NEW
+    serp_abandonments_navigation_count, -- NEW
+    serp_abandonments_tab_close_count, -- NEW
+    serp_abandonments_window_close_count, -- NEW
+    serp_abandonments_reason_absent_count, -- NEW
+    serp_abandonments_other_count, -- NEW
     has_adblocker_addon,
     policies_is_enterprise,
     -- keep these after the coalesce, so they read the same os, os_version and

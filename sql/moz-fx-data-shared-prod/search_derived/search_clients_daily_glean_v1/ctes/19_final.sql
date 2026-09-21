@@ -68,6 +68,11 @@ SELECT
   serp_ads_visible_sum, -- NEW
   serp_ads_blocked_sum, -- NEW
   serp_ads_notshowing_sum, -- NEW
+  serp_abandonments_navigation_count, -- NEW
+  serp_abandonments_tab_close_count, -- NEW
+  serp_abandonments_window_close_count, -- NEW
+  serp_abandonments_reason_absent_count, -- NEW
+  serp_abandonments_other_count, -- NEW
   has_adblocker_addon,
   policies_is_enterprise,
   -- keep these after the coalesce, so they read the same os, os_version and

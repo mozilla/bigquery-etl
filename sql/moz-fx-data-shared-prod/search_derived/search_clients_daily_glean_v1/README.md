@@ -276,6 +276,9 @@ The two sides do not compute the same measures.
 
 - SAP produces `sap_counts_total` (a count of `sap.counts` events) and `concurrent_tab_count_max`.
 - SERP produces `counts_total` and the ad measures: tagged and organic search counts, searches with ads, ad clicks, and the ads-loaded, ads-visible, ads-blocked and ads-notshowing sums. All of them are coined here without the `serp_` prefix and pick it up at the join. Tagged and organic are split on `is_tagged`, and follow-on searches are those whose `search_access_point` is `follow_on_from_refine_on_incontent_search` or `follow_on_from_refine_on_serp`.
+- SERP also produces the five abandonment counts, one per reason: navigation, tab close, window close, reason absent, and a catch-all. An abandoned impression is one that saw no engagement before it stopped being tracked, and `serp_events_v2`'s validity filter makes abandonment and engagement mutually exclusive per impression, so the five partition the abandoned population and never overlap the engagement counts.
+
+`abandon_reason` has two falsy states meaning opposite things, which is why the counts are enumerated rather than pivoted and why the column is left alone in `serp_base`. `null` means the impression was not abandoned. The empty string means it was abandoned with the reason absent, which the client sends for `searchTermChanged` and `pageTypeChanged`. Normalising the empty string to a sentinel — the way `partner_code` is normalised, because it is a grain key and a null would break its equality joins — would destroy that distinction. `serp_abandonments_reason_absent_count` carries the empty-string population so that `serp_abandonments_other_count` stays a clean signal: it is zero against the client's current vocabulary, and anything else means a new reason is being emitted.
 
 #### SAP and SERP Final
 
@@ -325,7 +328,7 @@ The trade-off is that a zero no longer distinguishes "no activity" from "the oth
 
 - `max_concurrent_tab_count_max`, the one shared measure that zero-fills, takes a third `coalesce` argument.
 - `sap_counts_total` is zero on a serp-only row.
-- The fifteen SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, and the six per-impression engagement and ad sums.
+- The twenty SERP-only counts are zero on a sap-only row: `serp_counts_total`, the tagged, organic and follow-on search counts, the searches-with-ads and ad-click counts, the six per-impression engagement and ad sums, and the five abandonment counts.
 - The seven `legacy_` counters are zero where the metrics ping carried nothing for that key, which is every row whose key exists on a pipeline but not in the counters.
 
 Five columns are deliberately left alone. `serp_ad_click_target` is a string and `serp_ad_blocker_inferred` is a boolean, so neither has a meaningful zero. `sap_provider_id`, `sap_provider_name` and `sap_overridden_by_third_party` are the same for strings and booleans, and are the three of the five that are `null` on a serp-only row rather than a sap-only one.

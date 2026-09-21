@@ -1,10 +1,10 @@
 2026-09-21:
-  start_date: 2024-08-07
-  end_date: 2026-09-21
+  start_date: 2024-08-09
+  end_date: 2026-09-19
   reason: DENG-8178 search_clients_daily_glean_v1
   watchers:
-  - kbammarito@mozilla.com
-  - loines@mozilla.com
+    - kbammarito@mozilla.com
+    - loines@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

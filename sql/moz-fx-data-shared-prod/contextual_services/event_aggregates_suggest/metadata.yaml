@@ -3,3 +3,8 @@ description: |-
   Aggregated event counts for suggest
 owners:
   - rburwei@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:ads/data-viewers
+      - workgroup:contextual-services/data-viewers

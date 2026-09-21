@@ -105,6 +105,14 @@ graph TD
     class join_sources,final finalStyle
 ```
 
+## Scheduling
+
+The query runs in the `bqetl_search` DAG with `date_partition_offset: -1`, so the run for logical date D processes and writes the partition for D-1.
+
+The offset exists because of `serp_events_v2`, one of the four sources. That table populates the previous day's partition on each run and declares the lag through its `destination_table` rather than through a `date_partition_offset`, so this table has no upstream offset to inherit and would otherwise process D and read a SERP partition its D run has not written yet. That failure is silent: the partition filter matches no rows, the query succeeds, and the day publishes with every SERP measure at `0`.
+
+A consequence worth knowing when comparing the two tables: a given day's partition here is produced a day later than `search_clients_daily_v8`'s partition for the same day.
+
 ## Helper functions
 
 One temporary function turns the string timestamps that Glean emits into dates.

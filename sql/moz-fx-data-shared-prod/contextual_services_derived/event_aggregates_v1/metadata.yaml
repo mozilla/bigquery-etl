@@ -22,4 +22,3 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:ads/data-viewers
-      - workgroup:contextual-services/data-viewers

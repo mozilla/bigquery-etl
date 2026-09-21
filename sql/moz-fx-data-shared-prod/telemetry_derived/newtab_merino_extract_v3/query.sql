@@ -90,7 +90,18 @@ flattened_newtab_events AS (
     document_id,
     submission_timestamp,
     {% if hour_propensity_regions %}
-      EXTRACT(HOUR FROM submission_timestamp) AS event_hour,
+      -- Only the in-scope experiment branches need an hour grain. Every other row gets a
+      -- single NULL hour so raw_grouped_totals keeps its current cardinality, instead of
+      -- fanning out by up to 24x through the four position-weight joins below -- a cost
+      -- this query would pay on every run, several times an hour, for rows that never
+      -- read hour_adjusted_impression_count.
+      IF(
+        CONCAT(normalized_country_code, '-', experiment_slug, '-', experiment_branch) IN UNNEST(
+          {{ hour_propensity_regions }}
+        ),
+        EXTRACT(HOUR FROM submission_timestamp),
+        NULL
+      ) AS event_hour,
     {% endif %}
     normalized_country_code,
     experiment_slug,
@@ -255,7 +266,11 @@ combined_events AS (
 {% if hour_propensity_regions %}
   /* Divide out time-of-day bias as well. Unlike position bias, which is a section-grid
      phenomenon, this applies to every row -- non-section events included. Kept in a separate
-     column so only the regions listed above consume it. */
+     column so only the regions listed above consume it.
+
+     Out-of-scope rows carry a NULL event_hour, so they match no weight and this column
+     equals adjusted_impression_count for them. That value is never read: only the listed
+     regions select it, in experiment_region_aggregates. */
   hour_adjusted_events AS (
     SELECT
       ce.*,

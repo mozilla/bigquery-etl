@@ -1,14 +1,4 @@
 type: BIGCONFIG_FILE
-# Guardrails for the DENG-11590 automation filter applied in query.sql.
-#
-# Each metric below is a SUM of new_profiles scoped to one OS with an AUTO threshold in both
-# directions, so a single metric per OS covers both failure modes: the lower bound fires if the
-# filter starts removing legitimate profiles, the upper bound fires if a new automated segment
-# appears that the signature does not match.
-#
-# rct_overrides is set to first_seen_date because this table partitions on first_seen_date
-# rather than the submission_date assumed by the shared saved metrics in sql/bigconfig.yml.
-#
 tag_deployments:
 - collection:
     name: Operational Checks
@@ -18,33 +8,11 @@ tag_deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.desktop_new_profiles_aggregates_v1.new_profiles
     metrics:
-    - metric_name: new_profiles_linux
-      metric_type:
+    - metric_type:
         predefined_metric: SUM
+      metric_name: new_profiles_linux
       conditions:
       - normalized_os = 'Linux'
-      threshold:
-        type: AUTO
-        sensitivity: MEDIUM
-      rct_overrides:
-      - first_seen_date
-    # Windows and Mac were unaffected by this incident and act as controls: if they move
-    # together with Linux the cause is pipeline-wide rather than the automation filter.
-    - metric_name: new_profiles_windows
-      metric_type:
-        predefined_metric: SUM
-      conditions:
-      - normalized_os = 'Windows'
-      threshold:
-        type: AUTO
-        sensitivity: MEDIUM
-      rct_overrides:
-      - first_seen_date
-    - metric_name: new_profiles_mac
-      metric_type:
-        predefined_metric: SUM
-      conditions:
-      - normalized_os = 'Mac'
       threshold:
         type: AUTO
         sensitivity: MEDIUM

@@ -1,0 +1,8 @@
+friendly_name: Remote Settings
+description: Derived data for Remote Settings.
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

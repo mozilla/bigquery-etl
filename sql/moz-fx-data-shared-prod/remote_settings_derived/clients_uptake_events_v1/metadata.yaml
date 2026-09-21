@@ -1,0 +1,25 @@
+friendly_name: Clients Uptake Events
+description: |-
+  Derived dataset from Glean events emitted by our
+  Gecko (JS) and Application-Services (Rust) clients.
+owners:
+- mleplatre@mozilla.com
+- aplacitelli@mozilla.com
+labels:
+  incremental: true
+  owner1: mleplatre
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'submission_timestamp'
+    require_partition_filter: true
+    expiration_days: 365
+  clustering:
+    fields:
+    - normalized_channel
+    - implementation
+    - extra_source
+    - extra_status
+require_column_descriptions: true

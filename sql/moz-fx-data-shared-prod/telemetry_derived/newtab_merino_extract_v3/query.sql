@@ -2,7 +2,12 @@ WITH experiment_configs AS (
   SELECT
     *
   FROM
-    UNNEST([STRUCT('DE' AS region, 'publisher-constraint-in-germany' AS experiment_slug)])
+    UNNEST(
+      [
+        STRUCT('GB' AS region, 'hourly-seasonality-in-gb' AS experiment_slug),
+        STRUCT('FR' AS region, 'fixed-tile-in-fr' AS experiment_slug)
+      ]
+    )
 ),
 private_pings AS (
   SELECT

@@ -124,7 +124,7 @@ raw_grouped_totals AS (
   hour_propensity_weights AS (
     SELECT
       country,
-      HOUR,
+      `hour`,
       weight
     FROM
       `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_hour_propensity_v1`

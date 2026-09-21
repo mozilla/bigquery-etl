@@ -25,7 +25,7 @@
 WITH hours_per_set AS (
   SELECT
     COALESCE(country, 'GLOBAL') AS country,
-    COUNT(DISTINCT HOUR) AS hours
+    COUNT(DISTINCT `hour`) AS hours
   FROM
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
@@ -126,7 +126,7 @@ WITH moves AS (
 ),
 offenders AS (
   SELECT
-    CONCAT(country, ':', CAST(HOUR AS STRING)) AS cell
+    CONCAT(country, ':', CAST(`hour` AS STRING)) AS cell
   FROM
     moves
   WHERE

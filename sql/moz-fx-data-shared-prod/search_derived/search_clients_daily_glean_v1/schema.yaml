@@ -101,6 +101,9 @@ fields:
 - name: profile_creation_date
   type: INTEGER
   mode: NULLABLE
+  description: The date of the profile's first run, as days since 1970-01-01. The client
+    records that date on its own calendar with a trailing UTC offset, and this column keeps
+    the date as the client wrote it.
 - name: default_search_engine_display_name
   type: STRING
   mode: NULLABLE

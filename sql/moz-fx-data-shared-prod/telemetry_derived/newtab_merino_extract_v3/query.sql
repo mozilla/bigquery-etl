@@ -1,12 +1,17 @@
--- Experiments whose engagement rows get position-AND-hour-adjusted exposure, instead of the
--- position-only exposure every other row carries. Scoping it this way follows the same
--- region-experiment pattern the CTR prediction test uses: the doubly-adjusted rows sit
--- alongside the singly-adjusted global and per-country rows in one artifact, so the two can be
--- compared on identical traffic without changing impression_count semantics for any other
--- consumer -- the Thompson prior's concentration, the LIMIT 25000 row cap's ordering, and
--- Merino's freshness thresholds all keep their current meaning everywhere else.
--- An experiment only produces rows at all if it is also listed in experiment_configs below.
-{% set hour_propensity_experiments = ['ctrpred_engb'] %}
+-- Artifact regions whose engagement rows carry position-AND-hour-adjusted exposure, instead
+-- of the position-only exposure every other row carries. These strings are the region values
+-- experiment_region_aggregates emits, '<country>-<experiment_slug>-<experiment_branch>', so
+-- the scope is a single experiment branch.
+--
+-- This is the live A/B for the time-of-day weight: the treatment arm of ctrpred_engb ranks on
+-- doubly-adjusted exposure while its control arm keeps vanilla position-only exposure, on
+-- identical traffic. Scoping to a region-experiment instead of changing impression_count
+-- everywhere keeps the blast radius off every other consumer -- the Thompson prior's
+-- concentration, the LIMIT 25000 row cap's ordering and Merino's freshness thresholds all keep
+-- their current meaning for the global and per-country rows.
+--
+-- A region only produces rows at all if its experiment is listed in experiment_configs below.
+{% set hour_propensity_regions = ['GB-ctrpred_engb-treatment'] %}
 WITH experiment_configs AS (
   SELECT
     *
@@ -62,7 +67,7 @@ flattened_newtab_events AS (
   SELECT
     document_id,
     submission_timestamp,
-    {% if hour_propensity_experiments %}
+    {% if hour_propensity_regions %}
       EXTRACT(HOUR FROM submission_timestamp) AS event_hour,
     {% endif %}
     normalized_country_code,
@@ -95,7 +100,7 @@ raw_grouped_totals AS (
     position,
     format,
     section_position,
-    {% if hour_propensity_experiments %}
+    {% if hour_propensity_regions %}
       event_hour,
     {% endif %}
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS raw_impression_count,
@@ -111,11 +116,11 @@ raw_grouped_totals AS (
     position,
     format,
     section_position
-    {% if hour_propensity_experiments %},
+    {% if hour_propensity_regions %},
       event_hour
     {% endif %}
 ),
-{% if hour_propensity_experiments %}
+{% if hour_propensity_regions %}
   hour_propensity_weights AS (
     SELECT
       country,
@@ -125,6 +130,9 @@ raw_grouped_totals AS (
       `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_hour_propensity_v1`
     WHERE
       snapshot_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 14 DAY)
+      -- The global (country IS NULL) rows describe all-country pooled exposure and are
+      -- deliberately not joinable here.
+      AND country IS NOT NULL
     QUALIFY
       snapshot_date = MAX(snapshot_date) OVER ()
   ),
@@ -163,7 +171,7 @@ section_events AS (
     ) AS adjusted_impression_count,
     rw.report_count,
     rw.click_count
-    {% if hour_propensity_experiments %},
+    {% if hour_propensity_regions %},
       rw.event_hour
     {% endif %}
   FROM
@@ -202,7 +210,7 @@ non_section_events AS (
     raw_impression_count AS adjusted_impression_count, -- pass through unchanged
     report_count,
     click_count
-    {% if hour_propensity_experiments %},
+    {% if hour_propensity_regions %},
       event_hour
     {% endif %}
   FROM
@@ -222,16 +230,19 @@ combined_events AS (
   FROM
     section_events
 ),
-{% if hour_propensity_experiments %}
+{% if hour_propensity_regions %}
   /* Divide out time-of-day bias as well. Unlike position bias, which is a section-grid
      phenomenon, this applies to every row -- non-section events included. Kept in a separate
-     column so only the experiments listed above consume it. */
+     column so only the regions listed above consume it. */
   hour_adjusted_events AS (
     SELECT
       ce.*,
+      -- No global fallback, unlike the position weight: a UTC-hour curve is a local
+      -- diurnal pattern shifted by the region's offset from UTC, so the global curve
+      -- belongs to a different population and could correct the wrong way. A country
+      -- without its own weight is left unadjusted.
       ce.adjusted_impression_count / COALESCE(
         hwt_country.weight,
-        hwt_global.weight,
         1.0
       ) AS hour_adjusted_impression_count
     FROM
@@ -240,10 +251,6 @@ combined_events AS (
       hour_propensity_weights hwt_country
       ON hwt_country.country = ce.normalized_country_code
       AND hwt_country.hour = ce.event_hour
-    LEFT JOIN
-      hour_propensity_weights hwt_global
-      ON hwt_global.country IS NULL
-      AND hwt_global.hour = ce.event_hour
   ),
 {% endif %}
 /* Aggregate clicks, impressions, and reports by corpus_item_id and normalized_country_code. */
@@ -254,13 +261,13 @@ aggregated_events AS (
     fe.experiment_slug,
     fe.experiment_branch,
     SAFE_CAST(SUM(adjusted_impression_count) AS INT64) AS impression_count,
-    {% if hour_propensity_experiments %}
+    {% if hour_propensity_regions %}
       SAFE_CAST(SUM(hour_adjusted_impression_count) AS INT64) AS hour_adjusted_impression_count,
     {% endif %}
     SUM(click_count) AS click_count,
     SUM(report_count) AS report_count
   FROM
-    {% if hour_propensity_experiments %}
+    {% if hour_propensity_regions %}
       hour_adjusted_events fe
     {% else %}
       combined_events fe
@@ -320,17 +327,13 @@ experiment_region_aggregates AS (
   SELECT
     corpus_item_id,
     CONCAT(normalized_country_code, '-', experiment_slug, '-', experiment_branch) AS region,
-    {% if hour_propensity_experiments %}
+    {% if hour_propensity_regions %}
+      -- The CONCAT is repeated from the region column above because BigQuery cannot reference
+      -- a SELECT alias from a sibling expression.
       SUM(
         IF(
-          experiment_slug IN UNNEST(
-            [
-              {% for slug in hour_propensity_experiments %}
-                '{{ slug }}'
-                {% if not loop.last %},
-                {% endif %}
-              {% endfor %}
-            ]
+          CONCAT(normalized_country_code, '-', experiment_slug, '-', experiment_branch) IN UNNEST(
+            {{ hour_propensity_regions }}
           ),
           hour_adjusted_impression_count,
           impression_count
@@ -398,5 +401,5 @@ ORDER BY
 LIMIT
   -- This LIMIT was derived from the 5 MB payload size cap in Merino, the observed average
   -- record size of ~113 bytes, and recall measurements. At ~25k rows the JSON blob stays
-  -- under 5 MB while preserving more lower-impression rows after adding DE experiment rows.
+  -- under 5 MB while preserving more lower-impression rows alongside the experiment rows.
   25000;

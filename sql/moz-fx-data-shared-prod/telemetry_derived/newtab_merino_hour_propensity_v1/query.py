@@ -35,6 +35,34 @@ the estimation window, and therefore preserves overall CTR.
 Day-of-week is not a dimension; a multiple-of-7-days lookback averages over it
 instead of modelling it. A lookback that is not a whole number of weeks would
 bias particular hours.
+
+Unlike the position job, country weights here are **not** shrunk toward the
+global set, and the global set is **not** a fallback for a country that has
+none. Position bias is a property of the slate, so every region shares it and
+pooling is pure variance reduction. A UTC-hour curve is not shared: it is a
+local diurnal pattern shifted by the region's offset from UTC, so the global
+curve is a traffic-weighted mixture dominated by the largest markets. Blending
+a region toward it does not reduce variance around the same quantity, it mixes
+in a different one -- and for a region far enough from that mixture's phase the
+correction would run the wrong way. No adjustment is the safe default, so
+consumers COALESCE a missing country to 1.0 rather than to global.
+
+The variance that shrinkage would have bought is not needed. Every country
+clearing MIN_COUNTRY_IMPRESSIONS has at least a few thousand clicks per hour
+cell over a two-week window (~1.6% relative error on the thinnest, against a
+measured swing of 30-50%), so each country's own curve stands on its own.
+
+The global (country IS NULL) row is still emitted: it is the correct weight for
+exposure pooled over all countries, and it is the diagnostic baseline the
+per-country curves are compared against. It is only wrong as a per-country
+substitute.
+
+Known limitation: a country spanning several timezones gets one UTC-hour curve
+that is a within-country mixture of local curves, so its swing is damped and it
+under-corrects at the edges. Keying on local hour would fix this -- the ping
+carries ``metrics.quantity.newtab_content_utc_offset``, which the position job
+already reads -- but UTC hour is what the offline panel validated, so that is a
+v2 change rather than a silent divergence.
 """
 
 import logging
@@ -67,24 +95,20 @@ PROPENSITY_SNAPSHOT_LOOKBACK_DAYS = 14
 LAYOUT = "SECTION_GRID"
 
 # A country needs at least this many impressions (over the window) to get its own
-# emitted weight set. Below it, the country is not broken out and consumers fall
-# back to the global (country IS NULL) set. Same threshold as the position job.
+# emitted weight set. Below it the country is not broken out and gets no time-of-day
+# adjustment at all -- see the module docstring on why falling back to the global
+# curve would be worse than not adjusting. Same threshold as the position job; at
+# this floor an hour cell still holds ~40k impressions.
 MIN_COUNTRY_IMPRESSIONS = 1_000_000
 
-# Shrinkage strength (in impression units) for blending a country's per-hour weight
-# toward the global weight: weight = (imp_c * w_c + K * w_global) / (imp_c + K).
-# Same value as the position job. With 24 hours rather than hundreds of slots,
-# per-cell support is far higher there, so this should rarely bind -- the share of
-# cells where it does is logged.
-BLEND_PSEUDOCOUNT = 50_000
-
 # An (country, hour) cell below this many raw impressions is not emitted; consumers
-# fall back to the global set for it.
+# leave that cell unadjusted.
 MIN_CELL_IMPRESSIONS = 2_000
 
-# A cell counts as shrinkage-bound when the global term carries at least this much
-# of the blended weight. Diagnostic only.
-SHRINKAGE_BOUND_THRESHOLD = 0.1
+# Hour cells below this many clicks are logged as thin support. At 1% relative error
+# a cell needs ~10k clicks; this flags anything an order of magnitude below the
+# support every currently-qualifying country has.
+LOW_SUPPORT_CLICKS = 500
 
 HOURS_PER_DAY = 24
 
@@ -235,7 +259,7 @@ GROUP BY
   hour
 """
 
-# Column contract shared by compute_weights and blend_weights.
+# Column contract for an emitted weight set.
 WEIGHT_COLUMNS = ["hour", "impressions", "adjusted_impressions", "clicks", "weight"]
 SUPPORT_COLUMNS = ["impressions", "adjusted_impressions", "clicks"]
 
@@ -346,14 +370,13 @@ def compute_weights(hist):
     hourly["weight"], normalization_factor = normalize_weights(hourly)
 
     log.info(
-        f"global_ctr={global_ctr:.6f}, hours={len(hourly)}, "
-        f"weight range=[{hourly['weight'].min():.4f}, {hourly['weight'].max():.4f}], "
+        f"  all-hours ctr={global_ctr:.6f}, "
         f"normalization factor={normalization_factor:.6f}"
     )
     if len(hourly) < HOURS_PER_DAY:
         log.info(
-            f"Only {len(hourly)} of {HOURS_PER_DAY} hours emitted; consumers fall "
-            "back to the global set for the rest."
+            f"  only {len(hourly)} of {HOURS_PER_DAY} hours emitted; consumers leave "
+            "the missing hours unadjusted."
         )
 
     return _as_output(hourly.reset_index())
@@ -369,53 +392,41 @@ def _as_output(frame):
     return frame[WEIGHT_COLUMNS]
 
 
-def blend_weights(country_w, global_w, k=BLEND_PSEUDOCOUNT):
-    """Blend a country's weights toward the global weights via shrinkage.
-
-    Per hour, with imp_c the country's raw impressions for that hour:
-
-        weight = (imp_c * w_country + k * w_global) / (imp_c + k)
-
-    High-volume hours stay close to the country's own weight; sparse hours lean
-    toward global. Hours the global set lacks fall back to the country's weight. The
-    blended set is re-normalized against the country's own adjusted exposure so that
-    adjusted_impressions/weight is conserved (as compute_weights does).
-
-    Only hours present for the country are emitted; hours the country never served
-    are left to the global (country IS NULL) fallback downstream.
-    """
-    merged = country_w.merge(
-        global_w[["hour", "weight"]], on="hour", how="left", suffixes=("_c", "_g")
-    )
-    imp_c = merged["impressions"].astype(float)
-    w_c = merged["weight_c"]
-    w_g = merged["weight_g"].where(merged["weight_g"].notna(), w_c)
-    merged["unnormalized_weight"] = (imp_c * w_c + k * w_g) / (imp_c + k)
-
-    global_share = k / (imp_c + k)
-    bound = int((global_share >= SHRINKAGE_BOUND_THRESHOLD).sum())
+def log_support(label, weights):
+    """Log how well supported a weight set is, and warn on thin hour cells."""
+    clicks = weights["clicks"]
+    thin = weights.loc[clicks < LOW_SUPPORT_CLICKS, "hour"]
+    # Relative standard error of an hour's CTR is about 1/sqrt(clicks).
+    worst_error = 1.0 / np.sqrt(clicks.min()) if clicks.min() > 0 else float("nan")
     log.info(
-        f"  shrinkage: mean global share {global_share.mean():.4f}, "
-        f"{bound}/{len(merged)} hour(s) at or above "
-        f"{SHRINKAGE_BOUND_THRESHOLD:.0%}"
+        f"{label}: {len(weights)} hour(s), "
+        f"min {int(clicks.min()):,} clicks/cell (~{worst_error:.1%} relative error), "
+        f"weight range=[{weights['weight'].min():.4f}, {weights['weight'].max():.4f}]"
     )
-
-    _, normalization_factor = normalize_weights(merged)
-    merged["weight"] = merged["unnormalized_weight"] * normalization_factor
-    return _as_output(merged)
+    if len(thin) > 0:
+        log.warning(
+            f"{label}: {len(thin)} hour(s) below {LOW_SUPPORT_CLICKS:,} clicks: "
+            f"{sorted(thin)}"
+        )
 
 
 def compute_all_countries(hist):
-    """Compute the global hour weight set plus a blended set per high-volume country.
+    """Compute the global hour weight set plus an independent set per high-volume country.
 
-    The global set (all resolved countries pooled) is emitted with country = NULL.
+    The global set (all resolved countries pooled) is emitted with country = NULL. It
+    is the right weight for exposure pooled across countries, and the baseline the
+    per-country curves are read against -- it is NOT a substitute for a country that
+    has no set of its own, because a UTC-hour curve is region-specific. See the module
+    docstring.
+
     Every country whose total impressions clear MIN_COUNTRY_IMPRESSIONS gets its own
-    set, blended toward global by impression volume. Returns a single DataFrame with
-    a 'country' column added to the standard weight columns.
+    set, estimated only from its own traffic with no shrinkage toward global. Returns
+    a single DataFrame with a 'country' column added to the standard weight columns.
     """
     global_w = compute_weights(hist)
     if len(global_w) == 0:
         raise ValueError("No global hour weights could be computed for this snapshot.")
+    log_support("global (all countries pooled)", global_w)
     global_w["country"] = None
     frames = [global_w]
 
@@ -432,11 +443,10 @@ def compute_all_countries(hist):
                 f"{country}: {total:,} impressions but no fittable weights; skipping."
             )
             continue
-        blended = blend_weights(country_w, global_w)
-        blended["country"] = country
-        frames.append(blended)
+        log_support(country, country_w)
+        country_w["country"] = country
+        frames.append(country_w)
         emitted += 1
-        log.info(f"{country}: {total:,} impressions -> {len(blended)} blended hours")
 
     result = pd.concat(frames, ignore_index=True)
     log.info(f"Emitted global + {emitted} country sets; {len(result)} total rows")

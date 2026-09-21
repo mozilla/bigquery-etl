@@ -27,7 +27,6 @@ assert spec is not None and spec.loader is not None
 query_mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(query_mod)
 
-blend_weights = query_mod.blend_weights
 compute_weights = query_mod.compute_weights
 compute_all_countries = query_mod.compute_all_countries
 normalize_weights = query_mod.normalize_weights
@@ -63,29 +62,15 @@ def _flat_hist(country, ctr_by_hour, impressions=1_000_000, position_mult=1.0):
     )
 
 
-def _weights_df(rows):
-    """Build an output-shaped weights DataFrame from (hour, imp, adj, clicks, w) rows."""
-    return pd.DataFrame(
+def _gb_plus_inverted_us():
+    """GB against a 50x larger US whose hour curve is shifted half a day."""
+    inverted = {hour: SWINGY_CTR[(hour + 12) % 24] for hour in range(24)}
+    return pd.concat(
         [
-            {
-                "hour": hour,
-                "impressions": imp,
-                "adjusted_impressions": float(adj),
-                "clicks": clicks,
-                "weight": weight,
-            }
-            for hour, imp, adj, clicks, weight in rows
-        ]
-    )
-
-
-@pytest.fixture
-def identity_normalize(monkeypatch):
-    """Neuter the re-normalization so we can assert the raw shrinkage math."""
-    monkeypatch.setattr(
-        query_mod,
-        "normalize_weights",
-        lambda weights: (weights["unnormalized_weight"], 1.0),
+            _flat_hist("GB", SWINGY_CTR, impressions=1_000_000),
+            _flat_hist("US", inverted, impressions=50_000_000),
+        ],
+        ignore_index=True,
     )
 
 
@@ -153,7 +138,7 @@ def test_estimated_on_adjusted_not_raw_exposure():
 
 
 def test_thin_hours_are_dropped(monkeypatch):
-    # Cells below MIN_CELL_IMPRESSIONS are not emitted; consumers fall back to global.
+    # Cells below MIN_CELL_IMPRESSIONS are not emitted; consumers leave them unadjusted.
     monkeypatch.setattr(query_mod, "MIN_CELL_IMPRESSIONS", 10_000)
     hist = _flat_hist("GB", {hour: 0.005 for hour in range(24)})
     hist.loc[hist["hour"] == 3, ["impressions", "adjusted_impressions", "clicks"]] = [
@@ -195,60 +180,38 @@ def test_output_shape():
     assert out["hour"].tolist() == list(range(24))
 
 
-def test_blend_high_volume_stays_country(identity_normalize):
-    # imp_c >> K -> blended weight is essentially the country weight.
-    country = _weights_df([(1, 10_000_000, 10_000_000.0, 50_000, 2.0)])
-    glob = _weights_df([(1, 1_000, 1_000.0, 5, 0.5)])
-    out = blend_weights(country, glob, k=50_000)
-    assert out.loc[0, "weight"] == pytest.approx(2.0, rel=0.01)
+def test_country_weights_are_independent_of_other_countries():
+    """No shrinkage toward global: a country's curve comes from its own traffic only."""
+    gb_alone = compute_weights(_flat_hist("GB", SWINGY_CTR))
+
+    # Pool GB with a far larger country whose hour curve is phase-shifted 12 hours. Any
+    # surviving shrinkage toward the pooled curve would move GB's weights.
+    result = compute_all_countries(_gb_plus_inverted_us())
+    gb_pooled = result[result["country"] == "GB"].reset_index(drop=True)
+
+    pd.testing.assert_series_equal(
+        gb_alone["weight"], gb_pooled["weight"], check_names=False
+    )
 
 
-def test_blend_low_volume_leans_global(identity_normalize):
-    # imp_c -> 0 -> blended weight collapses to the global weight.
-    country = _weights_df([(1, 0, 0.0, 0, 2.0)])
-    glob = _weights_df([(1, 1_000, 1_000.0, 5, 0.5)])
-    out = blend_weights(country, glob, k=50_000)
-    assert out.loc[0, "weight"] == pytest.approx(0.5, rel=1e-6)
+def test_global_row_is_the_pooled_curve_not_a_transferable_one():
+    """The global row describes all-country pooled exposure, so it contradicts GB's."""
+    result = compute_all_countries(_gb_plus_inverted_us())
+    global_rows = result[result["country"].isna()].set_index("hour")
+    gb_rows = result[result["country"] == "GB"].set_index("hour")
+
+    # Dominated by US volume, the pooled curve moves opposite to GB's at hour 1 --
+    # exactly why it must not be used as a fallback for a country without its own row.
+    assert global_rows.loc[1, "weight"] < 1.0
+    assert gb_rows.loc[1, "weight"] > 1.0
 
 
-def test_blend_midpoint(identity_normalize):
-    # imp_c == K -> exact 50/50 average of country and global weights.
-    country = _weights_df([(1, 50_000, 50_000.0, 250, 2.0)])
-    glob = _weights_df([(1, 1_000, 1_000.0, 5, 0.5)])
-    out = blend_weights(country, glob, k=50_000)
-    assert out.loc[0, "weight"] == pytest.approx((2.0 + 0.5) / 2, rel=1e-6)
-
-
-def test_blend_missing_global_hour_falls_back_to_country(identity_normalize):
-    # Hour present for the country but not global -> uses the country weight.
-    country = _weights_df([(7, 100_000, 100_000.0, 500, 1.7)])
-    glob = _weights_df([(1, 1_000, 1_000.0, 5, 0.5)])
-    out = blend_weights(country, glob, k=50_000)
-    assert out.loc[0, "weight"] == pytest.approx(1.7, rel=1e-6)
-
-
-def test_blend_renormalizes_to_country_exposure():
-    # Without the identity_normalize fixture the blended set must still conserve the
-    # country's own adjusted exposure.
-    country = compute_weights(_flat_hist("GB", SWINGY_CTR))
-    glob = compute_weights(_flat_hist("GB", {hour: 0.005 for hour in range(24)}))
-    out = blend_weights(country, glob, k=50_000)
-    exposure = out["adjusted_impressions"].sum()
-    reweighted = (out["adjusted_impressions"] / out["weight"]).sum()
-    assert reweighted == pytest.approx(exposure, rel=1e-9)
-
-
-def test_blend_output_shape(identity_normalize):
-    country = _weights_df([(1, 100_000, 100_000.0, 500, 2.0)])
-    glob = _weights_df([(1, 1_000, 1_000.0, 5, 0.5)])
-    out = blend_weights(country, glob, k=50_000)
-    assert list(out.columns) == [
-        "hour",
-        "impressions",
-        "adjusted_impressions",
-        "clicks",
-        "weight",
-    ]
+def test_every_emitted_set_is_normalized_independently():
+    result = compute_all_countries(_gb_plus_inverted_us())
+    for country, rows in result.groupby(result["country"].fillna("GLOBAL")):
+        exposure = rows["adjusted_impressions"].sum()
+        reweighted = (rows["adjusted_impressions"] / rows["weight"]).sum()
+        assert reweighted == pytest.approx(exposure, rel=1e-9), country
 
 
 def test_normalize_weights_handles_zero_exposure():

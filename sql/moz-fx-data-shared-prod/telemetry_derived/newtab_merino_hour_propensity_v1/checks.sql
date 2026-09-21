@@ -16,25 +16,46 @@
 
 #fail
 {{ is_unique(["country", "hour"], "snapshot_date = @snapshot_date") }}
--- The global (country IS NULL) set must cover all 24 hours: consumers fall back to it
--- for every country and hour without its own weight, so a gap there is unrecoverable.
+-- Every emitted set, global and per-country alike, must cover all 24 hours. There is no
+-- cross-country fallback for this weight (a UTC-hour curve does not transfer between
+-- regions), so a country with a partial set silently loses the adjustment for the missing
+-- hours rather than borrowing one.
 
 #fail
+WITH hours_per_set AS (
+  SELECT
+    COALESCE(country, 'GLOBAL') AS country,
+    COUNT(DISTINCT HOUR) AS hours
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    snapshot_date = @snapshot_date
+  GROUP BY
+    country
+),
+offenders AS (
+  SELECT
+    CONCAT(country, '=', CAST(hours AS STRING)) AS detail
+  FROM
+    hours_per_set
+  WHERE
+    hours <> 24
+)
 SELECT
   IF(
-    COUNTIF(country IS NULL) <> 24,
-    ERROR(
-      CONCAT(
-        "Expected 24 global (country IS NULL) hour rows for this snapshot_date, found ",
-        CAST(COUNTIF(country IS NULL) AS STRING)
-      )
-    ),
-    NULL
-  )
-FROM
-  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE
-  snapshot_date = @snapshot_date;
+    (SELECT COUNTIF(country = 'GLOBAL') FROM hours_per_set) = 0,
+    ERROR("No global (country IS NULL) hour rows for this snapshot_date"),
+    IF(
+      (SELECT COUNT(*) FROM offenders) > 0,
+      ERROR(
+        CONCAT(
+          "Expected 24 hours per emitted set, got: ",
+          (SELECT ARRAY_TO_STRING(ARRAY_AGG(detail ORDER BY detail), ", ") FROM offenders)
+        )
+      ),
+      NULL
+    )
+  );
 
 -- Normalization contract: dividing exposure by these weights must conserve total
 -- adjusted exposure, so overall CTR is preserved rather than rescaled.

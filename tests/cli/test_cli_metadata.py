@@ -820,6 +820,103 @@ class TestMetadata:
             capfd=capfd,
         )
 
+    def write_generated_tree(self, with_tests_dir=True, with_test_case=True):
+        """Create the absolute layout CI builds under /tmp/workspace/private-generated-sql:
+        <root>/sql/<project>/<dataset>/<table> and, optionally,
+        <root>/tests/sql/<project>/<dataset>/<table>, with or without the
+        test_query_v1 child that makes the folder count as a unit test.
+        """
+        root = Path.cwd() / "private-generated-sql"
+        table_dir = (
+            root / "sql" / "moz-fx-data-shared-prod" / "telemetry_derived" / "query_v1"
+        )
+        os.makedirs(table_dir, exist_ok=True)
+
+        files = {
+            "metadata.yaml": {
+                "friendly_name": "test",
+                "description": "Table description.",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_default"},
+                "labels": {"change_controlled": "true", "level": "gold"},
+            },
+            "schema.yaml": {
+                "fields": [
+                    {"name": "column_1", "type": "STRING", "description": "Desc 1"}
+                ]
+            },
+            BIGEYE_PREDEFINED_FILE: {
+                "type": "BIGCONFIG_FILE",
+                "tag_deployments": [
+                    {
+                        "column_selectors": {"name": "{query_path}.*"},
+                        "metrics": [
+                            {
+                                "metric_type": {
+                                    "type": "PREDEFINED",
+                                    "predefined_metric": metric,
+                                },
+                                "metric_name": metric,
+                            }
+                            for metric in ("FRESHNESS", "VOLUME")
+                        ],
+                    }
+                ],
+            },
+        }
+        for name, content in files.items():
+            (table_dir / name).write_text(yaml.safe_dump(content))
+        (table_dir / "query.sql").write_text("SELECT column_1 FROM test_table")
+
+        if with_tests_dir:
+            tests_dir = root / "tests" / Path(*table_dir.parts[-4:])
+            os.makedirs(tests_dir / "test_query_v1" if with_test_case else tests_dir)
+
+        return table_dir
+
+    def test_level_gold_absolute_sql_dir_finds_tests_next_to_sql(self, runner, capfd):
+        """Absolute query_dir: os.path.join("tests", query_dir) drops "tests", so the
+        tests folder is resolved from the sql dir root instead.
+        """
+        with runner.isolated_filesystem():
+            table_dir = self.write_generated_tree(with_tests_dir=True)
+
+            metadata_from_file = Metadata.from_file(table_dir / "metadata.yaml")
+            result = validate_asset_level(str(table_dir), metadata_from_file)
+
+            assert result is True
+            assert "Metadata level gold achieved!" in capfd.readouterr().out
+
+    def test_level_gold_absolute_sql_dir_without_tests(self, runner, capfd):
+        """Same absolute layout without a tests/sql folder: unittests are still
+        reported as missing.
+        """
+        with runner.isolated_filesystem():
+            table_dir = self.write_generated_tree(with_tests_dir=False)
+
+            metadata_from_file = Metadata.from_file(table_dir / "metadata.yaml")
+            result = validate_asset_level(str(table_dir), metadata_from_file)
+
+            assert result is False
+            assert "Missing: unittests" in capfd.readouterr().out
+
+    def test_level_gold_absolute_sql_dir_tests_dir_without_test_case(
+        self, runner, capfd
+    ):
+        """The tests folder exists next to the sql dir but holds no test_ entry:
+        unittests are reported as missing.
+        """
+        with runner.isolated_filesystem():
+            table_dir = self.write_generated_tree(
+                with_tests_dir=True, with_test_case=False
+            )
+
+            metadata_from_file = Metadata.from_file(table_dir / "metadata.yaml")
+            result = validate_asset_level(str(table_dir), metadata_from_file)
+
+            assert result is False
+            assert "Missing: unittests" in capfd.readouterr().out
+
     def test_level_gold_not_comply_missing_description(self, runner, capfd):
         metadata = {
             "friendly_name": "test",

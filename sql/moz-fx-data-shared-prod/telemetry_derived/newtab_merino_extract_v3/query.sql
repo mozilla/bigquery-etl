@@ -1,22 +1,44 @@
--- Artifact regions whose engagement rows carry position-AND-hour-adjusted exposure, instead
--- of the position-only exposure every other row carries. These strings are the region values
--- experiment_region_aggregates emits, '<country>-<experiment_slug>-<experiment_branch>', so
--- the scope is a single experiment branch.
+-- The single source of truth for experiment-specific engagement rows. Each entry adds
+-- '<region>-<slug>-<branch>' rows to the artifact for every branch the ping reports, and
+-- every branch named in hour_adjusted_branches carries position-AND-hour-adjusted exposure
+-- instead of the position-only exposure each other row carries.
 --
--- This is the live A/B for the time-of-day weight: the treatment arm of ctrpred_engb ranks on
+-- Both the experiment_configs CTE and the hour-adjusted region list below are rendered from
+-- this list, so a slug cannot be rotated in one and forgotten in the other. Leave
+-- hour_adjusted_branches empty to emit an experiment's rows without any hour adjustment.
+--
+-- ctrpred_engb is the live A/B for the time-of-day weight: its treatment arm ranks on
 -- doubly-adjusted exposure while its control arm keeps vanilla position-only exposure, on
 -- identical traffic. Scoping to a region-experiment instead of changing impression_count
 -- everywhere keeps the blast radius off every other consumer -- the Thompson prior's
 -- concentration, the LIMIT 25000 row cap's ordering and Merino's freshness thresholds all keep
 -- their current meaning for the global and per-country rows.
 --
--- A region only produces rows at all if its experiment is listed in experiment_configs below.
-{% set hour_propensity_regions = ['GB-ctrpred_engb-treatment'] %}
+-- newtab_merino_priors_v1 keeps its own copy of the region/slug pairs; update both together.
+{% set experiments = [
+     {'region': 'GB', 'slug': 'ctrpred_engb', 'hour_adjusted_branches': ['treatment']},
+   ] %}
+{% set hour_propensity_regions = [] %}
+{% for experiment in experiments %}
+  {% for branch in experiment.hour_adjusted_branches %}
+    {% set _ = hour_propensity_regions.append(
+         experiment.region ~ '-' ~ experiment.slug ~ '-' ~ branch
+       ) %}
+  {% endfor %}
+{% endfor %}
 WITH experiment_configs AS (
   SELECT
     *
   FROM
-    UNNEST([STRUCT('GB' AS region, 'ctrpred_engb' AS experiment_slug)])
+    UNNEST(
+      [
+        {% for experiment in experiments %}
+          STRUCT('{{ experiment.region }}' AS region, '{{ experiment.slug }}' AS experiment_slug)
+          {% if not loop.last %},
+          {% endif %}
+        {% endfor %}
+      ]
+    )
 ),
 private_pings AS (
   SELECT

@@ -187,6 +187,7 @@ SELECT
     ) AS `boolean`,
     STRUCT(
       LAX_INT64(event_extra.action_position) AS `action_position`,
+      LAX_INT64(event_extra.active_age) AS `active_age`,
       LAX_INT64(event_extra.ads_hidden) AS `ads_hidden`,
       LAX_INT64(event_extra.ads_loaded) AS `ads_loaded`,
       LAX_INT64(event_extra.ads_visible) AS `ads_visible`,

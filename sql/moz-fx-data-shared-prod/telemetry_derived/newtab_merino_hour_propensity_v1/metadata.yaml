@@ -28,7 +28,6 @@ workgroup_access:
   - workgroup:mozsoc-ml/developers
 labels:
   incremental: true
-  owner: cbeck
 bigquery:
   time_partitioning:
     type: day

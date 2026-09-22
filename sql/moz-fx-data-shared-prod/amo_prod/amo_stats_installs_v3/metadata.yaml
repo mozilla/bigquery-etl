@@ -1,9 +1,6 @@
 ---
-friendly_name: AMO Stats DAU (Deprecated)
+friendly_name: AMO Stats DAU
 description: >
-  Deprecated - please use tables or views inside addons_derived or addons instead.
-  For more info see: DENG-9505.
-
   Daily install statistics to power addons.mozilla.org stats pages.
   See bug 1654330. Note that this table uses a hashed_addon_id
   defined as `TO_HEX(SHA256(addon_id))` because the underlying event
@@ -21,6 +18,8 @@ labels:
   schedule: daily
   table_type: aggregate
   shredder_mitigation: false
+scheduling:
+  dag_name: bqetl_amo_stats
 bigquery:
   time_partitioning:
     type: day
@@ -29,4 +28,3 @@ bigquery:
   clustering:
     fields:
       - hashed_addon_id
-deprecated: true

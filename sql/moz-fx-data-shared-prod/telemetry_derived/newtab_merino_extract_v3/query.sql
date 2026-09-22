@@ -427,6 +427,14 @@ filtered_results AS (
     removed_items ri
     USING (corpus_item_id)
   WHERE
+    -- Known arm asymmetry, accepted. This 600 threshold is compared against hour-adjusted
+    -- counts for rows in hour_propensity_regions and position-only counts for every other
+    -- row, so a manually removed item sitting near 600 can survive in the control arm and
+    -- be dropped in the treatment arm -- a candidate-set difference caused by the rescaling
+    -- rather than by the ranking change the experiment measures. Scope is narrow: only items
+    -- manually removed within 60 days whose exposure lands near the threshold. Filtering on
+    -- an unadjusted count would make this arm-neutral if it ever matters. See also the
+    -- caveat at the LIMIT.
     NOT (ri.corpus_item_id IS NOT NULL AND cr.impression_count < 600)
 )
 SELECT
@@ -440,11 +448,19 @@ LIMIT
   -- record size of ~113 bytes, and recall measurements. At ~25k rows the JSON blob stays
   -- under 5 MB while preserving more lower-impression rows alongside the experiment rows.
   --
-  -- Caveat: the ORDER BY now sorts across two exposure definitions, because the rows for
-  -- hour_propensity_regions carry hour-adjusted counts while every other row does not. So
-  -- the cut is made on mixed dimensions and can add or drop rows at the boundary. Measured
-  -- offline against an artifact built without the mixed dimension: 24,998 of 25,000 rows
-  -- shared, 2 added and 2 dropped, all four GB-ctrpred_engb-treatment, with the treatment
-  -- (461) and control (454) row counts and both cutoff scores (510) unchanged. Small enough
-  -- to leave alone, but worth re-checking if the scoped region set grows.
+  -- Caveat, one of two: impression_count now carries two exposure definitions in the same
+  -- column, since rows for hour_propensity_regions are hour-adjusted and every other row is
+  -- not. Anything that compares impression_count across rows therefore compares mixed
+  -- dimensions. Two places do:
+  --
+  --   1. this ORDER BY / LIMIT, where the cut can add or drop rows at the boundary.
+  --      Measured offline against an artifact built without the mixed dimension: 24,998 of
+  --      25,000 rows shared, 2 added and 2 dropped, all four GB-ctrpred_engb-treatment,
+  --      with the treatment (461) and control (454) row counts and both cutoff scores
+  --      (510) unchanged.
+  --   2. the `impression_count < 600` grace threshold for manually removed items in
+  --      filtered_results above -- see the note there.
+  --
+  -- Both are accepted rather than fixed. Re-check if the scoped region set grows, or if the
+  -- hour weights move outside their measured 0.75-1.55 band.
   25000;

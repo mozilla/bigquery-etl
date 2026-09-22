@@ -409,7 +409,7 @@ fields:
       description: "The per-process third-party module load context and events.\n\
         ```text\n[{\n  processName: string containing processType and pid, formatted\
         \ as `${processType}.0x${pid}`,\n  processType: one of the process string\
-        \ names specified in `xpcom/build/GeckoProcessTypes.h` or \"browser\" for\
+        \ names specified in `xpcom/build/GeckoProcessTypes.inc` or \"browser\" for\
         \ Default,\n  elapsed: number of seconds since process creation that this\
         \ object was generated,\n  xulLoadDurationMS: number of milliseconds it took\
         \ to load xul.dll,\n  sanitizationFailures: number of dropped events due to\
@@ -420,7 +420,7 @@ fields:
         \ of module section handles a child process sent that the parent refused as\
         \ invalid module section handles,\n  events: [{ // Array of module load events\
         \ for this process. The entries of this array are ordered to be in sync with\
-        \ the comb"
+        \ the co"
   - name: quantity
     type: RECORD
     mode: NULLABLE

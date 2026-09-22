@@ -4,7 +4,7 @@
   reason: fixed logic https://github.com/mozilla/bigquery-etl/pull/9900
   watchers:
   - cmorales@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   ignore_date_partition_offset: false

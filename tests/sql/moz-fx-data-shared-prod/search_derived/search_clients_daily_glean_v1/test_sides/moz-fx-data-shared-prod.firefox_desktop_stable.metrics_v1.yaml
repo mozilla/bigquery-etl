@@ -126,6 +126,54 @@
         - key: "engine4:organic"
           value: 1
 
+# AGGREGATED ONLY, and only for the tab count. A lower ping_seq than the ping above, so it
+# loses the QUALIFY and supplies none of client-legacy's published dimensions -- but its
+# tab count is the higher of the two, so it is what max_concurrent_tab_count_max must
+# publish. Carrying that column on the QUALIFY winner instead would report 7.
+# It deliberately declares no labeled_counter entries: legacy_exploded_cte reads every
+# ping rather than the winner, so counters here would add to the seven legacy_* sums.
+- submission_timestamp: "2026-08-13 10:00:00"
+  document_id: doc-metrics-legacy-early
+  sample_id: 3
+  normalized_country_code: JP
+  normalized_channel: release
+  normalized_os: Mac
+  normalized_os_version: 22.6.0
+  client_info:
+    client_id: client-legacy
+    app_display_version: "139.1.2"
+    app_channel: release
+    locale: ja
+    os: Darwin
+    os_version: 22.6.0
+    windows_build_number: null
+    first_run_date: "2026-06-01+09:00"
+    distribution:
+      name: null
+  ping_info:
+    start_time: "2026-08-13T04:00:00+09:00"
+    end_time: "2026-08-13T05:00:00+09:00"
+    seq: 2
+    experiments:
+      - key: exp-b
+        value:
+          branch: control
+          extra:
+            type: nimbus
+            enrollment_id: enr-2
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy-legacy
+      legacy_telemetry_profile_group_id: pg-legacy
+    boolean:
+      policies_is_enterprise: false
+    string:
+      region_home_region: JP
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 12
+    object:
+      addons_active_addons: null
+
 # KEPT, and the legacy arm of client-sapexp's sap-and-legacy row. Its counters land on
 # that client's SAP key -- engine2, tagged, sapcode, searchbar -- so the two sides join
 # rather than producing separate rows.

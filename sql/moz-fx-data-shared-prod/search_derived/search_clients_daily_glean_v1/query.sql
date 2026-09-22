@@ -275,7 +275,14 @@ legacy_with_client_info_cte AS (
     ping_seq,
     experiments,
     policies_is_enterprise,
-    max_concurrent_tab_count_max
+    -- a measure rather than a client dimension, so it takes the day's peak across every ping
+    -- instead of the winning ping's own value, matching the MAX the other two sides apply.
+    -- the window is evaluated before QUALIFY filters, so it still sees the losing pings
+    MAX(max_concurrent_tab_count_max) OVER (
+      PARTITION BY
+        client_id,
+        submission_date
+    ) AS max_concurrent_tab_count_max
   FROM
     legacy_base_cte
   QUALIFY

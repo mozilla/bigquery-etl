@@ -325,6 +325,8 @@
 # zero-fill beside them, which is the contrast the row is here to pin.
 # app_version comes from mozfun.norm.browser_version_info over the metrics ping's
 # app_display_version, where the other rows' came from a stored struct.
+# max_concurrent_tab_count_max is 12 while ping_seq is 4: the dimensions come from the
+# winning ping, which reported 7, and the tab count is the day's peak across both pings.
 - submission_date: "2026-08-13"
   client_id: client-legacy
   legacy_telemetry_client_id: legacy-legacy
@@ -350,7 +352,7 @@
   ping_start_time: "2026-08-13T06:00:00+09:00"
   ping_end_time: "2026-08-13T07:00:00+09:00"
   ping_seq: 4
-  max_concurrent_tab_count_max: 7
+  max_concurrent_tab_count_max: 12
   experiments:
     - key: exp-b
       value:

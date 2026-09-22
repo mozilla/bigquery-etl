@@ -10,9 +10,19 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: legacy_telemetry_client_id
+    append: " Carried alongside client_id, the Glean identifier this table is keyed on,
+      so a row can be joined to legacy telemetry tables."
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_engine
+    append: " Part of the grain of this table. The SAP and SERP sides normalize their own
+      engine values the same way, so the two join on it."
 - name: source
   type: STRING
   mode: NULLABLE
@@ -55,6 +65,11 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_build_number
+    append: " One of the three inputs to os_version_major and os_version_minor, which on
+      Windows are derived from os, os_version and this column together."
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -112,12 +127,21 @@ fields:
 - name: default_search_engine_data_load_path
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_load_path
 - name: default_search_engine_data_submission_url
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_submission_url
 - name: default_search_engine_partner_code
   type: STRING
   mode: NULLABLE
+  description: The partner code configured on the client's default search engine. It
+    describes the engine's configuration rather than any one search, so it need not agree
+    with this row's partner_code, which comes from the search event itself.
 - name: default_search_engine_provider_id
   type: STRING
   mode: NULLABLE
@@ -126,6 +150,9 @@ fields:
 - name: default_search_engine_overridden
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether a third party had overridden the client's default search engine.
+    Describes the engine's configuration, so it is distinct from
+    sap_overridden_by_third_party, which the SAP side reports per search event.
 - name: default_private_search_engine_display_name
   type: STRING
   mode: NULLABLE
@@ -135,12 +162,22 @@ fields:
 - name: default_private_search_engine_data_load_path
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_load_path
 - name: default_private_search_engine_data_submission_url
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_submission_url
 - name: default_private_search_engine_partner_code
   type: STRING
   mode: NULLABLE
+  description: The partner code configured on the engine set as the default for private
+    browsing mode. It describes that engine's configuration rather than any one search,
+    so it need not agree with this row's partner_code, which comes from the search event
+    itself. Null when no distinct private browsing default engine is configured.
 - name: default_private_search_engine_provider_id
   type: STRING
   mode: NULLABLE
@@ -149,6 +186,10 @@ fields:
 - name: default_private_search_engine_overridden
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether a third party had overridden the engine set as the default for
+    private browsing mode. Describes that engine's configuration, so it is distinct from
+    sap_overridden_by_third_party, which the SAP side reports per search event. Null when
+    no distinct private browsing default engine is configured.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -157,39 +198,64 @@ fields:
 - name: ping_start_time
   type: STRING
   mode: NULLABLE
+  description: The start of the interval covered by the ping these searches were reported
+    in, as the client wrote it - a local date and time with a trailing UTC offset, kept as
+    a string rather than converted to a timestamp. Taken from whichever source supplied
+    the row, so it describes that source's ping.
 - name: ping_end_time
   type: STRING
   mode: NULLABLE
+  description: The end of the interval covered by the ping these searches were reported
+    in, in the same client-local string form as ping_start_time.
 - name: ping_seq
   type: INTEGER
   mode: NULLABLE
+  description: The sequence number of the ping these searches were reported in. From the
+    SAP and legacy sides this is the per-client counter for that ping type, which is
+    monotonic and so orders a client's pings even when they are submitted out of order;
+    from the SERP side it is the subsession counter.
 - name: max_concurrent_tab_count_max
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: max_concurrent_tab_count_max
+    append: " Zero, not null, where no source reported a value."
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: The experiments the client was enrolled in when these searches were
+    reported, one element per enrollment and empty for a client enrolled in none. Taken
+    from whichever source recorded enrollments for this row rather than from whichever
+    source supplied the row, so an enrollment is not lost to a SERP impression that
+    predates it.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: The slug identifying the experiment.
   - name: value
     type: RECORD
     mode: NULLABLE
+    description: The enrollment in the experiment named by key.
     fields:
     - name: branch
       type: STRING
       mode: NULLABLE
+      description: The branch of the experiment the client was enrolled in.
     - name: extra
       type: RECORD
       mode: NULLABLE
+      description: Additional properties of the enrollment.
       fields:
       - name: type
         type: STRING
         mode: NULLABLE
+        description: The kind of enrollment.
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
+        description: The identifier of the enrollment.
 - name: profile_age_in_days
   type: INTEGER
   mode: NULLABLE

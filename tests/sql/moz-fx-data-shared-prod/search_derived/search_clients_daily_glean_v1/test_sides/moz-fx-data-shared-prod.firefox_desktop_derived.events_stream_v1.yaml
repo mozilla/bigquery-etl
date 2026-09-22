@@ -4,7 +4,7 @@
 # app_channel is the only channel any side supplies, so it proves the coalesce falls
 # through to SAP; locale is null here too, leaving it to the legacy arm.
 # experiments carries one enrollment, which the output publishes because the SERP array
-# is empty.
+# is empty -- the SERP arm's empty-array guard is what lets this side win.
 - submission_timestamp: "2026-08-13 10:05:00"
   event: sap.counts
   event_id: evt-matched-1
@@ -114,3 +114,24 @@
     provider_id: engine2
     partner_code: sapcode
     source: urlbar
+
+# KEPT, and published as a sap-and-legacy row -- the combination that isolates the SAP
+# arm of the experiments coalesce. It inherits experiments: null from the anchor while its
+# metrics ping carries an enrollment, so the enrollment reaches the output only because
+# the SAP arm's empty-array guard skips this side. Remove that guard and the row publishes
+# an empty array instead.
+# provider_id is a real engine rather than 'other', so sap_provider_id publishes and
+# sap_provider_name is absent -- the opposite of the sap-only row above.
+- <<: *sap_only
+  submission_timestamp: "2026-08-13 08:40:00"
+  event_id: evt-sapexp-1
+  event_timestamp: "2026-08-13 08:40:00"
+  document_id: doc-sap-sapexp
+  client_id: client-sapexp
+  legacy_telemetry_client_id: legacy-sapexp
+  profile_group_id: pg-sapexp
+  sample_id: 19
+  event_extra:
+    provider_id: engine2
+    partner_code: sapcode
+    source: searchbar

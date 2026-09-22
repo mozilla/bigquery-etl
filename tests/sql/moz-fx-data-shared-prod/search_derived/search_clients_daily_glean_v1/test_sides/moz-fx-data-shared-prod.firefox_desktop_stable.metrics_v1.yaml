@@ -125,3 +125,61 @@
       browser_search_adclicks_urlbar:
         - key: "engine4:organic"
           value: 1
+
+# KEPT, and the legacy arm of client-sapexp's sap-and-legacy row. Its counters land on
+# that client's SAP key -- engine2, tagged, sapcode, searchbar -- so the two sides join
+# rather than producing separate rows.
+# ping_info.experiments carries the enrollment while the SAP event carries none, which is
+# what the SAP arm's empty-array guard has to skip past for this to publish.
+# addons_active_addons is absent, so has_adblocker_addon is FALSE by COALESCE.
+- submission_timestamp: "2026-08-13 09:30:00"
+  document_id: doc-metrics-sapexp
+  sample_id: 19
+  normalized_country_code: DE
+  normalized_channel: beta
+  normalized_os: Linux
+  normalized_os_version: 6.1.0
+  client_info:
+    client_id: client-sapexp
+    app_display_version: "139.1.2"
+    app_channel: beta
+    locale: de
+    os: Linux
+    os_version: 6.1.0
+    windows_build_number: null
+    first_run_date: "2026-07-30-05:00"
+    distribution:
+      name: mozilla
+  ping_info:
+    start_time: "2026-08-13T08:00:00-05:00"
+    end_time: "2026-08-13T09:00:00-05:00"
+    seq: 2
+    experiments:
+      - key: exp-c
+        value:
+          branch: control
+          extra:
+            type: nimbus
+            enrollment_id: enr-3
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy-sapexp
+      legacy_telemetry_profile_group_id: pg-sapexp
+    boolean:
+      policies_is_enterprise: true
+    string:
+      region_home_region: DE
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 9
+    object:
+      addons_active_addons: null
+    labeled_counter:
+      browser_search_content_searchbar:
+        - key: "engine2:tagged:sapcode"
+          value: 6
+      browser_search_withads_searchbar:
+        - key: "engine2:tagged"
+          value: 4
+      browser_search_adclicks_searchbar:
+        - key: "engine2:tagged"
+          value: 1

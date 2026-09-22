@@ -163,6 +163,83 @@
   legacy_ad_clicks_tagged_sum: 0
   legacy_ad_clicks_organic_sum: 0
 
+# SAP and legacy, no SERP -- the combination that isolates the SAP arm of the experiments
+# coalesce. experiments comes from the legacy ping because the SAP event recorded none,
+# which only happens if the SAP arm's empty-array guard skips an empty array; without it
+# this row publishes [].
+# Dimensions all come from the SAP side, which carries every one of them, so the legacy
+# ping's copies never surface. sap_provider_id publishes and sap_provider_name is absent,
+# provider_id being a real engine here rather than 'other'.
+- submission_date: "2026-08-13"
+  client_id: client-sapexp
+  legacy_telemetry_client_id: legacy-sapexp
+  normalized_engine: Engine2
+  source: searchbar
+  partner_code: sapcode
+  country: DE
+  normalized_app_name: Firefox
+  app_version: "139.1.2"
+  app_major_version: "139"
+  app_minor_version: "1"
+  app_patch_revision: "2"
+  distribution_id: mozilla
+  locale: de
+  home_region: DE
+  os: Linux
+  normalized_os: Linux
+  os_version: 6.1.0
+  normalized_os_version: 6.1.0
+  channel: beta
+  normalized_channel: beta
+  profile_creation_date: 20664
+  sample_id: 19
+  ping_start_time: "2026-08-13T08:00:00-05:00"
+  ping_end_time: "2026-08-13T09:00:00-05:00"
+  ping_seq: 2
+  max_concurrent_tab_count_max: 9
+  experiments:
+    - key: exp-c
+      value:
+        branch: control
+        extra:
+          type: nimbus
+          enrollment_id: enr-3
+  profile_age_in_days: 14
+  serp_searches_organic_count: 0
+  serp_searches_tagged_count: 0
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 1
+  serp_counts_total: 0
+  serp_ad_clicks_sum: 0
+  serp_ad_clicks_tagged_sum: 0
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_searches_with_ads_organic_count: 0
+  serp_non_ad_link_clicks_sum: 0
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 0
+  serp_ads_visible_sum: 0
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 0
+  serp_abandonments_navigation_count: 0
+  serp_abandonments_tab_close_count: 0
+  serp_abandonments_window_close_count: 0
+  serp_abandonments_reason_absent_count: 0
+  serp_abandonments_other_count: 0
+  has_adblocker_addon: false
+  policies_is_enterprise: true
+  os_version_major: "6"
+  os_version_minor: "6.1"
+  profile_group_id: pg-sapexp
+  sap_provider_id: engine2
+  legacy_searches_tagged_non_follow_on_sum: 6
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 0
+  legacy_searches_with_ads_tagged_sum: 4
+  legacy_searches_with_ads_organic_sum: 0
+  legacy_ad_clicks_tagged_sum: 1
+  legacy_ad_clicks_organic_sum: 0
+
 # SERP-only, aggregated from five impressions on one key.
 # The five abandonment counts are each 1, which is the point of this row: '' and an
 # unrecognised reason are counted, and the NULL reason on the matched row above is not.

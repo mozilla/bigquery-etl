@@ -1149,12 +1149,13 @@ join_sources_cte AS (
     ) AS ping_end_time,
     COALESCE(serp_final_cte.ping_seq, sap_final_cte.ping_seq, legacy_cte.ping_seq) AS ping_seq,
     -- prefer whichever side recorded enrollments, not merely whichever side exists. an empty
-    -- array is not NULL, so without the IF a SERP impression that predates an enrollment
-    -- would win over a SAP event that carries it. legacy is reached only where neither pipeline
-    -- has the row at all, which is the case its enrollments are for.
+    -- array is not NULL, so without the IFs a SERP impression that predates an enrollment
+    -- would win over a SAP event that carries it, and an empty SAP array would win over a
+    -- legacy ping that carries one. legacy is reached whenever neither pipeline recorded an
+    -- enrollment, whether or not either of them has the row.
     COALESCE(
       IF(ARRAY_LENGTH(serp_final_cte.experiments) = 0, NULL, serp_final_cte.experiments),
-      sap_final_cte.experiments,
+      IF(ARRAY_LENGTH(sap_final_cte.experiments) = 0, NULL, sap_final_cte.experiments),
       legacy_cte.experiments
     ) AS experiments,
     COALESCE(

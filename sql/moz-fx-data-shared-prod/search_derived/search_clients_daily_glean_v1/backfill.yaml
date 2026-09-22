@@ -1,0 +1,11 @@
+2026-09-22:
+  start_date: 2024-08-15
+  end_date: 2026-09-21
+  reason: DENG-8178
+  watchers:
+  - kbammarito@mozilla.com
+  - loines@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

@@ -15,9 +15,10 @@ to add hour as a third factor to the position job's ALS
 (``log(ctr) = item_effect + slot_effect + hour_effect``) rather than to fit it
 separately, because separate fits double-count correlated factors.
 
-It is *not* naive with respect to position. The position weight already exists,
-so it is applied first and the hour effect is estimated on position-adjusted
-exposure. Otherwise a slate layout that varies by hour would leak position bias
+It is *not* naive with respect to position or format. That weight already
+exists and is keyed on (position, tile_format), so it is applied first and the
+hour effect is estimated on position/format-adjusted exposure. Otherwise a slate
+layout whose slot or format mix varies by hour would leak position/format bias
 into the hour weight.
 
 Estimation, per country and UTC hour, over a whole number of weeks:
@@ -59,10 +60,14 @@ substitute.
 
 Known limitation: a country spanning several timezones gets one UTC-hour curve
 that is a within-country mixture of local curves, so its swing is damped and it
-under-corrects at the edges. Keying on local hour would fix this -- the ping
-carries ``metrics.quantity.newtab_content_utc_offset``, which the position job
-already reads -- but UTC hour is what the offline panel validated, so that is a
-v2 change rather than a silent divergence.
+under-corrects at the edges. Keying on local hour would fix that, but there is
+currently no way to do it. ``metrics.quantity.newtab_content_utc_offset`` looks
+like the field for the job and the position job still reads it, but it is
+vestigial -- measured at 0.02% of newtab_content pings (644 of 4.05M in a
+10-minute sample), with 11 distinct values. A local-hour or region-timezone
+weight therefore needs new instrumentation or a geo-derived offset, not just a
+different GROUP BY. GB, the first market under test, is single-timezone, so the
+limitation does not bite there.
 """
 
 import logging
@@ -192,7 +197,7 @@ position_weights AS (
     snapshot_date = MAX(snapshot_date) OVER ()
 ),
 
-/* Section events carry position bias; divide it out first, exactly as the
+/* Section events carry position/format bias; divide it out first, exactly as the
    downstream extract job does (prefer exact-format weights, then 'any'). */
 section_events AS (
   SELECT

@@ -439,4 +439,12 @@ LIMIT
   -- This LIMIT was derived from the 5 MB payload size cap in Merino, the observed average
   -- record size of ~113 bytes, and recall measurements. At ~25k rows the JSON blob stays
   -- under 5 MB while preserving more lower-impression rows alongside the experiment rows.
+  --
+  -- Caveat: the ORDER BY now sorts across two exposure definitions, because the rows for
+  -- hour_propensity_regions carry hour-adjusted counts while every other row does not. So
+  -- the cut is made on mixed dimensions and can add or drop rows at the boundary. Measured
+  -- offline against an artifact built without the mixed dimension: 24,998 of 25,000 rows
+  -- shared, 2 added and 2 dropped, all four GB-ctrpred_engb-treatment, with the treatment
+  -- (461) and control (454) row counts and both cutoff scores (510) unchanged. Small enough
+  -- to leave alone, but worth re-checking if the scoped region set grows.
   25000;

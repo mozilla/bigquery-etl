@@ -1,13 +1,13 @@
 friendly_name: Newtab Merino Hour Propensity v1
 description: |-
   Time-of-day (UTC hour) propensity weights for newtab items, the companion to
-  newtab_merino_propensity_v2's position/format weights. Position bias is divided out first,
+  newtab_merino_propensity_v2's position/format weights. That bias is divided out first,
   then the residual hour effect is estimated as clicks / position-adjusted impressions per
   (country, UTC hour) relative to that country's all-hours rate. The weight is designed to be
   divided into exposure (adjusted_impressions / weight) immediately after the position weight,
   giving consumers a position-and-hour-free exposure without any ranker change.
-  Unlike the position weight, this one applies to non-section traffic too: position bias is a
-  section-grid phenomenon, time-of-day bias is not. Also unlike the position weight, country
+  Unlike the position weight, this one applies to non-section traffic too: position/format bias
+  is a section-grid phenomenon, time-of-day bias is not. Also unlike the position weight, country
   weights are not shrunk toward the global row and the global row is not a per-country fallback:
   a UTC-hour curve is a local diurnal pattern shifted by the region's offset from UTC, so it does
   not transfer between regions. A country without its own row is left unadjusted. The global row

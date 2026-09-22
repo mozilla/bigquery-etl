@@ -2,9 +2,9 @@
 
 A daily aggregate of desktop searches, one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `source`.
 
-Exposed to users as view `search.search_clients_engines_sources_daily`.
+Exposed to users as view `search.search_clients_daily_glean`. The similarly named `search.search_clients_engines_sources_daily` is v8's view, not this table's.
 
-This is the Glean-based replacement for the legacy `search_clients_daily_v8`.
+Built on Glean, and runs alongside `search_clients_daily_v8` rather than replacing it. The seven `legacy_` columns are what make a v8-comparable number available without querying both tables.
 
 ```mermaid
 graph TD

@@ -473,11 +473,6 @@ def test_select_source_ids_are_deduplicated():
     """Ensure the anti-join build side selects DISTINCT ids."""
     mock_client = Mock()
 
-    target = DeleteTarget(table="dataset.table_v1", field="client_id")
-    source = DeleteSource(
-        table="dataset.deletion_request_v1", field="client_info.client_id"
-    )
-
     delete_func = delete_from_partition(
         dry_run=True,
         partition=Partition(condition="", id="20260101"),

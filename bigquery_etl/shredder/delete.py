@@ -415,8 +415,8 @@ def delete_from_partition(
         else:
             field_joins = "".join(
                 (
-                    # DISTINCT is a required optimization to prevent extremely high
-                    # counts per client from causing performance issues.
+                    # DISTINCT is a required optimization to prevent extremely high counts per
+                    # client from causing performance issues. Doesn't affect DML path.
                     # See https://mozilla-hub.atlassian.net/browse/DENG-11643
                     f"""
                 LEFT JOIN

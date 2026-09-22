@@ -3536,6 +3536,14 @@ fields:
         style editor.
 
         '
+    - name: tab_reload_cover_shown
+      type: INTEGER
+      mode: NULLABLE
+      description: "Number of times the tab reload cover was actually placed over\
+        \ the\nengine view (a cached thumbnail was found and the cover ImageView\n\
+        flipped to VISIBLE). Baseline for the feature's engagement, and\na cross-check\
+        \ against `exited` event count \u2014 a gap would indicate\nthe process died\
+        \ while a cover was up.\n"
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

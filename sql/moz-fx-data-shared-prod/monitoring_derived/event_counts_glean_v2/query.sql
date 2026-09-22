@@ -314,41 +314,6 @@ firefox_desktop_sync_v1 AS (
     normalized_country_code,
     app_version
 ),
-firefox_desktop_urlbar_keyword_exposure_v1 AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    "firefox_desktop" AS app_id,
-    "firefox_desktop" AS app_name,
-    "Firefox for Desktop" AS normalized_app_name,
-    "urlbar_keyword_exposure" AS ping_type,
-    event.category AS event_category,
-    event.name AS event_name,
-    normalized_channel,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
-    COUNT(*) * 10 AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND sample_id
-    BETWEEN 0
-    AND 9
-  GROUP BY
-    submission_date,
-    app_id,
-    app_name,
-    normalized_app_name,
-    ping_type,
-    event_category,
-    event_name,
-    normalized_channel,
-    normalized_country_code,
-    app_version
-),
 firefox_desktop_urlbar_potential_exposure_v1 AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -2983,11 +2948,6 @@ SELECT
   *
 FROM
   firefox_desktop_sync_v1
-UNION ALL
-SELECT
-  *
-FROM
-  firefox_desktop_urlbar_keyword_exposure_v1
 UNION ALL
 SELECT
   *

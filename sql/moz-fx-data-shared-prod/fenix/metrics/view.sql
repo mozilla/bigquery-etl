@@ -424,7 +424,8 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
+      metrics.counter.tab_reload_cover_shown
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2739,7 +2740,8 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
+      metrics.counter.tab_reload_cover_shown
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5074,7 +5076,8 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
+      metrics.counter.tab_reload_cover_shown
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

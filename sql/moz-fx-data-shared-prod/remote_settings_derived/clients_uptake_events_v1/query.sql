@@ -16,7 +16,7 @@ WITH today_all_implementations AS (
     event_extra,
     -- As of 2026-09-22, desktop telemetry for rust is not enabled, but could land anytime.
     IF(event_category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    'Desktop' AS platform
+    'desktop' AS platform
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.events_unnested`
   WHERE
@@ -37,7 +37,7 @@ WITH today_all_implementations AS (
     normalized_country_code,
     event_extra,
     IF(event_category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    'Android' AS platform
+    'android' AS platform
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested`
   WHERE
@@ -58,7 +58,7 @@ WITH today_all_implementations AS (
     normalized_country_code,
     event_extra,
     'rust' AS implementation,
-    'iOS' AS platform
+    'ios' AS platform
   FROM
     `moz-fx-data-shared-prod.firefox_ios.events_unnested`
   WHERE

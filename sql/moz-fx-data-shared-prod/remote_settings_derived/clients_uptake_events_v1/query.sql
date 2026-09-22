@@ -1,5 +1,5 @@
 --
--- Query for remote_settings.clients_uptake_events_v1
+-- Query for remote_settings_derived.clients_uptake_events_v1
 --
 WITH today_all_implementations AS (
     --

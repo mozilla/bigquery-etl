@@ -166,7 +166,10 @@
 # SERP-only, aggregated from five impressions on one key.
 # The five abandonment counts are each 1, which is the point of this row: '' and an
 # unrecognised reason are counted, and the NULL reason on the matched row above is not.
-# ad_click_target concatenates the two distinct components in sorted order.
+# ad_click_target concatenates the clicked components in sorted order. ad_carousel before
+# ad_sitelink proves the ORDER BY and the ', ' separator; ad_image_row is absent because it
+# loaded without being clicked, and it sorts between the two, so dropping the num_clicks
+# filter would put it in the middle of this string.
 # experiments is [] here despite the coalesce yielding NULL -- every SERP row's array is
 # empty and there is no SAP or legacy arm to fall through to, but BigQuery returns a NULL
 # ARRAY as an empty array, so this column cannot be absent on any row.
@@ -207,8 +210,8 @@
   sap_counts_total: 0
   serp_counts_total: 5
   serp_ad_click_target: "ad_carousel, ad_sitelink"
-  serp_ad_clicks_sum: 3
-  serp_ad_clicks_tagged_sum: 3
+  serp_ad_clicks_sum: 5
+  serp_ad_clicks_tagged_sum: 5
   serp_ad_clicks_organic_sum: 0
   serp_searches_with_ads_tagged_count: 1
   serp_searches_with_ads_organic_count: 1

@@ -909,8 +909,9 @@ serp_aggregates_cte AS (
   -- Flattens ad_components_all into the ad_click_target string. ARRAY_CONCAT_AGG has to land as
   -- a column in serp_aggregates_base_cte before it can be unnested, because BigQuery rejects an
   -- aggregate inside UNNEST. Reads the base CTE, not serp_events, so there is no second scan.
-  -- A key whose ad_components are all empty concatenates to an empty array, which UNNESTs to no
-  -- rows and leaves STRING_AGG null.
+  -- STRING_AGG is null for two kinds of key: one whose ad_components are all empty, which
+  -- concatenates to an empty array and UNNESTs to no rows, and one whose components were loaded
+  -- but never clicked, which the num_clicks filter empties.
   -- ORDER BY makes the concatenation order deterministic (STRING_AGG is arbitrary otherwise)
   SELECT
     * EXCEPT (ad_components_all),
@@ -919,6 +920,8 @@ serp_aggregates_cte AS (
         STRING_AGG(DISTINCT ad_component.component, ', ' ORDER BY ad_component.component)
       FROM
         UNNEST(ad_components_all) AS ad_component
+      WHERE
+        ad_component.num_clicks > 0
     ) AS ad_click_target
   FROM
     serp_aggregates_base_cte

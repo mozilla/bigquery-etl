@@ -116,7 +116,7 @@
   browser_engagement_max_concurrent_tab_count: 2
   experiments: []
   ad_components:
-    - component: ad_carousel
+    - component: ad_image_row
       num_loaded: 1
       num_visible: 1
       num_blocked: 0
@@ -175,7 +175,7 @@
   event_timestamp: 7050
   abandon_reason: page_action
   browser_engagement_max_concurrent_tab_count: 6
-  num_ad_clicks: 3
+  num_ad_clicks: 5
   num_ads_visible: 0
   ad_components:
     - component: ad_sitelink
@@ -184,5 +184,13 @@
       num_blocked: 0
       num_notshowing: 0
       num_clicks: 3
+      num_other_engagements: 0
+      blocker_inferred: true
+    - component: ad_carousel
+      num_loaded: 1
+      num_visible: 0
+      num_blocked: 0
+      num_notshowing: 0
+      num_clicks: 2
       num_other_engagements: 0
       blocker_inferred: true

@@ -26,8 +26,8 @@ fields:
 - name: platform
   type: STRING
   mode: NULLABLE
-  description: Platform the event was reported from; one of "Desktop", "Android",
-    or "iOS".
+  description: Platform the event was reported from; one of "desktop", "android",
+    or "ios".
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE

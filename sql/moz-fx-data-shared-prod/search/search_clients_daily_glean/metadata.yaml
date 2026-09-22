@@ -1,0 +1,20 @@
+friendly_name: Search Clients Daily Glean
+description: |
+  A daily aggregate of desktop searches, one row per (client_id, submission_date,
+  normalized_engine, partner_code, source).
+
+  Built on Glean. Runs alongside `search_clients_daily_v8` rather than replacing it, so the
+  legacy_ columns are there to give a v8-comparable number without querying both tables.
+owners:
+- akommasani@mozilla.com
+- kbammarito@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: kbammarito
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1

@@ -1,11 +1,12 @@
-2026-08-24:
+2026-09-22:
   start_date: 2026-08-07
-  end_date: 2026-08-23
+  end_date: 2026-09-22
   reason: Backfill desktop's ads_client history now that Firefox desktop is a source
     (bug 2058567); volumes are thin (1-2 pings/day) so this is cheap. Range starts
     at the metric's actual landing date in Nightly.
   watchers:
   - ahanot@mozilla.com
+  - cbeck@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

@@ -7,7 +7,7 @@ A daily aggregate of desktop searches, one row per client per day per engine, pa
 * **Grain:** `client_id`, `submission_date`, `normalized_engine`, `partner_code`, `source`
 * **Key fields:** the five grain keys, `sample_id` (the clustering field), the `serp_` ad and engagement measures, `sap_counts_total`, and the seven `legacy_` parity counters
 * **Sources:**
-  * `mozdata.firefox_desktop.serp_events` — SERP impressions, carrying the ad, engagement and abandonment measures
+  * `firefox_desktop.serp_events` — SERP impressions, carrying the ad, engagement and abandonment measures
   * `firefox_desktop_derived.events_stream_v1` — `sap.counts` events, carrying search access point activity
   * `firefox_desktop_stable.metrics_v1` — the seven `legacy_` parity counters, taken from the `browser.search.content`, `withads` and `adclicks` labeled counters, and the ad-blocker add-on flag
   * `revenue.monetization_blocking_addons` — the list of ad-blocking add-ons

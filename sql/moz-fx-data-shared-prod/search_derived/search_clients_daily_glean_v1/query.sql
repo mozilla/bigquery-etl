@@ -749,7 +749,7 @@ serp_base_cte AS (
     -- mixed-case value in an otherwise lowercase vocabulary
     LOWER(sap_source) AS search_access_point
   FROM
-    `mozdata.firefox_desktop.serp_events`
+    `moz-fx-data-shared-prod.firefox_desktop.serp_events`
   WHERE
     submission_date = @submission_date
 ),

@@ -23,13 +23,19 @@ CREATE OR REPLACE FUNCTION udf.is_moz_supplied_suggestion(reporting_url STRING)
 RETURNS BOOLEAN AS (
   COALESCE(
     -- NET.HOST parses the host whether or not a scheme is present, but preserves
-    -- its case, so lowercase it before comparing. The path pattern is matched
-    -- case-insensitively via (?i) and likewise treats the scheme as optional.
+    -- its case, so lowercase it before comparing.
     LOWER(NET.HOST(reporting_url)) IN ('ads.mozilla.org', 'ads.allizom.org')
-    AND REGEXP_CONTAINS(
-      reporting_url,
-      r'(?i)^(?:[a-z][a-z0-9+.-]*:)?(?://)?[^/?#]*/v1/st(?:[/?#]|$)'
-    ),
+    -- The regex checks the path, part by part:
+    --   (?i)            match case-insensitively
+    --   ^               anchor at the start of reporting_url
+    --   (?:[^/?#]*//)?  optional "scheme://" prefix, absent on a bare host
+    --   [^/?#]*         the host; cannot contain / ? or #, so /v1/st below has
+    --                   to be the first path segment, not /something/v1/st
+    --   /v1/st          the literal endpoint path
+    --   (?:[/?#]|$)     boundary: end of string, or a sub-path, query string or
+    --                   fragment follows. /v1/st, /v1/st/extra and /v1/st?a=b
+    --                   all match; /v1/status does not
+    AND REGEXP_CONTAINS(reporting_url, r'(?i)^(?:[^/?#]*//)?[^/?#]*/v1/st(?:[/?#]|$)'),
     FALSE
   )
 );

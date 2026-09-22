@@ -1,0 +1,127 @@
+# This fixture feeds two CTEs at once: legacy_base_cte, for the parity counters and the
+# client dimensions, and clients_with_adblocker_addons_cte, for has_adblocker_addon. A
+# client with no row here gets FALSE from that second CTE's COALESCE, not NULL, which is
+# why client-sap and client-serp are absent from this file rather than present and empty.
+
+# KEPT on both counts. Its counters land on client-matched's existing key, so this is the
+# legacy arm of the three-sided row rather than a row of its own.
+# locale is the only one any side supplies, so it proves the coalesce reaches its third
+# argument -- the SERP and SAP rows both leave it null.
+# The content label's third segment is empty, which resolves to 'no_code' and so matches
+# the SERP empty string and the absent SAP extra on the same key. The withads and
+# adclicks labels are two-segment by design: they carry no partner code and take one by
+# rank-1 attribution.
+# addons_active_addons holds a blocking addon that is enabled, so this client is the one
+# row where has_adblocker_addon is TRUE.
+- submission_timestamp: "2026-08-13 11:00:00"
+  document_id: doc-metrics-matched
+  sample_id: 7
+  normalized_country_code: US
+  normalized_channel: release
+  normalized_os: Mac
+  normalized_os_version: 24.5.0
+  client_info:
+    client_id: client-matched
+    app_display_version: "141.0"
+    app_channel: release
+    locale: en-CA
+    os: Darwin
+    os_version: 24.5.0
+    windows_build_number: null
+    first_run_date: "2026-08-01+03:00"
+    distribution:
+      name: null
+  ping_info:
+    start_time: "2026-08-13T10:00:00+03:00"
+    end_time: "2026-08-13T11:00:00+03:00"
+    seq: 9
+    experiments: []
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy-matched
+      legacy_telemetry_profile_group_id: pg-matched
+    boolean:
+      policies_is_enterprise: false
+    string:
+      region_home_region: US
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 4
+    object:
+      addons_active_addons:
+        - id: blocker@example.com
+          userDisabled: false
+          appDisabled: false
+          blocklisted: false
+    labeled_counter:
+      browser_search_content_urlbar:
+        - key: "engine1:tagged:"
+          value: 5
+      browser_search_withads_urlbar:
+        - key: "engine1:tagged"
+          value: 3
+      browser_search_adclicks_urlbar:
+        - key: "engine1:tagged"
+          value: 2
+
+# KEPT, and published as a legacy-only row: no SERP impression and no SAP event carries
+# this key, so it reaches the output only because the legacy join is FULL OUTER.
+# This is the row that pins which columns stay NULL rather than zero-filling -- all six
+# of them: is_default_browser and sap_overridden_by_third_party, which the metrics ping
+# does not carry; serp_ad_click_target and serp_ad_blocker_inferred, SERP-only values
+# with nothing to zero-fill; and sap_provider_id and sap_provider_name, SAP-only. Every
+# serp_* count and sap_counts_total zero-fill on the same row, which is the contrast the
+# test exists to hold.
+# Its labels are organic rather than tagged, so the organic and tagged counters are not
+# the same numbers read twice.
+# addons_active_addons is absent, so has_adblocker_addon is FALSE by COALESCE.
+- submission_timestamp: "2026-08-13 12:00:00"
+  document_id: doc-metrics-legacy
+  sample_id: 3
+  normalized_country_code: JP
+  normalized_channel: release
+  normalized_os: Mac
+  normalized_os_version: 22.6.0
+  client_info:
+    client_id: client-legacy
+    app_display_version: "139.1.2"
+    app_channel: release
+    locale: ja
+    os: Darwin
+    os_version: 22.6.0
+    windows_build_number: null
+    first_run_date: "2026-06-01+09:00"
+    distribution:
+      name: null
+  ping_info:
+    start_time: "2026-08-13T06:00:00+09:00"
+    end_time: "2026-08-13T07:00:00+09:00"
+    seq: 4
+    experiments:
+      - key: exp-b
+        value:
+          branch: control
+          extra:
+            type: nimbus
+            enrollment_id: enr-2
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy-legacy
+      legacy_telemetry_profile_group_id: pg-legacy
+    boolean:
+      policies_is_enterprise: false
+    string:
+      region_home_region: JP
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 7
+    object:
+      addons_active_addons: null
+    labeled_counter:
+      browser_search_content_urlbar:
+        - key: "engine4:organic:"
+          value: 4
+      browser_search_withads_urlbar:
+        - key: "engine4:organic"
+          value: 2
+      browser_search_adclicks_urlbar:
+        - key: "engine4:organic"
+          value: 1

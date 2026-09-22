@@ -1,0 +1,116 @@
+# KEPT, and joins the SERP impression and the legacy counters into one three-sided row.
+# partner_code is absent from event_extra, so JSON_VALUE returns NULL and the COALESCE
+# resolves it to 'no_code' -- the same value the SERP side reaches from an empty string.
+# app_channel is the only channel any side supplies, so it proves the coalesce falls
+# through to SAP; locale is null here too, leaving it to the legacy arm.
+# experiments carries one enrollment, which the output publishes because the SERP array
+# is empty.
+- submission_timestamp: "2026-08-13 10:05:00"
+  event: sap.counts
+  event_id: evt-matched-1
+  event_timestamp: "2026-08-13 10:05:00"
+  document_id: doc-sap-matched
+  client_id: client-matched
+  legacy_telemetry_client_id: legacy-matched
+  profile_group_id: pg-matched
+  sample_id: 7
+  normalized_country_code: US
+  normalized_channel: release
+  normalized_os: Mac
+  normalized_os_version: 24.5.0
+  client_info:
+    app_display_version: "141.0"
+    app_channel: release
+    locale: null
+    os: Darwin
+    os_version: 24.5.0
+    windows_build_number: null
+    first_run_date: "2026-08-01+03:00"
+    distribution:
+      name: null
+  ping_info:
+    start_time: "2026-08-13T09:05:00+03:00"
+    end_time: "2026-08-13T10:05:00+03:00"
+    seq: 3
+  metrics:
+    boolean:
+      policies_is_enterprise: false
+    string:
+      region_home_region: US
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 4
+  event_extra:
+    provider_id: engine1
+    source: urlbar
+    overridden_by_third_party: true
+  experiments:
+    exp-a:
+      branch: treatment
+      extra:
+        type: nimbus
+        enrollment_id: enr-1
+
+# KEPT, and published as a sap-only row: no SERP impression and no metrics ping share
+# its key, so serp_counts_total and the seven legacy_* counters zero-fill while
+# serp_ad_click_target and serp_ad_blocker_inferred stay NULL.
+# provider_id is 'other' here, so the engine CASE falls to provider_name -- and both raw
+# extras publish, which is the pair B-5 checks for.
+# source is 'searchbar', a value needing no rewriting, so the hyphen REPLACE and the
+# abouthome/newtab rewrites stay out of this row's path.
+# experiments is NULL, which is what the generator emits for a ping carrying no
+# enrollments (events_stream_v1.query.sql:95-108). JSON_KEYS then yields no keys, so the
+# output array is empty rather than NULL.
+- &sap_only
+  submission_timestamp: "2026-08-13 08:30:00"
+  event: sap.counts
+  event_id: evt-sap-1
+  event_timestamp: "2026-08-13 08:30:00"
+  document_id: doc-sap-only
+  client_id: client-sap
+  legacy_telemetry_client_id: legacy-sap
+  profile_group_id: pg-sap
+  sample_id: 11
+  normalized_country_code: DE
+  normalized_channel: beta
+  normalized_os: Linux
+  normalized_os_version: 6.1.0
+  client_info:
+    app_display_version: "139.1.2"
+    app_channel: beta
+    locale: de
+    os: Linux
+    os_version: 6.1.0
+    windows_build_number: null
+    first_run_date: "2026-07-30-05:00"
+    distribution:
+      name: mozilla
+  ping_info:
+    start_time: "2026-08-13T08:00:00-05:00"
+    end_time: "2026-08-13T09:00:00-05:00"
+    seq: 2
+  metrics:
+    boolean:
+      policies_is_enterprise: true
+    string:
+      region_home_region: DE
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 9
+  event_extra:
+    provider_id: other
+    provider_name: engine2-xyz
+    partner_code: sapcode
+    source: searchbar
+  experiments: null
+
+# NOT KEPT. Identical to the row above except for the event, which is the point:
+# sap_base_cte filters on event = 'sap.counts', so this impression event is excluded.
+# Its extras name a different engine and access point, so if the filter ever stopped
+# applying this would surface as an extra output row rather than as a changed value.
+- <<: *sap_only
+  event: serp.impression
+  event_id: evt-sap-2
+  event_timestamp: "2026-08-13 08:31:00"
+  event_extra:
+    provider_id: engine2
+    partner_code: sapcode
+    source: urlbar

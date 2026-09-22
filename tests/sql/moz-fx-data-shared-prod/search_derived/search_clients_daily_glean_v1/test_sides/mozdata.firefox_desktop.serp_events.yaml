@@ -1,0 +1,188 @@
+# event_timestamp is INTEGER here, matching serp_events_v2's schema.yaml -- not the
+# TIMESTAMP the SAP side carries. The values only have to order the rows within a key.
+# ad_components carries the eight fields the view builds; the query reads .component and
+# nothing else, but the rest are filled consistently with each row's num_ads_* totals so
+# a reader is not misled about where those come from.
+
+# KEPT, and published as its own output row. The only impression for client-matched, on
+# a key the SAP event and the legacy counters also carry, so it is the three-sided case.
+# partner_code is the empty string here and absent on the SAP side; both resolve to
+# 'no_code', which is what lets the two sides join at all.
+# channel and locale are null so the coalesce has to fall through to SAP and to legacy.
+# experiments is empty rather than absent: the join's IF must read an empty array as "no
+# enrollments recorded" and take the SAP array instead of this one.
+# Deliberately not sharing the anchor below -- it is a different client with different
+# dimensions, and spreading them would hide that.
+- submission_date: "2026-08-13"
+  glean_client_id: client-matched
+  legacy_telemetry_client_id: legacy-matched
+  profile_group_id: pg-matched
+  sample_id: 7
+  document_id: doc-serp-matched
+  impression_id: imp-matched-1
+  event_timestamp: 1000
+  search_engine: engine1
+  partner_code: ""
+  sap_source: urlbar
+  is_tagged: true
+  normalized_country_code: US
+  browser_version_info:
+    version: "141.0"
+    major_version: 141
+    minor_version: 0
+    patch_revision: 0
+    is_major_release: true
+  channel: null
+  normalized_channel: release
+  locale: null
+  os: Darwin
+  normalized_os: Mac
+  os_version: 24.5.0
+  normalized_os_version: 24.5.0
+  first_run_date: "2026-08-01+03:00"
+  region_home_region: US
+  usage_is_default_browser: true
+  search_engine_default_display_name: Engine One
+  subsession_start_time: "2026-08-13T09:00:00+03:00"
+  subsession_end_time: "2026-08-13T10:00:00+03:00"
+  subsession_counter: 3
+  policies_is_enterprise: false
+  browser_engagement_max_concurrent_tab_count: 4
+  experiments: []
+  ad_components:
+    - component: ad_carousel
+      num_loaded: 3
+      num_visible: 1
+      num_blocked: 0
+      num_notshowing: 1
+      num_clicks: 2
+      num_other_engagements: 0
+      blocker_inferred: false
+  ad_blocker_inferred: false
+  abandon_reason: null
+  num_ad_clicks: 2
+  num_non_ad_link_clicks: 1
+  num_other_engagements: 0
+  num_ads_loaded: 3
+  num_ads_visible: 1
+  num_ads_blocked: 0
+  num_ads_notshowing: 1
+
+# The next five rows are client-serp, all on one grain tuple, so they collapse into a
+# single output row. Everything they share is in the anchor: only the QUALIFY winner's
+# dimensions are published, so a difference between them would be discarded without the
+# test noticing, and holding them in one place is what makes that visible.
+# What each row overrides is its whole contribution to the aggregate.
+# This client has no SAP event and no metrics ping, which is what makes sap_provider_id,
+# sap_provider_name and sap_overridden_by_third_party NULL on its output row while
+# sap_counts_total and the seven legacy_* counters zero-fill.
+
+# AGGREGATED ONLY, not published as a row. Contributes abandonments_navigation_count 1,
+# one tagged search, and the one visible ad behind searches_with_ads_tagged_count.
+- &serp_base
+  submission_date: "2026-08-13"
+  glean_client_id: client-serp
+  legacy_telemetry_client_id: legacy-serp
+  profile_group_id: pg-serp
+  sample_id: 42
+  document_id: doc-serp-only
+  impression_id: imp-serp-1
+  event_timestamp: 7010
+  search_engine: engine3
+  partner_code: serpcode
+  sap_source: urlbar
+  is_tagged: true
+  normalized_country_code: FR
+  browser_version_info:
+    version: "140.2.1"
+    major_version: 140
+    minor_version: 2
+    patch_revision: 1
+    is_major_release: false
+  channel: release
+  normalized_channel: release
+  locale: fr
+  os: Darwin
+  normalized_os: Mac
+  os_version: 23.1.0
+  normalized_os_version: 23.1.0
+  first_run_date: "2026-08-10+00:00"
+  region_home_region: FR
+  usage_is_default_browser: false
+  subsession_start_time: "2026-08-13T07:00:00+00:00"
+  subsession_end_time: "2026-08-13T08:00:00+00:00"
+  subsession_counter: 5
+  policies_is_enterprise: false
+  browser_engagement_max_concurrent_tab_count: 2
+  experiments: []
+  ad_components:
+    - component: ad_carousel
+      num_loaded: 1
+      num_visible: 1
+      num_blocked: 0
+      num_notshowing: 0
+      num_clicks: 0
+      num_other_engagements: 0
+      blocker_inferred: true
+  ad_blocker_inferred: true
+  abandon_reason: navigation
+  num_ad_clicks: 0
+  num_non_ad_link_clicks: 0
+  num_other_engagements: 0
+  num_ads_loaded: 1
+  num_ads_visible: 1
+  num_ads_blocked: 0
+  num_ads_notshowing: 0
+
+# AGGREGATED ONLY. Contributes abandonments_tab_close_count 1 and a second tagged search,
+# this one with no ads visible, so it stays out of searches_with_ads_tagged_count.
+- <<: *serp_base
+  impression_id: imp-serp-2
+  event_timestamp: 7020
+  abandon_reason: tab_close
+  num_ads_visible: 0
+  ad_components: []
+
+# AGGREGATED ONLY. Contributes abandonments_window_close_count 1 and the first organic
+# search, which is what keeps searches_organic_count from being vacuously zero.
+- <<: *serp_base
+  impression_id: imp-serp-3
+  event_timestamp: 7030
+  is_tagged: false
+  abandon_reason: window_close
+  num_ads_visible: 0
+  ad_components: []
+
+# AGGREGATED ONLY. The empty string is abandoned with the reason absent, so it
+# contributes abandonments_reason_absent_count 1 -- the case a NULL check would miss,
+# since NULL on the matched row above means not abandoned at all. Also the organic
+# search with an ad visible, so searches_with_ads_organic_count is non-zero.
+- <<: *serp_base
+  impression_id: imp-serp-4
+  event_timestamp: 7040
+  is_tagged: false
+  abandon_reason: ""
+  ad_components: []
+
+# KEPT as the QUALIFY winner -- the highest event_timestamp of the five -- so this row
+# alone supplies client-serp's published dimensions. Also contributes
+# abandonments_other_count 1, since page_action is outside the enumerated vocabulary and
+# the catch-all must pick it up rather than drop it; the only ad clicks on this key; and
+# the highest tab count, so max_concurrent_tab_count_max is visibly an aggregate over the
+# five rather than the winner's own value.
+- <<: *serp_base
+  impression_id: imp-serp-5
+  event_timestamp: 7050
+  abandon_reason: page_action
+  browser_engagement_max_concurrent_tab_count: 6
+  num_ad_clicks: 3
+  num_ads_visible: 0
+  ad_components:
+    - component: ad_sitelink
+      num_loaded: 1
+      num_visible: 0
+      num_blocked: 0
+      num_notshowing: 0
+      num_clicks: 3
+      num_other_engagements: 0
+      blocker_inferred: true

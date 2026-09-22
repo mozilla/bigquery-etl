@@ -1,0 +1,17 @@
+[
+  {
+    "name": "addon_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "addon_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "blocks_monetization",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  }
+]

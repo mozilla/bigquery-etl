@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.ads_backend.events_stream`
 AS
 SELECT
-  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  event_id,
   * EXCEPT (event_id),
   STRUCT(STRUCT(JSON_VALUE(event_extra.flight_id) AS `flight_id`) AS `string`) AS extras
 FROM

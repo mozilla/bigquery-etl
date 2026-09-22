@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.burnham.events_stream`
 AS
 SELECT
-  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  event_id,
   * EXCEPT (event_id),
   STRUCT(
     STRUCT(LAX_BOOL(event_extra.sampled_in) AS `sampled_in`) AS `boolean`,

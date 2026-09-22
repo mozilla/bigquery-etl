@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.moz_backstage.events_stream`
 AS
 SELECT
-  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  event_id,
   * EXCEPT (event_id),
   STRUCT(
     STRUCT(LAX_INT64(event_extra.time_saved) AS `time_saved`) AS `quantity`,

@@ -59,7 +59,7 @@ WITH events_stream_union AS (
     `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.events_stream_v1` AS e
 )
 SELECT
-  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  event_id,
   * EXCEPT (event_id),
   STRUCT(
     STRUCT(

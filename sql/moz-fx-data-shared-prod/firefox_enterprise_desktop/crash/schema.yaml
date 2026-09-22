@@ -638,7 +638,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Type of the process that crashed, the possible values are defined
-        in GeckoProcessTypes.h.
+        in GeckoProcessTypes.inc.
     - name: crash_product_id
       type: STRING
       mode: NULLABLE

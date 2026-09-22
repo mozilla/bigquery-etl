@@ -421,7 +421,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Type of the process that crashed, the possible values are defined
-        in GeckoProcessTypes.h.
+        in GeckoProcessTypes.inc.
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE

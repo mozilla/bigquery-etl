@@ -510,17 +510,19 @@ fields:
     - name: newtab_page_layout_variant
       type: STRING
       mode: NULLABLE
-      description: 'The name of the newtab page layout variant the client is assigned,
+      description: The name of the newtab page layout variant the client is assigned,
         for layout experimentation. One of nova-full-width, side-by-side-content-lead,
         side-by-side-widgets-lead, side-by-side-content-lead-five, side-by-side-widgets-lead-five,
-        spaces-buttons-top or spaces-buttons-bottom. The -five variants reach five
-        card columns counting the widgets column, the others four. The spaces variants
-        split the band into separately-navigable panels and differ only in where the
-        segmented control sits. Reports the assigned variant whether or not the page
-        can currently render it, and covers variants set by pref as well as by a Nimbus
-        train-hop configuration.
-
-        '
+        spaces-buttons-top, spaces-buttons-bottom, spaces-thematic-v1, auto-minimize-widgets
+        or widgets-ad-large. The -five variants reach five card columns counting the
+        widgets column, the others four. The spaces variants split the band into separately-navigable
+        panels; the buttons- ones differ only in where the segmented control sits,
+        while spaces-thematic-v1 names its panels for interests and puts the side-by-side
+        pair inside each one. The auto-minimize-widgets variant collapses the widgets
+        section to its title row shortly after load. The widgets-ad-large variant
+        puts a large sponsored card at the end of the first widget row. At one card
+        column it sits second instead. Reports the assigned variant whether or not
+        the page can currently render it, and covers variants set by pref as we
   - name: uuid
     type: RECORD
     mode: NULLABLE

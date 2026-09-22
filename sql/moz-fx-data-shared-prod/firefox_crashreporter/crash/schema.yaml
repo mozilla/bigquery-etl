@@ -599,7 +599,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Type of the process that crashed, the possible values are defined
-        in GeckoProcessTypes.h.
+        in GeckoProcessTypes.inc.
     - name: crash_profiler_child_shutdown_phase
       type: STRING
       mode: NULLABLE

@@ -6,7 +6,6 @@ SELECT
   "org_mozilla_klar" AS normalized_app_id,
   normalized_channel,
   additional_properties,
-  client_info,
   document_id,
   events,
   metadata,
@@ -24,12 +23,8 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_klar.page_extractor`

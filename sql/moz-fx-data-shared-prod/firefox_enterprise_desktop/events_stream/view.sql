@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_enterprise_desktop.events_stream`
 AS
 SELECT
-  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  event_id,
   * EXCEPT (event_id),
   STRUCT(
     STRUCT(
@@ -163,6 +163,7 @@ SELECT
       LAX_BOOL(event_extra.webVTTSubtitles) AS `webVTTSubtitles`
     ) AS `boolean`,
     STRUCT(
+      LAX_INT64(event_extra.active_age) AS `active_age`,
       LAX_INT64(event_extra.ads_hidden) AS `ads_hidden`,
       LAX_INT64(event_extra.ads_loaded) AS `ads_loaded`,
       LAX_INT64(event_extra.ads_visible) AS `ads_visible`,

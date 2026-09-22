@@ -1,6 +1,7 @@
 """Tests for newtab_merino_hour_propensity_v1 query.py (UTC-hour weights)."""
 
 import importlib.util
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -51,9 +52,9 @@ def _hist(rows):
     )
 
 
-def _flat_hist(country, ctr_by_hour, impressions=1_000_000, position_mult=1.0):
+def _flat_hist(country, ctr_by_hour, impressions=1_000_000):
     """A full 24-hour history for one country with the given per-hour CTRs."""
-    adjusted = impressions * position_mult
+    adjusted = float(impressions)
     return _hist(
         [
             (country, hour, impressions, adjusted, round(adjusted * ctr))
@@ -250,6 +251,50 @@ def test_compute_all_countries_breaks_out_only_high_volume():
     # Every emitted weight must be finite and positive.
     assert np.isfinite(result["weight"]).all()
     assert (result["weight"] > 0).all()
+
+
+class _FakeQueryJob:
+    def __init__(self, frame):
+        self._frame = frame
+
+    def to_dataframe(self):
+        return self._frame
+
+
+class _FakeClient:
+    """Stands in for bigquery.Client, returning a canned exposure frame."""
+
+    def __init__(self, frame):
+        self._frame = frame
+
+    def query(self, sql, job_config=None):
+        return _FakeQueryJob(self._frame)
+
+
+def _fetched_frame(position_snapshot_date):
+    frame = _flat_hist("GB", {hour: 0.005 for hour in range(24)})
+    frame["position_snapshot_date"] = position_snapshot_date
+    return frame
+
+
+def test_fetch_refuses_to_fit_on_unadjusted_exposure():
+    """No resolved position weights means adjusted_impressions is really raw."""
+    client = _FakeClient(_fetched_frame(None))
+    with pytest.raises(ValueError, match="position propensity weights"):
+        query_mod.fetch_hourly_exposure(client, date(2026, 9, 21), 14)
+
+
+def test_fetch_drops_the_snapshot_column_once_validated():
+    client = _FakeClient(_fetched_frame(date(2026, 9, 20)))
+    out = query_mod.fetch_hourly_exposure(client, date(2026, 9, 21), 14)
+    assert "position_snapshot_date" not in out.columns
+    assert len(out) == 24
+
+
+def test_fetch_raises_on_an_empty_window():
+    empty = _flat_hist("GB", {}).assign(position_snapshot_date=None)
+    with pytest.raises(ValueError, match="No newtab impressions"):
+        query_mod.fetch_hourly_exposure(_FakeClient(empty), date(2026, 9, 21), 14)
 
 
 def test_compute_all_countries_raises_without_a_global_set():

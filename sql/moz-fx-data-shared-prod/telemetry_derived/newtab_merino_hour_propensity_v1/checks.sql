@@ -16,20 +16,46 @@
 
 #fail
 {{ is_unique(["country", "hour"], "snapshot_date = @snapshot_date") }}
--- Every emitted set, global and per-country alike, must cover all 24 hours. There is no
--- cross-country fallback for this weight (a UTC-hour curve does not transfer between
--- regions), so a country with a partial set silently loses the adjustment for the missing
--- hours rather than borrowing one.
+-- The global (country IS NULL) set must cover all 24 hours. Consumers have no
+-- cross-country fallback for this weight -- a UTC-hour curve does not transfer between
+-- regions -- so the global set is the only one that is unrecoverable if incomplete.
 
 #fail
-WITH hours_per_set AS (
+WITH global_hours AS (
   SELECT
-    COALESCE(country, 'GLOBAL') AS country,
     COUNT(DISTINCT `hour`) AS hours
   FROM
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     snapshot_date = @snapshot_date
+    AND country IS NULL
+)
+SELECT
+  IF(
+    (SELECT hours FROM global_hours) <> 24,
+    ERROR(
+      CONCAT(
+        "Expected 24 global (country IS NULL) hour rows for this snapshot_date, found ",
+        CAST((SELECT hours FROM global_hours) AS STRING)
+      )
+    ),
+    NULL
+  );
+
+-- A per-country set may legitimately be short: query.py drops any hour cell below
+-- MIN_CELL_IMPRESSIONS or with no clicks, and consumers leave those hours unadjusted.
+-- So this warns rather than fails -- a partial country set is degraded, not broken.
+
+#warn
+WITH hours_per_country AS (
+  SELECT
+    country,
+    COUNT(DISTINCT `hour`) AS hours
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    snapshot_date = @snapshot_date
+    AND country IS NOT NULL
   GROUP BY
     country
 ),
@@ -37,24 +63,20 @@ offenders AS (
   SELECT
     CONCAT(country, '=', CAST(hours AS STRING)) AS detail
   FROM
-    hours_per_set
+    hours_per_country
   WHERE
     hours <> 24
 )
 SELECT
   IF(
-    (SELECT COUNTIF(country = 'GLOBAL') FROM hours_per_set) = 0,
-    ERROR("No global (country IS NULL) hour rows for this snapshot_date"),
-    IF(
-      (SELECT COUNT(*) FROM offenders) > 0,
-      ERROR(
-        CONCAT(
-          "Expected 24 hours per emitted set, got: ",
-          (SELECT ARRAY_TO_STRING(ARRAY_AGG(detail ORDER BY detail), ", ") FROM offenders)
-        )
-      ),
-      NULL
-    )
+    (SELECT COUNT(*) FROM offenders) > 0,
+    ERROR(
+      CONCAT(
+        "Country sets with fewer than 24 hours: ",
+        (SELECT ARRAY_TO_STRING(ARRAY_AGG(detail ORDER BY detail), ", ") FROM offenders)
+      )
+    ),
+    NULL
   );
 
 -- Normalization contract: dividing exposure by these weights must conserve total

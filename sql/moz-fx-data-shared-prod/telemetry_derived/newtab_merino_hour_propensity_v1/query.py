@@ -186,7 +186,8 @@ position_weights AS (
     country,
     SAFE_CAST(position AS INT64) AS position,
     tile_format,
-    weight
+    weight,
+    snapshot_date AS position_snapshot_date
   FROM `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v2`
   WHERE layout = @layout
     AND section_position IS NULL
@@ -257,7 +258,11 @@ SELECT
   hour,
   SUM(impressions) AS impressions,
   SUM(adjusted_impressions) AS adjusted_impressions,
-  SUM(clicks) AS clicks
+  SUM(clicks) AS clicks,
+  -- Which position weights actually resolved. NULL means none did, in which case every
+  -- COALESCE above fell through to 1.0 and adjusted_impressions is really raw
+  -- impressions; fetch_hourly_exposure refuses to continue on that.
+  (SELECT MAX(position_snapshot_date) FROM position_weights) AS position_snapshot_date
 FROM combined_events
 GROUP BY
   country,
@@ -294,7 +299,31 @@ def fetch_hourly_exposure(client, run_date, lookback_days):
     )
     df = client.query(HOURLY_EXPOSURE_SQL, job_config=job_config).to_dataframe()
     log.info(f"Fetched {len(df):,} (country, hour) rows")
-    return df
+
+    if df.empty:
+        raise ValueError(
+            f"No newtab impressions found for {window_start} through {run_date}."
+        )
+
+    # Fail rather than silently fit on unadjusted exposure. When no position weights
+    # resolve, every COALESCE in the query falls through to 1.0 and the hour weights
+    # quietly absorb whatever position/format bias varies by hour -- the exact
+    # contamination this job exists to avoid -- while still emitting a full, plausible
+    # 24-hour set that every check in checks.sql passes. The scheduled path is protected
+    # by the Airflow dependency on the position job; a backfill is not, and
+    # newtab_merino_propensity_v2 only has history from 2026-06-01.
+    resolved = df["position_snapshot_date"].dropna().unique()
+    if len(resolved) == 0:
+        raise ValueError(
+            "No position propensity weights resolved for layout "
+            f"{LAYOUT!r} in newtab_merino_propensity_v2 within "
+            f"{PROPENSITY_SNAPSHOT_LOOKBACK_DAYS} days of {run_date}. Refusing to fit "
+            "hour weights on unadjusted exposure. Check that the position job has run, "
+            "and note that it only has history from 2026-06-01."
+        )
+    log.info(f"Position weights resolved from snapshot_date={resolved[0]}")
+
+    return df.drop(columns=["position_snapshot_date"])
 
 
 def normalize_weights(weights):

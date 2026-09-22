@@ -1,7 +1,6 @@
 -- Query for search_derived.search_clients_daily_glean_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
--- the date portion of a client-local timestamp string. Every value it reads carries a trailing
+--
+-- local_date_of returns the date portion of a client-local timestamp string. Every value it reads carries a trailing
 -- offset, so the date is its first ten characters. Converting to UTC would shift it a day for
 -- part of the world, which would publish a profile_creation_date one day before the client's own
 -- first run. Parsing no time also absorbs the shapes that carry no seconds component.
@@ -9,13 +8,14 @@ CREATE TEMP FUNCTION local_date_of(ts STRING) AS (
   SAFE.PARSE_DATE('%F', SUBSTR(ts, 1, 10))
 );
 
--- legacy_parity_counters_cte
--- The v8-comparable counters, read from the same metrics ping partition
--- clients_with_adblocker_addons_cte already scans. What they measure, and how they compare
--- to v8 and to the SERP-derived columns, is in the README.
+-- The legacy block, legacy_base_cte through legacy_parity_counters_cte. The v8-comparable
+-- counters, read from the same metrics ping partition clients_with_adblocker_addons_cte
+-- already scans. Each column's description in schema.yaml says what it measures and which
+-- v8 and SERP columns it corresponds to.
 --
--- The three families are UNPIVOTed into one long row set keyed by access point so the
--- 17 columns per family do not become 51 near-identical UNNESTs.
+-- legacy_base_cte collects the three families into one array of (access_point, family,
+-- counters) structs, which legacy_exploded_cte unnests into one long row set keyed by access
+-- point, so the 17 counters per family do not become 51 near-identical UNNESTs.
 WITH legacy_base_cte AS (
   SELECT
     client_info.client_id,
@@ -329,7 +329,7 @@ legacy_content_agg_cte AS (
     search_access_point,
     SUM(IF(tag_type = 'tagged', n, 0)) AS legacy_searches_tagged_non_follow_on_sum,
     SUM(IF(tag_type = 'tagged-follow-on', n, 0)) AS legacy_searches_tagged_follow_on_sum,
-    -- known gap against v8, documented in the README
+    -- runs below v8's organic column by a margin that is not yet root-caused
     SUM(IF(tag_type = 'organic', n, 0)) AS legacy_searches_organic_sum,
     SUM(n) AS content_volume
   FROM
@@ -462,7 +462,7 @@ adblocker_addons_cte AS (
   WHERE
     blocks_monetization
 ),
--- this table is the new glean adblocker addons metric ping (used to be legacy telemetry)
+-- the adblocker add-ons a client had enabled, from the Glean metrics ping
 clients_with_adblocker_addons_cte AS (
   SELECT
     client_info.client_id,
@@ -488,9 +488,9 @@ clients_with_adblocker_addons_cte AS (
 -- LEFT JOIN in both cases, so a counter key survives even where the client has no metrics-ping
 -- row to describe it: the counters are the reason these rows exist and must not be dropped for
 -- want of a dimension. Same shape as the two _is_enterprise_cte joins.
--- is_default_browser and overridden_by_third_party are absent by necessity rather than oversight:
--- usage.is_default_browser is not sent in the metrics ping, and overridden_by_third_party is a
--- per-search event extra with no meaning at client-day grain.
+-- is_default_browser and overridden_by_third_party stay absent here: usage.is_default_browser
+-- comes from the events ping, and overridden_by_third_party is a per-search event extra, which
+-- has no value at the client-day grain this CTE works at.
 legacy_parity_counters_cte AS (
   SELECT
     legacy_counters_agg_cte.*,
@@ -523,11 +523,11 @@ sap_base_cte AS (
       ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
           JSON_VALUE(event_extra.provider_id)
         )
-    END AS normalized_engine, -- this is "engine" in v8
+    END AS normalized_engine,
     -- the two raw extras behind normalized_engine, kept so consumers can see what the engine
-    -- CASE collapsed. prefixed here rather than at the join, unlike the README convention:
-    -- by join_sources_cte provider_id already means the SERP normalized engine, so an
-    -- unprefixed sap provider_id would collide with it
+    -- CASE collapsed. prefixed here, where every other side-only column takes its prefix at
+    -- the join: by join_sources_cte provider_id already means the SERP normalized engine, so
+    -- an unprefixed sap provider_id would collide with it
     JSON_VALUE(event_extra.provider_id) AS sap_provider_id,
     JSON_VALUE(event_extra.provider_name) AS sap_provider_name,
     -- partner_code is a grain key, so it must never be NULL: an absent JSON key and an
@@ -543,7 +543,7 @@ sap_base_cte AS (
     -- computed once here because a SELECT cannot reference an alias from its own list, so
     -- reading four fields off it downstream would otherwise mean four calls per row. this also
     -- matches the SERP side, where serp_events_v2 stores the struct under the same name
-    mozfun.norm.browser_version_info(client_info.app_display_version) AS browser_version_info,
+    mozfun.norm.browser_version_info(client_info.app_display_version) AS browser_version_info
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
@@ -551,7 +551,8 @@ sap_base_cte AS (
     AND event = 'sap.counts'
 ),
 sap_is_enterprise_cte AS (
-    -- we still need this because of document_id is not null
+    -- separate from the other CTEs on this side because the document_id filter below
+    -- narrows the row set
   SELECT
     client_id,
     submission_date,
@@ -582,7 +583,7 @@ sap_events_with_client_info_cte AS (
     source,
     sample_id,
     profile_group_id,
-    legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
+    legacy_telemetry_client_id, -- carried so a row can be joined to legacy telemetry tables
     normalized_country_code AS country,
     browser_version_info.version AS app_version,
     browser_version_info.major_version AS app_major_version,
@@ -664,7 +665,7 @@ sap_events_with_client_info_cte AS (
     ) AS experiments
   FROM
     sap_base_cte
-    -- this is to get the last instance
+    -- keep the latest event per grain key
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -717,7 +718,6 @@ sap_aggregates_cte AS (
     normalized_engine,
     partner_code,
     source
-    -- search_access_point
 ),
 sap_final_cte AS (
   SELECT
@@ -729,7 +729,6 @@ sap_final_cte AS (
   LEFT JOIN
     sap_aggregates_cte
     USING (client_id, submission_date, normalized_engine, partner_code, source)
-    -- using(client_id, submission_date, normalized_engine, partner_code, search_access_point) -- rename
 ),
 -- the SERP row set with the three grain keys resolved once. every SERP CTE below reads this
 -- rather than the source, so the keys have a single definition and the join keys cannot drift.
@@ -742,22 +741,21 @@ serp_base_cte AS (
   SELECT
     * EXCEPT (glean_client_id, partner_code, sap_source),
     glean_client_id AS client_id,
-    `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(
-      search_engine
-    ) AS provider_id, -- this is engine
+    `moz-fx-data-shared-prod.udf.normalize_search_engine_glean`(search_engine) AS provider_id,
     -- partner_code is a grain key, so it must never be NULL: an absent map key and an
     -- empty string both become 'no_code' so equality joins match rather than silently missing
     COALESCE(NULLIF(partner_code, ''), 'no_code') AS partner_code,
     -- lowered because serp_events emits 'follow_on_from_refine_on_SERP', the one
     -- mixed-case value in an otherwise lowercase vocabulary
-    LOWER(sap_source) AS search_access_point,
+    LOWER(sap_source) AS search_access_point
   FROM
     `mozdata.firefox_desktop.serp_events`
   WHERE
     submission_date = @submission_date
 ),
 serp_is_enterprise_cte AS (
-    -- we still need this because of document_id is not null
+    -- separate from the other CTEs on this side because the document_id filter below
+    -- narrows the row set
   SELECT
     client_id,
     submission_date,
@@ -833,7 +831,6 @@ serp_events_with_client_info_cte AS (
     ) = 1
 ),
 serp_events_clients_ad_enterprise_cte AS (
-    -- serp_events_clients_ad_enterprise_cte
   SELECT
     serp_events_with_client_info_cte.*,
     -- match v8: clients with no adblocker addon are FALSE, not NULL
@@ -1273,10 +1270,10 @@ final_cte AS (
   SELECT
     submission_date,
     client_id,
-    legacy_telemetry_client_id, -- NEW
+    legacy_telemetry_client_id,
     provider_id AS normalized_engine,
     search_access_point AS source,
-    partner_code, -- NEW
+    partner_code,
     country,
     -- neither serp_events nor the metrics ping populates normalized_app_name, and the SAP side's
     -- normalization returns one value for every row, so the literal is the whole of what this
@@ -1287,34 +1284,34 @@ final_cte AS (
     app_major_version,
     app_minor_version,
     app_patch_revision,
-    windows_build_number, -- NEW
+    windows_build_number,
     distribution_id,
     locale,
     region_home_region AS home_region,
     os,
-    normalized_os, -- NEW
+    normalized_os,
     os_version,
-    normalized_os_version, -- NEW
+    normalized_os_version,
     channel,
-    normalized_channel, -- NEW
+    normalized_channel,
     usage_is_default_browser AS is_default_browser,
     profile_creation_date,
     default_search_engine_display_name,
     default_search_engine_load_path AS default_search_engine_data_load_path,
     default_search_engine_submission_url AS default_search_engine_data_submission_url,
-    default_search_engine_partner_code, -- NEW
-    default_search_engine_provider_id, -- NEW
-    default_search_engine_overridden, -- NEW
+    default_search_engine_partner_code,
+    default_search_engine_provider_id,
+    default_search_engine_overridden,
     default_private_search_engine_display_name,
     default_private_search_engine_load_path AS default_private_search_engine_data_load_path,
     default_private_search_engine_submission_url AS default_private_search_engine_data_submission_url,
-    default_private_search_engine_partner_code, -- NEW
-    default_private_search_engine_provider_id, -- NEW
-    default_private_search_engine_overridden, -- NEW
+    default_private_search_engine_partner_code,
+    default_private_search_engine_provider_id,
+    default_private_search_engine_overridden,
     sample_id,
-    ping_start_time, -- NEW
-    ping_end_time, -- NEW
-    ping_seq, -- NEW
+    ping_start_time,
+    ping_end_time,
+    ping_seq,
     max_concurrent_tab_count_max,
     experiments,
     -- days from the first run to the day this row reports into, derived from the
@@ -1334,17 +1331,17 @@ final_cte AS (
     serp_searches_with_ads_tagged_count,
     serp_searches_with_ads_organic_count,
     serp_ad_blocker_inferred,
-    serp_non_ad_link_clicks_sum, -- NEW
-    serp_other_engagements_sum, -- NEW
-    serp_ads_loaded_sum, -- NEW
-    serp_ads_visible_sum, -- NEW
-    serp_ads_blocked_sum, -- NEW
-    serp_ads_notshowing_sum, -- NEW
-    serp_abandonments_navigation_count, -- NEW
-    serp_abandonments_tab_close_count, -- NEW
-    serp_abandonments_window_close_count, -- NEW
-    serp_abandonments_reason_absent_count, -- NEW
-    serp_abandonments_other_count, -- NEW
+    serp_non_ad_link_clicks_sum,
+    serp_other_engagements_sum,
+    serp_ads_loaded_sum,
+    serp_ads_visible_sum,
+    serp_ads_blocked_sum,
+    serp_ads_notshowing_sum,
+    serp_abandonments_navigation_count,
+    serp_abandonments_tab_close_count,
+    serp_abandonments_window_close_count,
+    serp_abandonments_reason_absent_count,
+    serp_abandonments_other_count,
     has_adblocker_addon,
     policies_is_enterprise,
     -- keep these after the coalesce, so they read the same os, os_version and
@@ -1361,16 +1358,16 @@ final_cte AS (
       ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
     END AS os_version_minor,
     profile_group_id,
-    sap_provider_id, -- NEW
-    sap_provider_name, -- NEW
-    sap_overridden_by_third_party, -- NEW
-    legacy_searches_tagged_non_follow_on_sum, -- NEW
-    legacy_searches_tagged_follow_on_sum, -- NEW
-    legacy_searches_organic_sum, -- NEW
-    legacy_searches_with_ads_tagged_sum, -- NEW
-    legacy_searches_with_ads_organic_sum, -- NEW
-    legacy_ad_clicks_tagged_sum, -- NEW
-    legacy_ad_clicks_organic_sum -- NEW
+    sap_provider_id,
+    sap_provider_name,
+    sap_overridden_by_third_party,
+    legacy_searches_tagged_non_follow_on_sum,
+    legacy_searches_tagged_follow_on_sum,
+    legacy_searches_organic_sum,
+    legacy_searches_with_ads_tagged_sum,
+    legacy_searches_with_ads_organic_sum,
+    legacy_ad_clicks_tagged_sum,
+    legacy_ad_clicks_organic_sum
   FROM
     join_sources_cte
 )

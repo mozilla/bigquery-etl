@@ -452,8 +452,8 @@ fields:
     excluding follow-on searches, which the counter labels as a separate tag type and
     legacy_searches_tagged_follow_on_sum carries. The two ads families do not make that
     split and include follow-on. Zero, not null, where the metrics ping carried nothing
-    for this key. See the README's legacy parity counters section for how this compares
-    to v8 and to serp_searches_tagged_count, which includes follow-on.
+    for this key. It is the counterpart of v8's tagged_sap; serp_searches_tagged_count
+    measures the same searches from SERP impressions and includes follow-on.
 - name: legacy_searches_tagged_follow_on_sum
   type: INTEGER
   mode: NULLABLE
@@ -464,8 +464,8 @@ fields:
   mode: NULLABLE
   description: Organic, meaning non-partner, in-content searches from the browser.search.content
     Glean labeled counter. Runs below v8's organic column by a margin that is not yet
-    root-caused - see the README's legacy parity counters section before using it for
-    organic levels. Zero, not null, where the metrics ping carried nothing for this key.
+    root-caused, so prefer v8 for organic levels. Zero, not null, where the metrics ping
+    carried nothing for this key.
 - name: legacy_searches_with_ads_tagged_sum
   type: INTEGER
   mode: NULLABLE

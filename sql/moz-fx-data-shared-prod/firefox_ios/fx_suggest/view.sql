@@ -31,8 +31,7 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -41,9 +40,6 @@ SELECT
   ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefox.fx_suggest`
@@ -52,7 +48,37 @@ SELECT
   "org_mozilla_ios_firefoxbeta" AS normalized_app_id,
   "beta" AS normalized_channel,
   additional_properties,
-  client_info,
+  CAST(
+    NULL
+    AS
+      STRUCT<
+        `android_sdk_version` STRING,
+        `app_build` STRING,
+        `app_channel` STRING,
+        `app_display_version` STRING,
+        `architecture` STRING,
+        `build_date` STRING,
+        `client_id` STRING,
+        `device_manufacturer` STRING,
+        `device_model` STRING,
+        `first_run_date` STRING,
+        `locale` STRING,
+        `os` STRING,
+        `os_version` STRING,
+        `telemetry_sdk_build` STRING,
+        `windows_build_number` INTEGER,
+        `session_count` INTEGER,
+        `session_id` STRING,
+        `attribution` STRUCT<
+          `campaign` STRING,
+          `content` STRING,
+          `medium` STRING,
+          `source` STRING,
+          `term` STRING
+        >,
+        `distribution` STRUCT<`name` STRING>
+      >
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -77,19 +103,37 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  CAST(
+    NULL
+    AS
+      STRUCT<
+        `end_time` STRING,
+        `experiments` ARRAY<
+          STRUCT<
+            `key` STRING,
+            `value` STRUCT<`branch` STRING, `extra` STRUCT<`enrollment_id` STRING, `type` STRING>>
+          >
+        >,
+        `ping_type` STRING,
+        `reason` STRING,
+        `seq` INTEGER,
+        `start_time` STRING,
+        `server_knobs_config` STRUCT<
+          `event_threshold` INTEGER,
+          `metrics_enabled` ARRAY<STRUCT<`key` STRING, `value` BOOLEAN>>,
+          `pings_enabled` ARRAY<STRUCT<`key` STRING, `value` BOOLEAN>>,
+          `session_sample_rate` FLOAT64
+        >
+      >
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.fx_suggest`
@@ -98,7 +142,37 @@ SELECT
   "org_mozilla_ios_fennec" AS normalized_app_id,
   "nightly" AS normalized_channel,
   additional_properties,
-  client_info,
+  CAST(
+    NULL
+    AS
+      STRUCT<
+        `android_sdk_version` STRING,
+        `app_build` STRING,
+        `app_channel` STRING,
+        `app_display_version` STRING,
+        `architecture` STRING,
+        `build_date` STRING,
+        `client_id` STRING,
+        `device_manufacturer` STRING,
+        `device_model` STRING,
+        `first_run_date` STRING,
+        `locale` STRING,
+        `os` STRING,
+        `os_version` STRING,
+        `telemetry_sdk_build` STRING,
+        `windows_build_number` INTEGER,
+        `session_count` INTEGER,
+        `session_id` STRING,
+        `attribution` STRUCT<
+          `campaign` STRING,
+          `content` STRING,
+          `medium` STRING,
+          `source` STRING,
+          `term` STRING
+        >,
+        `distribution` STRUCT<`name` STRING>
+      >
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -123,19 +197,37 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  CAST(
+    NULL
+    AS
+      STRUCT<
+        `end_time` STRING,
+        `experiments` ARRAY<
+          STRUCT<
+            `key` STRING,
+            `value` STRUCT<`branch` STRING, `extra` STRUCT<`enrollment_id` STRING, `type` STRING>>
+          >
+        >,
+        `ping_type` STRING,
+        `reason` STRING,
+        `seq` INTEGER,
+        `start_time` STRING,
+        `server_knobs_config` STRUCT<
+          `event_threshold` INTEGER,
+          `metrics_enabled` ARRAY<STRUCT<`key` STRING, `value` BOOLEAN>>,
+          `pings_enabled` ARRAY<STRUCT<`key` STRING, `value` BOOLEAN>>,
+          `session_sample_rate` FLOAT64
+        >
+      >
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_fennec.fx_suggest`

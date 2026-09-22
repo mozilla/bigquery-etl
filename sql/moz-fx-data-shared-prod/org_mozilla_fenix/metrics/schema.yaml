@@ -26870,7 +26870,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
+      description: 'Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
+
+        '
     - name: places_manager_run_maintenance_optimize_time
       type: RECORD
       mode: NULLABLE
@@ -26911,7 +26913,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `PRAGMA optimize` inside `run_maintenance()`
+      description: 'Time taken to execute `PRAGMA optimize` inside `run_maintenance()`
+
+        '
     - name: places_manager_run_maintenance_prune_time
       type: RECORD
       mode: NULLABLE
@@ -26952,7 +26956,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `prune_older_visits()` inside `run_maintenance()`
+      description: 'Time taken to execute `prune_older_visits()` inside `run_maintenance()`
+
+        '
     - name: places_manager_run_maintenance_vacuum_time
       type: RECORD
       mode: NULLABLE
@@ -26993,7 +26999,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `VACUUM` inside `run_maintenance()`
+      description: 'Time taken to execute `VACUUM` inside `run_maintenance()`
+
+        '
     - name: cookie_banners_click_handle_duration
       type: RECORD
       mode: NULLABLE

@@ -35552,7 +35552,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
+      description: 'Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
+
+        '
     - name: places_manager_run_maintenance_optimize_time
       type: RECORD
       mode: NULLABLE
@@ -35570,7 +35572,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `PRAGMA optimize` inside `run_maintenance()`
+      description: 'Time taken to execute `PRAGMA optimize` inside `run_maintenance()`
+
+        '
     - name: places_manager_run_maintenance_prune_time
       type: RECORD
       mode: NULLABLE
@@ -35588,7 +35592,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `prune_older_visits()` inside `run_maintenance()`
+      description: 'Time taken to execute `prune_older_visits()` inside `run_maintenance()`
+
+        '
     - name: places_manager_run_maintenance_time
       type: RECORD
       mode: NULLABLE
@@ -35624,7 +35630,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: Time taken to execute `VACUUM` inside `run_maintenance()`
+      description: 'Time taken to execute `VACUUM` inside `run_maintenance()`
+
+        '
     - name: play_store_attribution_attribution_time
       type: RECORD
       mode: NULLABLE

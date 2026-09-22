@@ -30743,6 +30743,31 @@ fields:
         Updated during initialization and whenever the database changes.
 
         '
+    - name: smart_window_monitor_active_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of enabled monitors the user currently has. Set when the
+
+        monitor store is loaded at startup and after every create, edit,
+
+        pause, resume and delete, so each metrics ping carries the current
+
+        count.
+
+        '
+    - name: smart_window_monitor_paused_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of paused (disabled) monitors the user currently has. Set
+        when
+
+        the monitor store is loaded at startup and after every create, edit,
+
+        pause, resume and delete, so each metrics ping carries the current
+
+        count.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE

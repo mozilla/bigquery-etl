@@ -201,7 +201,6 @@ SELECT
       LAX_INT64(event_extra.number_of_logins_migrated) AS `number_of_logins_migrated`,
       LAX_INT64(event_extra.number_of_logins_quarantined) AS `number_of_logins_quarantined`,
       LAX_INT64(event_extra.number_of_logins_skipped) AS `number_of_logins_skipped`,
-      LAX_INT64(event_extra.number_of_logins_to_delete) AS `number_of_logins_to_delete`,
       LAX_INT64(event_extra.number_of_logins_to_migrate) AS `number_of_logins_to_migrate`,
       LAX_INT64(event_extra.number_of_logins_to_restore) AS `number_of_logins_to_restore`,
       LAX_INT64(event_extra.number_of_logins_updated) AS `number_of_logins_updated`,

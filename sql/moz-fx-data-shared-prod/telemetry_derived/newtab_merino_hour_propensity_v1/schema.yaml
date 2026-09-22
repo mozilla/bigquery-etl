@@ -1,0 +1,55 @@
+fields:
+- mode: NULLABLE
+  name: snapshot_date
+  type: DATE
+  description: The calendar date for which this hour propensity snapshot was computed.
+    The estimation window is a whole number of weeks ending on this date inclusive
+    (14 days by default).
+- mode: NULLABLE
+  name: snapshot_at
+  type: TIMESTAMP
+  description: UTC timestamp recording when this hour propensity snapshot was written
+    to BigQuery.
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: The ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'FR') derived
+    from the client's IP address or profile geography. Used for geographic segmentation
+    of telemetry data.
+- mode: NULLABLE
+  name: hour
+  type: INTEGER
+  description: Hour of the day (0-23) in UTC, taken from the submission timestamp
+    of the ping carrying the impression or click.
+- mode: NULLABLE
+  name: impressions
+  type: INTEGER
+  description: Raw number of impressions observed for this country and UTC hour over
+    the estimation window. Support for the weight, used to decide whether the cell
+    is emitted at all.
+- mode: NULLABLE
+  name: adjusted_impressions
+  type: FLOAT
+  description: Impressions for this country and UTC hour after dividing out the position
+    propensity weight from newtab_merino_propensity_v2. This is the exposure the hour
+    effect was estimated on, and the quantity the emitted weight is normalised to
+    conserve.
+- mode: NULLABLE
+  name: clicks
+  type: INTEGER
+  description: Number of clicks observed for this country and UTC hour over the estimation
+    window.
+- mode: NULLABLE
+  name: weight
+  type: FLOAT
+  description: Time-of-day propensity weight for this country and UTC hour, computed
+    as the inverse of the hour's position-adjusted CTR relative to the country's all-hours
+    CTR. Designed to be divided into exposure (adjusted_impressions / weight), applied
+    after the position weight. Normalised so that re-weighting preserves total adjusted
+    exposure, and therefore overall CTR, across the estimation window. Each country's
+    weights are estimated from that country's traffic alone, with no shrinkage toward
+    the global row - a UTC-hour curve is a local diurnal pattern shifted by the region's
+    offset from UTC, so it does not transfer between regions. The global (country
+    IS NULL) row is the weight for exposure pooled across all countries; it must not
+    be used as a fallback for a country that has no row of its own, which should be
+    left unadjusted instead.

@@ -259,7 +259,16 @@ SELECT
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size,
-      metrics.memory_distribution.glean_database_size
+      metrics.memory_distribution.glean_database_size,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `count` INTEGER,
+            `sum` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_db_size_after_maintenance`
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.app_last_opened_as_default_browser,
@@ -301,7 +310,82 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
       metrics.timing_distribution.ai_quick_answers_results_time,
       metrics.timing_distribution.google_lens_toolbar_button_search_time,
-      metrics.timing_distribution.google_lens_webpage_image_search_time
+      metrics.timing_distribution.google_lens_webpage_image_search_time,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_chk_pnt_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_optimize_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_prune_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_vacuum_time`
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -605,7 +689,8 @@ SELECT
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size,
-      metrics.memory_distribution.glean_database_size
+      metrics.memory_distribution.glean_database_size,
+      metrics.memory_distribution.places_manager_db_size_after_maintenance
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.app_last_opened_as_default_browser,
@@ -647,7 +732,12 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
       metrics.timing_distribution.ai_quick_answers_results_time,
       metrics.timing_distribution.google_lens_toolbar_button_search_time,
-      metrics.timing_distribution.google_lens_webpage_image_search_time
+      metrics.timing_distribution.google_lens_webpage_image_search_time,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time,
+      metrics.timing_distribution.places_manager_run_maintenance_time,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -951,7 +1041,16 @@ SELECT
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size,
-      metrics.memory_distribution.glean_database_size
+      metrics.memory_distribution.glean_database_size,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `count` INTEGER,
+            `sum` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_db_size_after_maintenance`
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.app_last_opened_as_default_browser,
@@ -993,7 +1092,82 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp,
       metrics.timing_distribution.ai_quick_answers_results_time,
       metrics.timing_distribution.google_lens_toolbar_button_search_time,
-      metrics.timing_distribution.google_lens_webpage_image_search_time
+      metrics.timing_distribution.google_lens_webpage_image_search_time,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_chk_pnt_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_optimize_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_prune_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_time`,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            `bucket_count` INTEGER,
+            `count` INTEGER,
+            `histogram_type` STRING,
+            `overflow` INTEGER,
+            `range` ARRAY<FLOAT64>,
+            `sum` INTEGER,
+            `time_unit` STRING,
+            `underflow` INTEGER,
+            `values` ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+          >
+      ) AS `places_manager_run_maintenance_vacuum_time`
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,

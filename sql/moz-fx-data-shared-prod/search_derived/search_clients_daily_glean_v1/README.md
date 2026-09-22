@@ -152,7 +152,7 @@ Because the join onto the SAP and SERP pipelines is a `left join`, a client that
 
 These are the eight `legacy_` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `search_access_point`** — the table's own output grain, which is why they join at `join_sources_cte` rather than into either pipeline.
 
-Comes from `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`, the same partition the adblocker CTE already scans. The column sets are disjoint, so this is a second scan and is billed as one.
+Comes from `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`, the same partition the adblocker CTE already scans. The two reads share no columns — that one takes `metrics.object.addons_active_addons`, this one the client dimensions and the 51 labeled counters — and BigQuery bills by column, so the bytes are additive. Reading the partition twice is not free just because it was already read once.
 
 They produce seven columns: `legacy_searches_tagged_non_follow_on_sum`, `legacy_searches_tagged_follow_on_sum`, `legacy_searches_organic_sum`, `legacy_searches_with_ads_tagged_sum`, `legacy_searches_with_ads_organic_sum`, `legacy_ad_clicks_tagged_sum` and `legacy_ad_clicks_organic_sum`. Each sums a labeled-counter value, so all seven take `_sum` rather than `_count`.
 
@@ -260,7 +260,7 @@ Each row represents the most recent search event for a specific client, on a spe
 
 - partitions events by `client_id`, `submission_date`, engine, `partner_code` and access point (`row_number()`)
 - lists the most recent event first (`order by event_timestamp desc`)
-- on the SERP side adds `impression_id` as a secondary sort key so ties are broken deterministically
+- adds a secondary sort key on both sides so ties are broken deterministically — `impression_id` on SERP, `event_id` on SAP
 - keeps only the most recent event (`qualify row_number() = 1`)
 
 #### Events with client, ad blocker and enterprise info
@@ -365,7 +365,7 @@ A few output columns are worth calling out.
 - `serp_follow_on_searches_tagged_count` either equals `serp_searches_tagged_count` or is zero, never anything between. The access point is part of the grain, so within a row either every impression was reached by refining a search from the results page or none was. Summing it beside `serp_searches_tagged_count` double-counts the follow-on rows.
 - `normalized_app_name` is the literal `'Firefox'`, set in `final_cte` rather than read from any side. Neither `serp_events` nor the metrics ping populates the column at all, and the SAP side's normalization returns one value for every row, so the literal is the whole of what it can say. It was previously coalesced across all three sides, which left it `null` on any row the SAP side never reached — the majority of serp-only rows.
 - `serp_ad_blocker_inferred` and `has_adblocker_addon` sound like the same fact and are not. The first is inferred from the results page and is true only where every one of the row's impressions showed the signs; the second reports an enabled ad-blocking add-on installed on the client that day, and is `false` rather than `null` where none was found. The `serp_` prefix on the first is now part of the distinction — it says the value exists only where there were impressions to infer from.
-- `experiments` prefers the SERP passthrough, which arrives as a repeated field and is never `null`. Because `coalesce` returns the first non-`null` argument and an empty array is not `null`, the SAP side is only reached on sap-only rows. The SAP side builds the same shape from JSON, one element per enrollment, ordered by experiment slug.
+- `experiments` prefers whichever side recorded enrollments, rather than whichever side exists. The SERP passthrough arrives as a repeated field and is never `null`, and an empty array is not `null`, so a plain `coalesce` would let an empty SERP array beat a populated SAP one — a SERP impression predating an enrollment would publish no experiments at all. The SERP arm is wrapped in `if(array_length(...) = 0, null, ...)` first, so the SAP array is reached on any row where SERP recorded nothing, not only on sap-only rows. The SAP side builds the same shape from JSON, one element per enrollment, ordered by experiment slug.
 - The seven `legacy_` columns measure the same events as SERP-derived columns already in the table: `legacy_searches_tagged_non_follow_on_sum` against `serp_searches_tagged_count`, `legacy_ad_clicks_tagged_sum` against `serp_ad_clicks_tagged_sum`, `legacy_searches_with_ads_tagged_sum` against `serp_searches_with_ads_tagged_count`, and the organic counterparts. The two sets are collected by different mechanisms and do not agree. See the legacy parity counters section above.
 
 glean_v1 is **not** a column-for-column match of v8 and is not intended to be. Every column carries real data; nothing is emitted as a placeholder `null` purely to preserve the v8 shape. Nineteen v8 columns that had no Glean source are therefore absent from both the query and `schema.yaml`: `addon_version`, `search_cohort`, `subsessions_hours_sum`, `active_addons_count_mean`, `unknown`, `is_sap_monetizable`, and the thirteen `scalar_parent_urlbar_searchmode_*` columns.

@@ -1,11 +1,13 @@
+{% set uptake_filter = "(e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings') AND e.name = 'uptake_remotesettings'" %}
+{% set android_apps = ['org_mozilla_firefox', 'org_mozilla_firefox_beta', 'org_mozilla_fenix'] %}
+{% set ios_apps = [('org_mozilla_ios_firefox', 'release'), ('org_mozilla_ios_firefoxbeta', 'beta'), ('org_mozilla_ios_fennec', 'nightly')] %}
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring.remote_settings_uptake_live`
 AS
 WITH all_implementations AS (
--- Desktop (Gecko / Rust) -- one dataset covers every channel
+  -- Desktop (Gecko / Rust): a single dataset covers every channel.
   SELECT
     'desktop' AS platform,
-    'firefox_desktop' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
     client_info.client_id AS client_id,
@@ -19,137 +21,53 @@ WITH all_implementations AS (
     `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
   INNER JOIN
     UNNEST(events) AS e
-    ON (e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings')
-    AND e.name = 'uptake_remotesettings'
-  UNION ALL
--- Android (Gecko / Rust) -- release
-  SELECT
-    'android' AS platform,
-    'org_mozilla_firefox' AS normalized_app_id,
-    IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    submission_timestamp,
-    client_info.client_id AS client_id,
-    client_info.app_display_version AS app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    e.extra AS event_extra,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_live.events_v1`
-  INNER JOIN
-    UNNEST(events) AS e
-    ON (e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings')
-    AND e.name = 'uptake_remotesettings'
-  UNION ALL
--- Android (Gecko / Rust) -- beta
-  SELECT
-    'android' AS platform,
-    'org_mozilla_firefox_beta' AS normalized_app_id,
-    IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    submission_timestamp,
-    client_info.client_id AS client_id,
-    client_info.app_display_version AS app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    e.extra AS event_extra,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.events_v1`
-  INNER JOIN
-    UNNEST(events) AS e
-    ON (e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings')
-    AND e.name = 'uptake_remotesettings'
-  UNION ALL
--- Android (Gecko / Rust) -- nightly
-  SELECT
-    'android' AS platform,
-    'org_mozilla_fenix' AS normalized_app_id,
-    IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    submission_timestamp,
-    client_info.client_id AS client_id,
-    client_info.app_display_version AS app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    e.extra AS event_extra,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
-  INNER JOIN
-    UNNEST(events) AS e
-    ON (e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings')
-    AND e.name = 'uptake_remotesettings'
-  UNION ALL
--- iOS (Rust) -- release
-  SELECT
-    'ios' AS platform,
-    'org_mozilla_ios_firefox' AS normalized_app_id,
-    'rust' AS implementation,
-    submission_timestamp,
-    client_info.client_id AS client_id,
-    client_info.app_display_version AS app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    e.extra AS event_extra,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.events_v1`
-  INNER JOIN
-    UNNEST(events) AS e
-    ON e.category = 'remote_settings'
-    AND e.name = 'uptake_remotesettings'
-  UNION ALL
--- iOS (Rust) -- beta
-  SELECT
-    'ios' AS platform,
-    'org_mozilla_ios_firefoxbeta' AS normalized_app_id,
-    'rust' AS implementation,
-    submission_timestamp,
-    client_info.client_id AS client_id,
-    client_info.app_display_version AS app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    e.extra AS event_extra,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.events_v1`
-  INNER JOIN
-    UNNEST(events) AS e
-    ON e.category = 'remote_settings'
-    AND e.name = 'uptake_remotesettings'
-  UNION ALL
--- iOS (Rust) -- nightly
-  SELECT
-    'ios' AS platform,
-    'org_mozilla_ios_fennec' AS normalized_app_id,
-    'rust' AS implementation,
-    submission_timestamp,
-    client_info.client_id AS client_id,
-    client_info.app_display_version AS app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    e.extra AS event_extra,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_fennec_live.events_v1`
-  INNER JOIN
-    UNNEST(events) AS e
-    ON e.category = 'remote_settings'
-    AND e.name = 'uptake_remotesettings'
+    ON {{ uptake_filter }}
+    {% for app in android_apps %}
+      UNION ALL
+  -- Android (Gecko / Rust): one live dataset per channel.
+      SELECT
+        'android' AS platform,
+        IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
+        submission_timestamp,
+        client_info.client_id AS client_id,
+        client_info.app_display_version AS app_display_version,
+        normalized_channel,
+        normalized_os,
+        normalized_os_version,
+        normalized_country_code,
+        e.extra AS event_extra,
+      FROM
+        `moz-fx-data-shared-prod.{{ app }}_live.events_v1`
+      INNER JOIN
+        UNNEST(events) AS e
+        ON {{ uptake_filter }}
+    {% endfor %}
+    {% for app, channel in ios_apps %}
+      UNION ALL
+  -- iOS (Rust): one live dataset per channel, each mapping to a single channel.
+      SELECT
+        'ios' AS platform,
+        IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
+        submission_timestamp,
+        client_info.client_id AS client_id,
+        client_info.app_display_version AS app_display_version,
+        normalized_channel,
+        normalized_os,
+        normalized_os_version,
+        normalized_country_code,
+        e.extra AS event_extra,
+      FROM
+        `moz-fx-data-shared-prod.{{ app }}_live.events_v1`
+      INNER JOIN
+        UNNEST(events) AS e
+        ON {{ uptake_filter }}
+    {% endfor %}
 )
 SELECT
   submission_timestamp,
   platform,
-  normalized_app_id,
   implementation,
-  SAFE_CAST(
-    mozfun.norm.truncate_version(app_display_version, 'major') AS INTEGER
-  ) AS major_version,
+  SAFE_CAST(mozfun.norm.truncate_version(app_display_version, 'major') AS INTEGER) AS major_version,
   client_id,
   normalized_channel,
   normalized_os,

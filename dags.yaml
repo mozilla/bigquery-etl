@@ -2914,13 +2914,13 @@ bqetl_gecko_trace:
       - telemetry-alerts@mozilla.com
       - jjalkanen@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     end_date: null
     max_active_tis_per_dag: null
     owner: jjalkanen@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: "2026-06-10"
+    start_date: "2026-09-23"
   description: |
     Processes gecko trace data across multiple Firefox applications.
   repo: bigquery-etl

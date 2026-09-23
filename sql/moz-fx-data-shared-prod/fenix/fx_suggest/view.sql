@@ -4,12 +4,10 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "org_mozilla_firefox" AS normalized_app_id,
-  mozfun.norm.fenix_app_info(
-    "org_mozilla_firefox",
-    client_info.app_build
-  ).channel AS normalized_channel,
+    -- set app build to 21850000 since all affected pings are coming from versions older than that
+    -- abb build only used to differentiate between preview (pre 21850000) and nightly (everything after)
+  mozfun.norm.fenix_app_info("org_mozilla_firefox", '21850000').channel AS normalized_channel,
   additional_properties,
-  client_info,
   document_id,
   events,
   metadata,
@@ -34,31 +32,24 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.fx_suggest`
 UNION ALL
 SELECT
   "org_mozilla_firefox_beta" AS normalized_app_id,
-  mozfun.norm.fenix_app_info(
-    "org_mozilla_firefox_beta",
-    client_info.app_build
-  ).channel AS normalized_channel,
+    -- set app build to 21850000 since all affected pings are coming from versions older than that
+    -- abb build only used to differentiate between preview (pre 21850000) and nightly (everything after)
+  mozfun.norm.fenix_app_info("org_mozilla_firefox_beta", '21850000').channel AS normalized_channel,
   additional_properties,
-  client_info,
   document_id,
   events,
   metadata,
@@ -83,31 +74,24 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.fx_suggest`
 UNION ALL
 SELECT
   "org_mozilla_fenix" AS normalized_app_id,
-  mozfun.norm.fenix_app_info(
-    "org_mozilla_fenix",
-    client_info.app_build
-  ).channel AS normalized_channel,
+    -- set app build to 21850000 since all affected pings are coming from versions older than that
+    -- abb build only used to differentiate between preview (pre 21850000) and nightly (everything after)
+  mozfun.norm.fenix_app_info("org_mozilla_fenix", '21850000').channel AS normalized_channel,
   additional_properties,
-  client_info,
   document_id,
   events,
   metadata,
@@ -132,31 +116,24 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.fx_suggest`
 UNION ALL
 SELECT
   "org_mozilla_fenix_nightly" AS normalized_app_id,
-  mozfun.norm.fenix_app_info(
-    "org_mozilla_fenix_nightly",
-    client_info.app_build
-  ).channel AS normalized_channel,
+    -- set app build to 21850000 since all affected pings are coming from versions older than that
+    -- abb build only used to differentiate between preview (pre 21850000) and nightly (everything after)
+  mozfun.norm.fenix_app_info("org_mozilla_fenix_nightly", '21850000').channel AS normalized_channel,
   additional_properties,
-  client_info,
   document_id,
   events,
   metadata,
@@ -181,31 +158,24 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.fx_suggest`
 UNION ALL
 SELECT
   "org_mozilla_fennec_aurora" AS normalized_app_id,
-  mozfun.norm.fenix_app_info(
-    "org_mozilla_fennec_aurora",
-    client_info.app_build
-  ).channel AS normalized_channel,
+    -- set app build to 21850000 since all affected pings are coming from versions older than that
+    -- abb build only used to differentiate between preview (pre 21850000) and nightly (everything after)
+  mozfun.norm.fenix_app_info("org_mozilla_fennec_aurora", '21850000').channel AS normalized_channel,
   additional_properties,
-  client_info,
   document_id,
   events,
   metadata,
@@ -230,19 +200,14 @@ SELECT
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id, metrics.uuid.fx_suggest_suggestion_id) AS `uuid`,
     STRUCT(metrics.boolean.fx_suggest_is_clicked) AS `boolean`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.url.fx_suggest_reporting_url) AS `url`
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
   sample_id,
   submission_timestamp,
-  app_version_major,
-  app_version_minor,
-  app_version_patch,
   is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.fx_suggest`

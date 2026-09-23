@@ -26,7 +26,8 @@ combined AS (
     COALESCE(normalized_country_code, metrics.string.quick_suggest_country) AS country,
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.quick_suggest_advertiser AS advertiser,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.quick_suggest_position AS position,
     CASE
       WHEN NULLIF(metrics.string.quick_suggest_request_id, "") IS NULL
@@ -124,7 +125,8 @@ combined AS (
     COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,
@@ -156,7 +158,8 @@ combined AS (
     COALESCE(metrics.string.fx_suggest_country, normalized_country_code) AS country,
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,

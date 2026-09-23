@@ -1,0 +1,94 @@
+# Two AMP-attributed impressions on the same query and block_id, one of them clicked.
+- request_id: "req_2001"
+  submission_timestamp: "2025-06-16T09:00:01Z"
+  query: "buy running shoes"
+  advertiser: "FakeShoeSupplier"
+  block_id: 1
+  is_clicked: true
+  normalized_channel: "release"
+  reporting_url: "https://imp.mt48.net/imp?id=abc123"
+
+- request_id: "req_2002"
+  submission_timestamp: "2025-06-16T09:00:03Z"
+  query: "buy running shoes"
+  advertiser: "FakeShoeSupplier"
+  block_id: 1
+  is_clicked: false
+  normalized_channel: "release"
+  reporting_url: "https://imp.mt48.net/imp?id=abc123"
+
+# Mozilla-supplied (non-AMP) interaction is excluded due to having
+# a reporting_url with a Mozilla host on the /v1/st path (which
+# udf.is_moz_supplied_suggestion matches). Shares query and block_id with the
+# rows above, so dropping that filter would inflate their counts.
+- request_id: "req_2003"
+  submission_timestamp: "2025-06-16T09:05:00Z"
+  query: "buy running shoes"
+  advertiser: "FakeMozillaAdvertiser"
+  block_id: 1
+  is_clicked: true
+  normalized_channel: "release"
+  reporting_url: "https://ads.mozilla.org/v1/st?suggestion_id=abc123"
+
+# Same, with the staging host in the reporting_url; also excluded.
+- request_id: "req_2008"
+  submission_timestamp: "2025-06-16T09:06:00Z"
+  query: "buy running shoes"
+  advertiser: "FakeMozillaAdvertiser"
+  block_id: 1
+  is_clicked: true
+  normalized_channel: "release"
+  reporting_url: "https://ads.allizom.org/v1/st?suggestion_id=def456"
+
+# Retained: the reporting_url has a Mozilla host but not the /v1/st path, and
+# udf.is_moz_supplied_suggestion requires both.
+- request_id: "req_2009"
+  submission_timestamp: "2025-06-16T09:07:00Z"
+  query: "moz other path"
+  advertiser: "FakeMozillaAdvertiser"
+  block_id: 7
+  is_clicked: false
+  normalized_channel: "release"
+  reporting_url: "https://ads.mozilla.org/v1/status?suggestion_id=ghi789"
+
+# Non-sponsored suggestions carry no reporting_url.
+# udf.is_moz_supplied_suggestion returns FALSE for NULL, so these rows keep reaching
+# the feed as they did before Mozilla-supplied suggestions existed.
+- request_id: "req_2004"
+  submission_timestamp: "2025-06-16T12:30:00Z"
+  query: "José Guadalupe Posada"
+  advertiser: "wikipedia"
+  block_id: 0
+  is_clicked: false
+  normalized_channel: "release"
+  reporting_url: null
+
+# Excluded: empty query.
+- request_id: "req_2005"
+  submission_timestamp: "2025-06-16T13:00:00Z"
+  query: ""
+  advertiser: "FakeTravelAgency"
+  block_id: 4
+  is_clicked: false
+  normalized_channel: "release"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
+
+# Excluded: non-release channel.
+- request_id: "req_2006"
+  submission_timestamp: "2025-06-16T14:00:00Z"
+  query: "cheap flights to Europe"
+  advertiser: "FakeTravelAgency"
+  block_id: 5
+  is_clicked: true
+  normalized_channel: "beta"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
+
+# Excluded: outside the requested partition.
+- request_id: "req_2007"
+  submission_timestamp: "2025-06-17T00:15:20Z"
+  query: "looking for flights"
+  advertiser: "FakeTravelAgency"
+  block_id: 6
+  is_clicked: false
+  normalized_channel: "release"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"

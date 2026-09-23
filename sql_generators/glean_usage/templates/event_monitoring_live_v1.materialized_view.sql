@@ -38,7 +38,7 @@ IF
               normalized_channel = 'release'
               AND event.category = 'uptake.remotecontent.result'
               AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
-              AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+              AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC) >= 143
               AND sample_id != 0
             ) IS NOT TRUE
         {% endif %}

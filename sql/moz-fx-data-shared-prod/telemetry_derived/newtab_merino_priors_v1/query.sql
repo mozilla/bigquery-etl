@@ -21,7 +21,7 @@ experiment_configs AS (
   SELECT
     *
   FROM
-    UNNEST([STRUCT('DE' AS region, 'publisher-constraint-in-germany' AS experiment_slug)])
+    UNNEST([STRUCT('GB' AS region, 'ctrpred_engb' AS experiment_slug)])
 ),
 corpus_items AS (
   SELECT DISTINCT

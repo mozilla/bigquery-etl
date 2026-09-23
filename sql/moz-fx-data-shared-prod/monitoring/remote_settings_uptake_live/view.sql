@@ -30,10 +30,7 @@ WITH all_implementations AS (
     submission_timestamp,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
-    mozfun.norm.fenix_app_info(
-      'org_mozilla_firefox',
-      client_info.app_build
-    ).channel AS normalized_channel,
+    normalized_channel,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -53,10 +50,7 @@ WITH all_implementations AS (
     submission_timestamp,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
-    mozfun.norm.fenix_app_info(
-      'org_mozilla_firefox_beta',
-      client_info.app_build
-    ).channel AS normalized_channel,
+    normalized_channel,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -76,10 +70,7 @@ WITH all_implementations AS (
     submission_timestamp,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
-    mozfun.norm.fenix_app_info(
-      'org_mozilla_fenix',
-      client_info.app_build
-    ).channel AS normalized_channel,
+    normalized_channel,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -99,7 +90,7 @@ WITH all_implementations AS (
     submission_timestamp,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
-    'release' AS normalized_channel,
+    normalized_channel,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -119,7 +110,7 @@ WITH all_implementations AS (
     submission_timestamp,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
-    'beta' AS normalized_channel,
+    normalized_channel,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -139,7 +130,7 @@ WITH all_implementations AS (
     submission_timestamp,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
-    'nightly' AS normalized_channel,
+    normalized_channel,
     normalized_os,
     normalized_os_version,
     normalized_country_code,

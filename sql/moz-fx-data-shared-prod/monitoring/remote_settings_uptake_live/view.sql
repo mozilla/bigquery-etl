@@ -1,5 +1,5 @@
 {% set uptake_filter = "(e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings') AND e.name = 'uptake_remotesettings'" %}
-{% set android_apps = ['org_mozilla_firefox', 'org_mozilla_firefox_beta', 'org_mozilla_fenix'] %}
+{% set android_apps = [('org_mozilla_firefox', 'release'), ('org_mozilla_firefox_beta', 'beta'), ('org_mozilla_fenix', 'nightly')] %}
 {% set ios_apps = [('org_mozilla_ios_firefox', 'release'), ('org_mozilla_ios_firefoxbeta', 'beta'), ('org_mozilla_ios_fennec', 'nightly')] %}
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring.remote_settings_uptake_live`
@@ -8,6 +8,7 @@ WITH all_implementations AS (
   -- Desktop (Gecko / Rust): a single dataset covers every channel.
   SELECT
     'desktop' AS platform,
+    CONCAT('org_mozilla_desktop_firefox_', normalized_channel) AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
     client_info.client_id AS client_id,
@@ -22,11 +23,12 @@ WITH all_implementations AS (
   INNER JOIN
     UNNEST(events) AS e
     ON {{ uptake_filter }}
-    {% for app in android_apps %}
+    {% for app, channel in android_apps %}
       UNION ALL
   -- Android (Gecko / Rust): one live dataset per channel.
       SELECT
         'android' AS platform,
+        'org_mozilla_android_firefox_{{ channel }}' AS normalized_app_id,
         IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
         submission_timestamp,
         client_info.client_id AS client_id,
@@ -47,6 +49,7 @@ WITH all_implementations AS (
   -- iOS (Rust): one live dataset per channel, each mapping to a single channel.
       SELECT
         'ios' AS platform,
+        'org_mozilla_ios_firefox_{{ channel }}' AS normalized_app_id,
         IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
         submission_timestamp,
         client_info.client_id AS client_id,
@@ -67,6 +70,7 @@ SELECT
   submission_timestamp,
   platform,
   implementation,
+  normalized_app_id,
   SAFE_CAST(mozfun.norm.truncate_version(app_display_version, 'major') AS INTEGER) AS major_version,
   client_id,
   normalized_channel,

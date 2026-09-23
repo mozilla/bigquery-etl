@@ -1,8 +1,7 @@
 ---
 - &click
   submission_timestamp: "2030-01-01 01:00:00"
-  client_info:
-    app_channel: release
+  normalized_channel: release
   metadata:
     geo:
       subdivision1: AZ

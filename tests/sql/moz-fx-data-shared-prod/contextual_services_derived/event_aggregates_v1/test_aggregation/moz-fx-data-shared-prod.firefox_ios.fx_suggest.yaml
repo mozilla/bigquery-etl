@@ -13,8 +13,7 @@
   metadata:
     geo:
       subdivision1: DC
-  client_info:
-    app_channel: release
+  normalized_channel: release
   normalized_country_code: US
 - <<: *suggest_base
   metrics:

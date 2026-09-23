@@ -428,6 +428,8 @@ jobs:
       id-token: write
       contents: read
     environment: *job-env
+    outputs:
+      generated-sql-commit: ${{ steps.generate.outputs.generated-sql-commit }}
     steps:
       - &checkout-with-creds
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -439,6 +441,7 @@ jobs:
       - *restore-venv
       - *auth-gcp-dryrun
       - name: Generate SQL content
+        id: generate
         env:
           TRIGGER_SQL_GENERATION: ${{ github.event.inputs.trigger-sql-generation }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
@@ -452,27 +455,39 @@ jobs:
           git clone -b generated-sql https://github.com/mozilla/bigquery-etl ~/remote-generated-sql
           cd ~/remote-generated-sql
 
-          if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
-            echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
-            git checkout tags/c-${MAIN_MERGE_BASE:0:9}
-          else
-            export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
-            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
-            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+          # Find the newest tagged main commit at or before the merge base
+          GENERATED_SQL_COMMIT=""
+          LOOKUP_START=$MAIN_MERGE_BASE
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            # On main the merge base is this commit. Start from its parent so a
+            # re-run doesn't pick up the tag this run's push-generated-sql
+            # already created.
+            LOOKUP_START="$GITHUB_SHA^"
+          fi
+          if [[ -n $MAIN_MERGE_BASE ]]; then
+            # get the hash of the most recent commit that matches a c-{hash} tag
+            GENERATED_SQL_COMMIT=$(git -C "$GITHUB_WORKSPACE" rev-list --first-parent "$LOOKUP_START" \
+              | grep -m1 -Fx -f <(git tag -l 'c-*' | sed 's/^c-//') || true)
           fi
 
-          # Get the state in which main was in when the generated-sql branch was created and pushed
+          if [[ -n $GENERATED_SQL_COMMIT ]]; then
+            echo "Using generated sql from tag c-$GENERATED_SQL_COMMIT"
+            git checkout "tags/c-$GENERATED_SQL_COMMIT"
+          else
+            GENERATED_SQL_COMMIT=$(git describe --tags --abbrev=0)
+            GENERATED_SQL_COMMIT=${GENERATED_SQL_COMMIT#c-}
+            echo "No tagged ancestor of the merge base; using latest tag c-$GENERATED_SQL_COMMIT"
+          fi
+          # deploy-changes-to-stage diffs against the same generated sql
+          echo "generated-sql-commit=$GENERATED_SQL_COMMIT" >> "$GITHUB_OUTPUT"
+
+          # Check out main at the commit the generated sql was created from instead of the merge
+          # base. If a commit between them never had its output pushed (CI failure or still
+          # running), the generated sql would be missing its changes.
           cd ~
           git clone -b main https://github.com/mozilla/bigquery-etl ~/remote-bigquery-etl-main
           cd ~/remote-bigquery-etl-main
-          export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
-          git checkout $LATEST_TAG_GENERATED_SQL
-          echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
-
-          if [[ -n $MAIN_MERGE_BASE ]]; then
-            echo "Checking out $MAIN_MERGE_BASE for diff"
-            git checkout $MAIN_MERGE_BASE
-          fi
+          git checkout "$GENERATED_SQL_COMMIT"
 
           cd $GITHUB_WORKSPACE
           export GENERATED_SQL_CHANGED=false
@@ -674,10 +689,23 @@ jobs:
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
       - name: Pull in generated-sql branch from remote
+        env:
+          GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
         run: |
           git clone --single-branch --branch generated-sql \
             https://github.com/mozilla/bigquery-etl \
             generated-sql
+          # Diff against the generated sql that generate-sql started from, not the
+          # branch head. On main, push-generated-sql runs alongside this job and
+          # can push this commit's output before the clone above, which leaves
+          # nothing to deploy. On PRs the head can include main changes the PR
+          # doesn't have, which would deploy the PR's older copies of them.
+          if [[ -n "$GENERATED_SQL_COMMIT" ]]; then
+            echo "Diffing against generated-sql at c-$GENERATED_SQL_COMMIT"
+            git -C generated-sql checkout -q "tags/c-$GENERATED_SQL_COMMIT"
+          else
+            echo "::warning::generate-sql didn't report a baseline, diffing against the generated-sql head"
+          fi
           # Normalize file permissions to avoid false positives in diffs
           find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true

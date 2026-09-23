@@ -16,8 +16,7 @@
       subdivision1: DC
     user_agent:
       os: Android
-  client_info:
-    app_channel: release
+  normalized_channel: release
   normalized_country_code: US
 - <<: *click
   metrics:

@@ -8,7 +8,8 @@ WITH all_implementations AS (
     'firefox_desktop' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     normalized_channel,
     normalized_os,
     normalized_os_version,
@@ -27,7 +28,8 @@ WITH all_implementations AS (
     'org_mozilla_firefox' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     mozfun.norm.fenix_app_info(
       'org_mozilla_firefox',
       client_info.app_build
@@ -49,7 +51,8 @@ WITH all_implementations AS (
     'org_mozilla_firefox_beta' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     mozfun.norm.fenix_app_info(
       'org_mozilla_firefox_beta',
       client_info.app_build
@@ -71,7 +74,8 @@ WITH all_implementations AS (
     'org_mozilla_fenix' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     mozfun.norm.fenix_app_info(
       'org_mozilla_fenix',
       client_info.app_build
@@ -93,7 +97,8 @@ WITH all_implementations AS (
     'org_mozilla_ios_firefox' AS normalized_app_id,
     'rust' AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     'release' AS normalized_channel,
     normalized_os,
     normalized_os_version,
@@ -112,7 +117,8 @@ WITH all_implementations AS (
     'org_mozilla_ios_firefoxbeta' AS normalized_app_id,
     'rust' AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     'beta' AS normalized_channel,
     normalized_os,
     normalized_os_version,
@@ -131,7 +137,8 @@ WITH all_implementations AS (
     'org_mozilla_ios_fennec' AS normalized_app_id,
     'rust' AS implementation,
     submission_timestamp,
-    client_info,
+    client_info.client_id AS client_id,
+    client_info.app_display_version AS app_display_version,
     'nightly' AS normalized_channel,
     normalized_os,
     normalized_os_version,
@@ -150,9 +157,9 @@ SELECT
   normalized_app_id,
   implementation,
   SAFE_CAST(
-    mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER
+    mozfun.norm.truncate_version(app_display_version, 'major') AS INTEGER
   ) AS major_version,
-  client_info.client_id AS client_id,
+  client_id,
   normalized_channel,
   normalized_os,
   normalized_os_version,

@@ -1,0 +1,59 @@
+friendly_name: Newtab Merino Hour Propensity v1
+description: |-
+  Time-of-day (UTC hour) propensity weights for newtab items, the companion to
+  newtab_merino_propensity_v2's position/format weights. That bias is divided out first,
+  then the residual hour effect is estimated as clicks / position-adjusted impressions per
+  (country, UTC hour) relative to that country's all-hours rate. The weight is designed to be
+  divided into exposure (adjusted_impressions / weight) immediately after the position weight,
+  giving consumers a position-and-hour-free exposure without any ranker change.
+  Unlike the position weight, this one applies to non-section traffic too: position/format bias
+  is a section-grid phenomenon, time-of-day bias is not. Also unlike the position weight, country
+  weights are not shrunk toward the global row and the global row is not a per-country fallback:
+  a UTC-hour curve is a local diurnal pattern shifted by the region's offset from UTC, so it does
+  not transfer between regions. A country without its own row is left unadjusted. The global row
+  is the weight for exposure pooled across all countries.
+  Deliberately naive: the hour effect is a population aggregate and is not adjusted for article
+  quality, so any systematic difference in article composition by hour is absorbed into the
+  weight. Estimated over a whole number of weeks (14 days by default, tunable with
+  --lookback_days) so that day-of-week is averaged over rather than biasing particular hours.
+  Partitioned by snapshot_date so daily outputs can be retained and backfilled.
+owners:
+- mmiermans@mozilla.com
+- rrando@mozilla.com
+- mlplyler@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: snapshot_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - hour
+scheduling:
+  dag_name: bqetl_merino_newtab_priors_to_gcs
+  date_partition_parameter: snapshot_date
+  arguments:
+  - --date
+  - "{{ ds }}"
+  - --project
+  - moz-fx-data-shared-prod
+  - --destination_dataset
+  - telemetry_derived
+  - --destination_table
+  - newtab_merino_hour_propensity_v1
+  # Hand-maintained because dependencies cannot be dry-run out of a Python script.
+  # newtab_content resolves to the stable table, so this task also waits for
+  # copy_deduplicate; newtab_merino_propensity_v2 must run first, because the hour
+  # effect is estimated on position-adjusted exposure.
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'firefox_desktop_stable', 'newtab_content_v1']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_propensity_v2']

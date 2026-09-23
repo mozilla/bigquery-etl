@@ -1,0 +1,26 @@
+friendly_name: Ads Event Aggregates for Suggest
+description: |-
+  Aggregated event counts for suggest.
+
+  Migrated from `contextual_services_derived.event_aggregates_suggest_v1`. The
+  incremental logic is identical to the legacy table, so the two are expected to
+  produce the same rows while both run in parallel during the migration.
+  History was seeded by copying the legacy table via the `is_init()` branch of
+  query.sql, because the upstream ping data is only retained for 30 days.
+owners:
+- cmorales@mozilla.com
+- mozilla/ads_data_team
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_ads
+  owner1: cmorales
+scheduling:
+  dag_name: bqetl_ads
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null

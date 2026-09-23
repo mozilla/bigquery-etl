@@ -53,25 +53,24 @@ glean_impressions AS (
     metrics.uuid.quick_suggest_context_id AS context_id,
     sample_id,
     metrics.boolean.quick_suggest_is_clicked AS is_clicked,
-    client_info.locale AS locale,
-    metadata.geo.country,
-    metadata.geo.subdivision1 AS region,
+    -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074848
+    CAST(NULL AS STRING) AS locale,
+    -- Moved from metadata.geo.country to quick_suggest_country
+    metrics.string.quick_suggest_country AS country,
+    CAST(NULL AS STRING) AS region,
     normalized_os,
     normalized_os_version,
     normalized_channel,
     metrics.quantity.quick_suggest_position AS position,
     metrics.url2.quick_suggest_reporting_url AS reporting_url,
     CAST(NULL AS STRING) AS scenario,
-    -- Truncate to just Firefox major version
-    SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
+    -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074848
+    CAST(NULL AS STRING) AS version,
     metrics.string.quick_suggest_match_type AS match_type,
-    ARRAY_AGG(
-      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
-    ) AS experiments,
+    -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074507
+    ARRAY<STRUCT<slug STRING, branch STRING>>[] AS experiments,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'

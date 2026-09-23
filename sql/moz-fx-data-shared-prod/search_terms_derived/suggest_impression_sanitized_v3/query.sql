@@ -4,6 +4,8 @@ with sanitized search query data captured in logs from the backend Merino servic
 
 The results of this are copied into suggest_impression_sanitized_v3,
 which is also defined in this directory.
+
+test comment
 */
 WITH legacy_impressions AS (
   SELECT

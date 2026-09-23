@@ -11,6 +11,12 @@ fields:
   description: The propensity-weight-adjusted number of impressions for this corpus
     item. For section-layout events the raw count is divided by the position-bias
     propensity weight; for non-section events the raw count passes through unchanged.
+    Rows whose region names a configured time-of-day experiment branch (a region of
+    the form '<country>-<experiment_slug>-<experiment_branch>') are an exception -
+    those are additionally divided by the time-of-day propensity weight from newtab_merino_hour_propensity_v1,
+    and for them the hour adjustment applies to non-section events as well. Those
+    counts therefore use a different exposure definition and are not comparable to
+    the plain country row for the same corpus item.
 - mode: NULLABLE
   name: click_count
   type: INTEGER

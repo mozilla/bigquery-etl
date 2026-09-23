@@ -1,4 +1,3 @@
--- test comment
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
 AS

@@ -70,7 +70,8 @@ base_events_v1 AS (
       normalized_channel = 'release'
       AND event.category = 'uptake.remotecontent.result'
       AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
-      AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+              -- udfs like mozfun.norm.extract_version can't be used in materialized views
+      AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC) >= 143
       AND sample_id != 0
     ) IS NOT TRUE
 ),
@@ -270,6 +271,34 @@ base_sync_v1 AS (
           -- Add * extra to every event to get total event count
     UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
+base_urlbar_keyword_exposure_v1 AS (
+  SELECT
+    submission_timestamp,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    'Firefox for Desktop' AS normalized_app_name,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_live.urlbar_keyword_exposure_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+),
 base_urlbar_potential_exposure_v1 AS (
   SELECT
     submission_timestamp,
@@ -343,6 +372,11 @@ combined AS (
     *
   FROM
     base_sync_v1
+  UNION ALL
+  SELECT
+    *
+  FROM
+    base_urlbar_keyword_exposure_v1
   UNION ALL
   SELECT
     *

@@ -55,6 +55,9 @@ fields:
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+  description: The total number of searches performed, aggregated across all clients in the group for the
+    submission date. Computed as the sum of per-client daily search counts from the underlying clients-daily
+    table.
 - mode: NULLABLE
   name: organic
   type: INTEGER
@@ -85,6 +88,9 @@ fields:
 - mode: NULLABLE
   name: normalized_app_name_os
   type: STRING
+  description: A human-readable label combining the normalized application name and operating system, produced
+    by the `mozfun.mobile_search.normalize_app_name` UDF (e.g. "Firefox Android", "Firefox iOS", "Focus
+    Android"). Used to group search activity by a canonical product-plus-platform identifier.
 - mode: NULLABLE
   name: normalized_default_search_engine
   type: STRING

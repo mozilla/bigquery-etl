@@ -1,0 +1,33 @@
+friendly_name: Gecko Trace Events Bridge
+description: |-
+  Ordered events of each trace pattern.
+
+  Each row has one (trace_signature, event_position, event_signature).
+  Rows are written once, when a trace signature is first seen.
+  Join gecko_trace_traces_v1 and gecko_trace_events_v1 to get stable ids
+  and source locations.
+owners:
+- jjalkanen@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_gecko_trace
+  owner1: jjalkanen
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: org_mozilla_fenix_nightly
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  clustering:
+    fields:
+    - trace_signature
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  script.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.gecko_trace_trace_events_v1
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.gecko_trace_v1

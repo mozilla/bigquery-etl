@@ -1,0 +1,29 @@
+---
+fields:
+  - name: trace_signature
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Base64-encoded SHA256 hash of all event signatures in root-to-leaf order.
+      Stable within a Firefox release. Changes when any event signature changes.
+      This is the MERGE key and the cluster key.
+  - name: stable_trace_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Stable UUID for this trace pattern. Set when the trace_key is first seen.
+      Several signatures from different releases can share one stable id.
+  - name: trace_key
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Base64-encoded SHA256 hash of the stable_event_ids in root-to-leaf order.
+      Two signatures with the same trace_key are the same trace pattern.
+  - name: first_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: First date when pings with this signature were received on the server side.
+  - name: last_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: Last date when pings with this signature were received on the server side.

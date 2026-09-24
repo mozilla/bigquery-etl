@@ -45,6 +45,9 @@ fields:
 - name: default_search_engine_submission_url
   type: STRING
   mode: NULLABLE
+  description: The submission URL template used by the client's default search engine to perform searches.
+    This URL includes engine-specific parameters (such as partner codes) that identify the Firefox mobile
+    client to the search provider.
 - name: distribution_id
   type: STRING
   mode: NULLABLE

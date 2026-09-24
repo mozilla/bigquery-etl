@@ -2,11 +2,15 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: country
 - name: product
   type: STRING
   mode: NULLABLE
@@ -14,7 +18,9 @@ fields:
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
-  description: Normalized Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_engine
 - name: clients
   type: INTEGER
   mode: NULLABLE
@@ -26,24 +32,36 @@ fields:
 - name: sap
   type: INTEGER
   mode: NULLABLE
-  description: SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - name: tagged_sap
   type: INTEGER
   mode: NULLABLE
-  description: Tagged SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
-  description: Tagged Follow On
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
-  description: Ad Click
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click
 - name: search_with_ads
   type: INTEGER
   mode: NULLABLE
-  description: Search with Ads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - name: organic
   type: INTEGER
   mode: NULLABLE
-  description: Organic
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic

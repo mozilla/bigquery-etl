@@ -24,6 +24,7 @@ fields:
   field: subscription
   new_description: |-
     The logical subscription as it ostensibly was at the end of the month.
+  force_nullable_mode: true
 - name: was_active_at_month_start
   type: BOOLEAN
   mode: NULLABLE

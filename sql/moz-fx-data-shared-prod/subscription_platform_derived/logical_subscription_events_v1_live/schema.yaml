@@ -29,9 +29,11 @@ fields:
   field: subscription
   new_description: |-
     The logical subscription as it ostensibly was after the event occurred.
+  force_nullable_mode: true
 - !include-field
   table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
   field: subscription
   new_name: old_subscription
   new_description: |-
     The logical subscription as it ostensibly was before the event occurred.
+  force_nullable_mode: true

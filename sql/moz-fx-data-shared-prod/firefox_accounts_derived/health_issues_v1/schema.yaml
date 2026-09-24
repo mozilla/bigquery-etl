@@ -65,3 +65,11 @@ fields:
 - mode: NULLABLE
   name: workcategory
   type: STRING
+- mode: NULLABLE
+  name: collaborators
+  type: STRING
+  description: Comma-separated list of collaborators.
+- mode: NULLABLE
+  name: ai_cost
+  type: FLOAT
+  description: Estimated AI spend in USD for AI-assisted work on the issue.

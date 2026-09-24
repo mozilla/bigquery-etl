@@ -2,11 +2,15 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: geo
   type: STRING
-  description: Geographical Area
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: geo
 - mode: NULLABLE
   name: user_state
   type: STRING
@@ -14,7 +18,9 @@ fields:
 - mode: NULLABLE
   name: client_count
   type: INTEGER
-  description: Client Count
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: client_count
 - mode: NULLABLE
   name: search_client_count
   type: INTEGER
@@ -22,11 +28,15 @@ fields:
 - mode: NULLABLE
   name: sap
   type: INTEGER
-  description: SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
-  description: Number of Searches with Ads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
@@ -34,12 +44,18 @@ fields:
 - mode: NULLABLE
   name: tagged_follow_on
   type: INTEGER
-  description: Number of Tagged Follow-Ons
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - mode: NULLABLE
   name: tagged_sap
   type: INTEGER
-  description: Number of Tagged SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - mode: NULLABLE
   name: organic
   type: INTEGER
-  description: Number of Organic Searches
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic

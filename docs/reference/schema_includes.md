@@ -39,6 +39,7 @@ Includes a field from the specified table/view or schema YAML file.
 - `new_fields`: Optional list of field definitions to use in place of the included struct field's original list of subfields.
 - `append_fields`: Optional list of field definitions to append to the included struct field's list of subfields.
 - `prepend_fields`: Optional list of field definitions to prepend to the included struct field's list of subfields.
+- `force_nullable_mode`: Whether to force `REQUIRED` mode fields to be `NULLABLE` mode instead, as they'll be if selected in views (defaults to false).
 
 **Tip:** include tags can be used in the `new_fields`, `append_fields`, and `prepend_fields` lists.
 
@@ -135,6 +136,7 @@ If the included fields are being inserted into part of a larger list, then the [
 - `field_names`: Optional list of fields to include (either top-level columns, or nested fields if `parent_field` is specified).
 - `exclude_field_names`: Optional list of fields to exclude (either top-level columns, or nested fields if `parent_field` is specified).
 - `field_replacements`: Optional list of field definitions that will be used in place of the associated field definitions found in the include (matched by field name).
+- `force_nullable_mode`: Whether to force `REQUIRED` mode fields to be `NULLABLE` mode instead, as they'll be if selected in views (defaults to false).
 
 **Tip:** include tags can be used in the `field_replacements` list.
 
@@ -282,6 +284,7 @@ Includes data from a YAML file.
 
 - `file`: File path of the YAML file to include from (relative to the root of the repository).
 - `jmespath`: Optional [JMESPath](https://jmespath.org/) expression to select the data.
+- `force_nullable_mode`: Whether to force `REQUIRED` mode fields to be `NULLABLE` mode instead, as they'll be if selected in views (defaults to false).
 
 #### Examples
 

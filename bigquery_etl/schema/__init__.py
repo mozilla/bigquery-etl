@@ -612,14 +612,41 @@ def yaml_tag_kwargs_loader(
     return yaml_tag_constructor_wrapper
 
 
+def _force_nullable_mode(field: dict) -> dict:
+    """Force `REQUIRED` mode fields to be `NULLABLE` mode instead, as they'll be if selected in views."""
+    mode = field.get("mode", "NULLABLE").upper()
+    if mode != "REQUIRED" and "fields" not in field:
+        return field
+
+    field = field.copy()
+    if mode == "REQUIRED":
+        field["mode"] = "NULLABLE"
+    if "fields" in field:
+        field["fields"] = [
+            _force_nullable_mode(subfield) for subfield in field["fields"]
+        ]
+    return field
+
+
 @yaml_tag_kwargs_loader
 def yaml_include_constructor(
-    loader: SchemaLoader, file: str, jmespath: Optional[str] = None
+    loader: SchemaLoader,
+    file: str,
+    jmespath: Optional[str] = None,
+    force_nullable_mode: bool = False,
 ) -> Any:
     """Load a YAML `!include` tag."""
     data = loader.load_yaml_from_project_file(file)
     if jmespath:
-        return jmespath_search(jmespath, data)
+        data = jmespath_search(jmespath, data)
+    if force_nullable_mode:
+        if isinstance(data, dict):
+            data = _force_nullable_mode(data)
+        elif isinstance(data, list):
+            data = [
+                _force_nullable_mode(item) if isinstance(item, dict) else item
+                for item in data
+            ]
     return data
 
 
@@ -641,6 +668,7 @@ def yaml_include_field_constructor(
     new_fields: Optional[list[dict]] = None,
     append_fields: Optional[list[dict]] = None,
     prepend_fields: Optional[list[dict]] = None,
+    force_nullable_mode: bool = False,
 ) -> dict:
     """Load a YAML `!include-field` tag."""
     if file:
@@ -672,6 +700,8 @@ def yaml_include_field_constructor(
         schema_field["fields"] = schema_field["fields"] + append_fields
     if prepend_fields:
         schema_field["fields"] = prepend_fields + schema_field["fields"]
+    if force_nullable_mode:
+        schema_field = _force_nullable_mode(schema_field)
     return schema_field
 
 
@@ -687,6 +717,7 @@ def yaml_include_fields_constructor(
     field_names: Optional[list[str]] = None,
     exclude_field_names: Optional[list[str]] = None,
     field_replacements: Optional[list[dict]] = None,
+    force_nullable_mode: bool = False,
 ) -> list[dict]:
     """Load a YAML `!include-fields` tag."""
     if file:
@@ -708,6 +739,8 @@ def yaml_include_fields_constructor(
     if field_replacements:
         field_replacements_dict = {field["name"]: field for field in field_replacements}
         fields = [field_replacements_dict.get(field["name"], field) for field in fields]
+    if force_nullable_mode:
+        fields = [_force_nullable_mode(field) for field in fields]
     return fields
 
 

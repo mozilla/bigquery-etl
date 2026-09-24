@@ -1,3 +1,21 @@
+2026-09-24:
+  start_date: 2026-09-22
+  end_date: 2026-09-23
+  reason: |-
+    https://bugzilla.mozilla.org/show_bug.cgi?id=2074852
+    firefox_desktop_derived.event_monitoring_live_v1 was redeployed and could not be
+    refreshed, so these days have no data. firefox_desktop is rebuilt from hourly
+    chunks of the live tables (backfill_desktop_hourly.sql) staged in
+    moz-fx-data-shared-prod.tmp.event_monitoring_desktop_hourly.
+  watchers:
+  - bewu@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  custom_query_path: sql/moz-fx-data-shared-prod/monitoring_derived/event_monitoring_aggregates_v1/backfill_from_hourly_bug2074852.sql
+  billing_project: moz-fx-data-backfill-4  # least busy on-demand project
 2025-09-05:
   start_date: 2025-06-01
   end_date: 2025-09-04

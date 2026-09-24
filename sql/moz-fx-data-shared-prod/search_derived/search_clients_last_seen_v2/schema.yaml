@@ -46,6 +46,8 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: The date on which the client was first observed sending telemetry. Used to compute how long
+    the client has been active.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
@@ -67,6 +69,8 @@ fields:
 - mode: NULLABLE
   name: first_reported_country
   type: STRING
+  description: The country code recorded the first time the client was seen, as sourced from the `clients_first_seen`
+    table. Unlike `country`, this value does not change across submission dates.
 - mode: NULLABLE
   name: max_concurrent_tab_count_max
   type: INTEGER
@@ -85,6 +89,8 @@ fields:
 - mode: NULLABLE
   name: total_uri_count_sum
   type: INTEGER
+  description: The total number of URIs visited by the client across all subsessions for the reporting period.
+    Null when no URI count data is available.
 - mode: NULLABLE
   name: organic
   type: INTEGER
@@ -153,9 +159,15 @@ fields:
 - mode: NULLABLE
   name: days_first_seen_bytes
   type: BYTES
+  description: A 365-bit array (stored as BYTES) encoding the number of days elapsed since the client was
+    first seen, represented as a positional bit within the 365-day window. Used to efficiently look up or
+    compute client tenure relative to the submission date.
 - mode: NULLABLE
   name: days_dau_bytes
   type: BYTES
+  description: A 365-bit array (stored as BYTES) where each bit represents one day in the past year, with
+    the rightmost bit being the most recent day. A bit is set when the client had both active hours and
+    at least one URI visit on that day, matching the standard DAU definition.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING

@@ -22,6 +22,8 @@ fields:
 - mode: NULLABLE
   name: has_adblocker_addon
   type: BOOLEAN
+  description: Indicates whether the client has at least one active ad-blocking addon installed. True means
+    a monetization-blocking addon was detected; false means none were found.
 - mode: NULLABLE
   name: app_version
   type: STRING
@@ -87,9 +89,14 @@ fields:
 - mode: NULLABLE
   name: default_private_search_engine_data_load_path
   type: STRING
+  description: The load path indicating how the default private browsing search engine was installed or
+    configured (e.g. '[app]ddg' for a built-in engine or '[addon]...' for an addon-provided engine). Null
+    when no private search engine is separately configured.
 - mode: NULLABLE
   name: default_private_search_engine_data_submission_url
   type: STRING
+  description: The base submission URL for the client's default private browsing search engine. Null when
+    no distinct private search engine is configured.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
@@ -116,6 +123,8 @@ fields:
 - mode: NULLABLE
   name: total_uri_count
   type: INTEGER
+  description: The total count of non-unique http(s) URIs visited during the day, including page reloads,
+    after session restoration. Private browsing URIs are excluded from this count.
 - fields:
   - mode: NULLABLE
     name: key

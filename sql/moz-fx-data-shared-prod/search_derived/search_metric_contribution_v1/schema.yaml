@@ -1,0 +1,209 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: ''
+- name: search_with_ads_from_sap
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: search_with_ads_from_active_hours
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: search_with_ads_from_ad_click
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: ad_click_from_sap
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: ad_click_from_active_hours
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: ad_click_from_search_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: active_hours_from_sap
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: active_hours_from_ad_click
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: active_hours_from_search_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: sap_from_search_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: sap_from_ad_click
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+- name: sap_from_active_hours
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: ''

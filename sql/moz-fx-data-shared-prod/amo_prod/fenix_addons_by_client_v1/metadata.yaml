@@ -1,6 +1,9 @@
 ---
-friendly_name: Fenix addons by client
+friendly_name: Fenix addons by client (Deprecated)
 description: >-
+  Deprecated - please use tables or views inside addons_derived or addons instead.
+  For more info see: DENG-9505.
+
   Clients_daily-like table on top of the various Firefox for Android channels
   that records only the dimensions and addon info necessary to power the daily
   amo_stats_dau_v2 query.
@@ -11,8 +14,6 @@ labels:
   incremental: true
   schedule: daily
   table_table: client_level
-scheduling:
-  dag_name: bqetl_amo_stats
 bigquery:
   time_partitioning:
     type: day
@@ -22,3 +23,4 @@ bigquery:
   clustering:
     fields:
       - sample_id
+deprecated: true

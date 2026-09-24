@@ -2,46 +2,75 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: client_id
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
-    It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sample_id
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: app_name
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_app_name
 - name: country
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: country
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: locale
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: app_version
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: channel
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os_version
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine
 - name: default_search_engine_submission_url
   type: STRING
   mode: NULLABLE
@@ -51,43 +80,81 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: distribution_id
 - name: profile_creation_date
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: profile_creation_date
 - name: profile_age_in_days
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: profile_age_in_days
 - name: organic
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic
 - name: sap
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - name: unknown
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: unknown
 - name: tagged_sap
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click
 - name: search_with_ads
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - name: total_searches
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: total_searches
 - name: tagged_searches
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_searches
 - name: engine_searches
   type: RECORD
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: engine_searches
   fields:
   - name: key
     type: STRING
@@ -111,18 +178,36 @@ fields:
 - name: days_seen_bytes
   type: BYTES
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_seen_bytes
 - name: days_searched_bytes
   type: BYTES
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_searched_bytes
 - name: days_tagged_searched_bytes
   type: BYTES
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_tagged_searched_bytes
 - name: days_searched_with_ads_bytes
   type: BYTES
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_searched_with_ads_bytes
 - name: days_clicked_ads_bytes
   type: BYTES
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_clicked_ads_bytes
 - name: days_created_profile_bytes
   type: BYTES
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_created_profile_bytes

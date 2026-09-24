@@ -17,7 +17,8 @@ ENROLLMENT_QUERY = """
 WITH active_experiments AS (
   SELECT DISTINCT
     normandy_slug as experiment,
-    b.slug AS branch
+    b.slug AS branch,
+    end_date
   FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
   CROSS JOIN UNNEST(branches) b
   WHERE start_date IS NOT NULL
@@ -31,12 +32,20 @@ enrollment_totals AS (
   WHERE experiment IS NOT NULL AND branch IS NOT NULL
   GROUP BY 1, 2
 ),
+experiment_end_dates AS (
+  SELECT DISTINCT
+    experiment,
+    end_date
+  FROM active_experiments
+),
 unenrollment_totals AS (
   SELECT
     experiment,
     branch,
-    SUM(value) as total_unenrollments
+    SUM(value) as total_unenrollments,
+    SUM(IF(DATE(time) >= end_date, value, 0)) as unenrollments_since_end
   FROM `moz-fx-data-shared-prod.telemetry_derived.experiment_unenrollment_overall_v1`
+  LEFT JOIN experiment_end_dates USING (experiment)
   WHERE experiment IS NOT NULL AND branch IS NOT NULL
   GROUP BY 1, 2
 ),
@@ -45,7 +54,8 @@ combined_by_experiment_branch AS (
     COALESCE(e.experiment, u.experiment) as experiment,
     COALESCE(e.branch, u.branch) as branch,
     COALESCE(e.total_enrollments, 0) as enrollments,
-    COALESCE(u.total_unenrollments, 0) as unenrollments
+    COALESCE(u.total_unenrollments, 0) as unenrollments,
+    COALESCE(u.unenrollments_since_end, 0) as unenrollments_since_end
   FROM enrollment_totals e
   FULL OUTER JOIN unenrollment_totals u
     ON e.experiment = u.experiment AND e.branch = u.branch
@@ -56,7 +66,11 @@ SELECT
   enrollments,
   unenrollments,
   SUM(enrollments) OVER (PARTITION BY experiment) as experiment_total_enrollments,
-  SUM(unenrollments) OVER (PARTITION BY experiment) as experiment_total_unenrollments
+  SUM(unenrollments) OVER (PARTITION BY experiment) as experiment_total_unenrollments,
+  end_date,
+  SUM(unenrollments_since_end) OVER (
+    PARTITION BY experiment
+  ) as experiment_unenrollments_since_end
 FROM combined_by_experiment_branch
 INNER JOIN active_experiments USING (experiment, branch)
 ORDER BY 1, 2
@@ -120,6 +134,11 @@ def main():
             data[exp] = {
                 "total_enrollments": int(row["experiment_total_enrollments"]),
                 "total_unenrollments": int(row["experiment_total_unenrollments"]),
+                "unenrollments_since_end": (
+                    int(row["experiment_unenrollments_since_end"])
+                    if row["end_date"] is not None
+                    else None
+                ),
                 "branches": {},
                 "unenrollment_reasons": {},
             }

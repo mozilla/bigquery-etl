@@ -16,6 +16,7 @@ from sql_generators.glean_usage.common import (
 
 TARGET_TABLE_ID = "events_stream_v1"
 PREFIX = "events_stream"
+DEFAULT_PING_EXPIRATION_DAYS = 775
 
 
 class EventsStreamTable(GleanTable):
@@ -97,6 +98,9 @@ class EventsStreamTable(GleanTable):
             "extras_by_type": get_glean_app_event_extras_by_type(
                 app_id_info["v1_name"]
             ),
+            "expiration_days": get_glean_app_ping_expiration_days(
+                app_id_info["v1_name"]
+            ),
         }
 
         super().generate_per_app_id(
@@ -171,6 +175,26 @@ def get_glean_dependency_v1_name(dependency: str) -> str:
 
 
 @cache
+def get_glean_app_ping_expiration_days(v1_name: str, ping: str = "events") -> int:
+    """Return the Glean app ping's configured expiration days, or DEFAULT_PING_EXPIRATION_DAYS if not configured."""
+    repository = get_glean_app_repository(v1_name)
+    return (
+        (
+            repository.get("moz_pipeline_metadata", {})
+            .get(ping, {})
+            .get("expiration_policy", {})
+            .get("delete_after_days")
+        )
+        or (
+            repository.get("moz_pipeline_metadata_defaults", {})
+            .get("expiration_policy", {})
+            .get("delete_after_days")
+        )
+        or DEFAULT_PING_EXPIRATION_DAYS
+    )
+
+
+@cache
 def get_glean_app_event_extras_by_type(
     v1_name: str, ping: str = "events", cutoff_date: Optional[date] = None
 ) -> dict[str, set[str]]:
@@ -179,21 +203,8 @@ def get_glean_app_event_extras_by_type(
     repository = get_glean_app_repository(v1_name)
 
     if not cutoff_date:
-        ping_delete_after_days = (
-            (
-                repository.get("moz_pipeline_metadata", {})
-                .get(ping, {})
-                .get("expiration_policy", {})
-                .get("delete_after_days")
-            )
-            or (
-                repository.get("moz_pipeline_metadata_defaults", {})
-                .get("expiration_policy", {})
-                .get("delete_after_days")
-            )
-            or 775
-        )
-        cutoff_date = date.today() - timedelta(days=(ping_delete_after_days - 1))
+        ping_expiration_days = get_glean_app_ping_expiration_days(v1_name, ping)
+        cutoff_date = date.today() - timedelta(days=(ping_expiration_days - 1))
 
     metrics = list(get_glean_app_metrics(v1_name).values())
     for metric in metrics:

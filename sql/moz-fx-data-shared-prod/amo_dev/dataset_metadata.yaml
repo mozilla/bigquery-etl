@@ -1,11 +1,18 @@
-friendly_name: AMO Stats Dev
+friendly_name: AMO Stats Dev (Deprecated)
 description: |-
+  Deprecated - please use tables or views inside addons_derived or addons instead.
+  For more info see: DENG-9505.
+
   Derived data used to power the dev instance of the AMO stats dashboards
 dataset_base_acl: derived
 user_facing: true
-labels: {}
-workgroup_access:
+default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:amo/nonprod
+workgroup_access:
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:amo/nonprod
+  - workgroup:mozilla-confidential/data-viewers

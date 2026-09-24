@@ -1,5 +1,8 @@
-friendly_name: AMO Stats DAU
+friendly_name: AMO Stats DAU (Deprecated)
 description: |-
+  Deprecated - please use tables or views inside addons_derived or addons instead.
+  For more info see: DENG-9505.
+
   Daily user statistics to power addons.mozilla.org stats pages.
   See bug 1572873.
 
@@ -15,10 +18,7 @@ labels:
   incremental: true
   schedule: daily
   table_type: aggregate
-  dag: bqetl_amo_stats
   owner1: kik
-scheduling:
-  dag_name: bqetl_amo_stats
 bigquery:
   time_partitioning:
     type: day
@@ -28,12 +28,5 @@ bigquery:
   clustering:
     fields:
     - addon_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:amo/prod
-  - workgroup:mozilla-confidential/data-viewers
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.amo_prod.desktop_addons_by_client_v1
-  - moz-fx-data-shared-prod.amo_prod.fenix_addons_by_client_v1
+workgroup_access: []
+deprecated: true

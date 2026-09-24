@@ -2,7 +2,9 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: ''
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - name: search_with_ads_from_sap
   type: RECORD
   mode: NULLABLE

@@ -2,19 +2,27 @@ fields:
   - mode: NULLABLE
     name: partner
     type: STRING
-    description: Partner
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: partner
   - mode: NULLABLE
     name: submission_date
     type: DATE
-    description: Submission Date
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: submission_date
   - mode: NULLABLE
     name: device
     type: STRING
-    description: Device
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: device
   - mode: NULLABLE
     name: country
     type: STRING
-    description: Country
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: country
   - mode: NULLABLE
     name: normalized_channel
     type: STRING
@@ -22,15 +30,21 @@ fields:
   - mode: NULLABLE
     name: distribution_id
     type: STRING
-    description: Distribution ID
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: distribution_id
   - mode: NULLABLE
     name: normalized_default_search_engine
     type: STRING
-    description: Normalized Default Search Engine
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: normalized_default_search_engine
   - mode: NULLABLE
     name: normalized_engine
     type: STRING
-    description: Normalized Search Engine
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: normalized_engine
   - mode: NULLABLE
     name: sap_category
     type: INTEGER
@@ -42,8 +56,12 @@ fields:
   - mode: NULLABLE
     name: dau_w_engine_as_default
     type: INTEGER
-    description: DAU with Engine as Default
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: dau_w_engine_as_default
   - mode: NULLABLE
     name: dau_engaged_w_sap
     type: INTEGER
-    description: DAU Engaged with SAP
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+      field: dau_engaged_w_sap

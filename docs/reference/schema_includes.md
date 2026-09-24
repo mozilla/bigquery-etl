@@ -16,6 +16,7 @@ The [YAML tags](#yaml-tags) listed below can be used in `schema.yaml` files to i
   - If the query selects specific fields from an upstream table, then use `!include-fields` with the `field_names` parameter specifying fields in the same order the query selects them.
   - If the query selects most fields from an upstream table with `SELECT * EXCEPT (...)`, then use `!include-fields` with the `exclude_field_names` parameter.
   - If the query replaces some fields from an upstream table with `SELECT * REPLACE (...)`, then use `!include-fields` with the `field_replacements` parameter.
+- Use the `force_nullable_mode` option for top-level includes in view schemas, as BigQuery views technically can't have any `REQUIRED` mode fields.
 - Avoid using the `bqetl query schema update` command on `schema.yaml` files with includes, as that will overwrite the includes.
 
 ## YAML tags
@@ -146,6 +147,12 @@ If the included fields are being inserted into part of a larger list, then the [
 # Include all top-level columns from an ETL table.
 fields: !include-fields
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+```
+```yaml
+# Include all top-level columns from an ETL table in a view schema, forcing REQUIRED fields to be NULLABLE instead.
+fields: !include-fields
+  table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+  force_nullable_mode: true
 ```
 ```yaml
 # Include all top-level columns from an ETL table alongside additional fields.

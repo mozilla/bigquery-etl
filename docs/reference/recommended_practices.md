@@ -135,6 +135,7 @@ labels:
 - Queries that only select from legacy telemetry data should be assigned a `legacy: true` label.
 - Queries that are output from code in `sql_generators/` should be assigned a `sql_generator` label set to the name of the generator.
 - only labels where value types are eithers integers or strings are published, all other values types are being skipped
+- The `bigquery.time_partitioning.expiration_days` value shouldn't be greater than the partition expiration of the upstream source tables unless the query does some form of de-identification (e.g. aggregation).
 
 ### Dynamic Schemas
 

@@ -117,7 +117,9 @@ SELECT
   CASE
     WHEN wnp.oldversion LIKE '999999999999999999999999%'
       THEN mozfun.norm.browser_version_info(NULL)
-    ELSE mozfun.norm.browser_version_info(wnp.oldversion)
+      -- There are a few cases where incredibly long value is injected for oldversion,
+      -- those are not valid values we drop them.
+    ELSE mozfun.norm.browser_version_info(IF(LENGTH(wnp.oldversion) >= 18, NULL, wnp.oldversion))
   END AS old_version_version_info,
   mozfun.norm.browser_version_info(wnp.newversion) AS new_version_version_info,
   CASE

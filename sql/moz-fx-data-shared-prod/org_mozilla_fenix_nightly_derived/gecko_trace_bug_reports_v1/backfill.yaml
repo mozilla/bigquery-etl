@@ -1,7 +1,0 @@
-2026-08-07:
-  start_date: 2026-07-27
-  end_date: 2026-08-07
-  reason: New table for bug report mappings, initial backfill.
-  watchers:
-  - jjalkanen@mozilla.com
-  status: Complete

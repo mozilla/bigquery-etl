@@ -15,9 +15,9 @@ are the only tables the mapper changes. Views join the two so that consumers see
 
 ## Pipeline
 
-For each Firefox application, the generator creates five derived tables.
+For each Firefox application, the generator creates seven derived tables.
 
-### Dimensions (`script.sql`, MERGE on the signature)
+### Dimensions (`script.sql`, MERGE on the signature, DAG `bqetl_gecko_trace`)
 
 1. **gecko_trace_events_v1** — One row per `event_signature`.
    The signature is a SHA256 hash of (source_file, source_line, result).
@@ -29,17 +29,23 @@ For each Firefox application, the generator creates five derived tables.
    A new signature with a known `trace_key` reuses the existing `stable_trace_id`.
    This table reads `gecko_trace_events_v1`, so it runs after it.
 
-### Bridge (`script.sql`, insert only)
+### Bridge (`script.sql`, insert only, DAG `bqetl_gecko_trace`)
 
 3. **gecko_trace_trace_events_v1** — One row per (`trace_signature`, `event_position`).
    Rows are written once, when a trace signature is first seen.
 
-### Daily facts (`query.sql`, partitioned by `submission_date`)
+### Daily facts (`query.sql`, partitioned by `submission_date`, DAG `bqetl_gecko_trace`)
 
 4. **gecko_trace_events_daily_v1** — One row per (`submission_date`, `event_signature`) with `hit_count`.
 5. **gecko_trace_traces_daily_v1** — One row per (`submission_date`, `trace_signature`) with `hit_count` and `avg_duration_nano`.
+6. **gecko_trace_platform_counts_v1** — One row per (`submission_date`, `trace_signature`, build, OS, OS version, architecture) with `hit_count`.
 
 A re-run of the same day replaces the partition.
+
+### Reporter state (`script.sql`, create only, DAG `bqetl_gecko_trace_weekly`)
+
+7. **gecko_trace_bug_reports_v1** — One row per `stable_trace_id` that has a Bugzilla bug.
+   The script only creates the table. The weekly reporter inserts and updates the rows.
 
 ### Aggregate views
 
@@ -50,6 +56,23 @@ The `gecko_trace_aggregates` dataset has these views. Each one combines all appl
 - **trace_events** — The bridge joined to both dimensions. Gives the ordered stable ids and source locations of each trace pattern.
 - **events_daily** — Daily event counts with `stable_event_id`.
 - **traces_daily** — Daily trace counts with `stable_trace_id`.
+- **platform_counts** — Daily trace counts per platform with `stable_trace_id`.
+- **bug_reports** — Bugzilla bugs filed per `stable_trace_id`.
+
+## Weekly Bugzilla reporter
+
+`sql/moz-fx-data-shared-prod/gecko_trace_aggregates/new_trace_reporter_v1/query.py` runs in the
+`bqetl_gecko_trace_weekly` DAG. It is hand-written, not generated. The logic is in
+`bigquery_etl/gecko_trace/bugzilla_reporter.py`. For each application it:
+
+1. Files one bug for each `stable_trace_id` first seen in the last 7 days that has no bug yet,
+   and records the bug in `gecko_trace_bug_reports_v1`.
+2. Posts one comment with fresh counts, platforms and source locations to the bug of each known
+   trace pattern that was seen in the last 7 days. It never changes the bug status.
+
+The reporter reads the `BUGZILLA_API_KEY` environment variable. In Airflow the key comes from the
+`bqetl_gecko_trace__bugzilla_api_key` secret declared in the task metadata. The secret must exist
+before the first production run.
 
 ## Applications
 
@@ -59,7 +82,8 @@ The generator creates tables for these Firefox applications:
 - `org_mozilla_fenix_nightly`
 - `org_mozilla_firefox_beta`
 
-To add an application, add it to the `APPLICATIONS` list in `__init__.py`.
+To add an application, add it to the `APPLICATIONS` list in `__init__.py` and in
+`bigquery_etl/gecko_trace/bugzilla_reporter.py`.
 
 ## Usage
 
@@ -76,18 +100,22 @@ Use `--target-project` to set the BigQuery project.
 templates/
   derived/
     _shared/
-      event_ctes.sql              # Span extraction and event hashing
-      trace_chain_ctes.sql        # Span tree walk and trace signatures
-    gecko_trace_events_v1/        script.sql, metadata.yaml, schema.yaml
-    gecko_trace_traces_v1/        script.sql, metadata.yaml, schema.yaml
-    gecko_trace_trace_events_v1/  script.sql, metadata.yaml, schema.yaml
-    gecko_trace_events_daily_v1/  query.sql, metadata.yaml, schema.yaml
-    gecko_trace_traces_daily_v1/  query.sql, metadata.yaml, schema.yaml
+      event_ctes.sql                  # Span extraction and event hashing
+      trace_chain_ctes.sql            # Span tree walk and trace signatures
+    gecko_trace_events_v1/            script.sql, metadata.yaml, schema.yaml
+    gecko_trace_traces_v1/            script.sql, metadata.yaml, schema.yaml
+    gecko_trace_trace_events_v1/      script.sql, metadata.yaml, schema.yaml
+    gecko_trace_events_daily_v1/      query.sql, metadata.yaml, schema.yaml
+    gecko_trace_traces_daily_v1/      query.sql, metadata.yaml, schema.yaml
+    gecko_trace_platform_counts_v1/   query.sql, metadata.yaml, schema.yaml
+    gecko_trace_bug_reports_v1/       script.sql, metadata.yaml, schema.yaml
   aggregates/
     dataset_metadata.yaml
-    events/        view.sql, metadata.yaml
-    traces/        view.sql, metadata.yaml
-    trace_events/  view.sql, metadata.yaml
-    events_daily/  view.sql, metadata.yaml
-    traces_daily/  view.sql, metadata.yaml
+    events/           view.sql, metadata.yaml
+    traces/           view.sql, metadata.yaml
+    trace_events/     view.sql, metadata.yaml
+    events_daily/     view.sql, metadata.yaml
+    traces_daily/     view.sql, metadata.yaml
+    platform_counts/  view.sql, metadata.yaml
+    bug_reports/      view.sql, metadata.yaml
 ```

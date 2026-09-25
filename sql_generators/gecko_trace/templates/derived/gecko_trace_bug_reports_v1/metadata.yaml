@@ -1,24 +1,28 @@
 ---
 friendly_name: Gecko Trace Bug Reports
 description: |-
-  Records which trace patterns already have a Bugzilla bug.
+  Bugzilla bugs filed for trace patterns, one row per stable_trace_id.
 
-  The weekly reporter uses this table to avoid duplicate bug filings.
-  Each row links one stable_trace_id to one Bugzilla bug number.
+  The weekly reporter writes this table. It files one bug for each new
+  stable_trace_id and records the bug here so that it does not file it again.
+  It also records when it last posted a comment to the bug.
+
+  The script only creates the table. The reporter inserts and updates the rows.
 
 owners:
   - jjalkanen@mozilla.com
 
 labels:
-  incremental: true
+  incremental: false
   schedule: weekly
 
 scheduling:
   dag_name: bqetl_gecko_trace_weekly
   task_group: {{ app_id }}
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
 
 bigquery:
   clustering:
     fields:
       - stable_trace_id
-      - app_id

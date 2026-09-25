@@ -1,0 +1,25 @@
+---
+# Trace A on Windows 10 (t1).
+- submission_date: 2026-08-03
+  trace_signature: 7NOyT14irw/rcw7tcJo2fCFMhOHHwQ4voN7T37l1K9w=
+  app_build: "20260801000000"
+  normalized_os: Windows
+  normalized_os_version: "10.0"
+  architecture: x86_64
+  hit_count: 1
+# Trace A on Linux (t3).
+- submission_date: 2026-08-03
+  trace_signature: 7NOyT14irw/rcw7tcJo2fCFMhOHHwQ4voN7T37l1K9w=
+  app_build: "20260802000000"
+  normalized_os: Linux
+  normalized_os_version: "6.1"
+  architecture: aarch64
+  hit_count: 1
+# Trace B on Windows 11 (t2).
+- submission_date: 2026-08-03
+  trace_signature: 0Q1la/+EIp9/nR+BnjIO4ynq8cgeHdx78h8clwC4fJ4=
+  app_build: "20260801000000"
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  architecture: x86_64
+  hit_count: 1

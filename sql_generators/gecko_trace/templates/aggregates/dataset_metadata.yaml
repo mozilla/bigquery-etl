@@ -1,7 +1,8 @@
 ---
 friendly_name: Gecko Trace
 description: |-
-  Views of events, traces, trace-event links and daily counts from the Gecko engine across all Firefox applications.
+  Views of events, traces, trace-event links, daily counts, platform counts and Bugzilla
+  bug reports from the Gecko engine across all Firefox applications.
 
   These views combine data from Firefox Desktop, Firefox for Android Nightly, and Firefox for Android Beta.
   They expose stable ids for events and traces. Use them for cross-application and cross-release analysis.

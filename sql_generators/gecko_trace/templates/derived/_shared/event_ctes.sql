@@ -7,7 +7,11 @@ raw_spans AS (
     JSON_VALUE(span, '$.parent_span_id') AS parent_span_id,
     JSON_QUERY_ARRAY(span, '$.events') AS events,
     SAFE_CAST(JSON_VALUE(span, '$.start_time_unix_nano') AS INT64) AS start_time_unix_nano,
-    SAFE_CAST(JSON_VALUE(span, '$.end_time_unix_nano') AS INT64) AS end_time_unix_nano
+    SAFE_CAST(JSON_VALUE(span, '$.end_time_unix_nano') AS INT64) AS end_time_unix_nano,
+    client_info.app_build AS app_build,
+    normalized_os,
+    normalized_os_version,
+    client_info.architecture AS architecture
   FROM
     `{{ target_project }}.{{ app_id }}_stable.{{ ping_name }}_v1`
   CROSS JOIN

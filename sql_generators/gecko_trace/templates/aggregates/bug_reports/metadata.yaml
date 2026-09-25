@@ -1,0 +1,10 @@
+---
+friendly_name: Gecko Trace Bug Reports
+description: |-
+  Bugzilla bugs filed for trace patterns across all Firefox applications.
+
+  Each row maps one (app_id, stable_trace_id) to its Bugzilla bug number and
+  the date of the last reporter comment.
+
+owners:
+  - jjalkanen@mozilla.com

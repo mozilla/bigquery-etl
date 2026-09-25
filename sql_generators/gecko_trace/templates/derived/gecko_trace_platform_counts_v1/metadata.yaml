@@ -1,10 +1,12 @@
 ---
 friendly_name: Gecko Trace Platform Counts
 description: |-
-  Counts of trace patterns per platform and build.
+  Daily counts of trace patterns per build, OS and architecture.
 
-  Each row has one trace signature with one (build, OS, architecture)
-  combination and the count for one day.
+  Each row has one trace signature with one (build, OS, OS version, architecture)
+  combination and its count for one day.
+  Join gecko_trace_traces_v1 on trace_signature to get the stable_trace_id.
+  A re-run of the same day replaces the partition.
 
 owners:
   - jjalkanen@mozilla.com
@@ -16,10 +18,12 @@ labels:
 scheduling:
   dag_name: bqetl_gecko_trace
   task_group: {{ app_id }}
-  date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
 
 bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
   clustering:
     fields:
       - trace_signature

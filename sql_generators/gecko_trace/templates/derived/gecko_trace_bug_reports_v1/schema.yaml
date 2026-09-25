@@ -1,17 +1,9 @@
 ---
 fields:
-  - name: submission_date
-    type: DATE
-    mode: NULLABLE
-    description: Date this row was inserted.
   - name: stable_trace_id
     type: STRING
     mode: NULLABLE
-    description: Stable UUID of the trace pattern. Foreign key to gecko_trace_traces_v1.
-  - name: app_id
-    type: STRING
-    mode: NULLABLE
-    description: Application ID, for example firefox_desktop.
+    description: FK to gecko_trace_traces_v1. Stable UUID of the trace pattern.
   - name: bug_id
     type: INT64
     mode: NULLABLE
@@ -19,4 +11,12 @@ fields:
   - name: filed_date
     type: DATE
     mode: NULLABLE
-    description: Date the Bugzilla bug was filed.
+    description: Date when the reporter filed the bug.
+  - name: last_comment_date
+    type: DATE
+    mode: NULLABLE
+    description: Date of the last bug comment or filing made by the reporter.
+  - name: last_reported_trace_signature
+    type: STRING
+    mode: NULLABLE
+    description: Trace signature whose source locations the reporter last posted to the bug.

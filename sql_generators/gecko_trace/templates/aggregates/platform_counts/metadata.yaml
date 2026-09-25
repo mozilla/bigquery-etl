@@ -1,9 +1,11 @@
 ---
 friendly_name: Gecko Trace Platform Counts
 description: |-
-  Trace pattern counts per platform and build across all Firefox applications.
+  Daily trace pattern counts per build, OS and architecture across all Firefox applications.
 
-  This view sums daily counts for each (trace_signature, build, OS, architecture) combination.
+  Each row has one (app_id, submission_date, trace_signature, platform) and its count,
+  with the stable_trace_id of the pattern. Use it to see which platforms a trace
+  pattern occurs on.
 
 owners:
   - jjalkanen@mozilla.com

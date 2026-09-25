@@ -2930,20 +2930,23 @@ bqetl_gecko_trace:
 
 bqetl_gecko_trace_weekly:
   catchup: false
-  schedule_interval: 0 6 * * 1
+  # Runs after bqetl_gecko_trace (09:00) has loaded Sunday's partitions.
+  schedule_interval: 0 12 * * 1
   description: |
     Weekly gecko trace reporting jobs.
-    Files Bugzilla bugs for new trace patterns.
+    Files Bugzilla bugs for new trace patterns and posts weekly updates
+    to the bugs of trace patterns that are still seen.
   default_args:
     depends_on_past: false
     owner: jjalkanen@mozilla.com
     email:
+      - telemetry-alerts@mozilla.com
       - jjalkanen@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     retries: 2
     retry_delay: 30m
-    start_date: "2026-06-12"
+    start_date: "2026-09-25"
   repo: bigquery-etl
   tags:
     - impact/tier_3

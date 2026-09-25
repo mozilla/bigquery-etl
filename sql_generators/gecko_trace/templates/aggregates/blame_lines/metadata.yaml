@@ -1,0 +1,11 @@
+---
+friendly_name: Gecko Trace Blame Lines
+description: |-
+  Cached Searchfox blame data for the source lines of gecko trace events,
+  across all Firefox applications.
+
+  Each row gives, for one event source line at one git revision, the revision
+  that introduced the line and the position the line had there.
+
+owners:
+  - jjalkanen@mozilla.com

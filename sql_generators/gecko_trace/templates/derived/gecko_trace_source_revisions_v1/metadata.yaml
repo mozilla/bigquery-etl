@@ -1,0 +1,30 @@
+---
+friendly_name: Gecko Trace Source Revisions
+description: |-
+  Source revision of each Firefox build seen in gecko traces, one row per app_build.
+
+  The daily event mapper writes this table. It looks the build id up in
+  buildhub2 to get the hg revision and the repository, picks the Searchfox
+  tree for that repository, and asks Searchfox for the git revision.
+  A row with a NULL git_rev is a build that could not be resolved.
+  The mapper does not try again for such a build.
+
+  The script only creates the table. The mapper inserts the rows.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: false
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
+
+bigquery:
+  clustering:
+    fields:
+      - app_build

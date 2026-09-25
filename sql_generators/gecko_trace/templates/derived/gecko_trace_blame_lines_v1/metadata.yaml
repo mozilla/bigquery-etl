@@ -1,0 +1,37 @@
+---
+friendly_name: Gecko Trace Blame Lines
+description: |-
+  Cached Searchfox blame data for the source lines of gecko trace events.
+
+  One row per event source line at one git revision. The row gives the
+  revision that introduced the line together with the path and line number
+  the line had in that revision. These three values stay the same while the
+  line is not modified, so two lines in different revisions that share them
+  are the same line. This is how the mapper finds the same event in a new
+  Firefox release.
+
+  A line that does not exist in a revision, because the file is missing or
+  shorter, has NULL origin fields. The daily event mapper writes this table
+  from the Searchfox blame-lines endpoint and never asks for the same
+  (tree, git_rev, source_file, lineno) twice.
+
+  The script only creates the table. The mapper inserts the rows.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: false
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
+
+bigquery:
+  clustering:
+    fields:
+      - git_rev
+      - source_file

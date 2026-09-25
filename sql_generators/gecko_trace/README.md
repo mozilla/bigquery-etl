@@ -13,9 +13,12 @@ Tables that count things are keyed by signature and partitioned by day. They are
 rewritten when the mapper runs. Tables that map signatures to stable ids are small and
 are the only tables the mapper changes. Views join the two so that consumers see stable ids.
 
+The mapper is the daily `event_mapper_v1` job described below. It uses Searchfox blame data
+to find the same source line in two Firefox releases.
+
 ## Pipeline
 
-For each Firefox application, the generator creates seven derived tables.
+For each Firefox application, the generator creates nine derived tables.
 
 ### Dimensions (`script.sql`, MERGE on the signature, DAG `bqetl_gecko_trace`)
 
@@ -47,6 +50,17 @@ A re-run of the same day replaces the partition.
 7. **gecko_trace_bug_reports_v1** — One row per `stable_trace_id` that has a Bugzilla bug.
    The script only creates the table. The weekly reporter inserts and updates the rows.
 
+### Mapper caches (`script.sql`, create only, DAG `bqetl_gecko_trace`)
+
+8. **gecko_trace_source_revisions_v1** — One row per `app_build`. Gives the Searchfox tree,
+   the hg revision and the git revision of the build. A NULL `git_rev` marks a build that
+   could not be resolved.
+9. **gecko_trace_blame_lines_v1** — One row per event source line at one git revision.
+   Gives the revision that introduced the line and the position the line had there.
+   A line that does not exist at a revision has NULL origin fields.
+
+The scripts only create the tables. The daily mapper inserts the rows.
+
 ### Aggregate views
 
 The `gecko_trace_aggregates` dataset has these views. Each one combines all applications.
@@ -58,6 +72,31 @@ The `gecko_trace_aggregates` dataset has these views. Each one combines all appl
 - **traces_daily** — Daily trace counts with `stable_trace_id`.
 - **platform_counts** — Daily trace counts per platform with `stable_trace_id`.
 - **bug_reports** — Bugzilla bugs filed per `stable_trace_id`.
+- **source_revisions** — Build ids with their Searchfox tree and revisions.
+- **blame_lines** — Cached Searchfox blame data for event source lines.
+
+## Daily event mapper
+
+`sql/moz-fx-data-shared-prod/gecko_trace_aggregates/event_mapper_v1/query.py` runs at the end
+of the `bqetl_gecko_trace` DAG. It is hand-written, not generated. The logic is in
+`bigquery_etl/gecko_trace/event_mapper.py` and the Searchfox client in
+`bigquery_etl/gecko_trace/searchfox.py`. For each application it:
+
+1. Finds events whose (build, source file, source line) has no cached blame. On the first run
+   that is every event; later it is only the new events of the day. It looks unknown builds
+   up in `telemetry.buildhub2` to get the hg revision and repository, picks the Searchfox tree
+   for the repository, and asks the Searchfox `hgrev` endpoint for the git revision.
+2. Fetches the Searchfox `blame-lines` endpoint once per revision for all lines that need it,
+   and stores one row per event line in `gecko_trace_blame_lines_v1`. A revision that has no blame yet,
+   for example a nightly from the same day, is not cached and is tried again on the next run.
+3. Gives events that share the blame triple (introducing revision, path, line) and the result the
+   `stable_event_id` of the oldest such event.
+4. Recomputes `trace_key` from the ordered stable event ids and gives traces with the same key the
+   `stable_trace_id` of the oldest trace. A trace whose events do not all map keeps its own id.
+
+Searchfox stores blame only for lines that were not modified. A line touched by a reformatting
+commit gets a new identity and the event counts as new, which is the same result as without the
+mapper. Builds of Android applications are not in buildhub2 and are not resolved.
 
 ## Weekly Bugzilla reporter
 
@@ -83,7 +122,7 @@ The generator creates tables for these Firefox applications:
 - `org_mozilla_firefox_beta`
 
 To add an application, add it to the `APPLICATIONS` list in `__init__.py` and in
-`bigquery_etl/gecko_trace/bugzilla_reporter.py`.
+`bigquery_etl/gecko_trace/__init__.py`.
 
 ## Usage
 
@@ -109,6 +148,8 @@ templates/
     gecko_trace_traces_daily_v1/      query.sql, metadata.yaml, schema.yaml
     gecko_trace_platform_counts_v1/   query.sql, metadata.yaml, schema.yaml
     gecko_trace_bug_reports_v1/       script.sql, metadata.yaml, schema.yaml
+    gecko_trace_source_revisions_v1/  script.sql, metadata.yaml, schema.yaml
+    gecko_trace_blame_lines_v1/       script.sql, metadata.yaml, schema.yaml
   aggregates/
     dataset_metadata.yaml
     events/           view.sql, metadata.yaml
@@ -118,4 +159,6 @@ templates/
     traces_daily/     view.sql, metadata.yaml
     platform_counts/  view.sql, metadata.yaml
     bug_reports/      view.sql, metadata.yaml
+    source_revisions/ view.sql, metadata.yaml
+    blame_lines/      view.sql, metadata.yaml
 ```

@@ -8,6 +8,8 @@ from typing import List, Optional
 import requests
 from google.cloud import bigquery
 
+from bigquery_etl.gecko_trace import APPLICATIONS
+
 BUGZILLA_PROD_URL = "https://bugzilla.mozilla.org/rest"
 BUGZILLA_DEV_URL = "https://bugzilla-dev.allizom.org/rest"
 PRODUCT = "Firefox"
@@ -16,11 +18,6 @@ WINDOW_DAYS = 7
 TOP_PLATFORMS = 10
 SEARCHFOX_URL = "https://searchfox.org/firefox-main/source/{file}#{line}"
 
-APPLICATIONS = (
-    "firefox_desktop",
-    "org_mozilla_fenix_nightly",
-    "org_mozilla_firefox_beta",
-)
 
 NEW_TRACES_QUERY = """
 SELECT

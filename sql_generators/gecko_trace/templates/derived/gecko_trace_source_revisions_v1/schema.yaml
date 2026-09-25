@@ -1,0 +1,26 @@
+---
+fields:
+  - name: app_build
+    type: STRING
+    mode: NULLABLE
+    description: Firefox build id as reported in client_info.app_build.
+  - name: channel
+    type: STRING
+    mode: NULLABLE
+    description: Release channel of the build from buildhub2, for example release or nightly.
+  - name: tree
+    type: STRING
+    mode: NULLABLE
+    description: Searchfox tree that indexes the repository of the build, for example firefox-release.
+  - name: hg_rev
+    type: STRING
+    mode: NULLABLE
+    description: Mercurial changeset the build was made from, from buildhub2.
+  - name: git_rev
+    type: STRING
+    mode: NULLABLE
+    description: Git commit for hg_rev in the Searchfox tree. NULL when the build could not be resolved.
+  - name: resolved_date
+    type: DATE
+    mode: NULLABLE
+    description: Date when the mapper resolved this build.

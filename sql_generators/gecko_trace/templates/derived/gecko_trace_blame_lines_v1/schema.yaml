@@ -1,0 +1,34 @@
+---
+fields:
+  - name: tree
+    type: STRING
+    mode: NULLABLE
+    description: Searchfox tree the data came from, for example firefox-release.
+  - name: git_rev
+    type: STRING
+    mode: NULLABLE
+    description: Git commit the file was read at.
+  - name: source_file
+    type: STRING
+    mode: NULLABLE
+    description: Source file path exactly as it appears in the events, before path normalization.
+  - name: lineno
+    type: INT64
+    mode: NULLABLE
+    description: 1-based line number of the event source line in the file at git_rev.
+  - name: origin_rev
+    type: STRING
+    mode: NULLABLE
+    description: Git commit that introduced this line. NULL when the line does not exist at git_rev.
+  - name: origin_path
+    type: STRING
+    mode: NULLABLE
+    description: Path of the file in origin_rev.
+  - name: origin_lineno
+    type: INT64
+    mode: NULLABLE
+    description: Line number of this line in origin_rev.
+  - name: fetched_date
+    type: DATE
+    mode: NULLABLE
+    description: Date when the mapper fetched this file from Searchfox.

@@ -1,0 +1,11 @@
+---
+friendly_name: Gecko Trace Source Revisions
+description: |-
+  Source revisions of the Firefox builds seen in gecko traces, across all
+  Firefox applications.
+
+  Each row maps one (app_id, app_build) to its Searchfox tree, hg revision
+  and git revision.
+
+owners:
+  - jjalkanen@mozilla.com

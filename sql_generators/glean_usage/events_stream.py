@@ -134,24 +134,15 @@ class EventsStreamTable(GleanTable):
         ):
             return
 
-        extras_by_type = defaultdict(
-            lambda: defaultdict(lambda: {"name": "", "type": "", "descriptions": []})
-        )
+        extras_by_type = _extras_by_type_dict()
         for app_id_info in app_ids_info:
             app_id_extras_by_type = get_glean_app_event_extras_by_type(
                 app_id_info["v1_name"],
                 skip_descriptions_deduplication=True,
             )
-            for extra_type, app_id_extras in app_id_extras_by_type.items():
-                for extra_name, app_id_extra in app_id_extras.items():
-                    extra = extras_by_type[extra_type][extra_name]
-                    extra["name"] = extra_name
-                    extra["type"] = extra_type
-                    extra["descriptions"].extend(app_id_extra["descriptions"])
+            _merge_extras_by_type(extras_by_type, app_id_extras_by_type)
         # Deduplicate the descriptions only after we have all of them so we can accurately tell which are most common.
-        for extras in extras_by_type.values():
-            for extra in extras.values():
-                extra["descriptions"] = _deduplicate_descriptions(extra["descriptions"])
+        _deduplicate_extras_by_type_descriptions(extras_by_type)
 
         custom_render_kwargs = {"extras_by_type": extras_by_type}
 
@@ -206,6 +197,38 @@ def get_glean_app_ping_expiration_days(v1_name: str, ping: str = "events") -> in
     )
 
 
+def _extras_by_type_dict() -> dict[str, dict[str, dict]]:
+    """Return a nested `defaultdict` setup for an `extras_by_type` dictionary indexed by type and name."""
+    return defaultdict(
+        lambda: defaultdict(lambda: {"name": "", "type": "", "descriptions": []})
+    )
+
+
+def _merge_extras_by_type(
+    extras_by_type: dict[str, dict[str, dict]],
+    other_extras_by_type: dict[str, dict[str, dict]],
+) -> None:
+    """Merge `other_extras_by_type` into `extras_by_type`."""
+    for extra_type, other_extras in other_extras_by_type.items():
+        for extra_name, other_extra in other_extras.items():
+            extra = extras_by_type[extra_type][extra_name]
+            extra["name"] = extra_name
+            extra["type"] = extra_type
+            extra["descriptions"].extend(other_extra["descriptions"])
+
+
+def _deduplicate_extras_by_type_descriptions(
+    extras_by_type: dict[str, dict[str, dict]],
+) -> None:
+    """Deduplicate the `extras_by_type` descriptions, putting the most commonly used descriptions first."""
+    for extras in extras_by_type.values():
+        for extra in extras.values():
+            extra["descriptions"] = [
+                description
+                for description, _ in Counter(extra["descriptions"]).most_common()
+            ]
+
+
 @cache
 def get_glean_app_event_extras_by_type(
     v1_name: str,
@@ -214,9 +237,7 @@ def get_glean_app_event_extras_by_type(
     skip_descriptions_deduplication: bool = False,
 ) -> dict[str, dict[str, dict]]:
     """Return the Glean app's event extras for the specified ping, indexed by type and name, with normalized descriptions collected in a list."""
-    extras_by_type: dict[str, dict[str, dict]] = defaultdict(
-        lambda: defaultdict(lambda: {"name": "", "type": "", "descriptions": []})
-    )
+    extras_by_type = _extras_by_type_dict()
     repository = get_glean_app_repository(v1_name)
 
     if not cutoff_date:
@@ -243,21 +264,9 @@ def get_glean_app_event_extras_by_type(
         dependency_extras_by_type = get_glean_app_event_extras_by_type(
             dependency_v1_name, ping, cutoff_date, skip_descriptions_deduplication=True
         )
-        for extra_type, dependency_extras in dependency_extras_by_type.items():
-            for extra_name, dependency_extra in dependency_extras.items():
-                extra = extras_by_type[extra_type][extra_name]
-                extra["name"] = extra_name
-                extra["type"] = extra_type
-                extra["descriptions"].extend(dependency_extra["descriptions"])
+        _merge_extras_by_type(extras_by_type, dependency_extras_by_type)
 
     if not skip_descriptions_deduplication:
-        for extras in extras_by_type.values():
-            for extra in extras.values():
-                extra["descriptions"] = _deduplicate_descriptions(extra["descriptions"])
+        _deduplicate_extras_by_type_descriptions(extras_by_type)
 
     return extras_by_type
-
-
-def _deduplicate_descriptions(descriptions: list[str]) -> list[str]:
-    """Deduplicate the descriptions, putting the most commonly used descriptions first."""
-    return [description for description, _ in Counter(descriptions).most_common()]

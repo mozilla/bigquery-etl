@@ -1,0 +1,36 @@
+friendly_name: Plausible Sessions Metrics V1
+description: |-
+  Daily aggregate of Plausible sessions by their entry page (the first page
+  viewed in the session) and country. Single scan of the raw Plausible
+  sessions export -- no join to events_v1, so none of the midnight
+  window-split caveats in plausible_external/README.md apply here.
+
+  bounces / entrances are exposed separately rather than as a pre-computed
+  bounce rate so that computing a rate across further grouping (e.g. across
+  countries) can be done correctly by summing both sides first.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_plausible_derived
+  depends_on_table_partitions_existing:
+  - task_id: wait_for_plausible_sessions_partition_for_sessions_metrics_v1
+    table_id: moz-fx-data-shared-prod.plausible_external.sessions_v1
+    partition_id: '{{ ds_nodash }}'
+    poke_interval: 30m
+    timeout: 10h
+    retries: 1
+    retry_delay: 30m
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - entry_page
+    - country_code
+require_column_descriptions: true

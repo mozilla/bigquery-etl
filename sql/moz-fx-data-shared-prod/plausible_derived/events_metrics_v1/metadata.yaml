@@ -1,0 +1,43 @@
+friendly_name: Plausible Events Metrics V1
+description: |-
+  Daily aggregate of Plausible events on firefox.com, by page path, country,
+  and event name. Single scan of the raw Plausible events export -- no join
+  to sessions_v1, so none of the midnight window-split caveats in
+  plausible_external/README.md apply here.
+
+  Covers every event name Plausible emits, including any added in the
+  future -- event_name is a plain dimension, not hardcoded columns, so a new
+  event type requires no schema change here. product_download rows are
+  included here too (a generic count, no product/platform breakdown); see
+  plausible_derived.download_metrics_v1 for that breakdown specifically.
+
+  total_engagement_time_ms is exposed as a sum rather than a pre-computed
+  average so that averaging across further grouping (e.g. across countries)
+  can be done correctly by summing both it and event_count first. It is only
+  meaningful when event_name = 'engagement'.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_plausible_derived
+  depends_on_table_partitions_existing:
+  - task_id: wait_for_plausible_events_partition_for_events_metrics_v1
+    table_id: moz-fx-data-shared-prod.plausible_external.events_v1
+    partition_id: '{{ ds_nodash }}'
+    poke_interval: 30m
+    timeout: 10h
+    retries: 1
+    retry_delay: 30m
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - pathname
+    - country_code
+require_column_descriptions: true

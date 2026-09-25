@@ -146,6 +146,7 @@ SELECT
       JSON_VALUE(event_extra.page_language) AS `page_language`,
       JSON_VALUE(event_extra.part_id) AS `part_id`,
       JSON_VALUE(event_extra.period) AS `period`,
+      JSON_VALUE(event_extra.permission) AS `permission`,
       JSON_VALUE(event_extra.position) AS `position`,
       JSON_VALUE(event_extra.preference) AS `preference`,
       JSON_VALUE(event_extra.preferred_size) AS `preferred_size`,

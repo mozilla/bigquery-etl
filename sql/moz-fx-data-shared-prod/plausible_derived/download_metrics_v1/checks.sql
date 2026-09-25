@@ -5,7 +5,7 @@
 {{ is_unique(["date", "pathname", "entry_page", "country_code", "acquisition_channel", "utm_campaign", "product", "platform", "release_channel", "download_language", "method"], "date = @submission_date") }}
 
 #warn
-{{ row_count_within_past_partitions_avg(7, 50, "date") }}
+{{ row_count_within_past_partitions_avg(7, 50) }}
 -- Drift warning: flags any props key on product_download events that this
 -- query isn't already parsing into its own column, so a new or renamed
 -- vendor property gets noticed instead of silently dropped.

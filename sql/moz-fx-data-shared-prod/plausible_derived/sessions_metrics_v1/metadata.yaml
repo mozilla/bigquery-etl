@@ -17,7 +17,7 @@ labels:
 scheduling:
   dag_name: bqetl_plausible_derived
   depends_on_table_partitions_existing:
-  - task_id: wait_for_plausible_sessions_partition
+  - task_id: wait_for_plausible_sessions_partition_for_sessions_metrics_v1
     table_id: moz-fx-data-shared-prod.plausible_external.sessions_v1
     partition_id: '{{ ds_nodash }}'
     poke_interval: 30m

@@ -31,8 +31,8 @@ bigquery:
     # Load-bearing: fenix.retention_clients reads the whole table with no date
     # filter and collapses it to one row per client there.
     require_partition_filter: false
-    # Deliberate: null keeps past partitions permanent, and it holds the
-    # backfill retention limit at 775 days rather than lowering it.
+    # Deliberate: is_onboarded needs every completion since 2025-01-01 to stay
+    # TRUE for long-tenured clients, so the table is on retention_exclusion_list.
     expiration_days: null
   clustering:
     fields:

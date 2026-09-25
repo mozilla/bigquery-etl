@@ -16,7 +16,7 @@ One row per Fenix client per day on which an `onboarding.completed` event from t
 
 ## Floor
 
-Coverage will begin 2025-01-01 when the table is backfilled; until then it holds only the days since it was deployed. A client whose completions all fall before 2025-01-01 will have no row here.
+Coverage will begin 2025-01-01 when the table is backfilled; until then it holds only the days since it was deployed. Partitions do not expire, so the floor will stay at 2025-01-01. A client whose completions all fall before 2025-01-01 will have no row here.
 
 That sets what `is_onboarded` on `retention_clients` can say. It will read `FALSE` only for clients first seen on or after 2025-01-01 with no completion on record by the row's `submission_date`, and `NULL` for clients first seen before that date or with no `first_seen_date` who have no completion on record by then, since their completions may predate the table. A completion whose ping arrived after the row's `submission_date` counts as not yet on record, so a late ping reads as `FALSE`, or `NULL` for a client first seen before 2025-01-01. A completion rate should filter on `first_seen_date >= '2025-01-01'`: clients first seen earlier read `TRUE` when they completed and `NULL` when they did not, so including them overstates the rate. Until the backfill completes, clients first seen on or after 2025-01-01 whose completions are not yet loaded will also read `FALSE`.
 

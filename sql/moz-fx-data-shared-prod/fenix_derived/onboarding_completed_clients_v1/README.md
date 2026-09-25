@@ -8,7 +8,7 @@ One row per Fenix client per day on which an `onboarding.completed` event from t
 * **Key fields:** `client_id`, `completed_date`, `sample_id` (a clustering field, not part of the grain), `app_version`
 * **Source:** `fenix.events_stream`
 * **Filters:** `event_category = 'onboarding'`, `event_name = 'completed'`, and a non-null `client_id`
-* **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `is_onboarded` and `app_version_at_onboarding_completion`, both limited there to completions on or before the row's `submission_date`. On `new_profile` rows that is the client's day 27; on later rows it is 27 days after that row's `metric_date`
+* **Downstream:** the `fenix.onboarding_completed_clients` view exposes this table unchanged. `fenix.retention_clients` reads that view to add two columns, `is_onboarded` and `app_version_at_onboarding_completion`. Both consider only completions on or before the row's `submission_date`: the client's day 27 on `new_profile` rows, and 27 days after that row's `metric_date` on later rows.
 
 `client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. Collapse on `client_id` first, and take `app_version` from the same row you take the date from. For example, `retention_clients` does this in its `onboarding_completions` CTE.
 

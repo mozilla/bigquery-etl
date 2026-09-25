@@ -9,7 +9,6 @@ FROM
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND LENGTH(query) > 0
-  AND normalized_channel = 'release'
   AND NOT `moz-fx-data-shared-prod.udf.is_moz_supplied_suggestion`(reporting_url)
 GROUP BY
   query,

@@ -8,7 +8,7 @@ One row per Fenix client per day on which they fired the Glean `onboarding.compl
 * **Key fields:** `client_id`, `completed_date`, `sample_id` (a clustering field, not part of the grain), `app_version`
 * **Source:** `fenix.events_stream`
 * **Filters:** `event_category = 'onboarding'`, `event_name = 'completed'`, and a non-null `client_id`
-* **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `onboarding_completed_by_day_27` and `app_version_at_onboarding_completion`, both limited there to completions on or before the row's day-27 date
+* **Downstream:** the view `fenix.onboarding_completed_clients`, which exposes this table unchanged, read by `fenix.retention_clients` to expose `is_onboarded` and `app_version_at_onboarding_completion`, both limited there to completions on or before the row's day-27 date
 
 `client_id` is not unique here, so anything joining this table or its view on `client_id` alone fans out. Collapse on `client_id` first, and take `app_version` from the same row you take the date from. For example, `retention_clients` does this in its `onboarding_completions` CTE.
 
@@ -18,7 +18,7 @@ One row per Fenix client per day on which they fired the Glean `onboarding.compl
 
 The table will be backfilled from 2025-01-01, so a client whose completions all fall before that date will have no row here.
 
-That matters downstream: on `retention_clients` those clients will read `NULL` rather than `FALSE`, indistinguishable from clients who never completed — the flag is `TRUE` or `NULL` and never `FALSE`. Anyone segmenting retention on it should filter `first_seen_date >= '2025-01-01'` so the population is limited to clients whose whole life falls inside the window. That filter is also what a completion rate needs for its denominator: `COUNTIF(onboarding_completed_by_day_27) / COUNT(onboarding_completed_by_day_27)` returns exactly 1.0, since `COUNT` skips nulls and every non-completer is null, so the denominator has to come from `retention_clients`'s own rows instead. `WHERE NOT onboarding_completed_by_day_27` returns nothing, for the same reason.
+That matters downstream: on `retention_clients` those clients will read `NULL` rather than `FALSE`, indistinguishable from clients who never completed — the flag is `TRUE` or `NULL` and never `FALSE`. Anyone segmenting retention on it should filter `first_seen_date >= '2025-01-01'` so the population is limited to clients whose whole life falls inside the window. That filter is also what a completion rate needs for its denominator: `COUNTIF(is_onboarded) / COUNT(is_onboarded)` returns exactly 1.0, since `COUNT` skips nulls and every non-completer is null, so the denominator has to come from `retention_clients`'s own rows instead. `WHERE NOT is_onboarded` returns nothing, for the same reason.
 
 ## Runs
 

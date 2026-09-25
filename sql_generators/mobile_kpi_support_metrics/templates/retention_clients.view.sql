@@ -122,7 +122,7 @@ SELECT
   {% else %}
   -- Not populated for this product; kept for union compatibility with fenix.
   CAST(NULL AS BOOLEAN)
-  {% endif %} AS onboarding_completed_by_day_27,
+  {% endif %} AS is_onboarded,
   {% if app_name == "fenix" %}
   -- The version at the client's earliest completion, limited to the same day-27
   -- window as the flag above so the two agree on who completed. Distinct from

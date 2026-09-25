@@ -140,7 +140,7 @@ SELECT
     onboarding_completions.first_completed_date <= active_users.submission_date,
     TRUE,
     NULL
-  ) AS onboarding_completed_by_day_27,
+  ) AS is_onboarded,
   -- The version at the client's earliest completion, limited to the same day-27
   -- window as the flag above so the two agree on who completed. Distinct from
   -- app_version above, which is as of the metric date. Null where the completion

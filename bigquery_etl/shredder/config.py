@@ -369,6 +369,14 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     DeleteTarget(
+        table="remote_settings_derived.clients_uptake_events_v1",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_GLEAN_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
         table="ltv_derived.fenix_client_ltv_v1",
         field=(),
     ): (),  # Does not need to be shredded https://mozilla-hub.atlassian.net/browse/DENG-6169

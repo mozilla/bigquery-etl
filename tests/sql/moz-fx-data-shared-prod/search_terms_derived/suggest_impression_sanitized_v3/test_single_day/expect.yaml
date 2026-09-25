@@ -58,25 +58,20 @@
   country: US
   form_factor: desktop
   is_clicked: false
-  locale: en-US
   normalized_channel: release
   normalized_os: macOS
   normalized_os_version: "15.2"
   os_family: macos
   position: 11
   query: anvils
-  region: CA
   reporting_url: https://example.com/acme-corp
   request_id: rid11
   sequence_no: 11
   session_id: sid11
   submission_timestamp: "2021-01-01T13:01:00+00:00"
   timestamp: "2021-01-01T13:01:00+00:00"
-  version: "134"
   match_type: "firefox-suggest"
-  experiments:
-    - slug: glean-exp
-      branch: treatment
+  experiments: []
 - advertiser: dunder mifflin
   block_id: 202
   browser: firefox(134)
@@ -84,25 +79,20 @@
   country: US
   form_factor: desktop
   is_clicked: true
-  locale: en-US
   normalized_channel: beta
   normalized_os: macOS
   normalized_os_version: "15.0"
   os_family: macos
   position: 12
   query: "best paper"
-  region: PA
   reporting_url: https://example.com/dunder-mifflin
   request_id: rid12
   sequence_no: 12
   session_id: sid12
   submission_timestamp: "2021-01-01T13:02:00+00:00"
   timestamp: "2021-01-01T13:02:00+00:00"
-  version: "134"
   match_type: "best-match"
-  experiments:
-    - slug: glean-exp
-      branch: treatment
+  experiments: []
 # legacy rid_overlap wins over glean rid_overlap (13:06 > 13:05); experiments from legacy source
 - advertiser: legacy store
   block_id: 105
@@ -136,19 +126,14 @@
   context_id: cid13
   country: US
   is_clicked: false
-  locale: en-US
   normalized_channel: nightly
   normalized_os: Windows
   normalized_os_version: "11.0"
   position: 13
-  region: OR
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
-  version: "134"
   match_type: "firefox-suggest"
-  experiments:
-    - slug: glean-exp
-      branch: treatment
+  experiments: []
 - advertiser: pizza place
   block_id: 120
   browser: firefox(96)
@@ -176,7 +161,7 @@
   experiments:
     - slug: suggest-exp
       branch: control
-# glean-dup 13:31 row wins dedup; experiments from the 13:31 ping
+# glean-dup 13:31 row wins dedup; advertiser/block_id come from the 13:31 ping
 - advertiser: widget co 2
   block_id: 131
   browser: firefox(134)
@@ -184,25 +169,20 @@
   country: US
   form_factor: desktop
   is_clicked: false
-  locale: en-US
   normalized_channel: release
   normalized_os: Windows
   normalized_os_version: "11.0"
   os_family: windows
   position: 30
   query: "best widget"
-  region: NV
   reporting_url: url_glean_dup_2
   request_id: rid_glean_dup
   sequence_no: 33
   session_id: sid_glean_dup
   submission_timestamp: "2021-01-01T13:31:00+00:00"
   timestamp: "2021-01-01T13:33:00+00:00"
-  version: "134"
   match_type: "best-match"
-  experiments:
-    - slug: glean-dup-exp
-      branch: wins
+  experiments: []
 - advertiser: norm store
   block_id: 140
   browser: firefox(96)

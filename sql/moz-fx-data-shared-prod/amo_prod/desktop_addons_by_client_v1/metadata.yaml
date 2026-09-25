@@ -1,6 +1,9 @@
 ---
-friendly_name: Desktop addons by client
+friendly_name: Desktop addons by client (Deprecated)
 description: >-
+  Deprecated - please use tables or views inside addons_derived or addons instead.
+  For more info see: DENG-9505.
+
   Clients_daily-like table that records only the dimensions and addon info
   necessary to power daily the amo_stats_dau_v2 query.
 owners:
@@ -11,8 +14,6 @@ labels:
   schedule: daily
   table_table: client_level
   legacy: true
-scheduling:
-  dag_name: bqetl_amo_stats
 bigquery:
   time_partitioning:
     type: day
@@ -22,3 +23,4 @@ bigquery:
   clustering:
     fields:
       - sample_id
+deprecated: true

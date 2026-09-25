@@ -1,6 +1,9 @@
 ---
-friendly_name: AMO Stats DAU dev/stage
+friendly_name: AMO Stats DAU dev/stage (Deprecated)
 description: >-
+  Deprecated - please use tables or views inside addons_derived or addons instead.
+  For more info see: DENG-9505.
+
   Reduced stats table for dev and stage versions of the AMO service.
 owners:
   - kik@mozilla.com
@@ -10,8 +13,6 @@ labels:
   schedule: daily
   table_type: aggregate
   shredder_mitigation: false
-scheduling:
-  dag_name: bqetl_amo_stats
 bigquery:
   time_partitioning:
     type: day
@@ -20,3 +21,4 @@ bigquery:
   clustering:
     fields:
       - addon_id
+deprecated: true

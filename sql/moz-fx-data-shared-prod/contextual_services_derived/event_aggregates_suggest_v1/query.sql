@@ -20,7 +20,8 @@ combined AS (
     COALESCE(normalized_country_code, metrics.string.quick_suggest_country) AS country,
     LOWER(metrics.string.quick_suggest_advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.quick_suggest_position AS position,
     IF(
       NULLIF(metrics.string.quick_suggest_request_id, "") IS NULL,
@@ -109,7 +110,8 @@ combined AS (
     COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
     metrics.string.fx_suggest_advertiser AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,
@@ -141,7 +143,8 @@ combined AS (
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
     'iOS' AS normalized_os,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,

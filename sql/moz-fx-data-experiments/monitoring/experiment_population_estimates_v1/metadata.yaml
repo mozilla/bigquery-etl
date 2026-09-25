@@ -3,15 +3,15 @@ friendly_name: Nimbus Experiment Population Estimates
 description: |-
   Per-experiment eligible-client estimates for Nimbus Draft experiments.
 
-  Populated daily by fetching experiments from the Experimenter v8 API where
+  Populated hourly by fetching experiments from the Experimenter v8 API where
   targetingSql.needsUpdate=true, running each experiment's translated SQL WHERE
   clause as a COUNTIF against a per-app pre-materialized client pool, and
   writing results to GCS for Experimenter to display on the Audience page.
 
-  Per-app client pools (nimbus_sizing_clients_v1) are populated earlier in the
-  same DAG run via the experiment_monitoring sql_generator. Each covers a 7-day
-  rolling window of deduplicated, 10%-sampled clients (scaled x10 to estimate
-  full population).
+  Per-app client pools (nimbus_sizing_clients_v1) are populated daily by
+  bqetl_experiments_daily via the experiment_monitoring sql_generator. Each
+  covers a 7-day rolling window of deduplicated, 10%-sampled clients (scaled
+  x10 to estimate full population).
 
   Results are also written to GCS at:
     gs://mozanalysis/population_sizing/experiment_population_estimates_v1_{date}.json
@@ -23,12 +23,12 @@ owners:
 labels:
   owner1: nimbus
 scheduling:
-  dag_name: bqetl_experiments_daily
+  dag_name: bqetl_experiments_hourly
   arguments: ["--date", "{{ ds }}"]
-  referenced_tables:
-    - ['moz-fx-data-shared-prod', 'firefox_desktop_derived', 'nimbus_sizing_clients_v1']
-    - ['moz-fx-data-shared-prod', 'org_mozilla_fenix_derived', 'nimbus_sizing_clients_v1']
-    - ['moz-fx-data-shared-prod', 'org_mozilla_ios_firefox_derived', 'nimbus_sizing_clients_v1']
+  # Left empty on purpose: the client pools are built daily, so declaring them
+  # would add a cross-DAG wait that only clears once a day and defeat running
+  # hourly. They cover a 7-day window, so a few hours of staleness is fine.
+  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

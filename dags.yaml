@@ -378,6 +378,24 @@ bqetl_experiments_daily:
   tags:
     - impact/tier_1
 
+bqetl_experiments_hourly:
+  schedule_interval: hourly
+  catchup: false
+  description: |
+    Experimentation queries that need to run more often than daily.
+
+    Currently just Nimbus pre-launch population sizing, so a newly created
+    or edited Draft experiment gets an eligible-client estimate within the
+    hour instead of waiting for the next daily run.
+  default_args:
+    owner: ykhurana@mozilla.com
+    start_date: "2026-09-25"
+    email: ["telemetry-alerts@mozilla.com", "ykhurana@mozilla.com"]
+    retries: 2
+    retry_delay: 10m
+  tags:
+    - impact/tier_2
+
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (done automatically)
 bqetl_public_data_json:

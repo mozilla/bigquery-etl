@@ -132,15 +132,18 @@ SELECT
   clients_daily.device_model,
   clients_daily.normalized_os AS os,
   clients_daily.normalized_os_version AS os_version,
-  -- Read from active_users, the day-27 row, so the flag is as-of day 27 rather
-  -- than day 0; clients_daily would give day-0 status. This and the version
-  -- below stay last, in this order, and unconditional in every product branch:
+  -- Onboarded by active_users.submission_date: on new_profile rows that is the
+  -- client's day 27; on later rows it is 27 days after that row's metric_date.
+  -- FALSE only for clients first seen on or after 2025-01-01, the completions
+  -- table's floor; NULL where the table cannot say. This and the version below
+  -- stay last, in this order, and unconditional in every product branch:
   -- mobile_retention_clients unions the products by position.
-  IF(
-    onboarding_completions.first_completed_date <= active_users.submission_date,
-    TRUE,
-    NULL
-  ) AS is_onboarded,
+  CASE
+    WHEN onboarding_completions.first_completed_date <= active_users.submission_date
+      THEN TRUE
+    WHEN clients_daily.first_seen_date >= DATE '2025-01-01'
+      THEN FALSE
+  END AS is_onboarded,
   -- The version at the client's earliest completion, limited to the same day-27
   -- window as the flag above so the two agree on who completed. Distinct from
   -- app_version above, which is as of the metric date. Null where the completion

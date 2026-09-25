@@ -1,13 +1,15 @@
 friendly_name: Onboarding Completed Clients
 description: |-
-  One row per Fenix client per day on which they fired the Glean
-  `onboarding.completed` event. A client who fired it on more than one day has a
-  row for each, so `client_id` is not unique here — collapse on it before
-  joining. `fenix.onboarding_completed_clients` exposes this table unchanged;
+  One row per Fenix client per day on which an `onboarding.completed` event from
+  them arrived, dated by submission date rather than by when the event fired. A
+  client with completions arriving on more than one day has a row for each, so
+  `client_id` is not unique here — collapse on it before joining.
+  `fenix.onboarding_completed_clients` exposes this table unchanged;
   `fenix.retention_clients` takes `MIN(completed_date)` per client.
 
-  Coverage will begin 2025-01-01, so a client whose completions all fall before
-  that date will not appear here.
+  Coverage will begin 2025-01-01 when the table is backfilled; until then it
+  holds only the days since it was deployed. A client whose completions all fall
+  before 2025-01-01 will not appear here.
 owners:
   - kbammarito@mozilla.com
 labels:

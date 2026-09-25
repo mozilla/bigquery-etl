@@ -2,7 +2,7 @@
 
 ## Description
 
-One row per Fenix client per day on which they fired the Glean `onboarding.completed` event. A client who fired it on more than one day has a row for each.
+One row per Fenix client per day on which an `onboarding.completed` event from them arrived, dated by submission date rather than by when the event fired. A client with completions arriving on more than one day has a row for each.
 
 * **Grain:** `client_id`, `completed_date`
 * **Key fields:** `client_id`, `completed_date`, `sample_id` (a clustering field, not part of the grain), `app_version`
@@ -16,7 +16,7 @@ One row per Fenix client per day on which they fired the Glean `onboarding.compl
 
 ## Floor
 
-The table will be backfilled from 2025-01-01, so a client whose completions all fall before that date will have no row here.
+Coverage will begin 2025-01-01 when the table is backfilled; until then it holds only the days since it was deployed. A client whose completions all fall before 2025-01-01 will have no row here.
 
 That sets what `is_onboarded` on `retention_clients` can say. It will read `FALSE` only for clients first seen on or after 2025-01-01 with no completion on record by the row's `submission_date`, and `NULL` for clients first seen before that date or with no `first_seen_date`, whose completions may predate the table. A completion rate should filter on `first_seen_date >= '2025-01-01'`: clients first seen earlier read `TRUE` when they completed and `NULL` when they did not, so including them overstates the rate. Until the backfill completes, clients first seen on or after 2025-01-01 whose completions are not yet loaded will also read `FALSE`.
 

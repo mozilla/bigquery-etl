@@ -19,7 +19,7 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
-    - implementation
+    - sample_id
     - extra_source
     - extra_status
 require_column_descriptions: true

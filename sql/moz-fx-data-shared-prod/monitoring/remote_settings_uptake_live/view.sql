@@ -8,7 +8,7 @@ WITH all_implementations AS (
   -- Desktop (Gecko / Rust): a single dataset covers every channel.
   SELECT
     'desktop' AS platform,
-    CONCAT('org_mozilla_desktop_firefox_', normalized_channel) AS normalized_app_id,
+    'firefox_desktop' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
     client_info.client_id AS client_id,

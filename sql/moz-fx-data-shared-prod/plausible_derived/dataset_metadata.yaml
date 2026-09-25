@@ -1,0 +1,16 @@
+friendly_name: Plausible Derived
+description: |-
+  Daily aggregate tables built on top of the raw Plausible Analytics exports
+  in plausible_external for firefox.com. See
+  sql/moz-fx-data-shared-prod/plausible_external/README.md for the source
+  semantics (in particular the midnight window-split caveat) that these
+  aggregates account for.
+
+  Plausible is only initialized in certain geographic regions.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

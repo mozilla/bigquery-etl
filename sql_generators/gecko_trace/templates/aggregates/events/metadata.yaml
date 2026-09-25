@@ -1,0 +1,10 @@
+---
+friendly_name: Gecko Trace Events
+description: |-
+  Event types across all Firefox applications, one row per (app_id, event_signature).
+
+  Each row maps an event signature to its stable_event_id and source location,
+  with the first and last dates it was seen. For counts use events_daily.
+
+owners:
+  - jjalkanen@mozilla.com

@@ -60,6 +60,17 @@ cohorts_in_range AS (
     first_seen_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
+    -- outright rather than flagged. Unlike the desktop_retention_clients tables this one has no
+    -- 27-day lag, so it has carried the segment since 2026-08-28 and needs a backfill.
+    -- clients_first_seen_v2.normalized_os is only partly normalized (rows sourced from
+    -- clients_daily carry the raw environment.system.os.name), so normalize before comparing.
+    AND NOT `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
+      mozfun.norm.os(normalized_os),
+      app_version,
+      startup_profile_selection_reason,
+      first_seen_date
+    )
 ),
 activity_cohort_match AS (
   SELECT
@@ -117,10 +128,6 @@ SELECT
   ) AS num_clients_active_on_day,
   COUNTIF(
     (active_client_id IS NOT NULL)
-    AND (dau_clients_days_since_seen = 0)
-  ) AS num_clients_dau_on_day,
-  COUNTIF(
-    (active_client_id IS NOT NULL)
     AND (
       COALESCE(
         BIT_COUNT(
@@ -172,7 +179,14 @@ SELECT
         FALSE
       )
     )
-  ) AS num_clients_dau_repeat_first_month_users
+  ) AS num_clients_dau_repeat_first_month_users,
+  -- Kept last to match the deployed table's field order. The backfill swap copies
+  -- partitions into the production table, so the query, schema.yaml and the deployed
+  -- table must agree on column positions. See DENG-11590.
+  COUNTIF(
+    (active_client_id IS NOT NULL)
+    AND (dau_clients_days_since_seen = 0)
+  ) AS num_clients_dau_on_day
 FROM
   activity_cohort_match
 GROUP BY

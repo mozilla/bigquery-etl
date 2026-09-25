@@ -1,0 +1,11 @@
+---
+friendly_name: Gecko Trace Traces
+description: |-
+  Trace patterns across all Firefox applications, one row per (app_id, trace_signature).
+
+  Each row maps a trace signature to its stable_trace_id and trace_key,
+  with the first and last dates it was seen. Filter on first_seen_date to
+  find new trace patterns. For counts use traces_daily.
+
+owners:
+  - jjalkanen@mozilla.com

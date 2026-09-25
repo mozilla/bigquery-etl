@@ -97,6 +97,9 @@ WITH events_unnested AS (
         )
       )
     )
+    -- DENG-11596: exclude crossword keystroke/cursor noise and context menu echoes,
+    -- which were mistakenly emitted as genuine user actions. See DENG-11450.
+    AND NOT `moz-fx-data-shared-prod.udf.newtab_is_noise_widget_event`(category, name, extra)
 ),
 core_visit_metrics AS (
   SELECT

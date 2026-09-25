@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Weekly Bugzilla reporter for new gecko trace patterns.
+"""Weekly Bugzilla reporter for gecko trace patterns.
 
-The Bugzilla API key must be set in the BUGZILLA_API_KEY environment variable.
-In Airflow, set this as a secret environment variable on the task.
+Files one bug per new trace pattern and posts a weekly update to the bugs of
+trace patterns that are still seen. The Bugzilla API key comes from the
+BUGZILLA_API_KEY environment variable.
 """
 
 import datetime
@@ -12,7 +13,7 @@ import sys
 
 import click
 
-from bigquery_etl.gecko_trace.bugzilla_reporter import BugzillaReporter
+from bigquery_etl.gecko_trace.bugzilla_reporter import BugzillaClient, BugzillaReporter
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,7 +26,7 @@ logging.basicConfig(
     "--date",
     type=click.DateTime(formats=["%Y-%m-%d"]),
     default=None,
-    help="Reference date for the 7-day window (default: today).",
+    help="Last day of the 7-day window (default: today).",
 )
 @click.option(
     "--project",
@@ -39,18 +40,17 @@ logging.basicConfig(
     help="Use the Bugzilla dev instance (bugzilla-dev.allizom.org).",
 )
 def main(date, project, dev):
-    """File Bugzilla bugs for new gecko trace patterns."""
+    """File and update Bugzilla bugs for gecko trace patterns."""
     api_key = os.environ.get("BUGZILLA_API_KEY")
     if not api_key:
-        click.echo(
-            "Error: set the BUGZILLA_API_KEY environment variable.", err=True
-        )
+        click.echo("Error: set the BUGZILLA_API_KEY environment variable.", err=True)
         sys.exit(1)
 
-    reference_date = date.date() if date else None
-
-    reporter = BugzillaReporter(api_key=api_key, project=project, dev=dev)
-    reporter.report_new_traces(reference_date=reference_date)
+    reference_date = date.date() if date else datetime.date.today()
+    reporter = BugzillaReporter(
+        BugzillaClient(api_key=api_key, dev=dev), project=project
+    )
+    reporter.report(reference_date=reference_date)
 
 
 if __name__ == "__main__":

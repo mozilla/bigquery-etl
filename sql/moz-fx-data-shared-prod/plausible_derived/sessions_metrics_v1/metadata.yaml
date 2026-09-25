@@ -31,6 +31,6 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
-    - pathname
+    - entry_page
     - country_code
 require_column_descriptions: true

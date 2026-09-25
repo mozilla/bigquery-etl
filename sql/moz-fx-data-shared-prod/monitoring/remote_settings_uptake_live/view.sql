@@ -49,7 +49,7 @@ WITH all_implementations AS (
   -- iOS (Rust): one live dataset per channel, each mapping to a single channel.
       SELECT
         'ios' AS platform,
-        'org_mozilla_ios_firefox_{{ channel }}' AS normalized_app_id,
+        '{{ app }}' AS normalized_app_id,
         IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
         submission_timestamp,
         client_info.client_id AS client_id,

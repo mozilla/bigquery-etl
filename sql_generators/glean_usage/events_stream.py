@@ -1,7 +1,7 @@
 """Generate events stream queries for Glean apps."""
 
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from functools import cache
 from typing import Optional
@@ -31,6 +31,7 @@ class EventsStreamTable(GleanTable):
         self.per_app_id_enabled = True
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel_events_stream.view.sql"
+        self.cross_channel_schema_template = "cross_channel_events_stream.schema.yaml"
         self.base_table_name = "events_v1"
         self.common_render_kwargs = {}
         self.possible_query_parameters = {
@@ -133,13 +134,24 @@ class EventsStreamTable(GleanTable):
         ):
             return
 
-        extras_by_type = defaultdict(set)
+        extras_by_type = defaultdict(
+            lambda: defaultdict(lambda: {"name": "", "type": "", "descriptions": []})
+        )
         for app_id_info in app_ids_info:
             app_id_extras_by_type = get_glean_app_event_extras_by_type(
-                app_id_info["v1_name"]
+                app_id_info["v1_name"],
+                skip_descriptions_deduplication=True,
             )
-            for app_id_extra_type, app_id_extras in app_id_extras_by_type.items():
-                extras_by_type[app_id_extra_type].update(app_id_extras)
+            for extra_type, app_id_extras in app_id_extras_by_type.items():
+                for extra_name, app_id_extra in app_id_extras.items():
+                    extra = extras_by_type[extra_type][extra_name]
+                    extra["name"] = extra_name
+                    extra["type"] = extra_type
+                    extra["descriptions"].extend(app_id_extra["descriptions"])
+        # Deduplicate the descriptions only after we have all of them so we can accurately tell which are most common.
+        for extras in extras_by_type.values():
+            for extra in extras.values():
+                extra["descriptions"] = _deduplicate_descriptions(extra["descriptions"])
 
         custom_render_kwargs = {"extras_by_type": extras_by_type}
 
@@ -196,10 +208,15 @@ def get_glean_app_ping_expiration_days(v1_name: str, ping: str = "events") -> in
 
 @cache
 def get_glean_app_event_extras_by_type(
-    v1_name: str, ping: str = "events", cutoff_date: Optional[date] = None
-) -> dict[str, set[str]]:
-    """Return the Glean app's event extra keys for the specified ping, grouped by type."""
-    extras_by_type = defaultdict(set)
+    v1_name: str,
+    ping: str = "events",
+    cutoff_date: Optional[date] = None,
+    skip_descriptions_deduplication: bool = False,
+) -> dict[str, dict[str, dict]]:
+    """Return the Glean app's event extras for the specified ping, indexed by type and name, with normalized descriptions collected in a list."""
+    extras_by_type: dict[str, dict[str, dict]] = defaultdict(
+        lambda: defaultdict(lambda: {"name": "", "type": "", "descriptions": []})
+    )
     repository = get_glean_app_repository(v1_name)
 
     if not cutoff_date:
@@ -212,19 +229,35 @@ def get_glean_app_event_extras_by_type(
             for history in metric["history"]:
                 last_date = datetime.fromisoformat(history["dates"]["last"]).date()
                 if ping in history["send_in_pings"] and last_date >= cutoff_date:
-                    for extra_key, extra_key_info in history["extra_keys"].items():
-                        extra_type = extra_key_info.get("type", "string")
-                        extras_by_type[extra_type].add(extra_key)
+                    for extra_name, extra_info in history["extra_keys"].items():
+                        extra_type = extra_info.get("type", "string")
+                        extra = extras_by_type[extra_type][extra_name]
+                        extra["name"] = extra_name
+                        extra["type"] = extra_type
+                        # Normalize whitespace in the descriptions to make them a single line.
+                        if description := (extra_info.get("description") or "").strip():
+                            extra["descriptions"].append(" ".join(description.split()))
 
     for dependency in repository["dependencies"]:
         dependency_v1_name = get_glean_dependency_v1_name(dependency)
         dependency_extras_by_type = get_glean_app_event_extras_by_type(
-            dependency_v1_name, ping, cutoff_date
+            dependency_v1_name, ping, cutoff_date, skip_descriptions_deduplication=True
         )
-        for (
-            dependency_extra_type,
-            dependency_extras,
-        ) in dependency_extras_by_type.items():
-            extras_by_type[dependency_extra_type].update(dependency_extras)
+        for extra_type, dependency_extras in dependency_extras_by_type.items():
+            for extra_name, dependency_extra in dependency_extras.items():
+                extra = extras_by_type[extra_type][extra_name]
+                extra["name"] = extra_name
+                extra["type"] = extra_type
+                extra["descriptions"].extend(dependency_extra["descriptions"])
+
+    if not skip_descriptions_deduplication:
+        for extras in extras_by_type.values():
+            for extra in extras.values():
+                extra["descriptions"] = _deduplicate_descriptions(extra["descriptions"])
 
     return extras_by_type
+
+
+def _deduplicate_descriptions(descriptions: list[str]) -> list[str]:
+    """Deduplicate the descriptions, putting the most commonly used descriptions first."""
+    return [description for description, _ in Counter(descriptions).most_common()]

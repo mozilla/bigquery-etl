@@ -34,15 +34,15 @@ _core_clients_first_seen AS (
 
 {% macro event_extras_by_type_struct(extras_by_type) %}
   STRUCT(
-    {% for extra_type in extras_by_type | sort %}
+    {% for extra_type, extras in extras_by_type | dictsort %}
       STRUCT(
-        {% for extra in extras_by_type[extra_type] | sort %}
+        {% for extra_name in extras | sort %}
           {% if extra_type == 'boolean' %}
-            LAX_BOOL(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+            LAX_BOOL(event_extra.{{ extra_name }}) AS `{{ extra_name }}`{{ ',' if not loop.last else '' }}
           {% elif extra_type == 'quantity' %}
-            LAX_INT64(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+            LAX_INT64(event_extra.{{ extra_name }}) AS `{{ extra_name }}`{{ ',' if not loop.last else '' }}
           {% else %}
-            JSON_VALUE(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+            JSON_VALUE(event_extra.{{ extra_name }}) AS `{{ extra_name }}`{{ ',' if not loop.last else '' }}
           {% endif %}
         {% endfor %}
       ) AS `{{ extra_type }}`{{ ',' if not loop.last else '' }}

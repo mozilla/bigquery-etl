@@ -1,70 +1,40 @@
 --
 -- Query for remote_settings_derived.clients_uptake_events_v1
 --
+-- `fenix.events` and `firefox_ios.events` already UNION every channel and fix up
+-- `normalized_channel`; `firefox_desktop.events` is a single dataset covering all
+-- channels. Only the desktop view lacks `normalized_app_id`, so it is set literally.
+-- As of 2026-09-22, desktop telemetry for rust is not enabled, but could land anytime.
+{% set uptake_filter = "e.name = 'uptake_remotesettings' AND (e.category = 'uptake.remotecontent.result' OR e.category = 'remote_settings')" %}
+{% set sources = [('desktop', 'firefox_desktop'), ('android', 'fenix'), ('ios', 'firefox_ios')] %}
 WITH today_all_implementations AS (
-    --
-    -- Desktop (Gecko / Rust)
-    --
-  SELECT
-    submission_timestamp,
-    client_info,
-    normalized_app_id,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    event_extra,
-    -- As of 2026-09-22, desktop telemetry for rust is not enabled, but could land anytime.
-    IF(event_category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    'desktop' AS platform
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events_unnested`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND event_name = 'uptake_remotesettings'
-    AND (event_category = 'uptake.remotecontent.result' OR event_category = 'remote_settings')
-  UNION ALL
-    --
-    -- Android (Gecko / Rust)
-    --
-  SELECT
-    submission_timestamp,
-    client_info,
-    normalized_app_id,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    event_extra,
-    IF(event_category = 'remote_settings', 'rust', 'gecko') AS implementation,
-    'android' AS platform
-  FROM
-    `moz-fx-data-shared-prod.fenix.events_unnested`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND event_name = 'uptake_remotesettings'
-    AND (event_category = 'uptake.remotecontent.result' OR event_category = 'remote_settings')
-  UNION ALL
-    --
-    -- iOS (Rust)
-    --
-  SELECT
-    submission_timestamp,
-    client_info,
-    normalized_app_id,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    normalized_country_code,
-    event_extra,
-    'rust' AS implementation,
-    'ios' AS platform
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios.events_unnested`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND event_category = 'remote_settings'
-    AND event_name = 'uptake_remotesettings'
+  {% for platform, dataset in sources %}
+    {% if not loop.first %}
+      UNION ALL
+    {% endif %}
+    SELECT
+      submission_timestamp,
+      client_info,
+      {% if platform == 'desktop' %}
+        'firefox_desktop' AS normalized_app_id,
+      {% else %}
+        normalized_app_id,
+      {% endif %}
+      normalized_channel,
+      normalized_os,
+      normalized_os_version,
+      normalized_country_code,
+      e.extra AS event_extra,
+      IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
+      '{{ platform }}' AS platform
+    FROM
+      `moz-fx-data-shared-prod.{{ dataset }}.events`
+    INNER JOIN
+      UNNEST(events) AS e
+      ON {{ uptake_filter }}
+    WHERE
+      DATE(submission_timestamp) = @submission_date
+  {% endfor %}
 )
 SELECT
   submission_timestamp,

@@ -1,0 +1,26 @@
+{% macro event_extras_by_type_schema(struct_field_name, extras_by_type) -%}
+name: {{ struct_field_name }}
+type: RECORD
+mode: NULLABLE
+description: Event extras, grouped by type.
+fields:
+{%- for extra_type, extras in extras_by_type | dictsort %}
+- name: {{ extra_type }}
+  type: RECORD
+  mode: NULLABLE
+  description: {{ extra_type | capitalize }} event extras.
+  fields:
+  {%- for extra_name, extra in extras | dictsort %}
+  - name: {{ extra_name }}
+    type: {{ extra_type | replace('quantity', 'integer') | upper }}
+    mode: NULLABLE
+    {%- if extra['descriptions'] | length == 1 %}
+    description: >-
+      {{ extra['descriptions'][0] | truncate(1024, killwords=True, leeway=0) }}
+    {%- elif extra['descriptions'] | length > 1 %}
+    description: |-
+      {{ ('Depending on the type of event:\n* ' ~ (extra['descriptions'] | join('\n* '))) | truncate(1024, killwords=True, leeway=0) | replace('\n', '\n      ') }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+{%- endmacro %}

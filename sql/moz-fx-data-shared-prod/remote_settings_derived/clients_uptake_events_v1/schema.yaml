@@ -5,8 +5,13 @@ fields:
   description: !include-field-description
     file: /bigquery_etl/schema/global.yaml
     field: submission_timestamp
-- name: major_version
+- name: sample_id
   type: INTEGER
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: sample_id
+- name: app_version_major
+  type: NUMERIC
   mode: NULLABLE
   description: !include-field-description
     file: /bigquery_etl/schema/global.yaml
@@ -86,7 +91,7 @@ fields:
   description: Collection timestamp reported by the client, as a string. This is
     the Remote Settings collection version, not a wall-clock time.
 - name: extra_age
-  type: NUMERIC
+  type: FLOAT64
   mode: NULLABLE
   description: Age in seconds of the local data at the time of the event, i.e. how
     stale the client's copy of the collection was.

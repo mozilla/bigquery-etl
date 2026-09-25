@@ -8,6 +8,8 @@
       quick_suggest_advertiser: acme corp
       quick_suggest_block_id: 201
       quick_suggest_country: US
+      quick_suggest_experiment_branch: treatment
+      quick_suggest_experiment_name: glean-exp
       quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid11
@@ -29,6 +31,8 @@
       quick_suggest_advertiser: dunder mifflin
       quick_suggest_block_id: 202
       quick_suggest_country: US
+      quick_suggest_experiment_branch: treatment
+      quick_suggest_experiment_name: glean-exp
       quick_suggest_match_type: "best-match"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid12
@@ -50,6 +54,8 @@
       quick_suggest_advertiser: duff beer
       quick_suggest_block_id: 203
       quick_suggest_country: US
+      quick_suggest_experiment_branch: treatment
+      quick_suggest_experiment_name: glean-exp
       quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: null
@@ -71,6 +77,9 @@
       quick_suggest_advertiser: glean store
       quick_suggest_block_id: 205
       quick_suggest_country: US
+      # Different branch from legacy rid_overlap fixture to confirm legacy source wins dedup
+      quick_suggest_experiment_branch: glean-loses
+      quick_suggest_experiment_name: overlap-exp
       quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid_overlap
@@ -92,6 +101,8 @@
       quick_suggest_advertiser: umbrella corp
       quick_suggest_block_id: 204
       quick_suggest_country: US
+      quick_suggest_experiment_branch: treatment
+      quick_suggest_experiment_name: glean-exp
       quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-click"
       quick_suggest_request_id: rid14
@@ -114,6 +125,9 @@
       quick_suggest_advertiser: widget co
       quick_suggest_block_id: 130
       quick_suggest_country: US
+      # Different branch from the 13:31 row to confirm 13:31 wins dedup
+      quick_suggest_experiment_branch: loses
+      quick_suggest_experiment_name: glean-dup-exp
       quick_suggest_match_type: "firefox-suggest"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid_glean_dup
@@ -135,6 +149,8 @@
       quick_suggest_advertiser: widget co 2
       quick_suggest_block_id: 131
       quick_suggest_country: US
+      quick_suggest_experiment_branch: wins
+      quick_suggest_experiment_name: glean-dup-exp
       quick_suggest_match_type: "best-match"
       quick_suggest_ping_type: "quicksuggest-impression"
       quick_suggest_request_id: rid_glean_dup
@@ -142,6 +158,29 @@
       quick_suggest_reporting_url: "url_glean_dup_2"
     uuid:
       quick_suggest_context_id: cid_glean_dup_2
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  sample_id: null
+# no quick_suggest_experiment_name/_branch metrics (not enrolled, or a version that
+# doesn't send them); expect experiments: []
+- submission_timestamp: "2021-01-01 13:50:00"
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 50
+    string:
+      quick_suggest_advertiser: no exp store
+      quick_suggest_block_id: 150
+      quick_suggest_country: US
+      quick_suggest_match_type: "firefox-suggest"
+      quick_suggest_ping_type: "quicksuggest-impression"
+      quick_suggest_request_id: rid_no_exp
+    url2:
+      quick_suggest_reporting_url: "url_no_exp"
+    uuid:
+      quick_suggest_context_id: cid_no_exp
   normalized_channel: release
   normalized_os: Windows
   normalized_os_version: "11.0"

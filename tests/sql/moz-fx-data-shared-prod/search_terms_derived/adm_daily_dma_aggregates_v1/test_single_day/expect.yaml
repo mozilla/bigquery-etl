@@ -23,7 +23,7 @@
   dma: ""
   query: "fly away now!"
   block_id: 2
-  impressions: 1
+  impressions: 2
   clicks: 0
 
 # req_1008 has a NULL reporting_url and is retained; req_1007's reporting_url has a

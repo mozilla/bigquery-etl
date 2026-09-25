@@ -1,7 +1,11 @@
 friendly_name: Clients Uptake Events
 description: |-
-  Derived dataset from Glean events emitted by our
-  Gecko (JS) and Application-Services (Rust) clients.
+  Remote Settings synchronization uptake events, unified across desktop, Android
+  and iOS, and across the Gecko (JS) and Application-Services (Rust) clients.
+  This derived dataset allows us to access the filtered raw Glean events records
+  more efficiently than reading and joining events tables on-the-fly.
+
+  See https://mozilla-hub.atlassian.net/browse/RMST-514
 owners:
 - mleplatre@mozilla.com
 - aplacitelli@mozilla.com

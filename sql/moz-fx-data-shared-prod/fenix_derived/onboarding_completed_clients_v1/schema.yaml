@@ -2,9 +2,12 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: |-
-    Unique ID for the client installation. Not unique in this table: a client
-    has one row per day on which a completion from them arrived.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/fenix_derived/dataset_schema.yaml
+    field: client_id
+    append: >-
+      Not unique in this table: a client has one row per day on which a
+      completion from them arrived.
 - name: completed_date
   type: DATE
   mode: NULLABLE
@@ -16,10 +19,11 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: |-
-    A number, 0-99, that samples by client_id and allows filtering data for
-    analysis. It is a pipeline-generated artifact that should match between
-    pings. Clustering field here; not part of the grain.
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/fenix_derived/dataset_schema.yaml
+    field: sample_id
+    append: >-
+      Clustering field here; not part of the grain.
 - name: app_version
   type: STRING
   mode: NULLABLE

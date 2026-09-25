@@ -1,6 +1,6 @@
 #fail
 {{ min_row_count(1, "date = @submission_date") }}
--- pathname and country_code are deliberately not checked not-null: Plausible
+-- entry_page and country_code are deliberately not checked not-null: Plausible
 -- normalizes empty strings to NULL uniformly across every string column
 -- (observed at 72-79% empty for other fields like referrer/subdivision2_code
 -- in plausible_external/README.md), so a NULL country_code from an
@@ -11,7 +11,7 @@
 {{ not_null(["date"], "date = @submission_date") }}
 
 #fail
-{{ is_unique(["date", "pathname", "country_code", "acquisition_channel", "utm_campaign"], "date = @submission_date") }}
+{{ is_unique(["date", "entry_page", "country_code", "acquisition_channel", "utm_campaign"], "date = @submission_date") }}
 
 #warn
 SELECT

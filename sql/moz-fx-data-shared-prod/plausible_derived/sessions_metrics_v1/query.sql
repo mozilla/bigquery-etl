@@ -3,7 +3,7 @@
 -- Single scan of sessions_v1, no joins.
 SELECT
   @submission_date AS `date`,
-  entry_page AS pathname,
+  entry_page,
   country_code,
   acquisition_channel,
   utm_campaign,
@@ -15,7 +15,7 @@ WHERE
   DATE(start) = @submission_date
 GROUP BY
   `date`,
-  pathname,
+  entry_page,
   country_code,
   acquisition_channel,
   utm_campaign

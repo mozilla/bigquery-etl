@@ -5,7 +5,7 @@ fields:
   description: |-
     The date this row aggregates, matching sessions_v1's `start` partition
     column for this day.
-- name: pathname
+- name: entry_page
   type: STRING
   mode: NULLABLE
   description: |-
@@ -34,8 +34,8 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: |-
-    Count of Plausible sessions whose entry_page was this pathname on this
-    date. The denominator for bounce rate.
+    Count of Plausible sessions with this entry_page on this date. The
+    denominator for bounce rate.
 - name: bounces
   type: INTEGER
   mode: NULLABLE

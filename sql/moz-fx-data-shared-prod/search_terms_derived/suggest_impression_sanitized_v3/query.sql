@@ -67,15 +67,23 @@ glean_impressions AS (
     -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074848
     CAST(NULL AS STRING) AS version,
     metrics.string.quick_suggest_match_type AS match_type,
-    -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074507
-    ARRAY<STRUCT<slug STRING, branch STRING>>[] AS experiments,
+    -- The general ping_info.experiments is not available over OHTTP, but the urlbar
+    -- may optionally inform us if there is a urlbar experiment enrolled.
+    IF(
+      metrics.string.quick_suggest_experiment_name IS NULL,
+      ARRAY<STRUCT<slug STRING, branch STRING>>[],
+      ARRAY<STRUCT<slug STRING, branch STRING>>[
+        STRUCT(
+          metrics.string.quick_suggest_experiment_name AS slug,
+          metrics.string.quick_suggest_experiment_branch AS branch
+        )
+      ]
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'
-  GROUP BY
-    ALL
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp DESC) = 1
 ),

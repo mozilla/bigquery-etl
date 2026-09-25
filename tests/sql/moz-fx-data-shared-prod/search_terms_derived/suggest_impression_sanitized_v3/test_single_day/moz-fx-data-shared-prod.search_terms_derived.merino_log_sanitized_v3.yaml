@@ -110,6 +110,18 @@
   form_factor: desktop
   browser: firefox(134)
   os_family: windows
+# merino record for rid_no_exp (impression with no experiment metrics)
+- timestamp: "2021-01-01 13:50:00.000000"
+  request_id: rid_no_exp
+  session_id: sid_no_exp
+  sequence_no: 50
+  query: "unenrolled query"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(134)
+  os_family: windows
 # query normalization: LTRIM(LOWER("  Great Sandals")) = "great sandals"
 - timestamp: "2021-01-01 13:40:00.000000"
   request_id: rid_norm

@@ -28,7 +28,7 @@ WITH all_implementations AS (
   -- Android (Gecko / Rust): one live dataset per channel.
       SELECT
         'android' AS platform,
-        'org_mozilla_android_firefox_{{ channel }}' AS normalized_app_id,
+        '{{ app }}' AS normalized_app_id,
         IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
         submission_timestamp,
         client_info.client_id AS client_id,

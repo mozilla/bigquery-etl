@@ -2168,6 +2168,30 @@ bqetl_plausible:
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
 
+bqetl_plausible_derived:
+  description: |
+    Daily aggregates built on top of the raw Plausible Analytics exports for
+    firefox.com in plausible_external. Scheduled separately from
+    bqetl_plausible (which lands the raw exports) so a delay in the raw DAG
+    doesn't get conflated with this one; this DAG's tasks wait on the day's
+    partition to exist in plausible_external rather than assuming a fixed
+    clock offset.
+  default_args:
+    depends_on_past: false
+    owner: sherrera@mozilla.com
+    email:
+      - sherrera@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2026-07-30"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 13 * * *
+
 bqetl_us_bls_unemployment_data:
   description: |
     This DAG pulls US unemployment data from the BLS API

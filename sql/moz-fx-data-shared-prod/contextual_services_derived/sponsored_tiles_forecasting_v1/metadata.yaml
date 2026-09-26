@@ -1,0 +1,6 @@
+description: Forecasting components for Sponsored Tiles.
+friendly_name: Sponsored Tiles Forecasting
+labels:
+  incremental: true
+owners:
+- skahmann@mozilla.com

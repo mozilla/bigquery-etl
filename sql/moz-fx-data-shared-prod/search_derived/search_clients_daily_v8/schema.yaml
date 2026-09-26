@@ -2,51 +2,86 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: client_id
 - mode: NULLABLE
   name: engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: engine
 - mode: NULLABLE
   name: source
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: source
 - mode: NULLABLE
   name: country
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: addon_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: addon_version
 - mode: NULLABLE
   name: has_adblocker_addon
   type: BOOLEAN
+  description: Indicates whether the client has at least one active ad-blocking addon installed. True means
+    a monetization-blocking addon was detected; false means none were found.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: app_version
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: locale
 - mode: NULLABLE
   name: user_pref_browser_search_region
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: user_pref_browser_search_region
 - mode: NULLABLE
   name: search_cohort
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_cohort
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os_version
 - mode: NULLABLE
   name: os_version_major
   type: STRING
@@ -60,62 +95,109 @@ fields:
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: channel
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: policies_is_enterprise
   type: BOOLEAN
-  description: Flag indicating if the user is an enterprise user based on various signals.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: policies_is_enterprise
 - mode: NULLABLE
   name: profile_creation_date
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: profile_creation_date
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: default_search_engine_data_load_path
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_load_path
 - mode: NULLABLE
   name: default_search_engine_data_submission_url
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_submission_url
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_private_search_engine
 - mode: NULLABLE
   name: default_private_search_engine_data_load_path
   type: STRING
+  description: The load path indicating how the default private browsing search engine was installed or
+    configured (e.g. '[app]ddg' for a built-in engine or '[addon]...' for an addon-provided engine). Null
+    when no private search engine is separately configured.
 - mode: NULLABLE
   name: default_private_search_engine_data_submission_url
   type: STRING
+  description: The base submission URL for the client's default private browsing search engine. Null when
+    no distinct private search engine is configured.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
-    It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sample_id
 - mode: NULLABLE
   name: subsession_hours_sum
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: subsession_hours_sum
 - mode: NULLABLE
   name: sessions_started_on_this_day
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sessions_started_on_this_day
 - mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: active_addons_count_mean
 - mode: NULLABLE
   name: max_concurrent_tab_count_max
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: max_concurrent_tab_count_max
 - mode: NULLABLE
   name: tab_open_event_count_sum
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tab_open_event_count_sum
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: active_hours_sum
 - mode: NULLABLE
   name: total_uri_count
   type: INTEGER
+  description: The total count of non-unique http(s) URIs visited during the day, including page reloads,
+    after session restoration. Private browsing URIs are excluded from this count.
 - fields:
   - mode: NULLABLE
     name: key
@@ -259,40 +341,78 @@ fields:
 - mode: NULLABLE
   name: profile_age_in_days
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: profile_age_in_days
 - mode: NULLABLE
   name: organic
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic
 - mode: NULLABLE
   name: tagged_sap
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - mode: NULLABLE
   name: tagged_follow_on
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - mode: NULLABLE
   name: sap
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click
 - mode: NULLABLE
   name: ad_click_organic
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click_organic
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - mode: NULLABLE
   name: search_with_ads_organic
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads_organic
 - mode: NULLABLE
   name: unknown
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: unknown
 - mode: NULLABLE
   name: normalized_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_engine
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: is_sap_monetizable
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: profile_group_id

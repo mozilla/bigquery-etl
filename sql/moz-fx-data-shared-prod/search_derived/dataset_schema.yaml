@@ -279,3 +279,7 @@ fields:
   description: The region code stored in the client's browser search region preference, typically an ISO 3166-1 alpha-2 country code. This value
     reflects the user's configured or detected region used to determine default search engine settings.
   type: STRING
+- name: engine_searches_key
+  description: The search engine identifier key within the engine_searches nested structure, representing
+    the specific search engine to which the associated search count arrays apply. A null value may indicate
+    searches where the engine could not be determined.

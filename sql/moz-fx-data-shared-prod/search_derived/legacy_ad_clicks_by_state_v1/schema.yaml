@@ -2,8 +2,9 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: |
-    The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - name: month
   type: DATE
   mode: NULLABLE
@@ -12,8 +13,9 @@ fields:
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
-  description: |
-    The normalized version of the search engine.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_engine
 - name: state
   type: STRING
   mode: NULLABLE

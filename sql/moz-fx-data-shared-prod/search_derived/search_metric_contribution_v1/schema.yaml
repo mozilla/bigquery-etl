@@ -1,0 +1,283 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
+- name: search_with_ads_from_sap
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 10% of SAP (search
+      access point) counts over the trailing 28-day window. Computed as the sum of search_with_ads for those
+      high-SAP clients divided by the overall search_with_ads aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 20% of SAP counts
+      over the trailing 28-day window. Computed as the sum of search_with_ads for those high-SAP clients divided
+      by the overall search_with_ads aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 30% of SAP counts
+      over the trailing 28-day window. Computed as the sum of search_with_ads for those high-SAP clients divided
+      by the overall search_with_ads aggregate.
+- name: search_with_ads_from_active_hours
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 10% of active hours
+      over the trailing 28-day window. Computed as the sum of search_with_ads for those highly-active clients
+      divided by the overall search_with_ads aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 20% of active hours
+      over the trailing 28-day window. Computed as the sum of search_with_ads for those highly-active clients
+      divided by the overall search_with_ads aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 30% of active hours
+      over the trailing 28-day window. Computed as the sum of search_with_ads for those highly-active clients
+      divided by the overall search_with_ads aggregate.
+- name: search_with_ads_from_ad_click
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 10% of ad click
+      counts over the trailing 28-day window. Computed as the sum of search_with_ads for those high-ad-click
+      clients divided by the overall search_with_ads aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 20% of ad click
+      counts over the trailing 28-day window. Computed as the sum of search_with_ads for those high-ad-click
+      clients divided by the overall search_with_ads aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total search_with_ads volume attributed to clients in the top 30% of ad click
+      counts over the trailing 28-day window. Computed as the sum of search_with_ads for those high-ad-click
+      clients divided by the overall search_with_ads aggregate.
+- name: ad_click_from_sap
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 10% of SAP counts over
+      the trailing 28-day window. Computed as the sum of ad_click for those high-SAP clients divided by the
+      overall ad_click aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 20% of SAP counts over
+      the trailing 28-day window. Computed as the sum of ad_click for those high-SAP clients divided by the
+      overall ad_click aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 30% of SAP counts over
+      the trailing 28-day window. Computed as the sum of ad_click for those high-SAP clients divided by the
+      overall ad_click aggregate.
+- name: ad_click_from_active_hours
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 10% of active hours over
+      the trailing 28-day window. Computed as the sum of ad_click for those highly-active clients divided
+      by the overall ad_click aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 20% of active hours over
+      the trailing 28-day window. Computed as the sum of ad_click for those highly-active clients divided
+      by the overall ad_click aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 30% of active hours over
+      the trailing 28-day window. Computed as the sum of ad_click for those highly-active clients divided
+      by the overall ad_click aggregate.
+- name: ad_click_from_search_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 10% of search_with_ads
+      counts over the trailing 28-day window. Computed as the sum of ad_click for those high-search-with-ads
+      clients divided by the overall ad_click aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 20% of search_with_ads
+      counts over the trailing 28-day window. Computed as the sum of ad_click for those high-search-with-ads
+      clients divided by the overall ad_click aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total ad click volume attributed to clients in the top 30% of search_with_ads
+      counts over the trailing 28-day window. Computed as the sum of ad_click for those high-search-with-ads
+      clients divided by the overall ad_click aggregate.
+- name: active_hours_from_sap
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 10% of SAP counts over the
+      trailing 28-day window. Computed as the sum of active_hours for those high-SAP clients divided by the
+      overall active_hours aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 20% of SAP counts over the
+      trailing 28-day window. Computed as the sum of active_hours for those high-SAP clients divided by the
+      overall active_hours aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 30% of SAP counts over the
+      trailing 28-day window. Computed as the sum of active_hours for those high-SAP clients divided by the
+      overall active_hours aggregate.
+- name: active_hours_from_ad_click
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 10% of ad click counts over
+      the trailing 28-day window. Computed as the sum of active_hours for those high-ad-click clients divided
+      by the overall active_hours aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 20% of ad click counts over
+      the trailing 28-day window. Computed as the sum of active_hours for those high-ad-click clients divided
+      by the overall active_hours aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 30% of ad click counts over
+      the trailing 28-day window. Computed as the sum of active_hours for those high-ad-click clients divided
+      by the overall active_hours aggregate.
+- name: active_hours_from_search_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 10% of search_with_ads counts
+      over the trailing 28-day window. Computed as the sum of active_hours for those high-search-with-ads
+      clients divided by the overall active_hours aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 20% of search_with_ads counts
+      over the trailing 28-day window. Computed as the sum of active_hours for those high-search-with-ads
+      clients divided by the overall active_hours aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total active hours attributed to clients in the top 30% of search_with_ads counts
+      over the trailing 28-day window. Computed as the sum of active_hours for those high-search-with-ads
+      clients divided by the overall active_hours aggregate.
+- name: sap_from_search_with_ads
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 10% of search_with_ads counts
+      over the trailing 28-day window. Computed as the sum of SAP for those high-search-with-ads clients divided
+      by the overall SAP aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 20% of search_with_ads counts
+      over the trailing 28-day window. Computed as the sum of SAP for those high-search-with-ads clients divided
+      by the overall SAP aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 30% of search_with_ads counts
+      over the trailing 28-day window. Computed as the sum of SAP for those high-search-with-ads clients divided
+      by the overall SAP aggregate.
+- name: sap_from_ad_click
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 10% of ad click counts over
+      the trailing 28-day window. Computed as the sum of SAP for those high-ad-click clients divided by the
+      overall SAP aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 20% of ad click counts over
+      the trailing 28-day window. Computed as the sum of SAP for those high-ad-click clients divided by the
+      overall SAP aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 30% of ad click counts over
+      the trailing 28-day window. Computed as the sum of SAP for those high-ad-click clients divided by the
+      overall SAP aggregate.
+- name: sap_from_active_hours
+  type: RECORD
+  mode: NULLABLE
+  description: ''
+  fields:
+  - name: top_10
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 10% of active hours over the
+      trailing 28-day window. Computed as the sum of SAP for those highly-active clients divided by the overall
+      SAP aggregate.
+  - name: top_20
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 20% of active hours over the
+      trailing 28-day window. Computed as the sum of SAP for those highly-active clients divided by the overall
+      SAP aggregate.
+  - name: top_30
+    type: FLOAT64
+    mode: NULLABLE
+    description: Fraction of total SAP volume attributed to clients in the top 30% of active hours over the
+      trailing 28-day window. Computed as the sum of SAP for those highly-active clients divided by the overall
+      SAP aggregate.

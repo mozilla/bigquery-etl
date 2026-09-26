@@ -2,27 +2,39 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - name: geo
   type: STRING
   mode: NULLABLE
-  description: Geo
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: geo
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: locale
 - name: engine
   type: STRING
   mode: NULLABLE
-  description: Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: engine
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating System
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: App Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: app_version
 - name: dcc
   type: INTEGER
   mode: NULLABLE
@@ -30,32 +42,48 @@ fields:
 - name: sap
   type: INTEGER
   mode: NULLABLE
-  description: SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - name: tagged_sap
   type: INTEGER
   mode: NULLABLE
-  description: Tagged SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
-  description: Tagged Follow On
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - name: search_with_ads
   type: INTEGER
   mode: NULLABLE
-  description: Searches with Ads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
-  description: Ad Clicks
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click
 - name: organic
   type: INTEGER
   mode: NULLABLE
-  description: Organic Searches
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic
 - name: ad_click_organic
   type: INTEGER
   mode: NULLABLE
-  description: Organic Ad Clicks
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click_organic
 - name: search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
-  description: Organic Searches with Ads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads_organic

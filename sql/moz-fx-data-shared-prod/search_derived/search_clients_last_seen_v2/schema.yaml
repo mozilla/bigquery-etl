@@ -2,116 +2,204 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: client_id
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sample_id
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: app_version
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: locale
 - mode: NULLABLE
   name: search_cohort
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_cohort
 - mode: NULLABLE
   name: addon_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: addon_version
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: channel
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: The date on which the client was first observed sending telemetry. Used to compute how long
+    the client has been active.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: default_search_engine_data_load_path
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_load_path
 - mode: NULLABLE
   name: default_search_engine_data_submission_url
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_submission_url
 - mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: active_addons_count_mean
 - mode: NULLABLE
   name: user_pref_browser_search_region
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: user_pref_browser_search_region
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os_version
 - mode: NULLABLE
   name: first_reported_country
   type: STRING
+  description: The country code recorded the first time the client was seen, as sourced from the `clients_first_seen`
+    table. Unlike `country`, this value does not change across submission dates.
 - mode: NULLABLE
   name: max_concurrent_tab_count_max
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: max_concurrent_tab_count_max
 - mode: NULLABLE
   name: tab_open_event_count_sum
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tab_open_event_count_sum
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: active_hours_sum
 - mode: NULLABLE
   name: subsession_hours_sum
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: subsession_hours_sum
 - mode: NULLABLE
   name: sessions_started_on_this_day
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sessions_started_on_this_day
 - mode: NULLABLE
   name: total_uri_count_sum
   type: INTEGER
+  description: The total number of URIs visited by the client across all subsessions for the reporting period.
+    Null when no URI count data is available.
 - mode: NULLABLE
   name: organic
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic
 - mode: NULLABLE
   name: sap
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - mode: NULLABLE
   name: unknown
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: unknown
 - mode: NULLABLE
   name: tagged_sap
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - mode: NULLABLE
   name: tagged_follow_on
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - mode: NULLABLE
   name: total_searches
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: total_searches
 - mode: NULLABLE
   name: tagged_searches
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_searches
 - fields:
   - mode: NULLABLE
     name: key
@@ -135,29 +223,54 @@ fields:
   mode: REPEATED
   name: engine_searches
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: engine_searches
 - mode: NULLABLE
   name: days_seen_bytes
   type: BYTES
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_seen_bytes
 - mode: NULLABLE
   name: days_searched_bytes
   type: BYTES
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_searched_bytes
 - mode: NULLABLE
   name: days_tagged_searched_bytes
   type: BYTES
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_tagged_searched_bytes
 - mode: NULLABLE
   name: days_searched_with_ads_bytes
   type: BYTES
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_searched_with_ads_bytes
 - mode: NULLABLE
   name: days_clicked_ads_bytes
   type: BYTES
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: days_clicked_ads_bytes
 - mode: NULLABLE
   name: days_first_seen_bytes
   type: BYTES
+  description: A 365-bit array (stored as BYTES) encoding the number of days elapsed since the client was
+    first seen, represented as a positional bit within the 365-day window. Used to efficiently look up or
+    compute client tenure relative to the submission date.
 - mode: NULLABLE
   name: days_dau_bytes
   type: BYTES
+  description: A 365-bit array (stored as BYTES) where each bit represents one day in the past year, with
+    the rightmost bit being the most recent day. A bit is set when the client had both active hours and
+    at least one URI visit on that day, matching the standard DAU definition.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: profile_group_id

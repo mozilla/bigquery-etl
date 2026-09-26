@@ -2,121 +2,177 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: addon_version
   type: STRING
-  description: Add-On Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: addon_version
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: app_version
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: engine
   type: STRING
-  description: Search Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: engine
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: locale
 - mode: NULLABLE
   name: search_cohort
   type: STRING
-  description: Search Cohort
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_cohort
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: source
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
-  description: Default Search Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
-  description: Default Private Search Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_private_search_engine
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: os_version
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: policies_is_enterprise
   type: BOOLEAN
-  description: Policies Is Enterprise
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: policies_is_enterprise
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: channel
 - mode: NULLABLE
   name: normalized_engine
   type: STRING
-  description: Normalized Search Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_engine
 - mode: NULLABLE
   name: normalized_default_search_engine
   type: STRING
-  description: Normalized Default Search Engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_default_search_engine
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
-  description: Is SAP Monetizable
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: is_sap_monetizable
 - mode: NULLABLE
   name: client_count
   type: INTEGER
-  description: Client Count
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: client_count
 - mode: NULLABLE
   name: organic
   type: INTEGER
-  description: Number of Organic Searches
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: organic
 - mode: NULLABLE
   name: tagged_sap
   type: INTEGER
-  description: Tagged SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_sap
 - mode: NULLABLE
   name: tagged_follow_on
   type: INTEGER
-  description: Tagged Follow On
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: tagged_follow_on
 - mode: NULLABLE
   name: sap
   type: INTEGER
-  description: SAP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: sap
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
-  description: Ad Click
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click
 - mode: NULLABLE
   name: ad_click_organic
   type: INTEGER
-  description: Ad Click Organic
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: ad_click_organic
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
-  description: Number of Searches with Ads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads
 - mode: NULLABLE
   name: search_with_ads_organic
   type: INTEGER
-  description: Number of Organic Searches with Ads
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: search_with_ads_organic
 - mode: NULLABLE
   name: unknown
   type: INTEGER
-  description: Unknown
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: unknown
 - mode: NULLABLE
   name: is_acer_cohort
   type: BOOLEAN

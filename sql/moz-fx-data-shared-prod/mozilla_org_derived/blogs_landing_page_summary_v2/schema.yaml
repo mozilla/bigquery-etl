@@ -2,59 +2,87 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date of the entrance to the visit
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: date
 - mode: NULLABLE
   name: device_category
   type: STRING
-  description: Device Category - The device category the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: device_category
 - mode: NULLABLE
   name: operating_system
   type: STRING
-  description: Operating System - The operating system the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: operating_system
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: Browser - The browser the visitor used to visit the site
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: browser
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language - Language of visitor's device
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: language
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country - The country from which events were reported, based on IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: standardized_country_name
   type: STRING
-  description: Standardized Country Name - The country from which events were reported, based on IP address
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: standardized_country_name
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source - Referring partner domain
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: source
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium - Category of the source, such as 'organic' for a search engine
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: medium
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign - Identifier for the marketing campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: campaign
 - mode: NULLABLE
   name: content
   type: STRING
-  description: Content - Indicates the particular link within a campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: content
 - mode: NULLABLE
   name: blog
   type: STRING
-  description: Blog
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: blog
 - mode: NULLABLE
   name: subblog
   type: STRING
-  description: Subblog
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: subblog
 - mode: NULLABLE
   name: landing_page
   type: STRING
-  description: Landing Page
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: landing_page
 - mode: NULLABLE
   name: cleaned_landing_page
   type: STRING
@@ -62,16 +90,24 @@ fields:
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Sessions - The number of sessions with an entrances value of 1
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: sessions
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads - The number of download click events
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: downloads
 - mode: NULLABLE
   name: social_share
   type: INT64
-  description: Social Shares - The number of social share events
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: social_share
 - mode: NULLABLE
   name: newsletter_subscription
   type: INT64
-  description: Newsletter Subscription - The number of newsletter subscribe events
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: newsletter_subscription

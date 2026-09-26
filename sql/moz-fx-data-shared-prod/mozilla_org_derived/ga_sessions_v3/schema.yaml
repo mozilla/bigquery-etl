@@ -2,15 +2,21 @@ fields:
 - name: ga_client_id
   mode: NULLABLE
   type: STRING
-  description: Google Analytics Client Identifier, using a cookie on mozilla.org
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ga_client_id
 - name: ga_session_id
   mode: NULLABLE
   type: STRING
-  description: Google Analytics Session Identifier
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: ga_session_id
 - name: session_date
   mode: NULLABLE
   type: DATE
-  description: The date the session started
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: session_date
 - name: session_start_timestamp
   mode: NULLABLE
   type: DATETIME
@@ -19,75 +25,105 @@ fields:
 - name: is_first_session
   mode: NULLABLE
   type: BOOLEAN
-  description: Whether this is the first session for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: is_first_session
 - name: session_number
   mode: NULLABLE
   type: INTEGER
-  description: The session number for this client. Starts at 1, consecutively increasing.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: session_number
 - name: time_on_site
   mode: NULLABLE
   type: INTEGER
-  description: Time in seconds between the first and last event of the session
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: time_on_site
 - name: pageviews
   mode: NULLABLE
   type: INTEGER
-  description: Total pageviews for this session.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: pageviews
 - name: country
   type: STRING
   mode: NULLABLE
-  description: |-
-    Country reported during GA user's session_start event. If no session start event, first reported country in the session.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: country
 - name: region
   type: STRING
   mode: NULLABLE
-  description: Region reported during GA user's session_start event.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: region
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City reported during GA user's session_start event.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: city
 - name: device_category
   type: STRING
   mode: NULLABLE
-  description: The type of device (Mobile, Tablet, Desktop) reported during GA user's session_start event
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: device_category
 - name: mobile_device_model
   type: STRING
   mode: NULLABLE
-  description: The mobile device model reported during GA user's session_start event
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: mobile_device_model
 - name: mobile_device_string
   type: STRING
   mode: NULLABLE
-  description: |-
-    The mobile device string reported during GA user's session_start event.
-    The branding, model, and marketing name used to identify the mobile device.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: mobile_device_string
 - name: os
   type: STRING
   mode: NULLABLE
-  description: "Operating system reported during GA user's session_start event (e.g., 'Macintosh' or 'Windows')."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: os
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: "Operating system version reported during GA user's session_start event"
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: os_version
 - name: language
   type: STRING
   mode: NULLABLE
-  description: |-
-    Language the device is set to use reported during GA user's session_start event. Expressed as the IETF language code.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: language
 - name: browser
   type: STRING
   mode: NULLABLE
-  description: "Browser reported during GA user's session_start event (e.g., 'Chrome' or 'Firefox')."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: browser
 - name: browser_version
   type: STRING
   mode: NULLABLE
-  description: "Browser version reported during GA user's session_start event."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: browser_version
 - name: first_campaign_from_event_params
   type: STRING
   mode: NULLABLE
-  description: "The first non-null reported campaign from event_params for this session."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: first_campaign_from_event_params
 - name: distinct_campaigns_from_event_params
   type: STRING
   mode: REPEATED
-  description: "All non-null reported campaigns from event_params for this session."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: distinct_campaigns_from_event_params
 - name: first_source_from_event_params
   type: STRING
   mode: NULLABLE
@@ -115,7 +151,9 @@ fields:
 - name: manual_campaign_id
   type: STRING
   mode: NULLABLE
-  description: Manual Campaign ID reported from collected_traffic_source during GA user's session_start event.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: manual_campaign_id
 - name: manual_campaign_name
   type: STRING
   mode: NULLABLE
@@ -134,7 +172,9 @@ fields:
 - name: manual_term
   type: STRING
   mode: NULLABLE
-  description: Manual Term reported from collected_traffic_source during GA user's session_start event.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: manual_term
 - name: manual_content
   type: STRING
   mode: NULLABLE
@@ -142,39 +182,57 @@ fields:
 - name: gclid
   type: STRING
   mode: NULLABLE
-  description: The last reported Google Click ID, which uniquely represent an ad click for Google ads.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: gclid
 - name: gclid_array
   type: STRING
   mode: REPEATED
-  description: All reported Google Click IDs, which uniquely represent an ad click for Google ads.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: gclid_array
 - name: had_download_event
   type: BOOLEAN
   mode: NULLABLE
-  description: "Whether this session had a download event for Firefox."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: had_download_event
 - name: firefox_desktop_downloads
   type: INT64
   mode: NULLABLE
-  description: "The number of firefox desktop downloads during this session."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: firefox_desktop_downloads
 - name: last_reported_install_target
   type: STRING
   mode: NULLABLE
-  description: "The last reported install target for this session (e.g. 'desktop_release' or 'android_beta')."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: last_reported_install_target
 - name: all_reported_install_targets
   type: STRING
   mode: REPEATED
-  description: "All install targets reported for this session (e.g. 'desktop_release' or 'android_beta'."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: all_reported_install_targets
 - name: last_reported_stub_session_id
   type: STRING
   mode: NULLABLE
-  description: "The last reported Stub Session ID for this session. Can be used to join with `dl_ga_triplets` to get dl_tokens."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: last_reported_stub_session_id
 - name: all_reported_stub_session_ids
   type: STRING
   mode: REPEATED
-  description: "All reported Stub Session IDs for this session. Can be used to join with `dl_ga_triplets` to get dl_tokens."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: all_reported_stub_session_ids
 - name: landing_screen
   type: STRING
   mode: NULLABLE
-  description: "The first reported landing screen for this session. Most sessions only have one, so this is a safe value to use."
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/mozilla_org_derived/dataset_schema.yaml
+    field: landing_screen
 - name: first_term_from_event_params
   type: STRING
   mode: NULLABLE

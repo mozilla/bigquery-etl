@@ -1,0 +1,139 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: |
+    Date value corresponding to the entry.
+
+- mode: NULLABLE
+  name: app_id
+  type: STRING
+  description: |
+    ID corresponding to your application in the App Store.
+
+- mode: NULLABLE
+  name: territory
+  type: STRING
+  description: |
+    The App Store as determined by the customer’s billing address.
+
+- mode: NULLABLE
+  name: source_type
+  type: STRING
+  description: |
+    The source type from which a customer tapped a link to your App Store
+    product page to view your app or download it for the first time.
+    Use this filter to view metrics based on the source from which users are finding your app.
+
+- mode: NULLABLE
+  name: app_referrer
+  type: STRING
+  description: |
+    The app from which a customer tapped a link to your App Store
+    product page to view it or download it for the first time.
+    Filter by App Referrer to view a list of apps that referred users to your app’s product page.
+
+- mode: NULLABLE
+  name: web_referrer
+  type: STRING
+  description: |
+    The website from which a customer tapped a link to your App Store product page
+    to view it or download it for the first time. Filter by Web Referrer to view
+    a list of websites that referred users to your app’s product page.
+
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: |
+    Custom App Store links you can use in your marketing materials, websites, or advertising.
+    Campaign links allow you to view your app sales, usage, and monetization for specific campaigns.
+    Campaigns only display in App Analytics after more than a day has passed since campaign launch
+    and at least five App Units are attributed to the campaign.
+
+- mode: NULLABLE
+  name: impressions
+  type: INTEGER
+  description: |
+    Number of Firefox iOS app impressions in the Apple Store.
+
+- mode: NULLABLE
+  name: impressions_unique_device
+  type: INTEGER
+  description: |
+    Number of Firefox iOS app unique impressions in the Apple Store.
+
+- mode: NULLABLE
+  name: page_views
+  type: INTEGER
+  description: |
+    The total number of times your App Store product page was viewed
+    (Includes when apps use StoreKit to load your product page).
+
+- mode: NULLABLE
+  name: page_views_unique_device
+  type: INTEGER
+  description: |
+    The number of unique devices that have viewed your App Store product page
+    (Includes when apps use StoreKit to load your product page).
+
+- mode: NULLABLE
+  name: first_time_downloads
+  type: INTEGER
+  description: |
+    The total number of first times an app is downloaded per Apple ID account;
+    Counted when an app is downloaded from the App Store after a user taps the "Buy" or "Get" button.
+    This doesn't include app updates, redownloads, or device restores.
+
+- mode: NULLABLE
+  name: redownloads
+  type: INTEGER
+  description: |
+    The total number of redownloads of your app on the App Store. Doesn't include auto-updates or device restores.
+    Counted when a customer clicks the redownload button.
+
+- mode: NULLABLE
+  name: total_downloads
+  type: INTEGER
+  description: |
+    The total number of app downloads on the App Store including First Time Downloads and Redownloads.
+
+- mode: NULLABLE
+  name: opt_in_active_devices
+  type: INTEGER
+  description: |
+    The number of devices with at least one session during the selected period.
+    Based on devices running a minimum of iOS 8, macOS 11, tvOS 9, or visionOS 1.
+
+- mode: NULLABLE
+  name: opt_in_active_devices_last_30_days
+  type: INTEGER
+  description: |
+    The number of active devices with at least one session during the previous 30 days.
+
+- mode: NULLABLE
+  name: deletions
+  type: INTEGER
+  description: |
+    The number of times your app was deleted on devices running
+    a minimum of iOS 12.3, macOS 11, tvOS 9, or visionOS 1.
+    This data includes deletions of the app from the Home Screen
+    and deletions of the app through Manage Storage.
+    Data from resetting or erasing a device’s content and settings is not included.
+
+- mode: NULLABLE
+  name: installations
+  type: INTEGER
+  description: |
+    The total number of times your app has been installed on devices running
+    a minimum of iOS 8, macOS 11, tvOS 9, or visionOS 1.
+    Redownloads on the same device, downloads to multiple devices sharing
+    the same Apple ID, and Family Sharing installations are included.
+    Only completed installations are counted. Failed or incomplete installations aren't included.
+
+- mode: NULLABLE
+  name: opt_in_sessions
+  type: INTEGER
+  description: |
+    The number of times the app has been used for at least two seconds.
+    If the app is in the background and is later used again, that counts as another session.

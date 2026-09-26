@@ -11,7 +11,6 @@ from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
 import rich_click as click
-from google.cloud import bigquery
 
 from ..cli.utils import (
     parallelism_option,
@@ -23,8 +22,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
-from ..util.bigquery_id import sql_table_id
-from ..util.client_queue import ClientQueue
+from ..util.client_queue import ClientQueue, get_client
 from ..util.common import block_coding_agents
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from ..view import View, broken_views
@@ -263,7 +261,7 @@ def publish(
 
 
 def _view_has_changes(target_project, credentials, view):
-    return view.has_changes(target_project, credentials)
+    return view.has_changes(target_project, client=get_client(credentials))
 
 
 def _publish_view_callback(
@@ -276,7 +274,7 @@ def _publish_view_callback(
     results,
 ):
     try:
-        client = bigquery.Client(credentials=credentials)
+        client = get_client(credentials)
         success = views_by_id[view_id].publish(target_project, dry_run, client)
         results[view_id] = success if success is not None else True
     except Exception:
@@ -375,6 +373,14 @@ def _collect_views(
     is_flag=True,
     help="Only clean views with labels: {authorized: true} in metadata.yaml",
 )
+@click.option(
+    "--region",
+    default="us",
+    help=(
+        "BigQuery region whose INFORMATION_SCHEMA is queried to find managed views."
+        " Views in datasets outside this region are not cleaned."
+    ),
+)
 def clean(
     name,
     sql_dir,
@@ -386,6 +392,7 @@ def clean(
     user_facing_only,
     skip_authorized,
     authorized_only,
+    region,
 ):
     """Clean managed views."""
     # set log level
@@ -416,39 +423,17 @@ def clean(
 
     client_q = ClientQueue([project_id], parallelism)
     with client_q.client() as client:
-        datasets = [
-            dataset
-            for dataset in client.list_datasets(target_project)
-            if not user_facing_only
-            or not dataset.dataset_id.endswith(
-                tuple(
-                    ConfigLoader.get(
-                        "default", "non_user_facing_dataset_suffixes", fallback=[]
-                    )
-                )
-            )
-        ]
+        managed_view_ids = _list_managed_views(
+            client,
+            target_project or project_id,
+            region,
+            name,
+            skip_authorized,
+            authorized_only,
+            user_facing_only,
+        )
 
     with ThreadPool(parallelism) as p:
-        managed_view_ids = {
-            view
-            for views in p.starmap(
-                client_q.with_client,
-                (
-                    (
-                        _list_managed_views,
-                        dataset,
-                        name,
-                        skip_authorized,
-                        authorized_only,
-                    )
-                    for dataset in datasets
-                ),
-                chunksize=1,
-            )
-            for view in views
-        }
-
         remove_view_ids = sorted(managed_view_ids - expected_view_ids)
         p.starmap(
             client_q.with_client,
@@ -458,16 +443,24 @@ def clean(
 
 
 def _list_managed_views(
-    client, dataset, pattern, skip_authorized, authorized_only=False
+    client,
+    project,
+    region,
+    pattern,
+    skip_authorized,
+    authorized_only=False,
+    user_facing_only=False,
 ):
+    """Return the ids of managed views in the given region of the project."""
     query = f"""
       SELECT
         table_catalog || "." || table_schema || "." || table_name AS table_id,
+        table_schema,
         CONTAINS_SUBSTR(option_value, 'STRUCT("authorized", "")') AS is_authorized
       FROM
-        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
+        `{project}.region-{region}.INFORMATION_SCHEMA.VIEWS`
       INNER JOIN
-        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+        `{project}.region-{region}.INFORMATION_SCHEMA.TABLE_OPTIONS`
       USING
         (table_catalog,
          table_schema,
@@ -477,16 +470,24 @@ def _list_managed_views(
       AND CONTAINS_SUBSTR(option_value, 'STRUCT("managed", "")')
     """
 
+    non_user_facing_suffixes = tuple(
+        ConfigLoader.get("default", "non_user_facing_dataset_suffixes", fallback=[])
+    )
+
     # running a query against information schema instead of using the API to list tables is much faster
     job = client.query(query)
     result = list(job.result())
-    return [
+    return {
         row.table_id
         for row in result
-        if (pattern is None or fnmatchcase(sql_table_id(row.table_id), f"*{pattern}"))
+        if (pattern is None or fnmatchcase(row.table_id, f"*{pattern}"))
         and (not skip_authorized or not row.is_authorized)
         and (not authorized_only or row.is_authorized)
-    ]
+        and (
+            not user_facing_only
+            or not row.table_schema.endswith(non_user_facing_suffixes)
+        )
+    }
 
 
 def _remove_view(client, view_id, dry_run):

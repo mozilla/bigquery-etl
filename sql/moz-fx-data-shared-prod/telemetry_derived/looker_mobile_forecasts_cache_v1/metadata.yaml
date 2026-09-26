@@ -1,0 +1,10 @@
+friendly_name: Looker Mobile Forecasts Cache
+description: |-
+  Cache for 2021 Mobile DAU forecasts.
+  These forecasts are created on-the-fly in Looker using BQ ML,
+  and inserted into this table for re-use.
+owners:
+  - loines@mozilla.com
+  - frank@mozilla.com
+labels:
+  incremental: false

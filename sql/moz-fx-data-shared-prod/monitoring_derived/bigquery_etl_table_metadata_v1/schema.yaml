@@ -1,0 +1,279 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: REQUIRED
+  description: Run date of the snapshot. This is the table's partition column.
+- name: project_id
+  type: STRING
+  mode: REQUIRED
+  description: GCP project the table is defined under (the `sql/<project>` directory).
+- name: dataset_id
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset the table is defined under.
+- name: table_id
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    Name of the entity's directory, including any version suffix, e.g.
+    clients_last_seen_v2.
+- name: full_table_id
+  type: STRING
+  mode: REQUIRED
+  description: Fully qualified name, project_id.dataset_id.table_id.
+- name: table_type
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The BigQuery object type, read from INFORMATION_SCHEMA.TABLES.table_type at
+    run time: BASE TABLE, VIEW, MATERIALIZED VIEW, EXTERNAL, CLONE or SNAPSHOT.
+    This is what the object actually is, as opposed to definition_type, which is
+    how the repo defines it. Null when table_type_status is not `found` --
+    always check that column before treating a null as "does not exist".
+- name: table_type_status
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    Why table_type has the value it does. `found` means INFORMATION_SCHEMA
+    returned a table_type. `not_in_bigquery` means the project was queried
+    successfully and the object was absent, i.e. defined in the repo but not
+    deployed. `project_unavailable` means the project's INFORMATION_SCHEMA could
+    not be read at all, so nothing is known either way. Keeping these apart
+    stops a permissions failure from being read as "the table does not exist".
+- name: definition_type
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The repo file that defines the entity, verbatim: query.sql, query.py,
+    script.sql, view.sql or materialized_view.sql. udf.sql and
+    stored_procedure.sql are excluded from this table entirely. Null when the
+    directory holds only metadata.yaml and schema.yaml -- the object exists in
+    BigQuery but is ingested by an external system rather than defined here.
+- name: definition_url
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    GitHub link to the definition_type file on the published branch
+    (generated-sql, or private-generated-sql for private-bigquery-etl),
+    matching the links bqetl puts in generated DAG docs. The repo is taken from
+    the scheduling DAG; unscheduled entities have no DAG and fall back to the
+    public repo. Null when definition_type is null.
+- name: friendly_name
+  type: STRING
+  mode: NULLABLE
+  description: friendly_name from metadata.yaml.
+- name: owners
+  type: STRING
+  mode: REPEATED
+  description: >-
+    The `owners` list from metadata.yaml. Entries are email addresses or GitHub
+    identities. Empty when no owner is declared.
+- name: owner_count
+  type: INTEGER
+  mode: REQUIRED
+  description: >-
+    Number of entries in `owners`. Never null: 0 covers every ownerless case,
+    including a metadata.yaml that failed to parse. To separate "declares no
+    owner" from "we could not read the file", pair this with
+    metadata_parse_error, which is non-null only in the latter case.
+- name: deprecated
+  type: BOOLEAN
+  mode: NULLABLE
+  description: The `deprecated` flag from metadata.yaml, defaulted to false when absent.
+- name: level
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The `labels.level` data tier: bronze, silver or gold. Sparse -- only a small
+    minority of entities declare it, so treat null as "unclassified" rather than
+    as a tier. Distinct from dag_tier, which is the scheduling DAG's operational
+    impact tier.
+- name: application
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The `labels.application` value, e.g. firefox, relay, amo, accounts_backend.
+    Useful for grouping ownership coverage by product. Null when not declared.
+- name: schedule
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The `labels.schedule` value: daily, weekly, hourly, frequently. This is a
+    hand-written label, not the real cadence -- dag_schedule_interval carries
+    the actual cron from dags.yaml and should be preferred where they disagree.
+- name: incremental
+  type: BOOLEAN
+  mode: NULLABLE
+  description: >-
+    The `labels.incremental` flag, parsed from either a YAML boolean or the
+    strings "true"/"false". Null when the label is absent or unparseable.
+- name: labels
+  type: RECORD
+  mode: REPEATED
+  description: >-
+    Every label as authored in metadata.yaml, key-sorted. Read from the raw YAML
+    rather than the parsed Metadata, which overwrites `owner<N>` with the local
+    parts of the `owners` emails and injects a `dag` key -- so `owner1` here is
+    what a human wrote, which can differ from `owners[0]` and is often silently
+    discarded by the tooling. For the labels actually applied to the deployed
+    table see monitoring_derived.bigquery_tables_inventory_v1. Note the
+    `table_type` label (client_level, aggregate, ...) is unrelated to this
+    table's `table_type` column, which is the BigQuery object type.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Label name as written in metadata.yaml.
+  - name: value
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Label value rendered as a string. YAML booleans become "true"/"false" and
+      list values (review_bugs) are comma-joined.
+- name: dag_name
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The `scheduling.dag_name` from metadata.yaml. Null when the file declares
+    no dag_name, which is how bqetl itself decides a query is unscheduled
+    (query_scheduling/task.py raises UnscheduledTask in that case).
+- name: is_scheduled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: >-
+    True when metadata.yaml declares a scheduling.dag_name, i.e. bqetl generates
+    an Airflow task for it. Note this means "not scheduled by bqetl", not "never
+    runs": roughly 20 tables carry other scheduling keys (arguments, retries,
+    date_partition_parameter) without a dag_name and are driven from
+    telemetry-airflow directly, and they appear here as false.
+- name: dag_tier
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Impact tier of the scheduling DAG, from its `impact/*` tag in dags.yaml:
+    tier_1, tier_2 or tier_3. Null when the table is unscheduled, the DAG is not
+    defined in bigquery-etl's dags.yaml, or the DAG has no impact tag.
+- name: dag_tags
+  type: STRING
+  mode: REPEATED
+  description: >-
+    All tags on the scheduling DAG, e.g. impact/tier_1, repo/bigquery-etl,
+    triage/no_triage.
+- name: dag_owner
+  type: STRING
+  mode: NULLABLE
+  description: The DAG's `default_args.owner` from dags.yaml.
+- name: dag_emails
+  type: STRING
+  mode: REPEATED
+  description: The DAG's `default_args.email` alert recipients from dags.yaml.
+- name: dag_schedule_interval
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The DAG's schedule_interval verbatim from dags.yaml, e.g. "0 2 * * *",
+    "daily" or "3h". This is the authoritative cadence; the `schedule` label is
+    a hand-written approximation that can disagree with it.
+- name: dag_schedule_frequency
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Coarse bucket derived from dag_schedule_interval: once, sub_hourly, hourly,
+    intraday, daily, weekly, monthly, yearly, or other when the interval could
+    not be interpreted. Use this for grouping instead of the `schedule` label,
+    which is unreliable. Null when the entity has no resolvable DAG.
+- name: dag_schedule_description
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Human-readable rendering of dag_schedule_interval, e.g. "Daily at 03:00
+    UTC", "Every 3 hours from 01:30 UTC", "Weekly on Sunday at 12:40 UTC". All
+    times are UTC, which is what Airflow schedules on. Named aliases are
+    expanded via the same table bqetl uses, so "daily" renders as "Daily at
+    00:00 UTC". When an interval cannot be interpreted this falls back to the
+    raw string and dag_schedule_frequency is `other`.
+- name: dag_repo
+  type: STRING
+  mode: NULLABLE
+  description: Repository the DAG is generated into, bigquery-etl or private-bigquery-etl.
+- name: last_changed_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: >-
+    When the most recent change to any file in the entity's directory landed.
+    This is the committer timestamp, not the author timestamp: for correlating
+    with a task failure what matters is when the change reached the branch, not
+    when someone first wrote it. For a squash-merged PR it is the merge time.
+    Null unless last_changed_status is `found`.
+- name: last_changed_by
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Who made the change -- the PR author, since GitHub attributes a squash-merge
+    commit to the author of the PR rather than to whoever merged it.
+- name: last_changed_pr
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Number of the merged PR that made the change, parsed from the commit
+    subject. Null when the change did not arrive via a PR: a direct push to the
+    branch leaves no PR reference, and no number is guessed for it. Currently
+    only a couple of entities across the repo fall into that case.
+- name: last_changed_pr_url
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Link to that PR. The repo is taken from this checkout's git remote rather
+    than from dag_repo, because PR numbers are per-repository and the history
+    read at run time is the image's own -- which in production is
+    private-bigquery-etl even for entities published from the public repo. Null
+    whenever last_changed_pr is null.
+- name: last_changed_title
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Title of the change with the trailing "(#1234)" stripped, which for a
+    squash-merged PR is the PR title. Falls back to the full commit subject when
+    the change did not come from a PR.
+- name: last_changed_file
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Which file that commit touched, as a path relative to the entity's directory
+    -- usually a bare filename such as query.sql, metadata.yaml or schema.yaml.
+    The directory itself is already in metadata_path. Tracking the whole
+    directory rather than just the definition file matters because a schema.yaml
+    edit can break a task as easily as a query change; this says which kind of
+    change it was.
+- name: last_changed_status
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    Why the last_changed_* columns have the values they do. `found` means git
+    history resolved. `not_in_git` means history was readable but no commit
+    touched this directory (a newly added, uncommitted entity).
+    `git_unavailable` means git is missing or this is not a checkout.
+    `shallow_history` means the checkout has truncated history, which would map
+    every entity to the build commit -- treated as unusable rather than
+    partially trusted, so the columns are null instead of misleading.
+- name: metadata_path
+  type: STRING
+  mode: REQUIRED
+  description: Repo-relative path of the metadata.yaml this row was built from.
+- name: metadata_parse_error
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Exception type and message when metadata.yaml could not be parsed. The row
+    is still emitted, with owner_count 0 and the other metadata-derived columns
+    null, so a broken file is not mistaken for an entity that does not exist.
+    Null on success.
+- name: run_timestamp
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: >-
+    UTC wall-clock time the snapshot was generated. Identical across every row
+    in a partition, so it identifies the run rather than the row. Distinct from
+    submission_date, which is the Airflow run date passed via --date: on a
+    backfill or a retry the two disagree, and run_timestamp is what tells you
+    when the repo was actually read.

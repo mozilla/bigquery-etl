@@ -64,3 +64,29 @@ tag_deployments:
             metric_schedule:
               named_schedule:
                 name: Default Schedule - 13:00 UTC
+      # Desktop rollout is still thin (single-digit pings/day), so a table-wide FRESHNESS
+      # or SUM check can't tell a desktop-specific gap from normal noise - mobile volume
+      # masks it. This counts rows for surface = 'Desktop' specifically over a rolling
+      # 3-day window, catching a multi-day silence like the 2026-08-26 to 2026-08-31
+      # gap that nothing else here would have flagged. Revisit the threshold/window once
+      # desktop volume is high enough for a statistically meaningful check.
+      - column_selectors:
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.*
+        metrics:
+          - metric_name: DESKTOP_ROW_COUNT
+            metric_type:
+              type: PREDEFINED
+              predefined_metric: COUNT_ROWS
+            conditions:
+              - surface = 'Desktop'
+            threshold:
+              type: CONSTANT
+              lower_bound: 1
+            lookback:
+              lookback_type: DATA_TIME
+              lookback_window:
+                interval_type: DAYS
+                interval_value: 3
+            metric_schedule:
+              named_schedule:
+                name: Default Schedule - 13:00 UTC

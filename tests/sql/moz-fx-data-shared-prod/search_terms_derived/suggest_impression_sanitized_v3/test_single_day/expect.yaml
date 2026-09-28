@@ -71,7 +71,9 @@
   submission_timestamp: "2021-01-01T13:01:00+00:00"
   timestamp: "2021-01-01T13:01:00+00:00"
   match_type: "firefox-suggest"
-  experiments: []
+  experiments:
+    - slug: glean-exp
+      branch: treatment
 - advertiser: dunder mifflin
   block_id: 202
   browser: firefox(134)
@@ -92,7 +94,9 @@
   submission_timestamp: "2021-01-01T13:02:00+00:00"
   timestamp: "2021-01-01T13:02:00+00:00"
   match_type: "best-match"
-  experiments: []
+  experiments:
+    - slug: glean-exp
+      branch: treatment
 # legacy rid_overlap wins over glean rid_overlap (13:06 > 13:05); experiments from legacy source
 - advertiser: legacy store
   block_id: 105
@@ -133,7 +137,9 @@
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
   match_type: "firefox-suggest"
-  experiments: []
+  experiments:
+    - slug: glean-exp
+      branch: treatment
 - advertiser: pizza place
   block_id: 120
   browser: firefox(96)
@@ -182,7 +188,9 @@
   submission_timestamp: "2021-01-01T13:31:00+00:00"
   timestamp: "2021-01-01T13:33:00+00:00"
   match_type: "best-match"
-  experiments: []
+  experiments:
+    - slug: glean-dup-exp
+      branch: wins
 - advertiser: norm store
   block_id: 140
   browser: firefox(96)
@@ -211,3 +219,25 @@
   experiments:
     - slug: suggest-exp
       branch: control
+# experiment_name is unset, so experiments is empty rather than [(null, null)]
+- advertiser: no exp store
+  block_id: 150
+  browser: firefox(134)
+  context_id: cid_no_exp
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  os_family: windows
+  position: 50
+  query: "unenrolled query"
+  reporting_url: url_no_exp
+  request_id: rid_no_exp
+  sequence_no: 50
+  session_id: sid_no_exp
+  submission_timestamp: "2021-01-01T13:50:00+00:00"
+  timestamp: "2021-01-01T13:50:00+00:00"
+  match_type: "firefox-suggest"
+  experiments: []

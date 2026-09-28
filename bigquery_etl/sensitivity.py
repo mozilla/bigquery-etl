@@ -11,7 +11,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import pathspec
 
@@ -90,6 +90,46 @@ def gated_readers(
     doctype = _VERSION_RE.sub("", table)
     members = tables.get(doctype, tables.get(table, entry.get("default", [])))
     return set(members)
+
+
+def restricted_dataset_acl(
+    project: str,
+    dataset: str,
+    families: Iterable[str],
+    base_acl: str,
+    gated: Optional[Dict[str, Dict]] = None,
+) -> Optional[Tuple[str, List[Dict]]]:
+    """Return (dataset_base_acl, workgroup_access) for a dataset on gated data.
+
+    Used when generating dataset_metadata.yaml for views and derived datasets
+    built on the `{family}_stable` datasets in `families`. An explicit
+    `gated_datasets` entry for `dataset` wins; otherwise the dataset gets the
+    narrowest `default` among the stable datasets, with unlisted ones counting
+    as broad. Returns None when the result is the broad default, so callers can
+    keep their usual metadata.
+    """
+    gated = load_gated_datasets() if gated is None else gated
+    project_gated = gated.get(project) or {}
+    readers: Optional[Set[str]] = None
+    if dataset in project_gated:
+        readers = set(project_gated[dataset].get("default", []))
+    else:
+        for family in families:
+            entry = project_gated.get(f"{family}_stable")
+            family_readers = (
+                set(entry.get("default", [])) if entry else set(BROAD_READERS)
+            )
+            readers = family_readers if readers is None else readers & family_readers
+
+    # empty readers means nobody, so it's restricted even though set() <= broad
+    if readers is None or (readers and readers <= BROAD_READERS):
+        return None
+    workgroup_access = (
+        [{"role": "roles/bigquery.dataViewer", "members": sorted(readers)}]
+        if readers
+        else []
+    )
+    return f"{base_acl}_restricted", workgroup_access
 
 
 class DatasetAccess:

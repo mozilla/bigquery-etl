@@ -14,8 +14,10 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
+from bigquery_etl.metadata.parse_metadata import DEFAULT_WORKGROUP_ACCESS
 from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
+from bigquery_etl.sensitivity import restricted_dataset_acl
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
 PROBEINFO_URL = "https://probeinfo.telemetry.mozilla.org"
@@ -40,11 +42,19 @@ DEPRECATED_APP_LIST = ConfigLoader.get(
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
 
 
-def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
+def write_dataset_metadata(
+    output_dir,
+    full_table_id,
+    derived_dataset_metadata=False,
+    project_id="moz-fx-data-shared-prod",
+    families=None,
+):
     """
     Add dataset_metadata.yaml to public facing datasets.
 
-    Does not overwrite existing dataset_metadata.yaml files.
+    Does not overwrite existing dataset_metadata.yaml files. `families` are the
+    bq_dataset_families the dataset reads from (defaults to the dataset's own
+    family); access is restricted when any of their stable datasets is gated.
     """
     d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
     d.parent.mkdir(parents=True, exist_ok=True)
@@ -57,14 +67,27 @@ def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=F
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         if derived_dataset_metadata:
             dataset_metadata = env.get_template("derived_dataset_metadata.yaml")
+            base_acl = "derived"
         else:
             dataset_metadata = env.get_template("dataset_metadata.yaml")
+            base_acl = "view"
+
+        dataset = d.parent.name
+        if families is None:
+            families = [dataset.removesuffix("_derived")]
+        workgroup_access = DEFAULT_WORKGROUP_ACCESS
+        restricted = restricted_dataset_acl(project_id, dataset, families, base_acl)
+        if restricted is not None:
+            base_acl, workgroup_access = restricted
+
         rendered = dataset_metadata.render(
             {
                 "friendly_name": " ".join(
                     [p.capitalize() for p in d.parent.name.split("_")]
                 ),
-                "dataset": d.parent.name,
+                "dataset": dataset,
+                "dataset_base_acl": base_acl,
+                "workgroup_access": workgroup_access,
             }
         )
 
@@ -488,7 +511,7 @@ class GleanTable:
                     skip_existing=skip_existing,
                 )
 
-            write_dataset_metadata(output_dir, view)
+            write_dataset_metadata(output_dir, view, project_id=project_id)
 
     def generate_per_app(
         self,
@@ -519,6 +542,7 @@ class GleanTable:
             (a["bq_dataset_family"], a.get("app_channel", "release"))
             for a in app_ids_info
         ]
+        families = [family for family, _ in datasets]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
             # This app only has a single channel, and the app_name
@@ -563,7 +587,9 @@ class GleanTable:
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
             if output_dir:
-                write_dataset_metadata(output_dir, view)
+                write_dataset_metadata(
+                    output_dir, view, project_id=project_id, families=families
+                )
 
                 view_dir = get_table_dir(output_dir, view)
                 write_sql(
@@ -648,8 +674,16 @@ class GleanTable:
                         skip_existing=skip_existing,
                     )
 
-                write_dataset_metadata(output_dir, view)
-                write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)
+                write_dataset_metadata(
+                    output_dir, view, project_id=project_id, families=families
+                )
+                write_dataset_metadata(
+                    output_dir,
+                    table,
+                    derived_dataset_metadata=True,
+                    project_id=project_id,
+                    families=families,
+                )
 
     def generate_across_apps(
         self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8

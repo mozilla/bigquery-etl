@@ -16,6 +16,7 @@ from bigquery_etl.sensitivity import (
     gated_readers,
     load_codeowners,
     path_owners,
+    restricted_dataset_acl,
     source_access,
 )
 
@@ -408,3 +409,67 @@ class TestSensitivityCommand:
         payload = result.output[: result.output.rindex("]") + 1]
         findings = json.loads(payload)
         assert findings[0]["source"] == f"{PROJECT}.src_external"
+
+
+class TestRestrictedDatasetAcl:
+    def test_inherits_narrow_stable_access(self):
+        assert restricted_dataset_acl(
+            PROJECT, "acme_derived", ["acme"], "derived", GATED
+        ) == (
+            "derived_restricted",
+            [
+                {
+                    "role": "roles/bigquery.dataViewer",
+                    "members": ["workgroup:acme/data-viewers"],
+                }
+            ],
+        )
+
+    def test_broad_or_unlisted_stable_keeps_default(self):
+        # telemetry_stable is broad at the dataset level; table gating doesn't apply
+        assert (
+            restricted_dataset_acl(PROJECT, "telemetry", ["telemetry"], "view", GATED)
+            is None
+        )
+        assert (
+            restricted_dataset_acl(PROJECT, "other", ["other"], "view", GATED) is None
+        )
+
+    def test_explicit_entry_overrides_stable(self):
+        gated = {
+            PROJECT: {
+                **GATED[PROJECT],
+                "acme_derived": {"default": [BROAD]},
+                "telemetry_derived": {"default": []},
+            }
+        }
+        assert (
+            restricted_dataset_acl(PROJECT, "acme_derived", ["acme"], "derived", gated)
+            is None
+        )
+        assert restricted_dataset_acl(
+            PROJECT, "telemetry_derived", ["telemetry"], "derived", gated
+        ) == ("derived_restricted", [])
+
+    def test_union_takes_narrowest_access(self):
+        # mixing a gated family with a broad one leaves no common readers
+        assert restricted_dataset_acl(
+            PROJECT, "mixed", ["acme", "telemetry"], "view", GATED
+        ) == ("view_restricted", [])
+
+    def test_resolves_per_project(self):
+        assert (
+            restricted_dataset_acl("other-project", "acme", ["acme"], "view", GATED)
+            is None
+        )
+        assert restricted_dataset_acl(
+            "other-project", "glam", ["glam"], "view", GATED
+        ) == (
+            "view_restricted",
+            [
+                {
+                    "role": "roles/bigquery.dataViewer",
+                    "members": ["workgroup:glam/data-viewers"],
+                }
+            ],
+        )

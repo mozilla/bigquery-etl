@@ -1,0 +1,37 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: 'A UUID that uniquely identifies an individual Fenix client installation.
+    This identifier persists across sessions for the same installation and is used
+    to link records to a specific device profile.
+
+    Not unique in this table: a client has one row per day on which a completion from
+    them arrived.'
+- name: completed_date
+  type: DATE
+  mode: NULLABLE
+  description: "Date the completion was reported: the ping's submission date, not\
+    \ the date\nthe event itself occurred. A delayed ping therefore dates the completion\n\
+    later than it happened. Not the client's first completion either \u2014 one whose\n\
+    completions arrived on more than one day has a row for each."
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: "A stable integer identifier (0\u201399) derived from hashing the client\
+    \ ID, used to partition clients into reproducible samples for analysis or experimentation.\
+    \ All rows in a given table may share the same sample_id if the table is pre-filtered\
+    \ to a specific sample.\nClustering field here; not part of the grain."
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: 'App display version the client was running at the completion, read
+    from the
+
+    earliest completion event among those reported on this row''s date, with ties
+
+    going to the ping that arrived first. Distinct from the app_version on
+
+    retention_clients, which is the version as of that row''s metric date and so
+
+    moves as the client upgrades. Null where the event carried no version.'

@@ -1,0 +1,22 @@
+friendly_name: Onboarding Completed Clients
+description: "User-facing view over onboarding_completed_clients_v1, which it exposes\n\
+  unchanged. One row per Fenix client per day on which an `onboarding.completed`\n\
+  event from them arrived, dated by submission date rather than by when the event\n\
+  fired, so `client_id` is not unique here \u2014 a client with completions arriving\n\
+  on more than one day appears once per day.\n\nCollapse on `client_id` before joining,\
+  \ or the join fans out.\n`fenix.retention_clients` takes `MIN(completed_date)` per\
+  \ client.\n\nCoverage will begin 2025-01-01 when the table is backfilled; completions\n\
+  before that date will be absent entirely. The earliest date present for a\nclient\
+  \ is therefore not necessarily their first completion \u2014 one who\ncompleted\
+  \ before it and again after appears with only the later one."
+owners:
+- kbammarito@mozilla.com
+labels:
+  owner1: kbammarito
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.onboarding_completed_clients_v1

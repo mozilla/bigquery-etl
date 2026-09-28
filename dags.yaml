@@ -699,7 +699,7 @@ bqetl_ctxsvc_derived:
   description: Contextual services derived tables
   schedule_interval: 0 3 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_search_terms_daily:
   default_args:
@@ -2331,7 +2331,7 @@ bqetl_usage_reporting:
   description: DAG for updating usage_reporting related datasets.
   schedule_interval: 0 4 * * *
   tags:
-    - impact/tier_3
+    - impact/tier_2
 
 bqetl_materialized_view_refresh:
   catchup: false

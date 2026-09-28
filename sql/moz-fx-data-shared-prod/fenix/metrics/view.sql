@@ -425,7 +425,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
-      metrics.counter.tab_reload_cover_shown
+      metrics.counter.tab_reload_cover_shown,
+      metrics.counter.browser_engine_full_page_capture_attempted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1234,7 +1235,9 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_availability,
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
-      metrics.labeled_counter.webrtc_get_user_media_source_granted
+      metrics.labeled_counter.webrtc_get_user_media_source_granted,
+      metrics.labeled_counter.browser_engine_full_page_capture_result,
+      metrics.labeled_counter.geolocation_network_link_change
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1398,7 +1401,8 @@ SELECT
       metrics.string.profiles_source,
       metrics.string.startup_profiles_ini_status,
       metrics.string.glean_database_load_error,
-      metrics.string.preferences_toolbar_tab_strip_shortcut
+      metrics.string.preferences_toolbar_tab_strip_shortcut,
+      metrics.string.tracking_protection_privacy_report_notification_availability
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2741,7 +2745,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
-      metrics.counter.tab_reload_cover_shown
+      metrics.counter.tab_reload_cover_shown,
+      metrics.counter.browser_engine_full_page_capture_attempted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3550,7 +3555,9 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_availability,
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
-      metrics.labeled_counter.webrtc_get_user_media_source_granted
+      metrics.labeled_counter.webrtc_get_user_media_source_granted,
+      metrics.labeled_counter.browser_engine_full_page_capture_result,
+      metrics.labeled_counter.geolocation_network_link_change
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3714,7 +3721,8 @@ SELECT
       metrics.string.profiles_source,
       metrics.string.startup_profiles_ini_status,
       metrics.string.glean_database_load_error,
-      metrics.string.preferences_toolbar_tab_strip_shortcut
+      metrics.string.preferences_toolbar_tab_strip_shortcut,
+      metrics.string.tracking_protection_privacy_report_notification_availability
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -5077,7 +5085,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
-      metrics.counter.tab_reload_cover_shown
+      metrics.counter.tab_reload_cover_shown,
+      metrics.counter.browser_engine_full_page_capture_attempted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5886,7 +5895,9 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_availability,
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
-      metrics.labeled_counter.webrtc_get_user_media_source_granted
+      metrics.labeled_counter.webrtc_get_user_media_source_granted,
+      metrics.labeled_counter.browser_engine_full_page_capture_result,
+      metrics.labeled_counter.geolocation_network_link_change
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6050,7 +6061,8 @@ SELECT
       metrics.string.profiles_source,
       metrics.string.startup_profiles_ini_status,
       metrics.string.glean_database_load_error,
-      metrics.string.preferences_toolbar_tab_strip_shortcut
+      metrics.string.preferences_toolbar_tab_strip_shortcut,
+      metrics.string.tracking_protection_privacy_report_notification_availability
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

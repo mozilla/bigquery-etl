@@ -10972,19 +10972,18 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Session restore: Counts session files that existed at startup,
-        labelled by whether the file failed to load because it was unreadable or corrupt.
-        Recorded once per candidate file in the load order, so one startup can contribute
-        several samples.
+        labelled by whether the file failed to load because it was unreadable, corrupt
+        or an incompatible version. Recorded once per candidate file in the load order,
+        so one startup can contribute several samples.
 
         "true" means the file existed but failed to load because of a read error,
-        invalid JSON, or an error Session Restore does not specifically handle. "false"
-        means the file existed and was not recognised as corrupt; it includes files
-        rejected for an incompatible format version, so it is not a count of successful
-        loads.
+        invalid JSON, an incompatible format version or an error Session Restore does
+        not specifically handle. "false" means the file existed and was not recognised
+        as corrupt.
 
         Before Firefox 157 a successful load incremented "false" twice. Before Firefox
-        158 errors that Session Restore does not specifically handle incremented "false"
-        rather than "true".
+        158 errors that Session Restore does not specifically handle, and files with
+        an incompatible format version, incremented "false" rather than "true".
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         FX_SESSION_RESTORE_CORRUPT_FILE.
@@ -14416,6 +14415,20 @@ fields:
         records.
 
         '
+    - name: geolocation_network_link_change
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many network:link-status-changed notifications, by notification,
+        the NetworkGeolocationProvider request cache saw after it first cached a position.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -14825,9 +14838,6 @@ fields:
           mode: NULLABLE
       description: 'Over-allocation due to PHC''s rounding (aka internal fragmentation).  Measured
         in bytes.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOP.
 
         '
     - name: image_decode_speed_avif
@@ -17147,13 +17157,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: "Records the status of parsing the profiles.ini file during startup:\n\
-        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Parsing the\
-        \ ini file completely failed, normally this would indicate\n    an out of\
-        \ memory issue.\n  ini-error:\n    The ini parser recorded some kind of failure\
-        \ during parsing\n  missing-name:\n    A profile section was missing the name\n\
-        \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
-        \    A profile section's path was invalid\nNote that if multiple profile sections\
-        \ contain errors then only the last will be reported.\n"
+        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Reading or parsing\
+        \ the ini file completely failed. This could\n    indicate an out of memory\
+        \ issue or an inability to read the file\n    from disk.\n  ini-error:\n \
+        \   The ini parser recorded some kind of failure during parsing\n  missing-name:\n\
+        \    A profile section was missing the name\n  missing-path:\n    A profile\
+        \ section was missing the path\n  invalid-path:\n    A profile section's path\
+        \ was invalid\nNote that if multiple profile sections contain errors then\
+        \ only the last will be reported.\n"
     - name: glean_database_load_error
       type: STRING
       mode: NULLABLE
@@ -41836,9 +41847,6 @@ fields:
           mode: NULLABLE
       description: 'Number of PHC slots currently allocated
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOTS_ALLOCATED.
-
         '
     - name: memory_phc_slots_freed
       type: RECORD
@@ -41863,9 +41871,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Number of PHC slots allocated-then-freed
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOTS_FREED.
 
         '
     - name: application_reputation_local
@@ -59700,6 +59705,46 @@ fields:
         \ added by an enterprise policy.\n- `user` refers to an engine a user has\
         \ added, e.g. via the settings\n  UI to add an engine, or via right-clicking\
         \ on a search field on a web\n  page.\n"
+    - name: smart_window_agent_active_actions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of enabled agentic actions the user currently has, keyed
+        by
+
+        agent type. Set when the monitor store is loaded at startup and after
+
+        every create, edit, pause, resume and delete, so each metrics ping
+
+        carries the current count.
+
+        '
+    - name: smart_window_agent_paused_actions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of paused (disabled) agentic actions the user currently
+        has,
+
+        keyed by agent type. Set when the monitor store is loaded at startup
+
+        and after every create, edit, pause, resume and delete, so each
+
+        metrics ping carries the current count.
+
+        '
   - name: labeled_memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -306,6 +306,12 @@ fields:
         region specific search providers.
 
         '
+    - name: fx_suggest_suggestion_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The suggestion ID from MARS/Merino.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE

@@ -354,6 +354,7 @@ SELECT
       JSON_VALUE(event_extra.has_olddata) AS `has_olddata`,
       JSON_VALUE(event_extra.hashed_addon_id) AS `hashed_addon_id`,
       JSON_VALUE(event_extra.host) AS `host`,
+      JSON_VALUE(event_extra.host_process) AS `host_process`,
       JSON_VALUE(event_extra.host_type) AS `host_type`,
       JSON_VALUE(event_extra.hours_since) AS `hours_since`,
       JSON_VALUE(event_extra.html_lang_attribute) AS `html_lang_attribute`,

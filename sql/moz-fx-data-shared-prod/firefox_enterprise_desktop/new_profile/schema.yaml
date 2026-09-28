@@ -590,13 +590,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: "Records the status of parsing the profiles.ini file during startup:\n\
-        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Parsing the\
-        \ ini file completely failed, normally this would indicate\n    an out of\
-        \ memory issue.\n  ini-error:\n    The ini parser recorded some kind of failure\
-        \ during parsing\n  missing-name:\n    A profile section was missing the name\n\
-        \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
-        \    A profile section's path was invalid\nNote that if multiple profile sections\
-        \ contain errors then only the last will be reported.\n"
+        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Reading or parsing\
+        \ the ini file completely failed. This could\n    indicate an out of memory\
+        \ issue or an inability to read the file\n    from disk.\n  ini-error:\n \
+        \   The ini parser recorded some kind of failure during parsing\n  missing-name:\n\
+        \    A profile section was missing the name\n  missing-path:\n    A profile\
+        \ section was missing the path\n  invalid-path:\n    A profile section's path\
+        \ was invalid\nNote that if multiple profile sections contain errors then\
+        \ only the last will be reported.\n"
   - name: string_list
     type: RECORD
     mode: NULLABLE

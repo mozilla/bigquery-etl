@@ -767,7 +767,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_availability,
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
-      metrics.labeled_counter.webrtc_get_user_media_source_granted
+      metrics.labeled_counter.webrtc_get_user_media_source_granted,
+      metrics.labeled_counter.geolocation_network_link_change
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

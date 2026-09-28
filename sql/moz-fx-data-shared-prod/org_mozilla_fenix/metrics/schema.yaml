@@ -3536,6 +3536,17 @@ fields:
         flipped to VISIBLE). Baseline for the feature's engagement, and\na cross-check\
         \ against `exited` event count \u2014 a gap would indicate\nthe process died\
         \ while a cover was up.\n"
+    - name: browser_engine_full_page_capture_attempted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Increments on every EngineView.captureFullPage() call, emitted
+        from
+
+        GeckoEngineView in engine-gecko. Serves as the denominator for the
+
+        full-page screenshot failure rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -10319,6 +10330,40 @@ fields:
         records.
 
         '
+    - name: browser_engine_full_page_capture_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Outcome of each full-page screenshot capture. `succeeded` = the
+        engine
+
+        returned a bitmap; `failed` = the capture was rejected or returned no
+
+        bitmap. Combined with full_page_capture_attempted this gives the
+
+        full-page screenshot failure rate.
+
+        '
+    - name: geolocation_network_link_change
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many network:link-status-changed notifications, by notification,
+        the NetworkGeolocationProvider request cache saw after it first cached a position.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -11079,13 +11124,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: "Records the status of parsing the profiles.ini file during startup:\n\
-        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Parsing the\
-        \ ini file completely failed, normally this would indicate\n    an out of\
-        \ memory issue.\n  ini-error:\n    The ini parser recorded some kind of failure\
-        \ during parsing\n  missing-name:\n    A profile section was missing the name\n\
-        \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
-        \    A profile section's path was invalid\nNote that if multiple profile sections\
-        \ contain errors then only the last will be reported.\n"
+        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Reading or parsing\
+        \ the ini file completely failed. This could\n    indicate an out of memory\
+        \ issue or an inability to read the file\n    from disk.\n  ini-error:\n \
+        \   The ini parser recorded some kind of failure during parsing\n  missing-name:\n\
+        \    A profile section was missing the name\n  missing-path:\n    A profile\
+        \ section was missing the path\n  invalid-path:\n    A profile section's path\
+        \ was invalid\nNote that if multiple profile sections contain errors then\
+        \ only the last will be reported.\n"
     - name: glean_database_load_error
       type: STRING
       mode: NULLABLE
@@ -11099,6 +11145,21 @@ fields:
 
         Possible values are: share, bookmark, translate, homepage, back, summarize
         or none.
+
+        '
+    - name: tracking_protection_privacy_report_notification_availability
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether the weekly privacy report notification can currently be
+        sent
+
+        and if not, which notification setting stops it. Possible values
+
+        are: `available`, `app_notifications_disabled`, `channel_disabled`,
+
+        and `channel_missing`. `channel_missing` indicates an unexpected state
+
+        caused by a programmer error.
 
         '
   - name: string_list
@@ -13691,9 +13752,6 @@ fields:
           mode: NULLABLE
       description: 'Number of PHC slots currently allocated
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOTS_ALLOCATED.
-
         '
     - name: memory_phc_slots_freed
       type: RECORD
@@ -13718,9 +13776,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Number of PHC slots allocated-then-freed
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOTS_FREED.
 
         '
     - name: application_reputation_local
@@ -42835,9 +42890,6 @@ fields:
           mode: NULLABLE
       description: 'Over-allocation due to PHC''s rounding (aka internal fragmentation).  Measured
         in bytes.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOP.
 
         '
     - name: image_decode_speed_avif

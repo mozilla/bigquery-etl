@@ -9041,6 +9041,20 @@ fields:
         records.
 
         '
+    - name: geolocation_network_link_change
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many network:link-status-changed notifications, by notification,
+        the NetworkGeolocationProvider request cache saw after it first cached a position.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -9397,9 +9411,6 @@ fields:
           mode: NULLABLE
       description: 'Over-allocation due to PHC''s rounding (aka internal fragmentation).  Measured
         in bytes.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOP.
 
         '
     - name: image_decode_speed_avif
@@ -10990,13 +11001,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: "Records the status of parsing the profiles.ini file during startup:\n\
-        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Parsing the\
-        \ ini file completely failed, normally this would indicate\n    an out of\
-        \ memory issue.\n  ini-error:\n    The ini parser recorded some kind of failure\
-        \ during parsing\n  missing-name:\n    A profile section was missing the name\n\
-        \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
-        \    A profile section's path was invalid\nNote that if multiple profile sections\
-        \ contain errors then only the last will be reported.\n"
+        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Reading or parsing\
+        \ the ini file completely failed. This could\n    indicate an out of memory\
+        \ issue or an inability to read the file\n    from disk.\n  ini-error:\n \
+        \   The ini parser recorded some kind of failure during parsing\n  missing-name:\n\
+        \    A profile section was missing the name\n  missing-path:\n    A profile\
+        \ section was missing the path\n  invalid-path:\n    A profile section's path\
+        \ was invalid\nNote that if multiple profile sections contain errors then\
+        \ only the last will be reported.\n"
     - name: glean_database_load_error
       type: STRING
       mode: NULLABLE
@@ -13222,9 +13234,6 @@ fields:
           mode: NULLABLE
       description: 'Number of PHC slots currently allocated
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOTS_ALLOCATED.
-
         '
     - name: memory_phc_slots_freed
       type: RECORD
@@ -13249,9 +13258,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Number of PHC slots allocated-then-freed
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MEMORY_PHC_SLOTS_FREED.
 
         '
     - name: application_reputation_local

@@ -541,6 +541,23 @@ fields:
       description: 'The firefox/mozilla account id
 
         '
+    - name: session_pairing_channel_hash
+      type: STRING
+      mode: NULLABLE
+      description: 'A SHA-256 hash of the device pairing channel id, hex encoded.
+        The two
+
+        devices in a pairing are separate sessions with separate flow ids, so this
+
+        is what joins the desktop and mobile halves of one pairing into a single
+
+        funnel. Empty outside a pairing flow. Hashed because the raw channel id
+
+        addresses a live channel; the hash is one-way and the id is a random
+
+        32-character value, so it cannot be reversed by search.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

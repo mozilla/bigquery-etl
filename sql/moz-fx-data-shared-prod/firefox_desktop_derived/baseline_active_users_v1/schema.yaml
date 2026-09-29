@@ -2,30 +2,48 @@ fields:
 - name: days_since_desktop_active
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the client was last active on Firefox Desktop, derived from days_desktop_active_bits.
+    Null if the client has not been active on Desktop within the 28-day window.
 - name: days_since_seen
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the client last sent any ping, derived from days_seen_bits. A value
+    of 0 means the client was seen on the submission date.
 - name: days_since_active
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the client was last active (sent any ping), derived from days_active_bits.
+    Null if the client has not been active within the 28-day window.
 - name: days_since_created_profile
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since this client's Firefox profile was created, derived from days_created_profile_bits.
+    Null if no profile creation event was observed within the 28-day window.
 - name: days_since_seen_session_start
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the client last sent a ping with a session start event, derived
+    from days_seen_session_start_bits. Null if no session start was observed within the 28-day window.
 - name: days_since_seen_session_end
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the client last sent a ping with a session end event, derived from
+    days_seen_session_end_bits. Null if no session end was observed within the 28-day window.
 - name: days_since_visited_1_uri
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the client last visited at least one URI, derived from days_visited_1_uri_bits.
+    Null if the client has not visited any URI within the 28-day window.
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer where each bit represents one day in the past 28 days; a set bit indicates
+    the client sent at least one ping on that day.
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer where each bit represents one day in the past 28 days; a set bit indicates
+    a new Firefox profile was created on that day.
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -286,6 +304,8 @@ fields:
 - name: distribution_id_source
   type: STRING
   mode: NULLABLE
+  description: Indicates whether the distribution_id was sourced from the Glean ping ('glean') or from a
+    legacy telemetry distribution mapping ('legacy'). Null when no distribution ID is available.
 - name: os
   type: STRING
   mode: NULLABLE
@@ -295,6 +315,8 @@ fields:
 - name: os_grouped
   type: STRING
   mode: NULLABLE
+  description: A grouped operating system label equivalent to the os field (e.g. 'Windows', 'Linux', 'Mac').
+    Included for backwards compatibility with legacy data sources.
 - name: os_version
   type: STRING
   mode: NULLABLE
@@ -304,12 +326,18 @@ fields:
 - name: os_version_build
   type: STRING
   mode: NULLABLE
+  description: A human-readable OS version build string combining the OS name and version (e.g. 'Windows
+    11', 'Windows 10', 'Windows 7'). For non-Windows platforms, falls back to the raw os_version string.
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
+  description: The major version component of the operating system version string (e.g. 10 for Windows 10,
+    6 for Windows Vista/7/8).
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
+  description: The minor version component of the operating system version string (e.g. 0 for Windows 10.0,
+    1 for macOS minor updates).
 - name: activity_segment
   type: STRING
   mode: NULLABLE
@@ -346,9 +374,13 @@ fields:
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The attribution campaign associated with the Firefox install at the most recent ping, similar
+    to the UTM campaign parameter. Null when attribution data was not collected.
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: The attribution content parameter associated with the Firefox install at the most recent
+    ping, similar to the UTM content parameter. Null when attribution data was not collected.
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
@@ -364,27 +396,48 @@ fields:
 - name: attribution_term
   type: STRING
   mode: NULLABLE
+  description: The attribution term (search keyword) associated with the Firefox install at the most recent
+    ping, similar to the UTM term parameter. Always null for this table.
 - name: distribution_name
   type: STRING
   mode: NULLABLE
+  description: The distribution name associated with the Firefox install at the most recent ping (e.g. 'canonical-002',
+    'mozilla-MSIX', 'MozillaOnline'). Can be a partner name or a distribution configuration preset.
 - name: first_seen_attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The attribution campaign associated with the Firefox install at the time of the client's
+    first seen ping, similar to the UTM campaign parameter. Null when attribution data was not recorded
+    at first seen.
 - name: first_seen_attribution_content
   type: STRING
   mode: NULLABLE
+  description: The attribution content parameter associated with the Firefox install at the time of the
+    client's first seen ping, similar to the UTM content parameter. Null when attribution data was not recorded
+    at first seen.
 - name: first_seen_attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The attribution medium associated with the Firefox install at the time of the client's first
+    seen ping, similar to the UTM medium parameter (e.g. 'referral', 'paidsearch'). Null when attribution
+    data was not recorded at first seen.
 - name: first_seen_attribution_source
   type: STRING
   mode: NULLABLE
+  description: The attribution source associated with the Firefox install at the time of the client's first
+    seen ping, similar to the UTM source parameter (e.g. 'www.google.com'). Null when attribution data was
+    not recorded at first seen.
 - name: first_seen_attribution_term
   type: STRING
   mode: NULLABLE
+  description: The attribution term associated with the Firefox install at the time of the client's first
+    seen ping, similar to the UTM term parameter. Always null for this table.
 - name: first_seen_distribution_name
   type: STRING
   mode: NULLABLE
+  description: The distribution name associated with the Firefox install at the time of the client's first
+    seen ping (e.g. 'canonical-002', 'mozilla-MSIX'). Null when no distribution name was recorded at first
+    seen.
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

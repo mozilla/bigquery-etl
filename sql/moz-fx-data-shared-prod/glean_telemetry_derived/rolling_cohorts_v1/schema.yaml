@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: client_id
 - mode: NULLABLE
   name: cohort_date
   type: DATE
@@ -11,12 +13,15 @@ fields:
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: activity_segment
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: app_version
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
@@ -30,45 +35,63 @@ fields:
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description: Attribution Experiment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_experiment
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: Attribution Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_medium
 - mode: NULLABLE
   name: attribution_source
   type: STRING
-  description: Attribution Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_source
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_variation
 - mode: NULLABLE
   name: city
   type: STRING
-  description: City
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: city
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: country
 - mode: NULLABLE
   name: device_model
   type: STRING
-  description: Device Model
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: device_model
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: locale
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING

@@ -1,0 +1,38 @@
+friendly_name: Plausible Download Metrics V1
+description: |-
+  Daily aggregate of Plausible product_download events on firefox.com, by
+  page path, session entry page, country, product, platform, release
+  channel, and download language. Sourced from the raw Plausible events
+  export, filtered to name = 'product_download'.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+  dag: bqetl_plausible_derived
+scheduling:
+  dag_name: bqetl_plausible_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country_code
+    - platform
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  - ..INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.plausible_external.events_v1
+  query.sql:
+  - moz-fx-data-shared-prod.plausible_external.events_v1
+  - moz-fx-data-shared-prod.plausible_external.sessions_v1
+require_column_descriptions: true

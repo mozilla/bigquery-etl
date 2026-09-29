@@ -377,6 +377,27 @@ fields:
       description: 'The suggestion ID from MARS/Merino.
 
         '
+    - name: quick_suggest_experiment_branch
+      type: STRING
+      mode: NULLABLE
+      description: 'The branch of the active `urlbar` experiment or rollout. (The
+        `urlbar`
+
+        Nimbus feature does not allow coenrollment.) Other experiments are not
+
+        included in order to prevent user fingerprinting.
+
+        '
+    - name: quick_suggest_experiment_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The slug of the active `urlbar` experiment or rollout. (The `urlbar`
+
+        Nimbus feature does not allow coenrollment.) Other experiments are not
+
+        included in order to prevent user fingerprinting.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

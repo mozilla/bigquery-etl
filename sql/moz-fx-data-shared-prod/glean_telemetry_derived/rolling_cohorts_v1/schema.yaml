@@ -65,9 +65,8 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
-    field: country
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: device_model
   type: STRING
@@ -117,13 +116,11 @@ fields:
   type: INTEGER
   description: The major (first) component of the operating system version string. For example, for version
     '10.0.1' the major version is 10. Defaults to 0 when the version cannot be parsed.
-    client. E.g. for version "100.9.11", the major is 100.
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
   description: The minor (second) component of the operating system version string. For example, for version
     '10.0.1' the minor version is 0. Defaults to 0 when the version cannot be parsed.
-    for version "100.9.11", the minor is 9.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
@@ -185,5 +182,5 @@ fields:
   mode: NULLABLE
   description: The package name of the app store or installer through which the mobile application was installed
     (e.g., 'com.android.vending' for the Google Play Store, 'com.sec.android.app.samsungapps' for the Samsung
-    Galaxy Store). Only populated for Mobile rows; null for Desktop.
+    Galaxy Store). Only populated for Mobile rows; null for Desktop. A null value for Mobile rows indicates
     the install source could not be determined.

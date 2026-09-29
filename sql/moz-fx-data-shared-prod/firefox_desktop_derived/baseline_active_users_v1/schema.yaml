@@ -12,13 +12,14 @@ fields:
 - name: days_since_active
   type: INTEGER
   mode: NULLABLE
-  description: The number of days since the client was last active (sent any ping), derived from days_active_bits.
-    Null if the client has not been active within the 28-day window.
+  description: The number of days since the client was last active (sent a baseline ping with duration > 0),
+    derived from days_active_bits. Null if the client has not been active within the 28-day window.
 - name: days_since_created_profile
   type: INTEGER
   mode: NULLABLE
-  description: The number of days since this client's Firefox profile was created, derived from days_created_profile_bits.
-    Null if no profile creation event was observed within the 28-day window.
+  description: The number of days since this client's Firefox profile first ran (first_run_date), derived
+    from days_created_profile_bits. Null if first_run_date was not within the reliable 7-day window before
+    the submission date.
 - name: days_since_seen_session_start
   type: INTEGER
   mode: NULLABLE
@@ -43,7 +44,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: A 28-bit integer where each bit represents one day in the past 28 days; a set bit indicates
-    a new Firefox profile was created on that day.
+    the client's first_run_date fell on that day. Derived via udf.days_since_created_profile_as_28_bits,
+    which only sets a bit when first_run_date is 0-6 days before the submission date, since client-reported
+    dates outside that window are unreliable.
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -127,8 +130,8 @@ fields:
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
-  description: Indicates whether this client's profile was created for the first time within the past 28
-    days, identifying newly created profiles.
+  description: True if submission_date equals the client's first_seen_date, i.e. this is the first day the
+    client was observed.
 - name: isp
   type: STRING
   mode: NULLABLE
@@ -137,7 +140,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: A 28-bit integer where each bit represents one day in the past 28 days; a set bit indicates
-    the client was active (sent any ping) on that day.
+    the client was active (baseline ping duration > 0) on that day.
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
@@ -397,7 +400,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The attribution term (search keyword) associated with the Firefox install at the most recent
-    ping, similar to the UTM term parameter. Always null for this table.
+    ping, similar to the UTM term parameter.
 - name: distribution_name
   type: STRING
   mode: NULLABLE
@@ -431,7 +434,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The attribution term associated with the Firefox install at the time of the client's first
-    seen ping, similar to the UTM term parameter. Always null for this table.
+    seen ping, similar to the UTM term parameter.
 - name: first_seen_distribution_name
   type: STRING
   mode: NULLABLE

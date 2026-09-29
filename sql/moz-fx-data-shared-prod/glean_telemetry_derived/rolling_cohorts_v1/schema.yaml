@@ -65,8 +65,9 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: country
 - mode: NULLABLE
   name: device_model
   type: STRING

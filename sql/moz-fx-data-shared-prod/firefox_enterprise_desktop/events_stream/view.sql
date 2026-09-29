@@ -185,6 +185,7 @@ SELECT
       LAX_INT64(event_extra.character_count) AS `character_count`,
       LAX_INT64(event_extra.check_weekday) AS `check_weekday`,
       LAX_INT64(event_extra.columnnumber) AS `columnnumber`,
+      LAX_INT64(event_extra.commands_available) AS `commands_available`,
       LAX_INT64(event_extra.comments_count) AS `comments_count`,
       LAX_INT64(event_extra.containers) AS `containers`,
       LAX_INT64(event_extra.cores) AS `cores`,

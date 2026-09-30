@@ -1,3 +1,5 @@
 friendly_name: Cloudflare Device Usage
 description: |-
-  Contains data from Cloudflare on usage by device type by day
+  Contains data from Cloudflare on usage by device type by day.
+  Values are relative shares (desktop / mobile / other percentages), not absolute
+  traffic volumes.

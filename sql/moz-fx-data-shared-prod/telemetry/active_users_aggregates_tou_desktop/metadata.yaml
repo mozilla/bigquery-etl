@@ -4,6 +4,9 @@ description: |-
   acceptance status, built to support the Terms of Use acceptance rate dashboard. This
   derived table replaces a Looker PDT that was causing inflated aggregates, providing
   performant, pre-aggregated data without relying on Looker-side caching.
+
+  submission_date in this table is a TIMESTAMP (midnight UTC), not a DATE like
+  in other active users tables. Use DATE(submission_date) when joining or filtering.
 owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com

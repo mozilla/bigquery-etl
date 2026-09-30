@@ -1,8 +1,14 @@
+from unittest.mock import call, patch
+
+import pytest
+
 from bigquery_etl.cli.deploy import (
     _build_dependency_graph,
+    _deploy_view_artifact,
     _discover_artifacts,
     _needs_schema_update,
 )
+from bigquery_etl.deploy import SkippedDeployException
 
 
 class TestArtifactDiscovery:
@@ -438,3 +444,121 @@ class TestSchemaUpdate:
             _needs_schema_update(table_dir / "query.sql", skip_existing_schemas=False)
             is True
         )
+
+
+class TestViewDeployGating:
+    """`deploy --views` skips views whose deployed definition already matches."""
+
+    @pytest.fixture
+    def view_path(self, tmp_path):
+        view_dir = tmp_path / "sql/test-project/test_dataset/test_view"
+        view_dir.mkdir(parents=True)
+        path = view_dir / "view.sql"
+        path.write_text(
+            "CREATE OR REPLACE VIEW `test-project.test_dataset.test_view` AS SELECT 1"
+        )
+        return path
+
+    @staticmethod
+    def _options(**overrides):
+        options = {
+            "dry_run": False,
+            "credentials": None,
+            "id_token": None,
+            "view_force": False,
+            "view_target_project": None,
+            "view_add_managed_label": False,
+            "use_cloud_function": False,
+        }
+        options.update(overrides)
+        return options
+
+    @patch("bigquery_etl.cli.deploy.get_client")
+    @patch("bigquery_etl.cli.deploy.View")
+    def test_unchanged_view_is_skipped(self, mock_view_cls, mock_get_client, view_path):
+        """A view with no changes should be skipped instead of republished."""
+        view = mock_view_cls.from_file.return_value
+        view.has_changes.return_value = False
+
+        with pytest.raises(SkippedDeployException):
+            _deploy_view_artifact(view_path, self._options())
+
+        view.publish.assert_not_called()
+
+    @patch("bigquery_etl.cli.deploy.get_client")
+    @patch("bigquery_etl.cli.deploy.View")
+    def test_failed_change_check_falls_back_to_publishing(
+        self, mock_view_cls, mock_get_client, view_path
+    ):
+        """A change check that raises should fall back to publishing, not fail the artifact."""
+        view = mock_view_cls.from_file.return_value
+        view.has_changes.side_effect = RuntimeError("boom")
+        view.publish.return_value = True
+
+        _deploy_view_artifact(view_path, self._options())
+
+        view.publish.assert_called_once()
+
+    @patch("bigquery_etl.cli.deploy.get_client")
+    @patch("bigquery_etl.cli.deploy.View")
+    def test_changed_view_is_published(self, mock_view_cls, mock_get_client, view_path):
+        """A view with changes should be published."""
+        view = mock_view_cls.from_file.return_value
+        view.has_changes.return_value = True
+        view.publish.return_value = True
+
+        _deploy_view_artifact(view_path, self._options())
+
+        view.publish.assert_called_once()
+
+    @patch("bigquery_etl.cli.deploy.get_client")
+    @patch("bigquery_etl.cli.deploy.View")
+    def test_force_skips_the_change_check(
+        self, mock_view_cls, mock_get_client, view_path
+    ):
+        """view_force should publish without consulting the change check."""
+        view = mock_view_cls.from_file.return_value
+        view.publish.return_value = True
+
+        _deploy_view_artifact(view_path, self._options(view_force=True))
+
+        view.has_changes.assert_not_called()
+        view.publish.assert_called_once()
+
+    @patch("bigquery_etl.cli.deploy.get_client")
+    @patch("bigquery_etl.cli.deploy.View")
+    def test_managed_label_applied_before_change_check(
+        self, mock_view_cls, mock_get_client, view_path
+    ):
+        """The managed label should be applied before the change check runs."""
+        # Otherwise adding the label to a view would never be detected.
+        view = mock_view_cls.from_file.return_value
+        view.labels = {}
+
+        def _has_changes(*args, **kwargs):
+            assert view.labels == {"managed": ""}
+            return False
+
+        view.has_changes.side_effect = _has_changes
+
+        with pytest.raises(SkippedDeployException):
+            _deploy_view_artifact(view_path, self._options(view_add_managed_label=True))
+
+    @patch("bigquery_etl.cli.deploy.get_client")
+    @patch("bigquery_etl.cli.deploy.View")
+    def test_clients_are_reused_across_artifacts(
+        self, mock_view_cls, mock_get_client, view_path
+    ):
+        """Deploying several views should reuse one client rather than build one each."""
+        view = mock_view_cls.from_file.return_value
+        view.has_changes.return_value = True
+        view.publish.return_value = True
+
+        _deploy_view_artifact(view_path, self._options())
+        _deploy_view_artifact(view_path, self._options())
+
+        assert mock_get_client.call_args_list == [
+            call(credentials=None),
+            call(credentials=None),
+        ]
+        assert view.publish.call_args.kwargs["client"] is mock_get_client.return_value

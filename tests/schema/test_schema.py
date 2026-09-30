@@ -1,8 +1,10 @@
 from pathlib import Path
 from textwrap import dedent
+from unittest.mock import Mock
 
 import pytest
 import yaml
+from google.api_core.exceptions import NotFound
 from google.cloud.bigquery import SchemaField
 
 from bigquery_etl.format_sql.formatter import reformat
@@ -1694,3 +1696,42 @@ class TestSchemaLoader:
                 nested_fields_schema["fields"][3],
             ]
         }
+
+
+class TestSchemaDeploy:
+    @pytest.fixture
+    def schema(self):
+        return Schema.from_json({"fields": [{"name": "a", "type": "INTEGER"}]})
+
+    def test_deploy_reuses_supplied_table(self, schema):
+        """A supplied table should be reused instead of refetched."""
+        client = Mock()
+        table = Mock()
+
+        result = schema.deploy("p.d.t", client=client, table=table)
+
+        client.get_table.assert_not_called()
+        client.update_table.assert_called_once_with(table, ["schema"])
+        assert result is client.update_table.return_value
+        assert table.schema == schema.to_bigquery_schema()
+
+    def test_deploy_fetches_table_when_not_supplied(self, schema):
+        """Deploy without a table should fetch the destination table itself."""
+        client = Mock()
+
+        schema.deploy("p.d.t", client=client)
+
+        client.get_table.assert_called_once_with("p.d.t")
+        client.update_table.assert_called_once_with(
+            client.get_table.return_value, ["schema"]
+        )
+
+    def test_deploy_creates_missing_table(self, schema):
+        """Deploy against a missing table should create it rather than update."""
+        client = Mock()
+        client.get_table.side_effect = NotFound("")
+
+        schema.deploy("p.d.t", client=client)
+
+        client.update_table.assert_not_called()
+        client.create_table.assert_called_once()

@@ -7,7 +7,6 @@ owners:
 labels:
   incremental: true
   table_type: aggregate
-  schedule: daily
 bigquery:
   time_partitioning:
     type: day

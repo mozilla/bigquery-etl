@@ -5,5 +5,5 @@ owners:
 - ecassell@mozilla.com
 - data-customer-experience-wg@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_customer_experience
 require_column_descriptions: true

@@ -1,5 +1,5 @@
 fields:
-- name: submission_date
+- name: creation_date
   type: DATE
   mode: NULLABLE
   description: Date.

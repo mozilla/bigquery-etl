@@ -102,8 +102,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: Two-letter ISO 3166-1 alpha-2 code (e.g. 'US') of the country in which
+    the activity took place, as determined by IP geolocation.
 - name: app_build
   type: STRING
   mode: NULLABLE

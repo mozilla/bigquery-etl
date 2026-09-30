@@ -1,0 +1,46 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The date this row aggregates, matching sessions_v1's `start` partition
+    column for this day.
+- name: entry_page
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Path of the first page viewed in the session (sessions_v1.entry_page).
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ISO 3166-1 alpha-2 country code of the visitor, as reported by Plausible
+    (sessions_v1.country_code).
+- name: acquisition_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Marketing channel Plausible attributes the session to, e.g. Referral,
+    Organic Search, Direct, Paid Search. Derived by Plausible's own
+    attribution logic, which is not the same methodology GA4 uses for its
+    channel groupings -- do not compare the two directly.
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    utm_campaign query parameter of the session's entry URL, as recorded by
+    Plausible. Not parsed or normalized.
+- name: entrances
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Count of Plausible sessions with this entry_page on this date. The
+    denominator for bounce rate.
+- name: bounces
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Of the sessions counted in entrances, how many were a bounce (Plausible's
+    definition: a session with only one pageview, regardless of time spent).
+    Divide by entrances to get bounce rate; do not average a pre-computed
+    per-row bounce rate across further grouping. Never exceeds entrances.

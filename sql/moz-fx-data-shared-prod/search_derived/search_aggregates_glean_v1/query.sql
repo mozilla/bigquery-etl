@@ -105,7 +105,7 @@ SELECT
   SUM(scd.legacy_ad_clicks_organic_sum) AS counter_ad_clicks_organic_sum,
 FROM
   `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1` AS scd
-JOIN
+LEFT JOIN
   client_day_country_cte AS cdc
   ON scd.client_id = cdc.client_id
   AND scd.submission_date = cdc.submission_date

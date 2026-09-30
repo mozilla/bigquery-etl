@@ -2,10 +2,9 @@ friendly_name: WWW Site Page Metrics V1
 description: |-
   Aggregated metrics per page on www.firefox.com from Google Analytics 4
 owners:
-- mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
   table_type: aggregate
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom

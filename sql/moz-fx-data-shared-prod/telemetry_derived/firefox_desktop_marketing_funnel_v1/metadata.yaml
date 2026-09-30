@@ -23,6 +23,7 @@ description: |-
 owners:
 - sbedwell@mozilla.com
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

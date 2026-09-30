@@ -3,6 +3,7 @@ description: |-
   Data about downloads from firefox.com from GA4
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

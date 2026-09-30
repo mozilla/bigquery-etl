@@ -948,13 +948,14 @@ bqetl_analytics_tables:
     - repo/bigquery-etl
 bqetl_fivetran_google_ads:
   default_args:
-    depends_on_past: false
+    owner: data-marketing-wg@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
+    depends_on_past: false
     end_date: null
-    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-01-01'
@@ -1174,11 +1175,12 @@ bqetl_mozilla_org_derived:
   schedule_interval: 0 2 * * *
   default_args:
     depends_on_past: false
+    owner: data-marketing-wg@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: true
-    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2023-11-13"
@@ -1295,13 +1297,14 @@ bqetl_google_analytics_derived_ga4:
   schedule_interval: 0 12 * * *
   description: Daily aggregations of data exported from Google Analytics 4
   default_args:
-    depends_on_past: false
-    owner: kik@mozilla.com
+    owner: data-marketing-wg@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-01-03"
+    depends_on_past: false
     retries: 2
     retry_delay: 30m
   tags:
@@ -1312,9 +1315,10 @@ bqetl_ga4_firefoxdotcom:
   description: Daily aggregations of data exported from Google Analytics 4
   default_args:
     depends_on_past: false
-    owner: kik@mozilla.com
+    owner: data-marketing-wg@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-05-27"
@@ -1463,7 +1467,6 @@ bqetl_desktop_retention_model:
     depends_on_past: false
     owner: mhirose@mozilla.com
     email:
-      - mhirose@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1494,12 +1497,13 @@ bqetl_desktop_conv_evnt_categorization:
   schedule_interval: 0 12 * * *
   description: Loads the desktop conversion event tables
   default_args:
-    depends_on_past: false
-    owner: kik@mozilla.com
+    owner: data-marketing-wg@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
+    depends_on_past: false
     start_date: "2024-06-04"
     retries: 2
     retry_delay: 30m
@@ -1511,9 +1515,10 @@ bqetl_census_feed:
   description: Loads the desktop conversion event tables
   default_args:
     depends_on_past: false
-    owner: kik@mozilla.com
+    owner: data-marketing-wg@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-06-10"
@@ -2142,10 +2147,9 @@ bqetl_marketing_analysis:
     DAG for scheduling marketing queries used for marketing campaign analysis.
   default_args:
     depends_on_past: false
-    owner: kik@mozilla.com
+    owner: data-marketing-wg@mozilla.com
     email:
-      - kik@mozilla.com
-      - shong@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-02-01"

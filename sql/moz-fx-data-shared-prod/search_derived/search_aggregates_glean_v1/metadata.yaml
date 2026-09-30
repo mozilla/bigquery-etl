@@ -1,0 +1,52 @@
+friendly_name: Search Aggregates Glean
+description: |
+  Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated across
+  unique sets of dimensions with `client_id` removed. The Glean analogue of
+  `search_aggregates_v8`.
+
+  Carries both measurement families of the client table. The `serp_` columns and
+  `sap_counts_total` come from SAP and SERP events. The seven `counter_` columns come from the
+  browser.search.{content,withads,adclicks} Glean labeled counters in the metrics ping, and are
+  the v8-comparable series. They are the client table's `legacy_` columns under a new prefix,
+  which names where the number comes from rather than a mechanism, as only the ad click
+  counters are counted from network activity.
+
+  `country` is one value per client-day, chosen as the country on the most rows of that
+  client-day (ties to the latest `ping_end_time`). `row_country` is the country the client
+  table carried on the row itself, which can differ for clients whose location changed
+  during the day.
+
+  Four counters carry no partner code of their own: `counter_searches_with_ads_tagged_sum`,
+  `counter_searches_with_ads_organic_sum`, `counter_ad_clicks_tagged_sum` and
+  `counter_ad_clicks_organic_sum`. The client table places each on one `partner_code` per
+  client, engine and source, so they are correct summed across `partner_code` and not when
+  sliced by it.
+
+  `client_count` is `COUNT(DISTINCT client_id)` within the row's dimensions. A client can appear
+  in several rows, so it cannot be summed across rows to give a number of clients.
+
+  v8's `is_acer_cohort` is not carried. It joined `search.acer_cohort` on the legacy
+  `client_id`, which this pipeline does not do. `distribution_id` is a dimension here, so
+  Acer distributions can still be filtered on it.
+
+  `policies_is_enterprise` is only populated from Firefox 144, and `has_adblocker_addon` is
+  unreliable before about 2025-06, so `clients_with_adblocker_addon` is too.
+
+  A given day's partition here is produced a day later than v8's partition for the same day,
+  because the client table it reads is.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_search
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null

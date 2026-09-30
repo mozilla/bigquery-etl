@@ -1,0 +1,21 @@
+fields:
+- name: project_id
+  type: STRING
+  mode: REQUIRED
+  description: Project of the deprecated table.
+- name: dataset_id
+  type: STRING
+  mode: REQUIRED
+  description: Dataset of the deprecated table.
+- name: table_id
+  type: STRING
+  mode: REQUIRED
+  description: Name of the deprecated table, including the version suffix.
+- name: deletion_date
+  type: DATE
+  mode: NULLABLE
+  description: Planned deletion date from the table's metadata.yaml, if set.
+- name: owners
+  type: STRING
+  mode: REPEATED
+  description: Owners listed in the table's metadata.yaml.

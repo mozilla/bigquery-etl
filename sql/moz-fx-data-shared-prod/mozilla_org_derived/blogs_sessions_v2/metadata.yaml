@@ -3,6 +3,7 @@ description: |-
   Intermediate table containing normalized sessions for blog.mozilla.org, sourced from Google Analytics 4 (GA4)
 owners:
 - mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: mhirose@mozilla.com

@@ -3,6 +3,7 @@ description: |-
   Daily summary Google analytics data for blog.mozilla.org landing page
 owners:
 - mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: mhirose@mozilla.com

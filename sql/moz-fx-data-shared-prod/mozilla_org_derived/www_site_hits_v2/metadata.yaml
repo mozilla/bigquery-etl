@@ -3,6 +3,7 @@ description: |-
   Normalized events from Google Analytics 4 (GA4) for www.mozilla.org. The events triggered at the same timestamp are given the same hit number.
 owners:
 - mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: mhirose@mozilla.com

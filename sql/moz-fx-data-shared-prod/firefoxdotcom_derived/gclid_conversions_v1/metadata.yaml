@@ -7,6 +7,7 @@ description: |-
   on different days.
 owners:
 - mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: mhirose@mozilla.com

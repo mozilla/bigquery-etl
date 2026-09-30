@@ -5,7 +5,7 @@
     raw plausible_external data available 2026-07-30 through 2026-09-29
   watchers:
   - sherrera@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

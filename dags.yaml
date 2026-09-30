@@ -837,11 +837,11 @@ bqetl_newtab:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - mbowerman@mozilla.com
+      - data-newtab-wg@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: mbowerman@mozilla.com
+    owner: data-newtab-wg@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2022-07-01'
@@ -856,11 +856,11 @@ bqetl_newtab_late_morning:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - ctroy@mozilla.com
+      - data-newtab-wg@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: mbowerman@mozilla.com
+    owner: data-newtab-wg@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2025-08-20'
@@ -1899,8 +1899,8 @@ bqetl_newtab_interactions_hourly:
   description: |
     This DAG aggregates Newtab engagement data - on an hourly cadence
   default_args:
-    owner: cbeck@mozilla.com
-    email: ["cbeck@mozilla.com"]
+    owner: data-newtab-wg@mozilla.com
+    email: ["data-newtab-wg@mozilla.com"]
     start_date: "2024-12-17"
     retries: 2
     retry_delay: 5m
@@ -2373,9 +2373,9 @@ bqetl_newtab_historical:
   description: |
     Load Newtab historical data from GCS into BigQuery
   default_args:
-    owner: cbeck@mozilla.com
+    owner: data-newtab-wg@mozilla.com
     email:
-      - cbeck@mozilla.com
+      - data-newtab-wg@mozilla.com
     start_date: '2025-05-13'
     retries: 1
     retry_delay: 5m
@@ -2581,11 +2581,11 @@ bqetl_newtab_hourly:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - lmcfall@mozilla.com
+      - data-newtab-wg@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: lmcfall@mozilla.com
+    owner: data-newtab-wg@mozilla.com
     retries: 1
     retry_delay: 10m
     start_date: '2025-12-05'

@@ -7,7 +7,7 @@ fields:
 - name: computed_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: When this row was resolved against metric-hub HEAD.
+  description: When this row was computed. The metric-hub config itself is resolved as of the experiment's last analysis update, not HEAD.
 
 - name: metric_config
   type: RECORD

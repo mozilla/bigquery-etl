@@ -6,6 +6,7 @@ import copy
 import datetime
 import json
 import logging
+import re
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
@@ -47,6 +48,43 @@ RECOVERABLE_RESOLUTION_ERRORS = (
     UndefinedError,
     RuntimeError,
 )
+
+STATS_DATASET = "mozanalysis"
+
+
+def _bq_normalize_name(name: str) -> str:
+    """Match jetstream.bq_normalize_name, so results table names line up."""
+    return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
+
+def get_first_updated_by_normalized_slug(
+    client: bigquery.Client, project: str
+) -> dict[str, datetime.datetime]:
+    """Return each experiment's `enrollments_<slug>` table's `last_updated` label.
+
+    Mirrors jetstream's BigQueryClient.experiment_table_first_updated, run in
+    bulk since this job resolves every experiment daily.
+    """
+    rows = client.query(f"""
+        SELECT
+          table_name,
+          REGEXP_EXTRACT_ALL(
+            option_value, r'STRUCT\\("last_updated", "([^"]+)"\\)'
+          ) AS last_updated
+        FROM `{project}.{STATS_DATASET}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+        WHERE option_name = 'labels' AND STARTS_WITH(table_name, 'enrollments_')
+        """).result()
+
+    first_updated = {}
+    for row in rows:
+        if not row.last_updated:
+            continue
+        normalized_slug = row.table_name[len("enrollments_") :]
+        first_updated[normalized_slug] = min(
+            datetime.datetime.fromtimestamp(int(ts), tz=datetime.UTC)
+            for ts in row.last_updated
+        )
+    return first_updated
 
 
 @attr.s(auto_attribs=True)
@@ -316,15 +354,25 @@ def resolve_metric_config(
 
 
 def get_metric_configs(
-    nimbus_experiments: list[NimbusExperiment], configs: ConfigCollection
+    nimbus_experiments: list[NimbusExperiment],
+    configs: ConfigCollection,
+    first_updated_by_normalized_slug: dict[str, datetime.datetime],
 ) -> list[Row]:
     """Resolve metric config for each experiment. A bad config never fails the run."""
     computed_at = datetime.datetime.now(datetime.UTC).isoformat()
     rows = []
+    configs_as_of_cache: dict[datetime.datetime | None, ConfigCollection] = {}
 
     for nimbus_experiment in nimbus_experiments:
+        first_updated = first_updated_by_normalized_slug.get(
+            _bq_normalize_name(nimbus_experiment.slug)
+        )
+        if first_updated not in configs_as_of_cache:
+            configs_as_of_cache[first_updated] = configs.as_of(first_updated)
+        experiment_configs = configs_as_of_cache[first_updated]
+
         try:
-            metric_config = resolve_metric_config(nimbus_experiment, configs)
+            metric_config = resolve_metric_config(nimbus_experiment, experiment_configs)
         except Exception as e:
             # don't fail if there is any error resolving the metric config,
             # attach the error to the row and proceed
@@ -333,7 +381,8 @@ def get_metric_configs(
             )
             metric_config = MetricConfig(
                 has_external_config=(
-                    _find_external_config(nimbus_experiment.slug, configs) is not None
+                    _find_external_config(nimbus_experiment.slug, experiment_configs)
+                    is not None
                 ),
                 resolution_error=str(e),
             )
@@ -354,7 +403,13 @@ def main():
     args = parser.parse_args()
     nimbus_experiments = get_nimbus_experiments()
     configs = MetricHubConfigLoader.experiment_configs()
-    rows = get_metric_configs(nimbus_experiments, configs)
+    client = bigquery.Client(args.project)
+    first_updated_by_normalized_slug = get_first_updated_by_normalized_slug(
+        client, args.project
+    )
+    rows = get_metric_configs(
+        nimbus_experiments, configs, first_updated_by_normalized_slug
+    )
 
     destination_table = (
         f"{args.project}.{args.destination_dataset}.{args.destination_table}"
@@ -373,7 +428,6 @@ def main():
         print(json.dumps(blob))
         sys.exit(0)
 
-    client = bigquery.Client(args.project)
     client.load_table_from_json(blob, destination_table, job_config=job_config).result()
     logger.info(f"Loaded {len(blob)} experiment metric configs")
 

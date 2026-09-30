@@ -6,6 +6,5 @@ description: >
   a test that has not run in at least 28 days (invalid_rc).
 labels:
   application: firefox
-  schedule: daily
 owners:
   - esmyth@mozilla.com

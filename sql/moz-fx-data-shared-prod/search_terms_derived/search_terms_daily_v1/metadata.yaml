@@ -5,7 +5,7 @@ description: |-
   Known data gap: partitions from 2026-06-18 through 2026-07-13 are missing or
   incomplete. The query began failing on 2026-06-18 with a "Resources exceeded"
   error (Bug 2048966) and was not producing output until the fix landed. Because
-  the source table `merino_log_sanitized_v4` only retains ~14 days of data
+  the source table `merino_log_sanitized_v3` only retains ~14 days of data
   (oldest available at time of fix: 2026-07-08), the 2026-06-18 through
   2026-07-07 partitions are permanently unrecoverable (the source rows have aged
   out). Backfilled partitions from 2026-07-08 through 2026-07-13 are

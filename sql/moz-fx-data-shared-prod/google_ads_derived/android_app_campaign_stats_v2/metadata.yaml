@@ -3,6 +3,7 @@ description: |-
   Calculates ad spend and new profiles and new activated profiles by day and country.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

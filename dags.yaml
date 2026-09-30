@@ -1467,7 +1467,6 @@ bqetl_desktop_retention_model:
     depends_on_past: false
     owner: mhirose@mozilla.com
     email:
-      - mhirose@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false

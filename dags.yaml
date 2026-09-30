@@ -2962,9 +2962,9 @@ bqetl_customer_experience:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - lvargas@mozilla.com
-    - data-customer-experience-wg@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - lvargas@mozilla.com
+      - data-customer-experience-wg@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -2978,6 +2978,5 @@ bqetl_customer_experience:
   repo: bigquery-etl
   schedule_interval: 0 2 * * *
   tags:
-  - impact/tier_1
-  - repo/bigquery-etl
-
+    - impact/tier_1
+    - repo/bigquery-etl

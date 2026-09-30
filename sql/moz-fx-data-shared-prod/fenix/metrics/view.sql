@@ -137,7 +137,8 @@ SELECT
       metrics.boolean.networking_cookie_file_present,
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
-      metrics.boolean.profiles_store_id_mismatch
+      metrics.boolean.profiles_store_id_mismatch,
+      metrics.boolean.power_saving_mode_active_at_startup
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -426,7 +427,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.tab_reload_cover_shown,
-      metrics.counter.browser_engine_full_page_capture_attempted
+      metrics.counter.browser_engine_full_page_capture_attempted,
+      metrics.counter.background_notification_helper_wake
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -787,7 +789,9 @@ SELECT
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
       metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
-      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor,
+      metrics.custom_distribution.background_notification_helper_wake_messages,
+      metrics.custom_distribution.background_notification_helper_wake_notifications
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1237,7 +1241,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
       metrics.labeled_counter.browser_engine_full_page_capture_result,
-      metrics.labeled_counter.geolocation_network_link_change
+      metrics.labeled_counter.geolocation_network_link_change,
+      metrics.labeled_counter.background_notification_helper_toggled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2457,7 +2462,8 @@ SELECT
       metrics.boolean.networking_cookie_file_present,
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
-      metrics.boolean.profiles_store_id_mismatch
+      metrics.boolean.profiles_store_id_mismatch,
+      metrics.boolean.power_saving_mode_active_at_startup
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2746,7 +2752,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.tab_reload_cover_shown,
-      metrics.counter.browser_engine_full_page_capture_attempted
+      metrics.counter.browser_engine_full_page_capture_attempted,
+      metrics.counter.background_notification_helper_wake
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3107,7 +3114,9 @@ SELECT
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
       metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
-      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor,
+      metrics.custom_distribution.background_notification_helper_wake_messages,
+      metrics.custom_distribution.background_notification_helper_wake_notifications
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3557,7 +3566,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
       metrics.labeled_counter.browser_engine_full_page_capture_result,
-      metrics.labeled_counter.geolocation_network_link_change
+      metrics.labeled_counter.geolocation_network_link_change,
+      metrics.labeled_counter.background_notification_helper_toggled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4797,7 +4807,8 @@ SELECT
       metrics.boolean.networking_cookie_file_present,
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
-      metrics.boolean.profiles_store_id_mismatch
+      metrics.boolean.profiles_store_id_mismatch,
+      metrics.boolean.power_saving_mode_active_at_startup
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5086,7 +5097,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.tab_reload_cover_shown,
-      metrics.counter.browser_engine_full_page_capture_attempted
+      metrics.counter.browser_engine_full_page_capture_attempted,
+      metrics.counter.background_notification_helper_wake
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5447,7 +5459,9 @@ SELECT
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
       metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
-      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor,
+      metrics.custom_distribution.background_notification_helper_wake_messages,
+      metrics.custom_distribution.background_notification_helper_wake_notifications
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5897,7 +5911,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
       metrics.labeled_counter.browser_engine_full_page_capture_result,
-      metrics.labeled_counter.geolocation_network_link_change
+      metrics.labeled_counter.geolocation_network_link_change,
+      metrics.labeled_counter.background_notification_helper_toggled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

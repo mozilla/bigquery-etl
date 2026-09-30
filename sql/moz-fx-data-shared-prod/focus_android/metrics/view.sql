@@ -325,7 +325,8 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
+      metrics.counter.background_notification_helper_wake
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -768,7 +769,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
-      metrics.labeled_counter.geolocation_network_link_change
+      metrics.labeled_counter.geolocation_network_link_change,
+      metrics.labeled_counter.background_notification_helper_toggled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1304,7 +1306,9 @@ SELECT
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
       metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
-      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor,
+      metrics.custom_distribution.background_notification_helper_wake_messages,
+      metrics.custom_distribution.background_notification_helper_wake_notifications
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -2364,7 +2368,8 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
+      metrics.counter.background_notification_helper_wake
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2807,7 +2812,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
-      metrics.labeled_counter.geolocation_network_link_change
+      metrics.labeled_counter.geolocation_network_link_change,
+      metrics.labeled_counter.background_notification_helper_toggled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3343,7 +3349,9 @@ SELECT
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
       metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
-      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor,
+      metrics.custom_distribution.background_notification_helper_wake_messages,
+      metrics.custom_distribution.background_notification_helper_wake_notifications
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -4403,7 +4411,8 @@ SELECT
       metrics.counter.devtools_debugger_stylesheets_stylesheets_opened_count,
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
-      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count
+      metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
+      metrics.counter.background_notification_helper_wake
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4846,7 +4855,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_error,
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
-      metrics.labeled_counter.geolocation_network_link_change
+      metrics.labeled_counter.geolocation_network_link_change,
+      metrics.labeled_counter.background_notification_helper_toggled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -5382,7 +5392,9 @@ SELECT
       metrics.custom_distribution.javascript_gc_buffer_alloc_heap_density,
       metrics.custom_distribution.netwerk_happy_eyeballs_dns_answer_spread,
       metrics.custom_distribution.networking_http_3_max_consecutive_ptos,
-      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor
+      metrics.custom_distribution.media_speech_recognition_inference_realtime_factor,
+      metrics.custom_distribution.background_notification_helper_wake_messages,
+      metrics.custom_distribution.background_notification_helper_wake_notifications
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

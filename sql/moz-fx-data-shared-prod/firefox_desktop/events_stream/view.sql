@@ -188,6 +188,7 @@ SELECT
       LAX_BOOL(event_extra.vulnerable) AS `vulnerable`,
       LAX_BOOL(event_extra.waited_out) AS `waited_out`,
       LAX_BOOL(event_extra.warning) AS `warning`,
+      LAX_BOOL(event_extra.was_last_tab) AS `was_last_tab`,
       LAX_BOOL(event_extra.wasActive) AS `wasActive`,
       LAX_BOOL(event_extra.webVTTSubtitles) AS `webVTTSubtitles`
     ) AS `boolean`,
@@ -217,6 +218,7 @@ SELECT
       LAX_INT64(event_extra.columnnumber) AS `columnnumber`,
       LAX_INT64(event_extra.commands_available) AS `commands_available`,
       LAX_INT64(event_extra.comments_count) AS `comments_count`,
+      LAX_INT64(event_extra.concurrent_open) AS `concurrent_open`,
       LAX_INT64(event_extra.containers) AS `containers`,
       LAX_INT64(event_extra.cores) AS `cores`,
       LAX_INT64(event_extra.count) AS `count`,

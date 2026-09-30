@@ -145,7 +145,7 @@ def format_slack_message(token, rows):
         table = f"{row['project_id']}.{row['dataset_id']}.{row['table_id']}"
         owners = " ".join(mention(token, owner) for owner in row["owners"])
         lines.append(
-            f"• {owners} `{table}` (deletion date: {row['deletion_date']})".rstrip()
+            f"• {owners} `{table}` (deletion date: {row['deletion_date']})"
         )
     return "\n".join(lines)
 

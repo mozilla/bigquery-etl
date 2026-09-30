@@ -4,6 +4,5 @@ description: >
   Desktop and Mobile
 labels:
   application: firefox
-  schedule: daily
 owners:
   - esmyth@mozilla.com

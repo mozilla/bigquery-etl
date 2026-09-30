@@ -5,6 +5,11 @@ description: |-
   Table grain: client_id, normalized_channel
   Table population: all clients
 
+  Each client has one row, on its first seen date (submission_date = first_seen_date).
+  When joining to other client-level tables, join on client_id, normalized_channel
+  and attribution_clients.submission_date = <other table>.first_seen_date.
+  Joining on the other table's submission_date drops every returning client.
+
   Notes:
   - 2025-05-14: `normalized_channel` field added (backfilled up until 2023-04-08, prior to this the value will always be `null`)
   {%- if app_name == 'fenix' %}

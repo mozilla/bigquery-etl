@@ -72,7 +72,11 @@ fields:
   mode: NULLABLE
   name: adjust_network
   type: STRING
-- description: The source of a client installation.
+- description: The source of a client installation, read from the metrics ping metric
+    metrics.install_source. This metric stopped being populated for most new profiles
+    around Sept 2024 (replaced by first_session.install_source, bug 1908383). For
+    reliable values use fenix.attribution_clients or fenix.new_profile_clients, which
+    read the baseline ping.
   mode: NULLABLE
   name: install_source
   type: STRING

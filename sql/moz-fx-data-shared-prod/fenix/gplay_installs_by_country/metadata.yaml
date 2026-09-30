@@ -1,6 +1,13 @@
 friendly_name: Gplay Installs By Country
 description: |-
-  A view on Fenix Google Play Install Data by Country
+  A view on Fenix Google Play Install Data by Country.
+
+  This is Google Play Console data, not Mozilla telemetry. It is built outside
+  bigquery-etl (fenix_external.gplay_installs_by_country_v1) from the Play Console
+  export in moz-fx-data-marketing-prod.google_play_store, filtered to Fenix
+  packages and joined to static.country_codes_v1 for region names.
+  Install counts here do not match telemetry new profile counts and are not
+  expected to.
 owners:
 - frank@mozilla.com
 labels: {}

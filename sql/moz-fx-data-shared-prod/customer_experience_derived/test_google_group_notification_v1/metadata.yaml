@@ -1,0 +1,9 @@
+friendly_name: Test Google Group Notificaiton
+description: |-
+  Please provide a description for the query
+owners:
+- ecassell@mozilla.com
+- data-customer-experience-wg@mozilla.com
+scheduling:
+  dag_name: bqetl_default
+require_column_descriptions: true

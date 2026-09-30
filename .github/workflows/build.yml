@@ -76,6 +76,12 @@ jobs:
             sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+      - id: changed-files-metadata
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
+        with:
+          files: |
+            **metadata.yaml
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
@@ -108,10 +114,14 @@ jobs:
           VALIDATE_ROUTINES: ${{ steps.changed-files-routines.outputs.any_changed }}
           VALIDATE_SQL: ${{ steps.changed-files-sql.outputs.any_changed }}
           VALIDATE_BQETL: ${{ steps.changed-files-bqetl.outputs.any_changed }}
+          VALIDATE_DEPRECATION_METADATA: ${{ steps.changed-files-metadata.outputs.any_changed }}
+          CHANGED_METADATA_FILES: ${{ steps.changed-files-metadata.outputs.all_changed_files }}
         run: |
           echo "validate-routines=$VALIDATE_ROUTINES" >> $GITHUB_OUTPUT
           echo "validate-sql=$VALIDATE_SQL" >> $GITHUB_OUTPUT
           echo "validate-bqetl=$VALIDATE_BQETL" >> $GITHUB_OUTPUT
+          echo "validate-deprecation-metadata=$VALIDATE_DEPRECATION_METADATA" >> $GITHUB_OUTPUT
+          echo "changed-metadata-files=$CHANGED_METADATA_FILES" >> $GITHUB_OUTPUT
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
@@ -207,6 +217,23 @@ jobs:
       - *restore-venv
       - name: Yamllint Test
         run: PATH=".venv/bin:$PATH" yamllint -c .yamllint.yaml .
+
+  verify-deprecation-metadata:
+    name: Verify Deprecation Metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: *build-env
+    needs: [build, decide-runs]
+    if: needs.decide-runs.outputs.validate-deprecation-metadata == 'true'
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - name: Deletion Date Check
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation \
+          ${{ needs.decide-runs.outputs.changed-metadata-files }}
 
   verify-format-sql:
     name: Verify SQL Format

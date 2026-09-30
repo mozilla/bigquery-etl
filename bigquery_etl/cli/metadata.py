@@ -337,6 +337,36 @@ def deprecate(
 
 
 @metadata.command(help="""
+    Validate that deprecation metadata is valid.
+    Used by CI to ensure that manual metadata edits have all required info.
+
+    Example:
+     ./bqetl metadata validate-deprecation path/to/metadata.yaml path/to/other/metadata.yaml
+    """)
+@click.argument("metadata_files", nargs=-1)
+def validate_deprecation(metadata_files: list[str]):
+    """Validate that deprecation metadata is valid."""
+    failed_files = set()
+    for file in metadata_files:
+        if Metadata.is_metadata_file(file):
+            metadata = Metadata.from_file(file)
+            # if dataset is deprecated it must have a deletion_date
+            if metadata.deprecated and metadata.deletion_date is None:
+                failed_files.add(file)
+
+    if len(failed_files) > 0:
+        click.echo(click.style("Deprecation metadata invalid for:", fg="red"))
+        for file in sorted(failed_files):
+            click.echo(click.style(str(file), fg="red"))
+        click.echo(
+            click.style("deletion_date required for deprecated datasets.", fg="red")
+        )
+        raise MetadataValidationError(
+            f"Deprecation metadata invalid for: {failed_files}. deletion_date required for deprecated datasets."
+        )
+
+
+@metadata.command(help="""
     Validate workgroup_access and default_table_workgroup_access configurations.
 
     Example:

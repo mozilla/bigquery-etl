@@ -463,6 +463,7 @@ generate:
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view
+      - firefox_enterprise_desktop  # restricted dataset (bug 2054438)
       # event pings for this app were removed but still high volume due to nimbus bugs in versions 138 to 140
       # events are still sent in the background-update ping, but they are being skipped
       # See: https://mozilla-hub.atlassian.net/browse/DENG-9715

@@ -107,9 +107,23 @@ def write_dataset_metadata_if_not_exists(
     object representing the dataset.
     """
     from bigquery_etl.metadata.parse_metadata import DatasetMetadata
+    from bigquery_etl.sensitivity import restricted_dataset_acl
 
     dataset_family = schema.bq_dataset_family
     project_dir = sql_dir / target_project
+
+    def acl_kwargs(dataset_name, base_acl):
+        # inherit access from the stable dataset when it's narrower than the default
+        restricted = restricted_dataset_acl(
+            target_project, dataset_name, [dataset_family], base_acl
+        )
+        if restricted is None:
+            return {"dataset_base_acl": base_acl}
+        restricted_base_acl, workgroup_access = restricted
+        return {
+            "dataset_base_acl": restricted_base_acl,
+            "workgroup_access": workgroup_access,
+        }
 
     # Derived dataset
     dataset_name = f"{dataset_family}_derived"
@@ -126,8 +140,8 @@ def write_dataset_metadata_if_not_exists(
                 f" https://github.com/mozilla/bigquery-etl"
                 f" and managed by Airflow"
             ),
-            dataset_base_acl="derived",
             user_facing=False,
+            **acl_kwargs(dataset_name, "derived"),
         ).write(target)
 
     # User-facing dataset
@@ -144,8 +158,8 @@ def write_dataset_metadata_if_not_exists(
                 f"mozilla-services/mozilla-pipeline-schemas/tree/"
                 f"generated-schemas/schemas/{schema.document_namespace}"
             ),
-            dataset_base_acl="view",
             user_facing=True,
+            **acl_kwargs(dataset_name, "view"),
         ).write(target)
 
 

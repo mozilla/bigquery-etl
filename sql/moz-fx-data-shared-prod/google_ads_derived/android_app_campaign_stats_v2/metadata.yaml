@@ -3,11 +3,12 @@ description: |-
   Calculates ad spend and new profiles and new activated profiles by day and country.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
   owner1: kik
-  owner2: rbaffourawuah
+  owner2: data-marketing-wg
   table_type: aggregate
   dag: bqetl_fivetran_google_ads
 scheduling:

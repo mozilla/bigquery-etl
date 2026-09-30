@@ -5,11 +5,13 @@ description: |-
 owners:
 - kik@mozilla.com
 - ahe@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik
   dag: bqetl_marketing_analysis
   owner2: ahe
+  owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_marketing_analysis
   depends_on_past: false

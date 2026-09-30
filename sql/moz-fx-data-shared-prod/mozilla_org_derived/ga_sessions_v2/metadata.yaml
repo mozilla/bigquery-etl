@@ -3,10 +3,12 @@ description: |-
   Contains 1 row for each Google Analytics 4 session
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   owner1: kik
   table_type: client_level
   dag: bqetl_google_analytics_derived_ga4
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null

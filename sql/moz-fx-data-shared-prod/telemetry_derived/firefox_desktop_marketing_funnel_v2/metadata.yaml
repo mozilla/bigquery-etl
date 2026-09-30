@@ -27,12 +27,14 @@ description: |-
 owners:
 - sbedwell@mozilla.com
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   table_type: aggregate
   dag: bqetl_marketing_analysis
   owner1: sbedwell
   owner2: kik
+  owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_marketing_analysis
   depends_on_past: true

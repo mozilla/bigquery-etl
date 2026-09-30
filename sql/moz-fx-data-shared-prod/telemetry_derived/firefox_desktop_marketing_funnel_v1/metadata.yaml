@@ -23,6 +23,7 @@ description: |-
 owners:
 - sbedwell@mozilla.com
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
@@ -30,6 +31,7 @@ labels:
   table_type: aggregate
   dag: bqetl_marketing_analysis
   owner2: kik
+  owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_marketing_analysis
   date_partition_offset: -27

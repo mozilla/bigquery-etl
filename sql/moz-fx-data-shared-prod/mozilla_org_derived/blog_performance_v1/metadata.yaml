@@ -3,12 +3,14 @@ description: |-
   Blog page engagement metrics by page title and date for blog.mozilla.org pages.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
   owner1: kik
   table_type: aggregate
   dag: bqetl_google_analytics_derived_ga4
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:

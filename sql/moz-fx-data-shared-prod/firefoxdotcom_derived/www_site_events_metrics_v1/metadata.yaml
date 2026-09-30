@@ -3,11 +3,11 @@ description: |-
   Aggregated metrics on non-page view events on www.firefox.com
   Sourced from Google Analytics 4 (GA4) data
 owners:
-- mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose
   dag: bqetl_ga4_firefoxdotcom
+  owner1: data-marketing-wg
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
 bigquery:

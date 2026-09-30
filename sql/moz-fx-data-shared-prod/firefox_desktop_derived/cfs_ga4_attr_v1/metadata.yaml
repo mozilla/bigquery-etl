@@ -4,10 +4,12 @@ description: |-
   on download token if a match is found.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   owner1: kik
   dag: bqetl_google_analytics_derived_ga4
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null

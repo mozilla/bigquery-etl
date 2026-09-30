@@ -9,12 +9,14 @@ description: |-
   just that campaign on that date.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik
   table_type: aggregate
   shredder_mitigation: true
   dag: bqetl_fivetran_google_ads
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

@@ -3,10 +3,12 @@ description: |-
   GA4 Events Data for SUMO (support.mozilla.org)
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik
   dag: bqetl_google_analytics_derived_ga4
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on_tables_existing:

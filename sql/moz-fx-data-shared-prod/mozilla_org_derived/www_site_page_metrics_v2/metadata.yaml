@@ -3,11 +3,13 @@ description: |-
   Aggregated metrics per page on www.mozilla.org from Google Analytics 4
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik
   table_type: aggregate
   dag: bqetl_google_analytics_derived_ga4
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
 bigquery:

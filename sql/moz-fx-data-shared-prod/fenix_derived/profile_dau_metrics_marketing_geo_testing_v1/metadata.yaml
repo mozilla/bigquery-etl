@@ -4,12 +4,14 @@ description: |-
 owners:
 - kik@mozilla.com
 - shong@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   table_type: aggregate
   dag: bqetl_marketing_analysis
   owner1: kik
   owner2: shong
+  owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_marketing_analysis
 bigquery:

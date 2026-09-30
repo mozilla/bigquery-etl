@@ -5,11 +5,13 @@ description: |-
   (first-touch, event-level, and session last-click). Intended as a base table for Looker dashboards.
 owners:
 - sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
   owner1: sherrera
   dag: bqetl_ga4_firefoxdotcom
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   depends_on:

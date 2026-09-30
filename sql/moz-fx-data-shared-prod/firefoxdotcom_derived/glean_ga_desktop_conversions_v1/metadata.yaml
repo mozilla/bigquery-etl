@@ -3,10 +3,12 @@ description: |-
   Query that pulls conversion event data for marketing campaigns
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik
   dag: bqetl_census_feed
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_census_feed
   depends_on_past: true

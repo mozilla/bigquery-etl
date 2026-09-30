@@ -3,12 +3,14 @@ description: |-
   Summary of site metrics from Google Analytics about firefox.com
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
   owner1: kik
   table_type: aggregate
   dag: bqetl_ga4_firefoxdotcom
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   depends_on:

@@ -5,6 +5,7 @@ description: |-
 owners:
 - kik@mozilla.com
 - shong@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   application: firefox_ios
   incremental: true
@@ -12,6 +13,7 @@ labels:
   dag: bqetl_marketing_analysis
   owner1: kik
   owner2: shong
+  owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_marketing_analysis
   date_partition_offset: -27

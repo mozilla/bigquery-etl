@@ -3,11 +3,13 @@ description: |-
   GA4 Site Metrics Summary for Mozilla VPN within mozilla.org
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik
   table_type: aggregate
   dag: bqetl_mozilla_vpn_site_metrics
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_mozilla_vpn_site_metrics
   depends_on:

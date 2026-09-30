@@ -3,11 +3,13 @@ description: |-
   Data about downloads from firefox.com from GA4
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
   owner1: kik
   dag: bqetl_ga4_firefoxdotcom
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   depends_on_tables_existing:

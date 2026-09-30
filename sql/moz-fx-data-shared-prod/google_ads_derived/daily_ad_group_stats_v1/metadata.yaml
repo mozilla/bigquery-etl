@@ -5,9 +5,11 @@ description: |-
   https://github.com/fivetran/dbt_google_ads
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   dag: bqetl_fivetran_google_ads
   owner1: kik
+  owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

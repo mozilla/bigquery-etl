@@ -4,12 +4,14 @@ description: |-
 owners:
 - kik@mozilla.com
 - sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
   owner1: kik
   owner2: sherrera
   dag: bqetl_ga4_firefoxdotcom
+  owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   depends_on:

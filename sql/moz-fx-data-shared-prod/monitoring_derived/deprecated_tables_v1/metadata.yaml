@@ -1,0 +1,19 @@
+friendly_name: Deprecated Tables
+description: |-
+  Contains tables that are deprecated with deletion date
+owners:
+- ascholtz@mozilla.com
+- mwilliams@mozilla.com
+labels:
+  dag: bqetl_monitoring
+  owner1: ascholtz
+  owner2: mwilliams
+scheduling:
+  dag_name: bqetl_monitoring
+  secrets:
+  - deploy_target: SLACK_API_KEY
+    key: slack_airflow_bot_token
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

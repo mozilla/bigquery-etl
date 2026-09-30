@@ -1,0 +1,16 @@
+friendly_name: Deprecated Tables
+description: |-
+  Contains tables that are deprecated with deletion date
+owners:
+- ascholtz@mozilla.com
+- mwilliams@mozilla.com
+labels:
+  owner1: ascholtz
+  owner2: mwilliams
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.deprecated_tables_v1

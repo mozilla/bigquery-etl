@@ -7,12 +7,8 @@ owners:
 labels:
   incremental: true
   table_type: client_level
-  schedule: daily
-  dag: bqetl_firefox_enterprise
   owner1: pissac
   owner2: kik
-scheduling:
-  dag_name: bqetl_firefox_enterprise
 bigquery:
   time_partitioning:
     type: day

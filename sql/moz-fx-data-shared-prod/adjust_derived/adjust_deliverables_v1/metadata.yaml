@@ -5,18 +5,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   table_type: aggregate
-  dag: bqetl_adjust
   owner1: mhirose
-scheduling:
-  dag_name: bqetl_adjust
-  date_partition_parameter: date
-  arguments:
-  - --date
-  - '{{ ds }}'
-  - --adjust_api_token
-  - '{{ var.value.ADJUST_API_TOKEN}}'
-  - --adjust_app_list
-  - '{{ var.value.ADJUST_APP_TOKEN_LIST}}'
 bigquery:
   time_partitioning:
     type: day

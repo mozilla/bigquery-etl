@@ -2872,6 +2872,7 @@ bqetl_customer_experience:
     email:
       - telemetry-alerts@mozilla.com
       - data-customer-experience-wg@mozilla.com
+      - lvargas@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null

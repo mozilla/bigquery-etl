@@ -8,7 +8,7 @@ fields:
   name: user_id_sha256
   type: STRING
   description: SHA-256 hash of the Firefox Accounts user ID, used to identify a unique user while preserving
-    privacy. Serves as the join key between daily activity records and this last-seen table.
+    privacy. Together with `service`, forms the key joining daily activity records to this last-seen table.
 - mode: NULLABLE
   name: service
   type: STRING
@@ -17,8 +17,9 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Two-letter ISO 3166-1 alpha-2 country code for the user's most recently observed location.
-    Null when country information is unavailable.
+  description: Country (ISO 3166-1 alpha-2) from the most recent day the user–service pair was active,
+    taken from `users_services_daily_v1.country`, which is that day's most frequent country. Null if no geo
+    data was available that day, even if an earlier day had one.
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER

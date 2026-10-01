@@ -1,0 +1,15 @@
+friendly_name: Test Google Group Notificaiton
+description: |-
+  Test task.
+owners:
+- ecassell@mozilla.com
+- data-customer-experience-wg@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'creation_date'
+    require_partition_filter: false
+    expiration_days: null
+scheduling:
+  dag_name: bqetl_customer_experience
+require_column_descriptions: true

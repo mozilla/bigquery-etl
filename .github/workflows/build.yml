@@ -57,7 +57,6 @@ jobs:
       validate-sql: ${{ steps.set-flags.outputs.validate-sql }}
       validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
       validate-deprecation-metadata: ${{ steps.set-flags.outputs.validate-deprecation-metadata }}
-      changed-metadata-files: ${{ steps.set-flags.outputs.changed-metadata-files }}
     steps:
       - &checkout-with-history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -117,13 +116,11 @@ jobs:
           VALIDATE_SQL: ${{ steps.changed-files-sql.outputs.any_changed }}
           VALIDATE_BQETL: ${{ steps.changed-files-bqetl.outputs.any_changed }}
           VALIDATE_DEPRECATION_METADATA: ${{ steps.changed-files-metadata.outputs.any_changed }}
-          CHANGED_METADATA_FILES: ${{ steps.changed-files-metadata.outputs.all_changed_files }}
         run: |
           echo "validate-routines=$VALIDATE_ROUTINES" >> $GITHUB_OUTPUT
           echo "validate-sql=$VALIDATE_SQL" >> $GITHUB_OUTPUT
           echo "validate-bqetl=$VALIDATE_BQETL" >> $GITHUB_OUTPUT
           echo "validate-deprecation-metadata=$VALIDATE_DEPRECATION_METADATA" >> $GITHUB_OUTPUT
-          echo "changed-metadata-files=$CHANGED_METADATA_FILES" >> $GITHUB_OUTPUT
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
@@ -228,16 +225,13 @@ jobs:
     environment: *build-env
     needs: [build, decide-runs]
     if: needs.decide-runs.outputs.validate-deprecation-metadata == 'true'
-    env:
-      CHANGED_METADATA_FILES: ${{ needs.decide-runs.outputs.changed-metadata-files }}
     steps:
       - *checkout
       - *setup-python
       - *restore-venv
       - name: Deletion Date Check
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation \
-          $CHANGED_METADATA_FILES
+          PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation
 
   verify-format-sql:
     name: Verify SQL Format

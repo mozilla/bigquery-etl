@@ -483,9 +483,9 @@ clients_with_adblocker_addons_cte AS (
     ON adblocker_addons_cte.addon_id = JSON_VALUE(addons, '$.id')
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND NOT BOOL(JSON_QUERY(addons, '$.userDisabled'))
-    AND NOT BOOL(JSON_QUERY(addons, '$.appDisabled'))
-    AND NOT BOOL(JSON_QUERY(addons, '$.blocklisted'))
+    AND NOT LAX_BOOL(JSON_QUERY(addons, '$.userDisabled'))
+    AND NOT LAX_BOOL(JSON_QUERY(addons, '$.appDisabled'))
+    AND NOT LAX_BOOL(JSON_QUERY(addons, '$.blocklisted'))
   GROUP BY
     client_id,
     DATE(submission_timestamp)
@@ -566,7 +566,7 @@ sap_is_enterprise_cte AS (
     -- match v8: statistical mode over the day, ties broken toward the latest event
     mozfun.stats.mode_last(
       ARRAY_AGG(
-        CAST(JSON_VALUE(metrics.boolean.policies_is_enterprise, '$') AS boolean)
+        SAFE_CAST(JSON_VALUE(metrics.boolean.policies_is_enterprise, '$') AS boolean)
         ORDER BY
           event_timestamp
       )
@@ -608,7 +608,7 @@ sap_events_with_client_info_cte AS (
     client_info.distribution.name AS distribution_id,
     UNIX_DATE(local_date_of(client_info.first_run_date)) AS profile_creation_date,
     CAST(JSON_VALUE(metrics.string.region_home_region, '$') AS string) AS region_home_region,
-    CAST(
+    SAFE_CAST(
       JSON_VALUE(metrics.boolean.usage_is_default_browser, '$') AS boolean
     ) AS usage_is_default_browser,
     CAST(
@@ -626,7 +626,7 @@ sap_events_with_client_info_cte AS (
     CAST(
       JSON_VALUE(metrics.url.search_engine_default_submission_url, '$') AS string
     ) AS search_engine_default_submission_url,
-    CAST(
+    SAFE_CAST(
       JSON_VALUE(metrics.boolean.search_engine_default_overridden_by_third_party, '$') AS boolean
     ) AS search_engine_default_overridden_by_third_party,
     CAST(
@@ -644,10 +644,10 @@ sap_events_with_client_info_cte AS (
     CAST(
       JSON_VALUE(metrics.url.search_engine_private_submission_url, '$') AS string
     ) AS search_engine_private_submission_url,
-    CAST(
+    SAFE_CAST(
       JSON_VALUE(metrics.boolean.search_engine_private_overridden_by_third_party, '$') AS boolean
     ) AS search_engine_private_overridden_by_third_party,
-    CAST(
+    SAFE_CAST(
       JSON_VALUE(event_extra.overridden_by_third_party, '$') AS boolean
     ) AS overridden_by_third_party,
     ping_info.start_time AS ping_start_time,
@@ -710,7 +710,7 @@ sap_aggregates_cte AS (
     source,
     COUNT(*) AS sap_counts_total,
     MAX(
-      CAST(
+      SAFE_CAST(
         JSON_EXTRACT_SCALAR(
           metrics.quantity,
           '$.browser_engagement_max_concurrent_tab_count'
@@ -1218,7 +1218,7 @@ join_sources_cte AS (
     -- ping stores it as INT64 already, so the legacy arm needs no cast.
     COALESCE(
       serp_final_cte.max_concurrent_tab_count_max,
-      CAST(sap_final_cte.concurrent_tab_count_max AS INT64),
+      SAFE_CAST(sap_final_cte.concurrent_tab_count_max AS INT64),
       legacy_cte.max_concurrent_tab_count_max,
       0
     ) AS max_concurrent_tab_count_max,

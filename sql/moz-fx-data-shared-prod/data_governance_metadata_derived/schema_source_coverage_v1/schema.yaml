@@ -1,0 +1,41 @@
+fields:
+- name: project
+  type: STRING
+  mode: REQUIRED
+  description: GCP project of the scanned table.
+- name: dataset
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset of the scanned table.
+- name: table
+  type: STRING
+  mode: REQUIRED
+  description: Table name (without project or dataset).
+- name: sql_generator
+  type: STRING
+  mode: NULLABLE
+  description: The name of the SQL generator label from the deployed BigQuery table (labels.sql_generator); null for hand-written tables.
+- name: source_schema_directory
+  type: STRING
+  mode: NULLABLE
+  description: Filesystem path to the resolved source schema directory in bigquery-etl or private-bigquery-etl; null when no source could be resolved.
+- name: source_schema_fully_described
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True when every field in the resolved source schema.yaml has a non-empty description; null when no source schema was found.
+- name: is_view
+  type: BOOLEAN
+  mode: REQUIRED
+  description: True when the scanned table directory contains a view.sql file (i.e. the table is a BigQuery view rather than a materialized table).
+- name: source_schema_is_private
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True when the resolved source directory lives under private-bigquery-etl; null when no source was resolved.
+- name: schema_defined_in_bqetl
+  type: BOOLEAN
+  mode: REQUIRED
+  description: True when a schema.yaml exists for this table in bigquery-etl.
+- name: scan_timestamp
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: UTC timestamp when this scan row was written. This is the table's partition column.

@@ -1,0 +1,40 @@
+friendly_name: Onboarding Completed Clients
+description: |-
+  One row per Fenix client per day on which an `onboarding.completed` event from
+  them arrived, dated by submission date rather than by when the event fired. A
+  client with completions arriving on more than one day has a row for each, so
+  `client_id` is not unique here — collapse on it before joining.
+  `fenix.onboarding_completed_clients` exposes this table unchanged;
+  `fenix.retention_clients` takes `MIN(completed_date)` per client.
+
+  Coverage will begin 2025-01-01 when the table is backfilled; until then it
+  holds only the days since it was deployed. A client whose completions all fall
+  before 2025-01-01 will not appear here.
+owners:
+  - kbammarito@mozilla.com
+labels:
+  application: fenix
+  incremental: true
+  schedule: daily
+  table_type: client_level
+# No shredder_mitigation label. Mitigation preserves pre-deletion history for
+# aggregate tables; this one is client-level and shredder deletes from it
+# directly.
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  task_group: fenix
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: completed_date
+    # Load-bearing: fenix.retention_clients reads the whole table with no date
+    # filter and collapses it to one row per client there.
+    require_partition_filter: false
+    # Deliberate: is_onboarded needs every completion since 2025-01-01 to stay
+    # TRUE for long-tenured clients, so the table is on retention_exclusion_list.
+    expiration_days: null
+  clustering:
+    fields:
+      - sample_id
+require_column_descriptions: true

@@ -7,6 +7,9 @@ fields:
 - name: event_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/glean_auto_events_derived/daily_auto_events_metadata_v1/schema.yaml
+    field: event_name
 - name: count
   type: INTEGER
   mode: NULLABLE

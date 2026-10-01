@@ -37,8 +37,8 @@ fields:
 - mode: NULLABLE
   name: addon_version
   type: STRING
-  description: The version of the search addon installed on the client, if any. Null for clients without
-    a search addon.
+  description: The version of the `followonsearch@mozilla.com` addon installed on the client. Null if the
+    addon is not installed.
 - mode: NULLABLE
   name: os
   type: STRING
@@ -125,7 +125,7 @@ fields:
   name: sap
   type: INTEGER
   description: The total number of search access point (SAP) searches on the most recently observed day;
-    searches initiated from a Mozilla-partnered entry point.
+    searches initiated from a Firefox search access point (e.g. urlbar, searchbar, new tab, context menu).
 - mode: NULLABLE
   name: unknown
   type: INTEGER
@@ -218,9 +218,9 @@ fields:
 - mode: NULLABLE
   name: days_dau_bytes
   type: BYTES
-  description: A 365-bit array (packed as bytes) representing which of the past 365 days the client qualified
-    as a daily active user (had active hours and loaded at least one URI), with the rightmost bit corresponding
-    to the current day.
+  description: A 365-bit array (packed as bytes) with a single bit set marking the first day within the
+    past 365 days that the client qualified as a daily active user (active hours > 0 and at least one URI
+    loaded); the bit shifts left one position each day.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING

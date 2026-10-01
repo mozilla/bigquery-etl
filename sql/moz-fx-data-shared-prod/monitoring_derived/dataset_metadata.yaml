@@ -3,11 +3,8 @@ description: |-
   Derived tables used for various pipeline monitoring purposes.
 dataset_base_acl: derived
 user_facing: false
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential/data-viewers
+labels: {}
 workgroup_access:
-- role: roles/bigquery.metadataViewer
+- role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers

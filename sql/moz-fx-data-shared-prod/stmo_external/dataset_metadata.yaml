@@ -5,7 +5,7 @@ description: |-
 
   Tables are mozilla-confidential and exclude fields that are potentially sensitive.
 dataset_base_acl: derived
-user_facing: true
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

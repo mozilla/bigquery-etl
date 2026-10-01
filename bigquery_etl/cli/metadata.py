@@ -20,8 +20,11 @@ from bigquery_etl.metadata.publish_metadata import publish_metadata
 from bigquery_etl.metadata.validate_metadata import (
     MetadataValidationError,
     validate_default_table_workgroup_access,
-    validate_workgroup_access,
 )
+from bigquery_etl.metadata.validate_metadata import (
+    validate_deprecation as validate_deprecation_metadata,
+)
+from bigquery_etl.metadata.validate_metadata import validate_workgroup_access
 
 from ..cli.utils import (
     parallelism_option,
@@ -362,19 +365,15 @@ def validate_deprecation(metadata_files: list[str]):
     for file in metadata_files:
         if Metadata.is_metadata_file(file):
             metadata = Metadata.from_file(file)
-            # if dataset is deprecated it must have a deletion_date
-            if metadata.deprecated and metadata.deletion_date is None:
+            if not validate_deprecation_metadata(metadata, file):
                 failed_files.add(file)
 
     if len(failed_files) > 0:
         click.echo(click.style("Deprecation metadata invalid for:", fg="red"))
         for file in sorted(failed_files):
             click.echo(click.style(str(file), fg="red"))
-        click.echo(
-            click.style("deletion_date required for deprecated datasets.", fg="red")
-        )
         raise MetadataValidationError(
-            f"Deprecation metadata invalid for: {failed_files}. deletion_date required for deprecated datasets."
+            f"Deprecation metadata invalid for: {failed_files}."
         )
 
 

@@ -212,7 +212,7 @@ class TestValidateMetadata(object):
 
         assert validate_deprecation(metadata_valid, "test/path/metadata.yaml")
 
-        metadata_valid = Metadata(
+        metadata_invalid = Metadata(
             friendly_name="test",
             description="test",
             owners=["test@example.org"],
@@ -221,9 +221,9 @@ class TestValidateMetadata(object):
             deletion_date=None,
         )
 
-        assert validate_deprecation(metadata_valid, "test/path/metadata.yaml")
+        assert not validate_deprecation(metadata_invalid, "test/path/metadata.yaml")
 
-        metadata_valid = Metadata(
+        metadata_invalid = Metadata(
             friendly_name="test",
             description="test",
             owners=["test@example.org"],
@@ -232,7 +232,7 @@ class TestValidateMetadata(object):
             deletion_date=date(2024, 5, 4),
         )
 
-        assert not validate_deprecation(metadata_valid, "test/path/metadata.yaml")
+        assert not validate_deprecation(metadata_invalid, "test/path/metadata.yaml")
 
     def test_validate_dataset_classification_user_facing_valid(self):
         metadata = DatasetMetadata(

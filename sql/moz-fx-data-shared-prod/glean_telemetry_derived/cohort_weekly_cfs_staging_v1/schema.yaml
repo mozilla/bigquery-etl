@@ -2,6 +2,8 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the Firefox application (e.g. "Firefox Desktop", "Fenix", "Firefox
+    iOS"). Excludes BrowserStack and MozillaOnline variants.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -13,21 +15,33 @@ fields:
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The optional attribution campaign associated with the Firefox installation, similar to or
+    the same as UTM `campaign`. Null when attribution data was not collected.
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: The optional attribution content associated with the Firefox installation, similar to or
+    the same as UTM `content`. Null when attribution data was not collected.
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: The name or identifier of the download/install experiment associated with the client's attribution,
+    if any. Null when no experiment was recorded.
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The optional attribution medium associated with the Firefox installation, similar to or the
+    same as UTM `medium` (e.g. "referral", "paidsearch"). Null when attribution data was not collected.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The optional attribution source associated with the Firefox installation, similar to or the
+    same as UTM `source` (e.g. "www.google.com", "www.bing.com"). Null when attribution data was not collected.
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: The variation or arm of the download/install experiment associated with the client's attribution
+    (e.g. "treatment", "control"). Null when no experiment variation was recorded.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -36,6 +50,9 @@ fields:
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The model of the device the application is running on. On Android this is the user-visible
+    marketing name (e.g. "Pixel 2 XL"); currently only collected on Android and iOS. Null when the device
+    model cannot be determined.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -56,36 +73,58 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: The user-visible version of the operating system (e.g. "10.0", "6.8"). Set to "Unknown" if
+    version detection fails.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
+  description: The Adjust ad group associated with the client's mobile install campaign. Null when Adjust
+    attribution data is not available.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
+  description: The Adjust campaign name associated with the client's mobile install. Null when Adjust attribution
+    data is not available.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
+  description: The Adjust creative identifier associated with the client's mobile install campaign (e.g.
+    ad creative name or ID). Null when Adjust attribution data is not available.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: The Adjust network (ad network or channel) through which the client's mobile install was
+    attributed (e.g. "Google Ads ACI", "Organic"). Null when Adjust attribution data is not available.
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The UTM campaign parameter from the Google Play Store referral URL associated with the app
+    install. Null when Play Store attribution data is not available.
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The UTM medium parameter from the Google Play Store referral URL associated with the app
+    install (e.g. "organic", "preload", "referral"). Null when Play Store attribution data is not available.
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+  description: The UTM source parameter from the Google Play Store referral URL associated with the app
+    install (e.g. "google-play", "apps.facebook.com"). Null when Play Store attribution data is not available.
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
+  description: The UTM content parameter from the Google Play Store referral URL associated with the app
+    install. Null when Play Store attribution data is not available.
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
+  description: The UTM term (keyword) parameter from the Google Play Store referral URL associated with
+    the app install. Null when Play Store attribution data is not available.
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
+  description: The full install referrer response string returned by the Google Play Store at install time,
+    containing raw UTM parameters (e.g. "utm_source=google-play&utm_medium=organic"). Null when not available.
 - name: cohort_date_week
   type: DATE
   mode: NULLABLE

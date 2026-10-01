@@ -24306,9 +24306,6 @@ fields:
         = Use ''X'' (unused), 8 = Not now (unused), 10 = Open submenu, 11 = Learn
         more. Add 20 if happened after reopen.)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram POPUP_NOTIFICATION_STATS.
-
         '
   - name: labeled_memory_distribution
     type: RECORD
@@ -27800,9 +27797,6 @@ fields:
       description: '(Bug 1207089) Time in ms between displaying a popup notification
         and dismissing it without an action the first time, keyed by ID
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram POPUP_NOTIFICATION_DISMISSAL_MS.
-
         '
     - name: popup_notification_main_action
       type: RECORD
@@ -27830,9 +27824,6 @@ fields:
             mode: NULLABLE
       description: '(Bug 1207089) Time in ms between initially requesting a popup
         notification and triggering the main action, keyed by ID
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram POPUP_NOTIFICATION_MAIN_ACTION_MS.
 
         '
     - name: search_suggestions_latency
@@ -28026,6 +28017,34 @@ fields:
         For non-OHTTP requests, labels are simply the numeric status code, e.g.,
 
         "200". For OHTTP requests, labels are `${status}_ohttp`, e.g., "200_ohttp".
+
+        '
+    - name: mini_window_open_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long a mini window stayed open, split by which flavour it
+        was.
 
         '
   - name: memory_distribution

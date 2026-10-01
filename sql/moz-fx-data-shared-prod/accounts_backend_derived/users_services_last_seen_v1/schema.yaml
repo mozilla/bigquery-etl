@@ -2,15 +2,23 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date for which this last-seen record applies. Each row represents the most recent 28-day
+    activity window ending on this date for a given user–service combination.
 - mode: NULLABLE
   name: user_id_sha256
   type: STRING
+  description: SHA-256 hash of the Firefox Accounts user ID, used to identify a unique user while preserving
+    privacy. Serves as the join key between daily activity records and this last-seen table.
 - mode: NULLABLE
   name: service
   type: STRING
+  description: Identifier for the Mozilla service the user authenticated with (e.g. 'sync', 'vpn', 'relay',
+    or an OAuth client ID hex string). Used to partition last-seen activity per user–service pair.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Two-letter ISO 3166-1 alpha-2 country code for the user's most recently observed location.
+    Null when country information is unavailable.
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER

@@ -347,6 +347,18 @@ def deprecate(
 def validate_deprecation(metadata_files: list[str]):
     """Validate that deprecation metadata is valid."""
     failed_files = set()
+    if not metadata_files:
+        skip_validation = ConfigLoader.get(
+            "metadata", "validation", "skip", fallback=[]
+        )
+        metadata_files = [
+            str(file)
+            for file in paths_matching_name_pattern(
+                None, "sql", project_id=None, files=["metadata.yaml"]
+            )
+            if str(file) not in skip_validation
+        ]
+
     for file in metadata_files:
         if Metadata.is_metadata_file(file):
             metadata = Metadata.from_file(file)

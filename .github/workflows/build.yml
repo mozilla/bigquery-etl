@@ -56,6 +56,8 @@ jobs:
       deploy: ${{ steps.set-flags.outputs.deploy }}
       validate-sql: ${{ steps.set-flags.outputs.validate-sql }}
       validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
+      validate-deprecation-metadata: ${{ steps.set-flags.outputs.validate-deprecation-metadata }}
+      changed-metadata-files: ${{ steps.set-flags.outputs.changed-metadata-files }}
     steps:
       - &checkout-with-history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -226,6 +228,8 @@ jobs:
     environment: *build-env
     needs: [build, decide-runs]
     if: needs.decide-runs.outputs.validate-deprecation-metadata == 'true'
+    env:
+      CHANGED_METADATA_FILES: ${{ needs.decide-runs.outputs.changed-metadata-files }}
     steps:
       - *checkout
       - *setup-python
@@ -233,7 +237,7 @@ jobs:
       - name: Deletion Date Check
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation \
-          ${{ needs.decide-runs.outputs.changed-metadata-files }}
+          $CHANGED_METADATA_FILES
 
   verify-format-sql:
     name: Verify SQL Format

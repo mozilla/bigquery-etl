@@ -2897,7 +2897,7 @@ bqetl_stmo:
   default_args:
     owner: bewu@mozilla.com
     start_date: "2026-09-30"
-    email: ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "benwu@mozilla.com"]
     retries: 2
     retry_delay: 30m
     depends_on_past: false

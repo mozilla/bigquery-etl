@@ -21,7 +21,7 @@ bigquery:
   time_partitioning:
     type: day
     field: created_at
-    require_partition_filter: false
+    require_partition_filter: true
     expiration_days: null
   clustering:
     fields:

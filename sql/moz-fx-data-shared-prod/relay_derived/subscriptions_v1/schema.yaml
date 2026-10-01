@@ -2,9 +2,15 @@ fields:
 - name: customer_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: customer_id
 - name: subscription_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: subscription_id
 - name: original_subscription_id
   type: STRING
   mode: NULLABLE
@@ -14,15 +20,24 @@ fields:
 - name: plan_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_id
 - name: status
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: status
 - name: event_timestamp
   type: TIMESTAMP
   mode: NULLABLE
 - name: subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: subscription_start_date
 - name: original_subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
@@ -38,24 +53,45 @@ fields:
 - name: trial_start
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: trial_start
 - name: trial_end
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: trial_end
 - name: canceled_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: canceled_at
 - name: canceled_for_customer_at
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: canceled_for_customer_at
 - name: cancel_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: cancel_at
 - name: cancel_at_period_end
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: cancel_at_period_end
 - name: ended_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: ended_at
 - name: ended_reason
   type: STRING
   mode: NULLABLE
@@ -65,9 +101,15 @@ fields:
 - name: fxa_uid
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: fxa_uid
 - name: country
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: country
 - name: country_name
   type: STRING
   mode: NULLABLE
@@ -76,27 +118,51 @@ fields:
 - name: provider
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: provider
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_amount
 - name: plan_currency
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_currency
 - name: plan_interval
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_interval
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_interval_count
 - name: plan_interval_timezone
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_interval_timezone
 - name: product_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: product_id
 - name: product_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: product_name
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
@@ -110,18 +176,33 @@ fields:
 - name: has_refunds
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: has_refunds
 - name: has_fraudulent_charges
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: has_fraudulent_charges
 - name: has_fraudulent_charge_refunds
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: has_fraudulent_charge_refunds
 - name: promotion_codes
   type: STRING
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: promotion_codes
 - name: promotion_discounts_amount
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: promotion_discounts_amount
 - name: customer_start_date
   type: TIMESTAMP
   mode: NULLABLE

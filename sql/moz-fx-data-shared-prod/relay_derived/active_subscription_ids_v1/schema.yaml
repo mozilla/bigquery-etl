@@ -2,6 +2,10 @@ fields:
 - name: active_date
   type: DATE
   mode: NULLABLE
+  description: The date on which the subscriptions are considered active. When the ETL is run without a
+    specific date parameter, this defaults to records from 7 days before the current date.
 - name: subscription_id
   type: STRING
   mode: NULLABLE
+  description: The unique Stripe subscription identifier for an active Firefox Relay subscription on the
+    given active_date. Values follow the Stripe subscription ID format (e.g., sub_...).

@@ -1,4 +1,8 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +173,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +193,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -351,7 +355,214 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    description: Boolean event extras.
+    fields:
+    - name: legacy_user
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True for users who signed up before data broker scanning was released
+        to the welcome flow.
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    description: Quantity event extras.
+    fields:
+    - name: breach_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Users who run the new free scan will be notified of breaches found
+        during the scan.
+    - name: broker_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Users who run the new free scan will be notified of breaches found
+        during the scan.
+    - name: legacy_breach_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Legacy users of Monitor may already have breaches reported on their
+        dashboard, without having run the new free scan.
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: automated_removal_period
+      type: STRING
+      mode: NULLABLE
+      description: The time period since the first automated removal for the user.
+        [initial, 3-months, 6-months, 12-months]
+    - name: banner_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the banner that was shown, or some way to identify where
+        on the page the interaction is located.
+    - name: button_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The ID of the button that was clicked on, or some way to identify where
+        on the page the interaction is located.
+
+        * The ID of the button that entered the viewport, or some way to identify
+        where on the page the interaction is located.'
+    - name: dashboard_tab
+      type: STRING
+      mode: NULLABLE
+      description: Either [action_needed, fixed] depending on where the user is in
+        their dashboard.
+    - name: experiment_branch
+      type: STRING
+      mode: NULLABLE
+      description: The experiment branch the user is on. [control, treatment]
+    - name: field_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the field that was clicked on, or some way to identify
+        where on the page the interaction is located.
+    - name: flow_id
+      type: STRING
+      mode: NULLABLE
+      description: A randomly generated unique identifier for following user flows
+        within the FxA system.
+    - name: id
+      type: STRING
+      mode: NULLABLE
+      description: An identifier of the element clicked. For automatic collection,
+        its value is the element's `data-glean-id` data attribute value.
+    - name: label
+      type: STRING
+      mode: NULLABLE
+      description: The label of the element clicked. For automatic collection, its
+        value is the element's `data-glean-label` data attribute value.
+    - name: last_scan_date
+      type: STRING
+      mode: NULLABLE
+      description: The date on which the user had their last data broker scan. [YYYYMMDD]
+    - name: link_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the link that was clicked on, or some way to identify
+        where on the page the interaction is located.
+    - name: nimbus_app_id
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus application ID
+    - name: nimbus_branch
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus branch
+    - name: nimbus_experiment
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus experiment name
+    - name: nimbus_experiment_type
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus experiment type
+    - name: nimbus_is_preview
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus preview mode enabled
+    - name: nimbus_user_id
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus user ID
+    - name: path
+      type: STRING
+      mode: NULLABLE
+      description: The path of the page.
+    - name: plan_tier
+      type: STRING
+      mode: NULLABLE
+      description: Which tier of plan the user is on [Free, Plus]
+    - name: popup_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the popup that was shown, or some way to identify where
+        on the page the interaction is located.
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The referring URL, if any.
+
+        * The referrer of the page where the element was clicked.
+
+        * The page referrer.'
+    - name: response_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the survey response option.
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+      description: "An ID that allows us to track \u201Csessions\u201D of the user\
+        \ experience within the product."
+    - name: survey_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The ID of the survey, or some way to identify which survey was responded
+        to.
+
+        * The ID of the survey, or some way to identify which survey that has been
+        dismissed by a user.
+
+        * The ID of the survey, or some way to identify which survey entered the viewport.'
+    - name: title
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The title of the page where the element was clicked.
+
+        * The page title.'
+    - name: type
+      type: STRING
+      mode: NULLABLE
+      description: The type of the element clicked. For automatic collection, its
+        value is the element's `data-glean-type` data attribute value.
+    - name: url
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The URL of the page where the element was clicked.
+
+        * The page URL.'
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+      description: Mozilla accounts user ID.
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+      description: Attribution campaign.
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+      description: Attribution content.
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+      description: Attribution medium.
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+      description: Attribution source.
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE
+      description: Attribution term.

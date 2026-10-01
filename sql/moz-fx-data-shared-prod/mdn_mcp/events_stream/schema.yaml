@@ -1,4 +1,8 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +173,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +193,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -351,7 +355,89 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    description: Quantity event extras.
+    fields:
+    - name: result_count
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of results returned.
+    - name: top_score
+      type: INTEGER
+      mode: NULLABLE
+      description: The search relevancy score of the top result.
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+      description: An identifier of the element clicked. For automatic collection,
+        its value is the element's `data-glean-id` data attribute value.
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: The BCD key that was fetched.
+    - name: label
+      type: STRING
+      mode: NULLABLE
+      description: The label of the element clicked. For automatic collection, its
+        value is the element's `data-glean-label` data attribute value.
+    - name: path
+      type: STRING
+      mode: NULLABLE
+      description: Normalised path of the page fetched from MDN.
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: A hard-coded reason the error occurred.
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The referrer of the page where the element was clicked.
+
+        * The page referrer.'
+    - name: title
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The title of the page where the element was clicked.
+
+        * The page title.'
+    - name: tool
+      type: STRING
+      mode: NULLABLE
+      description: The MCP tool where the error occurred.
+    - name: top_path
+      type: STRING
+      mode: NULLABLE
+      description: The path to the top result.
+    - name: type
+      type: STRING
+      mode: NULLABLE
+      description: The type of the element clicked. For automatic collection, its
+        value is the element's `data-glean-type` data attribute value.
+    - name: url
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The URL of the page where the element was clicked.
+
+        * The page URL.'
+    - name: user_agent
+      type: STRING
+      mode: NULLABLE
+      description: The HTTP User-Agent of the AI harness making the request.

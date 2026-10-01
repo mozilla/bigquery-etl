@@ -1,4 +1,8 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +173,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +193,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -351,7 +355,154 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    description: Boolean event extras.
+    fields:
+    - name: blocked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: The state of the "Block AI Enhancements" toggle.
+    - name: enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether launch on login was turned on (true) or off (false).
+    - name: result_is_default
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Whether Firefox is the default PDF handler when sampled after the attemptWaitTimeMs
+        delay.
+
+        * Whether Firefox is the default PDF handler when sampled.
+
+        * Whether Firefox is the default handler for `protocol` when sampled after
+        the attemptWaitTimeMs delay.'
+    - name: sampled_in
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this session is sampled in (true) or sampled out (false).
+        Events from sampled-out sessions are suppressed; this field lets analysts
+        validate that the observed sampling rate matches the configured rate.
+    - name: success
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Whether the API call for the chosen method returned without throwing. For
+        user_choice this means the registry write completed; for open_with and settings
+        it only means the launcher was invoked, not that the user picked Firefox.
+
+        * Whether the API call for the chosen method returned without throwing. For
+        user_choice this means the registry write completed; for open_with and settings
+        it only means the launcher was invoked, not that the user picked Firefox.
+        For launch_services this means macOS reported the default-application change
+        succeeded (i.e. the user accepted any consent prompt).
+
+        * Whether the API call for the chosen method returned without throwing. This
+        only means the launcher was invoked, not that the user picked Firefox.'
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    description: Quantity event extras.
+    fields:
+    - name: session_seq
+      type: INTEGER
+      mode: NULLABLE
+      description: The session sequence number (monotonically increasing across restarts).
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: action
+      type: STRING
+      mode: NULLABLE
+      description: The `action` of the system (chrome privileged) alert that Firefox
+        was launched to complete.
+    - name: feature
+      type: STRING
+      mode: NULLABLE
+      description: The AI Control feature identifier.
+    - name: id
+      type: STRING
+      mode: NULLABLE
+      description: A unique identifier for the crash.
+    - name: method
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Which method was last attempted. One of "user_choice" (UserChoice registry
+        write), "open_with" (IOpenWithLauncher API), or "settings" (ms-settings:defaultapps
+        modern settings dialog).
+
+        * Which method was last attempted. On Windows, one of "user_choice" (UserChoice
+        registry write), "open_with" (IOpenWithLauncher API), or "settings" (ms-settings:defaultapps
+        modern settings dialog). On macOS, "launch_services" (NSWorkspace setDefaultApplication).
+
+        * Which method was last attempted. One of "open_with" (IOpenWithLauncher API)
+        or "settings" (ms-settings:defaultapps modern settings dialog).'
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The `name` of the system (chrome privileged) alert that Firefox
+        was launched to complete.
+    - name: protocol
+      type: STRING
+      mode: NULLABLE
+      description: The protocol that was targeted (e.g. "https", "mailto").
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The reason why the crash failed to be submitted.
+
+        * Why the session ended. When in MANUAL mode, the reason can optionally be
+        set by the application. Possible values set by Glean in AUTO or LIFECYCLE
+        session management modes include: - "inactive": client went to background
+        (LIFECYCLE mode) - "replaced": a new session was started while one was already
+        active - "timeout": AUTO mode inactivity timeout expired - "abnormal": session
+        ended due to app crash/force-close - "abnormal_inactive": session was inactive
+        at time of crash'
+    - name: result
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the attempt to pin, values include: - `success_pinned`:
+        The pin request was affirmed by the user. - `success_rejected`: The pin request
+        was rejected by the user or system. - `success_fire_and_forget`: The pin request
+        was submitted, but its result is unknown. - `error_get_aumid`: Failed to get
+        the Application User Model ID. - `error_set_aumid`: Failed to set the Application
+        User Model ID. - `error_get_taskbar_manager`: Failed to get the TaskbarManager.
+        - `error_schedule_request_pin`: Failed to schedule the pin request. - `error_request_pin`:
+        The pin request failed.'
+    - name: selection
+      type: STRING
+      mode: NULLABLE
+      description: The state of the "Block AI Enhancements" dropdown.
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The unique UUID of the ended session.
+
+        * The unique UUID of the started session.'
+    - name: session_start_time
+      type: STRING
+      mode: NULLABLE
+      description: Wall-clock timestamp at session start (RFC 3339). Auxiliary only;
+        per-event timestamps remain authoritative for time-based analysis.
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: The `value` of the event. Mirrors to the Legacy Telemetry event's
+        `value` parameter.

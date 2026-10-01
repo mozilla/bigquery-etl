@@ -1,4 +1,8 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +173,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +193,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -351,7 +355,154 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: action
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The user action taken. Present when step is view (to distinguish upgrade
+        checkout view), engage, submit, or result. Allowed values: offer, upgrade,
+        keep_subscription, cancel_subscription.
+
+        * The user action taken. Only present when step is engage, submit, or result.
+        Allowed values: redeem_coupon, cancel_subscription, stay_subscribed, remain_canceled.'
+    - name: eligibility_status
+      type: STRING
+      mode: NULLABLE
+      description: 'Outcome of the retention eligibility evaluation for the current
+        flow intent. Indicates which intervention bucket the user qualified for and
+        is expected to align with the rendered screen. Allowed values: stay, cancel,
+        offer, not_eligible.'
+    - name: entrypoint
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Where the flow was entered from. Allowed values: internal_nav, subscription-management.
+        Empty string when the source is unidentified.
+
+        * Where the page was reached from. Allowed values: email, internal_nav, subscription-management.
+        Empty string when the source is unidentified.
+
+        * Where the flow was entered from. Allowed values: email, internal_nav, subscription-management.
+        Empty string when the source is unidentified.'
+    - name: error_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Specific reason for failure. Only present when step=result and outcome=error.
+        Unexpected_exception means there may have been a network failure, validation
+        error, server crash, etc. Allowed values: - subscription_not_found - customer_mismatch
+        - subscription_not_active - stripe_price_id_not_found - already_canceling_at_period_end
+        - current_interval_not_found - offering_id_not_found - no_cancel_interstitial_offer_found
+        - no_upgrade_plan_found - not_eligible_for_upgrade_interval - general_error
+        - operation_denied - unexpected_exception
+
+        * Specific reason for failure. Unexpected_exception means there may have been
+        a network failure, validation error, server crash, etc. Allowed values: -
+        customer_mismatch - discount_already_applied - general_error - no_churn_intervention_found
+        - redemption_limit_exceeded - subscription_not_active - subscription_not_found
+        - subscription_still_active - operation_denied - unexpected_exception'
+    - name: flow_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Type of retention flow. Allowed values: cancel, stay.'
+    - name: id
+      type: STRING
+      mode: NULLABLE
+      description: An identifier of the element clicked. For automatic collection,
+        its value is the element's `data-glean-id` data attribute value.
+    - name: interval
+      type: STRING
+      mode: NULLABLE
+      description: Billing interval for the subscription (daily | weekly | monthly
+        | halfyearly | yearly)
+    - name: label
+      type: STRING
+      mode: NULLABLE
+      description: The label of the element clicked. For automatic collection, its
+        value is the element's `data-glean-label` data attribute value.
+    - name: nimbus_user_id
+      type: STRING
+      mode: NULLABLE
+      description: Nimbus user ID
+    - name: offering_id
+      type: STRING
+      mode: NULLABLE
+      description: The API id of the specific subscription offering.
+    - name: outcome
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The result of the flow. Only present when step=result. Allowed values: upgrade_success,
+        customer_canceled, error.
+
+        * The category of the result. Allowed values: redeem_success, customer_canceled,
+        stay_subscribed_success, error.'
+    - name: page_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The page reached by the user. Allowed values: - management - payment_method'
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The referrer of the page where the element was clicked.
+
+        * The page referrer.'
+    - name: step
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Stage in the user journey lifecycle. Allowed values: - view - engage - submit
+        - result (final state; includes outcome and optional error_reason)
+
+        * Stage in the user journey lifecycle. Allowed values: view, engage, submit,
+        result.'
+    - name: title
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The title of the page where the element was clicked.
+
+        * The page title.'
+    - name: type
+      type: STRING
+      mode: NULLABLE
+      description: The type of the element clicked. For automatic collection, its
+        value is the element's `data-glean-type` data attribute value.
+    - name: url
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The URL of the page where the element was clicked.
+
+        * The page URL.'
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+      description: UTM campaign (if present).
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+      description: UTM medium (if present).
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+      description: UTM source (if present).

@@ -1,4 +1,8 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +173,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +193,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -238,11 +242,6 @@ fields:
       type: STRING
       mode: NULLABLE
     description: Parsed components of the client's user agent string
-- name: metrics
-  type: JSON
-  mode: NULLABLE
-  description: Metrics recorded along with the event, grouped by type and stored as
-    a JSON object.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -293,6 +292,11 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: metrics
+  type: JSON
+  mode: NULLABLE
+  description: Metrics recorded along with the event, grouped by type and stored as
+    a JSON object.
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
@@ -351,7 +355,3 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
-  mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).

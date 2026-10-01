@@ -1,4 +1,12 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+- name: normalized_app_id
+  type: STRING
+  mode: NULLABLE
+  description: The app ID with any dashes or dots replaced with underscores.
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -351,7 +359,196 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    description: Boolean event extras.
+    fields:
+    - name: corrupt
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether or not the database was corrupted when we tried to load
+        it. This field may be empty, e.g., if the database could not be loaded.
+    - name: is_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The new setting value, true for ON, false for OFF
+
+        * The new setting for tracker, true for ON, false for OFF
+
+        * The new setting for ETP, true for ON, false for OFF'
+    - name: sampled_in
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this session is sampled in (true) or sampled out (false).
+        Events from sampled-out sessions are suppressed; this field lets analysts
+        validate that the observed sampling rate matches the configured rate.
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    description: Quantity event extras.
+    fields:
+    - name: current_item
+      type: INTEGER
+      mode: NULLABLE
+      description: The curent displayed item position.
+    - name: from_version
+      type: INTEGER
+      mode: NULLABLE
+      description: The original version of the database. A value of 0 indicates that
+        the db_version was not set in the meta store.
+    - name: initial_version
+      type: INTEGER
+      mode: NULLABLE
+      description: The version of the database on disk at load time. This field may
+        be empty, e.g., if we cannot create a database.
+    - name: migrated_version
+      type: INTEGER
+      mode: NULLABLE
+      description: The version of the database that was migrated to. This field will
+        be empty if no migration(s) occurred.
+    - name: session_seq
+      type: INTEGER
+      mode: NULLABLE
+      description: The session sequence number (monotonically increasing across restarts).
+    - name: to_version
+      type: INTEGER
+      mode: NULLABLE
+      description: The target version of the migration that was performed.
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The branch slug/identifier that was randomly chosen
+
+        * The branch slug/identifier that was randomly chosen (if the client is enrolled)
+
+        * If reason == "invalid-branch", this is the invalid branch.'
+    - name: card_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Presented onboarding card (welcome / default browser / widget)
+
+        * The card presented when the onboarding was closed'
+    - name: conflict_slug
+      type: STRING
+      mode: NULLABLE
+      description: If the enrollment hit a feature conflict, the slug of the conflicting
+        experiment/rollout
+    - name: engine_name
+      type: STRING
+      mode: NULLABLE
+      description: The name of the engine used to perform the search.
+    - name: error
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * If an error occured during the initial load of the database this field will
+        contain the relevant error code.
+
+        * If an error occurred during the migration, the relevant error code.'
+    - name: error_string
+      type: STRING
+      mode: NULLABLE
+      description: If the enrollment resulted in an error, the associated error string
+    - name: experiment
+      type: STRING
+      mode: NULLABLE
+      description: The slug/unique identifier of the experiment
+    - name: experiment_type
+      type: STRING
+      mode: NULLABLE
+      description: Indicates whether this is an experiment or rollout
+    - name: feature_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The identifier of the feature that is recording an exposure
+
+        * The identifier of the feature that is has a malformed configuration
+
+        * The feature id of the configuration that was requested'
+    - name: item
+      type: STRING
+      mode: NULLABLE
+      description: 'A string containing the name of the item the user tapped: settings,
+        open_in_firefox, open_in_chrome, open_in_default_browser, share, copy_url,
+        desktop_view_off, desktop_view_on, find_in_page, add_to_shortcuts, remove_from_shortcuts'
+    - name: migration_error
+      type: STRING
+      mode: NULLABLE
+      description: If an error occurred during the initial load of the database this
+        field will contain the relevant error code.
+    - name: part_id
+      type: STRING
+      mode: NULLABLE
+      description: The identifier of the feature-specific part that is malformed.
+        e.g. the card or message id.
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The reason the client is in the noted status
+
+        * The reason for the enrollment failure
+
+        * The reason for the unenrollment failure
+
+        * Why the session ended. When in MANUAL mode, the reason can optionally be
+        set by the application. Possible values set by Glean in AUTO or LIFECYCLE
+        session management modes include: - "inactive": client went to background
+        (LIFECYCLE mode) - "replaced": a new session was started while one was already
+        active - "timeout": AUTO mode inactivity timeout expired - "abnormal": session
+        ended due to app crash/force-close - "abnormal_inactive": session was inactive
+        at time of crash
+
+        * The reason the migration occurred. This is one of: - "upgrade" - "invalid_version"
+
+        * The reason for the unenrollment'
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The unique UUID of the ended session.
+
+        * The unique UUID of the started session.'
+    - name: session_start_time
+      type: STRING
+      mode: NULLABLE
+      description: Wall-clock timestamp at session start (RFC 3339). Auxiliary only;
+        per-event timestamps remain authoritative for time-based analysis.
+    - name: slug
+      type: STRING
+      mode: NULLABLE
+      description: The slug/unique identifier of the experiment
+    - name: source_of_change
+      type: STRING
+      mode: NULLABLE
+      description: The source of interaction, "Panel" or "Settings"
+    - name: status
+      type: STRING
+      mode: NULLABLE
+      description: The status of this enrollment
+    - name: tracker_changed
+      type: STRING
+      mode: NULLABLE
+      description: The tracker changed, "Advertising", "Analytics", "Social", "Content"

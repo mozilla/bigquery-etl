@@ -1,4 +1,12 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+- name: normalized_app_id
+  type: STRING
+  mode: NULLABLE
+  description: The app ID with any dashes or dots replaced with underscores.
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +177,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +197,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -351,7 +359,69 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    description: Quantity event extras.
+    fields:
+    - name: time_saved
+      type: INTEGER
+      mode: NULLABLE
+      description: time saved by running the template
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: entity_ref
+      type: STRING
+      mode: NULLABLE
+      description: template ref
+    - name: id
+      type: STRING
+      mode: NULLABLE
+      description: An identifier of the element clicked. For automatic collection,
+        its value is the element's `data-glean-id` data attribute value.
+    - name: label
+      type: STRING
+      mode: NULLABLE
+      description: The label of the element clicked. For automatic collection, its
+        value is the element's `data-glean-label` data attribute value.
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: Name of software being created
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The referrer of the page where the element was clicked.
+
+        * The page referrer.'
+    - name: title
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The title of the page where the element was clicked.
+
+        * The page title.'
+    - name: type
+      type: STRING
+      mode: NULLABLE
+      description: The type of the element clicked. For automatic collection, its
+        value is the element's `data-glean-type` data attribute value.
+    - name: url
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The URL of the page where the element was clicked.
+
+        * The page URL.'

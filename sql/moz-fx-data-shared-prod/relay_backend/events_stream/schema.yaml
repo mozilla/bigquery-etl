@@ -1,4 +1,8 @@
 fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -169,6 +173,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -181,14 +193,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -238,11 +242,6 @@ fields:
       type: STRING
       mode: NULLABLE
     description: Parsed components of the client's user agent string
-- name: metrics
-  type: JSON
-  mode: NULLABLE
-  description: Metrics recorded along with the event, grouped by type and stored as
-    a JSON object.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -351,7 +350,97 @@ fields:
   mode: NULLABLE
   description: Which event number this was in the original document, in chronological
     order.
-- name: event_id
-  type: STRING
+- name: extras
+  type: RECORD
   mode: NULLABLE
-  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).
+  description: Event extras, grouped by type.
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    description: Boolean event extras.
+    fields:
+    - name: created_by_api
+      type: BOOLEAN
+      mode: NULLABLE
+      description: The mask was created via the API, rather than an incoming email
+    - name: has_extension
+      type: BOOLEAN
+      mode: NULLABLE
+      description: The user has the Relay Add-on
+    - name: has_website
+      type: BOOLEAN
+      mode: NULLABLE
+      description: The mask was created by the Add-on or integration on a website
+    - name: is_random_mask
+      type: BOOLEAN
+      mode: NULLABLE
+      description: The mask is a random mask, instead of a domain mask
+    - name: is_reply
+      type: BOOLEAN
+      mode: NULLABLE
+      description: The email is a reply from the Relay user
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    description: Quantity event extras.
+    fields:
+    - name: date_got_extension
+      type: INTEGER
+      mode: NULLABLE
+      description: Timestamp for adding Relay Add-on, seconds since epoch, -1 if not
+        used
+    - name: date_joined_premium
+      type: INTEGER
+      mode: NULLABLE
+      description: Timestamp for starting premium_status subscription, seconds since
+        epoch, -1 if not subscribed
+    - name: date_joined_relay
+      type: INTEGER
+      mode: NULLABLE
+      description: Timestamp for joining Relay, seconds since epoch
+    - name: n_deleted_domain_masks
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of deleted domain masks
+    - name: n_deleted_random_masks
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of deleted random masks
+    - name: n_domain_masks
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of premium subdomain masks
+    - name: n_random_masks
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of random masks
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    description: String event extras.
+    fields:
+    - name: endpoint
+      type: STRING
+      mode: NULLABLE
+      description: The name of the endpoint accessed
+    - name: fxa_id
+      type: STRING
+      mode: NULLABLE
+      description: Mozilla accounts user ID
+    - name: method
+      type: STRING
+      mode: NULLABLE
+      description: HTTP method used
+    - name: platform
+      type: STRING
+      mode: NULLABLE
+      description: Relay client platform
+    - name: premium_status
+      type: STRING
+      mode: NULLABLE
+      description: Subscription type and term
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: Code describing why the email was blocked

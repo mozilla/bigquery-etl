@@ -8,6 +8,9 @@ fields:
 - name: original_subscription_id
   type: STRING
   mode: NULLABLE
+  description: The original Stripe subscription ID before any plan changes created a new sequence record.
+    Populated only when the current row represents a continuation (plan change) of a prior subscription;
+    null for the initial subscription record.
 - name: plan_id
   type: STRING
   mode: NULLABLE
@@ -23,9 +26,15 @@ fields:
 - name: original_subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: The start date of the original subscription prior to any plan changes. For records that result
+    from a plan change, this reflects the start of the first subscription in the chain; null if the subscription
+    began during an active trial.
 - name: subscription_start_reason
   type: STRING
   mode: NULLABLE
+  description: The reason this subscription period started. Values include 'New' (first-time subscriber),
+    'Resurrected' (returning subscriber), 'Plan Change' (started due to a plan switch), and 'Converted Trial'
+    (converted from a free trial). Null when the subscription start date is null.
 - name: trial_start
   type: TIMESTAMP
   mode: NULLABLE
@@ -50,6 +59,9 @@ fields:
 - name: ended_reason
   type: STRING
   mode: NULLABLE
+  description: The reason the subscription ended. Values include 'Plan Change' (when a plan change caused
+    the record to close), 'Cancelled by Customer' (when the customer explicitly cancelled or cancel-at-period-end
+    was set), and 'Payment Failed' (for involuntary churn). Null for active subscriptions.
 - name: fxa_uid
   type: STRING
   mode: NULLABLE
@@ -59,6 +71,8 @@ fields:
 - name: country_name
   type: STRING
   mode: NULLABLE
+  description: The standardized full country name corresponding to the subscriber's billing country code,
+    derived from the static third-party country name lookup table.
 - name: provider
   type: STRING
   mode: NULLABLE
@@ -86,9 +100,13 @@ fields:
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
+  description: A human-readable string identifying the pricing plan, formed by concatenating the billing
+    interval count, interval unit, currency, and price amount (e.g., '1-year-usd-11.88').
 - name: billing_grace_period
   type: INTERVAL
   mode: NULLABLE
+  description: The grace period interval applied after a failed payment before the subscription is considered
+    lapsed. Set to 7 days for both Stripe and PayPal (as PayPal is billed through Stripe).
 - name: has_refunds
   type: BOOLEAN
   mode: NULLABLE
@@ -107,18 +125,32 @@ fields:
 - name: customer_start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: The earliest subscription start date across all subscriptions for this customer, representing
+    when the customer first became a paying subscriber.
 - name: end_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: The effective end date of the subscription; the `ended_at` timestamp if the subscription
+    has ended, otherwise the current date for active subscriptions.
 - name: months_retained
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months the subscriber was retained for this subscription,
+    calculated from `subscription_start_date` to `end_date` using the billing grace period.
 - name: original_subscription_months_retained
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months retained since the original subscription start date
+    (or the current subscription start if no original exists), calculated to `end_date` using the billing
+    grace period. Spans across plan changes.
 - name: current_months_since_subscription_start
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months elapsed from this subscription's start date to the
+    current date, accounting for the billing grace period.
 - name: current_months_since_original_subscription_start
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months elapsed from the original subscription start date (or
+    current subscription start if no original exists) to the current date, accounting for the billing grace
+    period.

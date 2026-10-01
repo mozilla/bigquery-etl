@@ -14,10 +14,71 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: "The country of the client on this day, one value per client-day: the country on the most rows of that
-      client-day in search_clients_daily_glean_v1, ties to the country whose latest row has the latest
-      ping_end_time, then to the country code. Mirrors the one country per client-day v8 carries. See row_country
-      for the value on the row itself."
+  description: "The country of the client on this day, one value per client-day: the country on the most rows of
+      that client-day in search_clients_daily_glean_v1, ties to the country whose latest row has the
+      latest ping_end_time, then to the country code. Mirrors the one country per client-day in
+      search_clients_daily_v8. See row_country for the value on the row itself."
+- name: row_country
+  type: STRING
+  mode: NULLABLE
+  description: "The country the client table carried on the row itself, which is the country of the last report
+      behind that row. Differs from country for the under 1% of client-days where the client's location
+      changed during the day, typically a VPN toggling."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: distribution_id
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: locale
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: app_version
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: os
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: os_version
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: channel
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: normalized_channel
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: is_default_browser
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: policies_is_enterprise
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_search_engine_display_name
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_private_search_engine_display_name
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: home_region
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and null for any other. Matches
+      substrings of the client-day's resolved default_search_engine_provider_id, the way
+      search_aggregates_v8 does on default_search_engine. Null where the provider id is null or names
+      another engine."
 - name: client_count
   type: INTEGER
   mode: NULLABLE
@@ -32,7 +93,9 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: sap_counts_total
-  append_description: " Summed over the client table rows in this row's dimensions."
+  new_description: "The number of search access point events for this key. This is a count of events, not a sum of a
+      counter, so it does not reproduce the sap column of search_aggregates_v8. Zero, not null, on a row
+      with no SAP activity. Summed over the client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_counts_total
@@ -92,7 +155,7 @@ fields:
   new_description: "Tagged searches from the browser.search.content Glean labeled counter, excluding follow-on searches, which the
       counter labels as a separate tag type and counter_searches_tagged_follow_on_sum carries. The two ads families
       do not make that split and include follow-on. Zero, not null, where the metrics ping carried nothing for this
-      key. It is the counterpart of v8's tagged_sap; serp_searches_tagged_count measures the same searches from
+      key. It is the counterpart of tagged_sap in search_aggregates_v8; serp_searches_tagged_count measures the same searches from
       SERP impressions and includes follow-on. Summed over the client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
@@ -103,7 +166,10 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_organic_sum
   new_name: counter_searches_organic_sum
-  append_description: " Summed over the client table rows in this row's dimensions."
+  new_description: "Organic, meaning non-partner, in-content searches from the browser.search.content Glean labeled
+      counter. Runs below the organic column of search_aggregates_v8 by a margin that is not yet
+      root-caused, so prefer search_aggregates_v8 for organic levels. Zero, not null, where the metrics
+      ping carried nothing for this key. Summed over the client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_with_ads_tagged_sum

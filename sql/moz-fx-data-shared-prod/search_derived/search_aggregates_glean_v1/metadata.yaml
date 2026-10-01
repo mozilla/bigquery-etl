@@ -7,7 +7,7 @@ description: |
   Carries both measurement families of the client table. The `serp_` columns and
   `sap_counts_total` come from SAP and SERP events. The seven `counter_` columns come from the
   browser.search.{content,withads,adclicks} Glean labeled counters in the metrics ping, and are
-  the v8-comparable series. They are the client table's `legacy_` columns under a new prefix,
+  the series comparable to `search_aggregates_v8`. They are the client table's `legacy_` columns under a new prefix,
   which names where the number comes from rather than a mechanism, as only the ad click
   counters are counted from network activity.
 
@@ -22,17 +22,23 @@ description: |
   client, engine and source, so they are correct summed across `partner_code` and not when
   sliced by it.
 
+  Every other client dimension, from `is_default_browser` and `app_version` to `distribution_id`,
+  is likewise resolved to one value per client-day. A client's rows on one day can disagree,
+  because the client table builds each row from whichever of its SERP, SAP and metrics streams
+  has activity, and `is_default_browser` is only filled on the event-backed side. The resolved
+  value comes from the event-backed side first, then the latest `ping_end_time`.
+
   `client_count` is `COUNT(DISTINCT client_id)` within the row's dimensions. A client can appear
   in several rows, so it cannot be summed across rows to give a number of clients.
 
-  v8's `is_acer_cohort` is not carried. It joined `search.acer_cohort` on the legacy
+  `search_aggregates_v8`'s `is_acer_cohort` is not carried. It joined `search.acer_cohort` on the legacy
   `client_id`, which this pipeline does not do. `distribution_id` is a dimension here, so
   Acer distributions can still be filtered on it.
 
   `policies_is_enterprise` is only populated from Firefox 144, and `has_adblocker_addon` is
   unreliable before about 2025-06, so `clients_with_adblocker_addon` is too.
 
-  A given day's partition here is produced a day later than v8's partition for the same day,
+  A given day's partition here is produced a day later than the `search_aggregates_v8` partition for the same day,
   because the client table it reads is.
 owners:
 - lmcfall@mozilla.com

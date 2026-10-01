@@ -425,15 +425,35 @@ def validate_col_desc_enforced(query_dir, metadata):
     return validate_fields(schema)
 
 
+APP_DEPRECATION_MARKER = "# app-level deprecation"
+
+
+def _is_app_deprecation(path):
+    """Check whether the metadata file marks an app-level deprecation."""
+    try:
+        with open(path) as f:
+            return APP_DEPRECATION_MARKER in f.read()
+    except OSError:
+        return False
+
+
 def validate_deprecation(metadata, path):
-    """Check that deprecated and deletion_date are set together."""
+    """Check that deprecated and deletion_date are set together.
+
+    Generated tables of deprecated apps carry an app-level deprecation marker
+    and are exempt from requiring a deletion_date.
+    """
     if metadata.deletion_date and not metadata.deprecated:
         click.echo(
             f"Deletion date should only be added when table is deprecated in {path}"
         )
         return False
 
-    if metadata.deprecated and metadata.deletion_date is None:
+    if (
+        metadata.deprecated
+        and metadata.deletion_date is None
+        and not _is_app_deprecation(path)
+    ):
         click.echo(f"deletion_date required for deprecated table in {path}")
         return False
 

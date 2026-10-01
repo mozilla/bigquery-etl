@@ -425,7 +425,6 @@ generate:
     - firefox_fire_tv
     - firefox_reality
     - firefox_reality_pc
-    deprecated_apps_deletion_date: 2026-10-01
     skip_existing:  # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql

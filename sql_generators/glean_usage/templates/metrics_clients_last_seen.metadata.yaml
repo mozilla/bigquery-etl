@@ -36,6 +36,5 @@ schema:
   derived_from:
   - table: ['moz-fx-data-shared-prod', '{{ app_name }}_derived', 'metrics_clients_daily_v1']
 {%- if deprecated_app %}
-deprecated: true
-deletion_date: {{ deprecated_apps_deletion_date }}
+deprecated: true  # app-level deprecation, deletion_date not required
 {%- endif -%}

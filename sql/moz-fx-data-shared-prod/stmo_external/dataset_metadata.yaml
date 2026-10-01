@@ -4,8 +4,8 @@ description: |-
   excluding columns that contain credentials or query result data.
 
   Tables are mozilla-confidential and exclude fields that are potentially sensitive.
-dataset_base_acl: restricted
-user_facing: false
+dataset_base_acl: derived
+user_facing: true
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -2,6 +2,9 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the Firefox application (e.g., 'Firefox Desktop',
+    'Fenix', 'Firefox iOS'). Derived from the app_name field in the source active
+    users tables.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -13,21 +16,39 @@ fields:
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The optional attribution campaign associated with the Firefox installation,
+    equivalent to the UTM campaign parameter. Sourced from Desktop clients only; null
+    for Mobile rows.
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: The optional attribution content parameter associated with the Firefox
+    installation, equivalent to the UTM content parameter. Sourced from Desktop clients
+    only; null for Mobile rows.
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: The name or identifier of the download-funnel experiment through which
+    the Firefox Desktop installation was attributed (e.g., "download-privacy", "download-as-default");
+    null or "(not set)" when no experiment attribution is present.
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The marketing medium through which the Firefox Desktop installation
+    was attributed (equivalent to UTM medium), such as "referral", "paidsearch", or
+    "(direct)"; null when attribution data is unavailable.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The referral source through which the Firefox Desktop installation
+    was attributed (equivalent to UTM source), such as "www.google.com" or "www.bing.com";
+    null when attribution source data is unavailable.
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: The name or identifier of the variation cohort within the attributed
+    download-funnel experiment (e.g., "treatment", "control"); null or "(not set)"
+    when no variation attribution is present.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -36,6 +57,7 @@ fields:
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The model of the device the application is running on.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -56,36 +78,66 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: The user-visible version string of the operating system (e.g., '10.0',
+    '15', '8.1.0'). If version detection fails, this may be set to 'Unknown'.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
+  description: The Adjust attribution ad group associated with the mobile client's
+    acquisition. Only populated for Mobile rows; null for Desktop.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
+  description: The Adjust attribution campaign name associated with the mobile client's
+    acquisition. Only populated for Mobile rows; null for Desktop.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
+  description: The Adjust attribution creative identifier associated with the mobile
+    client's acquisition (e.g., 'Display', 'Search GoogleSearch'). Only populated
+    for Mobile rows; null for Desktop.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: The Adjust attribution network through which the mobile client was
+    acquired (e.g., 'Google Ads ACI', 'Organic', 'Facebook Installs'). Only populated
+    for Mobile rows; null for Desktop.
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store install referrer campaign parameter for the mobile
+    client (e.g., a campaign identifier or URL-encoded campaign string). Only populated
+    for Mobile rows; null for Desktop.
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store install referrer medium parameter for the mobile
+    client (e.g., 'organic', 'preload', 'referral'). Only populated for Mobile rows;
+    null for Desktop.
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store install referrer source parameter for the mobile
+    client (e.g., 'google-play', 'eea-browser-choice', 'apps.facebook.com'). Only
+    populated for Mobile rows; null for Desktop.
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store install referrer content parameter for the mobile
+    client, often an RTA (Return-To-App) token or other content identifier. Only populated
+    for Mobile rows; null for Desktop.
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
+  description: The Google Play Store install referrer term (keyword) parameter for
+    the mobile client, typically the search term that led to the install. Only populated
+    for Mobile rows; null for Desktop.
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
+  description: The raw Google Play Store install referrer response string for the
+    mobile client, containing URL-encoded UTM parameters (e.g., 'utm_source=google-play&utm_medium=organic').
+    Only populated for Mobile rows; null for Desktop.
 - name: cohort_date_week
   type: DATE
   mode: NULLABLE
@@ -97,5 +149,6 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
-    the install source could not be determined.
+  description: The source through which the application was installed, such as 'com.android.vending'
+    for the Google Play Store. A null value indicates the install source could not
+    be determined.

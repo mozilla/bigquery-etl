@@ -34,9 +34,11 @@ fields:
   field: subscription
   new_description: |-
     The service subscription as it ostensibly was after the event occurred.
+  force_nullable_mode: true
 - !include-field
   table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
   field: subscription
   new_name: old_subscription
   new_description: |-
     The service subscription as it ostensibly was before the event occurred.
+  force_nullable_mode: true

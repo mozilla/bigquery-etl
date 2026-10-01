@@ -1,2 +1,3 @@
 fields: !include-fields
   table: moz-fx-data-shared-prod.glean_telemetry_derived.rolling_cohorts_v1
+  force_nullable_mode: true

@@ -9,6 +9,7 @@ description: |-
   just that campaign on that date.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik@mozilla.com

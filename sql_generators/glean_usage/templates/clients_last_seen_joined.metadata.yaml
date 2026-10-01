@@ -36,4 +36,5 @@ bigquery:
       - sample_id
 {%- if deprecated_app %}
 deprecated: true
+deletion_date: {{ deprecated_apps_deletion_date }}
 {%- endif -%}

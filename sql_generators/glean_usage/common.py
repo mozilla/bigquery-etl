@@ -7,10 +7,10 @@ import re
 from collections import namedtuple
 from functools import cache
 from pathlib import Path
+from typing import List, Set
 
 import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
@@ -35,6 +35,9 @@ BIGCONFIG_SKIP_APPS = ConfigLoader.get(
 
 DEPRECATED_APP_LIST = ConfigLoader.get(
     "generate", "glean_usage", "deprecated_apps", fallback=[]
+)
+DEPRECATED_APPS_DELETION_DATE = ConfigLoader.get(
+    "generate", "glean_usage", "deprecated_apps_deletion_date", fallback=None
 )
 
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
@@ -339,6 +342,7 @@ class GleanTable:
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
             enable_monitoring=enable_monitoring,
             deprecated_app=deprecated_app,
+            deprecated_apps_deletion_date=DEPRECATED_APPS_DELETION_DATE,
         )
 
         render_kwargs.update(self.common_render_kwargs)
@@ -531,6 +535,7 @@ class GleanTable:
             app_name=app_name,
             enable_monitoring=enable_monitoring,
             deprecated_app=deprecated_app,
+            deprecated_apps_deletion_date=DEPRECATED_APPS_DELETION_DATE,
         )
         render_kwargs.update(self.common_render_kwargs)
         if custom_render_kwargs:

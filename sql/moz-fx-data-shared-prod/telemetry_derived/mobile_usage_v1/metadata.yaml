@@ -32,3 +32,5 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+deprecated: true
+deletion_date: 2027-01-01

@@ -234,11 +234,7 @@ class TestValidateMetadata(object):
 
         assert not validate_deprecation(metadata_invalid, "test/path/metadata.yaml")
 
-    def test_validate_deprecation_skips_app_level_deprecation(self, tmp_path):
-        path = tmp_path / "metadata.yaml"
-        path.write_text(
-            "deprecated: true  # app-level deprecation, deletion_date not required\n"
-        )
+    def test_validate_deprecation_skips_deprecated_app(self):
         metadata = Metadata(
             friendly_name="test",
             description="test",
@@ -246,9 +242,10 @@ class TestValidateMetadata(object):
             labels={"test": "true"},
             deprecated=True,
             deletion_date=None,
+            deprecated_app=True,
         )
 
-        assert validate_deprecation(metadata, str(path))
+        assert validate_deprecation(metadata, "test/path/metadata.yaml")
 
     def test_validate_dataset_classification_user_facing_valid(self):
         metadata = DatasetMetadata(

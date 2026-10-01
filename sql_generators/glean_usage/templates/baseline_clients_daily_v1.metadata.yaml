@@ -31,5 +31,6 @@ bigquery:
 monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
 {%- if deprecated_app %}
-deprecated: true  # app-level deprecation, deletion_date not required
+deprecated: true
+deprecated_app: true
 {%- endif -%}

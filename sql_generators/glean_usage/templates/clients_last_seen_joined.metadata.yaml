@@ -35,5 +35,6 @@ bigquery:
       - normalized_channel
       - sample_id
 {%- if deprecated_app %}
-deprecated: true  # app-level deprecation, deletion_date not required
+deprecated: true
+deprecated_app: true
 {%- endif -%}

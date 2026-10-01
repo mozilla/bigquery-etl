@@ -7,8 +7,8 @@ fields:
 - name: event_type
   type: STRING
   mode: NULLABLE
-  description: High-level classification of the subscription lifecycle event, such as 'New' for a new subscription
-    or 'Cancelled' for a cancellation.
+  description: High-level classification of the subscription lifecycle event. One of 'New Trial', 'Cancelled
+    Trial', 'New', or 'Cancelled'.
 - name: granular_event_type
   type: STRING
   mode: NULLABLE

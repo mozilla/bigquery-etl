@@ -8,9 +8,9 @@ fields:
 - name: subscription_id
   type: STRING
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
-    field: subscription_id
+  description: Identifier for this subscription plan period. This is the Stripe subscription ID, with a `-N` suffix
+    added for the Nth plan-change record of the same Stripe subscription. The unsuffixed ID is in
+    original_subscription_id for suffixed records.
 - name: original_subscription_id
   type: STRING
   mode: NULLABLE
@@ -35,15 +35,14 @@ fields:
 - name: subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
-    field: subscription_start_date
+  description: When the current subscription plan period started. This is the plan start time for plan-change records,
+    otherwise the Stripe subscription start date. Null while a trial is ongoing or if the subscription ended
+    during its trial.
 - name: original_subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
-  description: The start date of the original subscription prior to any plan changes. For records that result
-    from a plan change, this reflects the start of the first subscription in the chain; null if the subscription
-    began during an active trial.
+  description: Start date of the underlying Stripe subscription (the same for all plan-change records). Null
+    while a trial is ongoing or if the subscription ended during its trial.
 - name: subscription_start_reason
   type: STRING
   mode: NULLABLE
@@ -89,9 +88,9 @@ fields:
 - name: ended_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
-    field: ended_at
+  description: When the current subscription plan period ended. This is the plan end time for plan-change records,
+    otherwise the Stripe subscription end time if it is before the current date. Null for active subscriptions,
+    including those with a scheduled future end.
 - name: ended_reason
   type: STRING
   mode: NULLABLE

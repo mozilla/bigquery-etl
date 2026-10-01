@@ -3,10 +3,8 @@ description: |-
   A table representing GA clients. Grain is one row per client.
   Key is ga_client_id.
 owners:
-- mhirose@mozilla.com
 - kik@mozilla.com
-labels:
-  owner1: mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 scheduling:
   depends_on_past: true
   dag_name: bqetl_ga4_firefoxdotcom

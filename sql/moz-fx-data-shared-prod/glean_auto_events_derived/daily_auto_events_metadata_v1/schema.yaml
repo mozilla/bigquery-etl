@@ -2,9 +2,13 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date of the event submissions, derived from the submission timestamp of the source `accounts_frontend.events_stream`
+    table.
 - name: app
   type: STRING
   mode: NULLABLE
+  description: The application that generated the events. This field is always set to `accounts_frontend`
+    for this table.
 - name: event_name
   description: Full event name with suffix from `extra`.
   type: STRING
@@ -12,3 +16,4 @@ fields:
 - name: count
   type: INTEGER
   mode: NULLABLE
+  description: The number of times the given event occurred for the given app on the given submission date.

@@ -1,0 +1,75 @@
+fields:
+- name: partner
+  type: STRING
+  mode: NULLABLE
+  description: 'The search partner the row''s DAU measures are for: Google, Bing or
+    DuckDuckGo. The same client appears under every partner, so do not sum across
+    partners.'
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date of the DAU and search activity.
+- name: device
+  type: STRING
+  mode: NULLABLE
+  description: Always 'desktop' in this table. Kept so this table's grain lines up
+    with search_dau_aggregates_v1.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel of the Firefox Desktop client, from firefox_desktop.baseline_active_users.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The country of the client on this day, from firefox_desktop.baseline_active_users,
+    which holds one row per client-day.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The distribution id of the client's install, for every DAU client whether or not they searched.
+    From the latest metrics ping of the day (client_info.distribution.name), then
+    search_clients_daily_glean_v1 for clients with no metrics ping. Null for default installs.
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The client's default search engine grouped as Google, Bing or DuckDuckGo, and null for any other
+    engine or when no engine is known, about 5% of DAU. From the latest metrics ping of the day:
+    provider_id, then engine_id for builds without it, then search_clients_daily_glean_v1. A
+    user-installed engine is never grouped as one of the three. Set for DAU clients whether or not
+    they searched.
+- name: normalized_engine
+  type: STRING
+  mode: NULLABLE
+  description: The search engine the client's searches went to, normalized, from search_clients_daily_glean_v1.
+    Null for DAU clients with no search rows that day.
+- name: sap_category
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if the client had at least one search access point event (sap_counts_total)
+    on this day, otherwise 0.
+- name: ad_click_category
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if the client had at least one tagged ad click on this day in the
+    browser.search.adclicks counters, otherwise 0. The counter series reconciles to
+    v8's ad_click, which counts tagged ad clicks only.
+- name: ad_click_category_serp
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if the client had at least one tagged ad click on this day in SERP
+    events, otherwise 0. SERP ad clicks run about 17% below the counters, so a client
+    can be 1 in ad_click_category and 0 here.
+- name: dau_w_engine_as_default
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct DAU clients whose default search engine is this
+    row's partner, counted only where the country is eligible for Google when the
+    partner is Google. Not summable across rows.
+- name: dau_engaged_w_sap
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct DAU clients with at least one search access
+    point event on this row's partner's engine, counted only where the country is
+    eligible for Google when the partner is Google. Not summable across rows.

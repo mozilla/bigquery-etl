@@ -1,0 +1,208 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: submission_date
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: normalized_engine
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: partner_code
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: source
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: "The country of the client on this day, one value per client-day: the country on the most rows of
+      that client-day in search_clients_daily_glean_v1, ties to the country whose latest row has the
+      latest ping_end_time, then to the country code. Mirrors the one country per client-day in
+      search_clients_daily_v8. See row_country for the value on the row itself."
+- name: row_country
+  type: STRING
+  mode: NULLABLE
+  description: "The country the client table carried on the row itself, which is the country of the last report
+      behind that row. Differs from country for the under 1% of client-days where the client's location
+      changed during the day, typically a VPN toggling."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: distribution_id
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: is_acer_distribution
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "TRUE when distribution_id contains 'acer', meaning an Acer distribution, and FALSE otherwise,
+      including when distribution_id is null. Replaces is_acer_cohort in search_aggregates_v8, which was
+      TRUE for clients that are NOT Acer and also checked the search.acer_cohort list of legacy client
+      ids. That list is not carried, so clients that were on an Acer distribution before 2023 and no
+      longer are show FALSE here."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: locale
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: app_version
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: os
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: os_version
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: channel
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: normalized_channel
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: is_default_browser
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: policies_is_enterprise
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_search_engine_display_name
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_private_search_engine_display_name
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: home_region
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and null for any other. Matches
+      substrings of the client-day's resolved default_search_engine_provider_id, the way
+      search_aggregates_v8 does on default_search_engine. Null where the provider id is null or names
+      another engine."
+- name: client_count
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of distinct clients in this row's dimensions. A client appears in several rows of this table, so
+      this cannot be summed across rows to give a number of clients."
+- name: clients_with_adblocker_addon
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of distinct clients in this row's dimensions with at least one enabled ad-blocking add-on
+      installed. Not summable across rows. Unreliable before about 2025-06, because the add-on probe rolled out
+      gradually through 2025."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: sap_counts_total
+  new_description: "The number of search access point events for this key. This is a count of events, not a sum of a
+      counter, so it does not reproduce the sap column of search_aggregates_v8. Zero, not null, on a row
+      with no SAP activity. Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_counts_total
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_searches_tagged_count
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_follow_on_searches_tagged_count
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_searches_organic_count
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_searches_with_ads_tagged_count
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_searches_with_ads_organic_count
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ad_clicks_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ad_clicks_tagged_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ad_clicks_organic_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ads_loaded_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ads_visible_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ads_blocked_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: serp_ads_notshowing_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_searches_tagged_non_follow_on_sum
+  new_name: counter_searches_tagged_non_follow_on_sum
+  new_description: "Tagged searches from the browser.search.content Glean labeled counter, excluding follow-on searches, which the
+      counter labels as a separate tag type and counter_searches_tagged_follow_on_sum carries. The two ads families
+      do not make that split and include follow-on. Zero, not null, where the metrics ping carried nothing for this
+      key. It is the counterpart of tagged_sap in search_aggregates_v8; serp_searches_tagged_count measures the same searches from
+      SERP impressions and includes follow-on. Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_searches_tagged_follow_on_sum
+  new_name: counter_searches_tagged_follow_on_sum
+  append_description: " Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_searches_organic_sum
+  new_name: counter_searches_organic_sum
+  new_description: "Organic, meaning non-partner, in-content searches from the browser.search.content Glean labeled
+      counter. Runs below the organic column of search_aggregates_v8 by a margin that is not yet
+      root-caused, so prefer search_aggregates_v8 for organic levels. Zero, not null, where the metrics
+      ping carried nothing for this key. Summed over the client table rows in this row's dimensions."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_searches_with_ads_tagged_sum
+  new_name: counter_searches_with_ads_tagged_sum
+  append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
+      partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
+      column is not meaningful."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_searches_with_ads_organic_sum
+  new_name: counter_searches_with_ads_organic_sum
+  append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
+      partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
+      column is not meaningful."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_ad_clicks_tagged_sum
+  new_name: counter_ad_clicks_tagged_sum
+  append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
+      partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
+      column is not meaningful."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: legacy_ad_clicks_organic_sum
+  new_name: counter_ad_clicks_organic_sum
+  append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
+      partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
+      column is not meaningful."

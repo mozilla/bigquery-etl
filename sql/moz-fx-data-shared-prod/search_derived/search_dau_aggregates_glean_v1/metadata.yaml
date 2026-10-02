@@ -12,12 +12,18 @@ description: |-
   profiles give several Glean ids for one legacy id, so this DAU runs higher than the legacy
   table's, and per-DAU measures will not tie to their legacy counterparts. That is expected.
 
-  Search behavior comes from `search_clients_daily_glean_v1`, joined on `client_id` and
-  submission date only. `country` is the DAU side's one value per client-day.
+  `dau_w_engine_as_default` counts every DAU client whose default engine is the partner's,
+  whether or not they searched, as `search_dau_aggregates_v1` does. `search_clients_daily_glean_v1`
+  only has rows for clients with search activity, so the default engine and `distribution_id`
+  come from the latest metrics ping of the day (`provider_id`, then `engine_id` for builds
+  without it, then the client table). About 5% of DAU have no engine from any of these.
+
+  Searches come from `search_clients_daily_glean_v1`, joined on `client_id` only. `country` is
+  the DAU side's one value per client-day.
 
   `sap_category` flags whether the client had a search access point event. `ad_click_category`
   flags tagged ad clicks from the browser.search.adclicks counters, the series that reconciles
-  to v8, and `ad_click_category_serp` flags them from SERP events, which run about 17% lower.
+  to `search_clients_daily_v8`, and `ad_click_category_serp` flags them from SERP events, which run about 17% lower.
   Both are grain keys, so a client can land on a different row depending on which is used.
 
   The Google eligible-country lists are ported verbatim from `search_dau_aggregates_v1`.

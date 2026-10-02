@@ -28,6 +28,14 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: distribution_id
   append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: is_acer_distribution
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "TRUE when distribution_id contains 'acer', meaning an Acer distribution, and FALSE otherwise,
+      including when distribution_id is null. Replaces is_acer_cohort in search_aggregates_v8, which was
+      TRUE for clients that are NOT Acer and also checked the search.acer_cohort list of legacy client
+      ids. That list is not carried, so clients that were on an Acer distribution before 2023 and no
+      longer are show FALSE here."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: locale

@@ -187,6 +187,9 @@ SELECT
   cdc.country,
   scd.country AS row_country,
   cdd.distribution_id,
+  -- TRUE for an Acer distribution. Replaces is_acer_cohort in search_aggregates_v8, which was
+  -- TRUE for clients that are NOT Acer. Never NULL.
+  COALESCE(cdd.distribution_id LIKE '%acer%', FALSE) AS is_acer_distribution,
   cdd.locale,
   cdd.app_version,
   cdd.os,
@@ -253,6 +256,7 @@ GROUP BY
   cdc.country,
   row_country,
   cdd.distribution_id,
+  is_acer_distribution,
   cdd.locale,
   cdd.app_version,
   cdd.os,

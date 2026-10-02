@@ -31,9 +31,11 @@ description: |
   `client_count` is `COUNT(DISTINCT client_id)` within the row's dimensions. A client can appear
   in several rows, so it cannot be summed across rows to give a number of clients.
 
-  `search_aggregates_v8`'s `is_acer_cohort` is not carried. It joined `search.acer_cohort` on the legacy
-  `client_id`, which this pipeline does not do. `distribution_id` is a dimension here, so
-  Acer distributions can still be filtered on it.
+  `is_acer_distribution` is true when `distribution_id` contains `acer`. It replaces
+  `search_aggregates_v8`'s `is_acer_cohort`, which was true for clients that are not Acer. That
+  column also checked the `search.acer_cohort` list of legacy `client_id`s, which this table
+  does not do, so clients that were on an Acer distribution before 2023 and no longer are
+  show false here.
 
   `policies_is_enterprise` is only populated from Firefox 144, and `has_adblocker_addon` is
   unreliable before about 2025-06, so `clients_with_adblocker_addon` is too.

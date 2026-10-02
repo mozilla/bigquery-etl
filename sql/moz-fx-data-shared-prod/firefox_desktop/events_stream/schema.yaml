@@ -1040,11 +1040,22 @@ fields:
       mode: NULLABLE
       description: Set to true if the search engine has been allowed to be overridden
         by a third-party add-on or OpenSearch engine.
+    - name: permanent_private
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this is an auto-started permanent private browsing session,
+        in which no session is ever restored
     - name: poisoned
       type: BOOLEAN
       mode: NULLABLE
       description: Whether there was a previous error, meaning that this event must
         be viewed with caution.
+    - name: previous_session_crashed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the previous session ended in a crash. Unset when we never
+        got as far as checking, which is the case when no session was found and in
+        permanent private browsing.
     - name: primary_password_set
       type: BOOLEAN
       mode: NULLABLE
@@ -4675,6 +4686,11 @@ fields:
       mode: NULLABLE
       description: The inference method. Possible values are `autocomplete`, `fathom`,
         `regex-heuristic`, or `update-heuristic`.
+    - name: init_error
+      type: STRING
+      mode: NULLABLE
+      description: The name of the error thrown while preparing the session, if one
+        was. The session is left in whatever state it had reached.
     - name: input
       type: STRING
       mode: NULLABLE
@@ -4746,6 +4762,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The type of user interaction with the CM record tile
+    - name: interstitial_reason
+      type: STRING
+      mode: NULLABLE
+      description: Why about:sessionrestore was shown rather than restoring, set when
+        action is "interstitial". One of "old_session", "many_crashes", "many_crashes_old_session"
+        or "safe_mode".
     - name: issue
       type: STRING
       mode: NULLABLE
@@ -6001,6 +6023,14 @@ fields:
         `history_semantic`, `history_semantic_serp`, `history_serp`, `intervention_clear`,
         `intervention_refresh`, `intervention_unknown`, `intervention_update`, `keyword`,
         `merino_adm_sponsored`, `merino_amo`, `me...'
+    - name: resume_reason
+      type: STRING
+      mode: NULLABLE
+      description: Why a session was resumed, set when session_type is "resume". One
+        of "os_restart" (armed before the OS restarted us), "resume_session_once"
+        (a one-off resume, as set for restarts due to application update) or "startup_page"
+        (the user asks for their session every time). Where more than one applies,
+        the most specific is reported.
     - name: retime
       type: STRING
       mode: NULLABLE
@@ -6233,6 +6263,12 @@ fields:
       mode: NULLABLE
       description: Wall-clock timestamp at session start (RFC 3339). Auxiliary only;
         per-event timestamps remain authoritative for time-based analysis.
+    - name: session_type
+      type: STRING
+      mode: NULLABLE
+      description: What Session Restore decided to do, one of "no_session", "recover"
+        (restore after a crash), "resume" (restore because it was asked for) or "defer"
+        (keep the session for the user to restore by hand)
     - name: setdefault_source
       type: STRING
       mode: NULLABLE

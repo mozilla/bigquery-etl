@@ -1,0 +1,19 @@
+friendly_name: STMO Query Results
+description: |
+  A copy of the `query_results` table from the Redash (sql.telemetry.mozilla.org) metadata database, excluding `data`, which holds the query result rows, updated daily to match the current state of the table.
+owners:
+- bewu@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_stmo
+  owner1: bewu
+scheduling:
+  dag_name: bqetl_stmo
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-data-stmo-prod-33f2.us.stmo-cloudsql-prod', 'SELECT\n         id,\n         org_id,\n         data_source_id,\n         query_hash,\n         query,\n         runtime,\n         retrieved_at\n       FROM\n         query_results\n    ')

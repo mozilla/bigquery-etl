@@ -1,0 +1,31 @@
+friendly_name: STMO Events
+description: |
+  Events from the `events` table in the Redash (sql.telemetry.mozilla.org) metadata database, such as query executions and dashboard views, partitioned by the day they were created.
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_stmo
+  owner1: bewu
+scheduling:
+  dag_name: bqetl_stmo
+  arguments:
+  - --date
+  - '{{ ds }}'
+  - --destination-table
+  - moz-fx-data-shared-prod.stmo_external.events_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: created_at
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - action
+    - object_type
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

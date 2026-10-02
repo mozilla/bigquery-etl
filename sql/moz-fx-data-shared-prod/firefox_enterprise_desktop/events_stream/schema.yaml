@@ -1753,13 +1753,13 @@ fields:
 
         * Number of characters submitted
 
+        * Number of characters in the mention
+
         * Page content length.
 
         * Length of the article
 
         * Number of characters read from the page
-
-        * Number of characters in the mention
 
         * number of characters of generated text.'
     - name: levenshtein_distance
@@ -2422,10 +2422,10 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Number of tabs the model returned. Absent when the request failed, or when
-        the answer carried no tab list at all.
+        * Number of tabs selected at the end
 
-        * Number of tabs selected at the end'
+        * Number of tabs the model returned. Absent when the request failed, or when
+        the answer carried no tab list at all.'
     - name: tabs_sent
       type: INTEGER
       mode: NULLABLE
@@ -4495,6 +4495,10 @@ fields:
       description: 'Final value from the last memories navigate, a comma-separated
         list of memory checkbox ids the user had selected, for example: ''memories-chats,memories-browsing''.
         Empty string if the user deselects all options'
+    - name: mention_type
+      type: STRING
+      mode: NULLABLE
+      description: 'What the mention refers to: "tab" or "tab_group"'
     - name: menu_action
       type: STRING
       mode: NULLABLE

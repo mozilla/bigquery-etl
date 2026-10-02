@@ -1,0 +1,14 @@
+friendly_name: STMO Groups
+description: |-
+  A copy of the `groups` table from the Redash (sql.telemetry.mozilla.org) metadata database, updated daily to match the current state of the table.
+owners:
+- bewu@mozilla.com
+labels:
+  owner1: bewu
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.stmo_external.groups_v1

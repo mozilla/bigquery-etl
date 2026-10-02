@@ -813,6 +813,15 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether a Primary Password was set at the time of the run.
+    - name: progress_predates_cutoff
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user completed any of the day 2 to day 7 prompts before
+        version 155 shipped (2026-09-01). Prompts are only shown while the feature
+        is on, so this is only possible for users who had it early: Nightly from version
+        151, Beta from version 155, or the Release experiment. False for users who
+        onboarded with the feature off, since any prompts they completed came after
+        updating to 155. Always false when last_completed_stage is omitted.'
     - name: psi_available
       type: BOOLEAN
       mode: NULLABLE
@@ -1228,6 +1237,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Count of items larger than QUOTA_BYTES_PER_ITEM.
+    - name: last_completed_stage
+      type: INTEGER
+      mode: NULLABLE
+      description: The last of the day 2, 3, 5 and 7 prompts the user had already
+        completed, as 2, 3, 5 or 7. Prompts complete in strict day order, so this
+        also implies every earlier prompt was completed. Omitted when no prompt had
+        been completed.
     - name: last_install
       type: INTEGER
       mode: NULLABLE
@@ -3163,6 +3179,19 @@ fields:
       mode: NULLABLE
       description: If an error occurred during the initial load of the database this
         field will contain the relevant error code.
+    - name: migration_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'unset_timestamp: No record of when the user finished initial onboarding,
+        either because they completed onboarding before version 150 (2026-04-21) or
+        bypassed onboarding completely. The two states cannot be distinguished. predates_rollout:
+        The user finished initial onboarding before version 155 shipped (2026-09-01)
+        and has not completed the day 7 prompt. This covers users who onboarded with
+        the feature off, and users who had it on early (Nightly from version 151,
+        Beta from version 155, or the Release experiment) with prompts still remaining.
+        Use progress_predates_cutoff to tell them apart. Users who onboarded on or
+        after version 155, or who have already completed the day 7 prompt, are not
+        migrated and do not record this event.'
     - name: mime_type
       type: STRING
       mode: NULLABLE

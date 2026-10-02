@@ -681,6 +681,7 @@ SELECT
       JSON_VALUE(event_extra.media_content_type) AS `media_content_type`,
       JSON_VALUE(event_extra.media_extension) AS `media_extension`,
       JSON_VALUE(event_extra.memory_source) AS `memory_source`,
+      JSON_VALUE(event_extra.mention_type) AS `mention_type`,
       JSON_VALUE(event_extra.menu_action) AS `menu_action`,
       JSON_VALUE(event_extra.message) AS `message`,
       JSON_VALUE(event_extra.message_count) AS `message_count`,

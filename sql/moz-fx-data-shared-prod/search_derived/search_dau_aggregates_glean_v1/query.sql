@@ -69,22 +69,23 @@ desktop_search_data AS (
 ),
 desktop_by_client_id AS (
   SELECT DISTINCT
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    client_id,
-    IF(COALESCE(search_count, 0) > 0, 1, 0) AS sap_category,
-    IF(COALESCE(ad_click, 0) > 0, 1, 0) AS ad_click_category,
-    IF(COALESCE(ad_click_serp, 0) > 0, 1, 0) AS ad_click_category_serp
+    dau.submission_date,
+    dau.device,
+    dau.normalized_channel,
+    dau.country,
+    srch.distribution_id,
+    srch.normalized_default_search_engine,
+    srch.normalized_engine,
+    dau.client_id,
+    IF(COALESCE(srch.search_count, 0) > 0, 1, 0) AS sap_category,
+    IF(COALESCE(srch.ad_click, 0) > 0, 1, 0) AS ad_click_category,
+    IF(COALESCE(srch.ad_click_serp, 0) > 0, 1, 0) AS ad_click_category_serp
   FROM
-    desktop_dau_data
+    desktop_dau_data AS dau
   LEFT JOIN
-    desktop_search_data
-    USING (submission_date, client_id)
+    desktop_search_data AS srch
+    ON dau.submission_date = srch.submission_date
+    AND dau.client_id = srch.client_id
 )
 SELECT
   'Google' AS partner,

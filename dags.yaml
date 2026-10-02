@@ -2888,3 +2888,18 @@ bqetl_customer_experience:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_stmo:
+  schedule_interval: 0 4 * * *
+  description: |
+    Daily copies of tables from the Redash (sql.telemetry.mozilla.org) metadata
+    database in Cloud SQL into stmo_external.
+  default_args:
+    owner: bewu@mozilla.com
+    start_date: "2026-09-30"
+    email: ["telemetry-alerts@mozilla.com", "benwu@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+    depends_on_past: false
+  tags:
+    - impact/tier_3

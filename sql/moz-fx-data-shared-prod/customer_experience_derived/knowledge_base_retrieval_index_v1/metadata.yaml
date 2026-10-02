@@ -42,10 +42,10 @@ labels:
   level: gold
   schedule: daily
   change_controlled: true
-  dag: bqetl_analytics_tables
+  dag: bqetl_customer_experience
   owner1: lvargas
 scheduling:
-  dag_name: bqetl_analytics_tables
+  dag_name: bqetl_customer_experience
   depends_on_past: false
   date_partition_parameter: null
 bigquery:

@@ -1,0 +1,19 @@
+SELECT
+  *
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-data-stmo-prod-33f2.us.stmo-cloudsql-prod",
+    -- encrypted_options is excluded because it holds data source credentials
+    """SELECT
+         id,
+         org_id,
+         name,
+         type,
+         queue_name,
+         scheduled_queue_name,
+         created_at,
+         description
+       FROM
+         data_sources
+    """
+  )

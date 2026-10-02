@@ -117,6 +117,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  # dry run SA can't use the STMO Cloud SQL connection
+  - sql/moz-fx-data-shared-prod/stmo_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
   - sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_funnel_v1/query.sql

@@ -1,0 +1,17 @@
+{% from 'macros.yaml' import event_extras_by_type_schema -%}
+{{ header_yaml }}
+fields: !flatten-lists
+- !include-field
+  table: {{ project_id }}.{{ datasets[0][0] }}_derived.events_stream_v1
+  field: event_id
+- name: normalized_app_id
+  type: STRING
+  mode: NULLABLE
+  description: The app ID with any dashes or dots replaced with underscores.
+- !include-fields
+  table: {{ project_id }}.{{ datasets[0][0] }}_derived.events_stream_v1
+  exclude_field_names:
+  - event_id
+{%- if extras_by_type %}
+- {{ event_extras_by_type_schema('extras', extras_by_type) | indent(2, first=False) }}
+{%- endif %}

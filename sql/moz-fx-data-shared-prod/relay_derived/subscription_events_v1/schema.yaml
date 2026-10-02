@@ -2,79 +2,48 @@ fields:
 - name: event_date
   type: DATE
   mode: NULLABLE
-  description: The date on which the subscription event occurred. Used as the partition key for incremental
-    loading of this table.
 - name: event_type
   type: STRING
   mode: NULLABLE
-  description: High-level classification of the subscription lifecycle event. One of 'New Trial', 'Cancelled
-    Trial', 'New', or 'Cancelled'.
 - name: granular_event_type
   type: STRING
   mode: NULLABLE
-  description: More detailed classification of the subscription event, providing finer-grained distinctions
-    within the broader event_type categories (e.g. 'New', 'Cancelled by Customer', 'Payment Failed', 'Resurrected').
 - name: plan_id
   type: STRING
   mode: NULLABLE
-  description: The unique identifier for the Stripe price/plan associated with the subscription event, corresponding
-    to a specific billing interval, currency, and amount combination.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: The ISO 3166-1 alpha-2 country code of the subscriber's billing country (e.g. 'us', 'de',
-    'fr').
 - name: country_name
   type: STRING
   mode: NULLABLE
-  description: The human-readable name of the subscriber's billing country corresponding to the country
-    code in the country field (e.g. 'USA', 'Germany', 'France').
 - name: provider
   type: STRING
   mode: NULLABLE
-  description: The payment provider used to process the subscription, either 'Stripe' or 'Paypal'.
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
-  description: The price of the plan in the smallest currency unit (e.g. cents for USD/EUR), representing
-    the total amount charged per billing interval.
 - name: plan_currency
   type: STRING
   mode: NULLABLE
-  description: The ISO 4217 currency code for the plan's billing currency (e.g. 'usd', 'eur', 'pln', 'czk').
 - name: plan_interval
   type: STRING
   mode: NULLABLE
-  description: The billing interval unit for the subscription plan, either 'month' for a monthly plan or
-    'year' for an annual plan.
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
-  description: The number of plan_interval units that make up one billing cycle (e.g. a value of 1 with
-    a plan_interval of 'month' means billed every month).
 - name: product_id
   type: STRING
   mode: NULLABLE
-  description: The unique Stripe product identifier for the Firefox Relay subscription product associated
-    with the event (e.g. Relay Premium, Relay Phones, or the bundled Mozilla VPN & Firefox Relay product).
 - name: product_name
   type: STRING
   mode: NULLABLE
-  description: The human-readable name of the Stripe product associated with the subscription event, such
-    as 'Relay Premium', 'Relay - Phones', or 'Mozilla VPN & Firefox Relay'.
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
-  description: A descriptive label for the pricing plan combining the billing interval, currency, and amount
-    (e.g. '1-year-usd-83.88' or '1-month-eur-1.99'), providing a human-readable summary of the plan's cost
-    structure.
 - name: promotion_codes
   type: STRING
   mode: REPEATED
-  description: An array of promotional or discount codes that were applied to the subscription at the time
-    of the event.
 - name: count
   type: INTEGER
   mode: NULLABLE
-  description: The number of subscription events matching this row's combination of dimensions (event_date,
-    event_type, plan, country, provider, etc.), used to aggregate events into summary rows.

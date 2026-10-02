@@ -2,74 +2,45 @@ fields:
 - name: active_date
   type: DATE
   mode: NULLABLE
-  description: The date on which the subscriptions counted in this row were active. Each row represents
-    a snapshot of active Firefox Relay subscriptions for this date.
 - name: plan_id
   type: STRING
   mode: NULLABLE
-  description: The Stripe price identifier for the subscription plan (e.g. `price_1JmREHJNcmPzuWtRxo7MoT58`).
-    Uniquely identifies a specific pricing configuration within Stripe.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Two-letter ISO country code of the subscriber's billing country (e.g. `us`, `de`). Null when
-    country information is unavailable.
 - name: country_name
   type: STRING
   mode: NULLABLE
-  description: Full human-readable name of the subscriber's billing country (e.g. `USA`, `Germany`). Null
-    when country information is unavailable.
 - name: provider
   type: STRING
   mode: NULLABLE
-  description: The payment provider used to process the subscription, either `Stripe` or `Paypal`. Null
-    when the provider cannot be determined.
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
-  description: The price of the subscription plan in the plan's smallest currency unit (e.g. cents for USD,
-    so `199` represents $1.99). Corresponds to the Stripe plan amount.
 - name: plan_currency
   type: STRING
   mode: NULLABLE
-  description: The ISO 4217 currency code for the subscription plan's pricing (e.g. `usd`, `eur`, `chf`).
 - name: plan_interval
   type: STRING
   mode: NULLABLE
-  description: The billing interval unit for the subscription plan, either `month` or `year`.
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
-  description: The number of interval units between each billing cycle. For example, a value of `1` combined
-    with a `plan_interval` of `month` means billing occurs every 1 month.
 - name: product_id
   type: STRING
   mode: NULLABLE
-  description: The Stripe product identifier for the Firefox Relay subscription product (e.g. `prod_KGizMiBqUJdYoY`).
-    Groups related plans under a single product such as Relay Premium or the VPN & Relay bundle.
 - name: product_name
   type: STRING
   mode: NULLABLE
-  description: The human-readable name of the Stripe product, such as `Relay Premium`, `Mozilla VPN & Firefox
-    Relay`, or `Relay - Phones`.
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
-  description: A composite label describing the subscription pricing tier in the format `{interval_count}-{interval}-{currency}-{price}`
-    (e.g. `1-year-usd-11.88`). Provides a human-readable summary of the plan's billing cadence, currency,
-    and cost.
 - name: promotion_codes
   type: STRING
   mode: REPEATED
-  description: Array of promotion or coupon codes applied to the subscription. Empty when no promotions
-    were applied.
 - name: promotion_discounts_amount
   type: INTEGER
   mode: NULLABLE
-  description: The total discount amount applied via promotions, in the plan's smallest currency unit (e.g.
-    cents for USD). Null when no promotional discount was applied to the subscription.
 - name: count
   type: INTEGER
   mode: NULLABLE
-  description: The number of active subscriptions matching the combination of dimensions (plan, country,
-    provider, etc.) on the given `active_date`.

@@ -124,7 +124,7 @@ sanitized_queries AS (
     LTRIM(LOWER(query)) AS query,
     * EXCEPT (`timestamp`, query, region, country)
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4`
   WHERE
     DATE(`timestamp`) = @submission_date
   QUALIFY
@@ -153,7 +153,7 @@ validated_queries AS (
     IF(
       _n < 1,
       ERROR(
-        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 is empty; retry later or investigate upstream issues"
+        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4 is empty; retry later or investigate upstream issues"
       ),
       TRUE
     )

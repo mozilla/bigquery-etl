@@ -1,0 +1,5 @@
+friendly_name: STMO Events
+description: Events from the `events` table in the Redash (sql.telemetry.mozilla.org) metadata database,
+  such as query executions and dashboard views, partitioned by the day they were created.
+owners:
+- bewu@mozilla.com

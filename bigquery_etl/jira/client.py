@@ -97,6 +97,16 @@ class JiraClient:
                 raise RuntimeError(f"Failed while requesting {path}") from exc
 
             if 200 <= response.status_code <= 299:
+                # Jira Cloud may return an HTTP 200 with no results when handed
+                # credentials that are expired, invalid, etc.
+                # https://developer.atlassian.com/server/jira/platform/jira-rest-api-example-basic-authentication-6291732/#advanced-topics
+                login_reason = response.headers.get("X-Seraph-LoginReason")
+                if login_reason and login_reason != "OK":
+                    raise RuntimeError(
+                        f"Jira authentication failed while requesting {path}: "
+                        f"X-Seraph-LoginReason={login_reason}; check that "
+                        "JIRA_USERNAME and JIRA_TOKEN are valid and unexpired"
+                    )
                 return response.json()
 
             if response.status_code in RETRY_STATUS_CODES and attempt < MAX_ATTEMPTS:

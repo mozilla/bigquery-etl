@@ -1,0 +1,11 @@
+2026-10-02:
+  start_date: 2025-01-01
+  end_date: 2026-10-01
+  reason: DENG-11076 backfill new onboarding table
+  watchers:
+  - kbammarito@mozilla.com
+  - pissac@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

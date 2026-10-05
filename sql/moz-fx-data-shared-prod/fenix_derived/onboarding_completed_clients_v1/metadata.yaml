@@ -38,3 +38,9 @@ bigquery:
     fields:
       - sample_id
 require_column_descriptions: true
+monitoring:
+  enabled: true
+  collection: Operational Checks
+  partition_column: completed_date
+  volume:
+    blocking: false

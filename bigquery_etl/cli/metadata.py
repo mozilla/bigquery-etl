@@ -19,6 +19,7 @@ from bigquery_etl.datahub.auth import LoginError
 from bigquery_etl.datahub.lineage import (
     DATAHUB_LINEAGE_DEGREES,
     DEFAULT_LOOKER_TMP_DAYS,
+    ENTITY_TYPES,
     AuthError,
     DataHubClient,
     LineageTooLargeError,
@@ -468,7 +469,8 @@ def validate_workgroups(
     "--type",
     "types",
     multiple=True,
-    help="Only list this entity type, e.g. DATASET, CHART, DASHBOARD. Repeatable.",
+    type=click.Choice(ENTITY_TYPES, case_sensitive=False),
+    help="Only list this entity type. Repeatable.",
 )
 @click.option(
     "--include_usage",
@@ -522,7 +524,6 @@ def get_downstream_lineage(
             "Expected dataset.table or project.dataset.table", param_hint="NAME"
         )
 
-    wanted_types = {t.upper() for t in types}
     try:
         client = DataHubClient()
         assets = get_downstream_lineage_from_datahub(
@@ -531,6 +532,7 @@ def get_downstream_lineage(
             since_days=since_days,
             include_deleted=include_deleted,
             include_usage=include_usage,
+            types={t.upper() for t in types},
             looker_tmp_days=looker_tmp_days,
             max_degree=DATAHUB_LINEAGE_DEGREES.index(max_degree) + 1,
         )
@@ -549,9 +551,6 @@ def get_downstream_lineage(
         )
     except (requests.RequestException, RuntimeError) as e:
         raise click.ClickException(f"Could not get lineage from DataHub: {e}")
-
-    if wanted_types:
-        assets = [a for a in assets if a["type"] in wanted_types]
 
     fields = [
         "degree",

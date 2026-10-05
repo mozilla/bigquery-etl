@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import click
 import pytest
+import requests
 
 from bigquery_etl.datahub.lineage import (
     AuthError,
@@ -33,7 +34,10 @@ def response(status=200, data=None, errors=None):
     resp = MagicMock()
     resp.status_code = status
     resp.json.return_value = {"data": data, **({"errors": errors} if errors else {})}
-    resp.raise_for_status.return_value = None
+    if status >= 400:
+        resp.raise_for_status.side_effect = requests.HTTPError(f"HTTP {status}")
+    else:
+        resp.raise_for_status.return_value = None
     return resp
 
 
@@ -173,6 +177,40 @@ class TestDataHubClient:
         )
         assert client.query("q", {}) == {"ok": True}
         assert client.session.post.call_count == 2
+
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
+    def test_does_not_retry_other_graphql_errors(self, sleep, client):
+        client.session.post = MagicMock(
+            return_value=response(
+                errors=[{"message": "Unauthorized to perform this action"}]
+            )
+        )
+        with pytest.raises(RuntimeError, match="Unauthorized"):
+            client.query("q", {})
+        assert client.session.post.call_count == 1
+        sleep.assert_not_called()
+
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
+    def test_does_not_retry_client_errors(self, sleep, client):
+        client.session.post = MagicMock(return_value=response(status=400))
+        with pytest.raises(requests.HTTPError):
+            client.query("q", {})
+        assert client.session.post.call_count == 1
+
+    @pytest.mark.parametrize("status", [429, 502, 503])
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
+    def test_retries_overload_statuses(self, sleep, client, status):
+        client.session.post = MagicMock(
+            side_effect=[response(status=status), response(data={"ok": True})]
+        )
+        assert client.query("q", {}) == {"ok": True}
+
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
+    def test_retries_connection_errors_then_gives_up(self, sleep, client):
+        client.session.post = MagicMock(side_effect=requests.ConnectionError("down"))
+        with pytest.raises(requests.ConnectionError):
+            client.query("q", {})
+        assert client.session.post.call_count == 5
 
     @patch("bigquery_etl.datahub.lineage.time.sleep")
     def test_does_not_retry_a_rejected_token(self, sleep, client):
@@ -327,6 +365,16 @@ class TestGetDownstreamLineage:
         assert {k: assets[0][k] for k in stats} == stats
         assert assets[1]["queries_30d"] is None
 
+    def test_types_are_filtered_before_the_usage_lookup(self):
+        table = result(table_urn("p.d.a"), "DATASET")
+        chart = result("urn:li:chart:(redash,1)", "CHART", platform="redash")
+        client = self.make_client(self.assets(table, chart))
+        assets = get_downstream_lineage(
+            client, "p.d.t", include_usage=True, types={"CHART"}
+        )
+        assert [a["type"] for a in assets] == ["CHART"]
+        client.usage.assert_not_called()
+
     def test_usage_is_off_by_default(self):
         client = self.make_client(self.assets(result(table_urn("p.d.a"), "DATASET")))
         assets = get_downstream_lineage(client, "p.d.t")
@@ -415,7 +463,7 @@ class TestFormatText:
     @pytest.mark.parametrize(
         "queries_30d,users_30d,last_query,shown",
         [
-            (None, None, None, ["0", "0", "n/a"]),
+            (None, None, None, ["n/a", "n/a", "n/a"]),
             (0, 0, None, ["0", "0", "none"]),
             (24, 2, None, ["24", "2", "n/a"]),
         ],

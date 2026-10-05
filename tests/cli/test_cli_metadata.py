@@ -2045,11 +2045,17 @@ class TestGetDownstreamLineage:
         assert kwargs["include_deleted"] is True
         assert kwargs["looker_tmp_days"] == 0
 
-    def test_type_filters_results(self, runner, lineage):
-        result = runner.invoke(get_downstream_lineage, ["d.a", "--type=chart"])
+    def test_type_is_case_insensitive_and_passed_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--type=chart", "--type=Dashboard"]
+        )
         assert result.exit_code == 0
-        assert "REDASH (1)" in result.output
-        assert "BIGQUERY" not in result.output
+        assert lineage.call_args[1]["types"] == {"CHART", "DASHBOARD"}
+
+    def test_type_rejects_unknown_values(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--type=DASHBOARDS"])
+        assert result.exit_code == 2
+        lineage.assert_not_called()
 
     @pytest.mark.parametrize("choice,max_degree", [("1", 1), ("2", 2), ("3+", 3)])
     def test_max_degree_choices(self, runner, lineage, choice, max_degree):

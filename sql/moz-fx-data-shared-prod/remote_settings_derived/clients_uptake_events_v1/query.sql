@@ -1,6 +1,9 @@
 --
 -- Query for remote_settings_derived.clients_uptake_events_v1
 --
+-- The `fenix` and `firefox_ios` events_stream views UNION every channel and expose
+-- `normalized_app_id`; `firefox_desktop.events_stream` is a single app and lacks it,
+-- so it is set literally.
 -- As of 2026-09-22, desktop telemetry for rust is not enabled, but could land anytime.
 --
 {% set uptake_filter = "event_name = 'uptake_remotesettings' AND event_category IN ('uptake.remotecontent.result', 'remote_settings')" %}
@@ -16,7 +19,11 @@
     client_id,
     IF(event_category = 'remote_settings', 'rust', 'gecko') AS implementation,
     '{{ platform }}' AS platform,
-    normalized_app_id,
+    {% if platform == 'desktop' %}
+      'firefox_desktop' AS normalized_app_id,
+    {% else %}
+      normalized_app_id,
+    {% endif %}
     normalized_channel,
     normalized_os,
     normalized_os_version,

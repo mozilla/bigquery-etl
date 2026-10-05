@@ -1,0 +1,63 @@
+{%- set fq = project_id ~ "." ~ project_id ~ "." ~ app_name ~ "_derived." ~ table_name -%}
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: {{ fq }}.app_id
+    - name: {{ fq }}.client_id
+    - name: {{ fq }}.sample_id
+    - name: {{ fq }}.first_seen_city_date
+    - name: {{ fq }}.first_seen_city
+    - name: {{ fq }}.last_seen_city_date
+    - name: {{ fq }}.last_seen_city
+    metrics:
+    - saved_metric_id: is_not_null
+      rct_overrides:
+      - first_seen_city_date
+  - column_selectors:
+    - name: {{ fq }}.client_id
+    metrics:
+    - saved_metric_id: is_valid_client_id
+      rct_overrides:
+      - first_seen_city_date
+  - column_selectors:
+    - name: {{ fq }}.*
+    metrics:
+    - saved_metric_id: composite_key_uniqueness_2_column
+      parameters:
+      - key: col_1
+        column_name: client_id
+      - key: col_1_string
+        string_value: client_id
+      - key: col_2
+        column_name: app_id
+      - key: col_2_string
+        string_value: app_id
+      - key: table
+        string_value: {{ project_id }}.{{ app_name }}_derived.{{ table_name }}
+      rct_overrides:
+      - FULL_SCAN
+  {#- Freshness/volume track first_seen_city_date, i.e. new clients only. #}
+  {#- Skipped for apps with too few new clients to monitor. #}
+  {%- if not skip_freshness_volume %}
+  - column_selectors:
+    - name: {{ fq }}.*
+    metrics:
+    {%- for metric in ["volume", "freshness"] %}
+    - saved_metric_id: {{ metric }}
+      {#- Sparse apps can go days without new clients; widen window. #}
+      {%- if low_volume %}
+      lookback:
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 28
+        lookback_type: DATA_TIME
+      rct_overrides:
+      - first_seen_city_date
+      {%- endif %}
+    {%- endfor %}
+  {%- endif %}

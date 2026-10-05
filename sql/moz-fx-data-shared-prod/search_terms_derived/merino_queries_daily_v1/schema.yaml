@@ -1,0 +1,33 @@
+fields:
+  - mode: NULLABLE
+    name: submission_date
+    type: DATE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+      field: submission_date
+  - mode: NULLABLE
+    name: query
+    type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+      field: country
+  - mode: NULLABLE
+    name: country
+    type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+      field: country
+  - mode: NULLABLE
+    name: form_factor
+    type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+      field: form_factor
+  - mode: NULLABLE
+    name: query_count
+    type: INTEGER
+    description: >-
+      The number of query-entry events for this query on the given submission
+      date, for the given country and form factor. Each distinct logged request
+      (request_id) is counted once, so repeated entries of the same query within
+      a session are counted separately; only exact duplicate log rows are removed.

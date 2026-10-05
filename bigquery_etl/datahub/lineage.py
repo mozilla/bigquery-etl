@@ -15,6 +15,12 @@ DEFAULT_DATAHUB_URL = "https://mozilla.acryl.io"
 PAGE_SIZE = 1000
 USAGE_BATCH_SIZE = 100
 MAX_ATTEMPTS = 5
+# GraphQL error messages DataHub returns when it is overloaded.
+TRANSIENT_ERRORS = (
+    "Connection lease request time out",
+    "error while performing request",
+    "Failed to execute PIT search",
+)
 REQUEST_TIMEOUT_SECONDS = 180
 DEFAULT_LOOKER_TMP_DAYS = 3
 # Values of DataHub's lineage degree facet, nearest first.
@@ -31,6 +37,8 @@ PLATFORM_COLORS: dict[str, int | str] = {
     "looker": "green",
 }
 TYPE_ORDER = ["DATASET", "DATA_JOB", "DATA_FLOW", "CHART", "DASHBOARD"]
+# Entity types the lineage query can return.
+ENTITY_TYPES = TYPE_ORDER + ["MLMODEL", "MLFEATURE_TABLE"]
 
 LINEAGE_QUERY = """
 query downstream($input: SearchAcrossLineageInput!) {
@@ -151,40 +159,46 @@ class DataHubClient:
         self._set_token(auth.get_token(self.url))
 
     def query(self, query: str, variables: dict[str, Any]) -> dict[str, Any]:
-        """Run a GraphQL query and return its data, retrying transient errors."""
+        """Run a GraphQL query and return its data."""
         signed_in_again = False
         for attempt in range(MAX_ATTEMPTS):
+            last_attempt = attempt == MAX_ATTEMPTS - 1
             try:
                 resp = self.session.post(
                     self.endpoint,
                     json={"query": query, "variables": variables},
                     timeout=REQUEST_TIMEOUT_SECONDS,
                 )
-                if resp.status_code == 401 and self.signed_in and not signed_in_again:
-                    self._sign_in_again()
-                    signed_in_again = True
-                    resp = self.session.post(
-                        self.endpoint,
-                        json={"query": query, "variables": variables},
-                        timeout=REQUEST_TIMEOUT_SECONDS,
-                    )
-                # Retrying won't fix a bad or expired token.
-                if resp.status_code in (401, 403):
-                    raise AuthError(f"HTTP {resp.status_code} from {self.endpoint}")
-                resp.raise_for_status()
-                body = resp.json()
-                if body.get("errors"):
-                    message = body["errors"][0].get("message") or ""
-                    if "maxRelations" in message:
-                        raise LineageTooLargeError(message)
-                    # DataHub reports overload (e.g. "Connection lease request
-                    # time out") as a GraphQL error on an HTTP 200, so retry.
-                    raise RuntimeError(message)
-                return body["data"]
-            except (requests.RequestException, RuntimeError):
-                if attempt == MAX_ATTEMPTS - 1:
+            except (requests.ConnectionError, requests.Timeout):
+                if last_attempt:
                     raise
                 time.sleep(2 ** (attempt + 1))
+                continue
+
+            if resp.status_code == 401 and self.signed_in and not signed_in_again:
+                self._sign_in_again()
+                signed_in_again = True
+                continue
+            # Retrying won't fix a bad or expired token.
+            if resp.status_code in (401, 403):
+                raise AuthError(f"HTTP {resp.status_code} from {self.endpoint}")
+            if resp.status_code == 429 or resp.status_code >= 500:
+                if last_attempt:
+                    resp.raise_for_status()
+                time.sleep(2 ** (attempt + 1))
+                continue
+            resp.raise_for_status()
+
+            body = resp.json()
+            if not body.get("errors"):
+                return body["data"]
+            message = body["errors"][0].get("message") or ""
+            if "maxRelations" in message:
+                raise LineageTooLargeError(message)
+            # DataHub reports overload as a GraphQL error on an HTTP 200.
+            if last_attempt or not any(m in message for m in TRANSIENT_ERRORS):
+                raise RuntimeError(message)
+            time.sleep(2 ** (attempt + 1))
         raise AssertionError("unreachable")
 
     def search_downstream(
@@ -366,6 +380,7 @@ def get_downstream_lineage(
     looker_tmp_days: Optional[int] = DEFAULT_LOOKER_TMP_DAYS,
     max_degree: Optional[int] = None,
     include_usage: bool = False,
+    types: Optional[set[str]] = None,
 ) -> list[dict[str, Any]]:
     """Return the downstream assets of a project.dataset.table.
 
@@ -383,6 +398,8 @@ def get_downstream_lineage(
     assets = [a for a in assets if not is_stale_looker_tmp(a["urn"], cutoff_ms)]
     if not include_deleted:
         assets = [a for a in assets if not a["deleted"]]
+    if types:
+        assets = [a for a in assets if a["type"] in types]
 
     if include_usage:
         # Usage is only recorded for BigQuery tables and views.
@@ -446,8 +463,8 @@ def format_text(
             + ([str(a["deleted"])] if show_deleted else [])
             + (
                 [
-                    "0" if a["queries_30d"] is None else str(a["queries_30d"]),
-                    "0" if a["users_30d"] is None else str(a["users_30d"]),
+                    "n/a" if a["queries_30d"] is None else str(a["queries_30d"]),
+                    "n/a" if a["users_30d"] is None else str(a["users_30d"]),
                     last_query_text(a),
                 ]
                 if usage_columns

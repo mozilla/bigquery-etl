@@ -9,6 +9,7 @@ owners:
 - jbuckley@mozilla.com
 - wdawson@mozilla.com
 labels:
+  authorized: true
   owner1: jbuckley
   owner2: wdawson
 workgroup_access:
@@ -16,6 +17,7 @@ workgroup_access:
   members:
   - workgroup:finops/billingetl-bq-scheduled
   - workgroup:mozilla-confidential/data-viewers
+  - workgroup:platform/access-events
   - workgroup:platform/backstage-gke
   - workgroup:platform/platform-tf
 references:

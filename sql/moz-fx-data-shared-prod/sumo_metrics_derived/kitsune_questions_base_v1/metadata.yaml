@@ -5,6 +5,8 @@ description: |
 
   The dates are in UTC timezone.
 
+  Spam and locked questions are excluded.
+
   Grain: Date x Product
 
   Single source of truth tracking:
@@ -40,4 +42,4 @@ workgroup_access:
   - workgroup:sumo/bq-automation
 references:
   query.sql:
-  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus

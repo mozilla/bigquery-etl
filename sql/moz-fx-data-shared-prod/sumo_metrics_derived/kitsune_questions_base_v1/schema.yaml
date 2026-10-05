@@ -15,7 +15,7 @@ fields:
 - name: forum_questions_posted
   type: INTEGER
   mode: NULLABLE
-  description: Total number of questions posted in the forum, excluding spam and locked questions.
+  description: Total number of questions posted in the forum.
 - name: generated_time
   type: TIMESTAMP
   mode: NULLABLE

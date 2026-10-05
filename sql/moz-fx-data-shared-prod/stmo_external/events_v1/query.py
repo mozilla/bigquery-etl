@@ -57,7 +57,6 @@ FROM
          action,
          object_type,
          object_id,
-         additional_properties,
          created_at
        FROM
          events

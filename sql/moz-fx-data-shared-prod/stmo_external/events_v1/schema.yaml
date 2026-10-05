@@ -23,10 +23,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: ID of the object the action was performed on.
-- name: additional_properties
-  type: JSON
-  mode: NULLABLE
-  description: JSON properties specific to the action.
 - name: created_at
   type: TIMESTAMP
   mode: NULLABLE

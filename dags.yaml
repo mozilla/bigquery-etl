@@ -1429,11 +1429,11 @@ bqetl_pageload_v1:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - wichan@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: wichan@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-04-01'

@@ -1,0 +1,18 @@
+2026-10-05:
+  start_date: 2016-02-23
+  end_date: 2026-10-03
+  reason: Initial load of Redash events history
+  watchers:
+  - bewu@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: main
+  query_script_date_arg: date
+  query_script_args:
+  - --destination-table=moz-fx-data-shared-prod.backfills_staging_derived.stmo_external__events_v1_2026_10_05
+  - --billing-project=moz-fx-data-backfill-slots
+  query_script_dry_run_arg: --dry-run

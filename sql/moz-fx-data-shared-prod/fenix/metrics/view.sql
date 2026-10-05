@@ -138,7 +138,8 @@ SELECT
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
-      metrics.boolean.power_saving_mode_active_at_startup
+      metrics.boolean.power_saving_mode_active_at_startup,
+      metrics.boolean.metrics_is_android_automotive
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2463,7 +2464,8 @@ SELECT
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
-      metrics.boolean.power_saving_mode_active_at_startup
+      metrics.boolean.power_saving_mode_active_at_startup,
+      metrics.boolean.metrics_is_android_automotive
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -4808,7 +4810,8 @@ SELECT
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
-      metrics.boolean.power_saving_mode_active_at_startup
+      metrics.boolean.power_saving_mode_active_at_startup,
+      metrics.boolean.metrics_is_android_automotive
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

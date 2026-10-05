@@ -1,0 +1,22 @@
+friendly_name: Plausible Sessions Metrics
+description: |-
+  Daily count of Plausible sessions (visits) to firefox.com. Plausible is only initialized in certain GEOs.
+
+  Total visits is SUM(entrances). Bounce rate is SUM(bounces) /
+  SUM(entrances); it exists only by entry page, not for pages in general.
+  Always filter on date.
+
+  Entrances to a page count only sessions that started on it. For all views
+  of a page, including views reached from other pages, use pageviews in
+  plausible_events_metrics.
+owners:
+- sherrera@mozilla.com
+labels:
+  owner1: sherrera
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.plausible_derived.sessions_metrics_v1

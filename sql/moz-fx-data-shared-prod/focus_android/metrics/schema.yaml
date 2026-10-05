@@ -14422,8 +14422,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'DirectWrite system fontlist initialization problem (1=GDI interop,
-        2=system font collection, 3=no fonts)
+      description: 'DirectWrite system fontlist initialization problem: 1=GDI interop
+        (removed in bug 2011408), 2=system font collection, 3=no fonts
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram DWRITEFONT_INIT_PROBLEM.

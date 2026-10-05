@@ -1,0 +1,22 @@
+friendly_name: Plausible Events Metrics
+description: |-
+  Daily count of Plausible events on firefox.com.
+
+  Every row belongs to one event_name, and event_count mixes all of them, so
+  always filter on event_name: use event_name = 'pageview' for pageviews.
+  Summing event_count without that filter overcounts, because engagement
+  events make up roughly half of all rows. A pageview is one page load, not
+  one visit; for visits (sessions) use plausible_sessions_metrics. For
+  downloads use plausible_download_metrics, not event_name =
+  'product_download'. Always filter on date.
+owners:
+- sherrera@mozilla.com
+labels:
+  owner1: sherrera
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.plausible_derived.events_metrics_v1

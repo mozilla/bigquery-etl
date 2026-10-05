@@ -4400,8 +4400,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'DirectWrite system fontlist initialization problem (1=GDI interop,
-        2=system font collection, 3=no fonts)
+      description: 'DirectWrite system fontlist initialization problem: 1=GDI interop
+        (removed in bug 2011408), 2=system font collection, 3=no fonts
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram DWRITEFONT_INIT_PROBLEM.
@@ -19178,8 +19178,12 @@ fields:
         ''shown_only_about_welcomeback'', ''shown_many_crashes'', ''shown_many_crashes_old_session''
         all indicate we did show the interstitial because of a crash, and the text
         after ''shown'' indicates what secondary reason there was to show this page
-        (as we don''t show it for ''just'' one crash). This metric was generated to
-        correspond to the Legacy Telemetry scalar browser.engagement.sessionrestore_interstitial.
+        (as we don''t show it for ''just'' one crash). ''shown_safe_mode'' also follows
+        a crash, but the interstitial is shown because we never automatically restore
+        in Safe Mode, whatever the crash count or session age. That case was not recorded
+        at all before Firefox 159, so the other ''shown'' keys undercount by however
+        often it happened. This metric was generated to correspond to the Legacy Telemetry
+        scalar browser.engagement.sessionrestore_interstitial.
 
         '
     - name: browser_is_user_default

@@ -24,8 +24,6 @@ SELECT
   action,
   object_type,
   object_id,
-  SAFE.PARSE_JSON(additional_properties, wide_number_mode => 'round')
-    AS additional_properties,
   created_at,
 FROM
   EXTERNAL_QUERY(

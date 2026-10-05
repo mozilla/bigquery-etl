@@ -426,11 +426,23 @@ def validate_col_desc_enforced(query_dir, metadata):
 
 
 def validate_deprecation(metadata, path):
-    """Check that deprecated is True when deletion date exists."""
+    """Check that deprecated and deletion_date are set together.
+
+    Tables of deprecated apps (`deprecated_app: true`) are exempt from
+    requiring a deletion_date.
+    """
     if metadata.deletion_date and not metadata.deprecated:
         click.echo(
             f"Deletion date should only be added when table is deprecated in {path}"
         )
+        return False
+
+    if (
+        metadata.deprecated
+        and metadata.deletion_date is None
+        and not metadata.deprecated_app
+    ):
+        click.echo(f"deletion_date required for deprecated table in {path}")
         return False
 
     return True

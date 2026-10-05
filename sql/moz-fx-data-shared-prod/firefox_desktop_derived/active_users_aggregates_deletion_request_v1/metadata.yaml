@@ -44,3 +44,4 @@ references:
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
   - mozdata.static.csa_gblmkt_languages
 deprecated: true
+deletion_date: 2026-10-01

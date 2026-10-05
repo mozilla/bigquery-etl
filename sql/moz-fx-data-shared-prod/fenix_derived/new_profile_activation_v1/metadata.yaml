@@ -32,4 +32,5 @@ references:
   - moz-fx-data-shared-prod.fenix.first_session
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 deprecated: true
+deletion_date: 2026-10-01
 require_column_descriptions: false

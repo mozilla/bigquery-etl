@@ -22,3 +22,4 @@ references:
   - moz-fx-data-shared-prod.fenix.baseline
   - moz-fx-data-shared-prod.fenix.metrics
 deprecated: true
+deletion_date: 2026-10-01

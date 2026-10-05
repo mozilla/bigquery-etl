@@ -32,3 +32,4 @@ references:
   - moz-fx-data-shared-prod.firefox_fire_tv.baseline_clients_last_seen
   - moz-fx-data-shared-prod.firefox_fire_tv.metrics_clients_last_seen
 deprecated: true
+deprecated_app: true

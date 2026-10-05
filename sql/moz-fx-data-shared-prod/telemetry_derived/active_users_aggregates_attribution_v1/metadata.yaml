@@ -41,4 +41,5 @@ references:
   - moz-fx-data-shared-prod.fenix.firefox_android_clients
   - moz-fx-data-shared-prod.telemetry.unified_metrics
 deprecated: true
+deletion_date: 2026-10-01
 require_column_descriptions: false

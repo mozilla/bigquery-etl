@@ -20,3 +20,4 @@ bigquery:
     - mailing_country
 workgroup_access: []
 deprecated: true
+deletion_date: 2026-10-01

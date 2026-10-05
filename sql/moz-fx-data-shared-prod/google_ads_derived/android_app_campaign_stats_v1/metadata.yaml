@@ -42,5 +42,6 @@ references:
   - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
   - moz-fx-data-shared-prod.ltv.fenix_client_ltv
 deprecated: true
+deletion_date: 2026-10-01
 monitoring:
   enabled: false

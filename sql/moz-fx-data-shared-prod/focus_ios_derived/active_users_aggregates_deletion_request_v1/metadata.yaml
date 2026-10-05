@@ -45,3 +45,4 @@ references:
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
   - mozdata.static.csa_gblmkt_languages
 deprecated: true
+deletion_date: 2026-10-01

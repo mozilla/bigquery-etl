@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.activity_stream.sessions
   - moz-fx-data-shared-prod.firefox_desktop.newtab
 deprecated: true
+deletion_date: 2026-10-01

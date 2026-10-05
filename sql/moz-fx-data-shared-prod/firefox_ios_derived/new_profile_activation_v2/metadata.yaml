@@ -35,3 +35,4 @@ references:
   - moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_v2
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 deprecated: true
+deletion_date: 2026-10-01

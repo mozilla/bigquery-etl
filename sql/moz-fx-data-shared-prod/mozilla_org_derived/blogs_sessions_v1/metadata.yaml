@@ -19,3 +19,4 @@ references:
   query.sql:
   - moz-fx-data-marketing-prod.66602784.ga_sessions_*
 deprecated: true
+deletion_date: 2026-10-01

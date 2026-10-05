@@ -42,3 +42,4 @@ references:
 deprecated: true
 monitoring:
   enabled: false
+deprecated_app: true

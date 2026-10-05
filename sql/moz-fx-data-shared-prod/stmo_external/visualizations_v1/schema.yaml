@@ -1,0 +1,33 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was last updated.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was created.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Visualization type, such as `CHART` or `TABLE`.
+- name: query_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the query the visualization belongs to, see `queries_v1`.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: Display name.
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: Description entered by the user.
+- name: options
+  type: JSON
+  mode: NULLABLE
+  description: JSON visualization options.

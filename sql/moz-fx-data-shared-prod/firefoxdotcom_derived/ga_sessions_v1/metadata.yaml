@@ -3,6 +3,7 @@ description: |-
   Contains 1 row for each Google Analytics 4 session
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik

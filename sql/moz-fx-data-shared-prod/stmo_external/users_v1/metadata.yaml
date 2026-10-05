@@ -1,0 +1,11 @@
+friendly_name: STMO Users
+description: >
+  A copy of the `users` table from the Redash (sql.telemetry.mozilla.org) metadata database,
+  excluding `api_key` and `password_hash`, updated daily to match the current state of the table.
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_stmo
+  date_partition_parameter: null

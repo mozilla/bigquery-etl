@@ -4,9 +4,8 @@ description: "One row per Fenix client per day on which an `onboarding.completed
   \ fired. A\nclient with completions arriving on more than one day has a row for\
   \ each, so\n`client_id` is not unique here \u2014 collapse on it before joining.\n\
   `fenix.onboarding_completed_clients` exposes this table unchanged;\n`fenix.retention_clients`\
-  \ takes `MIN(completed_date)` per client.\n\nCoverage will begin 2025-01-01 when\
-  \ the table is backfilled; until then it\nholds only the days since it was deployed.\
-  \ A client whose completions all fall\nbefore 2025-01-01 will not appear here."
+  \ takes `MIN(completed_date)` per client.\n\nCoverage begins 2025-01-01. A client\
+  \ whose completions all fall before\n2025-01-01 does not appear here."
 owners:
 - kbammarito@mozilla.com
 labels:

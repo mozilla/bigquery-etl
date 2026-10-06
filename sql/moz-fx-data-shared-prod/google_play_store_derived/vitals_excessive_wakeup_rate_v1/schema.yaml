@@ -14,13 +14,13 @@ fields:
   mode: NULLABLE
   description: Version of the app that was running on the user's device.
 
-- name: excessiveWakeupRate
+- name: excessive_wakeup_rate
   type: FLOAT
   mode: NULLABLE
   description: |-
     Percentage of distinct users in the aggregation period that had more than 10 wakeups per hour.
 
-- name: excessiveWakeupRate28dUserWeighted
+- name: excessive_wakeup_rate28d_user_weighted
   type: FLOAT
   mode: NULLABLE
   description: |-

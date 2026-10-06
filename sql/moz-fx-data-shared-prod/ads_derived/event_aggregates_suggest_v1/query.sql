@@ -40,7 +40,7 @@
       DATE(submission_timestamp) AS submission_date,
       'desktop' AS form_factor,
       -- The quick_suggest ping moved to OHTTP, which resolves geo from the forwarding
-      -- server's IP (≈US) instead of the client's. On OHTTP pings (identified by a
+      -- server's IP (US) instead of the client's. On OHTTP pings (identified by a
       -- missing User-Agent version) use the client-reported country, leaving it NULL
       -- when the client sent none; on direct pings the ingestion IP is the
       -- client, so use normalized_country_code.

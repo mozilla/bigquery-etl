@@ -1,0 +1,13 @@
+2026-10-07:
+  start_date: 2026-04-20
+  end_date: 2026-10-06
+  reason: Fill in Redash query_id and username for child jobs of scripts and jobs
+    without referenced tables (DENG-11404)
+  watchers:
+  - bewu@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

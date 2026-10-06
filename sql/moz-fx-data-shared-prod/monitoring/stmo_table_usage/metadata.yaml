@@ -1,0 +1,14 @@
+friendly_name: STMO Table Usage
+description: |-
+  Redash (sql.telemetry.mozilla.org) usage of each table in the last 180 days, with the queries
+  that read it and the non-archived dashboards that show those queries. Intended for finding
+  usage before deprecating a table.
+
+  One row per table which contains arrays of referencing queries and dashboards.
+
+  Users are people who ran a query, including by refreshing a dashboard, and exclude scheduled
+  runs. Failed statements are excluded, but earlier statements of a failed multi-statement query
+  are still counted. Tables are the ones BigQuery reports as referenced, so views are
+  reported as their underlying tables. Dashboard views exclude scripts that crawl Redash.
+owners:
+- bewu@mozilla.com

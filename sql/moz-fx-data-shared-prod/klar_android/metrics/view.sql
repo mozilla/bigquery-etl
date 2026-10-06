@@ -770,7 +770,8 @@ SELECT
       metrics.labeled_counter.media_speech_recognition_init_failure,
       metrics.labeled_counter.webrtc_get_user_media_source_granted,
       metrics.labeled_counter.geolocation_network_link_change,
-      metrics.labeled_counter.background_notification_helper_toggled
+      metrics.labeled_counter.background_notification_helper_toggled,
+      metrics.labeled_counter.web_notification_push_subscribe_origin
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

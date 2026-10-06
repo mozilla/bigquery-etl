@@ -1767,9 +1767,9 @@ fields:
 
         * A string which identify the extension (when available)
 
-        * Id of the addon.
-
         * Id of the addon (when available).
+
+        * Id of the addon.
 
         * A string which identifies the add-on. This value might be trimmed.
 
@@ -4124,9 +4124,9 @@ fields:
         can use more than one, e.g. install events with source "about:addons" may
         have "install-from-file" or "url" as method), one of: "amWebAPI", "drag-and-drop",
         "installTrigger", "install-from-file", "link", "management-webext-api", "sideload",
-        "synthetic-install", "url", "product-updates".
+        "onboarding", "rtamo", "synthetic-install", "url", "product-updates".
 
-        * The method used by the source to inst...'
+        * The method use...'
     - name: sourcedetails
       type: STRING
       mode: NULLABLE
@@ -4515,10 +4515,10 @@ fields:
 
         * The filename''s type, see `nsContentSecurityUtils::FilenameToFilenameType(...)`.
 
-        * The value is the ID of the add-on.
-
         * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
         parameter (i.e., the experiment slug).
+
+        * The value is the ID of the add-on.
 
         * The event value. This is either "started", "success", "decryptionError"
         or "encryptionError". "started" gets emitted at the start of the migrati...'

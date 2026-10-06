@@ -28077,7 +28077,7 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from about:home,
+            description: 'The count URI loads triggered in a subsession from about:home,
               broken down by the originating action.
 
               '
@@ -28091,7 +28091,7 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from about:newtab,
+            description: 'The count URI loads triggered in a subsession from about:newtab,
               broken down by the originating action.
 
               '
@@ -28105,8 +28105,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              contextmenu, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the contextmenu,
+              broken down by the originating action.
 
               '
         - name: browser_engagement_navigation_searchbar
@@ -28119,8 +28119,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              searchbar, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the searchbar,
+              broken down by the originating action.
 
               '
         - name: browser_engagement_navigation_urlbar
@@ -28133,8 +28133,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              urlbar (awesomebar), broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the urlbar
+              (awesomebar), broken down by the originating action.
 
               '
         - name: browser_engagement_navigation_urlbar_handoff
@@ -28147,8 +28147,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              urlbar via handoff, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
 
               '
         - name: browser_engagement_navigation_urlbar_persisted
@@ -28176,8 +28176,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              urlbar''s search mode, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the urlbar''s
+              search mode, broken down by the originating action.
 
               '
         - name: browser_engagement_navigation_webextension
@@ -28190,8 +28190,7 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from a
-              webextension.
+            description: 'The count URI loads triggered in a subsession from a webextension.
 
               '
         - name: browser_engagement_sessionrestore_interstitial
@@ -28371,8 +28370,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              urlbar via handoff, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
 
               '
         - name: browser_search_adclicks_urlbar_persisted
@@ -28562,8 +28561,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              urlbar via handoff, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
 
               '
         - name: browser_search_content_urlbar_persisted
@@ -28766,8 +28765,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-            description: 'The count of URI loads triggered in a subsession from the
-              urlbar via handoff, broken down by the originating action.
+            description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
 
               '
         - name: browser_search_withads_urlbar_persisted

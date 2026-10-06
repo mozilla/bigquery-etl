@@ -20395,6 +20395,19 @@ fields:
         the gate closed records nothing.
 
         '
+    - name: web_notification_push_subscribe_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The category of the origin that calls PushManager.subscribe().
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

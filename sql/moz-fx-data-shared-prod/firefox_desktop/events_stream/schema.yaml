@@ -3117,9 +3117,9 @@ fields:
 
         * A string which identify the extension (when available)
 
-        * Id of the addon.
-
         * Id of the addon (when available).
+
+        * Id of the addon.
 
         * A string which identifies the add-on. This value might be trimmed.
 
@@ -6416,9 +6416,9 @@ fields:
         can use more than one, e.g. install events with source "about:addons" may
         have "install-from-file" or "url" as method), one of: "amWebAPI", "drag-and-drop",
         "installTrigger", "install-from-file", "link", "management-webext-api", "sideload",
-        "synthetic-install", "url", "product-updates".
+        "onboarding", "rtamo", "synthetic-install", "url", "product-updates".
 
-        * The method used by the source to inst...'
+        * The method use...'
     - name: sourcedetails
       type: STRING
       mode: NULLABLE

@@ -2581,6 +2581,12 @@ fields:
         to receive push messages, counted when Firefox is launched with --receive-push-messages.
 
         '
+    - name: mailnews_graph_graph_accounts
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of Microsoft Graph servers a user has configured.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -19276,6 +19282,19 @@ fields:
         own switch only: the Nimbus-owned gate that can withdraw the feature is not
         a user action and is not counted here, so a client whose helper stops because
         the gate closed records nothing.
+
+        '
+    - name: web_notification_push_subscribe_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The category of the origin that calls PushManager.subscribe().
 
         '
   - name: labeled_string

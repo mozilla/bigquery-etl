@@ -16,7 +16,7 @@
       subdivision1: DC
     user_agent:
       os: Android
-      version: 130
+      version: "130"
   normalized_channel: release
   normalized_country_code: US
 - <<: *suggest_base

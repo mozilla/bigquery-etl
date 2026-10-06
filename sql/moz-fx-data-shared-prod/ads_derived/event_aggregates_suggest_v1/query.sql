@@ -39,14 +39,14 @@
       metrics.uuid.quick_suggest_context_id AS context_id,
       DATE(submission_timestamp) AS submission_date,
       'desktop' AS form_factor,
-      -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
-      -- receives geo information from the client rather than from Glean ingestion's
-      -- IP geolocation. Pick the trustworthy country per-ping:
-      -- OHTTP pings (user_agent.version IS NULL) have correct client-reported country;
-      -- legacy pings have reliable ingestion geo but an unreliable client field.
+      -- The quick_suggest ping moved to OHTTP, which resolves geo from the forwarding
+      -- server's IP (≈US) instead of the client's. On OHTTP pings (identified by a
+      -- missing User-Agent version) use the client-reported country, leaving it NULL
+      -- when the client sent none; on direct pings the ingestion IP is the
+      -- client, so use normalized_country_code.
       CASE
         WHEN metadata.user_agent.version IS NULL
-          THEN COALESCE(NULLIF(metrics.string.quick_suggest_country, ''), normalized_country_code)
+          THEN NULLIF(metrics.string.quick_suggest_country, '')
         ELSE normalized_country_code
       END AS country,
       LOWER(metrics.string.quick_suggest_advertiser) AS advertiser,
@@ -137,13 +137,13 @@
       metrics.uuid.fx_suggest_context_id AS context_id,
       DATE(submission_timestamp) AS submission_date,
       'phone' AS form_factor,
-      -- fx_suggest moved to OHTTP: ingestion geo becomes the gateway's IP (US), so
-      -- use the client-reported country on OHTTP pings (user_agent.version IS NULL);
-      -- fall back to ingestion for direct pings, where older clients send no client
-      -- country.
+      -- fx_suggest moved to OHTTP, which resolves geo from the gateway's IP (US)
+      -- instead of the client's. On OHTTP pings (missing User-Agent version) use the
+      -- client-reported country, leaving it NULL when the client sent none; on direct
+      -- pings the ingestion IP is the client.
       CASE
         WHEN metadata.user_agent.version IS NULL
-          THEN COALESCE(NULLIF(metrics.string.fx_suggest_country, ''), normalized_country_code)
+          THEN NULLIF(metrics.string.fx_suggest_country, '')
         ELSE normalized_country_code
       END AS country,
       metrics.string.fx_suggest_advertiser AS advertiser,
@@ -176,12 +176,13 @@
       metrics.uuid.fx_suggest_context_id AS context_id,
       DATE(submission_timestamp) AS submission_date,
       'phone' AS form_factor,
-      -- fx_suggest moved to OHTTP: ingestion geo becomes the gateway's IP (US), so
-      -- use the client-reported country on OHTTP pings (user_agent.version IS NULL);
-      -- fall back to ingestion for direct pings.
+      -- fx_suggest moved to OHTTP, which resolves geo from the gateway's IP (US)
+      -- instead of the client's. On OHTTP pings (missing User-Agent version) use the
+      -- client-reported country, leaving it NULL when the client sent none; on direct
+      -- pings the ingestion IP is the client.
       CASE
         WHEN metadata.user_agent.version IS NULL
-          THEN COALESCE(NULLIF(metrics.string.fx_suggest_country, ''), normalized_country_code)
+          THEN NULLIF(metrics.string.fx_suggest_country, '')
         ELSE normalized_country_code
       END AS country,
       metrics.string.fx_suggest_advertiser AS advertiser,

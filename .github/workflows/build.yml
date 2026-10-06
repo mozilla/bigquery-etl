@@ -103,6 +103,7 @@ jobs:
           files: |
             bqetl_project.yaml
             bigquery_etl/**
+            sql_generators/**
             tests/**
             script/bqetl
             script/entrypoint

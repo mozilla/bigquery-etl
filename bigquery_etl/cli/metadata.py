@@ -20,8 +20,11 @@ from bigquery_etl.metadata.publish_metadata import publish_metadata
 from bigquery_etl.metadata.validate_metadata import (
     MetadataValidationError,
     validate_default_table_workgroup_access,
-    validate_workgroup_access,
 )
+from bigquery_etl.metadata.validate_metadata import (
+    validate_deprecation as validate_deprecation_metadata,
+)
+from bigquery_etl.metadata.validate_metadata import validate_workgroup_access
 
 from ..cli.utils import (
     parallelism_option,
@@ -334,6 +337,44 @@ def deprecate(
 
     if not table_metadata_files:
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
+
+
+@metadata.command(help="""
+    Validate that deprecation metadata is valid.
+    Used by CI to ensure that manual metadata edits have all required info.
+
+    Example:
+     ./bqetl metadata validate-deprecation path/to/metadata.yaml path/to/other/metadata.yaml
+    """)
+@click.argument("metadata_files", nargs=-1)
+def validate_deprecation(metadata_files: list[str]):
+    """Validate that deprecation metadata is valid."""
+    failed_files = set()
+    if not metadata_files:
+        skip_validation = ConfigLoader.get(
+            "metadata", "validation", "skip", fallback=[]
+        )
+        metadata_files = [
+            str(file)
+            for file in paths_matching_name_pattern(
+                None, "sql", project_id=None, files=["metadata.yaml"]
+            )
+            if str(file) not in skip_validation
+        ]
+
+    for file in metadata_files:
+        if Metadata.is_metadata_file(file):
+            metadata = Metadata.from_file(file)
+            if not validate_deprecation_metadata(metadata, file):
+                failed_files.add(file)
+
+    if len(failed_files) > 0:
+        click.echo(click.style("Deprecation metadata invalid for:", fg="red"))
+        for file in sorted(failed_files):
+            click.echo(click.style(str(file), fg="red"))
+        raise MetadataValidationError(
+            f"Deprecation metadata invalid for: {failed_files}."
+        )
 
 
 @metadata.command(help="""

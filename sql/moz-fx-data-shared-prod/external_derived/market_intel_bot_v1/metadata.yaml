@@ -1,4 +1,5 @@
 deprecated: true
+deletion_date: 2026-10-01
 friendly_name: Market Intel Bot V1
 description: |-
   Runs monthly to summarize market research.

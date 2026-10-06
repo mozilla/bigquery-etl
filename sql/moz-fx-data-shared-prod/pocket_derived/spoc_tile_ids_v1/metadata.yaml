@@ -12,3 +12,4 @@ workgroup_access:
     members:
       - workgroup:pocket/prefect
 deprecated: true
+deletion_date: 2026-10-01

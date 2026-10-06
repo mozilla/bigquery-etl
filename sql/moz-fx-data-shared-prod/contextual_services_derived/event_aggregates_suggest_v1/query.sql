@@ -17,9 +17,8 @@ combined AS (
     -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
     -- receives geo information from the client rather than from Glean ingestion's
     -- IP geolocation. Pick the trustworthy country per-ping:
-    -- OHTTP pings (user_agent.version IS NULL) have an always-populated, correct
-    -- client-reported country; legacy pings have reliable ingestion geo but an
-    -- unreliable client field.
+    -- OHTTP pings (user_agent.version IS NULL) have correct client-reported country;
+    -- legacy pings have reliable ingestion geo but an unreliable client field.
     CASE
       WHEN metadata.user_agent.version IS NULL
         THEN COALESCE(NULLIF(metrics.string.quick_suggest_country, ''), normalized_country_code)

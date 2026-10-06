@@ -225,24 +225,34 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
             }
         )
 
-    upstream_stable_tables: Dict[str, Set[str]] = {}
-
     def traverse_upstream(base_table: str) -> Set[str]:
-        """Recursively traverse lineage to find stable tables."""
+        """Find all stable tables reachable upstream of the given table.
+
+        Results aren't cached per table because the lineage graph can contain cycles
+        and a partial result for a table in a cycle would be incorrect.
+        """
         if is_stable_table(base_table):  # stable tables are terminal nodes
             return {base_table}
-        if base_table not in upstream_stable_tables:
-            upstream_stable_tables[base_table] = set()
-            for parent_table in parent_tables[base_table]:
-                upstream_stable_tables[base_table] |= traverse_upstream(parent_table)
+        stable_tables = set()
+        seen = {base_table}
+        to_visit = [base_table]
+        while to_visit:
+            for parent_table in parent_tables[to_visit.pop()]:
+                if parent_table in seen:
+                    continue
+                seen.add(parent_table)
+                if is_stable_table(parent_table):
+                    stable_tables.add(parent_table)
+                else:
+                    to_visit.append(parent_table)
 
-        return upstream_stable_tables[base_table]
+        return stable_tables
 
     upstream_stable_table_map = {}
 
     print("Upstream stable tables:")
     for table_name in id_tables:
-        upstream_stable_table_map[table_name] = set(traverse_upstream(table_name))
+        upstream_stable_table_map[table_name] = traverse_upstream(table_name)
         print(f"{table_name} upstream: {upstream_stable_table_map[table_name]}")
 
     return upstream_stable_table_map

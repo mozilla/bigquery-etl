@@ -113,8 +113,15 @@ combined AS (
     metrics.uuid.fx_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
     'phone' AS form_factor,
-    -- With shift to OHTTP, we expect to stop receiving normalized_country_code soon
-    COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
+    -- fx_suggest moved to OHTTP: ingestion geo becomes the gateway's IP (US), so
+    -- use the client-reported country on OHTTP pings (user_agent.version IS NULL);
+    -- fall back to ingestion for direct pings, where older clients send no client
+    -- country.
+    CASE
+      WHEN metadata.user_agent.version IS NULL
+        THEN COALESCE(NULLIF(metrics.string.fx_suggest_country, ''), normalized_country_code)
+      ELSE normalized_country_code
+    END AS country,
     metrics.string.fx_suggest_advertiser AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
@@ -145,7 +152,14 @@ combined AS (
     metrics.uuid.fx_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
     'phone' AS form_factor,
-    COALESCE(metrics.string.fx_suggest_country, normalized_country_code) AS country,
+    -- fx_suggest moved to OHTTP: ingestion geo becomes the gateway's IP (US), so
+    -- use the client-reported country on OHTTP pings (user_agent.version IS NULL);
+    -- fall back to ingestion for direct pings.
+    CASE
+      WHEN metadata.user_agent.version IS NULL
+        THEN COALESCE(NULLIF(metrics.string.fx_suggest_country, ''), normalized_country_code)
+      ELSE normalized_country_code
+    END AS country,
     metrics.string.fx_suggest_advertiser AS advertiser,
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed

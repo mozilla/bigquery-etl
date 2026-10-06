@@ -188,7 +188,7 @@ class MonitoringMetadata:
     )
     # Bigeye workspace ID this table is registered in. When unset, monitoring
     # commands fall back to the --workspace CLI flag default. Must be one of
-    # `monitoring.bigeye_workspace_ids` in bqetl_project.yaml.
+    # `monitoring.bigeye_workspaces` in bqetl_project.yaml.
     workspace: Optional[int] = attr.ib(None)
 
 

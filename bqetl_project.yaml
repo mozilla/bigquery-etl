@@ -28,23 +28,19 @@ coding_agents:
   - moz-fx-data-proto
 
 monitoring:
-  bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
-  bigeye_workspace_ids:
-  - 463
-  - 508
-  - 509
-  - 661
-  # Per-workspace BigQuery warehouse IDs. Required for tables whose
-  # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
-  # single workspace, so an API call to one workspace's warehouse ID won't
-  # see metrics in another workspace. Falls back to bigeye_warehouse_id
-  # when a workspace isn't listed here (preserves single-workspace behavior).
-  bigeye_warehouses:
-    463: 1939
-    508: 2014
-    509: 1977
-    661: 2846
+  # Bigeye warehouses belong to a single workspace, so an API call to one workspace's warehouse ID
+  # won't see metrics in another workspace.
+  bigeye_workspaces:
+    463: # Mozilla default
+      warehouse: 1939
+    508: # Mozilla Ads
+      warehouse: 2014
+    509: # Mozilla Revenue - Cat 1
+      warehouse: 1977
+    661: # Marketing
+      warehouse: 2846
+  default_bigeye_workspace: 463
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:

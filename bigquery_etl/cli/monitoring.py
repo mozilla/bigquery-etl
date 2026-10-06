@@ -63,24 +63,29 @@ METRIC_STATUS_FAILURES = [
 ]
 
 
+def _workspace_config(workspace_id: int) -> dict:
+    """Return the Bigeye workspace's config from `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."""
+    workspaces = ConfigLoader.get("monitoring", "bigeye_workspaces", fallback={})
+    if workspace_id not in workspaces:
+        raise click.ClickException(
+            f"Workspace {workspace_id} isn't configured in `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."
+        )
+    return workspaces[workspace_id]
+
+
 def _resolve_workspace(metadata: Metadata, default_workspace: int) -> int:
     """Return the Bigeye workspace ID for a table.
 
-    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the
-    --workspace CLI flag default. Validates against
-    `monitoring.bigeye_workspace_ids` in bqetl_project.yaml when configured.
+    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the --workspace CLI flag default.
+    Validates against the `monitoring.bigeye_workspaces` config in `bqetl_project.yaml`.
     """
     workspace_id = (
         metadata.monitoring.workspace
         if metadata.monitoring and metadata.monitoring.workspace is not None
         else default_workspace
     )
-    allowed = ConfigLoader.get("monitoring", "bigeye_workspace_ids", fallback=None)
-    if allowed and workspace_id not in allowed:
-        raise click.ClickException(
-            f"workspace {workspace_id} is not in monitoring.bigeye_workspace_ids "
-            f"({allowed}) configured in bqetl_project.yaml"
-        )
+    # Verify the workspace is configured.
+    _workspace_config(workspace_id)
     return workspace_id
 
 
@@ -90,18 +95,26 @@ def _client_for_workspace(api_auth: APIKeyAuth, workspace_id: int):
 
 
 def _warehouse_id_for_workspace(workspace_id: int) -> int:
-    """Return the Bigeye BQ warehouse ID for the given workspace.
+    """Return the Bigeye warehouse ID configured in `monitoring.bigeye_workspaces` for the given workspace.
 
     Bigeye warehouses belong to a single workspace, so calls like
     `get_metric_info_batch_post(warehouse_ids=[...])` only return metrics from
-    that workspace's warehouse. Looks up `monitoring.bigeye_warehouses` first
-    and falls back to the singular `monitoring.bigeye_warehouse_id` for
-    back-compat.
+    that workspace's warehouse.
     """
-    warehouses = ConfigLoader.get("monitoring", "bigeye_warehouses", fallback={}) or {}
-    if workspace_id in warehouses:
-        return warehouses[workspace_id]
-    return ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+    workspace_config = _workspace_config(workspace_id)
+    if "warehouse" not in workspace_config:
+        raise click.ClickException(
+            f"Workspace {workspace_id} has no warehouse configured in `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."
+        )
+    return workspace_config["warehouse"]
+
+
+workspace_option = click.option(
+    "--workspace",
+    type=int,
+    default=ConfigLoader.get("monitoring", "default_bigeye_workspace", fallback=463),
+    help="Bigeye workspace to use when authenticating to API.",
+)
 
 
 @click.group(help="""
@@ -124,11 +137,7 @@ def monitoring(ctx):
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -296,11 +305,7 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -658,11 +663,7 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -762,11 +763,7 @@ def set_partition_column(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -865,11 +862,7 @@ def delete(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",

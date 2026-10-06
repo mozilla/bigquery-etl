@@ -18,11 +18,18 @@ ping_data AS (
       "click",
       "impression"
     ) AS interaction_type,
-    -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
-    -- receives geo information from the client rather than from Glean ingestion's
-    -- IP geolocation. We no longer send subdivision, only country.
-    COALESCE(metadata.geo.country, metrics.string.quick_suggest_country) AS country_code,
-    metadata.geo.subdivision1 AS region_code,
+    -- The quick_suggest ping moved to OHTTP, which resolves geo from the forwarding
+    -- server's IP (US) instead of the client's. On OHTTP pings (identified by a
+    -- missing User-Agent version) use the client-reported country, leaving it NULL
+    -- when the client sent none; on direct pings the ingestion IP is the client.
+    CASE
+      WHEN metadata.user_agent.version IS NULL
+        THEN NULLIF(metrics.string.quick_suggest_country, '')
+      ELSE metadata.geo.country
+    END AS country_code,
+    -- Subdivision is only the forwarding server's on OHTTP pings, so keep it for
+    -- direct pings only.
+    IF(metadata.user_agent.version IS NULL, NULL, metadata.geo.subdivision1) AS region_code,
     metadata.user_agent.os AS os_family,
     metadata.user_agent.version AS product_version,
   FROM
@@ -30,7 +37,7 @@ ping_data AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_advertiser != "wikipedia"
-    AND metrics.url.quick_suggest_reporting_url IS NOT NULL
+    AND metrics.url2.quick_suggest_reporting_url IS NOT NULL
     AND metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL
   SELECT DISTINCT

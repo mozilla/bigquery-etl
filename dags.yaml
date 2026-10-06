@@ -2890,7 +2890,7 @@ bqetl_customer_experience:
     - repo/bigquery-etl
 
 bqetl_stmo:
-  schedule_interval: 0 4 * * *
+  schedule_interval: 0 8 * * *
   description: |
     Daily copies of tables from the Redash (sql.telemetry.mozilla.org) metadata
     database in Cloud SQL into stmo_external.

@@ -80,7 +80,7 @@ LINEAGE_PARENT = "projects/moz-fx-data-shared-prod/locations/us"
 LINEAGE_BATCH_SIZE = 20
 LINEAGE_MAX_RESULTS = 10_000
 # Deadline for consuming the entire stream of a single request
-LINEAGE_STREAM_TIMEOUT = 120
+LINEAGE_STREAM_TIMEOUT = 90
 
 # The lineage API intermittently returns 503s that usually succeed on the next attempt.
 # Retries are kept short so persistent errors fail the task and are retried by airflow.
@@ -91,10 +91,10 @@ LINEAGE_RETRY = retry.Retry(
         exceptions.TooManyRequests,
         exceptions.InternalServerError,
     ),
-    initial=1.0,
-    maximum=16.0,
-    multiplier=2.0,
-    timeout=60.0,
+    initial=1,
+    maximum=16,
+    multiplier=2,
+    timeout=90,
 )
 
 

@@ -13,13 +13,9 @@ from google.cloud import bigquery
 
 CONNECTION = "moz-fx-data-stmo-prod-33f2.us.stmo-cloudsql-prod"
 
-# events has no index on created_at, so filtering on it alone scans the whole
-# table (about 40M rows and 18 GB). ids are assigned in roughly created_at order,
-# so the recursive CTE binary searches the primary key for an id range that
-# covers the day, and the created_at filter then picks the exact rows out of it.
-# The order isn't strict because created_at is set when the transaction starts:
-# the newest 300k rows had created_at out of id order by up to 200 seconds, so
-# each bound is searched for an hour outside the day.
+# created_at isn't indexed, so filtering on it alone scans the whole table.
+# ids roughly follow created_at, so this binary searches the primary key for an
+# id range around the day, padded by a day on each side for out-of-order rows.
 QUERY = '''
 SELECT
   id,
@@ -28,8 +24,6 @@ SELECT
   action,
   object_type,
   object_id,
-  SAFE.PARSE_JSON(additional_properties, wide_number_mode => 'round')
-    AS additional_properties,
   created_at,
 FROM
   EXTERNAL_QUERY(
@@ -61,7 +55,6 @@ FROM
          action,
          object_type,
          object_id,
-         additional_properties,
          created_at
        FROM
          events
@@ -108,8 +101,8 @@ def main(date, billing_project, destination_table, dry_run):
         connection=CONNECTION,
         start=start,
         end=end,
-        lower_target=f"{start} - INTERVAL '1 hour'",
-        upper_target=f"{end} + INTERVAL '1 hour'",
+        lower_target=f"{start} - INTERVAL '1 day'",
+        upper_target=f"{end} + INTERVAL '1 day'",
     )
     partition = f"{destination_table}${date.strftime('%Y%m%d')}"
 

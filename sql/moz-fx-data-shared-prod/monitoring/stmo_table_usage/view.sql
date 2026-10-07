@@ -12,7 +12,7 @@ WITH jobs AS (
   FROM
     `moz-fx-data-shared-prod.monitoring.bigquery_usage`
   WHERE
-    submission_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 180 DAY)
+    submission_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
     AND user_type = 'redash'
     AND error_reason IS NULL
     AND reference_table_id IS NOT NULL
@@ -66,7 +66,7 @@ dashboard_view_events AS (
   FROM
     `moz-fx-data-shared-prod.stmo_external.events_v1`
   WHERE
-    created_at >= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 180 DAY))
+    created_at >= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY))
     AND action = 'view'
     AND object_type = 'dashboard'
   -- Exclude scripts that crawl Redash, which view nearly every dashboard each day

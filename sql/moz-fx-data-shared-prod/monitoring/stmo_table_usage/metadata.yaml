@@ -1,6 +1,6 @@
 friendly_name: STMO Table Usage
 description: |-
-  Redash (sql.telemetry.mozilla.org) usage of each table in the last 180 days, with the queries
+  Redash (sql.telemetry.mozilla.org) usage of each table in the last 90 days, with the queries
   that read it and the non-archived dashboards that show those queries. Intended for finding
   usage before deprecating a table.
 

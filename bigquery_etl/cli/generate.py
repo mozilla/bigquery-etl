@@ -18,7 +18,11 @@ SQL_GENERATORS_DIR = Path(
     ConfigLoader.get("default", "sql_generators_dir", fallback="sql_generators")
 )
 if not SQL_GENERATORS_DIR.is_absolute():
-    SQL_GENERATORS_DIR = resolve_project_subpath(SQL_GENERATORS_DIR)
+    SQL_GENERATORS_DIR = (
+        SQL_GENERATORS_DIR.absolute()
+        if SQL_GENERATORS_DIR.exists()
+        else resolve_project_subpath(SQL_GENERATORS_DIR)
+    )
 
 
 def generate_group(sql_generators_dir):

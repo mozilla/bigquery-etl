@@ -2897,9 +2897,8 @@ fields:
         ERROR_NAME is either a DOMException error name or "OtherError" in case of
         non-DOMException errors).
 
-        * The reason for showing the authentication window.
-
-        * A string that identifies the reason for resetting the sto...'
+        * A string that identifies the reason for resetting the storage.local IndexedDB
+        database. e.g. - "ObjectStoreNo...'
     - name: redirects
       type: STRING
       mode: NULLABLE

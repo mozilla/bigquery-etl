@@ -2719,14 +2719,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Records the reason that resulted in an abandonment. The possible values
-        are: `blur` and `tab_switch`.
-
         * Records how the search session ended. `blur` is recorded when the input
         lost focus, `tab_switch` when a tab switch left the input focused. Only the
         address bar can stay focused across a tab switch, and only when the switch
         goes to a tab that already had it focused or to a newly opened tab. Every
-        other tab switch takes focus out of the input and so records `blur`.'
+        other tab switch takes focus out of the input and so records `blur`.
+
+        * Records the reason that resulted in an abandonment. The possible values
+        are: `blur` and `tab_switch`.'
     - name: about_config_change
       type: STRING
       mode: NULLABLE

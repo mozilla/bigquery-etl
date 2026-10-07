@@ -500,6 +500,35 @@ fields:
         May be null if no contextual information was provided.
 
         '
+    - name: ad_account_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Identifier for the account in the onboarding api that owns that
+        the advertiser is associated with. May be null if the ad did not originate
+        from onboarding.
+
+        '
+    - name: ad_advertiser_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Identifier for the advertiser in the onboarding api. May be null
+        if the ad did not originate from onboarding.
+
+        '
+    - name: ad_campaign_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Identifier for the campaign in the onboarding api. May be null
+        if the ad did not originate from onboarding.
+
+        '
+    - name: ad_rate
+      type: STRING
+      mode: NULLABLE
+      description: 'Rate configured for the ad set (called line item here) in the
+        onboarding api. May be null if the ad did not originate from onboarding.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

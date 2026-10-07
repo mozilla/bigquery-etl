@@ -1244,7 +1244,8 @@ SELECT
       metrics.labeled_counter.browser_engine_full_page_capture_result,
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
-      metrics.labeled_counter.web_notification_push_subscribe_origin
+      metrics.labeled_counter.web_notification_push_subscribe_origin,
+      metrics.labeled_counter.geolocation_request_activation
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3571,7 +3572,8 @@ SELECT
       metrics.labeled_counter.browser_engine_full_page_capture_result,
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
-      metrics.labeled_counter.web_notification_push_subscribe_origin
+      metrics.labeled_counter.web_notification_push_subscribe_origin,
+      metrics.labeled_counter.geolocation_request_activation
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5918,7 +5920,8 @@ SELECT
       metrics.labeled_counter.browser_engine_full_page_capture_result,
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
-      metrics.labeled_counter.web_notification_push_subscribe_origin
+      metrics.labeled_counter.web_notification_push_subscribe_origin,
+      metrics.labeled_counter.geolocation_request_activation
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

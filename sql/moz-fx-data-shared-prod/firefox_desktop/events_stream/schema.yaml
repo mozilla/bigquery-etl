@@ -3117,9 +3117,9 @@ fields:
 
         * A string which identify the extension (when available)
 
-        * Id of the addon (when available).
-
         * Id of the addon.
+
+        * Id of the addon (when available).
 
         * A string which identifies the add-on. This value might be trimmed.
 
@@ -5783,6 +5783,8 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Selected provider id.
+
         * The name of the `UrlbarProvider` that provided the selected result. The
         possible values are: `AboutPages`, `AliasEngines`, `Autofill`, `BookmarkKeywords`,
         `calculator`, `UrlbarProviderContextualSearch`, `HeuristicFallback`, `HistoryUrlHeuristic`,
@@ -5794,8 +5796,6 @@ fields:
         And also, if selected_result is `experimental_addon`, it means that the user
         selected a result from an add-on using the urlbar experimental API. In this
         case, this will be the provider name specified by the add-on.
-
-        * Selected provider id.
 
         * Which provider was last selected.
 

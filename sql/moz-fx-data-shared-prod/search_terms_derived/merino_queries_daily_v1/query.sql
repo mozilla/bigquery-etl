@@ -6,7 +6,7 @@ WITH all_queries AS (
     country,
     form_factor
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4`
   WHERE
     DATE(`timestamp`) = @submission_date
 )

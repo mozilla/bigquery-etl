@@ -6,8 +6,10 @@ Writes one row per profiled column to a single destination table
 (``column_profiles_v1``) in ``data_governance_metadata_derived``, tagged with
 ``source_dataset``/``source_table``. Profiles every base table in each
 ``--source-datasets`` entry (default ``telemetry_derived,telemetry``), or a
-``--tables`` subset. A single run accumulates all rows and overwrites its own
-``profiled_at`` date partition in one load, so the job is idempotent.
+``--tables`` subset. A run flushes profiled rows to a per-run staging table
+incrementally (bounded memory), then atomically replaces its ``profiled_at`` date
+partition from staging once the whole run succeeds — so a failure never leaves the
+partition partially written, and re-runs replace it cleanly.
 
 The profiling logic is vendored verbatim from
 ``data-shared-llm-agents/scripts/bq_profiler.py`` so this script depends only on
@@ -38,6 +40,12 @@ _MAX_PROFILABLE_COLUMNS = 500
 # otherwise dominate the accumulated rows and OOM the pod (DENG-11334).
 _TOP_VALUES_K = 50
 _MAX_VALUE_CHARS = 256
+# Flush buffered profile rows to BigQuery whenever the buffer reaches either
+# bound, so peak memory stays bounded regardless of table count (DENG-11439).
+# Bytes is the primary bound (rows are variable-size, dominated by the capped
+# example / top-value strings); the row count is a coarse safety cap.
+_LOAD_BATCH_BYTES = 64 * 1024 * 1024
+_LOAD_BATCH_ROWS = 50_000
 _TIER3_COLUMNS = {"metrics"}
 
 # Profile each table's most recent non-empty partition within the last
@@ -836,32 +844,43 @@ def build_rows(profile: dict[str, Any], profiled_at: str) -> list[dict[str, Any]
     return records
 
 
-def save_profiles(
+def _estimate_batch_bytes(rows: list[dict[str, Any]]) -> int:
+    """Roughly size a batch of profile rows for the flush decision (DENG-11439).
+
+    Dominated by the capped string fields (example value + top values); used only
+    to decide when to flush, so an approximation is fine.
+    """
+    total = 0
+    for row in rows:
+        total += len(row.get("example_value") or "")
+        total += sum(len(v.get("value") or "") for v in (row.get("values") or []))
+        total += 256  # coarse overhead for the identity / scalar fields
+    return total
+
+
+def _load_rows(
     client: bigquery.Client,
     rows: list[dict[str, Any]],
-    date: str,
-    destination_project: str,
-    destination_dataset: str,
-    destination_table: str,
+    table_ref: str,
 ) -> None:
-    """Overwrite the run's date partition with all profiled column rows."""
+    """Append a batch of profiled column rows to ``table_ref`` (the staging table).
+
+    Sets the schema + profiled_at DAY partitioning + clustering to match both the
+    per-run staging table and the final destination, so the batch loads cleanly and
+    the later copy into the destination partition preserves clustering. main()
+    flushes rows here incrementally, then copies staging into the destination
+    partition atomically once the whole run succeeds (DENG-11439).
+    """
     job_config = bigquery.LoadJobConfig()
     job_config.schema = _COLUMN_PROFILES_SCHEMA
-    job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_TRUNCATE
+    job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_APPEND
     job_config.time_partitioning = bigquery.TimePartitioning(
         type_=bigquery.TimePartitioningType.DAY, field="profiled_at"
     )
-    # Must match the destination table's clustering, otherwise loads into a
-    # clustered table fail with "Incompatible table partitioning specification".
+    # Match the staging/destination clustering, else the load fails with
+    # "Incompatible table partitioning specification".
     job_config.clustering_fields = ["source_dataset", "source_table", "column_name"]
-
-    partition_date = date.replace("-", "")
-    client.load_table_from_json(
-        rows,
-        f"{destination_project}.{destination_dataset}.{destination_table}"
-        f"${partition_date}",
-        job_config=job_config,
-    ).result()
+    client.load_table_from_json(rows, table_ref, job_config=job_config).result()
 
 
 def parse_args() -> argparse.Namespace:
@@ -1051,78 +1070,144 @@ def main() -> None:
         )
 
     rows: list[dict[str, Any]] = []
+    buffer_bytes = 0
+    rows_written = 0
     profiled = 0
     hard_failures = 0
     total_gb_scanned = 0.0
-    with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
-        futures = {executor.submit(_profile_one, item): item for item in work}
-        for future in as_completed(futures):
-            dataset, table_name = futures[future]
-            try:
-                _, profile_json = future.result()
-            except Exception as e:
-                logger.warning("Profiling raised for %s.%s: %s", dataset, table_name, e)
-                hard_failures += 1
-                continue
 
-            profile = json.loads(profile_json)
-            if "error" in profile:
-                msg = profile["error"]
-                if any(marker in msg for marker in _BENIGN_ERROR_MARKERS):
-                    logger.info("Skipping %s.%s: %s", dataset, table_name, msg)
-                else:
+    partition_date = args.date.replace("-", "")
+    dest = (
+        f"{args.destination_project}.{args.destination_dataset}."
+        f"{args.destination_table}"
+    )
+    # Per-run staging table: each flush appends here, then a single copy job moves
+    # the whole result into the destination partition once the run succeeds. This
+    # keeps the write atomic — a mid-run failure never leaves the destination
+    # partition partially written (DENG-11439). Recreated fresh each run, with a
+    # short expiry as a safety net against staging orphaned by a killed process.
+    staging = f"{dest}__staging_{partition_date}"
+
+    def _flush() -> None:
+        """Append the buffered rows to the staging table, then clear the buffer.
+
+        Keeps peak memory bounded to roughly _LOAD_BATCH_BYTES / _LOAD_BATCH_ROWS
+        rather than the whole run's output (DENG-11439).
+        """
+        nonlocal rows_written, buffer_bytes
+        if not rows:
+            return
+        _load_rows(client, rows, staging)
+        rows_written += len(rows)
+        rows.clear()
+        buffer_bytes = 0
+
+    try:
+        client.delete_table(staging, not_found_ok=True)
+        staging_tbl = bigquery.Table(staging, schema=_COLUMN_PROFILES_SCHEMA)
+        staging_tbl.time_partitioning = bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY, field="profiled_at"
+        )
+        staging_tbl.clustering_fields = [
+            "source_dataset",
+            "source_table",
+            "column_name",
+        ]
+        staging_tbl.expires = datetime.datetime.now(
+            datetime.timezone.utc
+        ) + datetime.timedelta(days=1)
+        client.create_table(staging_tbl)
+
+        with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
+            futures = {executor.submit(_profile_one, item): item for item in work}
+            for future in as_completed(futures):
+                # pop() drops the reference to the completed future (and its
+                # retained per-table profile result) as soon as it's handled, so
+                # peak memory doesn't grow with table count (DENG-11439).
+                # as_completed() snapshots its input, so draining it is safe.
+                dataset, table_name = futures.pop(future)
+                try:
+                    _, profile_json = future.result()
+                except Exception as e:
                     logger.warning(
-                        "Profiling failed for %s.%s: %s", dataset, table_name, msg
+                        "Profiling raised for %s.%s: %s", dataset, table_name, e
                     )
                     hard_failures += 1
-                continue
+                    continue
 
-            profiled += 1
-            total_gb_scanned += profile.get("gb_scanned", 0.0)
-            table_rows = build_rows(profile, args.date)
-            logger.info("%s.%s → %d column rows", dataset, table_name, len(table_rows))
-            rows.extend(table_rows)
+                profile = json.loads(profile_json)
+                if "error" in profile:
+                    msg = profile["error"]
+                    if any(marker in msg for marker in _BENIGN_ERROR_MARKERS):
+                        logger.info("Skipping %s.%s: %s", dataset, table_name, msg)
+                    else:
+                        logger.warning(
+                            "Profiling failed for %s.%s: %s",
+                            dataset,
+                            table_name,
+                            msg,
+                        )
+                        hard_failures += 1
+                    continue
 
-    # A dataset-wide outage (permissions/quota) would otherwise log warnings and
-    # exit 0, hiding the failure from triage. Fail loudly when nothing profiled
-    # AND at least one table hard-failed (an all-empty/benign dataset is fine).
-    if profiled == 0 and hard_failures > 0:
-        raise RuntimeError(
-            f"All profiling attempts failed across datasets {args.source_datasets} "
-            f"({hard_failures} hard failure(s), 0 tables profiled) — failing the task."
+                profiled += 1
+                total_gb_scanned += profile.get("gb_scanned", 0.0)
+                table_rows = build_rows(profile, args.date)
+                logger.info(
+                    "%s.%s → %d column rows", dataset, table_name, len(table_rows)
+                )
+                rows.extend(table_rows)
+                buffer_bytes += _estimate_batch_bytes(table_rows)
+                if len(rows) >= _LOAD_BATCH_ROWS or buffer_bytes >= _LOAD_BATCH_BYTES:
+                    _flush()
+
+        # A dataset-wide outage (permissions/quota) would otherwise log warnings
+        # and exit 0, hiding the failure from triage. Fail loudly when nothing
+        # profiled AND at least one table hard-failed (all-empty/benign is fine).
+        if profiled == 0 and hard_failures > 0:
+            raise RuntimeError(
+                f"All profiling attempts failed across datasets "
+                f"{args.source_datasets} ({hard_failures} hard failure(s), 0 "
+                f"tables profiled) — failing the task."
+            )
+
+        _flush()  # final partial batch
+
+        if rows_written == 0:
+            # Nothing profiled (or every profiled table produced no rows): leave
+            # the destination partition untouched (staging is discarded below).
+            logger.warning(
+                "No rows to write for %s on %s (%d table(s) profiled, %.2f GB "
+                "scanned); partition left unchanged.",
+                args.source_datasets,
+                args.date,
+                profiled,
+                total_gb_scanned,
+            )
+            return
+
+        # Atomic swap: replace the destination partition in one query job. (Copy
+        # jobs can't target a column-partition decorator — "copy ... to Column
+        # partitioned meta table: not supported" — but a query with the decorator
+        # as destination + WRITE_TRUNCATE replaces just that partition atomically,
+        # so downstream never sees a partially-written partition.) DENG-11439.
+        swap = bigquery.QueryJobConfig(
+            destination=f"{dest}${partition_date}",
+            write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
         )
-
-    if not rows:
-        logger.warning(
-            "No rows to write for %s on %s (%d table(s) profiled, %.2f GB scanned); "
-            "partition left unchanged.",
-            args.source_datasets,
-            args.date,
+        client.query(f"SELECT * FROM `{staging}`", job_config=swap).result()
+        logger.info(
+            "Wrote %d rows from %d table(s) across %d dataset(s) to %s$%s "
+            "(%.2f GB scanned)",
+            rows_written,
             profiled,
+            len(args.source_datasets),
+            dest,
+            partition_date,
             total_gb_scanned,
         )
-        return
-
-    save_profiles(
-        client,
-        rows,
-        args.date,
-        args.destination_project,
-        args.destination_dataset,
-        args.destination_table,
-    )
-    logger.info(
-        "Wrote %d rows from %d table(s) across %d dataset(s) to %s.%s.%s$%s "
-        "(%.2f GB scanned)",
-        len(rows),
-        profiled,
-        len(args.source_datasets),
-        args.destination_project,
-        args.destination_dataset,
-        args.destination_table,
-        args.date.replace("-", ""),
-        total_gb_scanned,
-    )
+    finally:
+        client.delete_table(staging, not_found_ok=True)
 
 
 if __name__ == "__main__":

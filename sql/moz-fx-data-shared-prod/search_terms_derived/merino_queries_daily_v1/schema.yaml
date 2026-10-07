@@ -1,0 +1,28 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The UTC date on which the data was submitted or received for processing.
+    Used as the primary partition date for organizing and querying records by day.
+- mode: NULLABLE
+  name: query
+  type: STRING
+  description: The sanitized search query string (PII removed) that triggered a suggestion
+    or sponsored result, sourced from Merino logs.
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: The ISO 3166-1 alpha-2 country code representing the geographic country
+    of the user or request origin. Used to segment search and suggestion data by geography.
+- mode: NULLABLE
+  name: form_factor
+  type: STRING
+  description: The form factor of the device used to make the request. Allows segmentation
+    of search and suggestion activity by device category.
+- mode: NULLABLE
+  name: query_count
+  type: INTEGER
+  description: The number of query-entry events for this query on the given submission
+    date, for the given country and form factor. Each distinct logged request (request_id)
+    is counted once, so repeated entries of the same query within a session are counted
+    separately; only exact duplicate log rows are removed.

@@ -10,9 +10,11 @@ import bigeye_sdk
 import pytest
 from bigeye_sdk.controller.metric_suite_controller import _find_bigconfig_files
 from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
+from bigeye_sdk.model.big_config import BigConfig
 from click.testing import CliRunner
 
 from bigquery_etl.cli.monitoring import (
+    BIGCONFIG_FILE,
     delete,
     deploy,
     deploy_custom_rules,
@@ -236,10 +238,23 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
+            bigconfig_file = SQL_DIR / BIGCONFIG_FILE
+            assert not bigconfig_file.exists()
 
-            assert not (SQL_DIR / "bigconfig.yml").exists()
-            runner.invoke(update, [f"{str(SQL_DIR)}"])
-            assert (SQL_DIR / "bigconfig.yml").exists()
+            runner.invoke(update, [str(SQL_DIR)])
+
+            assert bigconfig_file.exists()
+            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            # Assert the default freshness and volume metrics got added to the file.
+            assert bigconfig.tag_deployments is not None
+            assert len(bigconfig.tag_deployments) == 1
+            assert len(bigconfig.tag_deployments[0].deployments) == 1
+            tag_deployment_metrics = bigconfig.tag_deployments[0].deployments[0].metrics
+            assert len(tag_deployment_metrics) == 2
+            assert (
+                tag_deployment_metrics[0].metric_type.predefined_metric == "FRESHNESS"
+            )
+            assert tag_deployment_metrics[1].metric_type.predefined_metric == "VOLUME"
 
     def test_update_existing_bigconfig(self, runner):
         with runner.isolated_filesystem():
@@ -255,7 +270,8 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text("""
+            bigconfig_file = SQL_DIR / BIGCONFIG_FILE
+            bigconfig_file.write_text("""
                 type: BIGCONFIG_FILE
                 table_deployments:
                 - deployments:
@@ -269,17 +285,27 @@ class TestMonitoring:
                           name: Default Schedule - 13:00 UTC
             """)
 
-            assert (SQL_DIR / "bigconfig.yml").exists()
             runner.invoke(update, [f"{str(SQL_DIR)}"])
-            assert (SQL_DIR / "bigconfig.yml").exists()
-            print((SQL_DIR / "bigconfig.yml").read_text())
-            assert (
-                "predefined_metric: FRESHNESS"
-                in (SQL_DIR / "bigconfig.yml").read_text()
+
+            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            # Assert the freshness metric already defined in the file is still there.
+            assert bigconfig.table_deployments is not None
+            assert len(bigconfig.table_deployments) == 1
+            assert len(bigconfig.table_deployments[0].deployments) == 1
+            table_deployment_metrics = (
+                bigconfig.table_deployments[0].deployments[0].table_metrics
             )
+            assert len(table_deployment_metrics) == 1
             assert (
-                "predefined_metric: VOLUME" in (SQL_DIR / "bigconfig.yml").read_text()
+                table_deployment_metrics[0].metric_type.predefined_metric == "FRESHNESS"
             )
+            # Assert the default volume metric got added to the file.
+            assert bigconfig.tag_deployments is not None
+            assert len(bigconfig.tag_deployments) == 1
+            assert len(bigconfig.tag_deployments[0].deployments) == 1
+            tag_deployment_metrics = bigconfig.tag_deployments[0].deployments[0].metrics
+            assert len(tag_deployment_metrics) == 1
+            assert tag_deployment_metrics[0].metric_type.predefined_metric == "VOLUME"
 
     def test_validate_no_bigconfig_file(self, runner):
         with runner.isolated_filesystem():

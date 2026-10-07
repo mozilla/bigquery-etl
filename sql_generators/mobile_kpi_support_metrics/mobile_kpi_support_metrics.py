@@ -99,7 +99,12 @@ class AttributionFields:
             {
                 "name": "install_source",
                 "type": "STRING",
-                "description": "The source of a profile installation.",
+                "description": (
+                    "The source of a profile installation, i.e. the Android package name of the app that installed Firefox, "
+                    "e.g. 'com.android.vending' (Google Play), 'com.huawei.appmarket' (Huawei AppGallery). "
+                    "Values matching '%packageinstaller%' mean a sideloaded APK. Can be NULL or '' (both mean unknown). "
+                    "Read from the baseline ping metric first_session.install_source."
+                ),
             },
         ],
     )

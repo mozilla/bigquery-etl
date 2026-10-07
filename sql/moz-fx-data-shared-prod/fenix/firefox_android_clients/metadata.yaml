@@ -12,6 +12,13 @@ description: |-
   Note that the query for the underlying table this view references
   overwrites the whole table instead of writing to a single partition.
 
+  install_source in this view is collapsed to 'com.android.vending', 'Other'
+  or 'Unknown' (NULL and empty values become 'Unknown'). It is read from the
+  metrics ping metric metrics.install_source, which stopped being populated
+  for most new profiles around Sept 2024 (replaced by first_session.install_source,
+  bug 1908383). For full install_source values use fenix.attribution_clients
+  or fenix.new_profile_clients, which read the baseline ping.
+
   Proposal:
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.
 

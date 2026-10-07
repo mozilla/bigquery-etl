@@ -2,7 +2,10 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: The name of the browser.
+  description: The name of the browser. 'Firefox Desktop' for the desktop KPI
+    population. BrowserStack clients get 'Firefox Desktop BrowserStack' and
+    MozillaOnline clients get 'Firefox Desktop MozillaOnline', so filtering app_name =
+    'Firefox Desktop' excludes them.
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -10,7 +13,8 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The normalized channel the application is being distributed on. All
+    channels are included; filter channel = 'release' explicitly for most analyses.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -24,6 +28,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
+    Truncated to the language part, e.g. 'en-US' is stored as 'en'.
 - name: os
   type: STRING
   mode: NULLABLE
@@ -31,7 +36,10 @@ fields:
 - name: os_version_build
   type: STRING
   mode: NULLABLE
-  description: OS version reported by the client.
+  description: OS version reported by the client. For Windows this is a readable name
+    from mozfun.norm.windows_version_info, e.g. 'Windows 7', 'Windows 10', 'Windows 11',
+    or 'Windows 10 or 11' when the build number is missing. For other OSes it is the raw
+    normalized_os_version. Exposed as os_version in telemetry.active_users_aggregates.
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
@@ -75,7 +83,8 @@ fields:
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Count of users who report a ping in a day.
+  description: Count of users who report a ping in a day. No activity requirement, so it
+    is always >= dau. Do not use it as DAU.
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
@@ -87,7 +96,9 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: The number of daily active users, corresponding to the count of clients that reported at least one ping on the submission_date and qualify as active.
+  description: The number of daily active users, corresponding to the count of clients
+    that reported at least one ping on the submission_date and qualify as active
+    (active_hours_sum > 0 and URI count > 0). This is the column used for the DAU KPI.
 - name: wau
   type: INTEGER
   mode: NULLABLE

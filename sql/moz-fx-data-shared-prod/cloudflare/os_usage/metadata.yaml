@@ -1,3 +1,5 @@
 friendly_name: Cloudflare Operating System Usage
 description: |-
-  Contains OS market share data from Cloudflare over time
+  Contains OS market share data from Cloudflare over time.
+  This table has no user_type column, so bot traffic cannot be filtered out,
+  unlike browser_usage and device_usage.

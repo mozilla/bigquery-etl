@@ -255,6 +255,10 @@ class TestMonitoring:
                 tag_deployment_metrics[0].metric_type.predefined_metric == "FRESHNESS"
             )
             assert tag_deployment_metrics[1].metric_type.predefined_metric == "VOLUME"
+            # Assert the centralized Bigeye collection config was applied.
+            assert (
+                len(bigconfig.tag_deployments[0].collection.notification_channels) >= 1
+            )
 
     def test_update_existing_bigconfig(self, runner):
         with runner.isolated_filesystem():
@@ -274,7 +278,9 @@ class TestMonitoring:
             bigconfig_file.write_text("""
                 type: BIGCONFIG_FILE
                 table_deployments:
-                - deployments:
+                - collection:
+                    name: Operational Checks
+                  deployments:
                   - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.test.incremental_query_v1
                     table_metrics:
                     - metric_type:
@@ -306,6 +312,14 @@ class TestMonitoring:
             tag_deployment_metrics = bigconfig.tag_deployments[0].deployments[0].metrics
             assert len(tag_deployment_metrics) == 1
             assert tag_deployment_metrics[0].metric_type.predefined_metric == "VOLUME"
+            # Assert the centralized Bigeye collection config was applied.
+            assert (
+                len(bigconfig.table_deployments[0].collection.notification_channels)
+                >= 1
+            )
+            assert (
+                len(bigconfig.tag_deployments[0].collection.notification_channels) >= 1
+            )
 
     def test_validate_no_bigconfig_file(self, runner):
         with runner.isolated_filesystem():

@@ -627,7 +627,6 @@ generate:
     dag_name: bqetl_terms_of_use
     bigeye_defaults:
       collection: Operational Checks
-      notification_channel: '#de-bigeye-triage'
     apps:
       fenix:
         templates:
@@ -635,21 +634,18 @@ generate:
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_ios:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_messages_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
   stable_views_redacted:
     pings:
       firefox_desktop:

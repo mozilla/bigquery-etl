@@ -34,12 +34,35 @@ monitoring:
   bigeye_workspaces:
     463: # Mozilla default
       warehouse: 1939
+      collections:
+      - name: Operational Checks
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+      - name: Customer Experience
+        notification_channels:
+        - slack: '#cx-de-collaboration'
+      - name: Home Newtab
+        notification_channels:
+        - slack: '#hnt-dev-be-alerts'
+      - name: Subscription Platform
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+        - email: 'phlee@mozilla.com, srose@mozilla.com'
+      - name: Test
+        notification_channels:
+        - slack: '#ds-bigeye-triage'
     508: # Mozilla Ads
       warehouse: 2014
+      collections:
+      - name: Ads Client
+        notification_channels:
+        - slack: '#ads-client-owners'
     509: # Mozilla Revenue - Cat 1
       warehouse: 1977
+      collections: []
     661: # Marketing
       warehouse: 2846
+      collections: []
   default_bigeye_workspace: 463
   stable_tables_monitoring:
     # Firefox Desktop

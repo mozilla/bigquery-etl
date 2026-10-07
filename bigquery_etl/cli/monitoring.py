@@ -6,6 +6,7 @@ import os
 import re
 import sys
 from collections import defaultdict
+from functools import cache
 from multiprocessing.pool import Pool
 from pathlib import Path
 from typing import Optional
@@ -23,6 +24,7 @@ from bigeye_sdk.model.big_config import (
     BigConfig,
     ColumnSelector,
     RowCreationTimes,
+    TableDeploymentSuite,
     TagDeployment,
     TagDeploymentSuite,
 )
@@ -61,8 +63,12 @@ METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_MUTABLE_LOWERBOUND_CRITICAL,
     MetricRunStatus.METRIC_RUN_STATUS_GROUPS_LIMIT_FAILED,
 ]
+DEFAULT_WORKSPACE = ConfigLoader.get(
+    "monitoring", "default_bigeye_workspace", fallback=463
+)
 
 
+@cache
 def _workspace_config(workspace_id: int) -> dict:
     """Return the Bigeye workspace's config from `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."""
     workspaces = ConfigLoader.get("monitoring", "bigeye_workspaces", fallback={})
@@ -73,10 +79,23 @@ def _workspace_config(workspace_id: int) -> dict:
     return workspaces[workspace_id]
 
 
-def _resolve_workspace(metadata: Metadata, default_workspace: int) -> int:
+@cache
+def _collection_config(workspace_id: int, collection_name: str) -> Optional[dict]:
+    """Return the Bigeye collection's config (if any) from `bqetl_project.yaml` under `monitoring.bigeye_workspaces[workspace_id].collections`."""
+    workspace_config = _workspace_config(workspace_id)
+    collections: list[dict] = workspace_config.get("collections", [])
+    for collection in collections:
+        if collection.get("name") == collection_name:
+            return collection
+    return None
+
+
+def _resolve_workspace(
+    metadata: Metadata, default_workspace: int = DEFAULT_WORKSPACE
+) -> int:
     """Return the Bigeye workspace ID for a table.
 
-    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the --workspace CLI flag default.
+    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the default workspace.
     Validates against the `monitoring.bigeye_workspaces` config in `bqetl_project.yaml`.
     """
     workspace_id = (
@@ -112,7 +131,7 @@ def _warehouse_id_for_workspace(workspace_id: int) -> int:
 workspace_option = click.option(
     "--workspace",
     type=int,
-    default=ConfigLoader.get("monitoring", "default_bigeye_workspace", fallback=463),
+    default=DEFAULT_WORKSPACE,
     help="Bigeye workspace to use when authenticating to API.",
 )
 
@@ -595,6 +614,27 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
                             )
                         ]
                     )
+
+            # Apply our centralized collection configurations to the BigConfig file.
+            workspace_id = _resolve_workspace(metadata)
+            deployment_suites: list[TableDeploymentSuite | TagDeploymentSuite] = [
+                *(bigconfig.table_deployments or []),
+                *(bigconfig.tag_deployments or []),
+            ]
+            for deployment_suite in deployment_suites:
+                if deployment_suite.collection:
+                    collection_config = _collection_config(
+                        workspace_id, deployment_suite.collection.name
+                    )
+                    if collection_config:
+                        deployment_suite.collection = SimpleCollection(
+                            **collection_config
+                        )
+                    else:
+                        click.echo(
+                            f'WARNING: Bigeye collection "{deployment_suite.collection.name}" in workspace {workspace_id} '
+                            "isn't configured in `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."
+                        )
 
             bigconfig.save(
                 output_path=bigconfig_file.parent,

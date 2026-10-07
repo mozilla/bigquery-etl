@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+import pathlib
+import sys
+
+import yaml
+
+try:
+    data = yaml.safe_load(open("dom/base/use_counter_metrics.yaml").read())
+except:
+    print("Couldn't load dom/base/use_counter_metrics.yaml")
+    print("Run this from a Firefox checkout root")
+    exit(1)
+
+template = pathlib.Path(__file__).parent.parent / "sql_generators" / "use_counters" / "templates" / "templating.yaml"
+
+all_denominators = set()
+all_counters = set()
+
+with open(template) as f:
+    existing_data = yaml.safe_load(f)
+    for denom in existing_data["use_counter_denominators"]:
+        all_denominators.add(denom["name"])
+    for counter in existing_data["use_counters"]:
+        all_counters.add(counter["name"])
+
+for k in data.keys():
+    if k.startswith("use.counter"):
+        prefix = k.replace(".", "_") + "_"
+        entries = map(lambda k: prefix + k.replace("__", "_"), data[k].keys())
+        if k == "use.counter":
+            all_denominators.update(entries)
+        else:
+            all_counters.update(entries)
+
+result = {
+    "use_counter_denominators": [{"name": name} for name in sorted(all_denominators)],
+    "use_counters": [{"name": name} for name in sorted(all_counters)],
+}
+
+with open(template, "w") as f:
+    yaml.dump(result, f)

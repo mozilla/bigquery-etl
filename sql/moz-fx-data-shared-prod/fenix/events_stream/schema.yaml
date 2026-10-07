@@ -1771,9 +1771,9 @@ fields:
 
         * A string which identify the extension (when available)
 
-        * Id of the addon (when available).
-
         * Id of the addon.
+
+        * Id of the addon (when available).
 
         * A string which identifies the add-on. This value might be trimmed.
 
@@ -3779,7 +3779,7 @@ fields:
         ERROR_NAME is either a DOMException error name or "OtherError" in case of
         non-DOMException errors).
 
-        * The reason the client is ...'
+        * A string that identifies ...'
     - name: redirects
       type: STRING
       mode: NULLABLE

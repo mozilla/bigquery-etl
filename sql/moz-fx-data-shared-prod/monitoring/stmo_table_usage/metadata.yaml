@@ -1,0 +1,27 @@
+friendly_name: STMO Table Usage
+description: |-
+  Redash (sql.telemetry.mozilla.org) usage of each table in the last 90 days, with the queries
+  that read it and the non-archived dashboards that show those queries. Intended for finding
+  usage before deprecating a table.
+
+  One row per table which contains arrays of referencing queries and dashboards.
+
+  Users are people who ran a query, including by refreshing a dashboard, and exclude scheduled
+  runs. Failed statements are excluded, but earlier statements of a failed multi-statement query
+  are still counted. Tables are the ones BigQuery reports as referenced, so views are
+  reported as their underlying tables. Dashboard views exclude scripts that crawl Redash.
+owners:
+- bewu@mozilla.com
+labels:
+  owner1: bewu
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring.bigquery_usage
+  - moz-fx-data-shared-prod.monitoring.stmo_query_dashboards
+  - moz-fx-data-shared-prod.stmo_external.events_v1
+  - moz-fx-data-shared-prod.stmo_external.queries_v1
+  - moz-fx-data-shared-prod.stmo_external.users_v1

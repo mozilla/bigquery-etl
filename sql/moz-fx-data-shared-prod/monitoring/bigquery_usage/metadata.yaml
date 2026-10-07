@@ -1,12 +1,16 @@
 friendly_name: BigQuery Query Usage
 description: |-
-  BigQuery usage, partitioned by day.
+  BigQuery usage, partitioned by day. There is one row per job and referenced table,
+  so deduplicate by job_id before summing cost or bytes.
+
+  Multi-statement queries produce a parent job with statement_type SCRIPT and one
+  child job per statement. The parent's slot and byte totals include all of its
+  children, so exclude SCRIPT jobs when summing usage to avoid counting scripts twice.
+  Child jobs inherit query_id and username from their parent.
 owners:
-- wichan@mozilla.com
-- mhirose@mozilla.com
+- bewu@mozilla.com
 labels:
-  owner1: wichan
-  owner2: mhirose
+  owner1: bewu
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

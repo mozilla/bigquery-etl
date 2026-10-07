@@ -2871,10 +2871,10 @@ bqetl_customer_experience:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - lvargas@mozilla.com
       - data-customer-experience-wg@mozilla.com
+      - lvargas@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     end_date: null
     max_active_tis_per_dag: null
     owner: lvargas@mozilla.com
@@ -2890,7 +2890,7 @@ bqetl_customer_experience:
     - repo/bigquery-etl
 
 bqetl_stmo:
-  schedule_interval: 0 4 * * *
+  schedule_interval: 0 8 * * *
   description: |
     Daily copies of tables from the Redash (sql.telemetry.mozilla.org) metadata
     database in Cloud SQL into stmo_external.

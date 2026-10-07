@@ -313,6 +313,7 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: Optional[bool] = attr.ib(None)
+    deprecated_app: Optional[bool] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -391,6 +392,7 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = None
+        deprecated_app = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -460,6 +462,8 @@ class Metadata:
                     deprecated = metadata["deprecated"]
                 if "deletion_date" in metadata:
                     deletion_date = metadata["deletion_date"]
+                if "deprecated_app" in metadata:
+                    deprecated_app = metadata["deprecated_app"]
 
                 if "monitoring" in metadata:
                     converter = cattrs.BaseConverter()
@@ -493,6 +497,7 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
+                    deprecated_app,
                 )
             except yaml.YAMLError as e:
                 raise e

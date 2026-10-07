@@ -4,6 +4,7 @@ import importlib.util
 import sys
 import time
 from inspect import getmembers
+from pathlib import Path
 
 import rich_click as click
 
@@ -13,9 +14,11 @@ from bigquery_etl.util.common import resolve_project_subpath
 
 GENERATE_COMMAND = "generate"
 
-SQL_GENERATORS_DIR = resolve_project_subpath(
+SQL_GENERATORS_DIR = Path(
     ConfigLoader.get("default", "sql_generators_dir", fallback="sql_generators")
 )
+if not SQL_GENERATORS_DIR.is_absolute():
+    SQL_GENERATORS_DIR = resolve_project_subpath(SQL_GENERATORS_DIR)
 
 
 def generate_group(sql_generators_dir):

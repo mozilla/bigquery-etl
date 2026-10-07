@@ -259,14 +259,14 @@ class TestMonitoring:
                 type: BIGCONFIG_FILE
                 table_deployments:
                 - deployments:
-                - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.test.incremental_query_v1
+                  - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.test.incremental_query_v1
                     table_metrics:
                     - metric_type:
                         type: PREDEFINED
                         predefined_metric: FRESHNESS
-                    metric_schedule:
+                      metric_schedule:
                         named_schedule:
-                        name: Default Schedule - 13:00 UTC
+                          name: Default Schedule - 13:00 UTC
             """)
 
             assert (SQL_DIR / "bigconfig.yml").exists()
@@ -278,8 +278,7 @@ class TestMonitoring:
                 in (SQL_DIR / "bigconfig.yml").read_text()
             )
             assert (
-                "predefined_metric: VOLUME"
-                not in (SQL_DIR / "bigconfig.yml").read_text()
+                "predefined_metric: VOLUME" in (SQL_DIR / "bigconfig.yml").read_text()
             )
 
     def test_validate_no_bigconfig_file(self, runner):

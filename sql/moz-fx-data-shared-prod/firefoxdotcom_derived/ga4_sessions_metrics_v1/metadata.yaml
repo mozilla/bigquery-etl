@@ -5,6 +5,10 @@ description: >-
   SUM(engaged_sessions) / SUM(sessions).
 
 
+  Each daily run writes the date three days earlier, once ga_sessions_v2 has stopped updating it, so
+  the latest available session_date is three days behind the run date.
+
+
   Always filter on session_date. For downloads by source, medium or campaign use
   ga4_download_metrics_v1, and for CTA clicks and other events use ga4_events_metrics_v1.
 owners:
@@ -16,6 +20,8 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
+  date_partition_parameter: submission_date
+  date_partition_offset: -3
 bigquery:
   time_partitioning:
     type: day

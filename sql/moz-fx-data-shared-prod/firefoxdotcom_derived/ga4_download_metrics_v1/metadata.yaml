@@ -1,0 +1,33 @@
+friendly_name: GA4 Download Metrics V1
+description: >-
+  Daily aggregate of product_download events on firefox.com, joined to the session each download
+  happened in via ga_sessions_v2. Use for downloads by landing page, source, medium, campaign or
+  channel.
+
+
+  Always filter on event_date. For sessions and bounces use ga4_sessions_metrics_v1, and for CTA
+  clicks and other events use ga4_events_metrics_v1.
+owners:
+- sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  depends_on:
+  - task_id: wait_for_firefoxdotcom_events_table
+    dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - landing_page
+    - channel_group
+    - country
+require_column_descriptions: true

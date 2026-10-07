@@ -1,0 +1,30 @@
+friendly_name: GA4 Sessions Metrics V1
+description: >-
+  Daily aggregate of firefox.com sessions from ga_sessions_v2 by landing page, country, device and
+  traffic source. Counts and sums only: compute rates after summing, e.g. bounce rate is 1 -
+  SUM(engaged_sessions) / SUM(sessions).
+
+
+  Always filter on session_date. For downloads by source, medium or campaign use
+  ga4_download_metrics_v1, and for CTA clicks and other events use ga4_events_metrics_v1.
+owners:
+- sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: session_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - landing_page
+    - channel_group
+    - country
+require_column_descriptions: true

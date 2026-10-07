@@ -1,0 +1,18 @@
+friendly_name: STMO Object Views Daily
+description: |-
+  Daily views of Redash (sql.telemetry.mozilla.org) visualizations and dashboards over the last
+  400 days, one row per object, day, and user. Used by the DataHub Redash usage source.
+
+  Visualization views are dashboard renders plus query page loads, which are credited to the
+  query's default (lowest id) visualization. Duplicate events from a single render or dashboard
+  open are dropped, as are query page loads with no user, since they can't be told apart from
+  dashboard renders.
+
+  Views by crawlers are excluded: the DataHub ingestion accounts and other known bots, and any
+  user on a day they open 100 or more distinct dashboards.
+
+  Unlike `stmo.events`, there are no query or widget objects. A dashboard render logs a query,
+  widget, and visualization view together, so only the visualization view is counted, and query
+  page loads are counted under a visualization as above.
+owners:
+- bewu@mozilla.com

@@ -7,9 +7,8 @@ description: |-
   `fenix.onboarding_completed_clients` exposes this table unchanged;
   `fenix.retention_clients` takes `MIN(completed_date)` per client.
 
-  Coverage will begin 2025-01-01 when the table is backfilled; until then it
-  holds only the days since it was deployed. A client whose completions all fall
-  before 2025-01-01 will not appear here.
+  Coverage begins 2025-01-01. A client whose completions all fall before
+  2025-01-01 does not appear here.
 owners:
   - kbammarito@mozilla.com
 labels:

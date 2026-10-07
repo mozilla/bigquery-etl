@@ -426,15 +426,22 @@ def deploy_custom_rules(
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-def _update_bigconfig(
+def _add_default_metrics(
     bigconfig,
     metadata,
     project,
     dataset,
     table,
-    default_metrics,
 ):
-    """Update the BigConfig file to monitor a view."""
+    """Add the default metrics to the BigConfig file unless there's already an existing such metric."""
+    default_metrics = []
+    if metadata.monitoring.freshness:
+        default_metrics.append(SimplePredefinedMetricName.FRESHNESS)
+    if metadata.monitoring.volume:
+        default_metrics.append(SimplePredefinedMetricName.VOLUME)
+    if not default_metrics:
+        return
+
     tag_deployment_metrics = [
         {
             "predefined_metric": (
@@ -531,15 +538,6 @@ def _update_bigconfig(
             TagDeploymentSuite(deployments=deployments, collection=collection)
         ]
 
-        if metadata.monitoring.partition_column:
-            bigconfig.row_creation_times = RowCreationTimes(
-                column_selectors=[
-                    ColumnSelector(
-                        name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
-                    )
-                ]
-            )
-
 
 @monitoring.command(help="""
     Update BigConfig files based on monitoring metadata.
@@ -581,20 +579,22 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
             if (
                 metadata_file.parent / QUERY_FILE
             ).exists() and "public_bigquery" not in metadata.labels:
-                default_metrics = []
-                if metadata.monitoring.freshness:
-                    default_metrics.append(SimplePredefinedMetricName.FRESHNESS)
-                if metadata.monitoring.volume:
-                    default_metrics.append(SimplePredefinedMetricName.VOLUME)
-
-                _update_bigconfig(
+                _add_default_metrics(
                     bigconfig=bigconfig,
                     metadata=metadata,
                     project=project,
                     dataset=dataset,
                     table=table,
-                    default_metrics=default_metrics,
                 )
+
+                if metadata.monitoring.partition_column:
+                    bigconfig.row_creation_times = RowCreationTimes(
+                        column_selectors=[
+                            ColumnSelector(
+                                name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
+                            )
+                        ]
+                    )
 
             bigconfig.save(
                 output_path=bigconfig_file.parent,

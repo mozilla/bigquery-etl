@@ -89,24 +89,22 @@ def get_bqetl_project_root() -> Path | None:
     return None
 
 
-def resolve_project_file_path(project_file_path: str | Path) -> Path:
-    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
-    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+def resolve_project_subpath(project_subpath: str | Path) -> Path:
+    """Return the absolute path to the project subpath that exists, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_subpath = Path(str(project_subpath).removeprefix("/"))
 
-    bqetl_project_root = get_bqetl_project_root()
-    if bqetl_project_root:
-        absolute_project_file_path = bqetl_project_root / relative_project_file_path
-        if absolute_project_file_path.exists():
-            return absolute_project_file_path
+    if bqetl_project_root := get_bqetl_project_root():
+        absolute_project_subpath = bqetl_project_root / relative_project_subpath
+        if absolute_project_subpath.exists():
+            return absolute_project_subpath
 
     # Fall back to checking the main `bqetl` project if necessary.
-    if (
-        bqetl_project_root != ROOT
-        and (root_project_file_path := ROOT / relative_project_file_path).exists()
-    ):
-        return root_project_file_path
+    if ROOT != bqetl_project_root:
+        root_project_subpath = ROOT / relative_project_subpath
+        if root_project_subpath.exists():
+            return root_project_subpath
 
-    raise FileNotFoundError(f"Project file not found: {project_file_path}")
+    raise FileNotFoundError(f"Project subpath not found: {project_subpath}")
 
 
 def render(

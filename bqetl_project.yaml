@@ -44,6 +44,9 @@ monitoring:
       - name: Home Newtab
         notification_channels:
         - slack: '#hnt-dev-be-alerts'
+      - name: Marketing Metrics
+        notification_channels:
+        - slack: '#marketing-data-alerts'
       - name: Subscription Platform
         notification_channels:
         - slack: '#de-bigeye-triage'

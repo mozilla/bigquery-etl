@@ -1,5 +1,8 @@
 """bigquery-etl CLI metadata command."""
 
+import csv
+import io
+import json
 import re
 from datetime import datetime
 from functools import partial
@@ -8,9 +11,23 @@ from pathlib import Path
 from typing import Optional
 
 import click
+import requests
 from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 
+from bigquery_etl.datahub.auth import LoginError
+from bigquery_etl.datahub.lineage import (
+    DATAHUB_LINEAGE_DEGREES,
+    DEFAULT_LOOKER_TMP_DAYS,
+    ENTITY_TYPES,
+    AuthError,
+    DataHubClient,
+    LineageTooLargeError,
+    format_text,
+)
+from bigquery_etl.datahub.lineage import (
+    get_downstream_lineage as get_downstream_lineage_from_datahub,
+)
 from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
     Metadata,
@@ -422,3 +439,158 @@ def validate_workgroups(
         raise MetadataValidationError(
             f"Metadata workgroup validation failed for: {failed_files}"
         )
+
+
+@metadata.command(help="""
+    Get the downstream lineage of a BigQuery table from DataHub.
+
+    Example:
+     ./bqetl metadata get-downstream-lineage telemetry_derived.clients_last_seen_v2 --since-days=90
+    """)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@click.option(
+    "--since_days",
+    "--since-days",
+    type=click.IntRange(min=1),
+    help="Only follow lineage DataHub has seen in the last N days. Default: all time.",
+)
+@click.option(
+    "--max_degree",
+    "--max-degree",
+    type=click.Choice(DATAHUB_LINEAGE_DEGREES),
+    default=DATAHUB_LINEAGE_DEGREES[-1],
+    show_default=True,
+    help="Only list assets up to this many hops away. 3+ lists all of them.",
+)
+@click.option(
+    "--type",
+    "types",
+    multiple=True,
+    type=click.Choice(ENTITY_TYPES, case_sensitive=False),
+    help="Only list this entity type. Repeatable.",
+)
+@click.option(
+    "--include_usage",
+    "--include-usage",
+    is_flag=True,
+    help="Add query count, user count and last query date (last 30 days) for "
+    "BigQuery tables and views.",
+)
+@click.option(
+    "--include_deleted",
+    "--include-deleted",
+    is_flag=True,
+    help="Also list soft-deleted assets.",
+)
+@click.option(
+    "--looker_tmp_days",
+    "--looker-tmp-days",
+    type=click.IntRange(min=0),
+    default=DEFAULT_LOOKER_TMP_DAYS,
+    show_default=True,
+    help="Drop Looker aggregate table copies (looker_tmp.LR_*) built more than "
+    "this many days ago. 0 keeps all.",
+)
+@click.option(
+    "--output_format",
+    "--output-format",
+    type=click.Choice(["text", "json", "csv"]),
+    default="text",
+    show_default=True,
+    help="Output format.",
+)
+def get_downstream_lineage(
+    name: str,
+    project_id: str,
+    since_days: Optional[int],
+    max_degree: str,
+    types: tuple[str, ...],
+    include_deleted: bool,
+    include_usage: bool,
+    looker_tmp_days: int,
+    output_format: str,
+) -> None:
+    """Get the downstream lineage of a BigQuery table from DataHub."""
+    parts = name.split(".")
+    if len(parts) == 2:
+        table = f"{project_id}.{name}"
+    elif len(parts) == 3:
+        table = name
+    else:
+        raise click.BadParameter(
+            "Expected dataset.table or project.dataset.table", param_hint="NAME"
+        )
+
+    try:
+        client = DataHubClient()
+        assets = get_downstream_lineage_from_datahub(
+            client,
+            table,
+            since_days=since_days,
+            include_deleted=include_deleted,
+            include_usage=include_usage,
+            types={t.upper() for t in types},
+            looker_tmp_days=looker_tmp_days,
+            max_degree=DATAHUB_LINEAGE_DEGREES.index(max_degree) + 1,
+        )
+    except LoginError as e:
+        raise click.ClickException(str(e))
+    except AuthError as e:
+        raise click.ClickException(
+            f"DataHub rejected the token ({e}). If DATAHUB_GMS_TOKEN is set, check "
+            "it is valid and not expired."
+        )
+    except LineageTooLargeError:
+        raise click.ClickException(
+            "Lineage is too large for one DataHub query (maxRelations limit). "
+            "Re-run with --since-days (e.g. --since-days=90) to only follow recent "
+            "lineage, or --max-degree=1 or 2 to only list the nearest assets."
+        )
+    except (requests.RequestException, RuntimeError) as e:
+        raise click.ClickException(f"Could not get lineage from DataHub: {e}")
+
+    fields = [
+        "degree",
+        "type",
+        "subtype",
+        "platform",
+        "name",
+        "qualified_name",
+        "urn",
+    ]
+    if include_usage:
+        fields += ["queries_30d", "users_30d", "last_query"]
+    if include_deleted:
+        fields.append("deleted")
+    assets = [{f: a[f] for f in fields} for a in assets]
+
+    if output_format == "json":
+        click.echo(
+            json.dumps(
+                {
+                    "table": table,
+                    "since_days": since_days,
+                    "count": len(assets),
+                    "downstream": assets,
+                },
+                indent=2,
+            )
+        )
+    elif output_format == "csv":
+        out = io.StringIO()
+        writer = csv.DictWriter(out, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(assets)
+        click.echo(out.getvalue(), nl=False)
+    else:
+        click.echo(
+            format_text(
+                table, assets, show_deleted=include_deleted, show_usage=include_usage
+            )
+        )
+
+    if since_days:
+        click.echo(f"Note: only lineage seen in the last {since_days} days.", err=True)

@@ -10,7 +10,9 @@ import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
 
-from bigquery_etl.cli.metadata import deprecate, publish, update
+from bigquery_etl.cli.metadata import deprecate, get_downstream_lineage, publish, update
+from bigquery_etl.datahub.auth import LoginError
+from bigquery_etl.datahub.lineage import LineageTooLargeError
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     BIGEYE_PREDEFINED_FILE,
@@ -1969,3 +1971,145 @@ class TestMetadata:
             }
         )
         assert validate_query_parameters(metadata, "") is True
+
+
+class TestGetDownstreamLineage:
+    asset = {
+        "degree": 1,
+        "type": "DATASET",
+        "subtype": "Table",
+        "platform": "bigquery",
+        "name": "b",
+        "qualified_name": "moz-fx-data-shared-prod.d.b",
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:bigquery,moz-fx-data-shared-prod.d.b,PROD)",
+        "deleted": False,
+        "queries_30d": 0,
+        "users_30d": None,
+        "last_query": None,
+    }
+    chart = {
+        "degree": 2,
+        "type": "CHART",
+        "subtype": None,
+        "platform": "redash",
+        "name": "Retention",
+        "qualified_name": "Retention",
+        "urn": "urn:li:chart:(redash,1)",
+        "deleted": False,
+        "queries_30d": None,
+        "users_30d": None,
+        "last_query": None,
+    }
+
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def lineage(self):
+        with (
+            patch("bigquery_etl.cli.metadata.DataHubClient"),
+            patch(
+                "bigquery_etl.cli.metadata.get_downstream_lineage_from_datahub"
+            ) as lineage,
+        ):
+            lineage.return_value = [dict(self.asset), dict(self.chart)]
+            yield lineage
+
+    def test_dataset_table_gets_the_default_project(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[0][1] == "moz-fx-data-shared-prod.d.a"
+        assert "BIGQUERY (1)" in result.output
+        assert "moz-fx-data-shared-prod.d.b" in result.output
+
+    def test_fully_qualified_table_is_used_as_is(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["other-project.d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[0][1] == "other-project.d.a"
+
+    def test_rejects_a_bare_table_name(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["a"])
+        assert result.exit_code == 2
+        assert "dataset.table" in result.output
+        lineage.assert_not_called()
+
+    def test_passes_options_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage,
+            ["d.a", "--since-days=90", "--include-deleted", "--looker-tmp-days=0"],
+        )
+        assert result.exit_code == 0
+        kwargs = lineage.call_args[1]
+        assert kwargs["since_days"] == 90
+        assert kwargs["include_deleted"] is True
+        assert kwargs["looker_tmp_days"] == 0
+
+    def test_type_is_case_insensitive_and_passed_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--type=chart", "--type=Dashboard"]
+        )
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["types"] == {"CHART", "DASHBOARD"}
+
+    def test_type_rejects_unknown_values(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--type=DASHBOARDS"])
+        assert result.exit_code == 2
+        lineage.assert_not_called()
+
+    @pytest.mark.parametrize("choice,max_degree", [("1", 1), ("2", 2), ("3+", 3)])
+    def test_max_degree_choices(self, runner, lineage, choice, max_degree):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", f"--max-degree={choice}"]
+        )
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["max_degree"] == max_degree
+
+    def test_max_degree_defaults_to_all(self, runner, lineage):
+        runner.invoke(get_downstream_lineage, ["d.a"])
+        assert lineage.call_args[1]["max_degree"] == 3
+
+    def test_max_degree_rejects_other_values(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--max-degree=4"])
+        assert result.exit_code == 2
+        lineage.assert_not_called()
+
+    def test_csv_output(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--output-format=csv"])
+        assert result.exit_code == 0
+        lines = result.output.splitlines()
+        assert lines[0] == "degree,type,subtype,platform,name,qualified_name,urn"
+        assert len(lines) == 3
+
+    def test_too_large_lineage_suggests_since_days(self, runner, lineage):
+        lineage.side_effect = LineageTooLargeError("maxRelations")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "--since-days" in result.output
+
+    @patch("bigquery_etl.datahub.lineage.auth.get_token")
+    def test_failed_sign_in_is_reported(self, get_token, runner, monkeypatch):
+        monkeypatch.delenv("DATAHUB_GMS_TOKEN", raising=False)
+        get_token.side_effect = LoginError("DataHub sign-in failed: access_denied")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "access_denied" in result.output
+
+    def test_usage_is_off_by_default(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["include_usage"] is False
+        assert "QUERIES 30D" not in result.output
+
+    def test_include_usage_adds_columns_and_fields(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--include-usage"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["include_usage"] is True
+        assert "QUERIES 30D" in result.output
+
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--include-usage", "--output-format=csv"]
+        )
+        lines = result.output.splitlines()
+        assert lines[0].endswith(",urn,queries_30d,users_30d,last_query")
+        assert lines[1].endswith(",0,,")

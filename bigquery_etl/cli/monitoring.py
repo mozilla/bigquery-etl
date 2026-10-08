@@ -6,9 +6,10 @@ import os
 import re
 import sys
 from collections import defaultdict
+from functools import cache
 from multiprocessing.pool import Pool
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TypeAlias
 
 import click
 import sqlglot
@@ -17,12 +18,12 @@ from bigeye_sdk.bigconfig_validation.validation_context import _BIGEYE_YAML_FILE
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.client.enum import Method
 from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
-from bigeye_sdk.exceptions.exceptions import FileLoadException
 from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
 from bigeye_sdk.model.big_config import (
     BigConfig,
     ColumnSelector,
     RowCreationTimes,
+    TableDeploymentSuite,
     TagDeployment,
     TagDeploymentSuite,
 )
@@ -50,6 +51,7 @@ from ..util.common import block_coding_agents
 from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
+BIGCONFIG_FILE_RE = re.compile(r"^.*/([\w-]+)/(\w+)/(\w+)/bigconfig\.yml$")
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
 QUERY_FILE = "query.sql"
 VIEW_FILE = "view.sql"
@@ -61,25 +63,47 @@ METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_MUTABLE_LOWERBOUND_CRITICAL,
     MetricRunStatus.METRIC_RUN_STATUS_GROUPS_LIMIT_FAILED,
 ]
+DEFAULT_WORKSPACE = ConfigLoader.get("monitoring", "default_bigeye_workspace") or 463
+
+BigeyeDeploymentSuite: TypeAlias = TableDeploymentSuite | TagDeploymentSuite
 
 
-def _resolve_workspace(metadata: Metadata, default_workspace: int) -> int:
+@cache
+def _workspace_config(workspace_id: int) -> Optional[dict]:
+    """Return the Bigeye workspace's config (if any) from `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."""
+    workspaces_config = ConfigLoader.get("monitoring", "bigeye_workspaces") or {}
+    return workspaces_config.get(workspace_id)
+
+
+@cache
+def _collection_config(workspace_id: int, collection_name: str) -> Optional[dict]:
+    """Return the Bigeye collection's config (if any) from `bqetl_project.yaml` under `monitoring.bigeye_workspaces[workspace_id].collections`."""
+    workspace_config = _workspace_config(workspace_id)
+    if not workspace_config:
+        return None
+    collections: list[dict] = workspace_config.get("collections") or []
+    for collection in collections:
+        if collection.get("name") == collection_name:
+            return collection
+    return None
+
+
+def _resolve_workspace(
+    metadata: Metadata, default_workspace: int = DEFAULT_WORKSPACE
+) -> int:
     """Return the Bigeye workspace ID for a table.
 
-    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the
-    --workspace CLI flag default. Validates against
-    `monitoring.bigeye_workspace_ids` in bqetl_project.yaml when configured.
+    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the default workspace.
+    Validates against the `monitoring.bigeye_workspaces` config in `bqetl_project.yaml`.
     """
     workspace_id = (
         metadata.monitoring.workspace
         if metadata.monitoring and metadata.monitoring.workspace is not None
         else default_workspace
     )
-    allowed = ConfigLoader.get("monitoring", "bigeye_workspace_ids", fallback=None)
-    if allowed and workspace_id not in allowed:
+    if not _workspace_config(workspace_id):
         raise click.ClickException(
-            f"workspace {workspace_id} is not in monitoring.bigeye_workspace_ids "
-            f"({allowed}) configured in bqetl_project.yaml"
+            f"Workspace {workspace_id} isn't configured in `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."
         )
     return workspace_id
 
@@ -90,18 +114,26 @@ def _client_for_workspace(api_auth: APIKeyAuth, workspace_id: int):
 
 
 def _warehouse_id_for_workspace(workspace_id: int) -> int:
-    """Return the Bigeye BQ warehouse ID for the given workspace.
+    """Return the Bigeye warehouse ID configured in `monitoring.bigeye_workspaces` for the given workspace.
 
     Bigeye warehouses belong to a single workspace, so calls like
     `get_metric_info_batch_post(warehouse_ids=[...])` only return metrics from
-    that workspace's warehouse. Looks up `monitoring.bigeye_warehouses` first
-    and falls back to the singular `monitoring.bigeye_warehouse_id` for
-    back-compat.
+    that workspace's warehouse.
     """
-    warehouses = ConfigLoader.get("monitoring", "bigeye_warehouses", fallback={}) or {}
-    if workspace_id in warehouses:
-        return warehouses[workspace_id]
-    return ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+    workspace_config = _workspace_config(workspace_id)
+    if not workspace_config or "warehouse" not in workspace_config:
+        raise click.ClickException(
+            f"Workspace {workspace_id} has no warehouse configured in `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."
+        )
+    return workspace_config["warehouse"]
+
+
+workspace_option = click.option(
+    "--workspace",
+    type=int,
+    default=DEFAULT_WORKSPACE,
+    help="Bigeye workspace to use when authenticating to API.",
+)
 
 
 @click.group(help="""
@@ -124,11 +156,7 @@ def monitoring(ctx):
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -296,11 +324,7 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -421,15 +445,22 @@ def deploy_custom_rules(
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-def _update_bigconfig(
+def _add_default_metrics(
     bigconfig,
     metadata,
     project,
     dataset,
     table,
-    default_metrics,
 ):
-    """Update the BigConfig file to monitor a view."""
+    """Add the default metrics to the BigConfig file unless there's already an existing such metric."""
+    default_metrics = []
+    if metadata.monitoring.freshness:
+        default_metrics.append(SimplePredefinedMetricName.FRESHNESS)
+    if metadata.monitoring.volume:
+        default_metrics.append(SimplePredefinedMetricName.VOLUME)
+    if not default_metrics:
+        return
+
     tag_deployment_metrics = [
         {
             "predefined_metric": (
@@ -526,15 +557,6 @@ def _update_bigconfig(
             TagDeploymentSuite(deployments=deployments, collection=collection)
         ]
 
-        if metadata.monitoring.partition_column:
-            bigconfig.row_creation_times = RowCreationTimes(
-                column_selectors=[
-                    ColumnSelector(
-                        name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
-                    )
-                ]
-            )
-
 
 @monitoring.command(help="""
     Update BigConfig files based on monitoring metadata.
@@ -576,20 +598,38 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
             if (
                 metadata_file.parent / QUERY_FILE
             ).exists() and "public_bigquery" not in metadata.labels:
-                default_metrics = []
-                if metadata.monitoring.freshness:
-                    default_metrics.append(SimplePredefinedMetricName.FRESHNESS)
-                if metadata.monitoring.volume:
-                    default_metrics.append(SimplePredefinedMetricName.VOLUME)
-
-                _update_bigconfig(
+                _add_default_metrics(
                     bigconfig=bigconfig,
                     metadata=metadata,
                     project=project,
                     dataset=dataset,
                     table=table,
-                    default_metrics=default_metrics,
                 )
+
+                if metadata.monitoring.partition_column:
+                    bigconfig.row_creation_times = RowCreationTimes(
+                        column_selectors=[
+                            ColumnSelector(
+                                name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
+                            )
+                        ]
+                    )
+
+            # Apply our centralized collection configurations to the BigConfig file.
+            workspace_id = _resolve_workspace(metadata)
+            deployment_suites: list[BigeyeDeploymentSuite] = [
+                *(bigconfig.table_deployments or []),
+                *(bigconfig.tag_deployments or []),
+            ]
+            for deployment_suite in deployment_suites:
+                if deployment_suite.collection:
+                    collection_config = _collection_config(
+                        workspace_id, deployment_suite.collection.name
+                    )
+                    if collection_config:
+                        deployment_suite.collection = SimpleCollection(
+                            **collection_config
+                        )
 
             bigconfig.save(
                 output_path=bigconfig_file.parent,
@@ -603,50 +643,100 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
 
 
 @monitoring.command(help="""
-    Validate BigConfig files.
+    Validate BigConfig files and monitoring metadata.
     """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
 def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
-    """Validate BigConfig file."""
+    """Validate BigConfig files and monitoring metadata."""
     bigconfig_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["bigconfig.yml"]
+        name,
+        sql_dir,
+        project_id=project_id,
+        files=[BIGCONFIG_FILE],
+        file_regex=BIGCONFIG_FILE_RE,
+    )
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=[METADATA_FILE]
     )
 
-    invalid = False
+    file_errors: dict[Path, list[str]] = defaultdict(list)
 
-    for bigconfig_file in list(set(bigconfig_files)):
+    for bigconfig_file in bigconfig_files:
+        # Avoid spurious "Duplicate file found" errors by clearing Bigeye's BigConfig file index.
+        _BIGEYE_YAML_FILE_IX.clear()
         try:
-            BigConfig.load(bigconfig_file)
-        except FileLoadException as e:
-            if "Duplicate" in e.message:
-                pass
-            else:
-                click.echo(f"Invalid BigConfig file {bigconfig_file}: {e}")
-                invalid = True
+            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
         except Exception as e:
-            click.echo(f"Invalid BigConfig file {bigconfig_file}: {e}")
-            invalid = True
+            file_errors[bigconfig_file].append(f"Invalid BigConfig file: {e}")
+            continue
 
-        if (bigconfig_file.parent / VIEW_FILE).exists():
+        metadata_file = bigconfig_file.parent / METADATA_FILE
+        if metadata_file.exists():
+            metadata = Metadata.from_file(metadata_file)
+            if not (metadata.monitoring and metadata.monitoring.enabled):
+                continue
+
             try:
-                metadata = Metadata.from_file(bigconfig_file.parent / METADATA_FILE)
-                if metadata.monitoring and metadata.monitoring.enabled:
-                    if not metadata.monitoring.partition_column_set:
-                        invalid = True
-                        click.echo(
-                            "If montoring is enabled for views, then the partition_column needs to be configured "
-                            + f"explicitly in the `monitoring` metadata for {bigconfig_file.parent}. "
-                            + "Set `partition_column: null` for views that do not reference a partitioned table."
-                        )
-            except FileNotFoundError:
-                pass  # view has no metadata file, so monitoring is disabled
+                workspace_id = _resolve_workspace(metadata)
+            except Exception:
+                # Invalid workspace metadata will be reported by the metadata file validation.
+                continue
 
-    if invalid:
+            deployment_suites: list[BigeyeDeploymentSuite] = [
+                *(bigconfig.table_deployments or []),
+                *(bigconfig.tag_deployments or []),
+            ]
+            collection_names = set(
+                deployment_suite.collection.name
+                for deployment_suite in deployment_suites
+                if deployment_suite.collection
+            )
+            for collection_name in collection_names:
+                collection_config = _collection_config(workspace_id, collection_name)
+                if not collection_config:
+                    file_errors[bigconfig_file].append(
+                        f'Bigeye collection "{collection_name}" isn\'t configured in `bqetl_project.yaml` '
+                        f"under `monitoring.bigeye_workspaces[{workspace_id}].collections`."
+                    )
+
+    for metadata_file in metadata_files:
+        metadata = Metadata.from_file(metadata_file)
+        if not (metadata.monitoring and metadata.monitoring.enabled):
+            continue
+
+        view_file = metadata_file.parent / VIEW_FILE
+        if view_file.exists() and not metadata.monitoring.partition_column_set:
+            file_errors[metadata_file].append(
+                "If monitoring is enabled for views, then the partition_column needs to be configured explicitly in the "
+                "`monitoring` metadata. Set `partition_column: null` for views that don't reference a partitioned table."
+            )
+
+        try:
+            workspace_id = _resolve_workspace(metadata)
+        except Exception as e:
+            file_errors[metadata_file].append(f"Invalid Bigeye workspace config: {e}")
+            continue
+
+        if metadata.monitoring.collection:
+            collection_config = _collection_config(
+                workspace_id, metadata.monitoring.collection
+            )
+            if not collection_config:
+                file_errors[metadata_file].append(
+                    f'Bigeye collection "{metadata.monitoring.collection}" isn\'t configured in '
+                    f"`bqetl_project.yaml` under `monitoring.bigeye_workspaces[{workspace_id}].collections`."
+                )
+
+    if file_errors:
+        click.echo(f"{len(file_errors)} files had monitoring validation errors:")
+        for file, errors in sorted(file_errors.items()):
+            click.echo(f"  {file}:")
+            click.echo("    * " + "\n    * ".join(errors))
         sys.exit(1)
 
-    click.echo("All BigConfig files are valid.")
+    click.echo("All BigConfig files and monitoring metadata are valid.")
 
 
 @monitoring.command(help="""
@@ -658,11 +748,7 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -762,11 +848,7 @@ def set_partition_column(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -865,11 +947,7 @@ def delete(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@click.option(
-    "--workspace",
-    default=463,
-    help="Bigeye workspace to use when authenticating to API.",
-)
+@workspace_option
 @click.option(
     "--base-url",
     "--base_url",

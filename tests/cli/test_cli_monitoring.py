@@ -8,11 +8,17 @@ from unittest.mock import patch
 
 import bigeye_sdk
 import pytest
+from bigeye_sdk.bigconfig_validation.validation_context import (
+    _testcase_support_clear_validation_context as _clear_bigconfig_validation_context,
+)
 from bigeye_sdk.controller.metric_suite_controller import _find_bigconfig_files
 from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
+from bigeye_sdk.model.big_config import BigConfig
 from click.testing import CliRunner
 
 from bigquery_etl.cli.monitoring import (
+    BIGCONFIG_FILE,
+    METADATA_FILE,
     delete,
     deploy,
     deploy_custom_rules,
@@ -102,7 +108,7 @@ class TestMonitoring:
             metadata_file = other_workspace_dir / "metadata.yaml"
             metadata_file.write_text(
                 metadata_file.read_text().replace(
-                    "monitoring:\n  enabled: true",
+                    "monitoring:\n  enabled: true\n  collection: Operational Checks",
                     "monitoring:\n  enabled: true\n  workspace: 508",
                 )
             )
@@ -236,10 +242,28 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
+            bigconfig_file = SQL_DIR / BIGCONFIG_FILE
+            assert not bigconfig_file.exists()
 
-            assert not (SQL_DIR / "bigconfig.yml").exists()
-            runner.invoke(update, [f"{str(SQL_DIR)}"])
-            assert (SQL_DIR / "bigconfig.yml").exists()
+            runner.invoke(update, [str(SQL_DIR)])
+
+            assert bigconfig_file.exists()
+            _clear_bigconfig_validation_context()
+            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            # Assert the default freshness and volume metrics got added to the file.
+            assert bigconfig.tag_deployments is not None
+            assert len(bigconfig.tag_deployments) == 1
+            assert len(bigconfig.tag_deployments[0].deployments) == 1
+            tag_deployment_metrics = bigconfig.tag_deployments[0].deployments[0].metrics
+            assert len(tag_deployment_metrics) == 2
+            assert (
+                tag_deployment_metrics[0].metric_type.predefined_metric == "FRESHNESS"
+            )
+            assert tag_deployment_metrics[1].metric_type.predefined_metric == "VOLUME"
+            # Assert the centralized Bigeye collection config was applied.
+            assert (
+                len(bigconfig.tag_deployments[0].collection.notification_channels) >= 1
+            )
 
     def test_update_existing_bigconfig(self, runner):
         with runner.isolated_filesystem():
@@ -255,59 +279,142 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text("""
+            bigconfig_file = SQL_DIR / BIGCONFIG_FILE
+            bigconfig_file.write_text("""
                 type: BIGCONFIG_FILE
                 table_deployments:
-                - deployments:
-                - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.test.incremental_query_v1
+                - collection:
+                    name: Operational Checks
+                  deployments:
+                  - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.test.incremental_query_v1
                     table_metrics:
                     - metric_type:
                         type: PREDEFINED
                         predefined_metric: FRESHNESS
-                    metric_schedule:
+                      metric_schedule:
                         named_schedule:
-                        name: Default Schedule - 13:00 UTC
+                          name: Default Schedule - 13:00 UTC
             """)
 
-            assert (SQL_DIR / "bigconfig.yml").exists()
             runner.invoke(update, [f"{str(SQL_DIR)}"])
-            assert (SQL_DIR / "bigconfig.yml").exists()
-            print((SQL_DIR / "bigconfig.yml").read_text())
+
+            _clear_bigconfig_validation_context()
+            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            # Assert the freshness metric already defined in the file is still there.
+            assert bigconfig.table_deployments is not None
+            assert len(bigconfig.table_deployments) == 1
+            assert len(bigconfig.table_deployments[0].deployments) == 1
+            table_deployment_metrics = (
+                bigconfig.table_deployments[0].deployments[0].table_metrics
+            )
+            assert len(table_deployment_metrics) == 1
             assert (
-                "predefined_metric: FRESHNESS"
-                in (SQL_DIR / "bigconfig.yml").read_text()
+                table_deployment_metrics[0].metric_type.predefined_metric == "FRESHNESS"
+            )
+            # Assert the default volume metric got added to the file.
+            assert bigconfig.tag_deployments is not None
+            assert len(bigconfig.tag_deployments) == 1
+            assert len(bigconfig.tag_deployments[0].deployments) == 1
+            tag_deployment_metrics = bigconfig.tag_deployments[0].deployments[0].metrics
+            assert len(tag_deployment_metrics) == 1
+            assert tag_deployment_metrics[0].metric_type.predefined_metric == "VOLUME"
+            # Assert the centralized Bigeye collection config was applied.
+            assert (
+                len(bigconfig.table_deployments[0].collection.notification_channels)
+                >= 1
             )
             assert (
-                "predefined_metric: VOLUME"
-                not in (SQL_DIR / "bigconfig.yml").read_text()
+                len(bigconfig.tag_deployments[0].collection.notification_channels) >= 1
             )
 
-    def test_validate_no_bigconfig_file(self, runner):
+    def test_validate_bigconfig_no_file(self, runner):
         with runner.isolated_filesystem():
-            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/test_no_file")
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/bigconfig_no_file")
             os.makedirs(str(SQL_DIR))
+            assert not (SQL_DIR / BIGCONFIG_FILE).exists()
 
-            assert not (SQL_DIR / "bigconfig.yml").exists()
-            result = runner.invoke(validate, [f"{str(SQL_DIR)}"])
+            result = runner.invoke(validate, [str(SQL_DIR)])
             assert result.exit_code == 0
 
-    def test_validate_empty_file(self, runner):
+    def test_validate_bigconfig_empty_file(self, runner):
         with runner.isolated_filesystem():
-            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/test_empty")
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/bigconfig_empty_file")
             os.makedirs(str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text("")
+            (SQL_DIR / BIGCONFIG_FILE).write_text("")
 
-            result = runner.invoke(validate, [f"{str(SQL_DIR)}"])
+            result = runner.invoke(validate, [str(SQL_DIR)])
             assert result.exit_code == 1
+            assert "Invalid BigConfig file" in result.output
 
-    def test_validate_invalid_file(self, runner):
+    def test_validate_bigconfig_invalid_file(self, runner):
         with runner.isolated_filesystem():
-            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/invalid")
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/bigconfig_invalid_file")
             os.makedirs(str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text("invalid")
+            (SQL_DIR / BIGCONFIG_FILE).write_text("invalid")
 
-            result = runner.invoke(validate, [f"{str(SQL_DIR)}"])
+            result = runner.invoke(validate, [str(SQL_DIR)])
             assert result.exit_code == 1
+            assert "Invalid BigConfig file" in result.output
+
+    def test_validate_bigconfig_invalid_collection(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/bigconfig_invalid_collection"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / BIGCONFIG_FILE).write_text("""
+                type: BIGCONFIG_FILE
+                table_deployments:
+                - collection:
+                    name: Unconfigured Collection
+                  deployments: []
+            """)
+            (SQL_DIR / METADATA_FILE).write_text("""
+                monitoring:
+                  enabled: true
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert (
+                'Bigeye collection "Unconfigured Collection" isn\'t configured'
+                in result.output
+            )
+
+    def test_validate_metadata_invalid_collection(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/metadata_invalid_collection"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / METADATA_FILE).write_text("""
+                monitoring:
+                  enabled: true
+                  collection: Unconfigured Collection
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert (
+                'Bigeye collection "Unconfigured Collection" isn\'t configured'
+                in result.output
+            )
+
+    def test_validate_metadata_invalid_workspace(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/metadata_invalid_workspace"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / METADATA_FILE).write_text("""
+                monitoring:
+                  enabled: true
+                  workspace: 9999
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert "Invalid Bigeye workspace config" in result.output
 
     @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
     @patch(

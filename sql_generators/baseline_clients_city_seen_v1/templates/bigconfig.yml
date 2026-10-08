@@ -7,23 +7,9 @@ table_deployments:
   deployments:
   - fq_table_name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}
     {#- Default freshness/volume added by `bqetl monitoring update`. #}
-    table_metrics:
-    - saved_metric_id: composite_key_uniqueness_2_column
-      parameters:
-      - key: col_1
-        column_name: client_id
-      - key: col_1_string
-        string_value: client_id
-      - key: col_2
-        column_name: app_id
-      - key: col_2_string
-        string_value: app_id
-      - key: table
-        string_value: {{ project_id }}.{{ app_name }}_derived.{{ table_name }}
-      rct_overrides:
-      - FULL_SCAN
     {#- Sparse apps can go days without new clients; widen window. #}
     {%- if low_volume %}
+    table_metrics:
     {%- for metric in ["volume", "freshness"] %}
     - saved_metric_id: {{ metric }}
       lookback:
@@ -51,6 +37,20 @@ table_deployments:
       - saved_metric_id: is_valid_client_id
         rct_overrides:
         - first_seen_city_date
+      - saved_metric_id: composite_key_uniqueness_2_column
+        parameters:
+        - key: col_1
+          column_name: client_id
+        - key: col_1_string
+          string_value: client_id
+        - key: col_2
+          column_name: app_id
+        - key: col_2_string
+          string_value: app_id
+        - key: table
+          string_value: {{ project_id }}.{{ app_name }}_derived.{{ table_name }}
+        rct_overrides:
+        - FULL_SCAN
     {#- Returning clients update last_seen_* in older partitions. #}
     {%- for column in ["last_seen_city_date", "last_seen_city"] %}
     - column_name: {{ column }}

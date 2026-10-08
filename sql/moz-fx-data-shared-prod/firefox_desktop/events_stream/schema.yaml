@@ -1175,7 +1175,11 @@ fields:
     - name: smart_window
       type: BOOLEAN
       mode: NULLABLE
-      description: Whether the prompt was sent from Smart Window.
+      description: 'Depending on the type of event:
+
+        * Whether the prompt was sent from Smart Window.
+
+        * Whether the menu was shown in Smart Window.'
     - name: smartblockEmbedTogglesShown
       type: BOOLEAN
       mode: NULLABLE

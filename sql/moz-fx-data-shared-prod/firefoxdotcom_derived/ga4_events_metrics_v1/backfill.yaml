@@ -1,6 +1,6 @@
 2026-10-08:
   start_date: 2025-05-20
-  end_date: 2026-10-06
+  end_date: 2026-10-07
   reason: Initial backfill of new table (#10007) from first GA4 export date
   watchers:
   - sherrera@mozilla.com

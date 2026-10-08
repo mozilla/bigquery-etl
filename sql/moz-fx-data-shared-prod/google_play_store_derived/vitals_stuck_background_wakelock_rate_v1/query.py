@@ -35,7 +35,7 @@ DIMENSIONS = [
     "versionCode",
 ]
 PAGE_SIZE = 1000
-METRIC_SET_NAME = "excessiveWakeupRateMetricSet"
+METRIC_SET_NAME = "stuckBackgroundWakelockRateMetricSet"
 DEFAULT_TABLE_NAME = Path(__file__).parent
 
 SCHEMA_FILE = Path(__file__).parent / "schema.yaml"

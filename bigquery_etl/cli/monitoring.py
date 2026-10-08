@@ -63,9 +63,7 @@ METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_MUTABLE_LOWERBOUND_CRITICAL,
     MetricRunStatus.METRIC_RUN_STATUS_GROUPS_LIMIT_FAILED,
 ]
-DEFAULT_WORKSPACE = ConfigLoader.get(
-    "monitoring", "default_bigeye_workspace", fallback=463
-)
+DEFAULT_WORKSPACE = ConfigLoader.get("monitoring", "default_bigeye_workspace") or 463
 
 BigeyeDeploymentSuite: TypeAlias = TableDeploymentSuite | TagDeploymentSuite
 
@@ -73,7 +71,7 @@ BigeyeDeploymentSuite: TypeAlias = TableDeploymentSuite | TagDeploymentSuite
 @cache
 def _workspace_config(workspace_id: int) -> Optional[dict]:
     """Return the Bigeye workspace's config (if any) from `bqetl_project.yaml` under `monitoring.bigeye_workspaces`."""
-    workspaces_config = ConfigLoader.get("monitoring", "bigeye_workspaces", fallback={})
+    workspaces_config = ConfigLoader.get("monitoring", "bigeye_workspaces") or {}
     return workspaces_config.get(workspace_id)
 
 
@@ -83,7 +81,7 @@ def _collection_config(workspace_id: int, collection_name: str) -> Optional[dict
     workspace_config = _workspace_config(workspace_id)
     if not workspace_config:
         return None
-    collections: list[dict] = workspace_config.get("collections", [])
+    collections: list[dict] = workspace_config.get("collections") or []
     for collection in collections:
         if collection.get("name") == collection_name:
             return collection

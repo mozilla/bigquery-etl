@@ -911,6 +911,65 @@ class TestRewriteTestsForTarget:
         # Source files preserved at their original location.
         assert (src_test_dir / "src-p.src_ds.tbl.yaml").exists()
 
+    def test_renames_fixtures_for_stubbed_tables(self, tmp_path):
+        """Table stubs (e.g. for a stable table) should have their tests renamed."""
+        from bigquery_etl.cli.deploy import _rewrite_tests_for_target
+
+        source_artifact = tmp_path / "sql" / "src-p" / "src_ds" / "tbl" / "query.sql"
+        source_artifact.parent.mkdir(parents=True)
+        source_artifact.write_text("SELECT * FROM `src-p.src_stable.upstream_v1`")
+        target_artifact = (
+            tmp_path / "sql" / "tgt-p" / "tgt_ds" / "src_p__src_ds__tbl" / "query.sql"
+        )
+        target_artifact.parent.mkdir(parents=True)
+        target_artifact.write_text("SELECT 1")
+
+        stub = (
+            tmp_path
+            / "sql"
+            / "tgt-p"
+            / "tgt_ds"
+            / "src_p__src_stable__upstream_v1"
+            / "query.py"
+        )
+        stub.parent.mkdir(parents=True)
+        stub.write_text("# stub")
+        (stub.parent / MANIFEST_FILENAME).write_text(
+            yaml.dump(
+                {
+                    "source_project": "src-p",
+                    "source_dataset": "src_stable",
+                    "source_table": "upstream_v1",
+                }
+            )
+        )
+
+        src_test_dir = tmp_path / "tests" / "sql" / "src-p" / "src_ds" / "tbl" / "test"
+        src_test_dir.mkdir(parents=True)
+        (src_test_dir / "src-p.src_stable.upstream_v1.yaml").write_text("- a: 1")
+        (src_test_dir / "src-p.src_stable.upstream_v1.schema.yaml").write_text(
+            "fields: []"
+        )
+
+        _rewrite_tests_for_target(
+            {source_artifact: target_artifact, stub: stub},
+            tmp_path / "tests" / "sql",
+        )
+
+        tgt_test_dir = (
+            tmp_path
+            / "tests"
+            / "sql"
+            / "tgt-p"
+            / "tgt_ds"
+            / "src_p__src_ds__tbl"
+            / "test"
+        )
+        stub_id = "tgt-p.tgt_ds.src_p__src_stable__upstream_v1"
+        assert (tgt_test_dir / f"{stub_id}.yaml").exists()
+        assert (tgt_test_dir / f"{stub_id}.schema.yaml").exists()
+        assert not (tgt_test_dir / "src-p.src_stable.upstream_v1.yaml").exists()
+
 
 class TestResolveIsolatedSchema:
     """Test the 3-step fallback chain."""

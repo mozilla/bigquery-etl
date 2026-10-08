@@ -7,10 +7,10 @@ import re
 from collections import namedtuple
 from functools import cache
 from pathlib import Path
+from typing import List, Set
 
 import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
@@ -274,6 +274,7 @@ class GleanTable:
         self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
+        self.cross_channel_schema_template = None
         self.base_table_name = "baseline_v1"
         self.possible_query_parameters = {"submission_date": "DATE"}
 
@@ -315,8 +316,9 @@ class GleanTable:
         bigconfig_filename = f"{self.target_table_id}.bigconfig.yml"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
+        view_schema_filename = f"{self.target_table_id[:-3]}.schema.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
-        schema_filename = f"{self.target_table_id}.schema.yaml"
+        table_schema_filename = f"{self.target_table_id}.schema.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -387,17 +389,17 @@ class GleanTable:
 
         # Schema files are optional, except for Python queries without a SQL query to dry run
         try:
-            schema = render(
-                schema_filename,
+            table_schema = render(
+                table_schema_filename,
                 format=False,
                 template_folder=PATH / "templates",
                 **render_kwargs,
             )
         except TemplateNotFound:
-            schema = None
+            table_schema = None
             if query_python:
                 if query_sql:
-                    schema = Schema(
+                    table_schema = Schema(
                         DryRun(
                             os.path.join(project_id, *table.split("."), "query.sql"),
                             content=query_sql,
@@ -408,6 +410,15 @@ class GleanTable:
                     ).to_yaml()
                 else:
                     raise
+        try:
+            view_schema = render(
+                view_schema_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            view_schema = None
 
         if enable_monitoring:
             try:
@@ -457,8 +468,11 @@ class GleanTable:
             if bigconfig_contents:
                 artifacts.append(Artifact(table, "bigconfig.yml", bigconfig_contents))
 
-            if schema:
-                artifacts.append(Artifact(table, "schema.yaml", schema))
+            if table_schema:
+                artifacts.append(Artifact(table, "schema.yaml", table_schema))
+
+            if view_schema:
+                artifacts.append(Artifact(view, "schema.yaml", view_schema))
 
             for artifact in artifacts:
                 destination = (
@@ -551,14 +565,33 @@ class GleanTable:
             if output_dir:
                 write_dataset_metadata(output_dir, view)
 
-            if output_dir:
-                skip_existing = (
-                    str(get_table_dir(output_dir, view) / "view.sql")
-                    in skip_existing_artifacts
-                )
+                view_dir = get_table_dir(output_dir, view)
                 write_sql(
-                    output_dir, view, "view.sql", sql, skip_existing=skip_existing
+                    output_dir,
+                    view,
+                    "view.sql",
+                    sql,
+                    skip_existing=(
+                        str(view_dir / "view.sql") in skip_existing_artifacts
+                    ),
                 )
+
+                if self.cross_channel_schema_template:
+                    view_schema = render(
+                        self.cross_channel_schema_template,
+                        format=False,
+                        template_folder=PATH / "templates",
+                        **render_kwargs,
+                    )
+                    write_sql(
+                        output_dir,
+                        view,
+                        "schema.yaml",
+                        view_schema,
+                        skip_existing=(
+                            str(view_dir / "schema.yaml") in skip_existing_artifacts
+                        ),
+                    )
         else:
             query_filename = f"{target_view_name}.query.sql"
             query_sql = render(

@@ -29,3 +29,4 @@ bigquery:
     fields:
       - addon_id
 deprecated: true
+deletion_date: 2026-12-23

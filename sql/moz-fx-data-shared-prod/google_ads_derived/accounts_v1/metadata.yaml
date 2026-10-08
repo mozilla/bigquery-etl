@@ -3,6 +3,7 @@ description: |-
   Account information for different Google Ads accounts
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels: {}
 scheduling:
   scheduling:

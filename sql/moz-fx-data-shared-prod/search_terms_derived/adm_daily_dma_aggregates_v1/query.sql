@@ -16,7 +16,6 @@ WHERE
   sis.submission_timestamp >= TIMESTAMP(@submission_date)
   AND sis.submission_timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
   AND LENGTH(sis.query) > 0
-  AND sis.normalized_channel = 'release'
   AND NOT `moz-fx-data-shared-prod.udf.is_moz_supplied_suggestion`(sis.reporting_url)
 GROUP BY
   sis.query,

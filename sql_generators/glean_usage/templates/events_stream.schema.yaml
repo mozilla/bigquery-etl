@@ -1,0 +1,13 @@
+{% from 'macros.yaml' import event_extras_by_type_schema -%}
+{{ header_yaml }}
+fields: !flatten-lists
+- !include-field
+  table: {{ project_id }}.{{ events_stream_table }}
+  field: event_id
+- !include-fields
+  table: {{ project_id }}.{{ events_stream_table }}
+  exclude_field_names:
+  - event_id
+{%- if extras_by_type %}
+- {{ event_extras_by_type_schema('extras', extras_by_type) | indent(2, first=False) }}
+{%- endif %}

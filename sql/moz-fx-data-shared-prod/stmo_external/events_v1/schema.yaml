@@ -1,0 +1,29 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: org_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash organization ID. There is only one organization.
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the user who performed the action, see `users_v1`.
+- name: action
+  type: STRING
+  mode: NULLABLE
+  description: Action performed, such as `execute_query` or `view`.
+- name: object_type
+  type: STRING
+  mode: NULLABLE
+  description: Type of object the action was performed on, such as `query` or `dashboard`.
+- name: object_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the object the action was performed on.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time of the event.

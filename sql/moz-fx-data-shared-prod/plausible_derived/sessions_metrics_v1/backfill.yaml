@@ -1,0 +1,26 @@
+2026-10-05:
+  start_date: 2026-09-30
+  end_date: 2026-09-30
+  reason: Fill missing 2026-09-30 partition; initial backfill ended 2026-09-29
+    and bqetl_plausible_derived was paused until 2026-10-02 with no catchup
+  watchers:
+  - sherrera@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false
+2026-09-30:
+  start_date: 2026-07-30
+  end_date: 2026-09-29
+  reason: Initial backfill of new plausible_derived table; schedule has no catchup,
+    raw plausible_external data available 2026-07-30 through 2026-09-29
+  watchers:
+  - sherrera@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

@@ -2,9 +2,16 @@ fields:
 - name: app
   type: STRING
   mode: NULLABLE
+  description: The Glean application identifier that emitted the event (e.g. "accounts_frontend"). This
+    identifies which Mozilla app the auto-events originated from.
 - name: event_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/glean_auto_events_derived/daily_auto_events_metadata_v1/schema.yaml
+    field: event_name
 - name: count
   type: INTEGER
   mode: NULLABLE
+  description: The total number of times the event was recorded across all submission dates for the given
+    app and event name, aggregated by summing daily counts from the source table.

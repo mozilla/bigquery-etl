@@ -3,6 +3,7 @@ description: |-
   Classifies behavior of new clients based on their behavior in first 7 days of activity
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik

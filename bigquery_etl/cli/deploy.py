@@ -538,18 +538,25 @@ def _rewrite_tests_for_target(
     if not test_dir.exists():
         return
 
+    # Queries that read a stubbed table (e.g. stable tables) are rewritten to the stub,
+    # so the test fixtures for that table must be renamed too.
+    def _source_identity(source_path: Path) -> Tuple[str, str, str]:
+        return read_source_identity_from_manifest(
+            source_path
+        ) or extract_from_query_path(source_path)
+
     # Build a lookup keyed by every form of source identity that fixture
     # filenames can use: full `<proj>.<ds>.<tbl>` and short `<ds>.<tbl>`.
     # Maps to the equivalent target identity in full form.
     src_to_tgt_id: Dict[str, str] = {}
     for source_path, target_path in source_to_target_paths.items():
-        src = extract_from_query_path(source_path)
+        src = _source_identity(source_path)
         tgt = extract_from_query_path(target_path)
         src_to_tgt_id[".".join(src)] = ".".join(tgt)
         src_to_tgt_id[f"{src[1]}.{src[2]}"] = ".".join(tgt)
 
     for source_path, target_path in source_to_target_paths.items():
-        src = extract_from_query_path(source_path)
+        src = _source_identity(source_path)
         tgt = extract_from_query_path(target_path)
         src_test_dir = test_dir.joinpath(*src)
         if not src_test_dir.exists():

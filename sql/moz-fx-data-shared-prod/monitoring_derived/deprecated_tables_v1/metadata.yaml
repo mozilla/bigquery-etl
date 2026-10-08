@@ -1,0 +1,13 @@
+friendly_name: Deprecated Tables
+description: |-
+  Contains tables that are deprecated with deletion date
+owners:
+- ascholtz@mozilla.com
+- mwilliams@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_monitoring
+  secrets:
+  - deploy_target: SLACK_API_KEY
+    key: slack_airflow_bot_token

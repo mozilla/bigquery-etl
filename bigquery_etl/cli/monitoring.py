@@ -13,11 +13,13 @@ from typing import Optional, TypeAlias
 
 import click
 import sqlglot
+import yaml
 from bigeye_sdk.authentication.api_authentication import APIKeyAuth
 from bigeye_sdk.bigconfig_validation.validation_context import _BIGEYE_YAML_FILE_IX
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.client.enum import Method
 from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
+from bigeye_sdk.exceptions.exceptions import FileLoadException
 from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
 from bigeye_sdk.model.big_config import (
     BigConfig,
@@ -52,6 +54,7 @@ from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
 BIGCONFIG_FILE_RE = re.compile(r"^.*/([\w-]+)/(\w+)/(\w+)/bigconfig\.yml$")
+BIGCONFIG_FILE_TYPE = "BIGCONFIG_FILE"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
 QUERY_FILE = "query.sql"
 VIEW_FILE = "view.sql"
@@ -66,6 +69,28 @@ METRIC_STATUS_FAILURES = [
 DEFAULT_WORKSPACE = ConfigLoader.get("monitoring", "default_bigeye_workspace") or 463
 
 BigeyeDeploymentSuite: TypeAlias = TableDeploymentSuite | TagDeploymentSuite
+
+
+def _load_bigconfig(bigconfig_file: Path) -> BigConfig:
+    """Load a BigConfig file with validation, but without calling `BigConfig.load()`.
+
+    This avoids some problems with `BigConfig.load()`:
+      * It registers files in the Bigeye SDK's process-global BigConfig file index keyed by path, so
+        loading multiple files from the same path can fail with a "Duplicate file found" error (e.g. in tests).
+      * If loading fails due to validation errors it may write `FIXME_...` files in the working directory.
+    """
+    data = yaml.safe_load(bigconfig_file.read_text())
+    if not isinstance(data, dict):
+        raise FileLoadException(
+            f"`{bigconfig_file}` contains a {type(data).__name__}, but should contain a dictionary."
+        )
+    file_type = data.get("type")
+    if file_type != BIGCONFIG_FILE_TYPE:
+        raise FileLoadException(
+            f"`{bigconfig_file}` has type {file_type!r}, but should have type {BIGCONFIG_FILE_TYPE!r}."
+        )
+    # Load and validate the data.
+    return BigConfig(**data)
 
 
 @cache
@@ -591,9 +616,9 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
             bigconfig_file = metadata_file.parent / BIGCONFIG_FILE
 
             if bigconfig_file.exists():
-                bigconfig = BigConfig.load(bigconfig_file)
+                bigconfig = _load_bigconfig(bigconfig_file)
             else:
-                bigconfig = BigConfig(type="BIGCONFIG_FILE")
+                bigconfig = BigConfig(type=BIGCONFIG_FILE_TYPE)
 
             if (
                 metadata_file.parent / QUERY_FILE
@@ -664,10 +689,8 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
     file_errors: dict[Path, list[str]] = defaultdict(list)
 
     for bigconfig_file in bigconfig_files:
-        # Avoid spurious "Duplicate file found" errors by clearing Bigeye's BigConfig file index.
-        _BIGEYE_YAML_FILE_IX.clear()
         try:
-            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            bigconfig = _load_bigconfig(bigconfig_file)
         except Exception as e:
             file_errors[bigconfig_file].append(f"Invalid BigConfig file: {e}")
             continue
@@ -1100,15 +1123,11 @@ def migrate(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) -
                 project_id=project_id,
             )
 
-            # clearing Bigeye file index after running the `update` command
-            # this is necessary as Bigeye throws an exception when it sees the same config file twice,
-            # which will be the case after doing `update` previously
-            _BIGEYE_YAML_FILE_IX.clear()
             bigconfig_file = check_file.parent / BIGCONFIG_FILE
             if bigconfig_file.exists():
-                bigconfig = BigConfig.load(bigconfig_file)
+                bigconfig = _load_bigconfig(bigconfig_file)
             else:
-                bigconfig = BigConfig(type="BIGCONFIG_FILE")
+                bigconfig = BigConfig(type=BIGCONFIG_FILE_TYPE)
 
             checks = check_file.read_text()
             metrics_by_column = defaultdict(list)

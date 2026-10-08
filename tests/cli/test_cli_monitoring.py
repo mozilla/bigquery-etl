@@ -8,17 +8,14 @@ from unittest.mock import patch
 
 import bigeye_sdk
 import pytest
-from bigeye_sdk.bigconfig_validation.validation_context import (
-    _testcase_support_clear_validation_context as _clear_bigconfig_validation_context,
-)
 from bigeye_sdk.controller.metric_suite_controller import _find_bigconfig_files
 from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
-from bigeye_sdk.model.big_config import BigConfig
 from click.testing import CliRunner
 
 from bigquery_etl.cli.monitoring import (
     BIGCONFIG_FILE,
     METADATA_FILE,
+    _load_bigconfig,
     delete,
     deploy,
     deploy_custom_rules,
@@ -248,8 +245,7 @@ class TestMonitoring:
             runner.invoke(update, [str(SQL_DIR)])
 
             assert bigconfig_file.exists()
-            _clear_bigconfig_validation_context()
-            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            bigconfig = _load_bigconfig(bigconfig_file)
             # Assert the default freshness and volume metrics got added to the file.
             assert bigconfig.tag_deployments is not None
             assert len(bigconfig.tag_deployments) == 1
@@ -298,8 +294,7 @@ class TestMonitoring:
 
             runner.invoke(update, [f"{str(SQL_DIR)}"])
 
-            _clear_bigconfig_validation_context()
-            bigconfig: BigConfig = BigConfig.load(bigconfig_file)
+            bigconfig = _load_bigconfig(bigconfig_file)
             # Assert the freshness metric already defined in the file is still there.
             assert bigconfig.table_deployments is not None
             assert len(bigconfig.table_deployments) == 1

@@ -18,6 +18,7 @@ from click.testing import CliRunner
 
 from bigquery_etl.cli.monitoring import (
     BIGCONFIG_FILE,
+    METADATA_FILE,
     delete,
     deploy,
     deploy_custom_rules,
@@ -107,7 +108,7 @@ class TestMonitoring:
             metadata_file = other_workspace_dir / "metadata.yaml"
             metadata_file.write_text(
                 metadata_file.read_text().replace(
-                    "monitoring:\n  enabled: true",
+                    "monitoring:\n  enabled: true\n  collection: Operational Checks",
                     "monitoring:\n  enabled: true\n  workspace: 508",
                 )
             )
@@ -326,32 +327,94 @@ class TestMonitoring:
                 len(bigconfig.tag_deployments[0].collection.notification_channels) >= 1
             )
 
-    def test_validate_no_bigconfig_file(self, runner):
+    def test_validate_bigconfig_no_file(self, runner):
         with runner.isolated_filesystem():
-            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/test_no_file")
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/bigconfig_no_file")
             os.makedirs(str(SQL_DIR))
+            assert not (SQL_DIR / BIGCONFIG_FILE).exists()
 
-            assert not (SQL_DIR / "bigconfig.yml").exists()
-            result = runner.invoke(validate, [f"{str(SQL_DIR)}"])
+            result = runner.invoke(validate, [str(SQL_DIR)])
             assert result.exit_code == 0
 
-    def test_validate_empty_file(self, runner):
+    def test_validate_bigconfig_empty_file(self, runner):
         with runner.isolated_filesystem():
-            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/test_empty")
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/bigconfig_empty_file")
             os.makedirs(str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text("")
+            (SQL_DIR / BIGCONFIG_FILE).write_text("")
 
-            result = runner.invoke(validate, [f"{str(SQL_DIR)}"])
+            result = runner.invoke(validate, [str(SQL_DIR)])
             assert result.exit_code == 1
+            assert "Invalid BigConfig file" in result.output
 
-    def test_validate_invalid_file(self, runner):
+    def test_validate_bigconfig_invalid_file(self, runner):
         with runner.isolated_filesystem():
-            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/invalid")
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/bigconfig_invalid_file")
             os.makedirs(str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text("invalid")
+            (SQL_DIR / BIGCONFIG_FILE).write_text("invalid")
 
-            result = runner.invoke(validate, [f"{str(SQL_DIR)}"])
+            result = runner.invoke(validate, [str(SQL_DIR)])
             assert result.exit_code == 1
+            assert "Invalid BigConfig file" in result.output
+
+    def test_validate_bigconfig_invalid_collection(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/bigconfig_invalid_collection"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / BIGCONFIG_FILE).write_text("""
+                type: BIGCONFIG_FILE
+                table_deployments:
+                - collection:
+                    name: Unconfigured Collection
+                  deployments: []
+            """)
+            (SQL_DIR / METADATA_FILE).write_text("""
+                monitoring:
+                  enabled: true
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert (
+                'Bigeye collection "Unconfigured Collection" isn\'t configured'
+                in result.output
+            )
+
+    def test_validate_metadata_invalid_collection(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/metadata_invalid_collection"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / METADATA_FILE).write_text("""
+                monitoring:
+                  enabled: true
+                  collection: Unconfigured Collection
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert (
+                'Bigeye collection "Unconfigured Collection" isn\'t configured'
+                in result.output
+            )
+
+    def test_validate_metadata_invalid_workspace(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/metadata_invalid_workspace"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / METADATA_FILE).write_text("""
+                monitoring:
+                  enabled: true
+                  workspace: 9999
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert "Invalid Bigeye workspace config" in result.output
 
     @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
     @patch(

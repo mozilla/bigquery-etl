@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 
 """Search for tables with client id columns."""
+
 import datetime
 from collections import defaultdict
 from functools import cache
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Set
+from typing import Any, Dict, Iterable, List, Set, Tuple
 
 import click
+from google.api_core import exceptions, retry
 from google.cloud import bigquery
 from google.cloud import datacatalog_lineage_v1 as datacatalog_lineage
 from google.cloud.bigquery import TableReference
@@ -73,6 +75,32 @@ WHERE
   AND DATE(creation_time) < DATE_SUB('2025-11-24', INTERVAL 1 DAY)
 """
 
+LINEAGE_PARENT = "projects/moz-fx-data-shared-prod/locations/us"
+# SearchLineageStreaming accepts at most 20 root entities per request
+LINEAGE_BATCH_SIZE = 20
+LINEAGE_MAX_RESULTS = 10_000
+# Deadline for consuming the entire stream of a single request
+LINEAGE_STREAM_TIMEOUT = 90
+
+# The lineage API intermittently returns 503s that usually succeed on the next attempt.
+# Retries are kept short so persistent errors fail the task and are retried by airflow.
+# Deadline exceeded is not retried because the same batch is likely to time out again.
+LINEAGE_RETRY = retry.Retry(
+    predicate=retry.if_exception_type(
+        exceptions.ServiceUnavailable,
+        exceptions.TooManyRequests,
+        exceptions.InternalServerError,
+    ),
+    initial=1,
+    maximum=16,
+    multiplier=2,
+    timeout=90,
+)
+
+
+class LineageTruncatedError(Exception):
+    """Lineage search returned the maximum number of results."""
+
 
 def find_client_id_tables(project: str) -> List[str]:
     """Return a list of tables that have columns ending with 'client_id'."""
@@ -84,6 +112,89 @@ def find_client_id_tables(project: str) -> List[str]:
     return [f"{project}.{row.table_schema}.{row.table_name}" for row in row_results]
 
 
+def is_stable_table(table_name: str) -> bool:
+    """Return true if the table is a stable table."""
+    return TableReference.from_string(table_name).dataset_id.endswith("_stable")
+
+
+def get_direct_upstream_links(
+    client: datacatalog_lineage.LineageClient, tables: List[str]
+) -> List[Tuple[str, str]]:
+    """Return (source, target) pairs for the direct upstream bigquery tables of the given tables.
+
+    If the search results are truncated, split the batch in half and search each half.
+    """
+    try:
+        return search_direct_upstream_links(client, tables)
+    except LineageTruncatedError:
+        if len(tables) == 1:
+            raise
+        mid = len(tables) // 2
+        return get_direct_upstream_links(
+            client, tables[:mid]
+        ) + get_direct_upstream_links(client, tables[mid:])
+
+
+@LINEAGE_RETRY
+def search_direct_upstream_links(
+    client: datacatalog_lineage.LineageClient, tables: List[str]
+) -> List[Tuple[str, str]]:
+    """Search lineage for the direct upstream bigquery tables of the given tables.
+
+    The stream is fully consumed inside this function so errors partway through a stream
+    are retried along with the rest of the batch.
+    """
+    request_type = datacatalog_lineage.SearchLineageStreamingRequest
+    request = request_type(
+        parent=LINEAGE_PARENT,
+        locations=["us"],
+        root_criteria=request_type.RootCriteria(
+            entities=datacatalog_lineage.MultipleEntityReference(
+                entities=[
+                    datacatalog_lineage.EntityReference(
+                        fully_qualified_name=f"bigquery:{table}"
+                    )
+                    for table in tables
+                ]
+            )
+        ),
+        direction=request_type.SearchDirection.UPSTREAM,
+        # exclude column-level lineage
+        filters=request_type.SearchFilters(entity_set=request_type.EntitySet.ENTITIES),
+        limits=request_type.SearchLimits(max_depth=1, max_results=LINEAGE_MAX_RESULTS),
+    )
+
+    links = []
+    num_links = 0
+    for response in client.search_lineage_streaming(
+        request=request, timeout=LINEAGE_STREAM_TIMEOUT
+    ):
+        if response.unreachable:
+            raise RuntimeError(
+                f"Lineage search was incomplete, unreachable: {response.unreachable}"
+            )
+        for link in response.links:
+            num_links += 1
+            # possible sources: https://docs.cloud.google.com/knowledge-catalog/docs/fully-qualified-names
+            link_parts = link.source.fully_qualified_name.split(":")
+            source = link_parts[0]
+            parent_table = link_parts[-1]
+            if not source.startswith("bigquery") or parent_table.startswith(
+                "moz-fx-data-shredder.shredder_tmp"
+            ):
+                continue
+            links.append(
+                (parent_table, link.target.fully_qualified_name.split(":")[-1])
+            )
+
+    if num_links >= LINEAGE_MAX_RESULTS:
+        raise LineageTruncatedError(
+            f"Lineage search results were truncated for {tables}"
+        )
+
+    return links
+
+
 def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
     """Build map of tables to upstream stable tables using GCP data catalog lineage.
 
@@ -91,42 +202,57 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
     """
     client = datacatalog_lineage.LineageClient()
 
-    upstream_stable_tables = defaultdict(set)
+    # Fetch the lineage graph one level at a time, batching the tables in each level.
+    # Searching multiple levels in one request doesn't stop at stable tables and can
+    # hit the result limit.
+    parent_tables: Dict[str, Set[str]] = defaultdict(set)
+    visited = set()
+    tables_to_search = sorted(
+        {table for table in id_tables if not is_stable_table(table)}
+    )
+    while tables_to_search:
+        visited.update(tables_to_search)
+        for i in range(0, len(tables_to_search), LINEAGE_BATCH_SIZE):
+            batch = tables_to_search[i : i + LINEAGE_BATCH_SIZE]
+            for parent_table, table in get_direct_upstream_links(client, batch):
+                parent_tables[table].add(parent_table)
+        tables_to_search = sorted(
+            {
+                parent_table
+                for table in tables_to_search
+                for parent_table in parent_tables[table]
+                if not is_stable_table(parent_table) and parent_table not in visited
+            }
+        )
 
-    def traverse_upstream(base_table: str):
-        """Recursively traverse lineage to find stable tables."""
-        table_ref = TableReference.from_string(base_table)
+    def traverse_upstream(base_table: str) -> Set[str]:
+        """Find all stable tables reachable upstream of the given table.
 
-        if table_ref.dataset_id.endswith("_stable"):  # stable tables are terminal nodes
-            upstream_stable_tables[base_table] = {base_table}
-        elif base_table not in upstream_stable_tables:
-            upstream_links_result = client.search_links(
-                request={
-                    "parent": "projects/moz-fx-data-shared-prod/locations/us",
-                    "target": datacatalog_lineage.EntityReference(
-                        fully_qualified_name=f"bigquery:{base_table}"
-                    ),
-                }
-            )
-            # recursively add upstream tables
-            for upstream_link in upstream_links_result:
-                # possible sources: https://cloud.google.com/dataplex/docs/fully-qualified-names
-                link_parts = upstream_link.source.fully_qualified_name.split(":")
-                source = link_parts[0]
-                parent_table = link_parts[-1]
-                if not source.startswith("bigquery") or parent_table.startswith("moz-fx-data-shredder.shredder_tmp"):
-                    break
-                upstream_stable_tables[base_table] = upstream_stable_tables[
-                    base_table
-                ].union(traverse_upstream(parent_table))
+        Results aren't cached per table because the lineage graph can contain cycles
+        and a partial result for a table in a cycle would be incorrect.
+        """
+        if is_stable_table(base_table):  # stable tables are terminal nodes
+            return {base_table}
+        stable_tables = set()
+        seen = {base_table}
+        to_visit = [base_table]
+        while to_visit:
+            for parent_table in parent_tables[to_visit.pop()]:
+                if parent_table in seen:
+                    continue
+                seen.add(parent_table)
+                if is_stable_table(parent_table):
+                    stable_tables.add(parent_table)
+                else:
+                    to_visit.append(parent_table)
 
-        return upstream_stable_tables[base_table]
+        return stable_tables
 
     upstream_stable_table_map = {}
 
     print("Upstream stable tables:")
     for table_name in id_tables:
-        upstream_stable_table_map[table_name] = set(traverse_upstream(table_name))
+        upstream_stable_table_map[table_name] = traverse_upstream(table_name)
         print(f"{table_name} upstream: {upstream_stable_table_map[table_name]}")
 
     return upstream_stable_table_map
@@ -240,7 +366,7 @@ def delete_source_to_dict(source: DeleteSource):
 
 
 def get_missing_deletions(
-    associated_deletions: Dict[str, Set[DeleteSource]]
+    associated_deletions: Dict[str, Set[DeleteSource]],
 ) -> List[Dict[str, Any]]:
     """Get list of all tables with the currently configured deletion sources and the sources based on lineage."""
     # get the generated glean deletion list

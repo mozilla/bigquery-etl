@@ -2,36 +2,63 @@ fields:
 - name: task_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the Taskcluster task associated with this cost record. Each task
+    may have multiple runs (retries), each represented by a separate row.
 - name: run_id
   type: INTEGER
   mode: NULLABLE
+  description: The zero-based index of the specific run attempt for the task. A value of 0 indicates the
+    first (original) attempt; higher values indicate retry attempts.
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date for which this cost record is computed, corresponding to the task's submission date
+    in the source task runs table.
 - name: run_cost
   type: FLOAT
   mode: NULLABLE
+  description: The estimated cloud infrastructure cost (in USD) attributed to this specific task run, calculated
+    as the run's share of the worker instance's total cost proportional to its uptime fraction (run_duration
+    / attribution_worker_uptime * attribution_worker_cost).
 - name: cloud_provider
   type: STRING
   mode: NULLABLE
+  description: The cloud provider on which the worker instance ran. Values are 'gcp' for Google Cloud Platform
+    or 'azure' for Microsoft Azure.
 - name: worker_project
   type: STRING
   mode: NULLABLE
+  description: The cloud project or subscription that owns the worker instance, such as a GCP project ID
+    (e.g. 'fxci-production-level1-workers') or an Azure subscription name.
 - name: worker_zone
   type: STRING
   mode: NULLABLE
+  description: The cloud availability zone or region where the worker instance was running, such as a GCP
+    zone (e.g. 'us-central1-c') or an Azure region (e.g. 'eastus').
 - name: worker_instance_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier of the cloud VM instance that executed the task run, used to join task
+    run records with worker cost and uptime data.
 - name: attribution_worker_cost
   type: FLOAT
   mode: NULLABLE
+  description: The total billed cost (in USD) for the worker instance over the 30-day attribution window
+    ending on the submission date, used as the basis for proportional cost allocation to individual runs.
 - name: attribution_worker_uptime
   type: FLOAT
   mode: NULLABLE
+  description: The total uptime (in seconds) recorded for the worker instance over the 30-day attribution
+    window ending on the submission date, used as the denominator when apportioning costs to individual
+    task runs.
 - name: run_duration
   type: INTEGER
   mode: NULLABLE
+  description: The elapsed time in seconds for this task run, computed as the difference between the task's
+    resolved and started timestamps.
 - name: attribution_method
   type: STRING
   mode: NULLABLE
+  description: The method used to measure worker uptime for cost attribution. Values include 'gcp_monitoring_instance_uptime'
+    for GCP instances measured via Cloud Monitoring and 'azure_billing_vm_quantity' for Azure instances
+    measured via billing data.

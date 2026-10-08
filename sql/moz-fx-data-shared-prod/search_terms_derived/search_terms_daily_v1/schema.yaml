@@ -2,9 +2,15 @@ fields:
   - mode: NULLABLE
     name: submission_date
     type: DATE
+    description: The date on which the search queries were submitted, derived from the timestamp of terminal
+      queries in each session. Partitions this table and is used to filter results to a single day of aggregated
+      search term data.
   - mode: NULLABLE
     name: query
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/merino_log_sanitized_v3/schema.yaml
+      field: query
   - mode: NULLABLE
     name: search_sessions
     type: INTEGER

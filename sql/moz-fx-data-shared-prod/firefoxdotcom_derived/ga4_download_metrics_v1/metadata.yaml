@@ -1,0 +1,47 @@
+friendly_name: GA4 Download Metrics V1
+description: |-
+  Daily aggregate of product_download events on firefox.com, joined to the session each download happened in via ga_sessions_v2. Use for downloads by landing page, source, medium, campaign or channel.
+
+  Always filter on event_date. For sessions and bounces use ga4_sessions_metrics_v1, and for CTA clicks and other events use ga4_events_metrics_v1.
+
+  Overlaps with www_site_downloads_v1, which is session level and has no landing page, channel group or ad platform. This table is a daily aggregate that attaches those session attributes from ga_sessions_v2, so use it for downloads by landing page or channel. Use www_site_downloads_v1 when you need session level rows.
+owners:
+- sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+  dag: bqetl_ga4_firefoxdotcom
+  owner2: data-marketing-wg
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  depends_on:
+  - task_id: wait_for_firefoxdotcom_events_table
+    dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - landing_page
+    - channel_group
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  checks.sql:
+  - ..
+  - ..INFORMATION_SCHEMA.PARTITIONS
+  query.sql:
+  - moz-fx-data-marketing-prod.analytics_489412379.events_*
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2
+require_column_descriptions: true

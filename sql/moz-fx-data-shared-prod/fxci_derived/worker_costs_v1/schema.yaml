@@ -2,21 +2,39 @@ fields:
 - name: project
   type: STRING
   mode: NULLABLE
+  description: The cloud project or subscription that incurred the cost. For GCP this is the project ID
+    (e.g. "fxci-production-level1-workers" or "fxci-production-level3-workers"); for Azure this is the subscription
+    name (e.g. "FXCI Azure DevTest Subscription").
 - name: name
   type: STRING
   mode: NULLABLE
+  description: The human-readable name of the virtual machine instance. For GCP this is extracted from the
+    resource name path; for Azure it is extracted from the ResourceId. May be empty for some GCP billing
+    rows that lack an instance name segment.
 - name: zone
   type: STRING
   mode: NULLABLE
+  description: The cloud region or availability zone where the worker instance ran. For GCP this is a zone
+    identifier (e.g. "us-central1-c"); for Azure this is a region identifier (e.g. "eastus").
 - name: instance_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the virtual machine instance. For GCP this is the numeric instance
+    ID extracted from the resource's global name path; for Azure it is the virtual machine name extracted
+    from the ResourceId.
 - name: total_cost
   type: FLOAT
   mode: NULLABLE
+  description: The total daily cost in billing currency for the worker instance, calculated as the sum of
+    raw usage charges plus any credits (e.g. sustained-use discounts). A value of zero indicates the credits
+    fully offset the charges for that instance on that day.
 - name: usage_start_date
   type: DATE
   mode: NULLABLE
+  description: The date on which the worker instance usage began, derived from the billing export's usage
+    start timestamp. This is also the partition/submission date used to load each daily batch.
 - name: cloud_provider
   type: STRING
   mode: NULLABLE
+  description: The cloud provider that hosted the worker instance. Either "gcp" for Google Cloud Platform
+    or "azure" for Microsoft Azure.

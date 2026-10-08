@@ -43,4 +43,7 @@ monitoring:
   {%- if skip_freshness_volume %}
   freshness: null
   volume: null
+  {%- else %}
+  volume:
+    blocking: false
   {%- endif %}

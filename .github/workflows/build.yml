@@ -56,7 +56,6 @@ jobs:
       deploy: ${{ steps.set-flags.outputs.deploy }}
       validate-sql: ${{ steps.set-flags.outputs.validate-sql }}
       validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
-      validate-deprecation-metadata: ${{ steps.set-flags.outputs.validate-deprecation-metadata }}
     steps:
       - &checkout-with-history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -76,13 +75,6 @@ jobs:
             sql/moz-fx-data-shared-prod/udf/**
             sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
-      - id: changed-files-metadata
-        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
-        with:
-          files: |
-            sql/**/metadata.yaml
-            sql_generators/**/metadata.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
@@ -117,12 +109,10 @@ jobs:
           VALIDATE_ROUTINES: ${{ steps.changed-files-routines.outputs.any_changed }}
           VALIDATE_SQL: ${{ steps.changed-files-sql.outputs.any_changed }}
           VALIDATE_BQETL: ${{ steps.changed-files-bqetl.outputs.any_changed }}
-          VALIDATE_DEPRECATION_METADATA: ${{ steps.changed-files-metadata.outputs.any_changed }}
         run: |
           echo "validate-routines=$VALIDATE_ROUTINES" >> $GITHUB_OUTPUT
           echo "validate-sql=$VALIDATE_SQL" >> $GITHUB_OUTPUT
           echo "validate-bqetl=$VALIDATE_BQETL" >> $GITHUB_OUTPUT
-          echo "validate-deprecation-metadata=$VALIDATE_DEPRECATION_METADATA" >> $GITHUB_OUTPUT
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
@@ -218,36 +208,6 @@ jobs:
       - *restore-venv
       - name: Yamllint Test
         run: PATH=".venv/bin:$PATH" yamllint -c .yamllint.yaml .
-
-  verify-deprecation-metadata:
-    name: Verify Deprecation Metadata
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    environment: *build-env
-    needs: [build, generate-sql, decide-runs]
-    if: |
-      always() &&
-      needs.decide-runs.result == 'success' &&
-      needs.decide-runs.outputs.validate-deprecation-metadata == 'true' &&
-      (needs.generate-sql.result == 'success' || needs.generate-sql.result == 'skipped')
-    steps:
-      - *checkout
-      - *setup-python
-      - *restore-venv
-      - &download-generated-sql
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
-      - &copy-generated-sql
-        name: Move generated SQL into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/generated-sql/sql sql/
-      - name: Deletion Date Check
-        run: |
-          PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation
 
   verify-format-sql:
     name: Verify SQL Format
@@ -597,6 +557,31 @@ jobs:
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
+
+  verify-deprecation-metadata:
+    name: Verify Deprecation Metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: *build-env
+    needs: [build, generate-sql]
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &download-generated-sql
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - &copy-generated-sql
+        name: Move generated SQL into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql/
+      - name: Deletion Date Check
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation
 
   trigger-private-ci:
     name: Trigger Private CI

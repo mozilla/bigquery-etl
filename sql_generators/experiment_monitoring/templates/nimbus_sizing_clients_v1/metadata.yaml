@@ -1,21 +1,28 @@
 {%- if dataset == "firefox_desktop" -%}
 {%- set app_label = "Desktop" -%}
 {%- set source_dataset = "firefox_desktop" -%}
-{%- set source_table = "nimbus_targeting_context" -%}
 {%- elif dataset == "org_mozilla_fenix" -%}
 {%- set app_label = "Fenix" -%}
-{%- set source_dataset = "fenix_derived" -%}
-{%- set source_table = "nimbus_recorded_targeting_context_v1" -%}
+{%- set source_dataset = "fenix" -%}
 {%- else -%}
 {%- set app_label = "Firefox for iOS" -%}
-{%- set source_dataset = dataset + "_derived" -%}
-{%- set source_table = "nimbus_recorded_targeting_context_v1" -%}
+{%- set source_dataset = "firefox_ios" -%}
 {%- endif -%}
 ---
 friendly_name: Nimbus Population Sizing Client Pool ({{ app_label }})
 description: |-
   Pre-materialized 7-day rolling window of deduplicated, 10%-sampled {{ app_label }}
   clients for Nimbus pre-launch population sizing.
+
+  Sourced from the dedicated nimbus-targeting-context ping, which covers the whole
+  population and carries a real sample_id. Each daily partition is an independently
+  deduplicated 7-day window, so consumers must read a single partition — summing
+  partitions counts the same client repeatedly.
+
+  Mobile pools keep the Nimbus context verbatim as a JSON column rather than
+  flattening it into typed columns. Experimenter owns the JEXL-to-SQL mapping and
+  emits JSON_VALUE(context, ...) lookups, so adding a targeting attribute needs no
+  change here.
 
   Consumed by experiment_population_estimates_v1 to run per-experiment
   COUNTIF queries without inline deduplication or date arithmetic.
@@ -26,7 +33,7 @@ labels:
 scheduling:
   dag_name: bqetl_experiments_daily
   referenced_tables:
-    - ['moz-fx-data-shared-prod', '{{ source_dataset }}', '{{ source_table }}']
+    - ['moz-fx-data-shared-prod', '{{ source_dataset }}', 'nimbus_targeting_context']
 bigquery:
   time_partitioning:
     type: day

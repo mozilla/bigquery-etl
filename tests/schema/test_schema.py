@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 from textwrap import dedent
 
@@ -860,6 +861,15 @@ class TestSchemaLoader:
         with nested_fields_schema_file_path.open() as file_stream:
             return yaml.safe_load(file_stream)
 
+    @pytest.fixture(scope="class")
+    def nullable_fields_schema(self, nested_fields_schema):
+        nullable_schema = deepcopy(nested_fields_schema)
+        # submission_timestamp
+        nullable_schema["fields"][0]["mode"] = "NULLABLE"
+        # client_info.distribution.name
+        nullable_schema["fields"][1]["fields"][2]["fields"][0]["mode"] = "NULLABLE"
+        return nullable_schema
+
     @pytest.fixture
     def patch_get_stable_table_schemas(self, monkeypatch, nested_fields_schema):
         def mock_get_stable_table_schemas():
@@ -899,6 +909,17 @@ class TestSchemaLoader:
         result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
         assert result == {"fields": [nested_fields_schema["fields"][0]]}
 
+    def test_include_jmespath_field_force_nullable(self, nullable_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include
+              file: {self.nested_fields_schema_file}
+              jmespath: fields[?name == 'submission_timestamp'] | [0]
+              force_nullable_mode: true
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nullable_fields_schema["fields"][0]]}
+
     def test_include_jmespath_specific_fields(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields: !include
@@ -924,6 +945,7 @@ class TestSchemaLoader:
             "fields": [
                 nested_fields_schema["fields"][0],
                 nested_fields_schema["fields"][3],
+                nested_fields_schema["fields"][4],
             ]
         }
 
@@ -967,6 +989,29 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_jmespath_nested_fields_force_nullable(
+        self, nullable_fields_schema
+    ):
+        schema_yaml = dedent(f"""
+            fields:
+            - name: client_information
+              type: RECORD
+              fields: !include
+                file: {self.nested_fields_schema_file}
+                jmespath: fields[?name == 'client_info'] | [0].fields
+                force_nullable_mode: true
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    "name": "client_information",
+                    "type": "RECORD",
+                    "fields": nullable_fields_schema["fields"][1]["fields"],
+                }
+            ]
+        }
+
     # !include-field tag tests...
     def test_include_field(self, nested_fields_schema):
         schema_yaml = dedent(f"""
@@ -977,6 +1022,39 @@ class TestSchemaLoader:
         """)
         result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
         assert result == {"fields": [nested_fields_schema["fields"][0]]}
+
+    def test_include_field_force_nullable(self, nullable_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: submission_timestamp
+              force_nullable_mode: true
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nullable_fields_schema["fields"][0]]}
+
+    def test_include_record_field_force_nullable(self, nullable_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info
+              force_nullable_mode: true
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nullable_fields_schema["fields"][1]]}
+
+    def test_include_repeated_field_ignore_force_nullable(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: tags
+              force_nullable_mode: true
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nested_fields_schema["fields"][4]]}
 
     def test_include_nested_field(self, nested_fields_schema):
         schema_yaml = dedent(f"""
@@ -1288,6 +1366,15 @@ class TestSchemaLoader:
         result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
         assert result == {"fields": nested_fields_schema["fields"]}
 
+    def test_include_fields_force_nullable(self, nullable_fields_schema):
+        schema_yaml = dedent(f"""
+            fields: !include-fields
+              table: {self.nested_fields_table}
+              force_nullable_mode: true
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": nullable_fields_schema["fields"]}
+
     def test_include_specific_fields(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields: !include-fields
@@ -1333,6 +1420,7 @@ class TestSchemaLoader:
             "fields": [
                 nested_fields_schema["fields"][0],
                 nested_fields_schema["fields"][3],
+                nested_fields_schema["fields"][4],
             ]
         }
 
@@ -1351,6 +1439,7 @@ class TestSchemaLoader:
                 {"name": "client_info", "type": "JSON"},
                 nested_fields_schema["fields"][2],
                 nested_fields_schema["fields"][3],
+                nested_fields_schema["fields"][4],
             ]
         }
 

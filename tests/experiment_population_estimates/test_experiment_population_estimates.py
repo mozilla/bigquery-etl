@@ -3,6 +3,7 @@
 import importlib.util
 import json
 import os
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -289,3 +290,46 @@ class TestWriteToGCS:
         blob_paths = [call[0][0] for call in mock_bucket.blob.call_args_list]
         assert all("experiment_population_estimates" in p for p in blob_paths)
         assert not any("nimbus_draft" in p for p in blob_paths)
+
+
+class TestWriteToBigQuery:
+    """Tests for writing sizing results to BigQuery."""
+
+    RESULTS = {
+        "my-experiment": {
+            "platform": "firefox_desktop",
+            "eligible_count": 1_000_000,
+            "warnings": [],
+        }
+    }
+
+    def _write(self, mock_bigquery):
+        _mod.write_to_bigquery(
+            results=self.RESULTS,
+            project="moz-fx-data-experiments",
+            dataset="monitoring",
+            table="experiment_population_estimates_v1",
+            submission_date=date(2026, 7, 27),
+        )
+        return mock_bigquery.return_value.load_table_from_json
+
+    def test_appends_rather_than_truncating(self):
+        """Each run only sizes the experiments flagged needsUpdate at that moment,
+        so truncating the partition would drop estimates written earlier the same
+        day once this runs more often than daily."""
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            load = self._write(mock_client)
+
+        job_config = load.call_args[1]["job_config"]
+        assert job_config.write_disposition == "WRITE_APPEND"
+
+    def test_no_write_when_no_results(self):
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            _mod.write_to_bigquery(
+                results={},
+                project="moz-fx-data-experiments",
+                dataset="monitoring",
+                table="experiment_population_estimates_v1",
+                submission_date=date(2026, 7, 27),
+            )
+        mock_client.return_value.load_table_from_json.assert_not_called()

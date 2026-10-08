@@ -2,33 +2,58 @@ fields:
   - name: task_id
     type: STRING
     mode: REQUIRED
+    description: The unique identifier for a Taskcluster task. A single task may have multiple runs, each
+      identified by the combination of task_id and run_id.
   - name: run_id
     type: INTEGER
     mode: REQUIRED
+    description: The zero-based index of this run attempt for the associated task. A value of 0 indicates
+      the first attempt; higher values indicate subsequent retries or reruns.
   - name: reason_created
     type: STRING
     mode: NULLABLE
+    description: The reason the task run was created, as reported by Taskcluster. Common values include 'scheduled'
+      (initial run), 'retry' and 'task-retry' (automatic retries), 'exception' (run created due to a prior
+      exception), and 'rerun' (manually triggered rerun).
   - name: reason_resolved
     type: STRING
     mode: NULLABLE
+    description: The reason the task run was resolved, as reported by Taskcluster. Values include 'completed'
+      (successful finish), 'failed' (task failure), 'deadline-exceeded', 'worker-shutdown', 'canceled', 'intermittent-task',
+      'malformed-payload', 'claim-expired', 'internal-error', and 'resource-unavailable'.
   - name: resolved
     type: TIMESTAMP
     mode: REQUIRED
+    description: The timestamp at which the task run reached a terminal state (completed, failed, or exception)
+      in Taskcluster.
   - name: scheduled
     type: TIMESTAMP
     mode: REQUIRED
+    description: The timestamp at which the task run was scheduled and became eligible to be claimed by a
+      worker in Taskcluster.
   - name: started
     type: TIMESTAMP
     mode: NULLABLE
+    description: The timestamp at which a worker claimed and began executing the task run. Null for runs that
+      were never picked up by a worker (e.g. deadline-exceeded or canceled before execution).
   - name: state
     type: STRING
     mode: REQUIRED
+    description: The final state of the task run as reported by Taskcluster. One of 'completed' (successful),
+      'failed' (task returned a non-zero exit code), or 'exception' (run ended due to an infrastructure or
+      scheduling exception).
   - name: submission_date
     type: DATE
     mode: REQUIRED
+    description: The date on which this record was ingested into the data warehouse, used as the partitioning
+      column.
   - name: worker_group
     type: STRING
     mode: NULLABLE
+    description: The group or region identifier of the worker pool that executed the task run, such as a GCP
+      zone or datacenter name. Null for runs that were never claimed by a worker.
   - name: worker_id
     type: STRING
     mode: NULLABLE
+    description: The unique identifier of the specific worker instance that claimed and executed the task
+      run. Null for runs that were never claimed by a worker.

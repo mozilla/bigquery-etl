@@ -1,0 +1,12 @@
+2026-10-08:
+  start_date: 2025-05-23
+  end_date: 2026-10-06
+  reason: Initial backfill of new table (#10007), session_date 2025-05-20 to 2026-10-03
+  watchers:
+  - sherrera@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

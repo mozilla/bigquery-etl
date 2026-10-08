@@ -217,31 +217,61 @@ fields:
 - name: attribution
   type: RECORD
   mode: NULLABLE
+  description: Attribution metadata captured at the time the subscription was created,
+    sourced from session and UTM parameters stored in Stripe subscription metadata.
+    This struct is null when no attribution signals were present.
   fields:
   - name: flow_id
     type: STRING
     mode: NULLABLE
+    description: The Firefox Accounts session flow identifier recorded at subscription
+      creation, used to link the subscription back to a specific FxA authentication
+      or onboarding flow.
   - name: entrypoint
     type: STRING
     mode: NULLABLE
+    description: The FxA entrypoint value recorded at subscription creation, identifying
+      the UI surface or page from which the user initiated the subscription flow (e.g.
+      'www.mozilla.org-vpn-product-page').
   - name: entrypoint_experiment
     type: STRING
     mode: NULLABLE
+    description: The name of the experiment associated with the FxA entrypoint at
+      subscription creation, used to tie subscriptions to A/B or multivariate experiments
+      (e.g. 'mozilla-vpn-in-private-browsing').
   - name: entrypoint_variation
     type: STRING
     mode: NULLABLE
+    description: The experiment variation assigned to the user at the FxA entrypoint
+      when the subscription was created, corresponding to a specific branch of the
+      entrypoint experiment (e.g. 'treatment-d', 'a', 'b').
   - name: utm_campaign
     type: STRING
     mode: NULLABLE
+    description: The UTM campaign parameter recorded at subscription creation, identifying
+      the marketing campaign that drove the user to subscribe (e.g. 'vpn-product-page',
+      'in-product-pricing-grid').
   - name: utm_content
     type: STRING
     mode: NULLABLE
+    description: The UTM content parameter recorded at subscription creation, used
+      to differentiate creatives or links within the same campaign (e.g. 'get-started-us',
+      'notsignedin').
   - name: utm_medium
     type: STRING
     mode: NULLABLE
+    description: The UTM medium parameter recorded at subscription creation, indicating
+      the marketing channel through which the user arrived (e.g. 'referral', 'firefox-desktop',
+      'organic').
   - name: utm_source
     type: STRING
     mode: NULLABLE
+    description: The UTM source parameter recorded at subscription creation, identifying
+      the specific website or origin that referred the user (e.g. 'www.mozilla.org-vpn-product-page',
+      'google', 'toolbar').
   - name: utm_term
     type: STRING
     mode: NULLABLE
+    description: The UTM term parameter recorded at subscription creation, typically
+      used to identify paid search keywords or specific UI element labels that led
+      the user to subscribe (e.g. 'bento', 'settings', 'sidebar').

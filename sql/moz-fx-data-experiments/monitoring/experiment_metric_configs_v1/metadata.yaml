@@ -3,7 +3,16 @@ friendly_name: Experiment metric configs
 description: |
   Resolved jetstream/metric-hub analysis configuration (metrics, statistics,
   segments, overrides) for each experiment returned by the Experimenter API,
-  refreshed daily against metric-hub HEAD.
+  except rollouts, which jetstream does not analyze.
+
+  Like jetstream, each experiment is resolved against metric-hub as of the
+  time jetstream last touched it (config_as_of), or HEAD if it has not been
+  analyzed yet. Since resolving as of a past commit is slow, rows are reused
+  from the previous run for experiments that ended over 30 days ago: until
+  they are 7 days old, and for experiments that ended over 90 days ago, until
+  first_updated changes. Rows are also re-resolved when the schema structure or
+  the metric-config-parser version changes (resolver_fingerprint). Run with
+  --force-refresh to re-resolve everything.
 
   Read by monitoring.experimenter_experiments_v1's ten-minute import task,
   which nests this table's metric_config column into its own rows on a

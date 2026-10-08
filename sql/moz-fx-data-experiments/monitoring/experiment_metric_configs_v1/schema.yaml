@@ -7,7 +7,23 @@ fields:
 - name: computed_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: When this row was computed. The metric-hub config itself is resolved as of the experiment's last analysis update, not HEAD.
+  description: >-
+    When this row was last resolved. Rows for experiments that ended over 30 days ago are reused for up to 7 days,
+    and indefinitely once over 90 days ago, unless config_as_of changes.
+
+- name: config_as_of
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: >-
+    Timestamp metric-hub was resolved as of, matching jetstream (when it last touched the experiment's enrollments table).
+    NULL means jetstream has not analyzed the experiment yet, so metric-hub HEAD was used.
+
+- name: resolver_fingerprint
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Hash of this table's schema structure and the metric-config-parser version the row was resolved with.
+    Rows are re-resolved when it changes.
 
 - name: metric_config
   type: RECORD

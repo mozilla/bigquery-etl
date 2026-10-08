@@ -22,6 +22,23 @@
 - <<: *suggest_base
   country: US
   subdivision1: AZ
+- <<: *suggest_base
+  country: CA
+  subdivision1: BC
+- submission_date: "2030-01-01"
+  source: suggest
+  provider: merino
+  event_type: click
+  form_factor: desktop
+  advertiser: ad1
+  release_channel: release
+  match_type: "firefox-suggest"
+  normalized_os: Windows
+  suggest_data_sharing_enabled: true
+  position: 1
+  event_count: 1
+  user_count: 1
+  query_type: branded
 - &suggest_mobile
   submission_date: "2030-01-01"
   source: suggest

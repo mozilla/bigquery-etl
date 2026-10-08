@@ -3,86 +3,29 @@ WITH events AS (
   SELECT
     event_name AS raw_event_name,
     geo.country AS country,
-    (
-      SELECT
-        `value`
-      FROM
-        UNNEST(event_params)
-      WHERE
-        key = 'page_location'
-    ).string_value AS page_location,
-    (
-      SELECT
-        `value`
-      FROM
-        UNNEST(event_params)
-      WHERE
-        key = 'engagement_time_msec'
-    ).int_value AS engagement_time_msec,
+    mozfun.map.get_key(event_params, 'page_location').string_value AS page_location,
+    mozfun.map.get_key(event_params, 'engagement_time_msec').int_value AS engagement_time_msec,
     -- Blank strings become NULL.
-    NULLIF((SELECT `value` FROM UNNEST(event_params) WHERE key = 'uid').string_value, '') AS uid,
+    NULLIF(mozfun.map.get_key(event_params, 'uid').string_value, '') AS uid,
+    NULLIF(mozfun.map.get_key(event_params, 'type').string_value, '') AS `type`,
+    NULLIF(mozfun.map.get_key(event_params, 'position').string_value, '') AS position,
+    NULLIF(mozfun.map.get_key(event_params, 'link_id').string_value, '') AS link_id,
+    NULLIF(mozfun.map.get_key(event_params, 'link_classes').string_value, '') AS link_classes,
+    NULLIF(mozfun.map.get_key(event_params, 'link_url').string_value, '') AS link_url,
+    NULLIF(mozfun.map.get_key(event_params, 'text').string_value, '') AS text,
+    NULLIF(mozfun.map.get_key(event_params, 'gtm_tag_name').string_value, '') AS gtm_tag_name,
+    NULLIF(mozfun.map.get_key(event_params, 'product').string_value, '') AS product,
+    NULLIF(mozfun.map.get_key(event_params, 'platform').string_value, '') AS platform,
+    NULLIF(mozfun.map.get_key(event_params, 'release_channel').string_value, '') AS release_channel,
     NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'type').string_value,
-      ''
-    ) AS `type`,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'position').string_value,
-      ''
-    ) AS position,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'link_id').string_value,
-      ''
-    ) AS link_id,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'link_classes').string_value,
-      ''
-    ) AS link_classes,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'link_url').string_value,
-      ''
-    ) AS link_url,
-    NULLIF((SELECT `value` FROM UNNEST(event_params) WHERE key = 'text').string_value, '') AS text,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'gtm_tag_name').string_value,
-      ''
-    ) AS gtm_tag_name,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'product').string_value,
-      ''
-    ) AS product,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'platform').string_value,
-      ''
-    ) AS platform,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'release_channel').string_value,
-      ''
-    ) AS release_channel,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'download_language').string_value,
+      mozfun.map.get_key(event_params, 'download_language').string_value,
       ''
     ) AS download_language,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'method').string_value,
-      ''
-    ) AS method,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'action').string_value,
-      ''
-    ) AS action,
-    NULLIF((SELECT `value` FROM UNNEST(event_params) WHERE key = 'name').string_value, '') AS name,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'newsletter_id').string_value,
-      ''
-    ) AS newsletter_id,
-    (
-      SELECT
-        `value`
-      FROM
-        UNNEST(event_params)
-      WHERE
-        key = 'percent_scrolled'
-    ).int_value AS percent_scrolled
+    NULLIF(mozfun.map.get_key(event_params, 'method').string_value, '') AS method,
+    NULLIF(mozfun.map.get_key(event_params, 'action').string_value, '') AS action,
+    NULLIF(mozfun.map.get_key(event_params, 'name').string_value, '') AS name,
+    NULLIF(mozfun.map.get_key(event_params, 'newsletter_id').string_value, '') AS newsletter_id,
+    mozfun.map.get_key(event_params, 'percent_scrolled').int_value AS percent_scrolled
   FROM
     `moz-fx-data-marketing-prod.analytics_489412379.events_*`
   WHERE

@@ -2,39 +2,18 @@
 WITH downloads AS (
   SELECT
     user_pseudo_id AS ga_client_id,
-    CAST(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'ga_session_id').int_value AS STRING
-    ) AS ga_session_id,
-    (
-      SELECT
-        `value`
-      FROM
-        UNNEST(event_params)
-      WHERE
-        key = 'page_location'
-    ).string_value AS page_location,
+    CAST(mozfun.map.get_key(event_params, 'ga_session_id').int_value AS STRING) AS ga_session_id,
+    mozfun.map.get_key(event_params, 'page_location').string_value AS page_location,
     geo.country AS country,
     -- Blank strings become NULL.
+    NULLIF(mozfun.map.get_key(event_params, 'product').string_value, '') AS product,
+    NULLIF(mozfun.map.get_key(event_params, 'platform').string_value, '') AS platform,
+    NULLIF(mozfun.map.get_key(event_params, 'release_channel').string_value, '') AS release_channel,
     NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'product').string_value,
-      ''
-    ) AS product,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'platform').string_value,
-      ''
-    ) AS platform,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'release_channel').string_value,
-      ''
-    ) AS release_channel,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'download_language').string_value,
+      mozfun.map.get_key(event_params, 'download_language').string_value,
       ''
     ) AS download_language,
-    NULLIF(
-      (SELECT `value` FROM UNNEST(event_params) WHERE key = 'method').string_value,
-      ''
-    ) AS method
+    NULLIF(mozfun.map.get_key(event_params, 'method').string_value, '') AS method
   FROM
     `moz-fx-data-marketing-prod.analytics_489412379.events_*`
   WHERE

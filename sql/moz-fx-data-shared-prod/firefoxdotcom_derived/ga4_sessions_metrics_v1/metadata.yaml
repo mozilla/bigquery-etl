@@ -11,6 +11,12 @@ description: >-
 
   Always filter on session_date. For downloads by source, medium or campaign use
   ga4_download_metrics_v1, and for CTA clicks and other events use ga4_events_metrics_v1.
+
+
+  Overlaps with wwww_site_metrics_summary_v1 and www_site_landing_page_metrics_v1, which read
+  www_site_hits_v1. Those tables have no channel_group, ad_platform or engaged_sessions, so this
+  table is the one to use for channel level or engagement analysis. They carry non_fx_ columns,
+  unique_pageviews and exits that this table does not.
 owners:
 - sherrera@mozilla.com
 - data-marketing-wg@mozilla.com

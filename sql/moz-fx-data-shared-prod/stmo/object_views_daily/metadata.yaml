@@ -3,10 +3,13 @@ description: |-
   Daily views of Redash (sql.telemetry.mozilla.org) visualizations and dashboards over the last
   400 days, one row per object, day, and user. Used by the DataHub Redash usage source.
 
-  Visualization views are dashboard renders plus query page loads, which are credited to the
-  query's default (lowest id) visualization. Duplicate events from a single render or dashboard
-  open are dropped, as are query page loads with no user, since they can't be told apart from
-  dashboard renders.
+  Visualization views are dashboard widget renders, embeds, and query page loads, which are
+  credited to the query's default (lowest id) visualization. Duplicate events from a single load
+  or dashboard open are dropped.
+
+  Rows with a null user_email are views by someone Redash couldn't identify, because the request
+  used a query or dashboard API key instead of a login. Nearly all are embedded visualizations,
+  mostly in Confluence pages, plus a few public dashboard links.
 
   Views by crawlers are excluded: the DataHub ingestion accounts and other known bots, and any
   user on a day they open 100 or more distinct dashboards.

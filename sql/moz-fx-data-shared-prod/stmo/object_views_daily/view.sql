@@ -1,6 +1,9 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.stmo.object_views_daily`
 AS
+-- user_id is null when Redash authenticates a request with a query or dashboard API key instead
+-- of a login. Nearly all of these are embedded visualizations, mostly in Confluence pages, plus a
+-- few public dashboard links. They count as views but not users.
 WITH view_events AS (
   SELECT
     events.created_at,
@@ -26,7 +29,8 @@ WITH view_events AS (
       'nobody@mozilla.org'
     )
   -- Drop every view by a user on a day they open 100 or more distinct dashboards, which only
-  -- happens when a script crawls Redash. People rarely open more than 30 in a day.
+  -- happens when a script crawls Redash. People rarely open more than 30 in a day. Views with
+  -- no user are kept, since they aren't one person.
   QUALIFY
     events.user_id IS NULL
     OR COUNT(DISTINCT IF(events.object_type = 'dashboard', events.object_id, NULL)) OVER (
@@ -35,8 +39,9 @@ WITH view_events AS (
         DATE(events.created_at)
     ) < 100
 ),
--- Redash sometimes logs one dashboard open as two or more view events less than a second apart,
--- so a view within 5 seconds of the same user's previous view of the dashboard is dropped
+-- Redash usually logs a dashboard open as two view events less than a second apart, one from the
+-- page and one from its API request, so a view within 5 seconds of the same user's previous view
+-- of the dashboard is dropped. Views with no user can't be told apart, so they're all kept.
 dashboard_views AS (
   SELECT
     created_at,
@@ -57,9 +62,9 @@ dashboard_views AS (
       TRUE
     )
 ),
--- Only dashboard widgets log visualization views. Each one also logs a query view for the
--- same render, which query_page_views drops.
-dashboard_visualization_views AS (
+-- Dashboard widgets and embeds log visualization views. Each load also logs a query view, which
+-- query_page_views drops.
+visualization_views AS (
   SELECT
     view_events.created_at,
     view_events.object_id AS visualization_id,
@@ -95,18 +100,18 @@ query_page_views AS (
     default_visualizations
     ON default_visualizations.query_id = view_events.object_id
   LEFT JOIN
-    dashboard_visualization_views
-    ON dashboard_visualization_views.query_id = view_events.object_id
-    AND dashboard_visualization_views.user_id = view_events.user_id
-    AND dashboard_visualization_views.created_at
+    visualization_views
+    ON visualization_views.query_id = view_events.object_id
+    AND visualization_views.user_id = view_events.user_id
+    AND visualization_views.created_at
     BETWEEN TIMESTAMP_SUB(view_events.created_at, INTERVAL 10 SECOND)
     AND TIMESTAMP_ADD(view_events.created_at, INTERVAL 10 SECOND)
   WHERE
     view_events.object_type = 'query'
-    -- Query views with no user can't be matched to the dashboard render that logged them, and
-    -- most come from renders, so they're dropped
+    -- Query views with no user are the second event of an embed load. They can't be matched to
+    -- their visualization view by user, so they're dropped.
     AND view_events.user_id IS NOT NULL
-    AND dashboard_visualization_views.visualization_id IS NULL
+    AND visualization_views.visualization_id IS NULL
 ),
 object_events AS (
   SELECT
@@ -115,7 +120,7 @@ object_events AS (
     created_at,
     user_email,
   FROM
-    dashboard_visualization_views
+    visualization_views
   UNION ALL
   SELECT
     'visualization' AS object_type,

@@ -8,6 +8,9 @@ fields:
   - mode: NULLABLE
     name: query
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/search_terms_derived/merino_log_sanitized_v3/schema.yaml
+      field: query
   - mode: NULLABLE
     name: search_sessions
     type: INTEGER

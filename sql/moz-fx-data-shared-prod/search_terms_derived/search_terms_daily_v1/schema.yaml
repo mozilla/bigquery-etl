@@ -2,6 +2,9 @@ fields:
   - mode: NULLABLE
     name: submission_date
     type: DATE
+    description: The date on which the search queries were submitted, derived from the timestamp of terminal
+      queries in each session. Partitions this table and is used to filter results to a single day of aggregated
+      search term data.
   - mode: NULLABLE
     name: query
     type: STRING

@@ -20,6 +20,10 @@ owners:
 - lvargas@mozilla.com
 - mozilla/kpi_table_reviewers
 bigquery:
-  expiration_days: 780
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
 deprecated: true
 deletion_date: 2026-10-01

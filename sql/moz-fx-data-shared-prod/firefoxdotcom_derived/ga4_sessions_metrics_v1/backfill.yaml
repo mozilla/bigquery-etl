@@ -1,10 +1,9 @@
-2026-10-07:
-  start_date: 2026-04-20
-  end_date: 2026-10-06
-  reason: Fill in Redash query_id and username for child jobs of scripts and jobs
-    without referenced tables (DENG-11704)
+2026-10-08:
+  start_date: 2025-05-23
+  end_date: 2026-10-07
+  reason: Initial backfill of new table (#10007), session_date 2025-05-20 to 2026-10-04
   watchers:
-  - bewu@mozilla.com
+  - sherrera@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false

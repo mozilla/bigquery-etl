@@ -1,0 +1,42 @@
+friendly_name: GA4 Sessions Metrics V1
+description: >-
+  Daily aggregate of firefox.com sessions from ga_sessions_v2 by landing page, country, device and
+  traffic source. Counts and sums only: compute rates after summing, e.g. bounce rate is 1 -
+  SUM(engaged_sessions) / SUM(sessions).
+
+
+  Each daily run writes the date three days earlier, once ga_sessions_v2 has stopped updating it, so
+  the latest available session_date is three days behind the run date.
+
+
+  Always filter on session_date. For downloads by source, medium or campaign use
+  ga4_download_metrics_v1, and for CTA clicks and other events use ga4_events_metrics_v1.
+
+
+  Overlaps with wwww_site_metrics_summary_v1 and www_site_landing_page_metrics_v1, which read
+  www_site_hits_v1. Those tables have no channel_group, ad_platform or engaged_sessions, so this
+  table is the one to use for channel level or engagement analysis. They carry non_fx_ columns,
+  unique_pageviews and exits that this table does not.
+owners:
+- sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  date_partition_parameter: submission_date
+  date_partition_offset: -3
+bigquery:
+  time_partitioning:
+    type: day
+    field: session_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - landing_page
+    - channel_group
+    - country
+require_column_descriptions: true

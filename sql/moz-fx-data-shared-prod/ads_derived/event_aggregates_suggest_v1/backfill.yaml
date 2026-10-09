@@ -1,3 +1,14 @@
+2026-10-07:
+  start_date: 2026-09-21
+  end_date: 2026-10-06
+  reason: DAG was paused, needs to be backfilled for the time this table was not running
+  watchers:
+  - cmorales@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false
+
 2026-09-21:
   start_date: 2026-09-01
   end_date: 2026-09-20

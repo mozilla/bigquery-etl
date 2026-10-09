@@ -7,3 +7,4 @@ description: |-
   or sessions. Always filter on event_date.
 owners:
 - sherrera@mozilla.com
+- data-marketing-wg@mozilla.com

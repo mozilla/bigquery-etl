@@ -9,6 +9,8 @@ description: |-
   Users are people who ran a query, including by refreshing a dashboard, and exclude scheduled
   runs. Failed statements are excluded, but earlier statements of a failed multi-statement query
   are still counted. Tables are the ones BigQuery reports as referenced, so views are
-  reported as their underlying tables. Dashboard views exclude scripts that crawl Redash.
+  reported as their underlying tables. Dashboard views are counted as in
+  `stmo.object_views_daily`, which drops repeated view events and the accounts
+  that crawl Redash.
 owners:
 - bewu@mozilla.com

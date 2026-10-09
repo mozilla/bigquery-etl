@@ -1,0 +1,9 @@
+friendly_name: GA4 Firefox.com Download Metrics
+description: |-
+  Daily count of product downloads (GA4 product_download events) on
+  firefox.com.
+
+  Total downloads is SUM(download_count). It counts events, not distinct users
+  or sessions. Always filter on event_date.
+owners:
+- sherrera@mozilla.com

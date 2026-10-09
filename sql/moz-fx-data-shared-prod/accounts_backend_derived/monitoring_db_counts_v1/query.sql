@@ -119,13 +119,6 @@ WITH table_counts AS (
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
-    'oauth_tokens' AS table_name,
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_tokens_v1`
-    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
-  UNION ALL
-  SELECT
     'passkeys' AS table_name,
     COUNT(*) AS total_rows
   FROM

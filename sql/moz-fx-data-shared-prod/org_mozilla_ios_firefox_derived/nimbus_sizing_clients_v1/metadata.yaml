@@ -1,10 +1,14 @@
 friendly_name: Nimbus Population Sizing Client Pool (Firefox for iOS)
-description: |-
-  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Firefox for iOS
-  clients for Nimbus pre-launch population sizing.
-
-  Consumed by experiment_population_estimates_v1 to run per-experiment
-  COUNTIF queries without inline deduplication or date arithmetic.
+description: "Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Firefox\
+  \ for iOS\nclients for Nimbus pre-launch population sizing.\n\nSourced from the\
+  \ dedicated nimbus-targeting-context ping, which covers the whole\npopulation and\
+  \ carries a real sample_id. Each daily partition is an independently\ndeduplicated\
+  \ 7-day window, so consumers must read a single partition \u2014 summing\npartitions\
+  \ counts the same client repeatedly.\n\nMobile pools keep the Nimbus context verbatim\
+  \ as a JSON column rather than\nflattening it into typed columns. Experimenter owns\
+  \ the JEXL-to-SQL mapping and\nemits JSON_VALUE(context, ...) lookups, so adding\
+  \ a targeting attribute needs no\nchange here.\n\nConsumed by experiment_population_estimates_v1\
+  \ to run per-experiment\nCOUNTIF queries without inline deduplication or date arithmetic."
 owners:
 - ykhurana@mozilla.com
 labels:
@@ -14,8 +18,8 @@ scheduling:
   dag_name: bqetl_experiments_daily
   referenced_tables:
   - - moz-fx-data-shared-prod
-    - org_mozilla_ios_firefox_derived
-    - nimbus_recorded_targeting_context_v1
+    - firefox_ios
+    - nimbus_targeting_context
 bigquery:
   time_partitioning:
     type: day
@@ -28,4 +32,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_recorded_targeting_context_v1
+  - moz-fx-data-shared-prod.firefox_ios.nimbus_targeting_context

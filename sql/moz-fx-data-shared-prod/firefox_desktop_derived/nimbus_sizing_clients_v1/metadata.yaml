@@ -1,10 +1,14 @@
 friendly_name: Nimbus Population Sizing Client Pool (Desktop)
-description: |-
-  Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Desktop
-  clients for Nimbus pre-launch population sizing.
-
-  Consumed by experiment_population_estimates_v1 to run per-experiment
-  COUNTIF queries without inline deduplication or date arithmetic.
+description: "Pre-materialized 7-day rolling window of deduplicated, 10%-sampled Desktop\n\
+  clients for Nimbus pre-launch population sizing.\n\nSourced from the dedicated nimbus-targeting-context\
+  \ ping, which covers the whole\npopulation and carries a real sample_id. Each daily\
+  \ partition is an independently\ndeduplicated 7-day window, so consumers must read\
+  \ a single partition \u2014 summing\npartitions counts the same client repeatedly.\n\
+  \nMobile pools keep the Nimbus context verbatim as a JSON column rather than\nflattening\
+  \ it into typed columns. Experimenter owns the JEXL-to-SQL mapping and\nemits JSON_VALUE(context,\
+  \ ...) lookups, so adding a targeting attribute needs no\nchange here.\n\nConsumed\
+  \ by experiment_population_estimates_v1 to run per-experiment\nCOUNTIF queries without\
+  \ inline deduplication or date arithmetic."
 owners:
 - ykhurana@mozilla.com
 labels:

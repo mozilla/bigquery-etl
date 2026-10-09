@@ -1447,11 +1447,11 @@ bqetl_pageload_v1:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - wichan@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: wichan@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-04-01'
@@ -1973,10 +1973,10 @@ bqetl_default_browser_aggregates:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - wichan@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    owner: wichan@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-12-20'
@@ -2521,11 +2521,11 @@ bqetl_bigeye_derived:
 bqetl_baseline_clients_city_seen:
   schedule_interval: 0 4 * * *
   default_args:
-    owner: wichan@mozilla.com
+    owner: data-marketing-wg@mozilla.com
     start_date: "2025-09-20"
     email:
       - telemetry-alerts@mozilla.com
-      - wichan@mozilla.com
+      - data-marketing-wg@mozilla.com
     email_on_failure: true
     email_on_retry: true
     retries: 2

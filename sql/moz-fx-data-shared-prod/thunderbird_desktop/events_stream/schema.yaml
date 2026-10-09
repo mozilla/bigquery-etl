@@ -3458,11 +3458,11 @@ fields:
 
         * The flowId of the interaction session with the passport form.
 
-        * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
-        parameter. The filename''s type, see `nsContentSecurityUtils::FilenameToFilenameType(...)`.
-
         * The error code string (e.g. dnsNotFound, connectionFailure, netTimeout).
         Truncated to 40 characters.
+
+        * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
+        parameter. The filename''s type, see `nsContentSecurityUtils::FilenameToFilenameType(...)`.
 
         * The filename''s type, see `nsContentSecurityUtils::FilenameToFilenameType(...)`.
 

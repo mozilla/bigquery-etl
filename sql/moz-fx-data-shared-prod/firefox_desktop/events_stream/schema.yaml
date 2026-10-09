@@ -3403,7 +3403,12 @@ fields:
     - name: can_load
       type: STRING
       mode: NULLABLE
-      description: Whether or not the startup file can be read/loaded
+      description: 'Depending on the type of event:
+
+        * Whether or not the startup file can be read/loaded
+
+        * Whether or not the startup file can be read/loaded. Missing files and files
+        with an incompatible format version are also recorded as "false"'
     - name: canaries
       type: STRING
       mode: NULLABLE
@@ -4892,7 +4897,13 @@ fields:
     - name: loadfail_reason
       type: STRING
       mode: NULLABLE
-      description: Reason why the file cannot be loaded, N/A if can be loaded
+      description: 'Depending on the type of event:
+
+        * Reason why the file cannot be loaded, N/A if can be loaded
+
+        * Why the file could not be loaded, or "N/A" when it loaded. This is free-form
+        rather than a closed set - values interpolate exception names and format-version
+        values, so expect high cardinality.'
     - name: locale
       type: STRING
       mode: NULLABLE
@@ -5676,6 +5687,14 @@ fields:
       mode: NULLABLE
       description: For nimbus_experiment, if reason = "prefFlips-failed", the type
         of the existing pref value (one of "bool", "string", "int", or "invalid").
+    - name: prescan
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the prescan, which checks the page for the presence
+        of ads before the page is categorized into components. Possible values are:
+        `found` (at least one ad was found in the prescan), `none_found` (no ads were
+        found in the prescan), `not_run` (the prescan never ran, e.g. the user navigated
+        away before the page finished loading).'
     - name: previous
       type: STRING
       mode: NULLABLE
@@ -5801,9 +5820,9 @@ fields:
         selected a result from an add-on using the urlbar experimental API. In this
         case, this will be the provider name specified by the add-on.
 
-        * Which provider was last selected.
-
         * The name of the provider.
+
+        * Which provider was last selected.
 
         * Current provider id.
 
@@ -6122,6 +6141,14 @@ fields:
         * The search access point. It records where the exposure happened. The possible
         values are: `urlbar`, `handoff`, `urlbar_newtab`, `urlbar_addonpage`, and
         `searchbar`.'
+    - name: scan
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the scan that categorizes the components on the
+        page. Possible values are: `complete` (the categorization completed normally),
+        `error` (an error was encountered during categorization), `not_run` (the categorization
+        never ran, potentially because the user navigated away before the page finished
+        loading).'
     - name: scenario
       type: STRING
       mode: NULLABLE
@@ -6306,13 +6333,31 @@ fields:
     - name: shutdown_ok
       type: STRING
       mode: NULLABLE
-      description: Whether or not the shutdown happened successfully, unsuccessful
-        if previous session crashed
+      description: 'Depending on the type of event:
+
+        * Whether or not the shutdown happened successfully, unsuccessful if previous
+        session crashed
+
+        * Despite the name, this is "true" when the previous session did NOT shut
+        down cleanly - it is set from the internal crash flag. The polarity has been
+        inverted since the event was introduced and is documented rather than corrected
+        so existing data stays comparable. session_restore.shutdown_ok carries the
+        same signal with the expected polarity.'
     - name: shutdown_reason
       type: STRING
       mode: NULLABLE
-      description: Reason why shutdown didn't happen successfully, N/A if previous
-        session didn't crashed
+      description: 'Depending on the type of event:
+
+        * Reason why shutdown didn''t happen successfully, N/A if previous session
+        didn''t crashed
+
+        * Why we concluded the previous session did not shut down cleanly. "final-state-write-incomplete"
+        means the CrashMonitor checkpoints showed we never finished writing the final
+        state. "session-state-missing-or-running-at-last-write" means we fell back
+        to the session.state flag in the session file, which was either absent or
+        still "running". "N/A" means we concluded the shutdown was clean, either from
+        the CrashMonitor checkpoints, or - if there were no checkpoints - from the
+        session.state flag being present and not "running".'
     - name: side_bar_state
       type: STRING
       mode: NULLABLE

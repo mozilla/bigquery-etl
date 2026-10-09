@@ -20184,9 +20184,6 @@ fields:
         mode: NULLABLE
       description: 'Results of login import from a CSV/TSV file, by category
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram PWMGR_IMPORT_LOGINS_FROM_FILE_CATEGORICAL.
-
         '
     - name: pwmgr_is_username_only_form
       type: RECORD
@@ -50756,6 +50753,65 @@ fields:
         recorded in that ping; it is recorded in a later ping once activity
 
         resumes.
+
+        '
+    - name: newtab_opened_page_dwell_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Active time the user spent on a page opened from the newtab, in
+        milliseconds, labelled by what was clicked to open it. Measures how long the
+        user was interacting with the browser, anywhere in the window, while that
+        page was the selected tab of the focused window, not how long the tab was
+        open.
+
+        One sample per opened page. Samples accumulate per client and are submitted
+        with the metrics ping. The distribution in one ping covers every page opened
+        from a newtab since the previous metrics ping, and belongs to no single newtab
+        visit.
 
         '
   - name: labeled_custom_distribution

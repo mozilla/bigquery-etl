@@ -524,6 +524,41 @@ org_mozilla_firefox_onboarding_v1 AS (
     normalized_country_code,
     app_version
 ),
+org_mozilla_firefox_privacy_report_notification_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "org_mozilla_firefox" AS app_id,
+    "fenix" AS app_name,
+    "Firefox for Android" AS normalized_app_name,
+    "privacy_report_notification" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.privacy_report_notification_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
 org_mozilla_firefox_beta_events_v1 AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -629,6 +664,41 @@ org_mozilla_firefox_beta_onboarding_v1 AS (
     normalized_country_code,
     app_version
 ),
+org_mozilla_firefox_beta_privacy_report_notification_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "org_mozilla_firefox_beta" AS app_id,
+    "fenix" AS app_name,
+    "Firefox for Android" AS normalized_app_name,
+    "privacy_report_notification" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.privacy_report_notification_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
 org_mozilla_fenix_events_v1 AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -715,6 +785,41 @@ org_mozilla_fenix_onboarding_v1 AS (
     COUNT(*) * 10 AS total_events,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_stable.onboarding_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
+),
+org_mozilla_fenix_privacy_report_notification_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "org_mozilla_fenix" AS app_id,
+    "fenix" AS app_name,
+    "Firefox for Android" AS normalized_app_name,
+    "privacy_report_notification" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.privacy_report_notification_v1`
   CROSS JOIN
     UNNEST(events) AS event
   WHERE
@@ -1555,111 +1660,6 @@ mdn_yari_events_v1 AS (
     COUNT(*) * 10 AS total_events,
   FROM
     `moz-fx-data-shared-prod.mdn_yari_stable.events_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND sample_id
-    BETWEEN 0
-    AND 9
-  GROUP BY
-    submission_date,
-    app_id,
-    app_name,
-    normalized_app_name,
-    ping_type,
-    event_category,
-    event_name,
-    normalized_channel,
-    normalized_country_code,
-    app_version
-),
-bedrock_events_v1 AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    "bedrock" AS app_id,
-    "bedrock" AS app_name,
-    "www.mozilla.org" AS normalized_app_name,
-    "events" AS ping_type,
-    event.category AS event_category,
-    event.name AS event_name,
-    normalized_channel,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
-    COUNT(*) * 10 AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.bedrock_stable.events_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND sample_id
-    BETWEEN 0
-    AND 9
-  GROUP BY
-    submission_date,
-    app_id,
-    app_name,
-    normalized_app_name,
-    ping_type,
-    event_category,
-    event_name,
-    normalized_channel,
-    normalized_country_code,
-    app_version
-),
-bedrock_interaction_v1 AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    "bedrock" AS app_id,
-    "bedrock" AS app_name,
-    "www.mozilla.org" AS normalized_app_name,
-    "interaction" AS ping_type,
-    event.category AS event_category,
-    event.name AS event_name,
-    normalized_channel,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
-    COUNT(*) * 10 AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND sample_id
-    BETWEEN 0
-    AND 9
-  GROUP BY
-    submission_date,
-    app_id,
-    app_name,
-    normalized_app_name,
-    ping_type,
-    event_category,
-    event_name,
-    normalized_channel,
-    normalized_country_code,
-    app_version
-),
-bedrock_non_interaction_v1 AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    "bedrock" AS app_id,
-    "bedrock" AS app_name,
-    "www.mozilla.org" AS normalized_app_name,
-    "non_interaction" AS ping_type,
-    event.category AS event_category,
-    event.name AS event_name,
-    normalized_channel,
-    normalized_country_code,
-    client_info.app_display_version AS app_version,
-    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
-    COUNT(*) * 10 AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1`
   CROSS JOIN
     UNNEST(events) AS event
   WHERE
@@ -2947,6 +2947,11 @@ UNION ALL
 SELECT
   *
 FROM
+  org_mozilla_firefox_privacy_report_notification_v1
+UNION ALL
+SELECT
+  *
+FROM
   org_mozilla_firefox_beta_events_v1
 UNION ALL
 SELECT
@@ -2962,6 +2967,11 @@ UNION ALL
 SELECT
   *
 FROM
+  org_mozilla_firefox_beta_privacy_report_notification_v1
+UNION ALL
+SELECT
+  *
+FROM
   org_mozilla_fenix_events_v1
 UNION ALL
 SELECT
@@ -2973,6 +2983,11 @@ SELECT
   *
 FROM
   org_mozilla_fenix_onboarding_v1
+UNION ALL
+SELECT
+  *
+FROM
+  org_mozilla_fenix_privacy_report_notification_v1
 UNION ALL
 SELECT
   *
@@ -3093,21 +3108,6 @@ SELECT
   *
 FROM
   mdn_yari_events_v1
-UNION ALL
-SELECT
-  *
-FROM
-  bedrock_events_v1
-UNION ALL
-SELECT
-  *
-FROM
-  bedrock_interaction_v1
-UNION ALL
-SELECT
-  *
-FROM
-  bedrock_non_interaction_v1
 UNION ALL
 SELECT
   *

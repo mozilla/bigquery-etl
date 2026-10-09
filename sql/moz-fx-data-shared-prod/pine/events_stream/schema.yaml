@@ -3168,6 +3168,14 @@ fields:
       mode: NULLABLE
       description: For nimbus_experiment, if reason = "prefFlips-failed", the type
         of the existing pref value (one of "bool", "string", "int", or "invalid").
+    - name: prescan
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the prescan, which checks the page for the presence
+        of ads before the page is categorized into components. Possible values are:
+        `found` (at least one ad was found in the prescan), `none_found` (no ads were
+        found in the prescan), `not_run` (the prescan never ran, e.g. the user navigated
+        away before the page finished loading).'
     - name: previous
       type: STRING
       mode: NULLABLE
@@ -3438,6 +3446,14 @@ fields:
       mode: NULLABLE
       description: String that contains a comma-separated list of fields located in
         a sandbox iframe.
+    - name: scan
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the scan that categorizes the components on the
+        page. Possible values are: `complete` (the categorization completed normally),
+        `error` (an error was encountered during categorization), `not_run` (the categorization
+        never ran, potentially because the user navigated away before the page finished
+        loading).'
     - name: scenario
       type: STRING
       mode: NULLABLE

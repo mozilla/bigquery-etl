@@ -42,7 +42,11 @@ SELECT
             ) AS privacy_notice_banner_displayed_date,
             metrics.datetime.privacy_notice_banner_displayed_date AS raw_privacy_notice_banner_displayed_date,
             mozfun.glean.parse_datetime(metrics.datetime.terms_of_use_date) AS terms_of_use_date,
-            metrics.datetime.terms_of_use_date AS raw_terms_of_use_date
+            metrics.datetime.terms_of_use_date AS raw_terms_of_use_date,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.tracking_protection_privacy_report_notification_scheduled_at
+            ) AS tracking_protection_privacy_report_notification_scheduled_at,
+            metrics.datetime.tracking_protection_privacy_report_notification_scheduled_at AS raw_tracking_protection_privacy_report_notification_scheduled_at
           ) AS datetime
         ),
         metrics.text2 AS text,

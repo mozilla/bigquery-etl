@@ -1215,6 +1215,13 @@ fields:
         Android Auto, where a phone projects apps onto the car''s display.
 
         '
+    - name: tracking_protection_privacy_report_notification_worker_scheduled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the worker for the weekly privacy report notification
+        is currently scheduled.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -18416,9 +18423,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Results of login import from a CSV/TSV file, by category
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram PWMGR_IMPORT_LOGINS_FROM_FILE_CATEGORICAL.
 
         '
     - name: pwmgr_is_username_only_form
@@ -44213,6 +44217,18 @@ fields:
       mode: NULLABLE
       description: The timestamp when the user accepted the Terms of Use.
     - name: raw_terms_of_use_date
+      type: STRING
+      mode: NULLABLE
+    - name: tracking_protection_privacy_report_notification_scheduled_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The most recent day on which the app confirmed that the worker
+        for the weekly privacy
+
+        report notification is scheduled.
+
+        '
+    - name: raw_tracking_protection_privacy_report_notification_scheduled_at
       type: STRING
       mode: NULLABLE
   - name: timespan

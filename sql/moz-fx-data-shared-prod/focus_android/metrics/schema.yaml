@@ -7454,9 +7454,6 @@ fields:
         mode: NULLABLE
       description: 'Results of login import from a CSV/TSV file, by category
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram PWMGR_IMPORT_LOGINS_FROM_FILE_CATEGORICAL.
-
         '
     - name: pwmgr_is_username_only_form
       type: RECORD

@@ -302,6 +302,50 @@ base_org_mozilla_firefox_onboarding_v1 AS (
     experiment,
     experiment_branch
 ),
+base_org_mozilla_firefox_privacy_report_notification_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.privacy_report_notification_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
 org_mozilla_firefox_aggregated AS (
   SELECT
     submission_date,
@@ -333,6 +377,11 @@ org_mozilla_firefox_aggregated AS (
         *
       FROM
         base_org_mozilla_firefox_onboarding_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_org_mozilla_firefox_privacy_report_notification_v1
     )
   GROUP BY
     submission_date,
@@ -480,6 +529,50 @@ base_org_mozilla_firefox_beta_onboarding_v1 AS (
     experiment,
     experiment_branch
 ),
+base_org_mozilla_firefox_beta_privacy_report_notification_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.privacy_report_notification_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
 org_mozilla_firefox_beta_aggregated AS (
   SELECT
     submission_date,
@@ -511,6 +604,11 @@ org_mozilla_firefox_beta_aggregated AS (
         *
       FROM
         base_org_mozilla_firefox_beta_onboarding_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_org_mozilla_firefox_beta_privacy_report_notification_v1
     )
   GROUP BY
     submission_date,
@@ -658,6 +756,50 @@ base_org_mozilla_fenix_onboarding_v1 AS (
     experiment,
     experiment_branch
 ),
+base_org_mozilla_fenix_privacy_report_notification_v1 AS (
+  SELECT
+    DATE(@submission_date) AS submission_date,
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+    COUNT(*) AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.privacy_report_notification_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    window_start,
+    window_end,
+    event_category,
+    event_name,
+    event_extra_key,
+    country,
+    channel,
+    version,
+    experiment,
+    experiment_branch
+),
 org_mozilla_fenix_aggregated AS (
   SELECT
     submission_date,
@@ -689,6 +831,11 @@ org_mozilla_fenix_aggregated AS (
         *
       FROM
         base_org_mozilla_fenix_onboarding_v1
+      UNION ALL
+      SELECT
+        *
+      FROM
+        base_org_mozilla_fenix_privacy_report_notification_v1
     )
   GROUP BY
     submission_date,
@@ -2318,184 +2465,6 @@ mdn_yari_aggregated AS (
     SUM(total_events) AS total_events,
   FROM
     (SELECT * FROM base_mdn_yari_action_v1 UNION ALL SELECT * FROM base_mdn_yari_events_v1)
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    normalized_app_name,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_bedrock_events_v1 AS (
-  SELECT
-    DATE(@submission_date) AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.bedrock_stable.events_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-          -- Iterator for accessing experiments.
-          -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-          -- Add * extra to every event to get total event count
-    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_bedrock_interaction_v1 AS (
-  SELECT
-    DATE(@submission_date) AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-          -- Iterator for accessing experiments.
-          -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-          -- Add * extra to every event to get total event count
-    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_bedrock_non_interaction_v1 AS (
-  SELECT
-    DATE(@submission_date) AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-          -- Iterator for accessing experiments.
-          -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-          -- Add * extra to every event to get total event count
-    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-bedrock_aggregated AS (
-  SELECT
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    "www.mozilla.org" AS normalized_app_name,
-    channel,
-    version,
-    experiment,
-    experiment_branch,
-    SUM(total_events) AS total_events,
-  FROM
-    (
-      SELECT
-        *
-      FROM
-        base_bedrock_events_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_bedrock_interaction_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_bedrock_non_interaction_v1
-    )
   GROUP BY
     submission_date,
     window_start,
@@ -4950,11 +4919,6 @@ SELECT
   *
 FROM
   mdn_yari_aggregated
-UNION ALL
-SELECT
-  *
-FROM
-  bedrock_aggregated
 UNION ALL
 SELECT
   *

@@ -139,7 +139,8 @@ SELECT
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.power_saving_mode_active_at_startup,
-      metrics.boolean.metrics_is_android_automotive
+      metrics.boolean.metrics_is_android_automotive,
+      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1976,7 +1977,9 @@ SELECT
       metrics.datetime.privacy_notice_banner_displayed_date,
       metrics.datetime.raw_privacy_notice_banner_displayed_date,
       metrics.datetime.terms_of_use_date,
-      metrics.datetime.raw_terms_of_use_date
+      metrics.datetime.raw_terms_of_use_date,
+      metrics.datetime.tracking_protection_privacy_report_notification_scheduled_at,
+      metrics.datetime.raw_tracking_protection_privacy_report_notification_scheduled_at
     ) AS `datetime`,
     STRUCT(
       metrics.timespan.engine_kill_background_age,
@@ -2467,7 +2470,8 @@ SELECT
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.power_saving_mode_active_at_startup,
-      metrics.boolean.metrics_is_android_automotive
+      metrics.boolean.metrics_is_android_automotive,
+      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -4304,7 +4308,9 @@ SELECT
       metrics.datetime.privacy_notice_banner_displayed_date,
       metrics.datetime.raw_privacy_notice_banner_displayed_date,
       metrics.datetime.terms_of_use_date,
-      metrics.datetime.raw_terms_of_use_date
+      metrics.datetime.raw_terms_of_use_date,
+      metrics.datetime.tracking_protection_privacy_report_notification_scheduled_at,
+      metrics.datetime.raw_tracking_protection_privacy_report_notification_scheduled_at
     ) AS `datetime`,
     STRUCT(
       metrics.timespan.engine_kill_background_age,
@@ -4815,7 +4821,8 @@ SELECT
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.power_saving_mode_active_at_startup,
-      metrics.boolean.metrics_is_android_automotive
+      metrics.boolean.metrics_is_android_automotive,
+      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -6652,7 +6659,9 @@ SELECT
       metrics.datetime.privacy_notice_banner_displayed_date,
       metrics.datetime.raw_privacy_notice_banner_displayed_date,
       metrics.datetime.terms_of_use_date,
-      metrics.datetime.raw_terms_of_use_date
+      metrics.datetime.raw_terms_of_use_date,
+      metrics.datetime.tracking_protection_privacy_report_notification_scheduled_at,
+      metrics.datetime.raw_tracking_protection_privacy_report_notification_scheduled_at
     ) AS `datetime`,
     STRUCT(
       metrics.timespan.engine_kill_background_age,

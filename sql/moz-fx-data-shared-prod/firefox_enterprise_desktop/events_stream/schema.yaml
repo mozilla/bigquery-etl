@@ -1046,7 +1046,11 @@ fields:
     - name: smart_window
       type: BOOLEAN
       mode: NULLABLE
-      description: Whether the prompt was sent from Smart Window.
+      description: 'Depending on the type of event:
+
+        * Whether the prompt was sent from Smart Window.
+
+        * Whether the menu was shown in Smart Window.'
     - name: smartblockEmbedTogglesShown
       type: BOOLEAN
       mode: NULLABLE
@@ -1395,14 +1399,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Milliseconds from mousedown to showing.
+
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
         when its timer was armed, such as at browser start, reports the missed time
         plus about one second, because overdue timers are armed one second out. Larger
         values mostly measure time the browser was closed or asleep. Absent for manual
         runs and when the stored scheduled time could not be parsed.
-
-        * Milliseconds from mousedown to showing.
 
         * Milliseconds waiting on previous
 
@@ -2765,8 +2769,9 @@ fields:
 
         * Whether the panel was hidden or shown.
 
-        * What we did with the session state as a result, one of "restore", "interstitial"
-        (replaced it with about:sessionresto...'
+        * Which action was clicked, e.g., ai, search, copy.
+
+        * What we did with the session state as a result, one of "restore",...'
     - name: action_id
       type: STRING
       mode: NULLABLE
@@ -3102,7 +3107,12 @@ fields:
     - name: can_load
       type: STRING
       mode: NULLABLE
-      description: Whether or not the startup file can be read/loaded
+      description: 'Depending on the type of event:
+
+        * Whether or not the startup file can be read/loaded
+
+        * Whether or not the startup file can be read/loaded. Missing files and files
+        with an incompatible format version are also recorded as "false"'
     - name: canaries
       type: STRING
       mode: NULLABLE
@@ -3305,14 +3315,22 @@ fields:
     - name: component
       type: STRING
       mode: NULLABLE
-      description: 'Type of components on a SERP. Possible values are: `ad_carousel`,
-        `ad_image_row`, `ad_link`, `ad_popover`, `ad_sidebar`, `ad_sitelink`, `ad_subframe`,
+      description: 'Depending on the type of event:
+
+        * Type of components on a SERP. Possible values are: `ad_carousel`, `ad_image_row`,
+        `ad_link`, `ad_popover`, `ad_sidebar`, `ad_sitelink`, `ad_subframe`, `cookie_banner`,
+        `refined_search_buttons`, `shopping_tab`. Defaults to `ad_link`. `ad_popover`
+        was added as a temporary component in August 2024 as a response to clients
+        reporting an extra hidden ad and stopped being reported in telemetry with
+        Firefox 131 as the version added the ability to categorize links but not report
+        them in telemetry. `ad_subframe` is used for providers where ads are served
+        in an iframe rather than as inline links.
+
+        * Type of components on a SERP. Possible values are: `ad_carousel`, `ad_image_row`,
+        `ad_link`, `ad_popover`, `ad_sidebar`, `ad_sitelink`, `ad_subframe`, `ad_uncategorized`,
         `cookie_banner`, `refined_search_buttons`, `shopping_tab`. Defaults to `ad_link`.
         `ad_popover` was added as a temporary component in August 2024 as a response
-        to clients reporting an extra hidden ad and stopped being reported in telemetry
-        with Firefox 131 as the version added the ability to categorize links but
-        not report them in telemetry. `ad_subframe` is used for providers where ads
-        are served in an iframe rather than as inline links.'
+        to clients reporting an extra hidden ad and stopped being repo...'
     - name: component_stack
       type: STRING
       mode: NULLABLE
@@ -4455,7 +4473,13 @@ fields:
     - name: loadfail_reason
       type: STRING
       mode: NULLABLE
-      description: Reason why the file cannot be loaded, N/A if can be loaded
+      description: 'Depending on the type of event:
+
+        * Reason why the file cannot be loaded, N/A if can be loaded
+
+        * Why the file could not be loaded, or "N/A" when it loaded. This is free-form
+        rather than a closed set - values interpolate exception names and format-version
+        values, so expect high cardinality.'
     - name: locale
       type: STRING
       mode: NULLABLE
@@ -5044,11 +5068,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Any partner_code parsing in the URL or an empty string if not available.
+
         * The partner code, if defined/known, that is being used for the search. Not
         all search engines have partner codes. May be empty for engines that are overridden
-        by a third-party add-on or OpenSearch engine.
-
-        * Any partner_code parsing in the URL or an empty string if not available.'
+        by a third-party add-on or OpenSearch engine.'
     - name: passwords
       type: STRING
       mode: NULLABLE
@@ -5198,6 +5222,14 @@ fields:
       mode: NULLABLE
       description: For nimbus_experiment, if reason = "prefFlips-failed", the type
         of the existing pref value (one of "bool", "string", "int", or "invalid").
+    - name: prescan
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the prescan, which checks the page for the presence
+        of ads before the page is categorized into components. Possible values are:
+        `found` (at least one ad was found in the prescan), `none_found` (no ads were
+        found in the prescan), `not_run` (the prescan never ran, e.g. the user navigated
+        away before the page finished loading).'
     - name: previous
       type: STRING
       mode: NULLABLE
@@ -5623,6 +5655,14 @@ fields:
         * The search access point. It records where the exposure happened. The possible
         values are: `urlbar`, `handoff`, `urlbar_newtab`, `urlbar_addonpage`, and
         `searchbar`.'
+    - name: scan
+      type: STRING
+      mode: NULLABLE
+      description: 'The outcome of the scan that categorizes the components on the
+        page. Possible values are: `complete` (the categorization completed normally),
+        `error` (an error was encountered during categorization), `not_run` (the categorization
+        never ran, potentially because the user navigated away before the page finished
+        loading).'
     - name: scenario
       type: STRING
       mode: NULLABLE
@@ -5791,13 +5831,31 @@ fields:
     - name: shutdown_ok
       type: STRING
       mode: NULLABLE
-      description: Whether or not the shutdown happened successfully, unsuccessful
-        if previous session crashed
+      description: 'Depending on the type of event:
+
+        * Whether or not the shutdown happened successfully, unsuccessful if previous
+        session crashed
+
+        * Despite the name, this is "true" when the previous session did NOT shut
+        down cleanly - it is set from the internal crash flag. The polarity has been
+        inverted since the event was introduced and is documented rather than corrected
+        so existing data stays comparable. session_restore.shutdown_ok carries the
+        same signal with the expected polarity.'
     - name: shutdown_reason
       type: STRING
       mode: NULLABLE
-      description: Reason why shutdown didn't happen successfully, N/A if previous
-        session didn't crashed
+      description: 'Depending on the type of event:
+
+        * Reason why shutdown didn''t happen successfully, N/A if previous session
+        didn''t crashed
+
+        * Why we concluded the previous session did not shut down cleanly. "final-state-write-incomplete"
+        means the CrashMonitor checkpoints showed we never finished writing the final
+        state. "session-state-missing-or-running-at-last-write" means we fell back
+        to the session.state flag in the session file, which was either absent or
+        still "running". "N/A" means we concluded the shutdown was clean, either from
+        the CrashMonitor checkpoints, or - if there were no checkpoints - from the
+        session.state flag being present and not "running".'
     - name: sidebar
       type: STRING
       mode: NULLABLE

@@ -63,7 +63,8 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: is_default_browser
-  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
+  append_description: " Resolved to one value per client-day: firefox_desktop.baseline_clients_daily when it has one, then
+      the event-backed side, then the latest ping_end_time."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: policies_is_enterprise
@@ -160,6 +161,7 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_tagged_non_follow_on_sum
   new_name: counter_searches_tagged_non_follow_on_sum
+  prepend_description: "Renames legacy_searches_tagged_non_follow_on_sum in search_clients_daily_glean_v1. "
   new_description: "Tagged searches from the browser.search.content Glean labeled counter, excluding follow-on searches, which the
       counter labels as a separate tag type and counter_searches_tagged_follow_on_sum carries. The two ads families
       do not make that split and include follow-on. Zero, not null, where the metrics ping carried nothing for this
@@ -169,11 +171,13 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_tagged_follow_on_sum
   new_name: counter_searches_tagged_follow_on_sum
+  prepend_description: "Renames legacy_searches_tagged_follow_on_sum in search_clients_daily_glean_v1. "
   append_description: " Summed over the client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_organic_sum
   new_name: counter_searches_organic_sum
+  prepend_description: "Renames legacy_searches_organic_sum in search_clients_daily_glean_v1. "
   new_description: "Organic, meaning non-partner, in-content searches from the browser.search.content Glean labeled
       counter. Runs below the organic column of search_aggregates_v8 by a margin that is not yet
       root-caused, so prefer search_aggregates_v8 for organic levels. Zero, not null, where the metrics
@@ -182,6 +186,7 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_with_ads_tagged_sum
   new_name: counter_searches_with_ads_tagged_sum
+  prepend_description: "Renames legacy_searches_with_ads_tagged_sum in search_clients_daily_glean_v1. "
   append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
       partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
       column is not meaningful."
@@ -189,6 +194,7 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_with_ads_organic_sum
   new_name: counter_searches_with_ads_organic_sum
+  prepend_description: "Renames legacy_searches_with_ads_organic_sum in search_clients_daily_glean_v1. "
   append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
       partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
       column is not meaningful."
@@ -196,6 +202,7 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_ad_clicks_tagged_sum
   new_name: counter_ad_clicks_tagged_sum
+  prepend_description: "Renames legacy_ad_clicks_tagged_sum in search_clients_daily_glean_v1. "
   append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
       partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
       column is not meaningful."
@@ -203,6 +210,7 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_ad_clicks_organic_sum
   new_name: counter_ad_clicks_organic_sum
+  prepend_description: "Renames legacy_ad_clicks_organic_sum in search_clients_daily_glean_v1. "
   append_description: " Summed over the client table rows in this row's dimensions. The client table puts this counter on one
       partner_code per client, engine and source, so sum it across partner_code. A per-partner_code slice of this
       column is not meaningful."

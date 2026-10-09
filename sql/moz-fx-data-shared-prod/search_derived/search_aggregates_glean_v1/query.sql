@@ -178,6 +178,18 @@ client_day_dims_cte AS (
   GROUP BY
     client_id,
     submission_date
+),
+-- is_default_browser is only set on SERP and SAP rows, so a client seen only on the metrics ping has
+-- none. The baseline ping carries it, one value per client-day.
+baseline_default_browser AS (
+  SELECT
+    client_id,
+    submission_date,
+    is_default_browser
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily`
+  WHERE
+    submission_date = @submission_date
 )
 SELECT
   scd.submission_date,
@@ -196,7 +208,7 @@ SELECT
   cdd.os_version,
   cdd.channel,
   cdd.normalized_channel,
-  cdd.is_default_browser,
+  COALESCE(bcd.is_default_browser, cdd.is_default_browser) AS is_default_browser,
   cdd.policies_is_enterprise,
   cdd.default_search_engine_display_name,
   cdd.default_private_search_engine_display_name,
@@ -246,6 +258,10 @@ LEFT JOIN
   client_day_dims_cte AS cdd
   ON scd.client_id = cdd.client_id
   AND scd.submission_date = cdd.submission_date
+LEFT JOIN
+  baseline_default_browser AS bcd
+  ON scd.client_id = bcd.client_id
+  AND scd.submission_date = bcd.submission_date
 WHERE
   scd.submission_date = @submission_date
 GROUP BY
@@ -263,7 +279,7 @@ GROUP BY
   cdd.os_version,
   cdd.channel,
   cdd.normalized_channel,
-  cdd.is_default_browser,
+  COALESCE(bcd.is_default_browser, cdd.is_default_browser),
   cdd.policies_is_enterprise,
   cdd.default_search_engine_display_name,
   cdd.default_private_search_engine_display_name,

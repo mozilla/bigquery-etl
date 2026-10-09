@@ -7,7 +7,8 @@ description: |
   Carries both measurement families of the client table. The `serp_` columns and
   `sap_counts_total` come from SAP and SERP events. The seven `counter_` columns come from the
   browser.search.{content,withads,adclicks} Glean labeled counters in the metrics ping, and are
-  the series comparable to `search_aggregates_v8`. They are the client table's `legacy_` columns under a new prefix,
+  the series comparable to `search_aggregates_v8`. They are the client table's `legacy_` columns under a new prefix (each
+  column's description names the one it renames),
   which names where the number comes from rather than a mechanism, as only the ad click
   counters are counted from network activity.
 
@@ -27,6 +28,8 @@ description: |
   because the client table builds each row from whichever of its SERP, SAP and metrics streams
   has activity, and `is_default_browser` is only filled on the event-backed side. The resolved
   value comes from the event-backed side first, then the latest `ping_end_time`.
+  `is_default_browser` is taken from `firefox_desktop.baseline_clients_daily` when it has a value,
+  because the metrics ping carries none.
 
   `client_count` is `COUNT(DISTINCT client_id)` within the row's dimensions. A client can appear
   in several rows, so it cannot be summed across rows to give a number of clients.

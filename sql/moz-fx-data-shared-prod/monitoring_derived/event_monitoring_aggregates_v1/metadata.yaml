@@ -81,6 +81,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.onboarding_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.privacy_report_notification_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.onboarding_v1

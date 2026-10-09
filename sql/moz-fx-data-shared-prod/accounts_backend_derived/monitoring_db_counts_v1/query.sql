@@ -98,6 +98,13 @@ WITH table_counts AS (
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
+    'oauth_account_activity' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_account_activity_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
     'oauth_account_authorizations' AS table_name,
     COUNT(*) AS total_rows
   FROM
@@ -130,6 +137,13 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_passkeys_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
+    'passkey_wraps' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_passkey_wraps_v1`
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT

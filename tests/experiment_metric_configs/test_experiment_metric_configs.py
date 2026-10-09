@@ -173,7 +173,7 @@ def previous_row(query, **overrides):
         "computed_at": NOW - datetime.timedelta(days=1),
         "config_as_of": FIRST_UPDATED,
         "resolver_fingerprint": FINGERPRINT,
-        "has_resolution_error": False,
+        "needs_retry": False,
         "blob": {"normandy_slug": "slug-a"},
     }
     return query.PreviousRow(**{**values, **overrides})
@@ -223,8 +223,8 @@ class TestCanReuseRow:
                 False,
             ),
             reuse_case(
-                "previous resolution error",
-                {"has_resolution_error": True},
+                "previous error to retry",
+                {"needs_retry": True},
                 ENDED_LONG_AGO,
                 FIRST_UPDATED,
                 False,
@@ -309,17 +309,39 @@ class TestReadPreviousRows:
             resolver_fingerprint=FINGERPRINT,
             metric_config={"resolution_error": "boom"},
         )
+        load_failed_row = MagicMock(
+            normandy_slug="slug-c",
+            computed_at=NOW,
+            config_as_of=FIRST_UPDATED,
+            resolver_fingerprint=FINGERPRINT,
+            metric_config={"resolution_error": f"{query.AS_OF_ERROR_PREFIX}boom"},
+        )
+        unexpected_error_row = MagicMock(
+            normandy_slug="slug-d",
+            computed_at=NOW,
+            config_as_of=FIRST_UPDATED,
+            resolver_fingerprint=FINGERPRINT,
+            metric_config={"resolution_error": f"{query.UNEXPECTED_ERROR_PREFIX}boom"},
+        )
         client = MagicMock()
-        client.query.return_value.result.return_value = [row, error_row]
+        client.query.return_value.result.return_value = [
+            row,
+            error_row,
+            load_failed_row,
+            unexpected_error_row,
+        ]
 
         previous_rows = query.read_previous_rows(client, "proj.monitoring.table")
         previous = previous_rows["slug-a"]
-        assert previous_rows["slug-b"].has_resolution_error
+        # only failing to load metric-hub is retried, not a config that fails to resolve
+        assert previous_rows["slug-b"].needs_retry is False
+        assert previous_rows["slug-c"].needs_retry is True
+        assert previous_rows["slug-d"].needs_retry is True
 
         assert previous.computed_at == NOW
         assert previous.config_as_of == FIRST_UPDATED
         assert previous.resolver_fingerprint == FINGERPRINT
-        assert previous.has_resolution_error is False
+        assert previous.needs_retry is False
         assert previous.blob == {
             "normandy_slug": "slug-a",
             "computed_at": NOW.isoformat(),
@@ -417,6 +439,12 @@ class TestComputeFingerprint:
             self.fields(**changes)
         ) != query.compute_fingerprint(self.fields())
 
+    def test_changes_with_resolver_version(self, query):
+        first = query.compute_fingerprint(self.fields())
+        with patch.object(query, "RESOLVER_VERSION", query.RESOLVER_VERSION + 1):
+            second = query.compute_fingerprint(self.fields())
+        assert first != second
+
     def test_changes_with_library_version(self, query):
         with patch.object(query.importlib.metadata, "version", return_value="1"):
             first = query.compute_fingerprint(self.fields())
@@ -454,7 +482,7 @@ def make_fake_configs(commit_hash_for_as_of=None):
     def as_of(timestamp):
         picked = next(c for c in COMMITS if c.committed_datetime <= timestamp)
         repo.commit_hash = commit_hash_for_as_of or picked.hexsha
-        return SimpleNamespace(repos=[repo])
+        return SimpleNamespace(repos=[repo], configs=[])
 
     configs.as_of.side_effect = as_of
     return configs
@@ -511,6 +539,20 @@ class TestGetMetricConfigsReuse:
 
         assert configs.as_of.call_count == 2
 
+    def test_config_errors_are_kept_but_unexpected_errors_are_marked_for_retry(
+        self, query, resolve
+    ):
+        resolve.side_effect = [ValueError("bad config"), TypeError("oops")]
+
+        blobs = get_rows(
+            query, ended_experiments("slug-a", "slug-b"), make_fake_configs()
+        )
+
+        assert [b["metric_config"]["resolution_error"] for b in blobs] == [
+            "bad config",
+            f"{query.UNEXPECTED_ERROR_PREFIX}oops",
+        ]
+
     def test_as_of_failure_becomes_error_rows_for_the_group(self, query, resolve):
         configs = make_fake_configs()
         real_as_of = configs.as_of.side_effect
@@ -527,9 +569,8 @@ class TestGetMetricConfigsReuse:
         )
 
         assert [b["metric_config"]["resolution_error"] for b in blobs[:2]] == [
-            "boom",
-            "boom",
-        ]
+            f"{query.AS_OF_ERROR_PREFIX}boom"
+        ] * 2
         assert blobs[2]["metric_config"]["resolution_error"] is None
         assert configs.as_of.call_count == 2
         assert resolve.call_count == 1
@@ -550,7 +591,9 @@ class TestGetMetricConfigsReuse:
         blobs = get_rows(query, ended_experiments("slug-a", "slug-b"), configs)
 
         assert blobs[0]["metric_config"]["resolution_error"] is None
-        assert blobs[1]["metric_config"]["resolution_error"] == "boom"
+        assert blobs[1]["metric_config"]["resolution_error"] == (
+            f"{query.AS_OF_ERROR_PREFIX}boom"
+        )
 
     def test_reuses_valid_previous_rows(self, query):
         configs = make_fake_configs()

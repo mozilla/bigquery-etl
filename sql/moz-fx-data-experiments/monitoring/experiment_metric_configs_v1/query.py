@@ -65,6 +65,14 @@ STATS_DATASET = "mozanalysis"
 RECENTLY_ENDED_WINDOW = datetime.timedelta(days=30)
 WEEKLY_REFRESH_WINDOW = datetime.timedelta(days=90)
 MAX_ROW_AGE = datetime.timedelta(days=7)
+# A bad config fails the same way every time, but failing to load metric-hub or an
+# unexpected error may be transient or a bug, so rows with these prefixes are retried.
+AS_OF_ERROR_PREFIX = "Cannot load metric-hub as of first_updated: "
+UNEXPECTED_ERROR_PREFIX = "Unexpected error resolving config: "
+RETRIED_ERROR_PREFIXES = (AS_OF_ERROR_PREFIX, UNEXPECTED_ERROR_PREFIX)
+# Bump when a change to the resolution logic alters rows without changing the schema,
+# so that reused rows are re-resolved.
+RESOLVER_VERSION = 1
 
 
 def _bq_normalize_name(name: str) -> str:
@@ -122,12 +130,14 @@ def _schema_structure(fields) -> list:
 def compute_fingerprint(schema_fields: list[bigquery.SchemaField]) -> str:
     """Hash what rows are resolved with, to re-resolve them when it changes.
 
-    Covers the schema structure (not descriptions) and the metric-config-parser version.
+    Covers the schema structure (not descriptions), the metric-config-parser version
+    and RESOLVER_VERSION.
     """
     payload = json.dumps(
         [
             _schema_structure(schema_fields),
             importlib.metadata.version("mozilla-metric-config-parser"),
+            RESOLVER_VERSION,
         ]
     )
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
@@ -140,7 +150,7 @@ class PreviousRow:
     computed_at: datetime.datetime
     config_as_of: datetime.datetime | None
     resolver_fingerprint: str | None
-    has_resolution_error: bool
+    needs_retry: bool
     blob: dict
 
 
@@ -176,7 +186,9 @@ def read_previous_rows(client: bigquery.Client, table: str) -> dict[str, Previou
             computed_at=row.computed_at,
             config_as_of=row.config_as_of,
             resolver_fingerprint=row.resolver_fingerprint,
-            has_resolution_error=row.metric_config["resolution_error"] is not None,
+            needs_retry=(row.metric_config["resolution_error"] or "").startswith(
+                RETRIED_ERROR_PREFIXES
+            ),
             blob=_to_jsonable(
                 {
                     "normandy_slug": row.normandy_slug,
@@ -203,7 +215,7 @@ def can_reuse_row(
     """Whether resolving the experiment now would give the same row as before."""
     if force_refresh or previous is None or first_updated is None:
         return False
-    if previous.config_as_of != first_updated or previous.has_resolution_error:
+    if previous.config_as_of != first_updated or previous.needs_retry:
         return False
     if previous.resolver_fingerprint != fingerprint:
         return False
@@ -485,13 +497,13 @@ def resolve_metric_config(
 
 
 def _error_config(
-    nimbus_experiment: NimbusExperiment, configs: ConfigCollection, error: Exception
+    nimbus_experiment: NimbusExperiment, configs: ConfigCollection, message: str
 ) -> MetricConfig:
     return MetricConfig(
         has_external_config=(
             _find_external_config(nimbus_experiment.slug, configs) is not None
         ),
-        resolution_error=str(error),
+        resolution_error=message,
     )
 
 
@@ -501,13 +513,19 @@ def _resolve_or_error(
     """Resolve one experiment's config. A bad config never fails the run."""
     try:
         return resolve_metric_config(nimbus_experiment, configs)
-    except Exception as e:
-        # don't fail if there is any error resolving the metric config,
-        # attach the error to the row and proceed
+    except RECOVERABLE_RESOLUTION_ERRORS as e:
         logger.warning(
             f"Cannot resolve metric config for {nimbus_experiment.slug}: {e}"
         )
-        return _error_config(nimbus_experiment, configs, e)
+        return _error_config(nimbus_experiment, configs, str(e))
+    except Exception as e:
+        # don't fail the run on an unexpected error either, but mark the row to be retried
+        logger.warning(
+            f"Unexpected error resolving metric config for {nimbus_experiment.slug}: {e}"
+        )
+        return _error_config(
+            nimbus_experiment, configs, f"{UNEXPECTED_ERROR_PREFIX}{e}"
+        )
 
 
 def _commit_for(commits: list, timestamp: datetime.datetime):
@@ -595,7 +613,9 @@ def get_metric_configs(
                 nimbus_experiment,
                 first_updated,
                 (
-                    _error_config(nimbus_experiment, configs, error)
+                    _error_config(
+                        nimbus_experiment, configs, f"{AS_OF_ERROR_PREFIX}{error}"
+                    )
                     if error is not None
                     else _resolve_or_error(nimbus_experiment, experiment_configs)
                 ),

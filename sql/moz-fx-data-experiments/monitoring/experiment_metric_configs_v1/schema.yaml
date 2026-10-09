@@ -22,8 +22,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Hash of this table's schema structure and the metric-config-parser version the row was resolved with.
-    Rows are re-resolved when it changes.
+    Hash of this table's schema structure, the metric-config-parser version and the resolver version
+    (RESOLVER_VERSION in query.py) the row was resolved with. Rows are re-resolved when it changes.
 
 - name: metric_config
   type: RECORD
@@ -187,4 +187,7 @@ fields:
   - name: resolution_error
     type: STRING
     mode: NULLABLE
-    description: Set only when the experiment's config could not be resolved at all (e.g. an invalid experiment spec).
+    description: >-
+      Set only when the experiment's config could not be resolved at all (e.g. an invalid experiment spec).
+      Starts with "Cannot load metric-hub as of first_updated" or "Unexpected error resolving config" if the failure may not repeat,
+      and such rows are retried on every run.

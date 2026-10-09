@@ -10,9 +10,10 @@ description: |
   analyzed yet. Since resolving as of a past commit is slow, rows are reused
   from the previous run for experiments that ended over 30 days ago: until
   they are 7 days old, and for experiments that ended over 90 days ago, until
-  first_updated changes. Rows are also re-resolved when the schema structure or
-  the metric-config-parser version changes (resolver_fingerprint). Run with
-  --force-refresh to re-resolve everything.
+  first_updated changes. Rows are also re-resolved when the schema structure,
+  the metric-config-parser version or RESOLVER_VERSION in query.py changes
+  (resolver_fingerprint), so bump RESOLVER_VERSION when changing how rows are
+  resolved. Run with --force-refresh to re-resolve everything.
 
   Read by monitoring.experimenter_experiments_v1's ten-minute import task,
   which nests this table's metric_config column into its own rows on a

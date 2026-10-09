@@ -647,6 +647,14 @@ generate:
     - firefox_desktop_background_update
     - firefox_desktop_background_defaultagent
     - firefox_desktop_background_tasks
+    # Bigeye freshness/volume only see new clients (first_seen_city_date).
+    # Apps with sparse new clients get a 28-day lookback.
+    low_volume_apps:
+    - focus_ios
+    - klar_android
+    # New clients too rare (months apart); freshness/volume disabled.
+    skip_freshness_volume_apps:
+    - klar_ios
 
 geo_deprecation:
   skip_apps:

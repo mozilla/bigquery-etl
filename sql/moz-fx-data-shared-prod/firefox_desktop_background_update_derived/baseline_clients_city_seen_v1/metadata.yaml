@@ -43,3 +43,10 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_background_update_derived.baseline_clients_city_seen_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_update_live.baseline_v1
+monitoring:
+  enabled: true
+  collection: Operational Checks
+  partition_column: first_seen_city_date
+  partition_column_set: true
+  volume:
+    blocking: false

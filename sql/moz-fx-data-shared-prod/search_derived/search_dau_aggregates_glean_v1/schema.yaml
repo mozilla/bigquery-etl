@@ -28,17 +28,18 @@ fields:
   mode: NULLABLE
   description: >-
     The distribution id of the client's install, for every DAU client whether or not they searched.
-    From the latest metrics ping of the day (client_info.distribution.name), then
-    search_clients_daily_glean_v1 for clients with no metrics ping. Null for default installs.
+    From the nearest metrics ping from 7 days before to 1 day after the date
+    (client_info.distribution.name), then search_clients_daily_glean_v1 for clients with no ping in
+    that window. Null for default installs.
 - name: normalized_default_search_engine
   type: STRING
   mode: NULLABLE
   description: >-
     The client's default search engine grouped as Google, Bing or DuckDuckGo, and null for any other
-    engine or when no engine is known, about 5% of DAU. From the latest metrics ping of the day:
-    provider_id, then engine_id for builds without it, then search_clients_daily_glean_v1. A
-    user-installed engine is never grouped as one of the three. Set for DAU clients whether or not
-    they searched.
+    engine or when no engine is known. From the nearest metrics ping from 7 days before to 1 day
+    after the date: provider_id, then engine_id for builds without it, then
+    search_clients_daily_glean_v1. A user-installed engine is never grouped as one of the three. Set
+    for DAU clients whether or not they searched.
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

@@ -29,14 +29,17 @@ WITH desktop_dau_data AS (
 ),
 -- Default engine and distribution for every DAU client, searching or not.
 -- search_clients_daily_glean_v1 only has rows for clients with search activity, so they come from
--- the latest metrics ping of the day. provider_id is preferred; engine_id covers builds without
--- it, and the client table is the last fallback.
+-- the metrics ping. About 8% of DAU send no metrics ping on a given day, and both values rarely
+-- change, so the nearest ping from 7 days before to 1 day after is used (the job runs after the
+-- next day has landed). provider_id is preferred; engine_id covers builds without it, and the
+-- client table is the last fallback.
 metrics_ping_attributes AS (
   SELECT
     client_info.client_id AS client_id,
     ARRAY_AGG(
       metrics.string.search_engine_default_provider_id IGNORE NULLS
       ORDER BY
+        ABS(DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY)),
         submission_timestamp DESC
       LIMIT
         1
@@ -44,6 +47,7 @@ metrics_ping_attributes AS (
     ARRAY_AGG(
       metrics.string.search_engine_default_engine_id IGNORE NULLS
       ORDER BY
+        ABS(DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY)),
         submission_timestamp DESC
       LIMIT
         1
@@ -51,6 +55,7 @@ metrics_ping_attributes AS (
     ARRAY_AGG(
       client_info.distribution.name IGNORE NULLS
       ORDER BY
+        ABS(DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY)),
         submission_timestamp DESC
       LIMIT
         1
@@ -58,7 +63,9 @@ metrics_ping_attributes AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
   GROUP BY
     client_id
 ),

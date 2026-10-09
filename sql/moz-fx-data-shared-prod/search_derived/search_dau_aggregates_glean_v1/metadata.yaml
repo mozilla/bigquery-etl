@@ -15,8 +15,9 @@ description: |-
   `dau_w_engine_as_default` counts every DAU client whose default engine is the partner's,
   whether or not they searched, as `search_dau_aggregates_v1` does. `search_clients_daily_glean_v1`
   only has rows for clients with search activity, so the default engine and `distribution_id`
-  come from the latest metrics ping of the day (`provider_id`, then `engine_id` for builds
-  without it, then the client table). About 5% of DAU have no engine from any of these.
+  come from the nearest metrics ping from 7 days before to 1 day after the date (`provider_id`,
+  then `engine_id` for builds without it), then the client table. The window covers clients that send no
+  metrics ping on a given day. A small share of DAU still has no engine from any of these.
 
   Searches come from `search_clients_daily_glean_v1`, joined on `client_id` only. `country` is
   the DAU side's one value per client-day.

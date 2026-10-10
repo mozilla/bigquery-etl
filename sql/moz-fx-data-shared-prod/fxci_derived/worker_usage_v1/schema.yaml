@@ -2,21 +2,37 @@ fields:
 - name: cloud_provider
   type: STRING
   mode: NULLABLE
+  description: The cloud infrastructure provider hosting the worker instance. Values are "gcp" for Google
+    Cloud Platform or "azure" for Microsoft Azure.
 - name: project
   type: STRING
   mode: NULLABLE
+  description: The cloud project or subscription that owns the worker instance, such as a GCP project ID
+    (e.g. "fxci-production-level1-workers") or an Azure subscription name (e.g. "FXCI Azure DevTest Subscription").
 - name: zone
   type: STRING
   mode: NULLABLE
+  description: The geographic zone or region where the worker instance ran, such as a GCP zone (e.g. "us-central1-c")
+    or an Azure region (e.g. "eastus").
 - name: instance_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier of the cloud VM instance. For GCP this is the instance name extracted
+    from monitoring data; for Azure it is the virtual machine name extracted from the resource ID.
 - name: usage_start_date
   type: DATE
   mode: NULLABLE
+  description: The date for which worker usage is reported, corresponding to the submission or billing date
+    of the underlying source data.
 - name: uptime
   type: FLOAT
   mode: NULLABLE
+  description: The total uptime of the worker instance in seconds for the given date and zone. For GCP this
+    is derived from instance uptime monitoring metrics; for Azure it is computed from billed VM hours converted
+    to seconds (quantity × 3600).
 - name: attribution_method
   type: STRING
   mode: NULLABLE
+  description: The data source and methodology used to derive the uptime figure. "gcp_monitoring_instance_uptime"
+    indicates GCP Cloud Monitoring metrics; "azure_billing_vm_quantity" indicates Azure billing quantity
+    data.

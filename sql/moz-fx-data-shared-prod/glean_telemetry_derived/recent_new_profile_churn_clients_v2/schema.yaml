@@ -101,30 +101,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Year of first seen date
-- name: attribution_campaign
-  type: STRING
-  mode: NULLABLE
-  description: The attribution campaign (e.g. 'mozilla-org').
-- name: attribution_content
-  type: STRING
-  mode: NULLABLE
-  description: The attribution content (e.g. 'firefoxview').
-- name: attribution_medium
-  type: STRING
-  mode: NULLABLE
-  description: The attribution medium (e.g. 'organic' for a search engine).
-- name: attribution_source
-  type: STRING
-  mode: NULLABLE
-  description: The attribution source (e.g. 'google-play').
-- name: attribution_term
-  type: STRING
-  mode: NULLABLE
-  description: The attribution term (e.g. 'browser with developer tools for android').
-- name: distribution_name
-  type: STRING
-  mode: NULLABLE
-  description: The distribution name (e.g. 'MozillaOnline').
 - name: first_seen_attribution_campaign
   type: STRING
   mode: NULLABLE

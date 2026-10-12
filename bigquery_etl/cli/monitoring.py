@@ -113,9 +113,7 @@ def _collection_config(workspace_id: int, collection_name: str) -> Optional[dict
     return None
 
 
-def _resolve_workspace(
-    metadata: Metadata, default_workspace: int = DEFAULT_WORKSPACE
-) -> int:
+def _resolve_workspace(metadata: Metadata) -> int:
     """Return the Bigeye workspace ID for a table.
 
     Uses `metadata.monitoring.workspace` if set, otherwise falls back to the default workspace.
@@ -124,7 +122,7 @@ def _resolve_workspace(
     workspace_id = (
         metadata.monitoring.workspace
         if metadata.monitoring and metadata.monitoring.workspace is not None
-        else default_workspace
+        else DEFAULT_WORKSPACE
     )
     if not _workspace_config(workspace_id):
         raise click.ClickException(
@@ -153,14 +151,6 @@ def _warehouse_id_for_workspace(workspace_id: int) -> int:
     return workspace_config["warehouse"]
 
 
-workspace_option = click.option(
-    "--workspace",
-    type=int,
-    default=DEFAULT_WORKSPACE,
-    help="Bigeye workspace to use when authenticating to API.",
-)
-
-
 @click.group(help="""
     Commands for managing monitoring of datasets.
     """)
@@ -181,7 +171,6 @@ def monitoring(ctx):
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
-@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -202,7 +191,6 @@ def deploy(
     name: str,
     sql_dir: Optional[str],
     project_id: Optional[str],
-    workspace: int,
     base_url: str,
     dry_run: bool,
 ) -> None:
@@ -238,7 +226,7 @@ def deploy(
                     sql_dir=sql_dir,
                     project_id=project_id,
                 )
-                table_workspace = _resolve_workspace(metadata, workspace)
+                table_workspace = _resolve_workspace(metadata)
                 bigconfigs_by_workspace.setdefault(table_workspace, []).append(
                     metadata_file.parent / BIGCONFIG_FILE
                 )
@@ -349,7 +337,6 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -361,7 +348,6 @@ def deploy_custom_rules(
     sql_dir: Optional[str],
     project_id: Optional[str],
     base_url: str,
-    workspace: int,
 ) -> None:
     """Deploy custom SQL rules for files."""
     api_key = os.environ.get("BIGEYE_API_KEY")
@@ -383,7 +369,7 @@ def deploy_custom_rules(
         try:
             metadata = Metadata.from_file(custom_rule_file.parent / METADATA_FILE)
             if metadata.monitoring and metadata.monitoring.enabled:
-                table_workspace = _resolve_workspace(metadata, workspace)
+                table_workspace = _resolve_workspace(metadata)
                 warehouse_id = _warehouse_id_for_workspace(table_workspace)
                 client = _client_for_workspace(api_auth, table_workspace)
                 collections = client.get_collections()
@@ -771,7 +757,6 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -783,7 +768,6 @@ def set_partition_column(
     sql_dir: Optional[str],
     project_id: Optional[str],
     base_url: str,
-    workspace: int,
 ) -> None:
     """Validate BigConfig file."""
     api_key = os.environ.get("BIGEYE_API_KEY")
@@ -806,7 +790,7 @@ def set_partition_column(
                 if not metadata.monitoring.partition_column_set:
                     click.echo(f"No partition column set for {metadata_file.parent}")
                     continue
-                table_workspace = _resolve_workspace(metadata, workspace)
+                table_workspace = _resolve_workspace(metadata)
                 warehouse_id = _warehouse_id_for_workspace(table_workspace)
                 client = _client_for_workspace(api_auth, table_workspace)
                 table_id = client.get_table_ids(
@@ -871,7 +855,6 @@ def set_partition_column(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -896,7 +879,6 @@ def delete(
     sql_dir: Optional[str],
     project_id: Optional[str],
     base_url: str,
-    workspace: int,
     custom_sql: bool,
     metrics: bool,
 ) -> None:
@@ -920,7 +902,7 @@ def delete(
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
             continue
-        table_workspace = _resolve_workspace(metadata, workspace)
+        table_workspace = _resolve_workspace(metadata)
         warehouse_id = _warehouse_id_for_workspace(table_workspace)
         client = _client_for_workspace(api_auth, table_workspace)
         existing_rules = {
@@ -970,7 +952,6 @@ def delete(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-@workspace_option
 @click.option(
     "--base-url",
     "--base_url",
@@ -978,7 +959,7 @@ def delete(
     help="Bigeye base URL.",
 )
 @click.option("--marker", default="", help="Marker to filter checks.")
-def run(name, project_id, sql_dir, workspace, base_url, marker):
+def run(name, project_id, sql_dir, base_url, marker):
     """Run Bigeye checks."""
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
@@ -1000,7 +981,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
         try:
             metadata = Metadata.from_file(metadata_file)
             if metadata.monitoring and metadata.monitoring.enabled:
-                table_workspace = _resolve_workspace(metadata, workspace)
+                table_workspace = _resolve_workspace(metadata)
                 warehouse_id = _warehouse_id_for_workspace(table_workspace)
                 client = _client_for_workspace(api_auth, table_workspace)
                 existing_rules = {

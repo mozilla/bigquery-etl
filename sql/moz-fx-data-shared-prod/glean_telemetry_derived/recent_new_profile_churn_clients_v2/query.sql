@@ -41,60 +41,61 @@ max_available_date AS (
   FROM
     activity_range
 ),
-  -- Client-level attributes from each client's cohort date row, with all joins
+  -- Client-level attributes from each client's baseline_clients_first_seen_v1 row;
+  -- city comes from the client's cohort date row in baseline_clients_last_seen
 client_attributes AS (
   SELECT
-    last_seen.client_id,
-    IFNULL(last_seen.country, '??') AS country,
+    first_seen.client_id,
+    IFNULL(first_seen.country, '??') AS country,
     IFNULL(last_seen.city, '??') AS city,
-    COALESCE(REGEXP_EXTRACT(last_seen.locale, r'^(.+?)-'), last_seen.locale, NULL) AS locale,
+    COALESCE(REGEXP_EXTRACT(first_seen.locale, r'^(.+?)-'), first_seen.locale, NULL) AS locale,
     CASE
-      WHEN LOWER(IFNULL(last_seen.isp, '')) = 'browserstack'
-        THEN CONCAT('Firefox Desktop', ' ', last_seen.isp)
+      WHEN LOWER(IFNULL(first_seen.isp, '')) = 'browserstack'
+        THEN CONCAT('Firefox Desktop', ' ', first_seen.isp)
       WHEN LOWER(
-          IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
+          IFNULL(COALESCE(first_seen.distribution_id, distribution_mapping.distribution_id), '')
         ) = 'mozillaonline'
         THEN CONCAT(
             'Firefox Desktop',
             ' ',
-            COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id)
+            COALESCE(first_seen.distribution_id, distribution_mapping.distribution_id)
           )
       ELSE 'Firefox Desktop'
     END AS app_name,
-    last_seen.app_display_version,
-    `mozfun.norm.browser_version_info`(last_seen.app_display_version) AS browser_version_info,
-    last_seen.normalized_channel,
-    COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
+    first_seen.app_display_version,
+    `mozfun.norm.browser_version_info`(first_seen.app_display_version) AS browser_version_info,
+    first_seen.normalized_channel,
+    COALESCE(first_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
     CASE
-      WHEN last_seen.distribution_id IS NOT NULL
+      WHEN first_seen.distribution_id IS NOT NULL
         THEN "glean"
       WHEN distribution_mapping.distribution_id IS NOT NULL
         THEN "legacy"
       ELSE CAST(NULL AS STRING)
     END AS distribution_id_source,
-    last_seen.normalized_os,
-    last_seen.normalized_os_version,
+    first_seen.normalized_os,
+    first_seen.normalized_os_version,
     COALESCE(
       `mozfun.norm.glean_windows_version_info`(
-        last_seen.normalized_os,
-        last_seen.normalized_os_version,
-        last_seen.windows_build_number
+        first_seen.normalized_os,
+        first_seen.normalized_os_version,
+        first_seen.windows_build_number
       ),
-      last_seen.normalized_os_version
+      first_seen.normalized_os_version
     ) AS os_version_build,
     CAST(
-      `mozfun.norm.extract_version`(last_seen.normalized_os_version, "major") AS INTEGER
+      `mozfun.norm.extract_version`(first_seen.normalized_os_version, "major") AS INTEGER
     ) AS os_version_major,
     CAST(
-      `mozfun.norm.extract_version`(last_seen.normalized_os_version, "minor") AS INTEGER
+      `mozfun.norm.extract_version`(first_seen.normalized_os_version, "minor") AS INTEGER
     ) AS os_version_minor,
-    EXTRACT(YEAR FROM last_seen.first_seen_date) AS first_seen_year,
-    last_seen.attribution.campaign AS attribution_campaign,
-    last_seen.attribution.content AS attribution_content,
-    last_seen.attribution.medium AS attribution_medium,
-    last_seen.attribution.source AS attribution_source,
-    last_seen.attribution.term AS attribution_term,
-    last_seen.distribution.name AS distribution_name,
+    EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
+    first_seen.attribution.campaign AS attribution_campaign,
+    first_seen.attribution.content AS attribution_content,
+    first_seen.attribution.medium AS attribution_medium,
+    first_seen.attribution.source AS attribution_source,
+    first_seen.attribution.term AS attribution_term,
+    first_seen.distribution.name AS distribution_name,
     first_seen.attribution.campaign AS first_seen_attribution_campaign,
     first_seen.attribution.content AS first_seen_attribution_content,
     first_seen.attribution.medium AS first_seen_attribution_medium,
@@ -102,32 +103,33 @@ client_attributes AS (
     first_seen.attribution.term AS first_seen_attribution_term,
     first_seen.distribution.name AS first_seen_distribution_name,
     IF(
-      LOWER(IFNULL(last_seen.isp, '')) <> 'browserstack'
+      LOWER(IFNULL(first_seen.isp, '')) <> 'browserstack'
       AND LOWER(
-        IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
+        IFNULL(COALESCE(first_seen.distribution_id, distribution_mapping.distribution_id), '')
       ) <> 'mozillaonline',
       TRUE,
       FALSE
     ) AS is_desktop,
-    last_seen.policies_is_enterprise,
-    last_seen.sample_id
+    first_seen.policies_is_enterprise,
+    first_seen.sample_id
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
+    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
   LEFT JOIN
     `moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1` AS distribution_mapping
-    USING (submission_date, client_id)
+    ON first_seen.client_id = distribution_mapping.client_id
+    AND first_seen.first_seen_date = distribution_mapping.submission_date
+    AND distribution_mapping.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND distribution_mapping.submission_date <= @submission_date
   LEFT JOIN
-    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
-    ON last_seen.client_id = first_seen.client_id
-    AND last_seen.sample_id = first_seen.sample_id
-    AND first_seen.first_seen_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND @submission_date
-  WHERE
-      -- Pull attributes from each client's cohort date (first seen day) row
-    last_seen.submission_date = last_seen.first_seen_date
+    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
+    ON first_seen.client_id = last_seen.client_id
+    AND first_seen.sample_id = last_seen.sample_id
+    AND first_seen.first_seen_date = last_seen.submission_date
     AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND last_seen.submission_date <= @submission_date
+  WHERE
+    first_seen.first_seen_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND first_seen.first_seen_date <= @submission_date
 ),
 client_level AS (
   SELECT

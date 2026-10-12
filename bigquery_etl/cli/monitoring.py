@@ -232,6 +232,12 @@ def deploy(
     # aren't removed" guarantee; splitting across workspaces is required since
     # each MetricSuiteController binds to a single workspace's catalog.
     for ws_id, bigconfig_paths in bigconfigs_by_workspace.items():
+        # Bigeye's YAML file index is process-global and is not cleared between
+        # `execute_bigconfig` calls, so the shared `sql/bigconfig.yml` appended
+        # below is rejected as a duplicate on every iteration after the first.
+        # That silently drops the `saved_metric_definitions` for those
+        # workspaces, breaking any `saved_metric_id` reference they make.
+        _BIGEYE_YAML_FILE_IX.clear()
         client = _client_for_workspace(api_auth, ws_id)
         mc = MetricSuiteController(client=client)
         try:

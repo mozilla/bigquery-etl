@@ -16,4 +16,5 @@ scheduling:
   - '--billing-project=moz-fx-data-backfill-3'
 {%- endif %}
 labels:
+  sql_generator: glean_usage
   materialized_view: true

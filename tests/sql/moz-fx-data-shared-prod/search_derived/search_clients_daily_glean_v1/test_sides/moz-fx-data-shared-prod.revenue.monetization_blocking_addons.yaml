@@ -1,0 +1,8 @@
+# blocker@example.com is the only one adblocker_addons_cte keeps; the second row is
+# here so the blocks_monetization filter has something to exclude.
+- addon_id: blocker@example.com
+  addon_name: Blocker
+  blocks_monetization: true
+- addon_id: harmless@example.com
+  addon_name: Harmless
+  blocks_monetization: false

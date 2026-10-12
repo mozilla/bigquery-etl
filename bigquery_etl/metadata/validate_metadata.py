@@ -343,6 +343,19 @@ def validate_asset_level(query_dir, metadata):
             name.startswith("test_") for name in os.listdir(unittest_path)
         )
 
+        # `os.path.join("tests", query_dir)` collapses to `query_dir` when it is
+        # absolute (e.g. `--sql-dir=/tmp/workspace/private-generated-sql/sql`), so
+        # resolve the tests dir relative to the sql dir root instead.
+        if not results["unittests"]:
+            query_path = Path(query_dir)
+            if len(query_path.parents) >= 4:
+                new_unittest_path = (
+                    query_path.parents[3] / "tests" / Path(*query_path.parts[-4:])
+                )
+                results["unittests"] = new_unittest_path.exists() and any(
+                    name.startswith("test_") for name in os.listdir(new_unittest_path)
+                )
+
         # Check scheduler.
         results["scheduler"] = (
             metadata.scheduling is not None
@@ -413,11 +426,23 @@ def validate_col_desc_enforced(query_dir, metadata):
 
 
 def validate_deprecation(metadata, path):
-    """Check that deprecated is True when deletion date exists."""
+    """Check that deprecated and deletion_date are set together.
+
+    Tables of deprecated apps (`deprecated_app: true`) are exempt from
+    requiring a deletion_date.
+    """
     if metadata.deletion_date and not metadata.deprecated:
         click.echo(
             f"Deletion date should only be added when table is deprecated in {path}"
         )
+        return False
+
+    if (
+        metadata.deprecated
+        and metadata.deletion_date is None
+        and not metadata.deprecated_app
+    ):
+        click.echo(f"deletion_date required for deprecated table in {path}")
         return False
 
     return True
@@ -456,7 +481,8 @@ def validate_exclusion_list_expiration_days(metadata, path):
 def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
     """Validate external_sharing config on a dataset.
 
-    Subscriber identities are validated at parse time (must be `group:`).
+    Subscriber identities are validated at parse time (must be `group:` or
+    `workgroup:`).
     Enforces that:
     * only `_shared` datasets may be shared (they are published to the
       user-facing project and the BigQuery Sharing listing points there), and
@@ -498,6 +524,67 @@ def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
                 )
             )
             is_valid = False
+
+    return is_valid
+
+
+def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_path):
+    """Validate external_data_subscription config on a dataset.
+
+    The source exchange/listing ID charset is validated at parse time. Read
+    access to the linked dataset is granted via the dataset's own
+    `workgroup_access`. Enforces that:
+    * only `_external` datasets may subscribe to external data (the linked
+      dataset is externally-sourced, matching the repo's `_external` convention),
+      and
+    * the dataset defines no tables/views: a subscription links a read-only
+      dataset provisioned by BigQuery Sharing, so no ETL can be defined in it.
+      This includes schema-only tables (a `metadata.yaml`/`schema.yaml` with no
+      query), which deploy without a query file.
+    """
+    if not dataset_metadata.external_data_subscription:
+        return True
+
+    is_valid = True
+
+    if not dataset_name.endswith("_external"):
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but is not suffixed with '_external'.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    # a table/view lives in a subdirectory and is defined by any of these; the
+    # metadata/schema files catch schema-only tables that have no query file
+    table_definition_files = sorted(
+        definition_file
+        for pattern in (
+            "query.sql",
+            "query.py",
+            "view.sql",
+            "materialized_view.sql",
+            "script.sql",
+            "init.sql",
+            "metadata.yaml",
+            "schema.yaml",
+        )
+        for definition_file in Path(dataset_path).glob(f"*/{pattern}")
+    )
+    for definition_file in table_definition_files:
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but defines "
+                f"'{definition_file.parent.name}/{definition_file.name}'. A "
+                "subscription links a read-only dataset; it cannot contain tables "
+                "or views.",
+                fg="red",
+            )
+        )
+        is_valid = False
 
     return is_valid
 
@@ -778,6 +865,11 @@ def validate_datasets(target):
                         failed = True
 
                     if not validate_external_sharing(
+                        dataset_name, dataset_metadata, root
+                    ):
+                        failed = True
+
+                    if not validate_external_data_subscription(
                         dataset_name, dataset_metadata, root
                     ):
                         failed = True

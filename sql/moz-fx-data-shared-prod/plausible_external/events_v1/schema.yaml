@@ -1,0 +1,160 @@
+fields:
+- name: site_id
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Plausible numeric identifier of the site the event was recorded on.
+    Constant 86997652 (firefox.com) for every row of this export.
+- name: session_id
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Plausible visit identifier; joins to plausible_external.sessions_v1.
+    Typed NUMERIC rather than INTEGER because Plausible emits this as an
+    unsigned 64-bit hash and observed values exceed the INT64 range.
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    UTC time the event was recorded. The export file for a given day contains
+    only events whose timestamp falls on that day, so this is the partition
+    column. Note that a session spanning midnight has its events split across
+    two days here while its sessions_v1 row stays on its start date -- see
+    README.md before joining or aggregating across the two tables.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Event type: pageview, engagement, or product_download. "engagement" is a
+    synthetic event Plausible emits during page interaction and is the majority
+    of rows (~77% observed), so it inflates raw event counts; filter to
+    name = 'pageview' for pageview-only analysis.
+- name: hostname
+  type: STRING
+  mode: NULLABLE
+  description: Hostname the event was recorded on, e.g. firefox.com.
+- name: pathname
+  type: STRING
+  mode: NULLABLE
+  description: Path of the page the event was recorded on.
+- name: referrer
+  type: STRING
+  mode: NULLABLE
+  description: Full referrer URL, or NULL when there was no referrer.
+- name: referrer_source
+  type: STRING
+  mode: NULLABLE
+  description: Plausible-normalized referrer source name.
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: ISO 3166-1 alpha-2 country code derived from the visitor's IP.
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: Full country name corresponding to country_code.
+- name: subdivision1_code
+  type: STRING
+  mode: NULLABLE
+  description: ISO 3166-2 code of the first-level subdivision (region/state).
+- name: subdivision2_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ISO 3166-2 code of the second-level subdivision (county). Usually NULL;
+    Plausible does not resolve it for most locations.
+- name: region_name
+  type: STRING
+  mode: NULLABLE
+  description: Full name of the first-level subdivision.
+- name: screen_size
+  type: STRING
+  mode: NULLABLE
+  description: Device size category, one of Desktop, Mobile, Tablet, or Laptop.
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating system name reported by the visitor's user agent.
+- name: operating_system_version
+  type: STRING
+  mode: NULLABLE
+  description: Operating system version reported by the visitor's user agent.
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser name reported by the visitor's user agent.
+- name: browser_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser version reported by the visitor's user agent.
+- name: utm_medium
+  type: STRING
+  mode: NULLABLE
+  description: utm_medium query parameter of the page URL.
+- name: utm_source
+  type: STRING
+  mode: NULLABLE
+  description: utm_source query parameter of the page URL.
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+  description: utm_campaign query parameter of the page URL.
+- name: utm_content
+  type: STRING
+  mode: NULLABLE
+  description: utm_content query parameter of the page URL.
+- name: utm_term
+  type: STRING
+  mode: NULLABLE
+  description: utm_term query parameter of the page URL.
+- name: acquisition_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Marketing channel Plausible attributes the visit to, e.g. Referral,
+    Organic Search, Direct, Paid Search. Derived by the vendor's own
+    attribution logic, which we do not control or reproduce.
+- name: scroll_depth
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Percentage of the page scrolled, 0-100. Only meaningful on engagement
+    events; other event types carry 0 rather than NULL, as delivered.
+- name: engagement_time
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Active time on the page in milliseconds. Only meaningful on engagement
+    events; other event types carry 0 rather than NULL, as delivered. Values
+    are not sanity-bounded by the vendor (observed maxima exceed a day), so
+    cap outliers before averaging.
+- name: revenue_reporting_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Revenue attributed to the event in the site's reporting currency. Always
+    NULL for firefox.com, which has no Plausible revenue goals configured;
+    retained to stay faithful to the export.
+- name: revenue_reporting_currency
+  type: STRING
+  mode: NULLABLE
+  description: Currency of revenue_reporting_amount. Always NULL for firefox.com.
+- name: revenue_source_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Revenue attributed to the event in its original currency. Always NULL for
+    firefox.com; retained to stay faithful to the export.
+- name: revenue_source_currency
+  type: STRING
+  mode: NULLABLE
+  description: Currency of revenue_source_amount. Always NULL for firefox.com.
+- name: props
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Custom event properties as a raw JSON string, "{}" when none were sent
+    (~99% of rows). Observed keys: method, platform, product, release_channel,
+    download_language, and gtm.uniqueEventId. Kept as a string rather than
+    BigQuery JSON so that an unexpected vendor payload cannot fail the daily
+    load; use JSON_VALUE(props, '$.method') downstream.

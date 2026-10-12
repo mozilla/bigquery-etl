@@ -27,6 +27,7 @@ description: |-
 owners:
 - sbedwell@mozilla.com
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   # This query results in the table being rebuilt on each run

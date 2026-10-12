@@ -10,6 +10,7 @@ description: |-
 owners:
   - ascholtz@mozilla.com
 labels:
+  sql_generator: glean_usage
   incremental: true
   schedule: daily
   table_type: client_level
@@ -36,4 +37,5 @@ schema:
   - table: ['moz-fx-data-shared-prod', '{{ app_name }}_derived', 'metrics_clients_daily_v1']
 {%- if deprecated_app %}
 deprecated: true
+deprecated_app: true
 {%- endif -%}

@@ -1,0 +1,396 @@
+# A NULL column is omitted here rather than written as null: the harness drops null keys
+# from the result row, so naming one fails as a key the result does not have. Every
+# omission below is therefore an assertion that the column is NULL, not an oversight.
+#
+# Row order does not matter; the harness normalises it.
+#
+# app_major_version, app_minor_version and app_patch_revision are quoted. They are the
+# only NUMERIC columns in the output -- mozfun.norm.browser_version_info returns NUMERIC
+# for all three -- and the harness compares a NUMERIC as its string form, so an unquoted
+# 139 fails against '139'.
+
+# Three-sided: SERP impression, SAP event and legacy counters all on one key.
+# The coalesce order is visible in three columns -- country comes from SERP, channel from
+# SAP because SERP's is null, and locale from legacy because both pipelines' are null.
+# experiments comes from SAP even though the SERP row exists, because the SERP array is
+# empty and the join's IF treats that as "nothing recorded".
+# windows_build_number and distribution_id are NULL on every side, so both are omitted.
+- submission_date: "2026-08-13"
+  client_id: client-matched
+  legacy_telemetry_client_id: legacy-matched
+  normalized_engine: Engine1
+  source: urlbar
+  partner_code: no_code
+  country: US
+  normalized_app_name: Firefox
+  app_version: "141.0"
+  app_major_version: "141"
+  app_minor_version: "0"
+  app_patch_revision: "0"
+  locale: en-CA
+  home_region: US
+  os: Darwin
+  normalized_os: Mac
+  os_version: 24.5.0
+  normalized_os_version: 24.5.0
+  channel: release
+  normalized_channel: release
+  is_default_browser: true
+  profile_creation_date: 20666
+  default_search_engine_display_name: Engine One
+  sample_id: 7
+  ping_start_time: "2026-08-13T09:00:00+03:00"
+  ping_end_time: "2026-08-13T10:00:00+03:00"
+  ping_seq: 3
+  max_concurrent_tab_count_max: 4
+  experiments:
+    - key: exp-a
+      value:
+        branch: treatment
+        extra:
+          type: nimbus
+          enrollment_id: enr-1
+  profile_age_in_days: 12
+  serp_searches_organic_count: 0
+  serp_searches_tagged_count: 1
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 1
+  serp_counts_total: 1
+  serp_ad_click_target: ad_carousel
+  serp_ad_clicks_sum: 2
+  serp_ad_clicks_tagged_sum: 2
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 1
+  serp_searches_with_ads_organic_count: 0
+  serp_ad_blocker_inferred: false
+  serp_non_ad_link_clicks_sum: 1
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 3
+  serp_ads_visible_sum: 1
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 1
+  serp_abandonments_navigation_count: 0
+  serp_abandonments_tab_close_count: 0
+  serp_abandonments_window_close_count: 0
+  serp_abandonments_reason_absent_count: 0
+  serp_abandonments_other_count: 0
+  has_adblocker_addon: true
+  policies_is_enterprise: false
+  os_version_major: "24"
+  os_version_minor: "24.5"
+  profile_group_id: pg-matched
+  sap_provider_id: engine1
+  sap_overridden_by_third_party: true
+  legacy_searches_tagged_non_follow_on_sum: 5
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 0
+  legacy_searches_with_ads_tagged_sum: 3
+  legacy_searches_with_ads_organic_sum: 0
+  legacy_ad_clicks_tagged_sum: 2
+  legacy_ad_clicks_organic_sum: 0
+  # sap_provider_name omitted: provider_id is not 'other' on this row, so the extra is absent
+
+# SAP-only. The SERP-only values have nothing to fall back to, so serp_ad_click_target
+# and serp_ad_blocker_inferred are omitted while every serp_* count zero-fills -- the
+# distinction this row exists to hold.
+# sap_provider_id is 'other', so the engine came from sap_provider_name; both publish.
+# is_default_browser is omitted because the metrics the SAP event carries do not include
+# usage.is_default_browser on this row, and there is no SERP side to supply it.
+# experiments is an empty array rather than absent: the SAP ping carried no enrollments,
+# so JSON_KEYS yields nothing and the array is empty, which is not NULL.
+- submission_date: "2026-08-13"
+  client_id: client-sap
+  legacy_telemetry_client_id: legacy-sap
+  normalized_engine: Engine2
+  source: searchbar
+  partner_code: sapcode
+  country: DE
+  normalized_app_name: Firefox
+  app_version: "139.1.2"
+  app_major_version: "139"
+  app_minor_version: "1"
+  app_patch_revision: "2"
+  distribution_id: mozilla
+  locale: de
+  home_region: DE
+  os: Linux
+  normalized_os: Linux
+  os_version: 6.1.0
+  normalized_os_version: 6.1.0
+  channel: beta
+  normalized_channel: beta
+  profile_creation_date: 20664
+  sample_id: 11
+  ping_start_time: "2026-08-13T08:00:00-05:00"
+  ping_end_time: "2026-08-13T09:00:00-05:00"
+  ping_seq: 2
+  max_concurrent_tab_count_max: 9
+  experiments: []
+  profile_age_in_days: 14
+  serp_searches_organic_count: 0
+  serp_searches_tagged_count: 0
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 1
+  serp_counts_total: 0
+  serp_ad_clicks_sum: 0
+  serp_ad_clicks_tagged_sum: 0
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_searches_with_ads_organic_count: 0
+  serp_non_ad_link_clicks_sum: 0
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 0
+  serp_ads_visible_sum: 0
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 0
+  serp_abandonments_navigation_count: 0
+  serp_abandonments_tab_close_count: 0
+  serp_abandonments_window_close_count: 0
+  serp_abandonments_reason_absent_count: 0
+  serp_abandonments_other_count: 0
+  has_adblocker_addon: false
+  policies_is_enterprise: true
+  os_version_major: "6"
+  os_version_minor: "6.1"
+  profile_group_id: pg-sap
+  sap_provider_id: other
+  sap_provider_name: engine2-xyz
+  legacy_searches_tagged_non_follow_on_sum: 0
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 0
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_searches_with_ads_organic_sum: 0
+  legacy_ad_clicks_tagged_sum: 0
+  legacy_ad_clicks_organic_sum: 0
+
+# SAP and legacy, no SERP -- the combination that isolates the SAP arm of the experiments
+# coalesce. experiments comes from the legacy ping because the SAP event recorded none,
+# which only happens if the SAP arm's empty-array guard skips an empty array; without it
+# this row publishes [].
+# Dimensions all come from the SAP side, which carries every one of them, so the legacy
+# ping's copies never surface. sap_provider_id publishes and sap_provider_name is absent,
+# provider_id being a real engine here rather than 'other'.
+- submission_date: "2026-08-13"
+  client_id: client-sapexp
+  legacy_telemetry_client_id: legacy-sapexp
+  normalized_engine: Engine2
+  source: searchbar
+  partner_code: sapcode
+  country: DE
+  normalized_app_name: Firefox
+  app_version: "139.1.2"
+  app_major_version: "139"
+  app_minor_version: "1"
+  app_patch_revision: "2"
+  distribution_id: mozilla
+  locale: de
+  home_region: DE
+  os: Linux
+  normalized_os: Linux
+  os_version: 6.1.0
+  normalized_os_version: 6.1.0
+  channel: beta
+  normalized_channel: beta
+  profile_creation_date: 20664
+  sample_id: 19
+  ping_start_time: "2026-08-13T08:00:00-05:00"
+  ping_end_time: "2026-08-13T09:00:00-05:00"
+  ping_seq: 2
+  max_concurrent_tab_count_max: 9
+  experiments:
+    - key: exp-c
+      value:
+        branch: control
+        extra:
+          type: nimbus
+          enrollment_id: enr-3
+  profile_age_in_days: 14
+  serp_searches_organic_count: 0
+  serp_searches_tagged_count: 0
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 1
+  serp_counts_total: 0
+  serp_ad_clicks_sum: 0
+  serp_ad_clicks_tagged_sum: 0
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_searches_with_ads_organic_count: 0
+  serp_non_ad_link_clicks_sum: 0
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 0
+  serp_ads_visible_sum: 0
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 0
+  serp_abandonments_navigation_count: 0
+  serp_abandonments_tab_close_count: 0
+  serp_abandonments_window_close_count: 0
+  serp_abandonments_reason_absent_count: 0
+  serp_abandonments_other_count: 0
+  has_adblocker_addon: false
+  policies_is_enterprise: true
+  os_version_major: "6"
+  os_version_minor: "6.1"
+  profile_group_id: pg-sapexp
+  sap_provider_id: engine2
+  legacy_searches_tagged_non_follow_on_sum: 6
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 0
+  legacy_searches_with_ads_tagged_sum: 4
+  legacy_searches_with_ads_organic_sum: 0
+  legacy_ad_clicks_tagged_sum: 1
+  legacy_ad_clicks_organic_sum: 0
+
+# SERP-only, aggregated from five impressions on one key.
+# The five abandonment counts are each 1, which is the point of this row: '' and an
+# unrecognised reason are counted, and the NULL reason on the matched row above is not.
+# ad_click_target concatenates the clicked components in sorted order. ad_carousel before
+# ad_sitelink proves the ORDER BY and the ', ' separator; ad_image_row is absent because it
+# loaded without being clicked, and it sorts between the two, so dropping the num_clicks
+# filter would put it in the middle of this string.
+# experiments is [] here despite the coalesce yielding NULL -- every SERP row's array is
+# empty and there is no SAP or legacy arm to fall through to, but BigQuery returns a NULL
+# ARRAY as an empty array, so this column cannot be absent on any row.
+# sap_provider_id, sap_provider_name and sap_overridden_by_third_party are omitted --
+# SAP-only values on a row with no SAP event -- while sap_counts_total zero-fills.
+- submission_date: "2026-08-13"
+  client_id: client-serp
+  legacy_telemetry_client_id: legacy-serp
+  normalized_engine: Engine3
+  source: urlbar
+  partner_code: serpcode
+  country: FR
+  normalized_app_name: Firefox
+  app_version: "140.2.1"
+  app_major_version: "140"
+  app_minor_version: "2"
+  app_patch_revision: "1"
+  locale: fr
+  home_region: FR
+  os: Darwin
+  normalized_os: Mac
+  os_version: 23.1.0
+  normalized_os_version: 23.1.0
+  channel: release
+  normalized_channel: release
+  is_default_browser: false
+  profile_creation_date: 20675
+  sample_id: 42
+  ping_start_time: "2026-08-13T07:00:00+00:00"
+  ping_end_time: "2026-08-13T08:00:00+00:00"
+  ping_seq: 5
+  max_concurrent_tab_count_max: 6
+  experiments: []
+  profile_age_in_days: 3
+  serp_searches_organic_count: 2
+  serp_searches_tagged_count: 3
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 0
+  serp_counts_total: 5
+  serp_ad_click_target: "ad_carousel, ad_sitelink"
+  serp_ad_clicks_sum: 5
+  serp_ad_clicks_tagged_sum: 5
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 1
+  serp_searches_with_ads_organic_count: 1
+  serp_ad_blocker_inferred: true
+  serp_non_ad_link_clicks_sum: 0
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 5
+  serp_ads_visible_sum: 2
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 0
+  serp_abandonments_navigation_count: 1
+  serp_abandonments_tab_close_count: 1
+  serp_abandonments_window_close_count: 1
+  serp_abandonments_reason_absent_count: 1
+  serp_abandonments_other_count: 1
+  has_adblocker_addon: false
+  policies_is_enterprise: false
+  os_version_major: "23"
+  os_version_minor: "23.1"
+  profile_group_id: pg-serp
+  legacy_searches_tagged_non_follow_on_sum: 0
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 0
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_searches_with_ads_organic_sum: 0
+  legacy_ad_clicks_tagged_sum: 0
+  legacy_ad_clicks_organic_sum: 0
+
+# Legacy-only, reaching the output only because the legacy join is FULL OUTER.
+# Six columns are omitted here and on no other row for the same reason -- nothing on
+# either pipeline supplies them and the metrics ping cannot: is_default_browser,
+# sap_overridden_by_third_party, serp_ad_click_target, serp_ad_blocker_inferred,
+# sap_provider_id and sap_provider_name. Every serp_* count and sap_counts_total
+# zero-fill beside them, which is the contrast the row is here to pin.
+# app_version comes from mozfun.norm.browser_version_info over the metrics ping's
+# app_display_version, where the other rows' came from a stored struct.
+# max_concurrent_tab_count_max is 12 while ping_seq is 4: the dimensions come from the
+# winning ping, which reported 7, and the tab count is the day's peak across both pings.
+- submission_date: "2026-08-13"
+  client_id: client-legacy
+  legacy_telemetry_client_id: legacy-legacy
+  normalized_engine: Engine4
+  source: urlbar
+  partner_code: no_code
+  country: JP
+  normalized_app_name: Firefox
+  app_version: "139.1.2"
+  app_major_version: "139"
+  app_minor_version: "1"
+  app_patch_revision: "2"
+  locale: ja
+  home_region: JP
+  os: Darwin
+  normalized_os: Mac
+  os_version: 22.6.0
+  normalized_os_version: 22.6.0
+  channel: release
+  normalized_channel: release
+  profile_creation_date: 20605
+  sample_id: 3
+  ping_start_time: "2026-08-13T06:00:00+09:00"
+  ping_end_time: "2026-08-13T07:00:00+09:00"
+  ping_seq: 4
+  max_concurrent_tab_count_max: 12
+  experiments:
+    - key: exp-b
+      value:
+        branch: control
+        extra:
+          type: nimbus
+          enrollment_id: enr-2
+  profile_age_in_days: 73
+  serp_searches_organic_count: 0
+  serp_searches_tagged_count: 0
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 0
+  serp_counts_total: 0
+  serp_ad_clicks_sum: 0
+  serp_ad_clicks_tagged_sum: 0
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_searches_with_ads_organic_count: 0
+  serp_non_ad_link_clicks_sum: 0
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 0
+  serp_ads_visible_sum: 0
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 0
+  serp_abandonments_navigation_count: 0
+  serp_abandonments_tab_close_count: 0
+  serp_abandonments_window_close_count: 0
+  serp_abandonments_reason_absent_count: 0
+  serp_abandonments_other_count: 0
+  has_adblocker_addon: false
+  policies_is_enterprise: false
+  os_version_major: "22"
+  os_version_minor: "22.6"
+  profile_group_id: pg-legacy
+  legacy_searches_tagged_non_follow_on_sum: 0
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 4
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_searches_with_ads_organic_sum: 2
+  legacy_ad_clicks_tagged_sum: 0
+  legacy_ad_clicks_organic_sum: 1

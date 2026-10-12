@@ -133,7 +133,29 @@ labels:
 ```
 
 - Queries that only select from legacy telemetry data should be assigned a `legacy: true` label.
+- Queries that are output from code in `sql_generators/` should be assigned a `sql_generator` label set to the name of the generator.
 - only labels where value types are eithers integers or strings are published, all other values types are being skipped
+
+### Table partitioning/clustering
+
+Table partitioning and/or clustering can be configured under a `bigquery` metadata section, like so:
+
+```yaml
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+      - sample_id
+```
+
+- If there's a primary timestamp or date column like `submission_timestamp` or `submission_date` it should generally be used for time partitioning.
+- `require_partition_filter` should be enabled for large tables to avoid queries accidentally scanning the entire table.
+- For large tables that contain client IDs it's highly recommended to include the associated `sample_id` column and cluster on it to allow for more performant sample-specific queries.
+- The table partition expiration shouldn't be greater than the partition expiration of the query's upstream source tables unless the query does some form of de-identification (e.g. aggregation).
 
 ### Dynamic Schemas
 
@@ -173,6 +195,7 @@ Without this flag, `--skip-existing` will skip schema updates for queries that a
 - For each view, a `metadata.yaml` file may be created in the same directory.
 - This file contains a description, owners, and labels (see the query metadata example above).
 - Views that only select from legacy telemetry data should be assigned a `legacy: true` label.
+- Views that are output from code in `sql_generators/` should be assigned a `sql_generator` label set to the name of the generator.
 
 ## UDFs
 

@@ -5,6 +5,7 @@ description: |-
   (first-touch, event-level, and session last-click). Intended as a base table for Looker dashboards.
 owners:
 - sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

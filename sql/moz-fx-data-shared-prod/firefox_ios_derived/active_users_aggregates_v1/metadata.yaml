@@ -22,3 +22,4 @@ owners:
 bigquery:
   expiration_days: 780
 deprecated: true
+deletion_date: 2026-10-01

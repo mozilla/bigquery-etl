@@ -1,0 +1,18 @@
+---
+friendly_name: Experiment metric configs
+description: |
+  Resolved jetstream/metric-hub analysis configuration (metrics, statistics,
+  segments, overrides) for each experiment returned by the Experimenter API,
+  refreshed daily against metric-hub HEAD.
+
+  Read by monitoring.experimenter_experiments_v1's ten-minute import task,
+  which nests this table's metric_config column into its own rows on a
+  best-effort basis. That read is deliberately not declared as an Airflow
+  dependency, so a delay here never blocks the ten-minute import.
+labels:
+  incremental: false
+  schedule: daily
+owners:
+  - mwilliams@mozilla.com
+scheduling:
+  dag_name: bqetl_experiments_daily

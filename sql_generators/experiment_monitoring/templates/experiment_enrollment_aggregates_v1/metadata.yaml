@@ -5,5 +5,6 @@ owners:
 scheduling:
   dag_name: bqetl_experiments_daily
 labels:
+  sql_generator: experiment_monitoring
   table_type: aggregate
   shredder_mitigation: false

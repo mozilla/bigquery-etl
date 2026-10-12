@@ -252,6 +252,13 @@ DELETE_TARGETS: DeleteIndex = {
         table="search_derived.mobile_search_clients_daily_v2"
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
+    # client_id is the Glean id here, so this pairs with the Glean deletion stream while
+    # v8 above pairs with the legacy one. The row also carries
+    # legacy_telemetry_client_id, but it needs no second target: deleting on client_id
+    # removes the whole row, and client_id is a grain key that is never null.
+    client_id_target(
+        table="search_derived.search_clients_daily_glean_v1"
+    ): DESKTOP_GLEAN_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,

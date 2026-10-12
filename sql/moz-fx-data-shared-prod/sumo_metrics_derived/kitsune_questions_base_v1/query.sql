@@ -5,7 +5,10 @@ WITH questions AS (
     mozfun.customer_experience.normalize_product(q.product, 'Kitsune') AS product,
     q.question_id
   FROM
-    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions` q
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
+  WHERE
+    q.is_spam = FALSE
+    AND q.is_locked = FALSE
 ),
 deduped AS (
   SELECT

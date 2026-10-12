@@ -6,6 +6,7 @@ description: |
 owners:
   - tlong@mozilla.com
 labels:
+  sql_generator: telemetry_health
   incremental: true
   schedule: daily
 scheduling:

@@ -1,0 +1,1066 @@
+[
+  {
+    "label": "system",
+    "parent": null,
+    "level": "subject",
+    "display_name": "System Data",
+    "description": "Data related to a system that is not authorization or operations data.",
+    "examples": "Data we generate on our end, such as: \ndocument_id, channel, app_name, app_version, app_display_version, distribution ID, submission date/timestamp (i.e. time we received the ping on our edge servers), experiment_id, experiment_branch, enrollment_id, glean_client_annotation_experimentation_id, etc, window_start, window_end"
+  },
+  {
+    "label": "system.authorization",
+    "parent": "system",
+    "level": "data_type",
+    "display_name": "Systems Authorization Data",
+    "description": "Data used to manage access to the system.",
+    "examples": "lockedAt"
+  },
+  {
+    "label": "system.operations",
+    "parent": "system",
+    "level": "data_type",
+    "display_name": "System Operations Data",
+    "description": "Data used to operate the systems.",
+    "examples": "ETL monitoring data, backend systems telemetry with no user IDs, sample IDs"
+  },
+  {
+    "label": "user",
+    "parent": null,
+    "level": "subject",
+    "display_name": "User Data",
+    "description": "Data related to a user that cannot be categorized with one of the sub-categories, includes events coming out of User Activity",
+    "examples": "Note: use this category for \"additional_properties\""
+  },
+  {
+    "label": "user.account",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Account Information",
+    "description": "Data related to a user's account that cannot be categorized with one of the sub-categories, includes creation and registration information",
+    "examples": "profile changed at, email verified"
+  },
+  {
+    "label": "user.account.fxid",
+    "parent": "user.account",
+    "level": "subcategory",
+    "display_name": "Firefox Account ID",
+    "description": "A user's unique Mozilla accounts identifier (NOT client ID)",
+    "examples": "FxA_ID"
+  },
+  {
+    "label": "user.account.username",
+    "parent": "user.account",
+    "level": "subcategory",
+    "display_name": "Account Username",
+    "description": "Unique identifier for a user, selected by the user.",
+    "examples": "username"
+  },
+  {
+    "label": "user.account.settings",
+    "parent": "user.account",
+    "level": "subcategory",
+    "display_name": "Account Settings",
+    "description": "Account preferences and settings.",
+    "examples": null
+  },
+  {
+    "label": "user.account.contact",
+    "parent": "user.account",
+    "level": "subcategory",
+    "display_name": "Account Contact Data",
+    "description": "Mozilla account holders contact information",
+    "examples": "email address, phone number"
+  },
+  {
+    "label": "user.authorization",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Authorization Information",
+    "description": "What a user is authorized to do, including the permissions and type of access granted",
+    "examples": "tokenData, tokenID, fxa_login - success"
+  },
+  {
+    "label": "user.behavior",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Interaction Data",
+    "description": "Data related to a user's behavior or actions, that is not considered browsing, search or purchase history",
+    "examples": "button click counts, interaction data (how often do you use x feature), activity_segment\nimpression/exposure data fits here - as a user had to do something to be in a place to see the impression."
+  },
+  {
+    "label": "user.behavior.attribution",
+    "parent": "user.behavior",
+    "level": "subcategory",
+    "display_name": "Attribution Data",
+    "description": "User's attribution data (information about how a user first came to use a product)",
+    "examples": null
+  },
+  {
+    "label": "user.behavior.browsing",
+    "parent": "user.behavior",
+    "level": "subcategory",
+    "display_name": "Browsing Data",
+    "description": "User identifiable browsing data",
+    "examples": null
+  },
+  {
+    "label": "user.behavior.browsing.categories",
+    "parent": "user.behavior.browsing",
+    "level": "subcategory",
+    "display_name": "Browsing Data (Categories)",
+    "description": "User's non-specific browsing history (general categories and top level domains, no specific URLs)",
+    "examples": "search terms, walmart.com, search categorization"
+  },
+  {
+    "label": "user.behavior.browsing_history",
+    "parent": "user.behavior",
+    "level": "subcategory",
+    "display_name": "Browsing History",
+    "description": "User's browsing history (specific urls)",
+    "examples": "https://www.bestbuy.com/site/pioneer-55-class-led-4k-uhd-smart-xumo-tv/\nUTM parameter get both user.behaviour.browsing.urls and user.behavior, as it could be specific place or did a specific thing to get in the attribution or campaign"
+  },
+  {
+    "label": "user.behavior.media_consumption",
+    "parent": "user.behavior",
+    "level": "subcategory",
+    "display_name": "Media Consumption",
+    "description": "User's content consumption, click and scroll data",
+    "examples": "time on page, clicks, interactions, ex: viewing videos, articles read, URI count, ad clicks, ad impressions, # of unique URLs visited, sponsored tiles clicks, impressions"
+  },
+  {
+    "label": "user.behavior.purchase_history",
+    "parent": "user.behavior",
+    "level": "subcategory",
+    "display_name": "Purchase History",
+    "description": "User's purchase (subscription) or donation history",
+    "examples": "Subscriptions, MoFo donation history"
+  },
+  {
+    "label": "user.behavior.search",
+    "parent": "user.behavior",
+    "level": "data_type",
+    "display_name": "Search Data",
+    "description": "Data related to a user's search behavior",
+    "examples": "SAP, unknown, organic, tagged_sap, # of searches done"
+  },
+  {
+    "label": "user.behavior.search.provider",
+    "parent": "user.behavior.search",
+    "level": "subcategory",
+    "display_name": "Search Provider",
+    "description": "Search provider information",
+    "examples": "Google, DuckDuckGo, etc"
+  },
+  {
+    "label": "user.behavior.search.topic",
+    "parent": "user.behavior.search",
+    "level": "subcategory",
+    "display_name": "Search Data (topic)",
+    "description": "User's non-specific search history (general categories, keywords). No specific search terms",
+    "examples": "Weather, shopping, travel"
+  },
+  {
+    "label": "user.behavior.search.term",
+    "parent": "user.behavior.search",
+    "level": "subcategory",
+    "display_name": "Search Data (term)",
+    "description": "User's specific search history",
+    "examples": "\"LED TVs\", \"bullseye rash on leg\", \"are grapes safe for dogs\""
+  },
+  {
+    "label": "user.biometric",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Biometric Data",
+    "description": "Specific physical, physiological or behavioural characteristics of a natural person, which allow or confirm the unique identification of that natural person",
+    "examples": "voice print, fingerprint"
+  },
+  {
+    "label": "user.contact",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Contact Data",
+    "description": "User contact information not related to Mozilla accounts",
+    "examples": "email address, phone number"
+  },
+  {
+    "label": "user.content",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "User Content",
+    "description": "Data provided by the user and uploaded into a Mozilla system",
+    "examples": "Uploaded image, SUMO comment, pocket collections, bookmarks, survey data, thumbs up/thumbs down"
+  },
+  {
+    "label": "user.demographic",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Demographic Data",
+    "description": "Data that describes one or more populations and their characteristics",
+    "examples": "Age, sex, race, ethnicity"
+  },
+  {
+    "label": "user.demographic.sexual_orientation",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Sexual Orientation",
+    "description": "Data regarding a user's sexual orientation or sex life",
+    "examples": "LGBTQIA, sex life"
+  },
+  {
+    "label": "user.demographic.race_ethnicity",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Race",
+    "description": "User's race or ethnicity",
+    "examples": "White, asian, hispanic"
+  },
+  {
+    "label": "user.demographic.immigration",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Immigration Data",
+    "description": "User's citizenship and/or immigration status",
+    "examples": "British, US citizen, green card holder, undocumented"
+  },
+  {
+    "label": "user.demographic.religious_philosophical",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Religious / Philosophical Data",
+    "description": "User's religion or philisophical beliefs",
+    "examples": "Muslim, Jewish, Christian, Buddhist, Atheist, Utilitarian, Nihilist"
+  },
+  {
+    "label": "user.demographic.protected_class",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Protected Class",
+    "description": "Any information (not falling into other categories) relating to user as a member of a protected class",
+    "examples": "Pregnant women, veterans, conviction record, credit history"
+  },
+  {
+    "label": "user.demographic.age_range",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Age Range",
+    "description": "Non-specific age, or age range of user",
+    "examples": "Minor, 30-40, 55+ etc"
+  },
+  {
+    "label": "user.demographic.date_of_birth",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Birth Date",
+    "description": "User's date of birth",
+    "examples": "02/09/89. 17th November, 2003"
+  },
+  {
+    "label": "user.demographic.gender",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Gender",
+    "description": "User's gender",
+    "examples": "Male, female, non-binary"
+  },
+  {
+    "label": "user.demographic.language",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Language",
+    "description": "User's spoken / written / understood languages",
+    "examples": "Spanish, English, Korean"
+  },
+  {
+    "label": "user.demographic.marital_status",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Marital Status",
+    "description": "User's marital status",
+    "examples": "Single, married, widowed, divorced"
+  },
+  {
+    "label": "user.demographic.political_opinion",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": "Political Opinion",
+    "description": "User's policitical opinions",
+    "examples": "Left, right, conservative, republican, labour, liberal"
+  },
+  {
+    "label": "user.demographic.profile",
+    "parent": "user.demographic",
+    "level": "subcategory",
+    "display_name": null,
+    "description": "User's demographic profile",
+    "examples": "White 30-40s male, asian LQBTQ married woman"
+  },
+  {
+    "label": "user.device",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Device Data",
+    "description": "Device-related information",
+    "examples": "OS, OS versions, Device, Device model, etc."
+  },
+  {
+    "label": "user.device.ip_address",
+    "parent": "user.device",
+    "level": "subcategory",
+    "display_name": "IP Address",
+    "description": "A unique address that identifies a device on the internet or a local network; it can be static or dynamic",
+    "examples": "IPv4, IPv6"
+  },
+  {
+    "label": "user.device.internet_service_provider",
+    "parent": "user.device",
+    "level": "subcategory",
+    "display_name": "Internet Service Provider",
+    "description": "Data related to the device's internet service provider",
+    "examples": "ISP, isp_name"
+  },
+  {
+    "label": "user.financial",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Financial Data",
+    "description": "Payment data related to subscriptions or donations, including amount and how the payment was made",
+    "examples": "credit card (last 4), transaction amount for purchase or donation"
+  },
+  {
+    "label": "user.government_id",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Government ID",
+    "description": "State or country provided identification data.",
+    "examples": "Passport number, driver's license number, state identification number"
+  },
+  {
+    "label": "user.health_and_medical",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Health and Medical Data",
+    "description": "Health or medical records-related information.",
+    "examples": "Accomodations-related data, medical leave information, sick notes"
+  },
+  {
+    "label": "user.human_resources",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Human Resources",
+    "description": "Data related to management of the workforce.",
+    "examples": "Data within Workday"
+  },
+  {
+    "label": "user.human_resources.employment",
+    "parent": "user.human_resources",
+    "level": "subcategory",
+    "display_name": "Employment Data",
+    "description": "Data related to the hiring process.",
+    "examples": "Benefits information"
+  },
+  {
+    "label": "user.human_resources.hiring",
+    "parent": "user.human_resources",
+    "level": "subcategory",
+    "display_name": "Hiring Data",
+    "description": "Data related to the recruiting/pre-employment process.",
+    "examples": "Job applicant data within Greenhouse"
+  },
+  {
+    "label": "user.location",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Location Data",
+    "description": "Data related to the region or location of the user",
+    "examples": "Country, City, Subdivisions, Street Address, Zip Code, etc."
+  },
+  {
+    "label": "user.location.precise",
+    "parent": "user.location",
+    "level": "subcategory",
+    "display_name": "Precise Location Data",
+    "description": "Precise location derived by sensors / from device (within 500m / 1850ft)",
+    "examples": "40.8259, -73.0361"
+  },
+  {
+    "label": "user.location.coarse",
+    "parent": "user.location",
+    "level": "subcategory",
+    "display_name": "Coarse Location Data",
+    "description": "Coarse location derived from sensors or inference",
+    "examples": "City, state, country"
+  },
+  {
+    "label": "user.system_performance",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Service Performance Data",
+    "description": "User-identifiable data related to the user's system's performance.",
+    "examples": "Memory usage, performance, page rendering speed for a specific Fx user\nRecord fields that track how well processes are running in the browser"
+  },
+  {
+    "label": "user.unique_id",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Unique ID",
+    "description": "Unique identifier for a user; name, usernames and includes non-permanent identifiers not used in context of a Mozilla account",
+    "examples": "client_id, session_id, cookies"
+  },
+  {
+    "label": "user.unique_id.client_id",
+    "parent": "user.unique_id",
+    "level": "subcategory",
+    "display_name": "Client ID",
+    "description": "A user's client identifier",
+    "examples": null
+  },
+  {
+    "label": "user.unique_id.profile_group_id",
+    "parent": "user.unique_id",
+    "level": "subcategory",
+    "display_name": "Profile Group ID",
+    "description": "A user's profile group ID (an identifier for a grouping of Firefox client IDs stemming from the same original client ID)",
+    "examples": null
+  },
+  {
+    "label": "user.settings",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "User Settings",
+    "description": "Configurations set by the data subject",
+    "examples": null
+  },
+  {
+    "label": "user.settings.privacy",
+    "parent": "user.settings",
+    "level": "subcategory",
+    "display_name": "User Privacy Settings",
+    "description": "Privacy preferences or settings set by the subject",
+    "examples": "Cookie settings, opt-ins and outs, Enhanced Tracking Protection settings, location and camera permissions"
+  },
+  {
+    "label": "user.settings.installs",
+    "parent": "user.settings",
+    "level": "subcategory",
+    "display_name": "User Settings Installs",
+    "description": "User's add-ons and installations",
+    "examples": "Theme, extensions, ad blockers"
+  },
+  {
+    "label": "user.telemetry",
+    "parent": "user",
+    "level": "data_type",
+    "display_name": "Telemetry Data",
+    "description": "Data we calculate based on other information such as device and interaction data.",
+    "examples": "Fields calculated based on usage data - for example, DAU, WAU, MAU (# of daily active users, # of weekly active users, # of monthly active users, # of new profiles)\n\nAlso includes fields based on a client's usage history - for example, days_active_bits, days_seen_bits, days_seen_bytes, days_since_active, first_run_date, first_seen_date, is_new_profile, active_hours, active_hours_sum\n\nAlso being used to record fields that track how well processes are running in the browser\n\nAlso includes fields like - session_count\n\nAlso used to count how often certain processes are used - how often are different parts of devtools being used (i.e.  JS debugger, JS profiler, inspector, etc)\n\nHow often different web page (CSS) elements are being used (so we know which ones to prioritize for improvements, debugging, etc)\n\ngfx_compositor (type of graphics compositor being used), max # of tabs open at one time"
+  },
+  {
+    "label": "company",
+    "parent": null,
+    "level": "subject",
+    "display_name": null,
+    "description": null,
+    "examples": null
+  },
+  {
+    "label": "company.financial",
+    "parent": "company",
+    "level": "data_type",
+    "display_name": "Company Financial Data",
+    "description": "Company financial data like costs, revenue, etc",
+    "examples": null
+  },
+  {
+    "label": "personnel",
+    "parent": null,
+    "level": "subject",
+    "display_name": null,
+    "description": null,
+    "examples": null
+  },
+  {
+    "label": "personnel.contact",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Contact Data",
+    "description": "Personnel contact data",
+    "examples": "email address, phone number"
+  },
+  {
+    "label": "personnel.content",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "User Content",
+    "description": "Content data provided or created by personnel",
+    "examples": "Email and Slack content, uploaded images, survey responses"
+  },
+  {
+    "label": "personnel.demographic",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Demographic Data",
+    "description": "Data that describes one or more populations and their characteristics",
+    "examples": "Age, sex, race, ethnicity"
+  },
+  {
+    "label": "personnel.demographic.sexual_orientation",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Sexual Orientation",
+    "description": "Data regarding an individual's 's sexual orientation or sex life",
+    "examples": "LGBTQIA, sex life"
+  },
+  {
+    "label": "personnel.demographic.race_ethnicity",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Race",
+    "description": "Individual's race or ethnicity",
+    "examples": "White, asian, hispanic"
+  },
+  {
+    "label": "personnel.demographic.immigration",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Immigration Data",
+    "description": "Individual's citizenship and/or immigration status",
+    "examples": "British, US citizen, green card holder, undocumented"
+  },
+  {
+    "label": "personnel.demographic.religious_philosophical",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Religious / Philosophical Data",
+    "description": "Individual's religion or philisophical beliefs",
+    "examples": "Muslim, Jewish, Christian, Buddhist, Atheist, Utilitarian, Nihilist"
+  },
+  {
+    "label": "personnel.demographic.union_membership",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Union Membership",
+    "description": "Individual's union membership or union related activity",
+    "examples": "Membership of union like Autoworkers Union,"
+  },
+  {
+    "label": "personnel.demographic.protected_class",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Protected Class",
+    "description": "Any information (not falling into other categories) relating to user as a member of a protected class",
+    "examples": "Pregnant women, veterans, conviction record, credit history"
+  },
+  {
+    "label": "personnel.demographic.age",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Age Range or date of birth",
+    "description": "Individual's date of birth or Non-specific age, or age range",
+    "examples": "Minor, 30-40, 55+, 02/09/89. 17th November, 2003 etc"
+  },
+  {
+    "label": "personnel.demographic.gender",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Gender",
+    "description": "Individual's gender / gender identity",
+    "examples": "Male, female, non-binary"
+  },
+  {
+    "label": "personnel.demographic.language",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Language",
+    "description": "Individual's spoken / written / understood languages",
+    "examples": "Spanish, English, Korean"
+  },
+  {
+    "label": "personnel.demographic.political_opinion",
+    "parent": "personnel.demographic",
+    "level": "subcategory",
+    "display_name": "Political Opinion",
+    "description": "Individual's policitical opinions",
+    "examples": "Left, right, conservative, republican, labour, liberal"
+  },
+  {
+    "label": "personnel.financial",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Financial Data",
+    "description": "Payment data related to compensation, salary, banking details, payroll",
+    "examples": "Compensation data, bank account details"
+  },
+  {
+    "label": "personnel.government_id",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Government ID",
+    "description": "State or country provided identification data.",
+    "examples": "Passport number, driver's license number, state identification number"
+  },
+  {
+    "label": "personnel.health_and_medical",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Health and Medical Data",
+    "description": "Health or medical records-related information.",
+    "examples": "Accomodations-related data, medical leave information, sick notes"
+  },
+  {
+    "label": "personnel.human_resources",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Human Resources",
+    "description": "Data related to management of the workforce.",
+    "examples": "Any other HR data"
+  },
+  {
+    "label": "personnel.human_resources.employment",
+    "parent": "personnel.human_resources",
+    "level": "subcategory",
+    "display_name": "Employment Data",
+    "description": "Data related to managing employment",
+    "examples": "Benefits information, performance reviews, data within Workday"
+  },
+  {
+    "label": "personnel.human_resources.hiring",
+    "parent": "personnel.human_resources",
+    "level": "subcategory",
+    "display_name": "Hiring Data",
+    "description": "Data related to the recruiting/pre-employment process.",
+    "examples": "Job applicant data within Greenhouse"
+  },
+  {
+    "label": "personnel.human_resources.operations",
+    "parent": "personnel.human_resources",
+    "level": "subcategory",
+    "display_name": "HR Operations data",
+    "description": "Clothing sizes, event attendance, physical entry/exit logs, information on CCTV",
+    "examples": "Workforce operations data"
+  },
+  {
+    "label": "personnel.location",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Location Data",
+    "description": "Data related to the region or location of the individual",
+    "examples": "Country, City, Subdivisions, Street Address, Zip Code, etc."
+  },
+  {
+    "label": "personnel.location.precise",
+    "parent": "personnel.location",
+    "level": "subcategory",
+    "display_name": "Precise Location Data",
+    "description": "Precise location derived by sensors / from device (within 500m / 1850ft)",
+    "examples": "40.8259, -73.0361"
+  },
+  {
+    "label": "personnel.location.coarse",
+    "parent": "personnel.location",
+    "level": "subcategory",
+    "display_name": "Coarse Location Data",
+    "description": "Coarse location derived from sensors or inference",
+    "examples": "City, state, country"
+  },
+  {
+    "label": "personnel.unique_id",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Unique ID",
+    "description": "Unique identifier; includes name, username and non-permanent identifiers",
+    "examples": "client_id, session_id, cookies"
+  },
+  {
+    "label": "personnel.authorization",
+    "parent": "personnel",
+    "level": "data_type",
+    "display_name": "Authorization Information",
+    "description": "What an individual is authorized to do, including the permissions and type of access granted",
+    "examples": "tokenData, tokenID, fxa_login - success"
+  },
+  {
+    "label": "jobapplicants",
+    "parent": null,
+    "level": "subject",
+    "display_name": null,
+    "description": null,
+    "examples": null
+  },
+  {
+    "label": "jobapplicants.contact",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "Contact Data",
+    "description": "Contact inrformation of job applicants",
+    "examples": "email address, phone number"
+  },
+  {
+    "label": "jobapplicants.content",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "User Content",
+    "description": "Content information provided by job applicants",
+    "examples": "Cover letters, email content, survey data, etc"
+  },
+  {
+    "label": "jobapplicants.demographic",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "Demographic Data",
+    "description": "Data that describes one or more populations and their characteristics",
+    "examples": "Age, sex, race, ethnicity"
+  },
+  {
+    "label": "jobapplicants.demographic.sexual_orientation",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Sexual Orientation",
+    "description": "Data regarding an individual's 's sexual orientation or sex life",
+    "examples": "LGBTQIA, sex life"
+  },
+  {
+    "label": "jobapplicants.demographic.race_ethnicity",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Race",
+    "description": "Individual's race or ethnicity",
+    "examples": "White, asian, hispanic"
+  },
+  {
+    "label": "jobapplicants.demographic.immigration",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Immigration Data",
+    "description": "Individual's citizenship and/or immigration status",
+    "examples": "British, US citizen, green card holder, undocumented"
+  },
+  {
+    "label": "jobapplicants.demographic.religious_philosophical",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Religious / Philosophical Data",
+    "description": "Individual's religion or philisophical beliefs",
+    "examples": "Muslim, Jewish, Christian, Buddhist, Atheist, Utilitarian, Nihilist"
+  },
+  {
+    "label": "jobapplicants.demographic.union_membership",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Union Membership",
+    "description": "Individual's union membership or union related activity",
+    "examples": "Membership of union like Autoworkers Union,"
+  },
+  {
+    "label": "jobapplicants.demographic.protected_class",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Protected Class",
+    "description": "Any information (not falling into other categories) relating to user as a member of a protected class",
+    "examples": "Pregnant women, veterans, conviction record, credit history"
+  },
+  {
+    "label": "jobapplicants.demographic.age_range",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Age Range",
+    "description": "Non-specific age, or age range of user",
+    "examples": "Minor, 30-40, 55+ etc"
+  },
+  {
+    "label": "jobapplicants.demographic.date_of_birth",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Birth Date",
+    "description": "Individual's date of birth",
+    "examples": "02/09/89. 17th November, 2003"
+  },
+  {
+    "label": "jobapplicants.demographic.gender",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Gender",
+    "description": "Individual's gender",
+    "examples": "Male, female, non-binary"
+  },
+  {
+    "label": "jobapplicants.demographic.language",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Language",
+    "description": "Individual's spoken / written / understood languages",
+    "examples": "Spanish, English, Korean"
+  },
+  {
+    "label": "jobapplicants.demographic.marital_status",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Marital Status",
+    "description": "Individual's marital status",
+    "examples": "Single, married, widowed, divorced"
+  },
+  {
+    "label": "jobapplicants.demographic.political_opinion",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Political Opinion",
+    "description": "Individual's policitical opinions",
+    "examples": "Left, right, conservative, republican, labour, liberal"
+  },
+  {
+    "label": "jobapplicants.demographic.profile",
+    "parent": "jobapplicants.demographic",
+    "level": "subcategory",
+    "display_name": "Demographic profile",
+    "description": null,
+    "examples": "Advertising"
+  },
+  {
+    "label": "jobapplicants.health_and_medical",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "Medical data",
+    "description": null,
+    "examples": null
+  },
+  {
+    "label": "jobapplicants.human_resources",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "Human Resources",
+    "description": null,
+    "examples": null
+  },
+  {
+    "label": "jobapplicants.human_resources.employment",
+    "parent": "jobapplicants.human_resources",
+    "level": "subcategory",
+    "display_name": "Employment Data",
+    "description": "Data related to management of the workforce.",
+    "examples": "Benefits information"
+  },
+  {
+    "label": "jobapplicants.human_resources.hiring",
+    "parent": "jobapplicants.human_resources",
+    "level": "subcategory",
+    "display_name": "Hiring Data",
+    "description": "Data related to the hiring process.",
+    "examples": "Job applicant data within Greenhouse"
+  },
+  {
+    "label": "jobapplicants.location",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "Location Data",
+    "description": "Data related to the region or location of the individual",
+    "examples": "Country, City, Subdivisions, Street Address, Zip Code, etc."
+  },
+  {
+    "label": "jobapplicants.location.coarse",
+    "parent": "jobapplicants.location",
+    "level": "subcategory",
+    "display_name": "Coarse Location Data",
+    "description": null,
+    "examples": "City, state, country"
+  },
+  {
+    "label": "jobapplicants.unique_id",
+    "parent": "jobapplicants",
+    "level": "data_type",
+    "display_name": "Unique ID",
+    "description": null,
+    "examples": "Greenhouse ID number"
+  },
+  {
+    "label": "other",
+    "parent": null,
+    "level": "subject",
+    "display_name": null,
+    "description": "Event attendees, community members, grant recipients, speakers etc.",
+    "examples": null
+  },
+  {
+    "label": "other.contact",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Contact data",
+    "description": "Individual's contact information",
+    "examples": "Email address, physical address, phone number"
+  },
+  {
+    "label": "other.content",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Content data",
+    "description": "Data provided by the individual to Mozilla",
+    "examples": "Email content, messages, photos, videos"
+  },
+  {
+    "label": "other.demographic",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": null,
+    "description": "Data that describes the individuals' characteristics",
+    "examples": "Age, sex, race, ethnicity"
+  },
+  {
+    "label": "other.demographic.sexual_orientation",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Sexual Orientation",
+    "description": "Data regarding an individual's sexual orientation or sex life",
+    "examples": "LGBTQIA, sex life"
+  },
+  {
+    "label": "other.demographic.race_ethnicity",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Race",
+    "description": "Individual's race or ethnicity",
+    "examples": "White, asian, hispanic"
+  },
+  {
+    "label": "other.demographic.immigration",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Immigration Data",
+    "description": "Individual's citizenship and/or immigration status",
+    "examples": "British, US citizen, green card holder, undocumented"
+  },
+  {
+    "label": "other.demographic.religious_philosophical",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Religious / Philosophical Data",
+    "description": "Individual's religion or philisophical beliefs",
+    "examples": "Muslim, Jewish, Christian, Buddhist, Atheist, Utilitarian, Nihilist"
+  },
+  {
+    "label": "other.demographic.union_membership",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Union Membership",
+    "description": "Individual's union membership or union related activity",
+    "examples": "Membership of union like Autoworkers Union,"
+  },
+  {
+    "label": "other.demographic.protected_class",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Protected Class",
+    "description": "Any information (not falling into other categories) relating to Individual as a member of a protected class",
+    "examples": "Pregnant women, veterans, conviction record, credit history"
+  },
+  {
+    "label": "other.demographic.age_range",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Age Range",
+    "description": "Non-specific age, or age range of Individual",
+    "examples": "Minor, 30-40, 55+ etc"
+  },
+  {
+    "label": "other.demographic.date_of_birth",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Birth Date",
+    "description": "Individual's date of birth",
+    "examples": "02/09/89. 17th November, 2003"
+  },
+  {
+    "label": "other.demographic.gender",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Gender",
+    "description": "Individual's gender",
+    "examples": "Male, female, non-binary"
+  },
+  {
+    "label": "other.demographic.language",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Language",
+    "description": "Individual's spoken / written / understood languages",
+    "examples": "Spanish, English, Korean"
+  },
+  {
+    "label": "other.demographic.marital_status",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Marital Status",
+    "description": "Individual's marital status",
+    "examples": "Single, married, widowed, divorced"
+  },
+  {
+    "label": "other.demographic.political_opinion",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Political Opinion",
+    "description": "Individual's policitical opinions",
+    "examples": "Left, right, conservative, republican, green, independent, labour, liberal"
+  },
+  {
+    "label": "other.demographic.profile",
+    "parent": "other.demographic",
+    "level": "subcategory",
+    "display_name": "Demographic profile",
+    "description": "Individual's demographic profile",
+    "examples": "White 30-40s male, asian LQBTQ married woman"
+  },
+  {
+    "label": "other.financial",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Financial Data",
+    "description": "Payment data related to donations, event payments, including amount and how the payment was made, or salary, compensation or banking details",
+    "examples": "credit card (last 4), transaction amount for event fees or donation"
+  },
+  {
+    "label": "other.government_id",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Government ID",
+    "description": "State or country provided identification data.",
+    "examples": "Passport number, driver's license number, state identification number"
+  },
+  {
+    "label": "other.health_and_medical",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Health and Medical Data",
+    "description": "Health or medical records-related information.",
+    "examples": "Accomodations-related data, allergy information, event accident information"
+  },
+  {
+    "label": "other.human_resources",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Human Resources",
+    "description": null,
+    "examples": null
+  },
+  {
+    "label": "other.location",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Location data",
+    "description": "Location of individual",
+    "examples": "Location (coarse)"
+  },
+  {
+    "label": "other.unique_id",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Unique ID",
+    "description": "Unique identifier for individual",
+    "examples": "Unique identifier"
+  },
+  {
+    "label": "other.attendance",
+    "parent": "other",
+    "level": "data_type",
+    "display_name": "Attendance",
+    "description": "Data relating to individual's attendance at an event",
+    "examples": "Data relating to an individual's attendance at an event"
+  }
+]

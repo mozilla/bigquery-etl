@@ -5,4 +5,5 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  sql_generator: experiment_monitoring
   materialized_view: true

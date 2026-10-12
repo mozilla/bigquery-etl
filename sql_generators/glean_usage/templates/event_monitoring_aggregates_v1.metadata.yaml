@@ -6,7 +6,8 @@ owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
 labels:
-  incremental: true 
+  sql_generator: glean_usage
+  incremental: true
 scheduling:
   dag_name: bqetl_monitoring
   # Use backfill-3 project for on-demand query billing

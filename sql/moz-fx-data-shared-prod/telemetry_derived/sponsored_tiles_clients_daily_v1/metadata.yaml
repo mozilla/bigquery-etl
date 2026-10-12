@@ -26,3 +26,4 @@ bigquery:
     - sample_id
 require_column_descriptions: false
 deprecated: true
+deletion_date: 2026-12-18

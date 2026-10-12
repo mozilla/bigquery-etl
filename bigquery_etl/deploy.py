@@ -104,6 +104,7 @@ def deploy_table(
         query_schema = Schema.from_query_file(
             artifact_file,
             use_cloud_function=use_cloud_function,
+            billing_project=(project_name if not use_cloud_function else None),
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,
             client=client,

@@ -9,6 +9,7 @@ owners:
   - shong@mozilla.com
   - ascholtz@mozilla.com
 labels:
+  sql_generator: feature_usage
   incremental: true
   application: firefox
   schedule: daily

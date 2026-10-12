@@ -58,21 +58,18 @@
   country: US
   form_factor: desktop
   is_clicked: false
-  locale: en-US
   normalized_channel: release
   normalized_os: macOS
   normalized_os_version: "15.2"
   os_family: macos
   position: 11
   query: anvils
-  region: CA
   reporting_url: https://example.com/acme-corp
   request_id: rid11
   sequence_no: 11
   session_id: sid11
   submission_timestamp: "2021-01-01T13:01:00+00:00"
   timestamp: "2021-01-01T13:01:00+00:00"
-  version: "134"
   match_type: "firefox-suggest"
   experiments:
     - slug: glean-exp
@@ -84,21 +81,18 @@
   country: US
   form_factor: desktop
   is_clicked: true
-  locale: en-US
   normalized_channel: beta
   normalized_os: macOS
   normalized_os_version: "15.0"
   os_family: macos
   position: 12
   query: "best paper"
-  region: PA
   reporting_url: https://example.com/dunder-mifflin
   request_id: rid12
   sequence_no: 12
   session_id: sid12
   submission_timestamp: "2021-01-01T13:02:00+00:00"
   timestamp: "2021-01-01T13:02:00+00:00"
-  version: "134"
   match_type: "best-match"
   experiments:
     - slug: glean-exp
@@ -136,15 +130,12 @@
   context_id: cid13
   country: US
   is_clicked: false
-  locale: en-US
   normalized_channel: nightly
   normalized_os: Windows
   normalized_os_version: "11.0"
   position: 13
-  region: OR
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
-  version: "134"
   match_type: "firefox-suggest"
   experiments:
     - slug: glean-exp
@@ -176,7 +167,7 @@
   experiments:
     - slug: suggest-exp
       branch: control
-# glean-dup 13:31 row wins dedup; experiments from the 13:31 ping
+# glean-dup 13:31 row wins dedup; advertiser/block_id come from the 13:31 ping
 - advertiser: widget co 2
   block_id: 131
   browser: firefox(134)
@@ -184,21 +175,18 @@
   country: US
   form_factor: desktop
   is_clicked: false
-  locale: en-US
   normalized_channel: release
   normalized_os: Windows
   normalized_os_version: "11.0"
   os_family: windows
   position: 30
   query: "best widget"
-  region: NV
   reporting_url: url_glean_dup_2
   request_id: rid_glean_dup
   sequence_no: 33
   session_id: sid_glean_dup
   submission_timestamp: "2021-01-01T13:31:00+00:00"
   timestamp: "2021-01-01T13:33:00+00:00"
-  version: "134"
   match_type: "best-match"
   experiments:
     - slug: glean-dup-exp
@@ -231,3 +219,25 @@
   experiments:
     - slug: suggest-exp
       branch: control
+# experiment_name is unset, so experiments is empty rather than [(null, null)]
+- advertiser: no exp store
+  block_id: 150
+  browser: firefox(134)
+  context_id: cid_no_exp
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  os_family: windows
+  position: 50
+  query: "unenrolled query"
+  reporting_url: url_no_exp
+  request_id: rid_no_exp
+  sequence_no: 50
+  session_id: sid_no_exp
+  submission_timestamp: "2021-01-01T13:50:00+00:00"
+  timestamp: "2021-01-01T13:50:00+00:00"
+  match_type: "firefox-suggest"
+  experiments: []

@@ -5,6 +5,7 @@ owners:
   - kbammarito@mozilla.com
   - vsabino@mozilla.com
 labels:
+  sql_generator: glean_usage
   schedule: daily
   table_type: client_level
 scheduling:

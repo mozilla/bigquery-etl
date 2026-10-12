@@ -113,13 +113,17 @@ all_events_with_page_location_on_WNP AS (
 )
 SELECT
   wnp.* EXCEPT (uid_from_event_params),
-  mozfun.norm.browser_version_info(wnp.page_level_2) AS page_level_2_version_info,
-  CASE
-    WHEN wnp.oldversion LIKE '999999999999999999999999%'
-      THEN mozfun.norm.browser_version_info(NULL)
-    ELSE mozfun.norm.browser_version_info(wnp.oldversion)
-  END AS old_version_version_info,
-  mozfun.norm.browser_version_info(wnp.newversion) AS new_version_version_info,
+  -- There are a few cases where incredibly long value is injected for version,
+  -- Any value longer than 18 characters is not a valid version and can be safely dropped.
+  mozfun.norm.browser_version_info(
+    IF(LENGTH(wnp.page_level_2) >= 18, NULL, wnp.page_level_2)
+  ) AS page_level_2_version_info,
+  mozfun.norm.browser_version_info(
+    IF(LENGTH(wnp.oldversion) >= 18, NULL, wnp.oldversion)
+  ) AS old_version_version_info,
+  mozfun.norm.browser_version_info(
+    IF(LENGTH(wnp.newversion) >= 18, NULL, wnp.newversion)
+  ) AS new_version_version_info,
   CASE
     WHEN event_name = 'cta_click'
       THEN uid_from_event_params

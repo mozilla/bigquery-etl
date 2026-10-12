@@ -2,39 +2,48 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date of the impression event.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: submission_date
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Two-letter ISO country code.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: country
 - mode: NULLABLE
   name: form_factor
   type: STRING
-  description: >-
-    Form factor of the client device (e.g. "desktop", "phone").
-    Sourced from Merino logs.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: form_factor
+    append: 'Sourced from Merino logs; e.g. "desktop", "phone".'
 - mode: NULLABLE
   name: advertiser
   type: STRING
-  description: Advertiser name associated with the suggest result.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: advertiser
 - mode: NULLABLE
   name: partial
   type: STRING
-  description: >-
-    Normalized search query partial typed by the user at the time of the
-    impression, lowercased and trimmed. Sourced from Merino logs; rows
-    without a Merino match are excluded.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: partial
+    append: Lowercased and trimmed. Sourced from Merino logs; rows without a Merino match are excluded.
 - mode: NULLABLE
   name: position
   type: INTEGER
-  description: Position of the suggest result in the Firefox address bar dropdown.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: position
 - mode: NULLABLE
   name: match_type
   type: STRING
-  description: >-
-    Whether the suggest result was a best/top match or not. Either
-    "best-match" or "firefox-suggest". Only populated for Glean
-    impressions; NULL for legacy impressions.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: match_type
+    append: Only populated for Glean impressions; NULL for legacy impressions.
 - fields:
   - mode: NULLABLE
     name: slug
@@ -47,13 +56,18 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
-  description: >-
-    Active experiments the client was enrolled in at the time of the impression.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: experiments
 - mode: NULLABLE
   name: is_clicked
   type: BOOLEAN
-  description: Whether the suggest result was clicked by the user.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: is_clicked
 - mode: NULLABLE
   name: version
   type: STRING
-  description: Major version of Firefox installed on the device (e.g. "155").
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: version

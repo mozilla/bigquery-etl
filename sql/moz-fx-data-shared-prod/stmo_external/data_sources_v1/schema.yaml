@@ -1,0 +1,33 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: org_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash organization ID. There is only one organization.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: Display name.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Data source type, such as `bigquery` or `pg`.
+- name: queue_name
+  type: STRING
+  mode: NULLABLE
+  description: Worker queue used for ad hoc executions.
+- name: scheduled_queue_name
+  type: STRING
+  mode: NULLABLE
+  description: Worker queue used for scheduled executions.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was created.
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: Description entered by the user.

@@ -2,6 +2,7 @@ friendly_name: {{ ping }}.{{ category }}.{{ metric.name }} aggregates
 description:
   Aggregated metric data derived from {{ ping }}.{{ category }}.{{ metric.name }}
 labels:
+  sql_generator: rust_component_metrics
   incremental: true
 owners:
   - sync-team@mozilla.com

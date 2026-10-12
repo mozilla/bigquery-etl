@@ -89,24 +89,22 @@ def get_bqetl_project_root() -> Path | None:
     return None
 
 
-def resolve_project_file_path(project_file_path: str | Path) -> Path:
-    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
-    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+def resolve_project_subpath(project_subpath: str | Path) -> Path:
+    """Return the absolute path to the project subpath that exists, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_subpath = Path(str(project_subpath).removeprefix("/"))
 
-    bqetl_project_root = get_bqetl_project_root()
-    if bqetl_project_root:
-        absolute_project_file_path = bqetl_project_root / relative_project_file_path
-        if absolute_project_file_path.exists():
-            return absolute_project_file_path
+    if bqetl_project_root := get_bqetl_project_root():
+        absolute_project_subpath = bqetl_project_root / relative_project_subpath
+        if absolute_project_subpath.exists():
+            return absolute_project_subpath
 
     # Fall back to checking the main `bqetl` project if necessary.
-    if (
-        bqetl_project_root != ROOT
-        and (root_project_file_path := ROOT / relative_project_file_path).exists()
-    ):
-        return root_project_file_path
+    if ROOT != bqetl_project_root:
+        root_project_subpath = ROOT / relative_project_subpath
+        if root_project_subpath.exists():
+            return root_project_subpath
 
-    raise FileNotFoundError(f"Project file not found: {project_file_path}")
+    raise FileNotFoundError(f"Project subpath not found: {project_subpath}")
 
 
 def render(
@@ -512,13 +510,19 @@ def set_resolved_target_project(project_id: Optional[str]) -> None:
 
 _CLOUD_PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
 
+# Set by the CLI when a target impersonates a service account, and unset by
+# --no-impersonate, so it records whether this invocation wants impersonation.
+# Child processes inherit it, which is how spawned pool workers know to install
+# the `enable_impersonation` wrapper for themselves.
+IMPERSONATE_ENV_VAR = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+
 
 def enable_impersonation(target_principal: str) -> None:
     """Impersonate `target_principal` for all google-cloud clients in this process.
 
     `google.auth.default()` (used by every `bigquery.Client()`) ignores the
-    gcloud `CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` env var, so we wrap it to
-    return impersonated credentials built from the caller's ADC.
+    gcloud `IMPERSONATE_ENV_VAR` env var, so we wrap it to return impersonated
+    credentials built from the caller's ADC.
     """
     current = google.auth.default
     # Unwrap if already wrapped so re-targeting doesn't stack/recurse.
@@ -571,7 +575,7 @@ def exit_if_running_under_coding_agent():
     Coding agents may run otherwise-blocked commands only when both hold:
     the invocation is scoped to an allow-listed non-prod `--target` (managed in
     `bqetl_project.yaml`, see `get_dev_project_allowlist`), and a service account
-    is being impersonated (`CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT` set).
+    is being impersonated (`IMPERSONATE_ENV_VAR` set).
 
     IMPORTANT: these checks are advisory guardrails, NOT the write boundary.
     They only inspect the resolved `--target`, but `deploy` / `query backfill`
@@ -598,7 +602,7 @@ def exit_if_running_under_coding_agent():
             err=True,
         )
         sys.exit(1)
-    if not os.environ.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"):
+    if not os.environ.get(IMPERSONATE_ENV_VAR):
         click.echo(
             "Coding agents must impersonate the sandbox service account to run "
             "this command (its IAM is what prevents production writes). Set "

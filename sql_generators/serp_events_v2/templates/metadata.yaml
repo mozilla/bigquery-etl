@@ -12,6 +12,7 @@ owners:
 - kbammarito@mozilla.com
 - betling@mozilla.com
 labels:
+  sql_generator: serp_events_v2
   incremental: true
   schedule: daily
   table_type: client_level

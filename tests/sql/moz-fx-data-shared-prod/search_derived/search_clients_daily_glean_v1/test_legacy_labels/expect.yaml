@@ -1,0 +1,114 @@
+# Five rows from one metrics ping. Columns absent from every row are absent because no
+# side supplies them: the six that stay NULL on a legacy-only row -- is_default_browser,
+# sap_overridden_by_third_party, serp_ad_click_target, serp_ad_blocker_inferred,
+# sap_provider_id, sap_provider_name -- plus the app_* and os_* families, which the
+# fixture leaves null so this expectation stays on the label behaviour.
+# A NULL column is omitted rather than written as null; see test_sides/expect.yaml.
+#
+# Spreading an anchor is safe here, and only here, because all five rows carry exactly
+# the same key set -- they differ in the grain key and the seven legacy counters and in
+# nothing else. A merge cannot remove a key, so an anchor would be wrong the moment one
+# row needed a column NULL that another has populated. That is why test_sides/expect.yaml
+# repeats its rows in full, and it is the case docs/cookbooks/testing.md:101 warns about.
+
+# CASE 1, rank 1. Highest content volume on this key, so it receives the whole of the
+# access point's unlabelled ad counts, 6 and 4.
+- &base
+  submission_date: "2026-08-13"
+  client_id: client-labels
+  legacy_telemetry_client_id: legacy-labels
+  normalized_engine: Engine1
+  source: urlbar
+  partner_code: codeA
+  country: CA
+  normalized_app_name: Firefox
+  locale: en-CA
+  home_region: CA
+  channel: release
+  normalized_channel: release
+  profile_creation_date: 20666
+  sample_id: 5
+  ping_start_time: "2026-08-13T10:00:00+00:00"
+  ping_end_time: "2026-08-13T11:00:00+00:00"
+  ping_seq: 2
+  max_concurrent_tab_count_max: 3
+  experiments: []
+  profile_age_in_days: 12
+  serp_searches_organic_count: 0
+  serp_searches_tagged_count: 0
+  serp_follow_on_searches_tagged_count: 0
+  sap_counts_total: 0
+  serp_counts_total: 0
+  serp_ad_clicks_sum: 0
+  serp_ad_clicks_tagged_sum: 0
+  serp_ad_clicks_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_searches_with_ads_organic_count: 0
+  serp_non_ad_link_clicks_sum: 0
+  serp_other_engagements_sum: 0
+  serp_ads_loaded_sum: 0
+  serp_ads_visible_sum: 0
+  serp_ads_blocked_sum: 0
+  serp_ads_notshowing_sum: 0
+  serp_abandonments_navigation_count: 0
+  serp_abandonments_tab_close_count: 0
+  serp_abandonments_window_close_count: 0
+  serp_abandonments_reason_absent_count: 0
+  serp_abandonments_other_count: 0
+  has_adblocker_addon: false
+  policies_is_enterprise: false
+  profile_group_id: pg-labels
+  legacy_searches_tagged_non_follow_on_sum: 10
+  legacy_searches_tagged_follow_on_sum: 0
+  legacy_searches_organic_sum: 0
+  legacy_searches_with_ads_tagged_sum: 6
+  legacy_searches_with_ads_organic_sum: 0
+  legacy_ad_clicks_tagged_sum: 4
+  legacy_ad_clicks_organic_sum: 0
+
+# CASE 1, rank 2. Same key, lower volume, so it keeps its own content count and takes
+# none of the ads. Zeros here rather than a repeat of 6 and 4 is what makes a SUM over
+# the whole table add up instead of double-counting.
+- <<: *base
+  partner_code: codeB
+  legacy_searches_tagged_non_follow_on_sum: 3
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_ad_clicks_tagged_sum: 0
+
+# CASE 2, the orphan sentinel. Ads with no content label on the key, so there is no
+# partner code to attribute to; the row survives as 'unknown_code' with its content
+# counts zero-filled.
+- <<: *base
+  normalized_engine: Engine2
+  source: searchbar
+  partner_code: unknown_code
+  legacy_searches_tagged_non_follow_on_sum: 0
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_searches_with_ads_organic_sum: 2
+  legacy_ad_clicks_tagged_sum: 0
+  legacy_ad_clicks_organic_sum: 1
+
+# CASE 3, follow-on tag type, and rank 1 on its key. Its content is tagged-follow-on so
+# it lands in the follow-on counter and not the plain tagged one, while the organic ad
+# total attaches here anyway -- attribution follows volume, not tag type.
+- <<: *base
+  normalized_engine: Engine3
+  source: about_home
+  partner_code: codeC
+  legacy_searches_tagged_non_follow_on_sum: 0
+  legacy_searches_tagged_follow_on_sum: 7
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_searches_with_ads_organic_sum: 5
+  legacy_ad_clicks_tagged_sum: 0
+
+# CASE 3, the empty third segment. 'engine3:organic:' ends on a colon, so the partner
+# code is the empty string and resolves to 'no_code' -- the same value an absent code
+# reaches on the SAP side.
+- <<: *base
+  normalized_engine: Engine3
+  source: about_home
+  partner_code: no_code
+  legacy_searches_tagged_non_follow_on_sum: 0
+  legacy_searches_organic_sum: 2
+  legacy_searches_with_ads_tagged_sum: 0
+  legacy_ad_clicks_tagged_sum: 0

@@ -1,0 +1,24 @@
+SELECT
+  * REPLACE (SAFE.PARSE_JSON(`layout`, wide_number_mode => 'round') AS `layout`)
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-data-stmo-prod-33f2.us.stmo-cloudsql-prod",
+    """SELECT
+         id,
+         updated_at,
+         created_at,
+         org_id,
+         slug,
+         name,
+         user_email,
+         user_id,
+         layout,
+         dashboard_filters_enabled,
+         is_archived,
+         version,
+         is_draft,
+         tags
+       FROM
+         dashboards
+    """
+  )

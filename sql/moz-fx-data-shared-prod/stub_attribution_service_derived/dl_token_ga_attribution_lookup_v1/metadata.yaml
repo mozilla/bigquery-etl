@@ -9,6 +9,7 @@ description: |-
   stub_session_id - Available in Stub Attribution Service and GA
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

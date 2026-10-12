@@ -1,0 +1,11 @@
+friendly_name: STMO
+description: |-
+  User-facing views on tables copied from the Redash (sql.telemetry.mozilla.org)
+  metadata database. See `stmo_external` for how the tables are loaded.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

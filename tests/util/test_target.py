@@ -8,6 +8,7 @@ import yaml
 
 from bigquery_etl.cli.deploy import _collect_isolated_dependencies
 from bigquery_etl.util import target as target_module
+from bigquery_etl.util.common import render
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
     SCHEMA_FILE,
@@ -81,8 +82,8 @@ class TestTarget:
         "bigquery_etl.util.target._get_git_context",
         return_value={"branch": "main", "commit": "abc123de"},
     )
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_success(self, mock_config_loader, _mock_git, _mock_account):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_success(self, _mock_targets_file, _mock_git, _mock_account):
         """Test successfully getting a target with git info."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -95,8 +96,7 @@ prod:
   project_id: test-project-prod
 """)
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             target = get_target("dev")
 
@@ -112,8 +112,8 @@ prod:
         "bigquery_etl.util.target._get_git_context",
         return_value={"branch": "unknown", "commit": "unknown"},
     )
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_no_git_repo(self, mock_config_loader, _mock_git, _mock_account):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_no_git_repo(self, _mock_targets_file, _mock_git, _mock_account):
         """Test getting a target when not in a git repo."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -124,8 +124,7 @@ dev:
   dataset_prefix: dev_{{ git.branch }}_{{ git.commit }}_
 """)
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             target = get_target("dev")
 
@@ -133,8 +132,8 @@ dev:
             assert target.project_id == "test-project-dev"
             assert target.dataset_prefix == "dev_unknown_unknown_"
 
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_not_found(self, mock_config_loader):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_not_found(self, _mock_targets_file):
         """Test getting a target that doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -144,20 +143,19 @@ dev:
   project_id: test-project-dev
 """)
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             with pytest.raises(Exception, match="Couldn't find target `nonexistent`"):
                 get_target("nonexistent")
 
-    @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_file_not_found(self, mock_config_loader):
+    @patch("bigquery_etl.util.target._get_targets_file")
+    def test_get_target_file_not_found(self, _mock_targets_file):
         """Test getting a target when targets file doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
+            targets_file = tmpdir_path / "bqetl_targets.yaml"
 
-            mock_config_loader.get.return_value = "bqetl_targets.yaml"
-            mock_config_loader.project_dir = tmpdir_path
+            _mock_targets_file.return_value = targets_file
 
             with pytest.raises(Exception, match="Targets file not found"):
                 get_target("dev")
@@ -524,11 +522,13 @@ def mock_git(monkeypatch):
 @pytest.fixture
 def mock_config_loader(monkeypatch, tmp_path):
     """Patch ConfigLoader to use a temp directory for targets file."""
+
+    def _mock_get_targets_file():
+        return tmp_path / "bqetl_targets.yaml"
+
     monkeypatch.setattr(
-        "bigquery_etl.util.target.ConfigLoader.get",
-        lambda *a, **kw: "bqetl_targets.yaml",
+        "bigquery_etl.util.target._get_targets_file", _mock_get_targets_file
     )
-    monkeypatch.setattr("bigquery_etl.util.target.ConfigLoader.project_dir", tmp_path)
     return tmp_path
 
 
@@ -911,6 +911,65 @@ class TestRewriteTestsForTarget:
         # Source files preserved at their original location.
         assert (src_test_dir / "src-p.src_ds.tbl.yaml").exists()
 
+    def test_renames_fixtures_for_stubbed_tables(self, tmp_path):
+        """Table stubs (e.g. for a stable table) should have their tests renamed."""
+        from bigquery_etl.cli.deploy import _rewrite_tests_for_target
+
+        source_artifact = tmp_path / "sql" / "src-p" / "src_ds" / "tbl" / "query.sql"
+        source_artifact.parent.mkdir(parents=True)
+        source_artifact.write_text("SELECT * FROM `src-p.src_stable.upstream_v1`")
+        target_artifact = (
+            tmp_path / "sql" / "tgt-p" / "tgt_ds" / "src_p__src_ds__tbl" / "query.sql"
+        )
+        target_artifact.parent.mkdir(parents=True)
+        target_artifact.write_text("SELECT 1")
+
+        stub = (
+            tmp_path
+            / "sql"
+            / "tgt-p"
+            / "tgt_ds"
+            / "src_p__src_stable__upstream_v1"
+            / "query.py"
+        )
+        stub.parent.mkdir(parents=True)
+        stub.write_text("# stub")
+        (stub.parent / MANIFEST_FILENAME).write_text(
+            yaml.dump(
+                {
+                    "source_project": "src-p",
+                    "source_dataset": "src_stable",
+                    "source_table": "upstream_v1",
+                }
+            )
+        )
+
+        src_test_dir = tmp_path / "tests" / "sql" / "src-p" / "src_ds" / "tbl" / "test"
+        src_test_dir.mkdir(parents=True)
+        (src_test_dir / "src-p.src_stable.upstream_v1.yaml").write_text("- a: 1")
+        (src_test_dir / "src-p.src_stable.upstream_v1.schema.yaml").write_text(
+            "fields: []"
+        )
+
+        _rewrite_tests_for_target(
+            {source_artifact: target_artifact, stub: stub},
+            tmp_path / "tests" / "sql",
+        )
+
+        tgt_test_dir = (
+            tmp_path
+            / "tests"
+            / "sql"
+            / "tgt-p"
+            / "tgt_ds"
+            / "src_p__src_ds__tbl"
+            / "test"
+        )
+        stub_id = "tgt-p.tgt_ds.src_p__src_stable__upstream_v1"
+        assert (tgt_test_dir / f"{stub_id}.yaml").exists()
+        assert (tgt_test_dir / f"{stub_id}.schema.yaml").exists()
+        assert not (tgt_test_dir / "src-p.src_stable.upstream_v1.yaml").exists()
+
 
 class TestResolveIsolatedSchema:
     """Test the 3-step fallback chain."""
@@ -1220,3 +1279,171 @@ class TestShouldGrantImpersonationAccess:
         monkeypatch.setenv(ENV, "1")  # would grant for a human; ignored for agents
         target_module.set_grant_impersonation_access(None)
         assert _should_grant_impersonation_access("sa@p.iam") is False
+
+
+class TestCollectRoutineDependencies:
+    def _write_udf(self, sql_dir, dataset, name, body):
+        udf_dir = sql_dir / "proj" / dataset / name
+        udf_dir.mkdir(parents=True)
+        (udf_dir / "udf.sql").write_text(
+            f"CREATE OR REPLACE FUNCTION {dataset}.{name}() AS ({body});\n"
+        )
+        return udf_dir / "udf.sql"
+
+    def test_transitive_deps_excluding_inputs(self, tmp_path, monkeypatch):
+        from bigquery_etl.routine import parse_routine
+        from bigquery_etl.util.target import collect_routine_dependencies
+
+        sql_dir = tmp_path / "sql"
+        # udf_a -> udf_b -> udf_c
+        path_a = self._write_udf(sql_dir, "udf", "udf_a", "udf.udf_b()")
+        path_b = self._write_udf(sql_dir, "udf", "udf_b", "udf.udf_c()")
+        path_c = self._write_udf(sql_dir, "udf", "udf_c", "1")
+
+        raw = parse_routine.read_routine_dir(str(sql_dir))
+        monkeypatch.setattr(target_module, "read_routine_dir", lambda *a, **k: raw)
+
+        # deploying only udf_a should pull in b and c, not a itself
+        assert collect_routine_dependencies({path_a}) == {path_b, path_c}
+        # deploying a leaf pulls in nothing
+        assert collect_routine_dependencies({path_c}) == set()
+
+
+class TestRewritePreservesIsInit:
+    """`--target` rewrites must not collapse `{% if is_init() %}` branching.
+
+    Regression: the rewrite renders the query to find refs and writes the
+    result back. `is_init` defaults to False, so a plain render bakes in the
+    incremental arm and loses the init query. The staged copy is what
+    `test_init` SQL tests and `query initialize` run, and they re-render it
+    with `is_init=True` — they silently got the incremental query, filtered to
+    a single `@submission_date`, instead.
+    """
+
+    SOURCE = (
+        "moz-fx-data-shared-prod",
+        "telemetry_derived",
+        "clients_daily_v6",
+    )
+
+    QUERY_WITH_INIT = """SELECT
+  submission_date
+FROM
+  `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+WHERE
+  {% if is_init() %}
+  submission_date >= '2018-01-01'
+  {% else %}
+  submission_date = @submission_date
+  {% endif %}
+"""
+
+    def _write_query(self, tmp_path: Path, sql: str) -> Path:
+        query_dir = tmp_path / "sql" / "moz-fx-data-shared-prod" / "ds" / "tbl"
+        query_dir.mkdir(parents=True)
+        query_file = query_dir / "query.sql"
+        query_file.write_text(sql)
+        return query_file
+
+    def _rewrite(self, query_file: Path) -> str:
+        from bigquery_etl.util.target import rewrite_for_isolated
+
+        rewrite_for_isolated(
+            query_file,
+            str(query_file.parent.parent.parent.parent),
+            "my-dev-project",
+            Target(name="test", project_id="my-dev-project", dataset="anna_dev"),
+            deployed_source_identities={self.SOURCE},
+        )
+        return query_file.read_text()
+
+    def test_isolated_rewrite_preserves_branches_and_rerenders(self, tmp_path):
+        query_file = self._write_query(tmp_path, self.QUERY_WITH_INIT)
+        result = self._rewrite(query_file)
+
+        # the ref is rewritten in both arms, not just the incremental one
+        assert result.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 2
+        assert "moz-fx-data-shared-prod" not in result
+
+        # and the deployed file still re-renders correctly for both is_init modes
+        init_sql = render(
+            query_file.name,
+            template_folder=str(query_file.parent),
+            format=False,
+            is_init=lambda: True,
+        )
+        assert "submission_date >= '2018-01-01'" in init_sql
+        assert "@submission_date" not in init_sql
+
+        incremental_sql = render(
+            query_file.name,
+            template_folder=str(query_file.parent),
+            format=False,
+        )
+        assert "submission_date = @submission_date" in incremental_sql
+        assert "2018-01-01" not in incremental_sql
+
+    def test_rewrite_is_idempotent(self, tmp_path):
+        query_file = self._write_query(tmp_path, self.QUERY_WITH_INIT)
+        once = self._rewrite(query_file)
+        twice = self._rewrite(query_file)
+
+        assert "{% if is_init() %}" in twice
+        assert twice.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 2
+        assert once.split() == twice.split()
+
+    def test_query_without_is_init_is_not_wrapped(self, tmp_path):
+        result = self._rewrite(
+            self._write_query(
+                tmp_path,
+                "SELECT 1 FROM "
+                "`moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`\n",
+            )
+        )
+
+        assert "is_init" not in result
+        assert result.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 1
+
+    def _rewrite_defer(self, query_file: Path, monkeypatch) -> str:
+        from bigquery_etl.util.target import (
+            DeployedTableInfo,
+            rewrite_for_defer,
+            target_ref_for_source,
+        )
+
+        target = Target(name="test", project_id="my-dev-project", dataset="anna_dev")
+        deployed = DeployedTableInfo(
+            *target_ref_for_source(target, "my-dev-project", *self.SOURCE),
+            source_project=self.SOURCE[0],
+            source_dataset=self.SOURCE[1],
+            source_table=self.SOURCE[2],
+        )
+        # feed the deployed-artifact scans directly so the test doesn't need the
+        # BigQuery client
+        monkeypatch.setattr(
+            target_module, "get_deployed_tables_in_target", lambda *a, **k: [deployed]
+        )
+        monkeypatch.setattr(
+            target_module, "get_deployed_routines_in_target", lambda *a, **k: []
+        )
+        rewrite_for_defer(
+            query_file,
+            str(query_file.parent.parent.parent.parent),
+            "my-dev-project",
+            target,
+        )
+        return query_file.read_text()
+
+    def test_defer_rewrite_keeps_both_branches(self, tmp_path, monkeypatch):
+        # the defer path (query initialize on a target) also routes through
+        # _render_and_rewrite, so it must preserve is_init() branching too
+        result = self._rewrite_defer(
+            self._write_query(tmp_path, self.QUERY_WITH_INIT), monkeypatch
+        )
+
+        assert "{% if is_init() %}" in result
+        assert "{% else %}" in result
+        assert "submission_date >= '2018-01-01'" in result
+        assert "submission_date = @submission_date" in result
+        assert result.count("`my-dev-project`.`anna_dev`.`clients_daily_v6`") == 2
+        assert "moz-fx-data-shared-prod" not in result

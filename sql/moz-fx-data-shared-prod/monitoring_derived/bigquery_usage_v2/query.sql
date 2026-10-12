@@ -46,10 +46,7 @@ jobs_by_project AS (
       jp.project_id AS source_project,
       DATE(creation_time) AS creation_date,
       job_id,
-      referenced_table.project_id AS reference_project_id,
-      referenced_table.dataset_id AS reference_dataset_id,
-      referenced_table.table_id AS reference_table_id,
-      user_email,
+      COALESCE(parent_job_id, job_id) AS script_job_id,
       REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
       REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
       UPPER(
@@ -57,11 +54,33 @@ jobs_by_project AS (
       ) LIKE 'CALL BQ.REFRESH_MATERIALIZED_VIEW%' AS is_materialized_view_refresh,
     FROM
       `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
-    LEFT JOIN
-      UNNEST(referenced_tables) AS referenced_table
     WHERE
-      DATE(creation_time) = @submission_date
+      -- The previous day is included for parents of scripts that started before midnight
+      DATE(creation_time)
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
+      AND @submission_date
+      AND (DATE(creation_time) = @submission_date OR statement_type = 'SCRIPT')
   {%- endfor %}
+),
+-- Child jobs of multi-statement queries don't have the Redash header, so it's taken from the parent
+job_annotations AS (
+  SELECT
+    source_project,
+    job_id,
+    -- Only the parent's value is non-null inside the IF, so MAX returns it
+    COALESCE(username, MAX(IF(job_id = script_job_id, username, NULL)) OVER script) AS username,
+    COALESCE(query_id, MAX(IF(job_id = script_job_id, query_id, NULL)) OVER script) AS query_id,
+    is_materialized_view_refresh,
+  FROM
+    jobs_by_project
+  QUALIFY
+    creation_date = @submission_date
+  WINDOW
+    script AS (
+      PARTITION BY
+        source_project,
+        script_job_id
+    )
 )
 SELECT DISTINCT
   jo.source_project,
@@ -98,14 +117,7 @@ SELECT DISTINCT
 FROM
   jobs_by_org AS jo
 LEFT JOIN
-  jobs_by_project AS jp
-  USING (
-    source_project,
-    creation_date,
-    job_id,
-    reference_project_id,
-    reference_dataset_id,
-    reference_table_id
-  )
+  job_annotations AS jp
+  USING (source_project, job_id)
 WHERE
   creation_date = @submission_date

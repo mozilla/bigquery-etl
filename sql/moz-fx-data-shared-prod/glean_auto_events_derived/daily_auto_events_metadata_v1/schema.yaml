@@ -2,9 +2,13 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date on which the events were submitted, derived from the submission timestamp of the
+    source `accounts_frontend.events_stream` records.
 - name: app
   type: STRING
   mode: NULLABLE
+  description: The application that generated the events. Currently always set to `accounts_frontend`, identifying
+    the Firefox Accounts frontend application.
 - name: event_name
   description: Full event name with suffix from `extra`.
   type: STRING
@@ -12,3 +16,5 @@ fields:
 - name: count
   type: INTEGER
   mode: NULLABLE
+  description: The number of times the given event occurred on the submission date. Aggregates both element
+    click events and page load events from the `accounts_frontend.events_stream`.

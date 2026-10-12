@@ -1,0 +1,5 @@
+---
+# The view is a passthrough, so its schema is the table's. Included rather than copied so
+# a column added to the table cannot leave this file behind.
+fields: !include-fields
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1

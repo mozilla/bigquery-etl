@@ -10,6 +10,7 @@ description: |-
   in the "ad_group_segments" field.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: false
 scheduling:

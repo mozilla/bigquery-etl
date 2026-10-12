@@ -1,0 +1,61 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The date this row aggregates, matching events_v1's `timestamp` partition
+    column for this day.
+- name: pathname
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Path of the page these events were recorded on, e.g. /en-US/whatsnew/153/.
+    Sourced from Plausible's events_v1.pathname.
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ISO 3166-1 alpha-2 country code of the visitor, as reported by Plausible
+    (events_v1.country_code).
+- name: acquisition_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Marketing channel Plausible attributes the visit to, e.g. Referral,
+    Organic Search, Direct, Paid Search. Derived by Plausible's own
+    attribution logic, which is not the same methodology GA4 uses for its
+    channel groupings -- do not compare the two directly.
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    utm_campaign query parameter of the page URL, as recorded by Plausible.
+    Not parsed or normalized. For What's New Page URLs this is typically the
+    Firefox release version as a string, e.g. "153".
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Plausible's event type, e.g. pageview, engagement, product_download, or
+    any new event name Plausible starts emitting in the future -- this
+    column is not a fixed enum. See plausible_derived.download_metrics_v1
+    for a product/platform/release_channel breakdown of product_download
+    specifically.
+- name: event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Count of events with this event_name for this
+    pathname/country/channel/campaign combination on this date.
+- name: total_engagement_time_ms
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Sum of active engagement time in milliseconds, from Plausible's
+    engagement_time field. Only meaningful when event_name = 'engagement';
+    harmlessly 0 for other event names, since Plausible delivers
+    engagement_time = 0 (not NULL) on those. Each event's value is capped at
+    30 minutes (1,800,000 ms) before summing, since Plausible does not bound
+    this value itself (an observed maximum exceeded 13 days for a single
+    event). Divide by event_count to get an average; do not average a
+    pre-computed per-row average across further grouping.

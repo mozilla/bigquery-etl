@@ -17,7 +17,7 @@ from bigquery_etl.util.common import (
     render,
 )
 
-IMPERSONATE_ENV = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+IMPERSONATE_ENV = common.IMPERSONATE_ENV_VAR
 
 
 class TestUtilCommon:

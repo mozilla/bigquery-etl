@@ -1,0 +1,109 @@
+{{ header_yaml }}
+fields: !flatten-lists
+- !include-fields
+  table: {{ project_id }}.{{ events_view }}
+  exclude_field_names:
+  - events
+  field_replacements:
+  - !include-field
+    table: {{ project_id }}.{{ events_view }}
+    field: client_info
+    new_fields: !include-fields
+      table: {{ project_id }}.{{ events_view }}
+      parent_field: client_info
+      field_names:
+      - app_build
+      - app_channel
+      - app_display_version
+      - architecture
+      - attribution
+      - device_manufacturer
+      - device_model
+      - distribution
+      - first_run_date
+      - locale
+      - os
+      - os_version
+      - telemetry_sdk_build
+      - build_date
+      - session_id
+      - session_count
+      - windows_build_number
+  - !include-field
+    table: {{ project_id }}.{{ events_view }}
+    field: ping_info
+    new_fields: !include-fields
+      table: {{ project_id }}.{{ events_view }}
+      parent_field: ping_info
+      field_names:
+      - seq
+      - start_time
+      - parsed_start_time
+      - end_time
+      - parsed_end_time
+      - ping_type
+  {%- if not metrics_as_struct and has_metrics %}
+  - name: metrics
+    type: JSON
+    mode: NULLABLE
+    description: Metrics recorded along with the event, grouped by type and stored as a JSON object.
+  {%- endif %}
+- !include-field
+  table: {{ project_id }}.{{ events_view }}
+  field: client_info.client_id
+- !include-field
+  table: {{ project_id }}.{{ events_view }}
+  field: ping_info.reason
+- name: experiments
+  type: JSON
+  mode: NULLABLE
+  description: Any active experiments, stored as a JSON object.
+{%- if has_profile_group_id %}
+- !include-field
+  table: {{ project_id }}.{{ events_view }}
+  field: metrics.uuid.legacy_telemetry_profile_group_id
+  new_name: profile_group_id
+{%- else %}
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: This app doesn't have a `legacy_telemetry_profile_group_id` UUID metric, so this column will always be null.
+{%- endif %}
+{%- if has_legacy_telemetry_client_id %}
+- !include-field
+  table: {{ project_id }}.{{ events_view }}
+  field: metrics.uuid.legacy_telemetry_client_id
+{%- else %}
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: This app doesn't have a `legacy_telemetry_client_id` UUID metric, so this column will always be null.
+{%- endif %}
+- name: event_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the event ostensibly occurred based on data reported by the client (so be wary that unrealistic values are possible).
+- !include-field
+  table: {{ project_id }}.{{ events_view }}
+  field: events.category
+  new_name: event_category
+- !include-field
+  table: {{ project_id }}.{{ events_view }}
+  field: events.name
+  new_name: event_name
+- name: event
+  type: STRING
+  mode: NULLABLE
+  description: Fully qualified event name prefixed with the event category separated by a dot.
+- name: event_extra
+  type: JSON
+  mode: NULLABLE
+  description: Event extras, stored as a JSON object.
+- name: document_event_number
+  type: INTEGER
+  mode: NULLABLE
+  description: Which event number this was in the original document, in chronological order.
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique event ID (typically a concatenation of `document_id` and `document_event_number`).

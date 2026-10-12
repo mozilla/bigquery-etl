@@ -41,6 +41,31 @@ def test_get_returns_json(client):
 
 
 @responses.activate
+def test_get_raises_on_failed_login_without_retry(client):
+    """Jira Cloud answers bad credentials with a 200 served as anonymous."""
+    responses.get(
+        f"{BASE}/x",
+        json={"issues": [], "isLast": True},
+        status=200,
+        headers={"X-Seraph-LoginReason": "AUTHENTICATED_FAILED"},
+    )
+    with pytest.raises(RuntimeError, match="X-Seraph-LoginReason=AUTHENTICATED_FAILED"):
+        client.get("/x", {})
+    assert len(responses.calls) == 1
+
+
+@responses.activate
+def test_get_accepts_ok_login_reason(client):
+    responses.get(
+        f"{BASE}/x",
+        json={"ok": True},
+        status=200,
+        headers={"X-Seraph-LoginReason": "OK"},
+    )
+    assert client.get("/x", {}) == {"ok": True}
+
+
+@responses.activate
 def test_get_raises_on_404_without_retry(client):
     responses.get(f"{BASE}/x", json={}, status=404)
     with pytest.raises(RuntimeError, match="status_code=404"):

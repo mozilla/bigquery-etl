@@ -1,0 +1,19 @@
+friendly_name: GA4 Firefox.com Sessions Metrics
+description: |-
+  Daily count of GA4 sessions (visits) to firefox.com.
+
+  Sessions by landing page count only sessions that started on it. For all
+  views of a page, including views reached from other pages, use pageviews in
+  ga4_firefoxdotcom_events_metrics (event_name = 'page_view'). For downloads use
+  ga4_firefoxdotcom_download_metrics.
+owners:
+- sherrera@mozilla.com
+labels:
+  owner1: sherrera
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga4_sessions_metrics_v1

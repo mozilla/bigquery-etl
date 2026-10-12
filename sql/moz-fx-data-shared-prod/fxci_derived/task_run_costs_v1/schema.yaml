@@ -17,7 +17,7 @@ fields:
 - name: run_cost
   type: FLOAT
   mode: NULLABLE
-  description: The estimated cloud infrastructure cost (in USD) attributed to this specific task run, calculated
+  description: The estimated cloud infrastructure cost (in billing currency) attributed to this specific task run, calculated
     as the run's share of the worker instance's total cost proportional to its uptime fraction (run_duration
     / attribution_worker_uptime * attribution_worker_cost).
 - name: cloud_provider
@@ -29,7 +29,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The cloud project or subscription that owns the worker instance, such as a GCP project ID
-    (e.g. 'fxci-production-level1-workers') or an Azure subscription name.
+    (e.g. 'fxci-production-level1-workers') or an Azure subscription name. If the instance appears under
+    more than one project in the attribution window, this is a sorted, comma-separated list of them.
 - name: worker_zone
   type: STRING
   mode: NULLABLE
@@ -43,13 +44,13 @@ fields:
 - name: attribution_worker_cost
   type: FLOAT
   mode: NULLABLE
-  description: The total billed cost (in USD) for the worker instance over the 30-day attribution window
-    ending on the submission date, used as the basis for proportional cost allocation to individual runs.
+  description: The total billed cost (in billing currency) for the worker instance over the 31-day attribution
+    window (submission_date - 30 days through submission_date), used as the basis for proportional cost allocation to individual runs.
 - name: attribution_worker_uptime
   type: FLOAT
   mode: NULLABLE
-  description: The total uptime (in seconds) recorded for the worker instance over the 30-day attribution
-    window ending on the submission date, used as the denominator when apportioning costs to individual
+  description: The total uptime (in seconds) recorded for the worker instance over the 31-day attribution
+    window (submission_date - 30 days through submission_date), used as the denominator when apportioning costs to individual
     task runs.
 - name: run_duration
   type: INTEGER
@@ -61,4 +62,5 @@ fields:
   mode: NULLABLE
   description: The method used to measure worker uptime for cost attribution. Values include 'gcp_monitoring_instance_uptime'
     for GCP instances measured via Cloud Monitoring and 'azure_billing_vm_quantity' for Azure instances
-    measured via billing data.
+    measured via billing data. If more than one method applies in the attribution window, this is a sorted,
+    comma-separated list of them.

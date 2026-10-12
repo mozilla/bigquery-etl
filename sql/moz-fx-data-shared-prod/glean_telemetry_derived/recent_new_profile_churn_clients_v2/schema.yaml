@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The cohort date, equal to cohort_date.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -18,11 +18,8 @@ fields:
 - name: days_data_available
   type: INTEGER
   mode: NULLABLE
-  description: Number of days since first_seen_date
-- name: days_since_last_data
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of days since the last data pull
+  description: Number of days of data for the cohort, from first_seen_date through the latest date
+    the query read, counting both ends.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -40,10 +37,12 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The name of the browser.
-- name: app_version
+- name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: app_version
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
@@ -62,10 +61,12 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Is app_version a major release or not
-- name: channel
+- name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: normalized_channel
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -74,18 +75,18 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Distribution Id - Legacy or Glean
-- name: os
+- name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
-- name: os_grouped
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: normalized_os
+- name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: OS grouping
-- name: os_version
-  type: STRING
-  mode: NULLABLE
-  description: The normalized version of the operating system running at the client. E.g. "100.9.11".
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: normalized_os_version
 - name: os_version_build
   type: STRING
   mode: NULLABLE
@@ -100,11 +101,6 @@ fields:
   mode: NULLABLE
   description: Minor part of the operating system version running at the client. E.g.
     for version "100.9.11", the minor is 9.
-- name: activity_segment
-  type: STRING
-  mode: NULLABLE
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
@@ -169,23 +165,33 @@ fields:
 - name: churn_risk_after_5_days
   type: BOOLEAN
   mode: NULLABLE
-  description: Is the user a high risk of already churning, based on their inactivity levels in the five days after they are first seen?
+  description: Whether the client was inactive on days 1 to 4 after its first seen date (day 0), marking
+    it at high risk of churning. NULL until day 4 has data. E.g. once day 4 has data, a client active
+    on day 0 and no other day reads TRUE, and a client active on days 0 and 3 reads FALSE.
 - name: churn_risk_after_7_days
   type: BOOLEAN
   mode: NULLABLE
-  description: Is the user a high risk of already churning, based on their inactivity levels in the seven days after they are first seen?
+  description: Whether the client was inactive on days 2 to 6 after its first seen date (day 0), marking
+    it at high risk of churning. NULL until day 6 has data. E.g. once day 6 has data, a client active
+    on days 0 and 1 and no other day reads TRUE, and a client active on days 0, 1 and 4 reads FALSE.
 - name: churned_after_1_day
   type: BOOLEAN
   mode: NULLABLE
-  description: Shows if the client was active on their first seen date, but then immediately churned with no DAU activity for the following 28 days.
+  description: Whether the client was active on its first seen date (day 0), then inactive on days 1 to
+    28. NULL until day 28 has data. E.g. once day 28 has data, a client active on day 0 and no other day
+    reads TRUE, and a client active on days 0 and 1 reads FALSE.
 - name: churned_after_2_days
   type: BOOLEAN
   mode: NULLABLE
-  description: Shows if client was active in the first 48 hours after first seen, then then immediately churned no DAU activity for the following 28 days.
+  description: Whether the client was active on day 1 after its first seen date (day 0), then inactive
+    on days 2 to 29. NULL until day 29 has data. E.g. once day 29 has data, a client active on days 0
+    and 1 and no other day reads TRUE, and a client active on day 0 and no other day reads FALSE.
 - name: immediately_churned
   type: BOOLEAN
   mode: NULLABLE
-  description: User was not active in any of the the 28 days from the day they are first seen (i.e., qualified as "churned" immediately).
+  description: Whether the client was inactive on days 0 to 27, starting from its first seen date (day
+    0). NULL until day 27 has data. E.g. once day 27 has data, a client active on none of those days
+    reads TRUE, and a client active on day 0 reads FALSE.
 - name: day_0
   type: BOOLEAN
   mode: NULLABLE

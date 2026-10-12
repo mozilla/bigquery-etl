@@ -5,26 +5,24 @@ description: |-
   flag for each of days 0-30 indicating whether the client was active on that day (TRUE),
   inactive (FALSE), or whether data is not yet available (NULL). Derived churn signals include
   churn risk after 5 and 7 days, churned after 1 or 2 days of activity, and immediately churned
-  (never active across the full 30-day window). Client attributes such as country, channel, OS,
+  (never active in the 28 days from the cohort date). Client attributes such as country, channel, OS,
   attribution, and distribution are captured from the cohort date row.
 
   Jira: https://mozilla-hub.atlassian.net/browse/DENG-10676
 owners:
-- bbaird@mozilla.com
-- mhirose@mozilla.com
+- data-product-kpis-wg@mozilla.com
 labels:
   incremental: true
-  owner1: bbaird
-  owner2: mhirose
+  owner1: data-product-kpis-wg
 scheduling:
-  dag_name: bqetl_cohort_daily_churn
+  dag_name: bqetl_new_profile_churn
   date_partition_offset: -30
 bigquery:
   time_partitioning:
     type: day
     field: cohort_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields: [sample_id]
 require_column_descriptions: true

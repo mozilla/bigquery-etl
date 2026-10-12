@@ -36,8 +36,7 @@ activity_range AS (
   -- Latest date with data available; drives NULL logic for future day columns
 max_available_date AS (
   SELECT
-    MAX(submission_date) AS max_date,
-    DATE_DIFF(@submission_date, MAX(submission_date), DAY) AS days_since_last_data
+    MAX(submission_date) AS max_date
   FROM
     activity_range
 ),
@@ -61,20 +60,9 @@ client_attributes AS (
           )
       ELSE 'Firefox Desktop'
     END AS app_name,
-    last_seen.app_display_version AS app_version,
-    `mozfun.norm.browser_version_info`(
-      last_seen.app_display_version
-    ).major_version AS app_version_major,
-    `mozfun.norm.browser_version_info`(
-      last_seen.app_display_version
-    ).minor_version AS app_version_minor,
-    `mozfun.norm.browser_version_info`(
-      last_seen.app_display_version
-    ).patch_revision AS app_version_patch_revision,
-    `mozfun.norm.browser_version_info`(
-      last_seen.app_display_version
-    ).is_major_release AS app_version_is_major_release,
-    last_seen.normalized_channel AS channel,
+    last_seen.app_display_version,
+    `mozfun.norm.browser_version_info`(last_seen.app_display_version) AS browser_version_info,
+    last_seen.normalized_channel,
     COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
     CASE
       WHEN last_seen.distribution_id IS NOT NULL
@@ -83,9 +71,8 @@ client_attributes AS (
         THEN "legacy"
       ELSE CAST(NULL AS STRING)
     END AS distribution_id_source,
-    last_seen.normalized_os AS os,
-    last_seen.normalized_os AS os_grouped,
-    last_seen.normalized_os_version AS os_version,
+    last_seen.normalized_os,
+    last_seen.normalized_os_version,
     COALESCE(
       `mozfun.norm.glean_windows_version_info`(
         last_seen.normalized_os,
@@ -100,23 +87,6 @@ client_attributes AS (
     CAST(
       `mozfun.norm.extract_version`(last_seen.normalized_os_version, "minor") AS INTEGER
     ) AS os_version_minor,
-    CASE
-      WHEN BIT_COUNT(last_seen.days_desktop_active_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(last_seen.days_desktop_active_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(last_seen.days_desktop_active_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(last_seen.days_desktop_active_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
-    END AS activity_segment,
     EXTRACT(YEAR FROM last_seen.first_seen_date) AS first_seen_year,
     last_seen.attribution.campaign AS attribution_campaign,
     last_seen.attribution.content AS attribution_content,
@@ -160,7 +130,6 @@ client_level AS (
     sample_id,
     first_seen_date,
     DATE_DIFF(max_date, first_seen_date, DAY) + 1 AS days_data_available,
-    days_since_last_data,
     MAX(
       CASE
         WHEN days_since_first_seen = 0
@@ -479,8 +448,7 @@ client_level AS (
     client_id,
     sample_id,
     first_seen_date,
-    max_date,
-    days_since_last_data
+    max_date
 )
 SELECT
   first_seen_date AS submission_date,
@@ -488,27 +456,24 @@ SELECT
   sample_id,
   first_seen_date AS cohort_date,
   days_data_available,
-  days_since_last_data,
   -- Client attributes from the cohort date
   country,
   city,
   locale,
   app_name,
-  app_version,
-  app_version_major,
-  app_version_minor,
-  app_version_patch_revision,
-  app_version_is_major_release,
-  channel,
+  app_display_version,
+  browser_version_info.major_version AS app_version_major,
+  browser_version_info.minor_version AS app_version_minor,
+  browser_version_info.patch_revision AS app_version_patch_revision,
+  browser_version_info.is_major_release AS app_version_is_major_release,
+  normalized_channel,
   distribution_id,
   distribution_id_source,
-  os,
-  os_grouped,
-  os_version,
+  normalized_os,
+  normalized_os_version,
   os_version_build,
   os_version_major,
   os_version_minor,
-  activity_segment,
   first_seen_year,
   attribution_campaign,
   attribution_content,
@@ -524,8 +489,7 @@ SELECT
   first_seen_distribution_name,
   is_desktop,
   policies_is_enterprise,
-  -- No activity on days 0-4; at risk of churning by day 5
-  -- Clients active on day 0 or day 1 are excluded (they become churn_risk_after_7_days instead)
+  -- No activity on days 1-4; at risk of churning by day 5
   -- NULL if day 4 data not yet available
   CASE
     WHEN days_data_available < 5
@@ -624,8 +588,8 @@ SELECT
       THEN TRUE
     ELSE FALSE
   END AS churned_after_2_days,
-  -- Client is in the cohort but never active across the entire 30-day window
-  -- NULL if day 30 data not yet available
+  -- Client is in the cohort but never active on days 0-27
+  -- NULL if day 27 data not yet available
   CASE
     WHEN days_data_available < 28
       THEN NULL

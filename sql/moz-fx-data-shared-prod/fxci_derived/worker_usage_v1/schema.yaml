@@ -17,8 +17,9 @@ fields:
 - name: instance_id
   type: STRING
   mode: NULLABLE
-  description: The unique identifier of the worker VM instance. For GCP this comes directly from monitoring
-    metrics; for Azure it is extracted from the resource ID path under `/virtualmachines/`.
+  description: The unique identifier of the worker VM instance. For GCP this is the numeric Compute Engine
+    instance ID from Cloud Monitoring (via `worker_metrics_v1`); for Azure it is the VM name extracted from
+    the resource ID path under `/virtualmachines/`.
 - name: usage_start_date
   type: DATE
   mode: NULLABLE

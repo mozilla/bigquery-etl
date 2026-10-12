@@ -8,9 +8,9 @@ fields:
 - name: name
   type: STRING
   mode: NULLABLE
-  description: The human-readable name of the virtual machine instance. For GCP instances this is extracted
-    from the resource name path; for Azure it is extracted from the ResourceId. May be empty for some GCP
-    billing line items that lack an instance name.
+  description: The human-readable name of the virtual machine instance. For GCP this is the segment after
+    `/instances/` in the resource name, or the full resource name if that segment is absent; for Azure it
+    is the VM name extracted from the ResourceId (the same value as `instance_id`).
 - name: zone
   type: STRING
   mode: NULLABLE

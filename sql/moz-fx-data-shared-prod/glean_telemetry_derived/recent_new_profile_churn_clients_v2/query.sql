@@ -26,6 +26,7 @@ activity_range AS (
     cohort_cutoff
   WHERE
     first_seen.first_seen_date >= cohort_cutoff.min_cohort_date
+    AND first_seen.first_seen_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND first_seen.first_seen_date <= @submission_date
     AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND last_seen.submission_date <= @submission_date
@@ -109,7 +110,7 @@ client_attributes AS (
       FALSE
     ) AS is_desktop,
     last_seen.policies_is_enterprise,
-    sample_id
+    last_seen.sample_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
   LEFT JOIN
@@ -117,7 +118,11 @@ client_attributes AS (
     USING (submission_date, client_id)
   LEFT JOIN
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
-    USING (client_id, sample_id)
+    ON last_seen.client_id = first_seen.client_id
+    AND last_seen.sample_id = first_seen.sample_id
+    AND first_seen.first_seen_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
   WHERE
       -- Pull attributes from each client's cohort date (first seen day) row
     last_seen.submission_date = last_seen.first_seen_date

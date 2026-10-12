@@ -249,7 +249,6 @@ def deploy(
                             name=metadata_file.parent,
                             sql_dir=sql_dir,
                             project_id=project_id,
-                            workspace=table_workspace,
                         )
 
                 if (metadata_file.parent / CUSTOM_RULES_FILE).exists():

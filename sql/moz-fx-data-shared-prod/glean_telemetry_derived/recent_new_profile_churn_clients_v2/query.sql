@@ -41,13 +41,11 @@ max_available_date AS (
   FROM
     activity_range
 ),
-  -- Client-level attributes from each client's baseline_clients_first_seen_v1 row;
-  -- city comes from the client's cohort date row in baseline_clients_last_seen
+  -- Client-level attributes from each client's baseline_clients_first_seen_v1 row
 client_attributes AS (
   SELECT
     first_seen.client_id,
     IFNULL(first_seen.country, '??') AS country,
-    IFNULL(last_seen.city, '??') AS city,
     COALESCE(REGEXP_EXTRACT(first_seen.locale, r'^(.+?)-'), first_seen.locale, NULL) AS locale,
     CASE
       WHEN LOWER(IFNULL(first_seen.isp, '')) = 'browserstack'
@@ -120,13 +118,6 @@ client_attributes AS (
     AND first_seen.first_seen_date = distribution_mapping.submission_date
     AND distribution_mapping.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND distribution_mapping.submission_date <= @submission_date
-  LEFT JOIN
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
-    ON first_seen.client_id = last_seen.client_id
-    AND first_seen.sample_id = last_seen.sample_id
-    AND first_seen.first_seen_date = last_seen.submission_date
-    AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND last_seen.submission_date <= @submission_date
   WHERE
     first_seen.first_seen_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND first_seen.first_seen_date <= @submission_date
@@ -465,7 +456,6 @@ SELECT
   days_data_available,
   -- Client attributes from the cohort date
   country,
-  city,
   locale,
   app_name,
   app_display_version,

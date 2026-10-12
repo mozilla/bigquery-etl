@@ -25,10 +25,6 @@ fields:
   mode: NULLABLE
   description: Name of the country in which the activity took place, as determined
     by the IP geolocation.
-- name: city
-  type: STRING
-  mode: NULLABLE
-  description: City
 - name: locale
   type: STRING
   mode: NULLABLE

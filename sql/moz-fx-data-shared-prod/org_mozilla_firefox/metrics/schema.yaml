@@ -53736,6 +53736,28 @@ fields:
         expired when evicted.
 
         '
+    - name: browser_utils_category_consumer_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of consumers invoked through BrowserUtils.callModulesFromCategory
+        that returned or threw, per category. success + failure is the number of consumer
+        runs, so the failure rate of a category is failure / (success + failure).
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

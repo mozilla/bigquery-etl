@@ -381,12 +381,8 @@ fields:
     - name: alt_text_modal
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Depending on the type of event:
-
-        * Indicates if the alt text modal was displayed and the user clicked save,
-        or if it was skipped and the image was added directly after selection.
-
-        * present, empty, skipped.'
+      description: Indicates if the alt text modal was displayed and the user clicked
+        save, or if it was skipped and the image was added directly after selection.
     - name: always_ask
       type: BOOLEAN
       mode: NULLABLE
@@ -679,6 +675,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Was this a background update?
+    - name: is_default
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the picked voice is the default voice.
     - name: is_deleted
       type: BOOLEAN
       mode: NULLABLE
@@ -1854,9 +1854,6 @@ fields:
 
         * present, empty.
 
-        * Indicates if the alt text modal was displayed and the user clicked save,
-        or if it was skipped and the image was added directly after selection.
-
         * present, empty, skipped.'
     - name: app_package
       type: STRING
@@ -2018,6 +2015,8 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * The category whose consumer failed, e.g. "browser-window-idle-tasks".
+
         * Autofill category. Either "creditcard" or "address"
 
         * Autofill category. Either "creditcard", "address" or "passport"'
@@ -2159,6 +2158,12 @@ fields:
         * Connection type
 
         * The network connection type, e.g. "wifi" or "cellular".'
+    - name: consumer
+      type: STRING
+      mode: NULLABLE
+      description: The failing consumer's `object.method` identifier as registered
+        in the category manager, e.g. "gSync.init". "other" if it is not an identifier,
+        which an entry registered at runtime can pick freely.
     - name: content_type
       type: STRING
       mode: NULLABLE
@@ -2289,6 +2294,8 @@ fields:
       description: 'Depending on the type of event:
 
         * Direction of the m-section. recvonly, sendonly, sendrecv or inactive.
+
+        * Whether the seek moved the position `forward` or `backward`.
 
         * Which way the addresses were copied: "to_rust" for the migration into the
         Rust store, "to_json" for the copy back when the pref that chooses the store
@@ -2566,7 +2573,14 @@ fields:
     - name: errorName
       type: STRING
       mode: NULLABLE
-      description: An optional string with the error name attribute in case of failure.
+      description: 'Depending on the type of event:
+
+        * An optional string with the error name attribute in case of failure.
+
+        * The thrown error''s name: a JS error or DOMException name such as "TypeError",
+        or an `NS_ERROR_*` name when the consumer threw an XPCOM exception or a bare
+        nsresult. Empty if the thrown value has no name, "other" if that name is not
+        an identifier.'
     - name: errorResult
       type: STRING
       mode: NULLABLE
@@ -3063,7 +3077,11 @@ fields:
 
         * - The BCP47 language tag.
 
-        * The BCP 47 language tag of the page.'
+        * The BCP 47 language tag of the page.
+
+        * The BCP 47 language the page is read in.
+
+        * The BCP 47 language of the page.'
     - name: last_line
       type: STRING
       mode: NULLABLE
@@ -3313,6 +3331,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: model revision
+    - name: module
+      type: STRING
+      mode: NULLABLE
+      description: The URI of the module the failing consumer is registered from,
+        e.g. "moz-src:///browser/components/downloads/DownloadsCommon.sys.mjs". "other"
+        for a URI outside moz-src://, resource:// and chrome://, which an entry registered
+        at runtime can pick freely.
     - name: name
       type: STRING
       mode: NULLABLE
@@ -4142,6 +4167,10 @@ fields:
       mode: NULLABLE
       description: The sanitized type of SecurityPolicyViolationEvent's sourceFile,
         e.g. "chromeuri". This follows eval_usage_system_context sanitization procedure.
+    - name: speed
+      type: STRING
+      mode: NULLABLE
+      description: The selected speed as a multiple of the normal reading speed.
     - name: splitconsole
       type: STRING
       mode: NULLABLE

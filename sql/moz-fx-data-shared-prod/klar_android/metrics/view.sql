@@ -2020,7 +2020,8 @@ SELECT
       metrics.dual_labeled_counter.netwerk_happy_eyeballs_h3_discovery_by_resolver,
       metrics.dual_labeled_counter.tls_key_exchange_algorithm,
       metrics.dual_labeled_counter.dns_cache_miss_reason,
-      metrics.dual_labeled_counter.dns_negative_eviction
+      metrics.dual_labeled_counter.dns_negative_eviction,
+      metrics.dual_labeled_counter.browser_utils_category_consumer_result
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

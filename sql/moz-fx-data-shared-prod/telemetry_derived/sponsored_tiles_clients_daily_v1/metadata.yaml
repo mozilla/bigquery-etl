@@ -23,10 +23,7 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential/data-viewers
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.activity_stream.events
@@ -36,4 +33,6 @@ references:
   - moz-fx-data-shared-prod.telemetry.clients_daily
   - moz-fx-data-shared-prod.telemetry.main
   - moz-fx-data-shared-prod.telemetry.unified_metrics
+deprecated: true
+deletion_date: 2026-12-18
 require_column_descriptions: false

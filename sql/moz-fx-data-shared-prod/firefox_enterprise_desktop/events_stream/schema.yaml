@@ -831,7 +831,11 @@ fields:
     - name: is_success
       type: BOOLEAN
       mode: NULLABLE
-      description: Did the update complete successfully?
+      description: 'Depending on the type of event:
+
+        * Whether a valid page was generated
+
+        * Did the update complete successfully?'
     - name: is_temporarily_shown
       type: BOOLEAN
       mode: NULLABLE
@@ -1957,6 +1961,15 @@ fields:
         \ as a single visual character). For example, \U0001F468\u200D\U0001F469\u200D\
         \U0001F467\u200D\U0001F467 would count as 11 string length, 7 characters,\
         \ and 1 grapheme."
+    - name: num_chars_out
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of characters returned by the model
+    - name: num_chars_read
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of characters sent to the model outside of the prompt template
+        (page content, focus and modification instructions)
     - name: num_msections_audio_recvonly
       type: INTEGER
       mode: NULLABLE
@@ -1995,6 +2008,15 @@ fields:
       mode: NULLABLE
       description: The number of permission description strings in the extension permission
         doorhanger.
+    - name: num_tabs
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of tabs referenced explicitly. If 0, other page content
+        is used.
+    - name: num_tabs_total_attempted
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of tabs originally requested, before the tab limit is applied
     - name: num_transports
       type: INTEGER
       mode: NULLABLE
@@ -2167,6 +2189,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of prompts displayed
+    - name: raw_content_len
+      type: INTEGER
+      mode: NULLABLE
+      description: Length in characters of the raw_content argument sent in the request,
+        or 0 if missing
     - name: recovery_count
       type: INTEGER
       mode: NULLABLE
@@ -2223,6 +2250,10 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The screen Y coordinate that the window was created at
+    - name: seconds_elapsed
+      type: INTEGER
+      mode: NULLABLE
+      description: Time taken to generate the page
     - name: selected
       type: INTEGER
       mode: NULLABLE
@@ -3147,6 +3178,8 @@ fields:
 
         * The category of protections the user is in, standard, strict or custom.
 
+        * The category whose consumer failed, e.g. "browser-window-idle-tasks".
+
         * Autofill category. Either "creditcard" or "address"
 
         * Autofill category. Either "creditcard", "address" or "passport"'
@@ -3335,6 +3368,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The stacktrace for the React component where the error occurred.
+    - name: components_used
+      type: STRING
+      mode: NULLABLE
+      description: JSON-encoded array of the component types in the generated page,
+        in the order they are used, each formatted as component_layout (or just component
+        when it has no layout). An empty array on failure.
     - name: computed
       type: STRING
       mode: NULLABLE
@@ -3373,6 +3412,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Connection type
+    - name: consumer
+      type: STRING
+      mode: NULLABLE
+      description: The failing consumer's `object.method` identifier as registered
+        in the category manager, e.g. "gSync.init". "other" if it is not an identifier,
+        which an entry registered at runtime can pick freely.
     - name: container_id
       type: STRING
       mode: NULLABLE
@@ -3736,6 +3781,10 @@ fields:
 
         * error class or message
 
+        * Canonical error code, or absent on success: no_content, canceled, page_load_failed,
+        page_not_found, conversation_unavailable, pages_unreadable, nothing_to_change,
+        history_limit, empty_response, invalid_json, invalid_format, or generation_failed
+
         * Error code if Undo was not successful
 
         * If the event value is "decryptionError" or "encryptionError", this contains
@@ -3752,10 +3801,7 @@ fields:
         * Canonical chat error name, or empty on success
 
         * Canonical reason the flow ended. One of: "" on success; "invalid_query"
-        when the assistant supplied no usable query; "config_error" when the endpoint
-        or auth token was unavailable; "timeout" when the search request exceeded
-        its deadline; "http_error" when the back-end returned a non-2xx status, whose
-        value is in http_status; ...'
+        when the...'
     - name: error_code
       type: STRING
       mode: NULLABLE
@@ -3861,7 +3907,14 @@ fields:
     - name: errorName
       type: STRING
       mode: NULLABLE
-      description: An optional string with the error name attribute in case of failure.
+      description: 'Depending on the type of event:
+
+        * An optional string with the error name attribute in case of failure.
+
+        * The thrown error''s name: a JS error or DOMException name such as "TypeError",
+        or an `NS_ERROR_*` name when the consumer threw an XPCOM exception or a bare
+        nsresult. Empty if the thrown value has no name, "other" if that name is not
+        an identifier.'
     - name: errorResult
       type: STRING
       mode: NULLABLE
@@ -4234,6 +4287,14 @@ fields:
       mode: NULLABLE
       description: The number of hours that have passed since this version of This
         field is missing (0) for "addon_update_check".
+    - name: how_initiated
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * How the generation was requested: tab_list, tab_group, chat, or chat_followup
+
+        * How the modification was requested: chat, refresh, or chat_followup'
     - name: html_lang_attribute
       type: STRING
       mode: NULLABLE
@@ -4773,6 +4834,13 @@ fields:
         both, so it is recorded as `alt,altgraph` there. For example, `accel,shift`
         means the user held both the accel key and `SHIFT`. When no modifier, this
         will be empty string.
+    - name: module
+      type: STRING
+      mode: NULLABLE
+      description: The URI of the module the failing consumer is registered from,
+        e.g. "moz-src:///browser/components/downloads/DownloadsCommon.sys.mjs". "other"
+        for a URI outside moz-src://, resource:// and chrome://, which an entry registered
+        at runtime can pick freely.
     - name: move
       type: STRING
       mode: NULLABLE
@@ -5951,9 +6019,7 @@ fields:
 
         * The method used by the source to install the add-on (included when the source
         can use more than one, e.g. install events with source "about:addons" may
-        have "install-from-file" or "url" as method).
-
-        * The method use...'
+        have "install-from-file" or "url" as method), one of: "amWebAP...'
     - name: sourcedetails
       type: STRING
       mode: NULLABLE

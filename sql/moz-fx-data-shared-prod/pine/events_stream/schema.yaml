@@ -373,12 +373,8 @@ fields:
     - name: alt_text_modal
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Depending on the type of event:
-
-        * Indicates if the alt text modal was displayed and the user clicked save,
-        or if it was skipped and the image was added directly after selection.
-
-        * present, empty, skipped.'
+      description: Indicates if the alt text modal was displayed and the user clicked
+        save, or if it was skipped and the image was added directly after selection.
     - name: always_ask
       type: BOOLEAN
       mode: NULLABLE
@@ -1645,9 +1641,6 @@ fields:
 
         * present, empty.
 
-        * Indicates if the alt text modal was displayed and the user clicked save,
-        or if it was skipped and the image was added directly after selection.
-
         * present, empty, skipped.'
     - name: appearance
       type: STRING
@@ -1785,6 +1778,8 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Depending on the type of event:
+
+        * The category whose consumer failed, e.g. "browser-window-idle-tasks".
 
         * Autofill category. Either "creditcard" or "address"
 
@@ -1946,6 +1941,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Connection type
+    - name: consumer
+      type: STRING
+      mode: NULLABLE
+      description: The failing consumer's `object.method` identifier as registered
+        in the category manager, e.g. "gSync.init". "other" if it is not an identifier,
+        which an entry registered at runtime can pick freely.
     - name: contenttype
       type: STRING
       mode: NULLABLE
@@ -2274,7 +2275,14 @@ fields:
     - name: errorName
       type: STRING
       mode: NULLABLE
-      description: An optional string with the error name attribute in case of failure.
+      description: 'Depending on the type of event:
+
+        * An optional string with the error name attribute in case of failure.
+
+        * The thrown error''s name: a JS error or DOMException name such as "TypeError",
+        or an `NS_ERROR_*` name when the consumer threw an XPCOM exception or a bare
+        nsresult. Empty if the thrown value has no name, "other" if that name is not
+        an identifier.'
     - name: errorResult
       type: STRING
       mode: NULLABLE
@@ -2891,6 +2899,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: model revision
+    - name: module
+      type: STRING
+      mode: NULLABLE
+      description: The URI of the module the failing consumer is registered from,
+        e.g. "moz-src:///browser/components/downloads/DownloadsCommon.sys.mjs". "other"
+        for a URI outside moz-src://, resource:// and chrome://, which an entry registered
+        at runtime can pick freely.
     - name: name
       type: STRING
       mode: NULLABLE

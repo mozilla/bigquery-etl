@@ -1,8 +1,18 @@
-friendly_name: Unified Metrics
+friendly_name: Unified Metrics (Deprecated)
 description: |-
+  This table has been deprecated and is no longer used for our KPI calculations.
+  Instead please refer to active_users and active_users_aggregates queries.
+
+  ---
+
   Unified view on common browser metrics across all products.
 
-  Note. From Q4/2022 the app name includes the suffix ` Glean`
+  Notes:
+
+  - !!! This table has been deprecated and is no longer used for our KPI calculations.
+    Please refer to active_users and active_users_aggregates views instead.
+
+  - From Q4/2022 the app name includes the suffix ` Glean`
   to differentiate data collected via Glean from the data
   collected in Legavy Telemetry, until the migration to use only
   Glean is complete.
@@ -29,14 +39,8 @@ bigquery:
     fields:
     - sample_id
     - normalized_app_name
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential/data-viewers
+workgroup_access: []
 references:
-  checks.sql:
-  - ..
-  - ..INFORMATION_SCHEMA.PARTITIONS
   query.sql:
   - moz-fx-data-shared-prod.fenix.clients_last_seen_joined
   - moz-fx-data-shared-prod.firefox_ios.clients_last_seen_joined
@@ -46,4 +50,6 @@ references:
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
   - moz-fx-data-shared-prod.telemetry.core_clients_last_seen
+deprecated: true
+deletion_date: 2026-12-18
 require_column_descriptions: false

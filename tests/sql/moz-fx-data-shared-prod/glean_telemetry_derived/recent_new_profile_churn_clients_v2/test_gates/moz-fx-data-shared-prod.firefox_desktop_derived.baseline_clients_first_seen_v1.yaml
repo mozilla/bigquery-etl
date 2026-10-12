@@ -13,6 +13,10 @@
 - client_id: age_7
   sample_id: 5
   first_seen_date: 2026-09-24
+  # The DENG-11590 automated segment
+  normalized_os: Linux
+  app_display_version: '151.0'
+  startup_profile_selection_reason_first: argument-profile
 - client_id: age_6
   sample_id: 6
   first_seen_date: 2026-09-25

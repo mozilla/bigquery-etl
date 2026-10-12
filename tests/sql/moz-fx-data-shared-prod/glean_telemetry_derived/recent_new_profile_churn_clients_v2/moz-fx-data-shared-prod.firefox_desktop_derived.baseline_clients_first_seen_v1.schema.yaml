@@ -64,3 +64,6 @@ fields:
 - name: policies_is_enterprise
   type: BOOLEAN
   mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE

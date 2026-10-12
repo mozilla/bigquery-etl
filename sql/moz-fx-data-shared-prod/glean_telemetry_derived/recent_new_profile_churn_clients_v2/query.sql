@@ -116,6 +116,12 @@ client_attributes AS (
       FALSE
     ) AS is_desktop,
     first_seen.policies_is_enterprise,
+    `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
+      first_seen.normalized_os,
+      first_seen.app_display_version,
+      first_seen.startup_profile_selection_reason_first,
+      first_seen.first_seen_date
+    ) AS is_desktop_argument_profile_automation,
     first_seen.sample_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
@@ -355,7 +361,8 @@ SELECT
     cohort_age >= 30,
     mozfun.bits28.active_in_range(cohort_bits, 30 - cohort_age, 1),
     NULL
-  ) AS day_30
+  ) AS day_30,
+  is_desktop_argument_profile_automation
 FROM
   client_bits
 LEFT JOIN

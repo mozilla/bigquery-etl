@@ -312,3 +312,8 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Active on day 30 since first seen
+- name: is_desktop_argument_profile_automation
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the profile matches the automated segment tracked in DENG-11590, per
+    udf.is_desktop_argument_profile_automation. FALSE when an input is unknown.

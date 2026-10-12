@@ -7,6 +7,7 @@
   app_name: Firefox Desktop
   first_seen_year: 2026
   is_desktop: true
+  is_desktop_argument_profile_automation: false
   churn_risk_after_5_days: true
   churn_risk_after_7_days: true
   churned_after_1_day: true
@@ -52,6 +53,7 @@
   app_name: Firefox Desktop
   first_seen_year: 2026
   is_desktop: true
+  is_desktop_argument_profile_automation: false
   churn_risk_after_5_days: false
   churn_risk_after_7_days: true
   churned_after_1_day: false
@@ -97,6 +99,7 @@
   app_name: Firefox Desktop
   first_seen_year: 2026
   is_desktop: true
+  is_desktop_argument_profile_automation: false
   churn_risk_after_5_days: false
   churn_risk_after_7_days: false
   churned_after_1_day: false
@@ -142,6 +145,7 @@
   app_name: Firefox Desktop
   first_seen_year: 2026
   is_desktop: true
+  is_desktop_argument_profile_automation: false
   churn_risk_after_5_days: true
   churn_risk_after_7_days: true
   churned_after_1_day: false
@@ -187,6 +191,7 @@
   app_name: Firefox Desktop
   first_seen_year: 2026
   is_desktop: true
+  is_desktop_argument_profile_automation: false
   churn_risk_after_5_days: false
   churn_risk_after_7_days: false
   churned_after_1_day: false

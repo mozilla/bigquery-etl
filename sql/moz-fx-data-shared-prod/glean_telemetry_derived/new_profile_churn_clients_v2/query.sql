@@ -14,9 +14,11 @@ WITH activity_range AS (
     AND last_seen.sample_id = first_seen.sample_id
   WHERE
     first_seen.first_seen_date = @submission_date
-    AND last_seen.submission_date
-    BETWEEN @submission_date
-    AND DATE_ADD(@submission_date, INTERVAL 30 DAY)
+    -- The day 2 row covers days 0-2 and the day 30 row covers days 3-30
+    AND last_seen.submission_date IN (
+      DATE_ADD(@submission_date, INTERVAL 2 DAY),
+      DATE_ADD(@submission_date, INTERVAL 30 DAY)
+    )
 ),
   -- Latest date with data available; drives NULL logic for future day columns
 max_available_date AS (
@@ -110,316 +112,9 @@ client_level AS (
     sample_id,
     first_seen_date,
     DATE_DIFF(max_date, first_seen_date, DAY) + 1 AS days_data_available,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 0
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 0
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_0,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 1
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 1
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_1,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 2
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 2
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_2,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 3
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 3
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_3,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 4
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 4
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_4,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 5
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 5
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_5,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 6
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 6
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_6,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 7
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 7
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_7,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 8
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 8
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_8,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 9
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 9
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_9,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 10
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 10
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_10,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 11
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 11
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_11,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 12
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 12
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_12,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 13
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 13
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_13,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 14
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 14
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_14,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 15
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 15
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_15,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 16
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 16
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_16,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 17
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 17
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_17,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 18
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 18
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_18,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 19
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 19
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_19,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 20
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 20
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_20,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 21
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 21
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_21,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 22
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 22
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_22,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 23
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 23
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_23,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 24
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 24
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_24,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 25
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 25
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_25,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 26
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 26
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_26,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 27
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 27
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_27,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 28
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 28
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_28,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 29
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 29
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_29,
-    MAX(
-      CASE
-        WHEN days_since_first_seen = 30
-          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
-          THEN TRUE
-        WHEN days_since_first_seen = 30
-          THEN FALSE
-        ELSE NULL
-      END
-    ) AS day_30
+    DATE_DIFF(max_date, first_seen_date, DAY) AS cohort_age,
+    MAX(IF(days_since_first_seen = 2, days_desktop_active_bits, NULL)) AS day2_bits,
+    MAX(IF(submission_date = max_date, days_desktop_active_bits, NULL)) AS later_bits
   FROM
     activity_range
   CROSS JOIN
@@ -429,6 +124,23 @@ client_level AS (
     sample_id,
     first_seen_date,
     max_date
+),
+  -- One activity pattern per client, with day k at bit cohort_age - k; the day 2 row
+  -- adds days 0-2 once the latest row no longer covers them
+client_bits AS (
+  SELECT
+    client_id,
+    sample_id,
+    first_seen_date,
+    days_data_available,
+    cohort_age,
+    COALESCE(later_bits, 0) | IF(
+      cohort_age >= 28,
+      (COALESCE(day2_bits, 0) & 7) << (cohort_age - 2),
+      0
+    ) AS cohort_bits
+  FROM
+    client_level
 )
 SELECT
   @submission_date AS submission_date,
@@ -470,175 +182,159 @@ SELECT
   policies_is_enterprise,
   -- No activity on days 1-4; at risk of churning by day 5
   -- NULL if day 4 data not yet available
-  CASE
-    WHEN days_data_available < 5
-      THEN NULL
-    WHEN day_1 IS FALSE
-      AND day_2 IS FALSE
-      AND day_3 IS FALSE
-      AND day_4 IS FALSE
-      THEN TRUE
-    ELSE FALSE
-  END AS churn_risk_after_5_days,
+  IF(
+    cohort_age >= 4,
+    NOT mozfun.bits28.active_in_range(cohort_bits, 1 - cohort_age, 4),
+    NULL
+  ) AS churn_risk_after_5_days,
   -- No activity on days 2-6; at risk of churning by day 7
   -- NULL if day 6 data not yet available
-  CASE
-    WHEN days_data_available < 7
-      THEN NULL
-    WHEN day_2 = FALSE
-      AND day_3 = FALSE
-      AND day_4 = FALSE
-      AND day_5 = FALSE
-      AND day_6 = FALSE
-      THEN TRUE
-    ELSE FALSE
-  END AS churn_risk_after_7_days,
+  IF(
+    cohort_age >= 6,
+    NOT mozfun.bits28.active_in_range(cohort_bits, 2 - cohort_age, 5),
+    NULL
+  ) AS churn_risk_after_7_days,
   -- Active on day 0, then no activity for the next 28 days
   -- NULL if day 28 data not yet available
-  CASE
-    WHEN days_data_available < 29
-      THEN NULL
-    WHEN day_0 = TRUE
-      AND day_1 = FALSE
-      AND day_2 = FALSE
-      AND day_3 = FALSE
-      AND day_4 = FALSE
-      AND day_5 = FALSE
-      AND day_6 = FALSE
-      AND day_7 = FALSE
-      AND day_8 = FALSE
-      AND day_9 = FALSE
-      AND day_10 = FALSE
-      AND day_11 = FALSE
-      AND day_12 = FALSE
-      AND day_13 = FALSE
-      AND day_14 = FALSE
-      AND day_15 = FALSE
-      AND day_16 = FALSE
-      AND day_17 = FALSE
-      AND day_18 = FALSE
-      AND day_19 = FALSE
-      AND day_20 = FALSE
-      AND day_21 = FALSE
-      AND day_22 = FALSE
-      AND day_23 = FALSE
-      AND day_24 = FALSE
-      AND day_25 = FALSE
-      AND day_26 = FALSE
-      AND day_27 = FALSE
-      AND IFNULL(day_28, FALSE) = FALSE
-      THEN TRUE
-    ELSE FALSE
-  END AS churned_after_1_day,
+  IF(
+    cohort_age >= 28,
+    mozfun.bits28.active_in_range(cohort_bits, -cohort_age, 1)
+    AND NOT mozfun.bits28.active_in_range(cohort_bits, 1 - cohort_age, 28),
+    NULL
+  ) AS churned_after_1_day,
   -- Active on Day 1, then no activity for the next 28 days
   -- NULL if day 29 data not yet available
-  CASE
-    WHEN days_data_available < 30
-      THEN NULL
-    WHEN (day_1 = TRUE)
-      AND day_2 = FALSE
-      AND day_3 = FALSE
-      AND day_4 = FALSE
-      AND day_5 = FALSE
-      AND day_6 = FALSE
-      AND day_7 = FALSE
-      AND day_8 = FALSE
-      AND day_9 = FALSE
-      AND day_10 = FALSE
-      AND day_11 = FALSE
-      AND day_12 = FALSE
-      AND day_13 = FALSE
-      AND day_14 = FALSE
-      AND day_15 = FALSE
-      AND day_16 = FALSE
-      AND day_17 = FALSE
-      AND day_18 = FALSE
-      AND day_19 = FALSE
-      AND day_20 = FALSE
-      AND day_21 = FALSE
-      AND day_22 = FALSE
-      AND day_23 = FALSE
-      AND day_24 = FALSE
-      AND day_25 = FALSE
-      AND day_26 = FALSE
-      AND day_27 = FALSE
-      AND IFNULL(day_28, FALSE) = FALSE
-      AND IFNULL(day_29, FALSE) = FALSE
-      THEN TRUE
-    ELSE FALSE
-  END AS churned_after_2_days,
+  IF(
+    cohort_age >= 29,
+    mozfun.bits28.active_in_range(cohort_bits, 1 - cohort_age, 1)
+    AND NOT mozfun.bits28.active_in_range(cohort_bits, 2 - cohort_age, 28),
+    NULL
+  ) AS churned_after_2_days,
   -- Client is in the cohort but never active on days 0-27
   -- NULL if day 27 data not yet available
-  CASE
-    WHEN days_data_available < 28
-      THEN NULL
-    WHEN day_0 = FALSE
-      AND day_1 = FALSE
-      AND day_2 = FALSE
-      AND day_3 = FALSE
-      AND day_4 = FALSE
-      AND day_5 = FALSE
-      AND day_6 = FALSE
-      AND day_7 = FALSE
-      AND day_8 = FALSE
-      AND day_9 = FALSE
-      AND day_10 = FALSE
-      AND day_11 = FALSE
-      AND day_12 = FALSE
-      AND day_13 = FALSE
-      AND day_14 = FALSE
-      AND day_15 = FALSE
-      AND day_16 = FALSE
-      AND day_17 = FALSE
-      AND day_18 = FALSE
-      AND day_19 = FALSE
-      AND day_20 = FALSE
-      AND day_21 = FALSE
-      AND day_22 = FALSE
-      AND day_23 = FALSE
-      AND day_24 = FALSE
-      AND day_25 = FALSE
-      AND day_26 = FALSE
-      AND day_27 = FALSE
-      THEN TRUE
-    ELSE FALSE
-  END AS immediately_churned,
-  day_0,
-  day_1,
-  day_2,
-  day_3,
-  day_4,
-  day_5,
-  day_6,
-  day_7,
-  day_8,
-  day_9,
-  day_10,
-  day_11,
-  day_12,
-  day_13,
-  day_14,
-  day_15,
-  day_16,
-  day_17,
-  day_18,
-  day_19,
-  day_20,
-  day_21,
-  day_22,
-  day_23,
-  day_24,
-  day_25,
-  day_26,
-  day_27,
-  -- bits28 tracks 28 days (bits 0-27); clients inactive for 28+ days fall out of
-  -- baseline_clients_last_seen entirely, producing NULL instead of FALSE. Coerce to
-  -- FALSE when days_data_available confirms the date is in the past.
-  IF(days_data_available >= 29 AND day_28 IS NULL, FALSE, day_28) AS day_28,
-  IF(days_data_available >= 30 AND day_29 IS NULL, FALSE, day_29) AS day_29,
-  IF(days_data_available >= 31 AND day_30 IS NULL, FALSE, day_30) AS day_30
+  IF(
+    cohort_age >= 27,
+    NOT mozfun.bits28.active_in_range(cohort_bits, -cohort_age, 28),
+    NULL
+  ) AS immediately_churned,
+  -- Active on day k since first seen; NULL if day k data not yet available
+  IF(cohort_age >= 0, mozfun.bits28.active_in_range(cohort_bits, 0 - cohort_age, 1), NULL) AS day_0,
+  IF(cohort_age >= 1, mozfun.bits28.active_in_range(cohort_bits, 1 - cohort_age, 1), NULL) AS day_1,
+  IF(cohort_age >= 2, mozfun.bits28.active_in_range(cohort_bits, 2 - cohort_age, 1), NULL) AS day_2,
+  IF(cohort_age >= 3, mozfun.bits28.active_in_range(cohort_bits, 3 - cohort_age, 1), NULL) AS day_3,
+  IF(cohort_age >= 4, mozfun.bits28.active_in_range(cohort_bits, 4 - cohort_age, 1), NULL) AS day_4,
+  IF(cohort_age >= 5, mozfun.bits28.active_in_range(cohort_bits, 5 - cohort_age, 1), NULL) AS day_5,
+  IF(cohort_age >= 6, mozfun.bits28.active_in_range(cohort_bits, 6 - cohort_age, 1), NULL) AS day_6,
+  IF(cohort_age >= 7, mozfun.bits28.active_in_range(cohort_bits, 7 - cohort_age, 1), NULL) AS day_7,
+  IF(cohort_age >= 8, mozfun.bits28.active_in_range(cohort_bits, 8 - cohort_age, 1), NULL) AS day_8,
+  IF(cohort_age >= 9, mozfun.bits28.active_in_range(cohort_bits, 9 - cohort_age, 1), NULL) AS day_9,
+  IF(
+    cohort_age >= 10,
+    mozfun.bits28.active_in_range(cohort_bits, 10 - cohort_age, 1),
+    NULL
+  ) AS day_10,
+  IF(
+    cohort_age >= 11,
+    mozfun.bits28.active_in_range(cohort_bits, 11 - cohort_age, 1),
+    NULL
+  ) AS day_11,
+  IF(
+    cohort_age >= 12,
+    mozfun.bits28.active_in_range(cohort_bits, 12 - cohort_age, 1),
+    NULL
+  ) AS day_12,
+  IF(
+    cohort_age >= 13,
+    mozfun.bits28.active_in_range(cohort_bits, 13 - cohort_age, 1),
+    NULL
+  ) AS day_13,
+  IF(
+    cohort_age >= 14,
+    mozfun.bits28.active_in_range(cohort_bits, 14 - cohort_age, 1),
+    NULL
+  ) AS day_14,
+  IF(
+    cohort_age >= 15,
+    mozfun.bits28.active_in_range(cohort_bits, 15 - cohort_age, 1),
+    NULL
+  ) AS day_15,
+  IF(
+    cohort_age >= 16,
+    mozfun.bits28.active_in_range(cohort_bits, 16 - cohort_age, 1),
+    NULL
+  ) AS day_16,
+  IF(
+    cohort_age >= 17,
+    mozfun.bits28.active_in_range(cohort_bits, 17 - cohort_age, 1),
+    NULL
+  ) AS day_17,
+  IF(
+    cohort_age >= 18,
+    mozfun.bits28.active_in_range(cohort_bits, 18 - cohort_age, 1),
+    NULL
+  ) AS day_18,
+  IF(
+    cohort_age >= 19,
+    mozfun.bits28.active_in_range(cohort_bits, 19 - cohort_age, 1),
+    NULL
+  ) AS day_19,
+  IF(
+    cohort_age >= 20,
+    mozfun.bits28.active_in_range(cohort_bits, 20 - cohort_age, 1),
+    NULL
+  ) AS day_20,
+  IF(
+    cohort_age >= 21,
+    mozfun.bits28.active_in_range(cohort_bits, 21 - cohort_age, 1),
+    NULL
+  ) AS day_21,
+  IF(
+    cohort_age >= 22,
+    mozfun.bits28.active_in_range(cohort_bits, 22 - cohort_age, 1),
+    NULL
+  ) AS day_22,
+  IF(
+    cohort_age >= 23,
+    mozfun.bits28.active_in_range(cohort_bits, 23 - cohort_age, 1),
+    NULL
+  ) AS day_23,
+  IF(
+    cohort_age >= 24,
+    mozfun.bits28.active_in_range(cohort_bits, 24 - cohort_age, 1),
+    NULL
+  ) AS day_24,
+  IF(
+    cohort_age >= 25,
+    mozfun.bits28.active_in_range(cohort_bits, 25 - cohort_age, 1),
+    NULL
+  ) AS day_25,
+  IF(
+    cohort_age >= 26,
+    mozfun.bits28.active_in_range(cohort_bits, 26 - cohort_age, 1),
+    NULL
+  ) AS day_26,
+  IF(
+    cohort_age >= 27,
+    mozfun.bits28.active_in_range(cohort_bits, 27 - cohort_age, 1),
+    NULL
+  ) AS day_27,
+  IF(
+    cohort_age >= 28,
+    mozfun.bits28.active_in_range(cohort_bits, 28 - cohort_age, 1),
+    NULL
+  ) AS day_28,
+  IF(
+    cohort_age >= 29,
+    mozfun.bits28.active_in_range(cohort_bits, 29 - cohort_age, 1),
+    NULL
+  ) AS day_29,
+  IF(
+    cohort_age >= 30,
+    mozfun.bits28.active_in_range(cohort_bits, 30 - cohort_age, 1),
+    NULL
+  ) AS day_30
 FROM
-  client_level
+  client_bits
 LEFT JOIN
   client_attributes
   USING (client_id, sample_id)

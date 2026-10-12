@@ -27,7 +27,11 @@ _APP_SIZING_TABLE = _mod._APP_SIZING_TABLE
 build_query = _mod.build_query
 build_results = _mod.build_results
 fetch_experiments = _mod.fetch_experiments
+latest_pool_partition = _mod.latest_pool_partition
 write_to_gcs = _mod.write_to_gcs
+
+# build_query pins a partition; tests supply a fixed one.
+POOL_DATE = "2026-10-07"
 
 MOCK_EXPERIMENTS = [
     {
@@ -120,18 +124,18 @@ class TestColForIndex:
 
 class TestBuildQuery:
     def test_uses_indexed_column_aliases(self):
-        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop", POOL_DATE)
         assert "`exp_0`" in query
         assert "`exp_1`" in query
 
     def test_uses_countif_not_count_distinct(self):
-        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop", POOL_DATE)
         assert "COUNTIF(" in query
         assert "COUNT(DISTINCT" not in query
 
     def test_no_cte(self):
         """Dedup/sampling is pre-materialized — build_query should not contain a CTE."""
-        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop", POOL_DATE)
         assert "WITH latest_per_client" not in query
         assert "clients AS" not in query
 
@@ -153,17 +157,17 @@ class TestBuildQuery:
         ],
     )
     def test_uses_pre_materialized_table(self, app_name, expected_table):
-        query = build_query(MOCK_EXPERIMENTS, app_name)
+        query = build_query(MOCK_EXPERIMENTS, app_name, POOL_DATE)
         assert expected_table in query
         assert "mozdata" not in query
 
     def test_unknown_app_raises(self):
         with pytest.raises(KeyError):
-            build_query(MOCK_EXPERIMENTS, "unknown_app")
+            build_query(MOCK_EXPERIMENTS, "unknown_app", POOL_DATE)
 
     def test_generated_sql_is_syntactically_plausible(self):
         """Spot-check that generated SQL doesn't contain known invalid patterns."""
-        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop")
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop", POOL_DATE)
         assert " = NULL" not in query
         assert "JSON_ARRAY_LENGTH(" not in query
         assert "= FALSE" not in query
@@ -181,15 +185,151 @@ class TestBuildQuery:
                 },
             },
         ]
-        query = build_query(experiments, "firefox_desktop")
+        query = build_query(experiments, "firefox_desktop", POOL_DATE)
         expected = (
             "SELECT\n"
             "  COUNTIF(\n"
             "    os_version >= 120\n"
             "  ) * 10 AS `exp_0`\n"
-            "FROM `moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_sizing_clients_v1`"
+            "FROM `moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_sizing_clients_v1`\n"
+            "WHERE _PARTITIONDATE = '2026-10-07'"
         )
         assert query == expected
+
+
+class TestPartitionPinning:
+    """The pool keeps 14 overlapping 7-day windows, so an unpinned scan counts
+    each client once per partition it appears in."""
+
+    def test_pins_a_single_partition(self):
+        query = build_query(MOCK_EXPERIMENTS, "firefox_desktop", POOL_DATE)
+        assert f"WHERE _PARTITIONDATE = '{POOL_DATE}'" in query
+
+    @pytest.mark.parametrize("app_name", ["firefox_desktop", "fenix", "firefox_ios"])
+    def test_every_app_is_pinned(self, app_name):
+        query = build_query(MOCK_EXPERIMENTS, app_name, POOL_DATE)
+        assert "_PARTITIONDATE" in query
+
+    def test_latest_pool_partition_formats_as_date(self):
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = [
+                {"partition_id": "20261007"}
+            ]
+            got = latest_pool_partition(
+                "moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_sizing_clients_v1",
+                project="moz-fx-data-experiments",
+            )
+        assert got == "2026-10-07"
+
+    def test_latest_pool_partition_none_when_pool_empty(self):
+        """An empty pool must not silently size every experiment against nothing."""
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            mock_client.return_value.query.return_value.result.return_value = []
+            got = latest_pool_partition(
+                "moz-fx-data-shared-prod.fenix_derived.nimbus_sizing_clients_v1",
+                project="moz-fx-data-experiments",
+            )
+        assert got is None
+
+    def test_latest_pool_partition_skips_sentinel_and_empty_partitions(self):
+        """Sentinel ids like __NULL__ sort above real dates, and an empty
+        partition winning MAX would size every experiment at zero."""
+        with patch("google.cloud.bigquery.Client") as mock_client:
+            latest_pool_partition(
+                "moz-fx-data-shared-prod.fenix_derived.nimbus_sizing_clients_v1",
+                project="moz-fx-data-experiments",
+            )
+            sql = mock_client.return_value.query.call_args[0][0]
+        assert "REGEXP_CONTAINS(partition_id, r'^[0-9]{8}$')" in sql
+        assert "total_rows > 0" in sql
+        assert "INFORMATION_SCHEMA.PARTITIONS" in sql
+
+
+class TestChannelFilter:
+    """Mobile targeting SQL carries no channel predicate, so without this a
+    nightly rollout is sized against the release population."""
+
+    @staticmethod
+    def _exp(channel=None, channels=None):
+        exp = {"slug": "s", "targetingSql": {"sql": "region IN ('US')", "warnings": []}}
+        if channel is not None:
+            exp["channel"] = channel
+        if channels is not None:
+            exp["channels"] = channels
+        return [exp]
+
+    @pytest.mark.parametrize("channel", ["release", "beta", "nightly"])
+    def test_known_channel_is_applied(self, channel):
+        query = build_query(self._exp(channels=[channel]), "fenix", POOL_DATE)
+        assert f"normalized_channel IN ('{channel}')" in query
+
+    def test_channel_is_case_insensitive(self):
+        query = build_query(self._exp(channels=["Nightly"]), "fenix", POOL_DATE)
+        assert "normalized_channel IN ('nightly')" in query
+
+    @pytest.mark.parametrize("channel", ["developer", "", None])
+    def test_unemitted_channel_is_not_filtered(self, channel):
+        """The mobile pings only emit release/beta/nightly. Filtering on
+        anything else would return zero rather than an unconstrained estimate."""
+        query = build_query(self._exp(channels=[channel]), "fenix", POOL_DATE)
+        assert "normalized_channel" not in query
+
+    @pytest.mark.parametrize("channel", ["esr", "aurora"])
+    def test_desktop_only_channels_are_applied_on_desktop(self, channel):
+        """Desktop ships esr and aurora too. Treating them as unknown would drop
+        the filter and size an ESR experiment against every channel."""
+        query = build_query(self._exp(channels=[channel]), "firefox_desktop", POOL_DATE)
+        assert f"normalized_channel IN ('{channel}')" in query
+
+    @pytest.mark.parametrize("channel", ["esr", "aurora"])
+    def test_desktop_only_channels_are_not_applied_on_mobile(self, channel):
+        query = build_query(self._exp(channels=[channel]), "fenix", POOL_DATE)
+        assert "normalized_channel" not in query
+
+    def test_multiple_channels_render_as_in_list(self):
+        """`channels` is the canonical field and is multi-valued; reading the
+        singular `channel` would size a multi-channel experiment against one."""
+        query = build_query(self._exp(channels=["release", "beta"]), "fenix", POOL_DATE)
+        assert "normalized_channel IN ('beta', 'release')" in query
+
+    def test_channels_takes_precedence_over_legacy_channel(self):
+        query = build_query(
+            self._exp(channel="release", channels=["nightly"]), "fenix", POOL_DATE
+        )
+        assert "normalized_channel IN ('nightly')" in query
+
+    def test_falls_back_to_singular_channel_when_channels_absent(self):
+        query = build_query(self._exp(channel="beta"), "fenix", POOL_DATE)
+        assert "normalized_channel IN ('beta')" in query
+
+    def test_unemitted_channels_are_dropped_from_the_list(self):
+        """developer has no client population, so a release+developer
+        experiment should still be constrained to release."""
+        query = build_query(
+            self._exp(channels=["release", "developer"]), "fenix", POOL_DATE
+        )
+        assert "normalized_channel IN ('release')" in query
+
+    def test_channel_is_per_countif_not_global(self):
+        """One query batches every experiment for an app, and they do not share
+        a channel, so the predicate cannot live in the WHERE clause."""
+        experiments = [
+            {
+                "slug": "a",
+                "channels": ["release"],
+                "targetingSql": {"sql": "region IN ('US')", "warnings": []},
+            },
+            {
+                "slug": "b",
+                "channels": ["nightly"],
+                "targetingSql": {"sql": "region IN ('CA')", "warnings": []},
+            },
+        ]
+        query = build_query(experiments, "fenix", POOL_DATE)
+        assert "normalized_channel IN ('release')" in query
+        assert "normalized_channel IN ('nightly')" in query
+        where_clause = query.split("WHERE", 1)[1]
+        assert "normalized_channel" not in where_clause
 
 
 class TestBuildResults:

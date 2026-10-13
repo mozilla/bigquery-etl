@@ -11,6 +11,11 @@ WITH view_events AS (
     SAFE_CAST(events.object_id AS INT64) AS object_id,
     events.user_id,
     users.email AS user_email,
+    COALESCE(LAX_BOOL(events.additional_properties.dashboard), FALSE) AS from_dashboard,
+    COALESCE(LAX_BOOL(events.additional_properties.embed), FALSE) AS from_embed,
+    -- Only events logged by the web page have a screen resolution, not ones logged by the server
+    events.additional_properties.screen_resolution IS NOT NULL AS logged_by_page,
+    events.additional_properties.api_key IS NOT NULL AS used_api_key,
   FROM
     `moz-fx-data-shared-prod.stmo_external.events_v1` AS events
   LEFT JOIN
@@ -20,6 +25,13 @@ WITH view_events AS (
     events.created_at >= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 400 DAY))
     AND events.action = 'view'
     AND events.object_type IN ('dashboard', 'query', 'visualization')
+    -- Only browsers. Scripts using the API (python-requests, curl, node, and so on, including the
+    -- DataHub ingestion), bots, and headless browsers taking screenshots are dropped.
+    AND STARTS_WITH(LAX_STRING(events.additional_properties.user_agent), 'Mozilla/')
+    AND NOT REGEXP_CONTAINS(
+      LAX_STRING(events.additional_properties.user_agent),
+      r'(?i)bot|crawl|spider|headless'
+    )
     -- Accounts used by the DataHub Redash ingestion at some point,
     -- which views every published query and dashboard on each run
     AND COALESCE(users.email, '') NOT IN (
@@ -39,9 +51,8 @@ WITH view_events AS (
         DATE(events.created_at)
     ) < 100
 ),
--- Redash usually logs a dashboard open as two view events less than a second apart, one from the
--- page and one from its API request, so a view within 5 seconds of the same user's previous view
--- of the dashboard is dropped. Views with no user can't be told apart, so they're all kept.
+-- A dashboard open logs one view from the page and one from the server's API response, so only
+-- the page's is counted. Public dashboard links only log the server's, which has no user.
 dashboard_views AS (
   SELECT
     created_at,
@@ -51,33 +62,20 @@ dashboard_views AS (
     view_events
   WHERE
     object_type = 'dashboard'
-  QUALIFY
-    user_id IS NULL
-    OR COALESCE(
-      TIMESTAMP_DIFF(
-        created_at,
-        LAG(created_at) OVER (PARTITION BY user_id, object_id ORDER BY created_at),
-        MILLISECOND
-      ) >= 5000,
-      TRUE
-    )
+    AND (logged_by_page OR user_id IS NULL)
 ),
 -- Dashboard widgets and embeds log visualization views. Each load also logs a query view, which
--- query_page_views drops.
+-- query_page_views leaves out.
 visualization_views AS (
   SELECT
-    view_events.created_at,
-    view_events.object_id AS visualization_id,
-    visualizations.query_id,
-    view_events.user_id,
-    view_events.user_email,
+    created_at,
+    object_id AS visualization_id,
+    user_email,
   FROM
     view_events
-  INNER JOIN
-    `moz-fx-data-shared-prod.stmo_external.visualizations_v1` AS visualizations
-    ON visualizations.id = view_events.object_id
   WHERE
-    view_events.object_type = 'visualization'
+    object_type = 'visualization'
+    AND (from_dashboard OR from_embed)
 ),
 -- The query page opens on this visualization unless the URL names another one
 default_visualizations AS (
@@ -89,6 +87,7 @@ default_visualizations AS (
   GROUP BY
     query_id
 ),
+-- Query views that aren't the second event of a dashboard widget or embed load
 query_page_views AS (
   SELECT
     view_events.created_at,
@@ -99,19 +98,10 @@ query_page_views AS (
   INNER JOIN
     default_visualizations
     ON default_visualizations.query_id = view_events.object_id
-  LEFT JOIN
-    visualization_views
-    ON visualization_views.query_id = view_events.object_id
-    AND visualization_views.user_id = view_events.user_id
-    AND visualization_views.created_at
-    BETWEEN TIMESTAMP_SUB(view_events.created_at, INTERVAL 10 SECOND)
-    AND TIMESTAMP_ADD(view_events.created_at, INTERVAL 10 SECOND)
   WHERE
     view_events.object_type = 'query'
-    -- Query views with no user are the second event of an embed load. They can't be matched to
-    -- their visualization view by user, so they're dropped.
-    AND view_events.user_id IS NOT NULL
-    AND visualization_views.visualization_id IS NULL
+    AND NOT view_events.from_dashboard
+    AND NOT view_events.used_api_key
 ),
 object_events AS (
   SELECT

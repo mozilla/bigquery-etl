@@ -9,7 +9,9 @@ description: |-
   Users are people who ran a query, including by refreshing a dashboard, and exclude scheduled
   runs. Failed statements are excluded, but earlier statements of a failed multi-statement query
   are still counted. Tables are the ones BigQuery reports as referenced, so views are
-  reported as their underlying tables. Dashboard views exclude scripts that crawl Redash.
+  reported as their underlying tables. Dashboard views are counted as in
+  `stmo.object_views_daily`, which counts one view per dashboard open and only
+  counts views from browsers.
 owners:
 - bewu@mozilla.com
 labels:
@@ -17,11 +19,12 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataplatform/external-datahub
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring.bigquery_usage
-  - moz-fx-data-shared-prod.monitoring.stmo_query_dashboards
-  - moz-fx-data-shared-prod.stmo_external.events_v1
+  - moz-fx-data-shared-prod.stmo.object_views_daily
+  - moz-fx-data-shared-prod.stmo.query_dashboards
   - moz-fx-data-shared-prod.stmo_external.queries_v1
   - moz-fx-data-shared-prod.stmo_external.users_v1

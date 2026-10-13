@@ -28,4 +28,5 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataplatform/external-datahub
   - workgroup:mozilla-confidential/data-viewers

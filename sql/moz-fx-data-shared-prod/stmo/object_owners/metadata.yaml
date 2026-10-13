@@ -1,7 +1,8 @@
-friendly_name: STMO Query Dashboards
+friendly_name: STMO Object Owners
 description: |-
-  Redash (sql.telemetry.mozilla.org) queries and the dashboards that show them, based on the
-  current widgets on each dashboard.
+  Owners of published Redash (sql.telemetry.mozilla.org) visualizations and dashboards. A
+  visualization is owned by its query's owner. Excludes dashboards with all-digit names, which
+  DataHub doesn't ingest. Used by the DataHub Redash usage source.
 owners:
 - bewu@mozilla.com
 labels:
@@ -9,6 +10,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataplatform/external-datahub
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
@@ -16,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.stmo_external.queries_v1
   - moz-fx-data-shared-prod.stmo_external.users_v1
   - moz-fx-data-shared-prod.stmo_external.visualizations_v1
-  - moz-fx-data-shared-prod.stmo_external.widgets_v1

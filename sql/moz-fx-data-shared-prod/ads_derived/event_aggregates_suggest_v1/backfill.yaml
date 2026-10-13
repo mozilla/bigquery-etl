@@ -4,7 +4,7 @@
   reason: DAG was paused, needs to be backfilled for the time this table was not running
   watchers:
   - cmorales@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   ignore_date_partition_offset: false

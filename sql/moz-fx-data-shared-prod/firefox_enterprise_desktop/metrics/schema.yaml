@@ -3447,6 +3447,13 @@ fields:
         to receive push messages, counted when Firefox is launched with --receive-push-messages.
 
         '
+    - name: session_restore_write_attempts
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts attempts to write the session file. Attempts that are not
+        counted in write_outcome never completed.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -22403,6 +22410,22 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The user activation state on each geolocation request.
+
+        '
+    - name: session_restore_write_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts completed attempts to write the session file, by outcome.
+        "failed" means the session file was not written. "session_written_backup_failed"
+        means the session file was written but a later step, such as taking or pruning
+        upgrade backups, failed.
 
         '
   - name: labeled_custom_distribution

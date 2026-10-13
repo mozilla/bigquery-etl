@@ -762,6 +762,10 @@ fields:
         When that bug is resolved, the Extensions Panel is always opened.
 
         * Whether the Extensions Panel is unable to show any extensions.'
+    - name: is_final_write
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this was the final write at shutdown
     - name: is_first_startup
       type: BOOLEAN
       mode: NULLABLE
@@ -1022,6 +1026,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the user opted into including blocked tracker origins.
+    - name: session_written
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the session file itself was written before the failure
     - name: shopping_tab_displayed
       type: BOOLEAN
       mode: NULLABLE
@@ -3190,7 +3198,12 @@ fields:
     - name: cause
       type: STRING
       mode: NULLABLE
-      description: The interruption cause, `system_transient` or `system_permanent`.
+      description: 'Depending on the type of event:
+
+        * The nsresult name reported by IOUtils, such as "NS_ERROR_FILE_NO_DEVICE_SPACE",
+        or else the name of the DOMException or JS error the step failed with
+
+        * The interruption cause, `system_transient` or `system_permanent`.'
     - name: cc_exp
       type: STRING
       mode: NULLABLE
@@ -6091,6 +6104,10 @@ fields:
         download_started, download_completed, download_failed
 
         * start / cancel / error / complete
+
+        * The first step of the write that failed, one of "make_backups_dir", "move_clean",
+        "migrate_legacy_clean", "write_clean", "write_recovery", "stat", "copy_upgrade_backup",
+        "list_backups", "remove_old_backup" or "unknown"
 
         * step and description of opt-in screen interaction
 

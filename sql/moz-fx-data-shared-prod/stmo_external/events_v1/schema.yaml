@@ -27,3 +27,14 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time of the event.
+- name: additional_properties
+  type: JSON
+  mode: NULLABLE
+  description: >-
+    Selected properties Redash logged with the event. user_agent is the client's user agent.
+    screen_resolution is only set on events logged by the web page, not the server. dashboard
+    is true on the query and visualization views from a dashboard widget. embed, query_id, and
+    referer (origin only) are set on embedded visualization views. public and headless are set
+    on public dashboard views. api_key labels the API key a request used, such as
+    "ApiKey: Query 123". cache and file_type are set on execute_query and api_get events. IP
+    addresses, query text, and search terms are not loaded.

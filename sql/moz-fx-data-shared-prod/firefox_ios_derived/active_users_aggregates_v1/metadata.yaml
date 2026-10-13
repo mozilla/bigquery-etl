@@ -24,6 +24,6 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 780
 deprecated: true
 deletion_date: 2026-10-01

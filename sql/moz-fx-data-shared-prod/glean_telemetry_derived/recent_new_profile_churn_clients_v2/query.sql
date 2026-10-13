@@ -171,7 +171,7 @@ SELECT
   sample_id,
   first_seen_date AS cohort_date,
   days_data_available,
-  -- Client attributes from the cohort date
+  -- Client attributes from each client's baseline_clients_first_seen_v1 row
   country,
   locale,
   app_name,

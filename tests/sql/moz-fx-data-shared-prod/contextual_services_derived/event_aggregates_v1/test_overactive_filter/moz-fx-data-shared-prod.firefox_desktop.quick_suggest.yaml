@@ -7,7 +7,7 @@
       subdivision1: AZ
     user_agent:
       os: "Windows 11"
-      version: 130
+      version: "130"
   metrics: &click_metrics
     boolean:
       quick_suggest_improve_suggest_experience: true

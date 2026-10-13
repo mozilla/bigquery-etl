@@ -32,9 +32,8 @@ workgroup_access:
   - workgroup:search-terms/sanitized-writer
 references:
   checks.sql:
-  - moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata_v2
   - moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3
   query.sql:
   - moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1
-  - moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3
+  - moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4

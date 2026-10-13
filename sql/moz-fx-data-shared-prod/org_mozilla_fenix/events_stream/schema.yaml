@@ -1109,9 +1109,6 @@ fields:
 
         * Time in milliseconds between requesting warmup and warmup completion.
 
-        * The duration of time from when the resource began sharing until the share
-        sheet was ready to appear.
-
         * Duration of the Firefox Account flow in milliseconds.
 
         * Duration of the Firefox Authorization flow in milliseconds.'
@@ -2166,13 +2163,8 @@ fields:
     - name: content_type
       type: STRING
       mode: NULLABLE
-      description: 'Depending on the type of event:
-
-        * The content type of the web-page as listed in its JSONLD structured data.
-        See https://schema.org/docs/full.html for a list of potential types.
-
-        * The content type of the resource shared. Possible values are: `pdf` and
-        `other`.'
+      description: The content type of the web-page as listed in its JSONLD structured
+        data. See https://schema.org/docs/full.html for a list of potential types.
     - name: contenttype
       type: STRING
       mode: NULLABLE
@@ -2661,12 +2653,6 @@ fields:
       mode: NULLABLE
       description: When the trigger is failed-lookups, this contains the string representation
         of the failures that triggered the confirmation.
-    - name: failure_reason
-      type: STRING
-      mode: NULLABLE
-      description: 'Why sharing did not complete. Possible reasons are: `timeout`
-        when obtaining the bytes took longer than allowed, `cancelled` when sharing
-        was cancelled, and `error` when sharing failed with an error.'
     - name: family_name
       type: STRING
       mode: NULLABLE
@@ -4054,13 +4040,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: One of WARNING or ERROR.
-    - name: share_type
-      type: STRING
-      mode: NULLABLE
-      description: 'The way the bytes for the shared item was obtained. Possible values
-        are: `direct` when the bytes were already available (such as from the PDF
-        viewer), `internet` when the bytes were downloaded from a URL, and `local`
-        when the bytes were available on device.'
     - name: shortcut
       type: STRING
       mode: NULLABLE

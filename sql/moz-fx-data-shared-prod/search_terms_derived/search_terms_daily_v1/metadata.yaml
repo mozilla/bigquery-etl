@@ -39,4 +39,4 @@ workgroup_access:
   - workgroup:search-terms/sanitized-writer
 references:
   query.sql:
-  - moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3
+  - moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4

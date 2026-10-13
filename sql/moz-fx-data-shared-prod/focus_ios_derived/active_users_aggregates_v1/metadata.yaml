@@ -21,6 +21,12 @@ owners:
 - mozilla/kpi_table_reviewers
 labels:
   owner1: lvargas
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
 workgroup_access: []
 deprecated: true
 deletion_date: 2026-10-01

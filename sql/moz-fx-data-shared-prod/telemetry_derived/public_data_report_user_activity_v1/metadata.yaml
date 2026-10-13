@@ -10,6 +10,12 @@ owners:
 - bewu@mozilla.com
 labels:
   owner1: bewu
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -5,6 +5,8 @@ row_creation_times:
 tag_deployments:
 - collection:
     name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_desktop_background_update_derived.baseline_clients_city_seen_v1.*

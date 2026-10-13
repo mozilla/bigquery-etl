@@ -370,6 +370,9 @@ def validate(name: Optional[str], sql_dir: str, project_id: Optional[str]):
     metadata_files = paths_matching_name_pattern(
         name or "*.*", sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+    if name and not metadata_files:
+        raise click.ClickException(f"No metadata files found matching: {name}")
+
     table_dirs = sorted({Path(f).parent for f in metadata_files})
     dataset_dirs = {d.parent for d in table_dirs}
 

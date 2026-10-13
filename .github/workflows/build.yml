@@ -558,31 +558,6 @@ jobs:
           name: schema-cache
           path: /tmp/workspace/schema-cache
 
-  verify-deprecation-metadata:
-    name: Verify Deprecation Metadata
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    environment: *build-env
-    needs: [build, generate-sql]
-    steps:
-      - *checkout
-      - *setup-python
-      - *restore-venv
-      - &download-generated-sql
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
-      - &copy-generated-sql
-        name: Move generated SQL into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/generated-sql/sql sql/
-      - name: Deletion Date Check
-        run: |
-          PATH=".venv/bin:$PATH" script/bqetl metadata validate-deprecation
-
   trigger-private-ci:
     name: Trigger Private CI
     runs-on: ubuntu-latest
@@ -659,8 +634,16 @@ jobs:
       - *checkout
       - *setup-python
       - *restore-venv
-      - *download-generated-sql
-      - *copy-generated-sql
+      - &download-generated-sql
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - &copy-generated-sql
+        name: Move generated SQL into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql/
       - name: Generate documentation
         run: |
           PATH=".venv/bin:$PATH" script/bqetl docs generate --output_dir=generated_docs/
@@ -907,12 +890,9 @@ jobs:
 
   validate-metadata:
     name: Validate Metadata
-    needs: [build, decide-runs]
+    needs: [build, generate-sql]
     runs-on: ubuntu-latest
-    if: |
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
-      id-token: write
       contents: read
     environment: *job-env
     steps:
@@ -922,13 +902,11 @@ jobs:
       - name: Validate workgroup access configuration on main
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
-      - *auth-gcp-dryrun
+      - *download-generated-sql
+      - *copy-generated-sql
       - name: Verify that metadata files are valid
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl query validate \
-            --no-dryrun --skip-format-sql
+          PATH=".venv/bin:$PATH" script/bqetl metadata validate
       - name: Copy generated SQL for debugging
         if: failure()
         run: |

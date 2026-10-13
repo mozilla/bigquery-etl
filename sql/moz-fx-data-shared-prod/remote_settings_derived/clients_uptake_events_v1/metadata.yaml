@@ -1,0 +1,41 @@
+friendly_name: Clients Uptake Events
+description: |-
+  Remote Settings synchronization uptake events, unified across desktop, Android
+  and iOS, and across the Gecko (JS) and Application-Services (Rust) clients.
+  This derived dataset allows us to access the filtered raw Glean events records
+  more efficiently than reading and joining events tables on-the-fly.
+
+  See https://mozilla-hub.atlassian.net/browse/RMST-514
+owners:
+- mleplatre@mozilla.com
+- aplacitelli@mozilla.com
+labels:
+  incremental: true
+  owner1: mleplatre
+  dag: bqetl_default
+  owner2: aplacitelli
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 365.0
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+    - extra_source
+    - extra_status
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.events_stream
+  - moz-fx-data-shared-prod.firefox_desktop.events_stream
+  - moz-fx-data-shared-prod.firefox_ios.events_stream
+require_column_descriptions: true

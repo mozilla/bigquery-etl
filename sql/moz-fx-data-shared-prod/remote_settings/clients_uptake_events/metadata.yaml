@@ -1,0 +1,18 @@
+friendly_name: Clients Uptake Events
+description: |-
+  Derived dataset from Glean events emitted by our
+  Gecko (JS) and Application-Services (Rust) clients.
+owners:
+- mleplatre@mozilla.com
+- aplacitelli@mozilla.com
+labels:
+  owner1: mleplatre
+  owner2: aplacitelli
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.remote_settings_derived.clients_uptake_events_v1

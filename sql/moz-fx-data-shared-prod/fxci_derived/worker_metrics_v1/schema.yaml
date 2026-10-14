@@ -2,21 +2,35 @@ fields:
   - name: project
     type: STRING
     mode: REQUIRED
+    description: The GCP project ID in which the Firefox CI worker instance ran. Values correspond to trust-level-segmented
+      worker projects, such as `fxci-production-level1-workers` or `fxci-production-level3-workers`.
   - name: zone
     type: STRING
     mode: REQUIRED
+    description: The Google Cloud availability zone where the CI worker VM instance was running (e.g. `us-central1-c`).
+      Used to understand the geographic and infrastructure distribution of worker capacity.
   - name: instance_id
     type: STRING
     mode: REQUIRED
+    description: The unique numeric identifier assigned by GCP to the virtual machine instance hosting the
+      Firefox CI worker. Used to correlate metrics back to a specific worker VM.
   - name: interval_start_time
     type: TIMESTAMP
     mode: REQUIRED
+    description: The UTC timestamp marking the beginning of the metrics collection interval for this row.
+      Together with `interval_end_time`, defines the time window over which the reported metrics were aggregated.
   - name: interval_end_time
     type: TIMESTAMP
     mode: REQUIRED
+    description: The UTC timestamp marking the end of the metrics collection interval for this row. Together
+      with `interval_start_time`, defines the time window over which the reported metrics were aggregated.
   - name: submission_date
     type: DATE
     mode: REQUIRED
+    description: The date on which this metrics record was submitted, used as the primary partitioning key.
+      Corresponds to the calendar date of the metrics interval.
   - name: uptime
     type: FLOAT
     mode: NULLABLE
+    description: The total number of seconds the worker VM instance was active (running) during the metrics
+      interval. Null values may indicate the uptime could not be determined for the instance.

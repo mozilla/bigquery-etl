@@ -16,7 +16,11 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 from ..util import extract_from_query_path, standard_args
-from ..util.common import extract_last_group_by_from_query, project_dirs
+from ..util.common import (
+    extract_last_group_by_from_query,
+    get_unittests_dir,
+    project_dirs,
+)
 from .parse_metadata import (
     DEFAULT_DESCRIPTION_IN_METADATA,
     METADATA_FILE,
@@ -354,22 +358,12 @@ def validate_asset_level(query_dir, metadata):
         if not results["unittests"]:
             query_path = Path(query_dir)
             if len(query_path.parents) >= 4:
-                new_unittest_path = (
-                    query_path.parents[3] / "tests" / Path(*query_path.parts[-4:])
+                new_unittest_path = get_unittests_dir(query_path.parents[2]) / Path(
+                    *query_path.parts[-3:]
                 )
                 results["unittests"] = new_unittest_path.exists() and any(
                     name.startswith("test_") for name in os.listdir(new_unittest_path)
                 )
-
-        # Find the generated unit tests at the path the SQL generators use when CI runs, if no tests were found at the expected path.
-        if not results["unittests"]:
-            query_path = Path(query_dir)
-            cwd_unittest_path = Path("tests").joinpath(
-                *query_path.parts[query_path.is_absolute() :]
-            )
-            results["unittests"] = cwd_unittest_path.exists() and any(
-                name.startswith("test_") for name in os.listdir(cwd_unittest_path)
-            )
 
         # Check scheduler.
         results["scheduler"] = (
@@ -895,6 +889,22 @@ def validate_datasets(target):
         raise MetadataValidationError(
             f"Dataset metadata validation failed for {target}"
         )
+
+
+def validate_directories(table_dirs, dataset_dirs):
+    """Validate table and dataset metadata directories, returning error messages."""
+    errors = []
+    for table_dir in table_dirs:
+        try:
+            validate(table_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    for dataset_dir in dataset_dirs:
+        try:
+            validate_datasets(dataset_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    return errors
 
 
 def main():

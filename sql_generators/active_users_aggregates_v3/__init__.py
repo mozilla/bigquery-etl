@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import render, write_sql, get_table_dir
+from bigquery_etl.util.common import get_table_dir, get_unittests_dir, render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
 MOBILE_UNITTESTS_PATH = THIS_PATH / "templates/unittests/mobile"
@@ -124,8 +124,7 @@ def generate(target_project, output_dir, use_cloud_function):
         """Load, render and output unitest template."""
         test_folder = ""
         parts = 2
-        # Handle absolute and relative paths for tests, including ../
-        output_path = Path("tests").joinpath(*output_dir.parts[output_dir.is_absolute():])
+        output_path = get_unittests_dir(output_dir.parent) / output_dir.name
 
         for group in templates[template_type]:
             try:

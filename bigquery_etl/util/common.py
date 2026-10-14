@@ -615,6 +615,9 @@ def exit_if_running_under_coding_agent():
 
 def block_coding_agents(function: Callable) -> Callable:
     """Wrap a function so coding agents can only run it against a dev target."""
+    # Allow coding agents to run tests for `bqetl` commands that would otherwise be blocked.
+    if os.environ.get("PYTEST_VERSION") is not None:
+        return function
 
     @wraps(function)
     def wrapper(*args, **kwargs):

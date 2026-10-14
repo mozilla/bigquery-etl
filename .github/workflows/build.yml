@@ -535,13 +535,15 @@ jobs:
             cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
             cp -a sql/. /tmp/workspace/generated-sql/sql
 
-            # When the generators did not run, runs only the generators that write tests into /tmp, then keeps just their tests/ folder
-            for init in $(grep -l get_unittests_dir sql_generators/*/__init__.py); do
-              PATH=".venv/bin:$PATH" script/bqetl generate "$(basename "$(dirname "$init")")" \
-                --output-dir /tmp/generated-tests-scratch/sql/ \
+            # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
+            # no deleted or renamed SQL file, not a push to main, no manual trigger).
+            # Keep only their tests/ output for metadata validation.
+            for unittests_dir in sql_generators/*/templates/unittests; do
+              PATH=".venv/bin:$PATH" script/bqetl generate "$(basename "$(dirname "$(dirname "$unittests_dir")")")" \
+                --output-dir /tmp/generated-tests-temporary/sql/ \
                 --target-project moz-fx-data-shared-prod
             done
-            cp -r /tmp/generated-tests-scratch/tests /tmp/workspace/generated-sql/tests
+            cp -r /tmp/generated-tests-temporary/tests /tmp/workspace/generated-sql/tests
           fi
 
           PATH=".venv/bin:$PATH" script/bqetl query schema render \

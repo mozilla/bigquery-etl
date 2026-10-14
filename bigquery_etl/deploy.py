@@ -1,6 +1,7 @@
 """Utilities for deploying BigQuery tables from bigquery-etl queries."""
 
 import logging
+from datetime import date
 from pathlib import Path
 from typing import Optional
 
@@ -77,6 +78,16 @@ def deploy_table(
         ):
             raise SkippedDeployException(
                 f"Skipping deploy for {artifact_file}, null destination_table configured."
+            )
+
+        # Don't deploy deprecated tables once their deletion date has passed to allow for them to be manually deleted.
+        if (
+            metadata.deprecated
+            and metadata.deletion_date
+            and metadata.deletion_date <= date.today()
+        ):
+            raise SkippedDeployException(
+                f"Skipping deploy for {artifact_file}, deprecated with deletion_date {metadata.deletion_date}."
             )
     except FileNotFoundError:
         log.warning(f"No metadata found for {artifact_file}.")

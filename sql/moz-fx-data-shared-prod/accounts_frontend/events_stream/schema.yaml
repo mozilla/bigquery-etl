@@ -827,14 +827,14 @@ fields:
         ''security'', ''timeout'', ''no_passkey_found'', or ''unexpected''. See first_passkey_submit_frontend_error
         for full definitions.
 
+        * Categorized WebAuthn or sign-in error: ''not_allowed'', ''not_supported'',
+        ''security'', ''timeout'', ''no_passkey_found'', ''throttled'', ''request_blocked'',
+        ''authentication_failed'', ''challenge_expired'', or ''unexpected''. See first_passkey_submit_frontend_error
+        for full definitions.
+
         * Sign-in surface the user came from: ''emailfirst'' or ''login''.
 
-        * Sign-in surface the user came from: ''emailfirst'' (email-first page) or
-        ''signin'' (login page). Only these two surfaces reach the existing-password
-        page (no-password surfaces never do).
-
-        * Which sign-in flow brought the user to the set-password page: ''third_party_auth'',
-        ''otp'', or ''pass...'
+        * Sign-in su...'
     - name: referrer
       type: STRING
       mode: NULLABLE

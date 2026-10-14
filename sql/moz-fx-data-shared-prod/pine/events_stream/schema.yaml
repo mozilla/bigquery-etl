@@ -3975,10 +3975,12 @@ fields:
         * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
         parameter (i.e., the experiment slug).
 
+        * The `value` of the event.
+
         * The value is the ID of the add-on.
 
         * The event value. This is either "started", "success", "decryptionError"
-        or "encryptionError". "started" gets emitted at the start of the migrati...'
+        or "encryptionError". "started" gets emitted...'
     - name: variant_shown
       type: STRING
       mode: NULLABLE

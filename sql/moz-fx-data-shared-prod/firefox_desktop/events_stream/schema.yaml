@@ -2501,6 +2501,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The session sequence number (monotonically increasing across restarts).
+    - name: single_tabs_restored
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of times the user restored an individual tab from the list
+        before the outcome.
     - name: size
       type: INTEGER
       mode: NULLABLE
@@ -2663,6 +2668,10 @@ fields:
       mode: NULLABLE
       description: How many tabs the model rated as medium relevance. Absent when
         the request failed.
+    - name: tabs_offered
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of tabs the page offered to restore.
     - name: tabs_open
       type: INTEGER
       mode: NULLABLE
@@ -2711,7 +2720,9 @@ fields:
         * Number of tabs selected at the end
 
         * Number of tabs the model returned. Absent when the request failed, or when
-        the answer carried no tab list at all.'
+        the answer carried no tab list at all.
+
+        * Number of tabs selected at the time of the outcome.'
     - name: tabs_sent
       type: INTEGER
       mode: NULLABLE
@@ -3007,6 +3018,15 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The outer width of the browser window, in CSS pixels.
+    - name: windows_offered
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of windows the page offered to restore.
+    - name: windows_selected
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of windows with at least one tab selected at the time of
+        the outcome.
     - name: words_added
       type: INTEGER
       mode: NULLABLE
@@ -3468,6 +3488,11 @@ fields:
       mode: NULLABLE
       description: The Captive Portal Service state - unknown, not_captive, locked,
         or unlocked
+    - name: card_state
+      type: STRING
+      mode: NULLABLE
+      description: 'The card the open came from: "choose" for the first open, "complete"
+        for a later open from the finished card.'
     - name: category
       type: STRING
       mode: NULLABLE
@@ -3693,6 +3718,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The stacktrace for the React component where the error occurred.
+    - name: component_type
+      type: STRING
+      mode: NULLABLE
+      description: The component name recorded for creation, for example "Header"
+        or "List_column". "unknown" when the click is outside those blocks.
     - name: components_used
       type: STRING
       mode: NULLABLE
@@ -4517,6 +4547,12 @@ fields:
 
         * Joins to sibling firefox.ai.runtime.engine_run and run_inference_success_flow
         events for the same inference.'
+    - name: font
+      type: STRING
+      mode: NULLABLE
+      description: 'Heading font install, recorded beside outcome: "ready" when the
+        face was added, "unavailable" when no font bytes were sent, "error" when installing
+        the face failed.'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -5416,6 +5452,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The panel the user is switching from
+    - name: open_target
+      type: STRING
+      mode: NULLABLE
+      description: 'Where the page opens: "current" or "new".'
     - name: opened_from
       type: STRING
       mode: NULLABLE
@@ -5520,20 +5560,22 @@ fields:
 
         * Whether the user kept the value. One of: kept, edited, or cleared.
 
+        * What became of the page, one of: - "restore_all": the session was restored
+        with every window and tab selected - "restore_subset": the session was restored
+        with some windows or tabs deselected - "start_new_session": the user chose
+        to start a new session rather than restore, or asked to restore with nothing
+        selected - "no_data": the page had no session data to offer - "abandoned":
+        the page was closed or navigated away from without any of the above - "shutdown":
+        the browser quit with the page still open; the page is restored with the session,
+        so a later impression follows
+
+        * "ready", "unavailable", or "error".
+
         * What the user did with the generated value before submitting it. One of:
         kept, edited, or cleared.
 
         * How the flow ended. One of: completed (the user signed in), abandoned (the
-        user closed the sign-in tab or window without finishing), blocked (an account
-        cannot be connected, so the sign-in page was never shown), or error (the flow
-        threw)
-
-        * `recovered` (focus returned and the session resumed), `ended_permanent`
-        (a permanent loss inactivated it), or `unresolved_at_teardown` (a transient
-        interruption never resolved before the controller went away).
-
-        * How the session ended: `stopped`, `aborted`, `error` or `discarded` when
-        the owning window went away before the session finished.'
+        user closed the sign-in tab or window without finishing), blocked (an accoun...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -6094,13 +6136,15 @@ fields:
 
         * "ok", or "error" when initialization aborted with a fatal error.
 
+        * "switch" when an existing tab was focused, "new" when a tab was opened,
+        "error" when that attempt failed.
+
         * Outcome of the action: success, partial_success, no_match, cancelled, or
         error.
 
         * The outcome of the attempt to pin, values include: - `success_pinned`: The
         pin request was affirmed by the user. - `success_rejected`: The pin request
-        was rejected by the user or system. - `success_fire_and_forget`: The pin request
-        was submitted, but its result is unknown. - `error_get_aumid`: Failed to get...'
+        was rejected by the user or system. - `success_fi...'
     - name: results
       type: STRING
       mode: NULLABLE
@@ -6404,6 +6448,14 @@ fields:
       mode: NULLABLE
       description: The key combination pressed. Used only in the case that entrypoint
         === KeyShortcut.
+    - name: show_reason
+      type: STRING
+      mode: NULLABLE
+      description: Why the page was shown, one of "old_session", "many_crashes", "many_crashes_old_session"
+        or "safe_mode" (see session_restore.startup_session_decision's interstitial_reason)
+        or "profile_refresh" (about:welcomeback, shown after refreshing the profile).
+        Unset if unknown, which includes about:sessionrestore shown because the previous
+        session crashed with only about:welcomeback open.
     - name: shutdown_ok
       type: STRING
       mode: NULLABLE

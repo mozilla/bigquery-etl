@@ -7,6 +7,14 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Unique identifier for the support question in Kitsune (SUMO).
+- name: question_creator
+  type: STRING
+  mode: NULLABLE
+  description: Kitsune (SUMO) username of the user who created the support question.
+- name: answer_creator
+  type: STRING
+  mode: NULLABLE
+  description: Kitsune (SUMO) username of the user who created the answer; NULL when no answer exists.
 - name: answer_id
   type: INTEGER
   mode: NULLABLE
@@ -77,6 +85,23 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of unhelpful votes the answer has received from Kitsune users.
+- name: page_views
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of page views the support question has received on Kitsune (SUMO).
+- name: is_solved
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the support question has been marked as solved on Kitsune (SUMO).
+- name: is_locked
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the support question thread is locked on Kitsune (SUMO). The query
+    filters to unlocked questions (`is_locked = FALSE`), so this is effectively always FALSE.
+- name: num_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of votes (e.g. "me too" / interest votes) the support question has received on Kitsune (SUMO).
 - name: question_summary_llm
   type: STRING
   mode: NULLABLE

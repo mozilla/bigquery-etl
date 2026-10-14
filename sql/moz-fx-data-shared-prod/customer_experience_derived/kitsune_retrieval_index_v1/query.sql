@@ -24,7 +24,11 @@ WITH kitsune_questions AS (
     q.tier2_topic,
     q.tier3_topic,
     q.title,
-    q.question_content AS content
+    q.question_content AS content,
+    q.page_views,
+    q.is_solved,
+    q.is_locked,
+    q.num_votes
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
   WHERE
@@ -87,6 +91,8 @@ kitsune_embedding AS (
 SELECT
   DATE(kitsune_joined.question_created_at) AS creation_date,
   question_id,
+  question_creator,
+  answer_creator,
   answer_id,
   kitsune_joined.title,
   kitsune_joined.content,
@@ -107,6 +113,10 @@ SELECT
   END AS is_self_answer,
   num_helpful_votes,
   num_unhelpful_votes,
+  page_views,
+  is_solved,
+  is_locked,
+  num_votes,
   kitsune_llm.llm_result.question_summary_llm,
   kitsune_llm.llm_result.question_category_llm,
   kitsune_llm.llm_result.question_language_llm,

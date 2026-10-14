@@ -882,6 +882,22 @@ def validate_datasets(target):
         )
 
 
+def validate_directories(table_dirs, dataset_dirs):
+    """Validate table and dataset metadata directories, returning error messages."""
+    errors = []
+    for table_dir in table_dirs:
+        try:
+            validate(table_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    for dataset_dir in dataset_dirs:
+        try:
+            validate_datasets(dataset_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    return errors
+
+
 def main():
     """Validate all metadata.yaml files in the provided target directory."""
     args = parser.parse_args()

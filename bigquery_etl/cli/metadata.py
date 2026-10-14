@@ -1,5 +1,6 @@
 """bigquery-etl CLI metadata command."""
 
+import os
 import re
 from datetime import datetime
 from functools import partial
@@ -12,6 +13,7 @@ from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     DatasetMetadata,
     Metadata,
     WorkgroupAccessMetadata,
@@ -24,7 +26,10 @@ from bigquery_etl.metadata.validate_metadata import (
 from bigquery_etl.metadata.validate_metadata import (
     validate_deprecation as validate_deprecation_metadata,
 )
-from bigquery_etl.metadata.validate_metadata import validate_workgroup_access
+from bigquery_etl.metadata.validate_metadata import (
+    validate_directories,
+    validate_workgroup_access,
+)
 
 from ..cli.utils import (
     parallelism_option,
@@ -337,6 +342,64 @@ def deprecate(
 
     if not table_metadata_files:
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
+
+
+@metadata.command(help="""
+    Validate table and dataset metadata files without dry running or formatting queries.
+
+    With no arguments, validates the metadata of every table in all projects under
+    the sql directory, plus every dataset_metadata.yaml (including datasets that
+    have no tables). Pass a name pattern and/or --project-id to narrow the scope.
+    Files listed under metadata.validation.skip in bqetl_project.yaml are skipped.
+
+    Example:
+
+    \b
+     ./bqetl metadata validate
+     ./bqetl metadata validate telemetry_derived.clients_daily_v6
+     ./bqetl metadata validate "telemetry_derived.*"
+     ./bqetl metadata validate --project-id moz-fx-data-shared-prod
+    """)
+@click.argument("name", required=False)
+@project_id_option()
+@sql_dir_option
+def validate(name: Optional[str], sql_dir: str, project_id: Optional[str]):
+    """Validate table and dataset metadata files."""
+    # relative paths are needed to match `metadata.validation.skip` entries
+    sql_dir = os.path.relpath(sql_dir)
+    metadata_files = paths_matching_name_pattern(
+        name or "*.*", sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+    if name and not metadata_files:
+        raise click.ClickException(f"No metadata files found matching: {name}")
+
+    table_dirs = sorted({Path(f).parent for f in metadata_files})
+    dataset_dirs = {d.parent for d in table_dirs}
+
+    # without a name, also cover datasets that have no tables
+    if name is None:
+        project_dirs = (
+            [Path(sql_dir) / project_id]
+            if project_id
+            else [p for p in Path(sql_dir).iterdir() if p.is_dir()]
+        )
+        dataset_dirs.update(
+            d
+            for project_dir in project_dirs
+            if project_dir.is_dir()
+            for d in project_dir.iterdir()
+            if d.is_dir() and (d / DATASET_METADATA_FILE).exists()
+        )
+
+    errors = validate_directories(table_dirs, sorted(dataset_dirs))
+    if errors:
+        click.echo(
+            click.style(f"Metadata validation failed ({len(errors)}):", fg="red")
+        )
+        click.echo("\n".join(errors))
+        raise MetadataValidationError(f"Metadata validation failed for: {errors}")
+
+    click.echo(f"Validated metadata for {len(table_dirs)} tables.")
 
 
 @metadata.command(help="""

@@ -135,14 +135,23 @@ class Schema:
         else:
             raise KeyError(f"Field not found: {field_path}")
 
-    def deploy(self, destination_table: str) -> bigquery.Table:
-        """Deploy the schema to BigQuery named after destination_table."""
-        client = bigquery.Client()
+    def deploy(
+        self,
+        destination_table: str,
+        client: Optional[bigquery.Client] = None,
+        table: Optional[bigquery.Table] = None,
+    ) -> bigquery.Table:
+        """Deploy the schema to BigQuery named after destination_table.
+
+        Pass `table` when the caller already fetched it to skip a redundant get_table call.
+        """
+        client = client or bigquery.Client()
         bigquery_schema = self.to_bigquery_schema()
 
         try:
-            # destination table already exists, update schema
-            table = client.get_table(destination_table)
+            if table is None:
+                # destination table already exists, update schema
+                table = client.get_table(destination_table)
             table.schema = bigquery_schema
             return client.update_table(table, ["schema"])
         except NotFound:

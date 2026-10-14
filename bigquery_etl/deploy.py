@@ -41,6 +41,7 @@ def deploy_table(
     credentials=None,
     id_token=None,
     isolated: bool = False,
+    client: Optional[bigquery.Client] = None,
 ) -> None:
     """Deploy a query to a destination."""
     # Under --isolated, schema.yaml is authoritative and the table must
@@ -94,7 +95,7 @@ def deploy_table(
     except Exception as e:  # TODO: Raise/catch more specific exception
         raise SkippedDeployException(f"Schema missing for {artifact_file}.") from e
 
-    client = bigquery.Client(credentials=credentials)
+    client = client or bigquery.Client(credentials=credentials)
     # Skip the query-vs-schema dryrun check only in the isolated + skip-listed
     # case (rewritten refs in the target tree won't resolve in prod). Tying
     # this to isolated rather than dryrun_skipped alone keeps the bypass

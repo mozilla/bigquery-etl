@@ -7,7 +7,9 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: The name of the browser.
+  description: The name of the browser, e.g. 'Fenix', 'Firefox iOS', 'Focus Android',
+    'Focus iOS', 'Klar Android', 'Klar iOS'. BrowserStack and MozillaOnline clients get
+    a suffixed value (e.g. 'Fenix BrowserStack').
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -15,7 +17,8 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: The normalized channel the application is being distributed on. All
+    channels are included; filter channel = 'release' explicitly for most analyses.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -29,6 +32,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
+    Truncated to the language part, e.g. 'en-US' is stored as 'en'.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
@@ -84,11 +88,19 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: The id of the browser distribution made available in installation sources.
+  description: The id of the browser distribution made available in installation
+    sources. Only populated for Fenix; NULL for other apps. For Fenix it comes from
+    fenix.firefox_android_clients, which collapses values to 'com.android.vending',
+    'Other' or 'Unknown'. It reads the metrics ping metric metrics.install_source, which
+    stopped being populated for most new profiles around Sept 2024 (replaced by
+    first_session.install_source, bug 1908383), so recent clients mostly show 'Unknown'.
+    Use fenix.attribution_clients or fenix.new_profile_clients for install source
+    analysis.
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Count of users who report a ping in a day.
+  description: Count of users who report a ping in a day. No activity requirement, so it
+    is always >= dau. Do not use it as DAU.
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
@@ -101,7 +113,8 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: The number of daily active users, corresponding to the count of clients
-    that reported at least one ping on the submission_date and qualify as active.
+    that reported at least one ping on the submission_date and qualify as active
+    (baseline ping duration > 0). This is the column used for the DAU KPI.
 - name: wau
   type: INTEGER
   mode: NULLABLE

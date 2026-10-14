@@ -10,6 +10,13 @@ description: |-
   are qualified as active users.
   - daily_users counts all the users who reported a ping on the date.
   Only dau is exposed in the view telemetry.active_users_aggregates.
+  - All channels are included. Filter channel = 'release' explicitly.
+  {%- if app_name == "fenix" %}
+  - install_source comes from fenix.firefox_android_clients (metrics ping) and
+  is collapsed to 'com.android.vending' / 'Other' / 'Unknown'. It is unreliable
+  since Sept 2024; use fenix.attribution_clients or fenix.new_profile_clients
+  for install source analysis.
+  {%- endif %}
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.

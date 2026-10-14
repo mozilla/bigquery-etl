@@ -138,6 +138,10 @@ def generate(target_project, output_dir, use_cloud_function):
                             dataset == "firefox_desktop"
                             and file_name == "desktop_active_users"
                         )
+                        or (
+                            dataset == "focus_android"
+                            and file_name == "core_clients_last_seen"
+                        )
                         else dataset
                     )
                     _file = (

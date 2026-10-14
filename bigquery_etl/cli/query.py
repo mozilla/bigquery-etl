@@ -67,6 +67,7 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     DATASET_METADATA_FILE,
+    DEFAULT_DESCRIPTION_IN_METADATA,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -243,7 +244,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         view_metadata_file = view_path / "metadata.yaml"
         view_metadata = Metadata(
             friendly_name=string.capwords(name.replace("_", " ")),
-            description="Please provide a description for the query",
+            description=DEFAULT_DESCRIPTION_IN_METADATA,
             owners=[owner],
             labels={"owner": safe_owner},
         )
@@ -261,7 +262,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     metadata_file = derived_path / "metadata.yaml"
     metadata = Metadata(
         friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the query",
+        description=DEFAULT_DESCRIPTION_IN_METADATA,
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(

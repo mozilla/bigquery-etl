@@ -1,0 +1,22 @@
+friendly_name: accountActivity table from production fxa_oauth database
+description: |
+  A mirror of the `accountActivity` table from the production `fxa_oauth` CloudSQL database, updated daily to match the current state of the table.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa_oauth
+owners:
+- wclouser@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_db_daily
+  owner1: wclouser
+scheduling:
+  dag_name: bqetl_accounts_db_daily
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential/data-viewers
+  - workgroup:fxa/fraud-bot
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-oauth-prod-prod-fxa-oauth', 'SELECT\n         userId,\n         clientId,\n         scopeId,\n         firstSeenAt,\n         lastSeenAt\n       FROM\n         fxa_oauth.accountActivity\n    ')

@@ -431,6 +431,7 @@ jobs:
     environment: *job-env
     outputs:
       generated-sql-commit: ${{ steps.generate.outputs.generated-sql-commit }}
+      generated-sql-changed: ${{ steps.generate.outputs.generated-sql-changed }}
     steps:
       - &checkout-with-creds
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -513,6 +514,9 @@ jobs:
             GENERATED_SQL_CHANGED=true
           fi
 
+          # Records whether the generators ran (generated-sql-changed=true/false) so later jobs can read it
+          echo "generated-sql-changed=$GENERATED_SQL_CHANGED" >> "$GITHUB_OUTPUT"
+
           mkdir -p /tmp/workspace/generated-sql
           cp bqetl_project.yaml /tmp/workspace/generated-sql/
 
@@ -530,6 +534,16 @@ jobs:
 
             cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
             cp -a sql/. /tmp/workspace/generated-sql/sql
+
+            # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
+            # no deleted or renamed SQL file, not a push to main, no manual trigger).
+            # Keep only their tests/ output for metadata validation.
+            for unittests_dir in sql_generators/*/templates/unittests; do
+              PATH=".venv/bin:$PATH" script/bqetl generate "$(basename "$(dirname "$(dirname "$unittests_dir")")")" \
+                --output-dir /tmp/generated-tests-temporary/sql/ \
+                --target-project moz-fx-data-shared-prod
+            done
+            cp -r /tmp/generated-tests-temporary/tests /tmp/workspace/generated-sql/tests
           fi
 
           PATH=".venv/bin:$PATH" script/bqetl query schema render \
@@ -543,6 +557,12 @@ jobs:
             --sql-dir /tmp/workspace/generated-sql/sql/ \
             /tmp/workspace/generated-sql/sql/
           PATH=".venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
+
+          # Moves the generated tests out of generated-sql into their own artifact, generated-unittests,
+          # which the validate-metadata and deploy-changes-to-stage jobs download;
+          # private CI downloads only generated-sql, so it never receives them
+          mkdir -p /tmp/workspace/generated-unittests
+          mv /tmp/workspace/generated-sql/tests /tmp/workspace/generated-unittests/tests
       - name: Copy schema cache for reuse in other jobs
         run: |
           mkdir -p /tmp/workspace/schema-cache
@@ -553,6 +573,10 @@ jobs:
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: generated-unittests
+          path: /tmp/workspace/generated-unittests
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: schema-cache
@@ -689,6 +713,15 @@ jobs:
         run: |
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
+      # Copies the generated tests into tests/sql/ only when the changed flag is true, so test-sql runs them
+      - if: needs.generate-sql.outputs.generated-sql-changed == 'true'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: generated-unittests
+          path: /tmp/workspace/generated-unittests
+      - name: Move generated unit tests into place
+        if: needs.generate-sql.outputs.generated-sql-changed == 'true'
+        run: cp -r /tmp/workspace/generated-unittests/tests/sql/. tests/sql/
       - name: Pull in generated-sql branch from remote
         env:
           GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
@@ -904,6 +937,13 @@ jobs:
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
       - *download-generated-sql
       - *copy-generated-sql
+      # Copies the generated tests into tests/sql/, where metadata validate looks
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: generated-unittests
+          path: /tmp/workspace/generated-unittests
+      - name: Move generated unit tests into place
+        run: cp -r /tmp/workspace/generated-unittests/tests/sql/. tests/sql/
       - name: Verify that metadata files are valid
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate

@@ -201,6 +201,12 @@ def get_table_dir(output_dir, full_table_id, parts=2):
     return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-parts:])))
 
 
+def get_unittests_dir(sql_dir):
+    """Return the unittests directory associated to a sql directory."""
+    sql_dir = Path(sql_dir)
+    return sql_dir.parent / "tests" / sql_dir.name
+
+
 def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
     """Write out a query to a location based on the table ID.
 

@@ -17,6 +17,7 @@ from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_ide
 
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
+DEFAULT_DESCRIPTION_IN_METADATA = "Please provide a description for the query"
 DEFAULT_WORKGROUP_ACCESS = [
     dict(
         role="roles/bigquery.dataViewer",
@@ -403,7 +404,7 @@ class Metadata:
                 )
                 description = metadata.get(
                     "description",
-                    "Please provide a description for the query",
+                    DEFAULT_DESCRIPTION_IN_METADATA,
                 )
 
                 if "labels" in metadata:

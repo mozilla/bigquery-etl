@@ -4,4 +4,8 @@ description: >
   https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload
   and
   https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171
+  Note: the output field order must exactly match the field order expected by
+  mozilla_vpn_derived.guardian_apple_events_v1 and the downstream
+  subscription_platform_derived apple_subscriptions tables, so field order
+  here should not be changed without updating those queries.
 friendly_name: Parse Apple IAP Event from Subscription Platform

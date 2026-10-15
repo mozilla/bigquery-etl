@@ -669,27 +669,45 @@ jobs:
             -f description="Failed to dispatch private CI, see Trigger Private CI job"
 
   skip-private-ci:
-    name: Report Private CI Not Needed
+    name: Report Private CI Skipped
     runs-on: ubuntu-latest
-    needs: [decide-runs]
-    # Inverse of trigger-private-ci's condition: when private CI isn't
-    # dispatched nothing else reports its required status, so PRs and merge
-    # groups would wait on it forever
+    needs: [decide-runs, trigger-private-ci]
+    # When private CI isn't dispatched nothing else reports its required
+    # status, so PRs and merge groups would wait on it forever. That happens
+    # when it isn't needed, but also when an upstream job (e.g. Generate SQL)
+    # fails or is cancelled and trigger-private-ci gets skipped
     if: |
+      always() &&
       (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
-      needs.decide-runs.outputs.validate-sql != 'true' && needs.decide-runs.outputs.deploy != 'true'
+      needs.trigger-private-ci.result == 'skipped'
     permissions:
       statuses: write
     steps:
-      - name: Report success status
+      - name: Report status
         env:
           GH_TOKEN: ${{ github.token }}
           SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DECIDE_RUNS_RESULT: ${{ needs.decide-runs.result }}
+          VALIDATE_SQL: ${{ needs.decide-runs.outputs.validate-sql }}
+          DEPLOY: ${{ needs.decide-runs.outputs.deploy }}
         run: |
+          if [[ "$DECIDE_RUNS_RESULT" != "success" ]]; then
+            state=error
+            description="Couldn't determine whether private CI is needed"
+          elif [[ "$VALIDATE_SQL" == "true" || "$DEPLOY" == "true" ]]; then
+            state=error
+            description="Private CI not dispatched because an upstream job failed"
+          else
+            state=success
+            description="Not needed: no SQL, DAG or workflow changes"
+          fi
+
           gh api "repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
-            -f state=success \
+            -f state="$state" \
             -f context="private-bigquery-etl / Private CI" \
-            -f description="Not needed: no SQL, DAG or workflow changes"
+            -f target_url="$RUN_URL" \
+            -f description="$description"
 
   docs:
     name: Build and Deploy Documentation

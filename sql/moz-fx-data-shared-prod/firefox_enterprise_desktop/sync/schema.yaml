@@ -348,9 +348,6 @@ fields:
       description: 'Action taken by user through prompt for creating a login. (0=Prompt
         displayed [always recorded], 1=Add login, 2=Don''t save now, 3=Never save)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_PROMPT_REMEMBER_ACTION.
-
         '
     - name: pwmgr_prompt_update_action
       type: RECORD
@@ -372,9 +369,6 @@ fields:
       description: 'Action taken by user through prompt for modifying a login. (0=Prompt
         displayed [always recorded], 1=Update login, 2=Don''t update, 3=Remove saved
         login)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PWMGR_PROMPT_UPDATE_ACTION.
 
         '
   - name: datetime

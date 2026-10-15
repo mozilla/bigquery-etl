@@ -4224,12 +4224,13 @@ fields:
         otherwise, including when records were rejected or came up short: the counts
         already describe that.
 
+        * The error code after users click the email alias generation panel. When
+        the event is successful, the error_code is 0.
+
         * The string representation of the error code.
 
         * Why creation failed: limit_reached (the active monitor cap), invalid_input
-        (no prompt, no valid URL, too many URLs or a bad schedule), storage_error
-        (the IndexedDB write failed), interrupted (the browser is shutting down) or
-        unknown_error. Only present w...'
+        (no prompt, no valid URL, too many URLs or a bad schedule),...'
     - name: error_kind
       type: STRING
       mode: NULLABLE

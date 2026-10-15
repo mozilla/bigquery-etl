@@ -1507,7 +1507,10 @@ fields:
         * Duration of the call as seen by the caller, measured in LoginManager around
         the delegation to the active backend.
 
-        * How long the mini window was open, in milliseconds.'
+        * How long the mini window was open, in milliseconds.
+
+        * How long the panel was open, in milliseconds, measured from the moment it
+        was shown.'
     - name: edited
       type: INTEGER
       mode: NULLABLE
@@ -3135,11 +3138,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Whether and what type of breach alert was shown.
+
         * What type of breach alert was dismissed.
 
-        * What type of breach alert triggered the animation.
-
-        * Whether and what type of breach alert was shown.'
+        * What type of breach alert triggered the animation.'
     - name: build_id
       type: STRING
       mode: NULLABLE
@@ -3199,6 +3202,11 @@ fields:
       mode: NULLABLE
       description: The Captive Portal Service state - unknown, not_captive, locked,
         or unlocked
+    - name: card_state
+      type: STRING
+      mode: NULLABLE
+      description: 'The card the open came from: "choose" for the first open, "complete"
+        for a later open from the finished card.'
     - name: category
       type: STRING
       mode: NULLABLE
@@ -3350,6 +3358,14 @@ fields:
         * Type of notification interaction: "open_url" (body clicked to open watched
         page), "snooze" (snooze button clicked), or "dismiss" (dismiss button clicked
         to mute notifications).'
+    - name: closing_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'What closed the panel: "dismissed" when the user closed it without
+        acting on it, "navigated" when the page navigated away, or the action taken,
+        one of "etpToggled", "siteDataCleared", "clearSiteDataCancelled", "pageInfoOpened",
+        "certExceptionRemoved", "httpsOnlyChanged", "privacySettingsOpened", "smartblockToggled"
+        and "monitorOpened".'
     - name: code
       type: STRING
       mode: NULLABLE
@@ -3401,6 +3417,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The stacktrace for the React component where the error occurred.
+    - name: component_type
+      type: STRING
+      mode: NULLABLE
+      description: The component name recorded for creation, for example "Header"
+        or "List_column". "unknown" when the click is outside those blocks.
     - name: components_used
       type: STRING
       mode: NULLABLE
@@ -3436,6 +3457,11 @@ fields:
         experiment that caused the unenrollment.
 
         * The slug for the conflicting rollout.'
+    - name: connection
+      type: STRING
+      mode: NULLABLE
+      description: The connection state of the page the subview was opened for, for
+        example "secure", "secure-ev", "not-secure", "cert-error-page" or "https-only-error-page".
     - name: connection_id
       type: STRING
       mode: NULLABLE
@@ -3856,12 +3882,13 @@ fields:
         otherwise, including when records were rejected or came up short: the counts
         already describe that.
 
+        * The error code after users click the email alias generation panel. When
+        the event is successful, the error_code is 0.
+
         * The string representation of the error code.
 
         * Why creation failed: limit_reached (the active monitor cap), invalid_input
-        (no prompt, no valid URL, too many URLs or a bad schedule), storage_error
-        (the IndexedDB write failed), interrupted (the browser is shutting down) or
-        unknown_error. Only present w...'
+        (no prompt, no valid URL, too many URLs or a bad schedule),...'
     - name: error_kind
       type: STRING
       mode: NULLABLE
@@ -4150,6 +4177,12 @@ fields:
 
         * Joins to sibling firefox.ai.runtime.engine_run and run_inference_success_flow
         events for the same inference.'
+    - name: font
+      type: STRING
+      mode: NULLABLE
+      description: 'Heading font install, recorded beside outcome: "ready" when the
+        face was added, "unavailable" when no font bytes were sent, "error" when installing
+        the face failed.'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -4995,10 +5028,26 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The panel the user is switching from
+    - name: open_target
+      type: STRING
+      mode: NULLABLE
+      description: 'Where the page opens: "current" or "new".'
     - name: opened_from
       type: STRING
       mode: NULLABLE
       description: The method by which the full-page translations panel was opened.
+    - name: opening_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * How the panel was opened, one of "shieldButtonClicked", "embedPlaceholderButton",
+        or "unknown" when it was opened without a reason.
+
+        * How the panel was opened: "shieldButtonClicked" when the user clicked the
+        shield icon in the URL bar, "embedPlaceholderButton" when it was opened from
+        a SmartBlock embed placeholder, or "unknown" when it was opened without a
+        reason.'
     - name: openingReason
       type: STRING
       mode: NULLABLE
@@ -5096,12 +5145,13 @@ fields:
         the browser quit with the page still open; the page is restored with the session,
         so a later impression follows
 
+        * "ready", "unavailable", or "error".
+
         * What the user did with the generated value before submitting it. One of:
         kept, edited, or cleared.
 
         * How the flow ended. One of: completed (the user signed in), abandoned (the
-        user closed the sign-in tab or window without finishing), blocked (an account
-        cannot be connected, so the sign-in ...'
+        user closed the sign-in tab or window without finishing), blocked (an accoun...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -5638,6 +5688,9 @@ fields:
 
         * "ok", or "error" when initialization aborted with a fatal error.
 
+        * "switch" when an existing tab was focused, "new" when a tab was opened,
+        "error" when that attempt failed.
+
         * Outcome of the action: success, partial_success, no_match, unclear_target,
         blocked, cancelled, or error.
 
@@ -5646,8 +5699,7 @@ fields:
 
         * The outcome of the attempt to pin, values include: - `success_pinned`: The
         pin request was affirmed by the user. - `success_rejected`: The pin request
-        was rejected by the user or system. - `success_fire_and_forget`: The pin request
-        was submitted, but its result is unknown. - `error_get_aumid`: Failed to get...'
+        was rejected by the user or system. - `success_fi...'
     - name: results
       type: STRING
       mode: NULLABLE
@@ -5915,6 +5967,9 @@ fields:
       description: 'Depending on the type of event:
 
         * Identifier for the setting.
+
+        * The newly selected HTTPS-Only Mode setting for the site: "on", "off" or
+        "off-temporarily".
 
         * One of * `disabled` * `optional` * `required`'
     - name: severity

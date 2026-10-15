@@ -2123,11 +2123,11 @@ fields:
         otherwise, including when records were rejected or came up short: the counts
         already describe that.
 
-        * The SpeechRecognitionErrorCode of the error event, snake_cased. Empty when
-        `outcome` is not `error`.
-
         * The error code after users click the email alias generation panel. When
-        the event is successful, the error_code is 0.'
+        the event is successful, the error_code is 0.
+
+        * The SpeechRecognitionErrorCode of the error event, snake_cased. Empty when
+        `outcome` is not `error`.'
     - name: error_kind
       type: STRING
       mode: NULLABLE
@@ -3686,9 +3686,7 @@ fields:
         * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
         ``"timer"``, ``"forced"``, ``"manual"``).
 
-        * What triggered the region change (idle-daily, timezone-changed).
-
-        * For "...'
+        * What triggered the OS Keystore Popup. "edit" - when editing credit cards...'
     - name: trr
       type: STRING
       mode: NULLABLE

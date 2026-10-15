@@ -2504,14 +2504,15 @@ fields:
         otherwise, including when records were rejected or came up short: the counts
         already describe that.
 
+        * The error code after users click the email alias generation panel. When
+        the event is successful, the error_code is 0.
+
         * The error code describing what occurred during import. Current values are:
         1xxx - errors imply a file reading error 1001 - file read error 2xxx - errors
         imply an error encountered during parsing 2001 - parsing error - unsupported
         content type (like an html file that is not netscape format) 2002 - parsing
         error - invalid format (content type is supported, but has a bad format) 2003
-        - parsing error - an unexpected error related to parsing 3xxx - errors imply
-        an error encountered during bookmark insertion 3001 - bookmarks save error
-        4xxx - other errors not yet handled/cl...'
+        - parsing error - an unexpected error related to parsing 3xxx - errors...'
     - name: error_kind
       type: STRING
       mode: NULLABLE

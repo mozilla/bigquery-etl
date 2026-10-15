@@ -616,14 +616,14 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
                     table=table,
                 )
 
-                if metadata.monitoring.partition_column:
-                    bigconfig.row_creation_times = RowCreationTimes(
-                        column_selectors=[
-                            ColumnSelector(
-                                name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
-                            )
-                        ]
-                    )
+            if metadata.monitoring.partition_column:
+                bigconfig.row_creation_times = RowCreationTimes(
+                    column_selectors=[
+                        ColumnSelector(
+                            name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
+                        )
+                    ]
+                )
 
             # Apply our centralized collection configurations to the BigConfig file.
             workspace_id = _resolve_workspace(metadata)

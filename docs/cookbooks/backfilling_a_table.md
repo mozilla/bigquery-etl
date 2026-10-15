@@ -130,6 +130,7 @@ This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-1005
       If it doesn't, put the username with `@mozilla.com` instead (an email won't be sent there).
       e.g. if your username is `abcdef`, set the watcher to `abcdef@mozilla.com`
   - Reason: Why are you backfilling this table?
+  - Billing project: if set, must start with `moz-fx-data-backfill-`; the CLI defaults to `moz-fx-data-backfill-slots`.
 
 3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.
 

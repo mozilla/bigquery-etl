@@ -2,3 +2,9 @@ friendly_name: |-
   Contile Filter ADM Empty Response
 owners:
 - rburwei@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null

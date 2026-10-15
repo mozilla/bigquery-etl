@@ -2,3 +2,9 @@ friendly_name: |-
   Contile Tiles ADM Response Tiles Count
 owners:
 - rburwei@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null

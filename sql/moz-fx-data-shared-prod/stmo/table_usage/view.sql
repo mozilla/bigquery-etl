@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.stmo_table_usage`
+  `moz-fx-data-shared-prod.stmo.table_usage`
 AS
 WITH jobs AS (
   SELECT DISTINCT
@@ -59,28 +59,16 @@ query_usage AS (
     reference_table_id,
     query_id
 ),
-dashboard_view_events AS (
-  SELECT
-    SAFE_CAST(object_id AS INT64) AS dashboard_id,
-    user_id,
-  FROM
-    `moz-fx-data-shared-prod.stmo_external.events_v1`
-  WHERE
-    created_at >= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY))
-    AND action = 'view'
-    AND object_type = 'dashboard'
-  -- Exclude scripts that crawl Redash, which view nearly every dashboard each day
-  QUALIFY
-    user_id IS NULL
-    OR COUNT(DISTINCT object_id) OVER (PARTITION BY user_id, DATE(created_at)) < 500
-),
 dashboard_views AS (
   SELECT
-    dashboard_id,
-    COUNT(*) AS views,
-    COUNT(DISTINCT user_id) AS users,
+    object_id AS dashboard_id,
+    SUM(views) AS views,
+    COUNT(DISTINCT user_email) AS users,
   FROM
-    dashboard_view_events
+    `moz-fx-data-shared-prod.stmo.object_views_daily`
+  WHERE
+    object_type = 'dashboard'
+    AND submission_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
   GROUP BY
     dashboard_id
 ),
@@ -98,7 +86,7 @@ table_dashboards AS (
   FROM
     query_usage
   INNER JOIN
-    `moz-fx-data-shared-prod.monitoring.stmo_query_dashboards` AS query_dashboards
+    `moz-fx-data-shared-prod.stmo.query_dashboards` AS query_dashboards
     USING (query_id)
   LEFT JOIN
     dashboard_views

@@ -31,5 +31,8 @@
       period and the last day will be the same whether or not the partition
       preceding the first day was missing because values are only impacted by
       27 preceding days
+- Airflow will not automatically backfill older dates when `start_date` is
+  set in the past; backfilling must be done via the Airflow web interface or
+  CLI
 
 [dags.main_summary.exact_mau28_by_dimensions]: https://github.com/mozilla/telemetry-airflow/blob/89a6dc3/dags/main_summary.py#L385-L390

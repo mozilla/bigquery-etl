@@ -9,6 +9,7 @@ deletion_date are reported to Slack.
 
 import logging
 import os
+from collections import defaultdict
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
@@ -141,12 +142,20 @@ def format_slack_message(token, rows):
         "from BigQuery and private-/bigquery-etl or file a ticket requesting "
         f"deletion <{DELETION_REQUEST_URL}|here>."
     ]
+    # group tables sharing the same owners so each table is listed only once
+    tables_by_owners = defaultdict(list)
     for row in sorted(rows, key=lambda r: r["deletion_date"]):
-        table = f"{row['project_id']}.{row['dataset_id']}.{row['table_id']}"
-        owners = " ".join(mention(token, owner) for owner in row["owners"])
-        lines.append(
-            f"• {owners} `{table}` (deletion date: {row['deletion_date']})"
-        )
+        tables_by_owners[tuple(sorted(row["owners"]))].append(row)
+
+    # tables without owners are listed last
+    for owners, owner_rows in sorted(
+        tables_by_owners.items(), key=lambda item: (not item[0], item[0])
+    ):
+        mentions = " ".join(mention(token, owner) for owner in owners)
+        lines.append(f"\n• {mentions or 'No owners'}")
+        for row in owner_rows:
+            table = f"{row['project_id']}.{row['dataset_id']}.{row['table_id']}"
+            lines.append(f"    ◦ `{table}` (deletion date: {row['deletion_date']})")
     return "\n".join(lines)
 
 

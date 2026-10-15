@@ -619,12 +619,18 @@ def exit_if_running_under_coding_agent():
         sys.exit(1)
 
 
+# This flag exists so it can be overridden by pytest to allow coding agents to run tests for commands
+# that would otherwise be blocked.  See the `unblock_coding_agents` fixture in the root `conftest.py`.
+_BLOCK_CODING_AGENTS = True
+
+
 def block_coding_agents(function: Callable) -> Callable:
     """Wrap a function so coding agents can only run it against a dev target."""
 
     @wraps(function)
     def wrapper(*args, **kwargs):
-        exit_if_running_under_coding_agent()
+        if _BLOCK_CODING_AGENTS:
+            exit_if_running_under_coding_agent()
         return function(*args, **kwargs)
 
     return wrapper

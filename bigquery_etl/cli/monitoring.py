@@ -56,7 +56,6 @@ BIGCONFIG_FILE = "bigconfig.yml"
 BIGCONFIG_FILE_RE = re.compile(r"^.*/([\w-]+)/(\w+)/(\w+)/bigconfig\.yml$")
 BIGCONFIG_FILE_TYPE = "BIGCONFIG_FILE"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
-QUERY_FILE = "query.sql"
 VIEW_FILE = "view.sql"
 METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL,
@@ -605,9 +604,10 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
             else:
                 bigconfig = BigConfig(type=BIGCONFIG_FILE_TYPE)
 
-            if (
-                metadata_file.parent / QUERY_FILE
-            ).exists() and "public_bigquery" not in metadata.labels:
+            if not (
+                (metadata_file.parent / VIEW_FILE).exists()
+                or "public_bigquery" in metadata.labels
+            ):
                 _add_default_metrics(
                     bigconfig=bigconfig,
                     metadata=metadata,

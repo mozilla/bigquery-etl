@@ -261,6 +261,69 @@ class TestMonitoring:
                 len(bigconfig.tag_deployments[0].collection.notification_channels) >= 1
             )
 
+    def test_update_without_query_sql(self, runner):
+        with runner.isolated_filesystem():
+            test_query = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "python_script_query_v1"
+            )
+
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/python_script_query_v1")
+            os.makedirs(str(SQL_DIR))
+            copy_tree(str(test_query), str(SQL_DIR))
+            bigconfig_file = SQL_DIR / BIGCONFIG_FILE
+            bigconfig_file.unlink()
+
+            runner.invoke(update, [str(SQL_DIR)])
+
+            assert bigconfig_file.exists()
+            bigconfig = _load_bigconfig(bigconfig_file)
+            # Assert the default freshness and volume metrics got added to the file.
+            assert bigconfig.tag_deployments is not None
+            assert len(bigconfig.tag_deployments) == 1
+            assert len(bigconfig.tag_deployments[0].deployments) == 1
+            tag_deployment_metrics = bigconfig.tag_deployments[0].deployments[0].metrics
+            assert len(tag_deployment_metrics) == 2
+            assert (
+                tag_deployment_metrics[0].metric_type.predefined_metric == "FRESHNESS"
+            )
+            assert tag_deployment_metrics[1].metric_type.predefined_metric == "VOLUME"
+
+    def test_update_view(self, runner):
+        with runner.isolated_filesystem():
+            test_view = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "view_with_metadata"
+            )
+
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/view_with_metadata")
+            os.makedirs(str(SQL_DIR))
+            copy_tree(str(test_view), str(SQL_DIR))
+            bigconfig_file = SQL_DIR / BIGCONFIG_FILE
+            assert not bigconfig_file.exists()
+
+            runner.invoke(update, [str(SQL_DIR)])
+
+            assert bigconfig_file.exists()
+            bigconfig = _load_bigconfig(bigconfig_file)
+            # Assert no default metrics got added for the view.
+            assert not bigconfig.tag_deployments
+            # Assert the partition column got set as the row creation time.
+            assert bigconfig.row_creation_times is not None
+            assert len(bigconfig.row_creation_times.column_selectors) == 1
+            assert (
+                bigconfig.row_creation_times.column_selectors[0].name
+                == "moz-fx-data-shared-prod.moz-fx-data-shared-prod.test.view_with_metadata.date"
+            )
+
     def test_update_existing_bigconfig(self, runner):
         with runner.isolated_filesystem():
             test_query = (

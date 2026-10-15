@@ -1,0 +1,20 @@
+[metrics.platform_metric]
+select_expression = "1"
+data_source = "test_source"
+friendly_name = "Platform Metric"
+description = "Monitored by default."
+
+[metrics.rollout_metric]
+select_expression = "1"
+data_source = "test_source"
+friendly_name = "Rollout Metric"
+description = "Monitored by default for desktop rollouts."
+
+[metrics.custom_metric]
+select_expression = "1"
+data_source = "test_source"
+friendly_name = "Custom Metric"
+description = "Only monitored when a slug asks for it."
+
+[data_sources.test_source]
+from_expression = "test.test_source"

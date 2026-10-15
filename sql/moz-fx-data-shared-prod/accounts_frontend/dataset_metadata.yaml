@@ -1,9 +1,8 @@
-friendly_name: Accounts frontend
+friendly_name: Accounts Frontend
 description: |-
-  Views for accessing Mozilla Accounts frontend derived data
+  User-facing views related to document namespace accounts-frontend
 dataset_base_acl: view
 user_facing: true
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

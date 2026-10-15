@@ -7,6 +7,8 @@
 - May use [dags.utils.gcp.bigquery_etl_query] to simplify airflow configuration
   e.g. see [dags.main_summary.exact_mau28_by_dimensions]
 - May use [script/generate_incremental_table] to automate backfilling
+- May use `bqetl query backfill` for ad-hoc backfills or `bqetl backfill create`
+  to start the managed, PR-reviewed backfill workflow
 - Should use `WRITE_TRUNCATE` mode or `bq query --replace` to replace
   partitions atomically to prevent duplicate data
 - Will have tooling to generate an optimized _mostly materialized view_ that

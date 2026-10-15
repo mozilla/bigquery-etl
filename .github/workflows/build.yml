@@ -644,7 +644,9 @@ jobs:
               --arg run_id "$RUN_ID" \
               --argjson is_main "${IS_MAIN:-false}" \
               --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
-              '{event_type: "bqetl-ci", client_payload: {bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id, is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
+              '{event_type: "bqetl-ci", client_payload: {
+                bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
+                is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
 
           if [[ "$HTTP_STATUS" != "204" ]]; then
             echo "::error::Failed to dispatch private CI (HTTP $HTTP_STATUS)"

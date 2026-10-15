@@ -1,0 +1,11 @@
+friendly_name: Accounts frontend
+description: |-
+  Views for accessing Mozilla Accounts frontend derived data
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:fxa/fraud-bot

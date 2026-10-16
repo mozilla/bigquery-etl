@@ -315,3 +315,14 @@ fields:
 - name: ga4_ad_crosschannel_default_channel_group
   type: STRING
   mode: NULLABLE
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+  description: 'The build identifier string for the application, encoding the date
+    and time when the specific build was compiled (format: YYYYMMDDHHmmSS).'
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: The profile selection reason recorded for the first subsession or ping
+    of a client's activity period. Common values include 'default' and 'profile-selector',
+    indicating how Firefox chose which profile to load.

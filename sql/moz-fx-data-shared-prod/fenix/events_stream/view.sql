@@ -90,6 +90,7 @@ SELECT
       LAX_BOOL(event_extra.did_select_pw) AS `did_select_pw`,
       LAX_BOOL(event_extra.did_select_un) AS `did_select_un`,
       LAX_BOOL(event_extra.did_user_confirm) AS `did_user_confirm`,
+      LAX_BOOL(event_extra.dry_run) AS `dry_run`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.engine_available) AS `engine_available`,
       LAX_BOOL(event_extra.filled) AS `filled`,

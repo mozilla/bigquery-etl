@@ -592,8 +592,8 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Boolean indicating whether the os compositor is being used by
-        WebRender. Only collected in the first subsession. This metric was generated
-        to correspond to the Legacy Telemetry scalar gfx.os_compositor.
+        WebRender. This metric was generated to correspond to the Legacy Telemetry
+        scalar gfx.os_compositor.
 
         '
     - name: gfx_status_headless
@@ -16422,8 +16422,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Number of times we cycled the TRR connection during a subsession.
-        Keyed by TRR provider URL.
+      description: 'Number of times we cycled the TRR connection. Keyed by TRR provider
+        URL.
 
         '
     - name: networking_trr_request_count

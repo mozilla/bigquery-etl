@@ -503,6 +503,11 @@ fields:
 
         * True if the user confirmed the dialog to restart, false if the user dismissed
         it without restarting.'
+    - name: dry_run
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the copy owed is the dry run, which measures the migration
+        and then undoes it.
     - name: enabled
       type: BOOLEAN
       mode: NULLABLE

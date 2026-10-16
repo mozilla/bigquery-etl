@@ -526,6 +526,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True when urlbar button opens the disable PiP dialog
+    - name: dry_run
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the copy owed is the dry run, which measures the migration
+        and then undoes it.
     - name: during_shutdown
       type: BOOLEAN
       mode: NULLABLE
@@ -1484,7 +1489,11 @@ fields:
     - name: candidates
       type: INTEGER
       mode: NULLABLE
-      description: Number of candidate tabs shown
+      description: 'Depending on the type of event:
+
+        * Number of candidate tabs shown
+
+        * Number of tabs shown on the card'
     - name: cc_number_multi_parts
       type: INTEGER
       mode: NULLABLE
@@ -4169,7 +4178,10 @@ fields:
         SessionRestore, SystemMenu or SlowScript
 
         * The UI surface used to open the referrals tab. One of: app_menu, accounts_menu,
-        preferences, help_menu, about_dialog.'
+        preferences, help_menu, about_dialog.
+
+        * Where the card came from: browser_action (a chat request handled by the
+        manage_tabs tool) or resume (a "Pick up where you left off" pill)'
     - name: error
       type: STRING
       mode: NULLABLE
@@ -5885,9 +5897,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Type of prompt shown - disambiguation, batch_preview, or safety_confirmation
+        * Type of prompt shown: disambiguation, batch_preview, or safety_confirmation
 
-        * Type of prompt shown: disambiguation, batch_preview, or safety_confirmation'
+        * Type of prompt shown - disambiguation, batch_preview, or safety_confirmation'
     - name: prompt_version
       type: STRING
       mode: NULLABLE
@@ -6880,6 +6892,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The language being translated to.
+    - name: toggle
+      type: STRING
+      mode: NULLABLE
+      description: 'Which button the user clicked: select_all or deselect_all'
     - name: token_kind
       type: STRING
       mode: NULLABLE

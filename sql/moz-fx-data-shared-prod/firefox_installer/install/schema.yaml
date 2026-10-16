@@ -440,6 +440,12 @@ fields:
   mode: NULLABLE
   description: True if at least one existing Firefox profile was found on the system
     prior to this installation
+- name: notification_helper_stop_exit_code
+  type: STRING
+  mode: NULLABLE
+  description: 'Result of signaling the notification helper to stop during installation:
+    the helper''s exit code, "error" or "timeout" if it could not be run, or "unset"
+    if the helper was not installed'
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

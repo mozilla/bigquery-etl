@@ -32,6 +32,7 @@ SELECT
       LAX_BOOL(event_extra.did_select_pw) AS `did_select_pw`,
       LAX_BOOL(event_extra.did_select_un) AS `did_select_un`,
       LAX_BOOL(event_extra.disableDialog) AS `disableDialog`,
+      LAX_BOOL(event_extra.dry_run) AS `dry_run`,
       LAX_BOOL(event_extra.during_shutdown) AS `during_shutdown`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.encrypted) AS `encrypted`,

@@ -3014,7 +3014,11 @@ SELECT
       metrics.counter.use_counter_page_sanitizer_default_config,
       metrics.counter.use_counter_page_sanitizer_empty_config,
       metrics.counter.use_counter_page_sanitizer_invalid_config,
-      metrics.counter.use_counter_page_sanitizer_removeunsafe
+      metrics.counter.use_counter_page_sanitizer_removeunsafe,
+      metrics.counter.use_counter_css_doc_css_fit_tolerance,
+      metrics.counter.use_counter_css_doc_css_flow_tolerance,
+      metrics.counter.use_counter_css_page_css_fit_tolerance,
+      metrics.counter.use_counter_css_page_css_flow_tolerance
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

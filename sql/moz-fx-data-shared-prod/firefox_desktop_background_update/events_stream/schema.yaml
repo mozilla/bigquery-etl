@@ -458,6 +458,11 @@ fields:
       mode: NULLABLE
       description: Whether or not the saved/updated username was selected by the user
         choosing a suggested value from the autocomplete popup.
+    - name: dry_run
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the copy owed is the dry run, which measures the migration
+        and then undoes it.
     - name: filled
       type: BOOLEAN
       mode: NULLABLE

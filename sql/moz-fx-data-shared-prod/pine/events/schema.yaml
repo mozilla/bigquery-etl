@@ -639,11 +639,11 @@ fields:
     - name: browser_engagement_tab_open_event_count
       type: INTEGER
       mode: NULLABLE
-      description: 'The count of tab open events per subsession, across all windows,
-        after the session has been restored. This includes tab open events from private
-        windows and from manual session restorations (i.e. after crashes and from
-        about:home), but excludes tabs opened vertically. This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.engagement.tab_open_event_count.
+      description: 'The count of tab open events, across all windows, after the session
+        has been restored. This includes tab open events from private windows and
+        from manual session restorations (i.e. after crashes and from about:home),
+        but excludes tabs opened vertically. This metric was generated to correspond
+        to the Legacy Telemetry scalar browser.engagement.tab_open_event_count.
 
         '
     - name: browser_engagement_uri_count
@@ -690,9 +690,9 @@ fields:
     - name: browser_engagement_max_concurrent_tab_count
       type: INTEGER
       mode: NULLABLE
-      description: 'The count of maximum number of tabs open during a subsession,
-        across all windows, including tabs in private windows and restored at startup.
-        This metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.max_concurrent_tab_count.
+      description: 'The count of maximum number of tabs open, across all windows,
+        including tabs in private windows and restored at startup. This metric was
+        generated to correspond to the Legacy Telemetry scalar browser.engagement.max_concurrent_tab_count.
 
         '
   - name: url2

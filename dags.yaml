@@ -2927,8 +2927,8 @@ bqetl_remote_settings_uptake:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - remote-settings-alerts@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - remote-settings-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -2942,5 +2942,5 @@ bqetl_remote_settings_uptake:
   repo: bigquery-etl
   schedule_interval: 42 4 * * *
   tags:
-  - impact/tier_3
-  - repo/bigquery-etl
+    - impact/tier_3
+    - repo/bigquery-etl

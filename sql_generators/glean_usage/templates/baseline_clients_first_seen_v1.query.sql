@@ -86,9 +86,10 @@ WITH
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
      ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
-        ORDER BY submission_timestamp ASC LIMIT 1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+        metrics.string.startup_profile_selection_reason IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
+        ORDER BY ping_info.seq ASC, submission_timestamp ASC LIMIT 1
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
      ARRAY_AGG(
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
@@ -213,9 +214,10 @@ _baseline AS (
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
       ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
-        ORDER BY submission_timestamp ASC LIMIT 1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+        metrics.string.startup_profile_selection_reason IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
+        ORDER BY ping_info.seq ASC, submission_timestamp ASC LIMIT 1
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
      ARRAY_AGG(
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
@@ -391,9 +393,10 @@ _current AS (
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
       ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
-        ORDER BY submission_timestamp ASC LIMIT 1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+        metrics.string.startup_profile_selection_reason IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
+        ORDER BY ping_info.seq ASC, submission_timestamp ASC LIMIT 1
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
      ARRAY_AGG(
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC

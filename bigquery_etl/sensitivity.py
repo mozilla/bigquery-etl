@@ -11,7 +11,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import pathspec
 
@@ -70,7 +70,11 @@ _VERSION_RE = re.compile(r"_v[0-9]+$")
 
 
 def load_gated_datasets() -> Dict[str, Dict]:
-    """Load the `sensitivity.gated_datasets` map (keyed by project, then dataset)."""
+    """Load the `sensitivity.gated_datasets` map (keyed by project, then dataset).
+
+    Every entry is expected to set `default` (enforced by a test on the project
+    config); a missing key is read as `default: []`, readable by nobody.
+    """
     return ConfigLoader.get("sensitivity", "gated_datasets", fallback={}) or {}
 
 
@@ -80,8 +84,7 @@ def gated_readers(
     """Resolve a gated dataset/table's dataViewer members, or None if unlisted.
 
     Table-level entries (keyed by version-stripped doctype) override the dataset
-    `default`; a listed dataset with no matching table falls back to `default`
-    (empty when the dataset grants no broad read access).
+    `default`; a listed dataset with no matching table falls back to `default`.
     """
     entry = (gated.get(project) or {}).get(dataset)
     if entry is None:
@@ -90,6 +93,80 @@ def gated_readers(
     doctype = _VERSION_RE.sub("", table)
     members = tables.get(doctype, tables.get(table, entry.get("default", [])))
     return set(members)
+
+
+def _narrow_stable_readers(
+    project_gated: Dict[str, Dict], family: str
+) -> Optional[Set[str]]:
+    """Readers of `{family}_stable` if narrower than broad, else None."""
+    entry = project_gated.get(f"{family}_stable")
+    if entry is None:
+        return None
+    readers = set(entry.get("default", []))
+    if readers and readers <= BROAD_READERS:
+        return None
+    return readers
+
+
+def is_gated_family(
+    project: str, family: str, gated: Optional[Dict[str, Dict]] = None
+) -> bool:
+    """Whether `{family}_stable` is readable by less than the broad default.
+
+    The glean_usage generator uses this to keep gated app datasets out of
+    cross-app tables, which are written to broadly readable datasets.
+    """
+    gated = load_gated_datasets() if gated is None else gated
+    return _narrow_stable_readers(gated.get(project) or {}, family) is not None
+
+
+def restricted_dataset_acl(
+    project: str,
+    dataset: str,
+    dataset_families: Iterable[str],
+    base_acl: str,
+    gated: Optional[Dict[str, Dict]] = None,
+) -> Optional[Tuple[str, List[Dict]]]:
+    """Return (dataset_base_acl, workgroup_access) for a dataset on gated data.
+
+    An explicit `gated_datasets` entry for `dataset` takes priority. Otherwise readers are
+    the intersection of the narrow `{family}_stable` defaults; broad (moz-confidential) and
+    unlisted stable datasets are ignored. Returns None for the broad default.
+    Raises ValueError if the narrow workgroups have no readers in common (also checked by tests).
+    """
+    gated = load_gated_datasets() if gated is None else gated
+    project_gated = gated.get(project) or {}
+    readers: Optional[Set[str]] = None
+    if dataset in project_gated:
+        readers = set(project_gated[dataset].get("default", []))
+    else:
+        narrow: Dict[str, Set[str]] = {}
+        for family in dataset_families:
+            family_readers = _narrow_stable_readers(project_gated, family)
+            # broad rows mixed in are fine for the narrow workgroup, since its
+            # membership is granted explicitly
+            if family_readers is None:
+                continue
+            narrow[family] = family_readers
+            readers = family_readers if readers is None else readers & family_readers
+        # a stable dataset readable by nobody legitimately yields nobody, but
+        # disjoint workgroups do not
+        if readers == set() and all(narrow.values()):
+            raise ValueError(
+                f"{project}.{dataset} reads stable datasets gated to workgroups"
+                f" with no readers in common ({sorted(narrow)}); add an explicit"
+                f" sensitivity.gated_datasets entry for {dataset}"
+            )
+
+    # non-null but empty readers means nobody, so it's restricted even though set() <= broad
+    if readers is None or (readers and readers <= BROAD_READERS):
+        return None
+    workgroup_access = (
+        [{"role": "roles/bigquery.dataViewer", "members": sorted(readers)}]
+        if readers
+        else []
+    )
+    return f"{base_acl}_restricted", workgroup_access
 
 
 class DatasetAccess:

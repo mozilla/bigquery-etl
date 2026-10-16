@@ -6,17 +6,18 @@ WITH uac_campaigns AS (
     campaign_id,
     -- Google Ads campaign names use UK; Play Store and static.country_codes_v1 use GB.
     -- Unparseable names get a sentinel so installs and spend still join (NULL never matches in USING).
-    COALESCE(
-      CASE
-        UPPER(mozfun.map.get_key(campaign_segments, "country_code"))
-        WHEN "UK"
-          THEN "GB"
-        ELSE UPPER(mozfun.map.get_key(campaign_segments, "country_code"))
-      END,
-      "UNKNOWN"
-    ) AS country_code,
+    COALESCE(IF(parsed_country_code = "UK", "GB", parsed_country_code), "UNKNOWN") AS country_code,
   FROM
-    `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2`
+    (
+      SELECT
+        campaign_id,
+        UPPER(mozfun.map.get_key(campaign_segments, "country_code")) AS parsed_country_code,
+      FROM
+        `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2`
+      WHERE
+        account_name = "Mozilla Firefox UAC"
+        AND campaign_name NOT LIKE "%iOS%"
+    )
 ),
 uac_installs AS (
   SELECT
@@ -28,9 +29,6 @@ uac_installs AS (
   JOIN
     uac_campaigns AS c
     USING (campaign_id)
-  WHERE
-    conv.account_name = "Mozilla Firefox UAC"
-    AND conv.campaign_name NOT LIKE "%iOS%"
   GROUP BY
     `date`,
     country_code
@@ -47,9 +45,6 @@ uac_delivery AS (
   JOIN
     uac_campaigns AS c
     USING (campaign_id)
-  WHERE
-    stats.account_name = "Mozilla Firefox UAC"
-    AND stats.campaign_name NOT LIKE "%iOS%"
   GROUP BY
     `date`,
     country_code

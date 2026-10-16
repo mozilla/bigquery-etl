@@ -626,12 +626,12 @@ jobs:
           if [[ -z "$TRIGGER_TOKEN" ]]; then
             # Private CI is a required check on PRs and merge groups, so without
             # a dispatch they'd wait on it forever
-            if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-              echo "::warning::No private repo token available, skipping dispatch"
-              exit 0
+            if [[ "$GITHUB_EVENT_NAME" == "pull_request" || "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
+              echo "::error::No private repo token available, can't dispatch private CI"
+              exit 1
             fi
-            echo "::error::No private repo token available, can't dispatch private CI"
-            exit 1
+            echo "::warning::No private repo token available, skipping dispatch"
+            exit 0
           fi
 
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \

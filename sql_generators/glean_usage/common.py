@@ -47,14 +47,16 @@ def write_dataset_metadata(
     full_table_id,
     derived_dataset_metadata=False,
     project_id="moz-fx-data-shared-prod",
-    families=None,
+    dataset_families=None,
 ):
     """
     Add dataset_metadata.yaml to public facing datasets.
 
-    Does not overwrite existing dataset_metadata.yaml files. `families` are the
-    bq_dataset_families the dataset reads from (defaults to the dataset's own
-    family); access is restricted when any of their stable datasets is gated.
+    Does not overwrite existing dataset_metadata.yaml files.
+
+    `dataset_families` are the bq_dataset_families the dataset reads from: single app id for
+    per-app_id datasets or all app ids for an app for per-app datasets. access is restricted when
+    any of their stable datasets is gated.
     """
     d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
     d.parent.mkdir(parents=True, exist_ok=True)
@@ -73,10 +75,10 @@ def write_dataset_metadata(
             base_acl = "view"
 
         dataset = d.parent.name
-        if families is None:
-            families = [dataset.removesuffix("_derived")]
+        if dataset_families is None:
+            dataset_families = [dataset.removesuffix("_derived")]
         workgroup_access = DEFAULT_WORKGROUP_ACCESS
-        restricted = restricted_dataset_acl(project_id, dataset, families, base_acl)
+        restricted = restricted_dataset_acl(project_id, dataset, dataset_families, base_acl)
         if restricted is not None:
             base_acl, workgroup_access = restricted
 
@@ -588,7 +590,7 @@ class GleanTable:
 
             if output_dir:
                 write_dataset_metadata(
-                    output_dir, view, project_id=project_id, families=families
+                    output_dir, view, project_id=project_id, dataset_families=families
                 )
 
                 view_dir = get_table_dir(output_dir, view)
@@ -675,14 +677,14 @@ class GleanTable:
                     )
 
                 write_dataset_metadata(
-                    output_dir, view, project_id=project_id, families=families
+                    output_dir, view, project_id=project_id, dataset_families=families
                 )
                 write_dataset_metadata(
                     output_dir,
                     table,
                     derived_dataset_metadata=True,
                     project_id=project_id,
-                    families=families,
+                    dataset_families=families,
                 )
 
     def generate_across_apps(

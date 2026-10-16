@@ -2921,3 +2921,26 @@ bqetl_stmo:
     depends_on_past: false
   tags:
     - impact/tier_3
+
+bqetl_remote_settings_uptake:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - remote-settings-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: remote-settings-alerts@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-10-15'
+  description: DAG for Remote Settings uptake events
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 42 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

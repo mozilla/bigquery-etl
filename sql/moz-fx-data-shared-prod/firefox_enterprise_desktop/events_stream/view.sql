@@ -951,6 +951,7 @@ SELECT
       JSON_VALUE(event_extra.to) AS `to`,
       JSON_VALUE(event_extra.to_container_id) AS `to_container_id`,
       JSON_VALUE(event_extra.to_language) AS `to_language`,
+      JSON_VALUE(event_extra.toggle) AS `toggle`,
       JSON_VALUE(event_extra.token_kind) AS `token_kind`,
       JSON_VALUE(event_extra.tool_name) AS `tool_name`,
       JSON_VALUE(event_extra.top_preferred_language) AS `top_preferred_language`,

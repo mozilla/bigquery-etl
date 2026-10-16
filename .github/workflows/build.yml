@@ -959,6 +959,23 @@ jobs:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
 
+  validate-monitoring:
+    name: Validate Monitoring
+    needs: [build, generate-sql]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: *job-env
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *copy-generated-sql
+      - name: Verify that monitoring configs are valid
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl monitoring validate sql/
+
   validate-backfills:
     name: Validate Backfills
     runs-on: ubuntu-latest

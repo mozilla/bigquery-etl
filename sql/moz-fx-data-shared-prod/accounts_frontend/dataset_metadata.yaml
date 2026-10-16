@@ -1,0 +1,10 @@
+friendly_name: Accounts Frontend
+description: |-
+  User-facing views related to document namespace accounts-frontend
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:fxa/fraud-bot

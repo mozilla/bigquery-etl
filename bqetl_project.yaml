@@ -487,10 +487,9 @@ generate:
     events_monitoring:
       skip_apps:
       # Apps whose stable datasets are gated in sensitivity.gated_datasets are now
-      # excluded from the cross-app aggregates automatically. These two entries are
-      # kept for history and to make this note make sense.
+      # excluded from the cross-app aggregates automatically. This entry is kept for
+      # to give context to this comment.
       - ads_backend  # restricted dataset, we don't want to include it aggregate view
-      - firefox_enterprise_desktop  # restricted dataset (bug 2054438)
       # event pings for this app were removed but still high volume due to nimbus bugs in versions 138 to 140
       # events are still sent in the background-update ping, but they are being skipped
       # See: https://mozilla-hub.atlassian.net/browse/DENG-9715

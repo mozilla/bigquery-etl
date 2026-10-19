@@ -442,15 +442,6 @@ metadata:
   validation:
     skip:
     - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml  # backfill compatibility issue
-    # TODO: generated tables declare level: gold, but generated unit tests aren't available to CI
-    - sql/moz-fx-data-shared-prod/fenix_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v4/metadata.yaml
-    - sql/moz-fx-data-shared-prod/firefox_ios_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v4/metadata.yaml
-    - sql/moz-fx-data-shared-prod/focus_ios_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/klar_android_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/klar_ios_derived/active_users_aggregates_v3/metadata.yaml
 
 generate:
   glean_usage:

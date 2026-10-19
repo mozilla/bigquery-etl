@@ -49,7 +49,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: 1 if the client had at least one search access point event (sap_counts_total)
-    on this day, otherwise 0.
+    on this day, otherwise 0. Only Firefox 138 and later send the event.
 - name: ad_click_category
   type: INTEGER
   mode: NULLABLE
@@ -60,17 +60,19 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: 1 if the client had at least one tagged ad click on this day in SERP
-    events, otherwise 0. SERP ad clicks run about 17% below the counters, so a client
-    can be 1 in ad_click_category and 0 here.
+    events, otherwise 0. SERP ad clicks step up at Firefox 157, so a client can be 1
+    in ad_click_category and 0 here, and trends across the rollout show a level change.
 - name: dau_w_engine_as_default
   type: INTEGER
   mode: NULLABLE
   description: The number of distinct DAU clients whose default search engine is this
     row's partner, counted only where the country is eligible for Google when the
-    partner is Google. Not summable across rows.
+    partner is Google. Not summable across rows. Summing across normalized_engine counts
+    a client once per engine they searched on, as the legacy table does.
 - name: dau_engaged_w_sap
   type: INTEGER
   mode: NULLABLE
   description: The number of distinct DAU clients with at least one search access
     point event on this row's partner's engine, counted only where the country is
-    eligible for Google when the partner is Google. Not summable across rows.
+    eligible for Google when the partner is Google. Not summable across rows. Only
+    Firefox 138 and later send the event.

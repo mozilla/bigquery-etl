@@ -1,0 +1,15 @@
+2026-10-19:
+  start_date: 2026-07-01
+  end_date: 2026-10-18
+  reason: 'Populate the newly added is_dau_at_least_{5,6,7}_of_first_7_days, set_default
+    and is_dau_on_days_6_or_7 columns so the glean desktop conversions feed covers
+    the same conversion events as the legacy feed. Step 1 of 3: glean_gclid_conversions_v1
+    and glean_ga_desktop_conversions_v1 are backfilled after this one completes.'
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

@@ -683,7 +683,13 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
         metadata_file = bigconfig_file.parent / METADATA_FILE
         if metadata_file.exists():
             metadata = Metadata.from_file(metadata_file)
-            if not (metadata.monitoring and metadata.monitoring.enabled):
+            if metadata.monitoring is None or metadata.monitoring.enabled is None:
+                file_errors[metadata_file].append(
+                    f"When a `{BIGCONFIG_FILE}` exists then `monitoring.enabled` must be"
+                    f" explicitly set to either true or false in `{METADATA_FILE}`."
+                )
+                continue
+            if not metadata.monitoring.enabled:
                 continue
 
             try:

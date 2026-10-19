@@ -24,10 +24,5 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
-  checks.sql:
-  - moz-fx-data-shared-prod.accounts_backend_stable.accounts_events_v1
-  - moz-fx-data-shared-prod.accounts_backend_stable.events_v1
-  - moz-fx-data-shared-prod.accounts_frontend_stable.accounts_events_v1
-  - moz-fx-data-shared-prod.accounts_frontend_stable.events_v1
   query.sql:
   - moz-fx-data-shared-prod.accounts_backend.events

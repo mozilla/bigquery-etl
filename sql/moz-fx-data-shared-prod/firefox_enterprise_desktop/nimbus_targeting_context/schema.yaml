@@ -616,6 +616,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The full Firefox version string.
+    - name: nimbus_targeting_context_forget_button_area_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Where the Forget button is placed (e.g. "toolbar" or "panel"),
+        or "none" if it is not placed.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

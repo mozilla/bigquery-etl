@@ -2587,6 +2587,20 @@ fields:
       description: 'Records the number of Microsoft Graph servers a user has configured.
 
         '
+    - name: ipprotection_exclusions_rule_applied
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Incremented when a site exclusion decides whether a top-level
+        page load is proxied.
+
+        '
+    - name: ipprotection_inclusions_rule_applied
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Incremented when a site inclusion decides whether a top-level
+        page load is proxied.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -4862,9 +4876,6 @@ fields:
           mode: NULLABLE
       description: 'Application reputation local results (0=ALLOW, 1=BLOCK, 2=NONE)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram APPLICATION_REPUTATION_LOCAL.
-
         '
     - name: application_reputation_server
       type: RECORD
@@ -4891,9 +4902,6 @@ fields:
       description: 'Status of the application reputation remote lookup (0=OK, 1=failed,
         2=invalid protobuf response)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram APPLICATION_REPUTATION_SERVER.
-
         '
     - name: application_reputation_server_verdict
       type: RECORD
@@ -4919,9 +4927,6 @@ fields:
           mode: NULLABLE
       description: 'Application reputation remote verdict (0=SAFE, 1=DANGEROUS, 2=UNCOMMON,
         3=POTENTIALLY_UNWANTED, 4=DANGEROUS_HOST, 5=UNKNOWN)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram APPLICATION_REPUTATION_SERVER_VERDICT.
 
         '
     - name: a11y_consumers
@@ -5141,9 +5146,6 @@ fields:
       description: 'The number of origins that were purged during one run of cookie
         purging.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram COOKIE_PURGING_ORIGINS_PURGED.
-
         '
     - name: cookie_purging_trackers_with_user_interaction
       type: RECORD
@@ -5169,9 +5171,6 @@ fields:
           mode: NULLABLE
       description: 'The number of trackers that had user interaction at the time of
         purging.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram COOKIE_PURGING_TRACKERS_WITH_USER_INTERACTION.
 
         '
     - name: fontlist_dwritefont_delayedinit_count
@@ -5655,9 +5654,6 @@ fields:
       description: 'SafeBrowsing v4 hash completion error (0 = success, 1 = parsing
         failure, 2 = unknown threat type)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_COMPLETION_ERROR.
-
         '
     - name: urlclassifier_threathit_network_error
       type: RECORD
@@ -5688,9 +5684,6 @@ fields:
         12=inadequate security, 13=unknown host, 14=dns lookup queue full, 15=unknown
         proxy host)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_THREATHIT_NETWORK_ERROR.
-
         '
     - name: urlclassifier_threathit_remote_status
       type: RECORD
@@ -5718,9 +5711,6 @@ fields:
         1=200, 2=2xx, 3=204, 4=3xx, 5=400, 6=4xx, 7=403, 8=404, 9=408, 10=413, 11=5xx,
         12=502|504|511, 13=503, 14=505, 15=Other)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_THREATHIT_REMOTE_STATUS.
-
         '
     - name: urlclassifier_ui_events
       type: RECORD
@@ -5746,9 +5736,6 @@ fields:
           mode: NULLABLE
       description: 'URL CLassifier-related (aka Safe Browsing) UI events. See nsIUrlClassifierUITelemetry.idl
         for the specific values.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_UI_EVENTS.
 
         '
     - name: webcrypto_alg
@@ -15846,9 +15833,6 @@ fields:
       description: 'Whether a binary file examined by download protection is one of
         the common archive formats.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram APPLICATION_REPUTATION_BINARY_ARCHIVE.
-
         '
     - name: application_reputation_binary_type
       type: RECORD
@@ -15862,9 +15846,6 @@ fields:
         mode: NULLABLE
       description: 'Whether or not the file examined by download protection is a binary
         type (or it''s not possible to tell because the filename is missing).
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram APPLICATION_REPUTATION_BINARY_TYPE.
 
         '
     - name: application_reputation_reason
@@ -15880,9 +15861,6 @@ fields:
       description: 'The reason application reputation service blocks or allows the
         download.
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram APPLICATION_REPUTATION_REASON.
-
         '
     - name: application_reputation_remote_lookup_timeout
       type: RECORD
@@ -15897,9 +15875,6 @@ fields:
       description: 'Recorded when application reputation remote lookup is performed,
         `true` is recorded if the lookup times out.
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        APPLICATION_REPUTATION_REMOTE_LOOKUP_TIMEOUT.
-
         '
     - name: application_reputation_server_2
       type: RECORD
@@ -15912,9 +15887,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Network status of the application reputation remote lookup
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram APPLICATION_REPUTATION_SERVER_2.
 
         '
     - name: application_reputation_should_block
@@ -15929,9 +15901,6 @@ fields:
         mode: NULLABLE
       description: 'Overall (local or remote) application reputation verdict (shouldBlock=false
         is OK).
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        APPLICATION_REPUTATION_SHOULD_BLOCK.
 
         '
     - name: bfcache_combo
@@ -16341,9 +16310,6 @@ fields:
         mode: NULLABLE
       description: 'Whether or not the metadata for a variable-length prefix set loaded
         from disk is corrupted (true = file corrupted).
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        URLCLASSIFIER_VLPS_METADATA_CORRUPT.
 
         '
     - name: webcrypto_extractable_enc
@@ -21858,6 +21824,18 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Number of Local Mode mappings currently used when opening DevTools.
+
+        '
+    - name: ipprotection_exclusions_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of site exclusions the user has set.
+
+        '
+    - name: ipprotection_inclusions_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of site inclusions the user has set.
 
         '
   - name: rate
@@ -31010,9 +30988,6 @@ fields:
           mode: NULLABLE
       description: 'Server response time to remote lookup request (ms).
 
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        APPLICATION_REPUTATION_REMOTE_LOOKUP_RESPONSE_TIME.
-
         '
     - name: a11y_tree_update_timing
       type: RECORD
@@ -31103,9 +31078,6 @@ fields:
       description: 'Time spent per daily cookie purging activity, in milliseconds.
         This measures the time for all batch iterations of that day.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram COOKIE_PURGING_DURATION_MS.
-
         '
     - name: cookie_purging_interval_hours
       type: RECORD
@@ -31150,9 +31122,6 @@ fields:
       description: 'How much time (in hours) passed between the current cookie purging
         activity and the one before that (cookie purging is run on ''daily idle'')
 
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        COOKIE_PURGING_INTERVAL_HOURS.
-
         '
     - name: cookie_purging_trackers_user_interaction_remaining_days
       type: RECORD
@@ -31196,9 +31165,6 @@ fields:
           mode: NULLABLE
       description: 'The time remaining until expiration per user interaction permissions
         of trackers at the time of purging, in days (one record per tracker, not averaged).
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        COOKIE_PURGING_TRACKERS_USER_INTERACTION_REMAINING_DAYS.
 
         '
     - name: fontlist_bundledfonts_activate
@@ -32494,9 +32460,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent per AsyncClassifyLocalWithTables (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_ASYNC_CLASSIFYLOCAL_TIME.
-
         '
     - name: urlclassifier_cl_check_time
       type: RECORD
@@ -32539,9 +32502,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent per classifier lookup (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_CL_CHECK_TIME.
 
         '
     - name: urlclassifier_lookup_time_2
@@ -32586,9 +32546,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent per dbservice lookup (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_LOOKUP_TIME_2.
-
         '
     - name: urlclassifier_shutdown_time
       type: RECORD
@@ -32631,9 +32588,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent per dbservice shutdown (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_SHUTDOWN_TIME.
 
         '
     - name: urlclassifier_vlps_construct_time
@@ -32678,9 +32632,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent constructing Variable-Length PrefixSet from file (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_VLPS_CONSTRUCT_TIME.
-
         '
     - name: urlclassifier_vlps_fallocate_time
       type: RECORD
@@ -32724,9 +32675,6 @@ fields:
           mode: NULLABLE
       description: 'Time spent fallocating Variable-Length PrefixSet (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_VLPS_FALLOCATE_TIME.
-
         '
     - name: urlclassifier_vlps_fileload_time
       type: RECORD
@@ -32769,9 +32717,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent loading Variable-Length PrefixSet from file (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_VLPS_FILELOAD_TIME.
 
         '
     - name: image_decode_on_draw_latency
@@ -41780,9 +41725,6 @@ fields:
       description: 'Time spent per classifier update (ms), keyed by the name of the
         provider.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_CL_KEYED_UPDATE_TIME.
-
         '
     - name: urlclassifier_complete_server_response_time
       type: RECORD
@@ -41833,9 +41775,6 @@ fields:
             mode: NULLABLE
       description: 'Server response time to getHash request (ms). Keyed by provider
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_COMPLETE_SERVER_RESPONSE_TIME.
-
         '
     - name: urlclassifier_update_server_response_time
       type: RECORD
@@ -41885,9 +41824,6 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Server response time to update request (ms). Keyed by provider
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram URLCLASSIFIER_UPDATE_SERVER_RESPONSE_TIME.
 
         '
     - name: dns_trr_lookup_time
@@ -45759,9 +45695,6 @@ fields:
         (0=1xx, 1=200, 2=2xx, 3=204, 4=3xx, 5=400, 6=4xx, 7=403, 8=404, 9=408, 10=413,
         11=5xx, 12=502|504|511, 13=503, 14=505, 15=Other). Keyed by provider
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_COMPLETE_REMOTE_STATUS2.
-
         '
     - name: urlclassifier_update_error
       type: RECORD
@@ -45799,9 +45732,6 @@ fields:
         8 = cannot find table, 9 = build prefix failure, 10 = write disk failure,
         11 = protocol parser error). Keyed by provider
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_UPDATE_ERROR.
-
         '
     - name: urlclassifier_update_remote_network_error
       type: RECORD
@@ -45838,9 +45768,6 @@ fields:
         connection refused,11=partial transfer,12=inadequate security,13=unknown host,14=dns
         lookup queue full,15=unknown proxy host
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_UPDATE_REMOTE_NETWORK_ERROR.
-
         '
     - name: urlclassifier_update_remote_status2
       type: RECORD
@@ -45875,9 +45802,6 @@ fields:
         1=200, 2=2xx, 3=204, 4=3xx, 5=400, 6=4xx, 7=403, 8=404, 9=408, 10=413, 11=5xx,
         12=502|504|511, 13=503, 14=505, 15=Other). Keyed by provider
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram URLCLASSIFIER_UPDATE_REMOTE_STATUS2.
-
         '
     - name: urlclassifier_update_timeout
       type: RECORD
@@ -45911,8 +45835,7 @@ fields:
       description: ' Whether or not an update timed out (0 = no timeout, 1 = server
         respond
 
-        timeout, 2 = overall timeout). Keyed by provider This metric was generated
-        to correspond to the Legacy Telemetry enumerated histogram URLCLASSIFIER_UPDATE_TIMEOUT.
+        timeout, 2 = overall timeout). Keyed by provider
 
         '
     - name: dns_trr_attempt_count
@@ -47923,9 +47846,6 @@ fields:
           mode: NULLABLE
       description: 'Application reputation remote verdict, keyed by file extension
 
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram APPLICATION_REPUTATION_SERVER_VERDICT_2.
-
         '
     - name: dns_lookup_disposition
       type: RECORD
@@ -48356,9 +48276,6 @@ fields:
       description: 'This metric is recorded every time a gethash lookup is performed,
         `true` is recorded if the lookup times out. Keyed by provider
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        URLCLASSIFIER_COMPLETE_TIMEOUT2.
-
         '
     - name: contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2
       type: RECORD
@@ -48716,6 +48633,30 @@ fields:
       description: 'The number of consumers invoked through BrowserUtils.callModulesFromCategory
         that returned or threw, per category. success + failure is the number of consumer
         runs, so the failure rate of a category is failure / (success + failure).
+
+        '
+    - name: dom_register_protocol_handler_calls
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts navigator.registerProtocolHandler calls that passed the
+        scheme and URL checks, by the frame they came from and whether it had transient
+        user activation. The site permission gating the prompt is keyed on the top-level
+        origin. Used to judge the web compatibility impact of no longer prompting
+        for calls from cross-origin iframes, or without user activation.
 
         '
   - name: text2

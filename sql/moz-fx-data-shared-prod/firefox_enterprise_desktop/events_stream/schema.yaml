@@ -522,6 +522,8 @@ fields:
 
         * Whether launch on login was turned on (true) or off (false).
 
+        * Whether the action was turned on or off.
+
         * Boolean indicating if that type of memory was enabled or disabled
 
         * whether the preference was enabled or disabled in any way'
@@ -2842,7 +2844,9 @@ fields:
 
         * Which action was clicked, e.g., ai, search, copy.
 
-        * What we did with the session state as a result, one of "restore",...'
+        * Which action was toggled, e.g., ai, search, copy, master.
+
+        * What ...'
     - name: action_id
       type: STRING
       mode: NULLABLE

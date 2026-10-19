@@ -430,7 +430,9 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.tab_reload_cover_shown,
       metrics.counter.browser_engine_full_page_capture_attempted,
-      metrics.counter.background_notification_helper_wake
+      metrics.counter.background_notification_helper_wake,
+      metrics.counter.ipprotection_exclusions_rule_applied,
+      metrics.counter.ipprotection_inclusions_rule_applied
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1322,7 +1324,9 @@ SELECT
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
       metrics.quantity.nimbus_qa_prefs_int_user_value,
-      metrics.quantity.devtools_localmode_mappings_count
+      metrics.quantity.devtools_localmode_mappings_count,
+      metrics.quantity.ipprotection_exclusions_count,
+      metrics.quantity.ipprotection_inclusions_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -2303,7 +2307,8 @@ SELECT
       metrics.dual_labeled_counter.tls_key_exchange_algorithm,
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
-      metrics.dual_labeled_counter.browser_utils_category_consumer_result
+      metrics.dual_labeled_counter.browser_utils_category_consumer_result,
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -2762,7 +2767,9 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.tab_reload_cover_shown,
       metrics.counter.browser_engine_full_page_capture_attempted,
-      metrics.counter.background_notification_helper_wake
+      metrics.counter.background_notification_helper_wake,
+      metrics.counter.ipprotection_exclusions_rule_applied,
+      metrics.counter.ipprotection_inclusions_rule_applied
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3654,7 +3661,9 @@ SELECT
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
       metrics.quantity.nimbus_qa_prefs_int_user_value,
-      metrics.quantity.devtools_localmode_mappings_count
+      metrics.quantity.devtools_localmode_mappings_count,
+      metrics.quantity.ipprotection_exclusions_count,
+      metrics.quantity.ipprotection_inclusions_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -4635,7 +4644,8 @@ SELECT
       metrics.dual_labeled_counter.tls_key_exchange_algorithm,
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
-      metrics.dual_labeled_counter.browser_utils_category_consumer_result
+      metrics.dual_labeled_counter.browser_utils_category_consumer_result,
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5114,7 +5124,9 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.tab_reload_cover_shown,
       metrics.counter.browser_engine_full_page_capture_attempted,
-      metrics.counter.background_notification_helper_wake
+      metrics.counter.background_notification_helper_wake,
+      metrics.counter.ipprotection_exclusions_rule_applied,
+      metrics.counter.ipprotection_inclusions_rule_applied
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -6006,7 +6018,9 @@ SELECT
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
       metrics.quantity.nimbus_qa_prefs_int_user_value,
-      metrics.quantity.devtools_localmode_mappings_count
+      metrics.quantity.devtools_localmode_mappings_count,
+      metrics.quantity.ipprotection_exclusions_count,
+      metrics.quantity.ipprotection_inclusions_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -6987,7 +7001,8 @@ SELECT
       metrics.dual_labeled_counter.tls_key_exchange_algorithm,
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
-      metrics.dual_labeled_counter.browser_utils_category_consumer_result
+      metrics.dual_labeled_counter.browser_utils_category_consumer_result,
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

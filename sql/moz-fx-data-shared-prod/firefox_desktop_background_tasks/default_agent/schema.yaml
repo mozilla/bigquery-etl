@@ -312,6 +312,28 @@ fields:
         "shown" and "error".
 
         '
+    - name: install_from_msi
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this installation was installed from an MSI package. Only
+        recorded when `install.installer_type` is "full".
+
+        '
+    - name: install_has_win_package_id
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this installation is a packaged (MSIX) install, such as
+        one from the Microsoft Store. The same value as `system.has_win_package_id`
+        in the main browser''s pings.
+
+        '
+    - name: install_silent
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this installation was a silent install, as used for managed
+        deployments. Only recorded when `install.installer_type` is "full".
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -502,6 +524,27 @@ fields:
 
         This value is updated only when a ping is actually sent, so transitions are
         not missed across rate-limited runs.
+
+        '
+    - name: install_installer_type
+      type: STRING
+      mode: NULLABLE
+      description: 'How this installation was installed, with the same values as `installation.first_seen.installer_type`
+        in the main browser''s pings: * "stub" for the stub installer * "full" for
+        the full installer, including MSI installs * "msix" for MSIX packages
+
+        Not recorded if it could not be determined, for example because `installation_telemetry.json`
+        is missing from the installation directory.
+
+        '
+    - name: install_win_package_family_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The Windows package family name of this installation, which identifies
+        the MSIX package it came from, for example the Microsoft Store package. Only
+        recorded for packages published by Mozilla, that is, family names starting
+        with "Mozilla." or "MozillaCorporation.", as for `system.win_package_family_name`
+        in the main browser''s pings.
 
         '
   - name: quantity

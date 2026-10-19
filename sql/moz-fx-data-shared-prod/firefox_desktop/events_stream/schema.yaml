@@ -558,6 +558,8 @@ fields:
 
         * Whether launch on login was turned on (true) or off (false).
 
+        * Whether the action was turned on or off.
+
         * whether the preference was enabled or disabled in any way'
     - name: encrypted
       type: BOOLEAN
@@ -1494,6 +1496,10 @@ fields:
         * Number of candidate tabs shown
 
         * Number of tabs shown on the card'
+    - name: cards
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of resume cards visible when the section was shown.
     - name: cc_number_multi_parts
       type: INTEGER
       mode: NULLABLE
@@ -2377,6 +2383,8 @@ fields:
 
         * The position of the tab in the recently closed tab list (starting at 1)
 
+        * The position (0-index) of the card acted on.
+
         * The position (0-index) of the Top Sites tile. For example: 2 means the third
         tile in the row.'
     - name: pre_llm_confidence
@@ -2861,6 +2869,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of history entries displayed
+    - name: total_cards
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of resume cards available, including ones hidden behind
+        "Show more".
     - name: total_collapsed
       type: INTEGER
       mode: NULLABLE
@@ -4177,6 +4190,9 @@ fields:
         * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
         SessionRestore, SystemMenu or SlowScript
 
+        * Where the user opened the page from: "panel" for the button in the VPN panel,
+        "settings" for the button in about:settings#privacy.
+
         * The UI surface used to open the referrals tab. One of: app_menu, accounts_menu,
         preferences, help_menu, about_dialog.
 
@@ -4543,7 +4559,17 @@ fields:
     - name: flow
       type: STRING
       mode: NULLABLE
-      description: image_add, alt_text_edit.
+      description: 'Depending on the type of event:
+
+        * image_add, alt_text_edit.
+
+        * Which flow the activation started, as resolved from the flow variable of
+        the fireButton Nimbus feature: "panel" or "direct". Read from the same value
+        the widget acted on rather than from browser.fireButton.flow, so an enrollment
+        cannot make the reported flow disagree with the one the user got.
+
+        * Which flow was in effect, "panel" or "direct". Repeated from activated so
+        this event can be analysed without joining the two.'
     - name: flow_id
       type: STRING
       mode: NULLABLE
@@ -5573,22 +5599,19 @@ fields:
 
         * Whether the user kept the value. One of: kept, edited, or cleared.
 
+        * "deleted" if data was cleared, "cancelled" if the user explicitly backed
+        out with Cancel, "dismissed" if the confirmation panel was closed without
+        a choice, for example with Escape or a click outside it, "aborted" if the
+        user confirmed but nothing was deleted because the windows could not be closed,
+        for example when the user chose to stay on a page that asked before leaving.
+
         * What became of the page, one of: - "restore_all": the session was restored
         with every window and tab selected - "restore_subset": the session was restored
         with some windows or tabs deselected - "start_new_session": the user chose
         to start a new session rather than restore, or asked to restore with nothing
         selected - "no_data": the page had no session data to offer - "abandoned":
         the page was closed or navigated away from without any of the above - "shutdown":
-        the browser quit with the page still open; the page is restored with the session,
-        so a later impression follows
-
-        * "ready", "unavailable", or "error".
-
-        * What the user did with the generated value before submitting it. One of:
-        kept, edited, or cleared.
-
-        * How the flow ended. One of: completed (the user signed in), abandoned (the
-        user closed the sign-in tab or window without finishing), blocked (an accoun...'
+        the browser quit with th...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -6643,9 +6666,13 @@ fields:
     - name: state
       type: STRING
       mode: NULLABLE
-      description: 'Migrator state when the restore started: "RevertPending" the first
-        time the Rust backend is deactivated, "JSONPrimary" for a later startup retrying
-        a restore that did not complete.'
+      description: 'Depending on the type of event:
+
+        * Migrator state when the restore started: "RevertPending" the first time
+        the Rust backend is deactivated, "JSONPrimary" for a later startup retrying
+        a restore that did not complete.
+
+        * What the section showed: cards, empty_no_suggestions, or empty_all_dismissed.'
     - name: status
       type: STRING
       mode: NULLABLE
@@ -6719,7 +6746,14 @@ fields:
     - name: surface
       type: STRING
       mode: NULLABLE
-      description: Which UI surface.
+      description: 'Depending on the type of event:
+
+        * Which UI surface.
+
+        * Where the terminal action was taken: "panel" for the confirmation panel''s
+        own buttons, "dialog" for the clear-data dialog reached either through the
+        panel''s "Choose..." link or directly. The "direct" flow has no panel and
+        so only ever reports "dialog".'
     - name: suspicious_site
       type: STRING
       mode: NULLABLE

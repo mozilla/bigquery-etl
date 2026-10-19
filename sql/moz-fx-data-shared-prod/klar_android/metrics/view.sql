@@ -326,7 +326,9 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_links_opened_in_style_editor_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_edited_count,
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
-      metrics.counter.background_notification_helper_wake
+      metrics.counter.background_notification_helper_wake,
+      metrics.counter.ipprotection_exclusions_rule_applied,
+      metrics.counter.ipprotection_inclusions_rule_applied
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -951,7 +953,9 @@ SELECT
       metrics.quantity.data_storage_site_integrity_service_state,
       metrics.quantity.nimbus_qa_prefs_int_default_value,
       metrics.quantity.nimbus_qa_prefs_int_user_value,
-      metrics.quantity.devtools_localmode_mappings_count
+      metrics.quantity.devtools_localmode_mappings_count,
+      metrics.quantity.ipprotection_exclusions_count,
+      metrics.quantity.ipprotection_inclusions_count
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -2021,7 +2025,8 @@ SELECT
       metrics.dual_labeled_counter.tls_key_exchange_algorithm,
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
-      metrics.dual_labeled_counter.browser_utils_category_consumer_result
+      metrics.dual_labeled_counter.browser_utils_category_consumer_result,
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

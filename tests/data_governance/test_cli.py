@@ -16,21 +16,10 @@ from bigquery_etl.data_governance.classification.config import (
     DEFAULT_PROJECT,
     DEFAULT_VERTEX_LOCATION,
 )
-from bigquery_etl.util import common
 
 DATE = "2026-08-12"
 
 TARGET = "src-proj.src_dataset"
-
-
-@pytest.fixture(autouse=True)
-def not_a_coding_agent(monkeypatch):
-    """Switch off the guard that refuses to run under a coding agent.
-
-    It reads the ambient environment, so without this the whole file passes or
-    fails depending on which terminal it runs in.
-    """
-    monkeypatch.setattr(common, "is_running_under_coding_agent", lambda: False)
 
 
 @pytest.fixture

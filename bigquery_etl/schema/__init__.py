@@ -16,7 +16,7 @@ from jmespath import search as jmespath_search
 
 from .. import dryrun
 from ..config import ConfigLoader
-from ..util.common import resolve_project_file_path
+from ..util.common import resolve_project_subpath
 from .stable_table_schema import get_stable_table_schemas
 
 SCHEMA_FILE = "schema.yaml"
@@ -578,7 +578,7 @@ class SchemaLoader(yaml.FullLoader):
                 self.sql_dir, project_file_path.relative_to(DEFAULT_SQL_DIR)
             )
         else:
-            resolved_project_file_path = resolve_project_file_path(project_file_path)
+            resolved_project_file_path = resolve_project_subpath(project_file_path)
         with resolved_project_file_path.open() as file_stream:
             return yaml.load(file_stream, Loader=self.__class__)
 

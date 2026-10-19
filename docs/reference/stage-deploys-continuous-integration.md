@@ -2,7 +2,7 @@
 
 ## Stage Deploys in Continuous Integration
 
-Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's [CI (continuous integration)](https://github.com/mozilla/bigquery-etl/blob/main/.circleci/config.yml) [deploys these changes to a stage environment](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L353) and uses these stage artifacts to run its various checks. 
+Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. 
 
 Currently, the `moz-fx-data-integration-tests` project serves as the stage environment. CI does have read and write access, but does at no point publish actual data to this project. Only UDFs, table schemas and views are published. The project itself does not have access to any production project, like `mozdata`, so stage artifacts cannot reference any other artifacts that live in production.
 
@@ -46,6 +46,7 @@ Files (for example ones with changes) that should be deployed to stage need to b
 * `--dataset-suffix` is an optional suffix that will be added to the datasets deployed to stage
 * `--copy-sql-to-tmp-dir` copies SQL stored in `sql/` to a temporary folder. Reference updates and any other modifications required to run the stage deploy will be performed in this temporary directory. This is an optional parameter. If not specified, changes get applied to the files directly and can be reverted, for example, by running `git checkout -- sql/`
 * (optional) `--remove-updated-artifacts` removes artifact files that have been deployed from the "prod" folders. This ensures that tests don't run on outdated or undeployed artifacts.
+* Coding agents (automated AI agents) may only run `stage deploy` against an allow-listed dev project, as configured via `coding_agents.dev_project_allowlist` in `bqetl_project.yaml`, while impersonating a sandbox service account.
 
 Deployed stage artifacts can be deleted from `moz-fx-data-integration-tests` by running:
 

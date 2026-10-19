@@ -1,0 +1,86 @@
+# One ping, one client, carrying three independent label cases. They are on different
+# access points so they aggregate separately and each produces its own output rows.
+#
+# os, os_version and app_display_version are left null deliberately: the version and
+# os_version derivations are covered by test_sides, and leaving them null here keeps the
+# expectation to the columns this test is actually about.
+- submission_timestamp: "2026-08-13 11:00:00"
+  document_id: doc-metrics-labels
+  sample_id: 5
+  normalized_country_code: CA
+  normalized_channel: release
+  normalized_os: null
+  normalized_os_version: null
+  client_info:
+    client_id: client-labels
+    app_display_version: null
+    app_channel: release
+    locale: en-CA
+    os: null
+    os_version: null
+    windows_build_number: null
+    first_run_date: "2026-08-01+00:00"
+    distribution:
+      name: null
+  ping_info:
+    start_time: "2026-08-13T10:00:00+00:00"
+    end_time: "2026-08-13T11:00:00+00:00"
+    seq: 2
+    experiments: []
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy-labels
+      legacy_telemetry_profile_group_id: pg-labels
+    boolean:
+      policies_is_enterprise: false
+    string:
+      region_home_region: CA
+    quantity:
+      browser_engagement_max_concurrent_tab_count: 3
+    object:
+      addons_active_addons: null
+    labeled_counter:
+      # CASE 1, rank-1 attribution. Two content labels on one access point, differing
+      # only in their third segment, so this key spans two partner codes. The ads
+      # families below carry no partner code, so their totals cannot be split between
+      # the two and go whole to the higher-volume code -- codeA at 10 against codeB at 3.
+      # codeB's row must therefore show its own tagged count and zero ads, which is what
+      # makes a plain SUM over the table correct rather than double-counting.
+      browser_search_content_urlbar:
+        - key: "engine1:tagged:codeA"
+          value: 10
+        - key: "engine1:tagged:codeB"
+          value: 3
+      # two-segment, no partner code: the shape the rank-1 attribution exists for
+      browser_search_withads_urlbar:
+        - key: "engine1:tagged"
+          value: 6
+      browser_search_adclicks_urlbar:
+        - key: "engine1:tagged"
+          value: 4
+      # CASE 2, the orphan sentinel. Ad activity on an access point with no content
+      # label at all, which happens when a client clicks an ad on a page whose search
+      # never registered. There is no partner code to attribute to and no content row to
+      # join, so the FULL OUTER keeps the row and labels it 'unknown_code' rather than
+      # dropping it -- without which these counts would vanish from the table totals.
+      browser_search_withads_searchbar:
+        - key: "engine2:organic"
+          value: 2
+      browser_search_adclicks_searchbar:
+        - key: "engine2:organic"
+          value: 1
+      # CASE 3, tag types and the empty third segment. 'tagged-follow-on' must land in
+      # the follow-on counter rather than the plain tagged one, and the second label's
+      # trailing colon is an empty partner code, which resolves to 'no_code' -- the same
+      # value an absent code reaches, so the two cannot be told apart downstream and the
+      # test pins that they are not meant to be.
+      browser_search_content_about_home:
+        - key: "engine3:tagged-follow-on:codeC"
+          value: 7
+        - key: "engine3:organic:"
+          value: 2
+      # attaches to codeC, the higher-volume code, even though it is organic and codeC's
+      # content is tagged: attribution is by volume, not by tag type
+      browser_search_withads_about_home:
+        - key: "engine3:organic"
+          value: 5

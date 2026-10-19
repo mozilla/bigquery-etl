@@ -1,0 +1,106 @@
+---
+# DENG-11596: verifies that excluded crossword events do not contribute to
+# widget_interaction_count, is_widget_interaction, any_interaction_count or
+# nonsearch_interaction_count, while retained crossword events, events with no
+# action_value, and identical `interaction` events on other widgets still do.
+- submission_timestamp: 2026-05-04 12:00:00 UTC
+  normalized_os: Windows
+  normalized_channel: release
+  normalized_country_code: US
+  sample_id: 42
+  client_info:
+    client_id: client_id_1
+    app_display_version: "138.0.0"
+    locale: en-US
+  metrics:
+    uuid:
+      legacy_telemetry_profile_group_id: profile_group_id_1
+    string:
+      newtab_homepage_category: enabled
+      newtab_newtab_category: enabled
+      newtab_locale: en-US
+  events:
+    - category: newtab
+      name: opened
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: source
+          value: about:newtab
+    - category: newtab
+      name: widgets_impression
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+      # EXCLUDED: keystroke and cursor noise
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: input_letter
+      # EXCLUDED: context menu echo
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: reveal_grid_requested
+      # RETAINED: `interaction` with an action value that is not on the bad list
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: play_started
+      # RETAINED: crossword `interaction` with no action_value key at all. Guards
+      # against NULL propagation - the predicate must treat this as a genuine event
+      # rather than evaluating to NULL and silently dropping it.
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: interaction
+      # RETAINED: genuine action with no action_value
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: crossword
+        - key: user_action
+          value: learn_more
+      # RETAINED: identical bad action value on a different widget is unaffected
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: user_action
+          value: interaction
+        - key: action_value
+          value: input_letter

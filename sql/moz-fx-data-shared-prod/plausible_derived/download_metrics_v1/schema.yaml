@@ -1,0 +1,88 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The date this row aggregates, matching events_v1's `timestamp` partition
+    column for this day.
+- name: pathname
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Path of the page the download event itself was recorded on -- typically
+    a page later in the funnel than what actually drove the download (e.g. a
+    thank-you/confirmation page), not the campaign or landing page. Sourced
+    from Plausible's events_v1.pathname. See entry_page for the page that
+    started the session.
+- name: entry_page
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Path of the first page viewed in the download's session (e.g. a campaign
+    landing page), from a scoped join to the raw Plausible sessions export on
+    session_id. NULL when the download's session doesn't match within the
+    one-day lookback window used for the
+    join (see plausible_external/README.md's midnight window-split caveat) --
+    this means "session not found," not "no entry page."
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ISO 3166-1 alpha-2 country code of the visitor, as reported by Plausible
+    (events_v1.country_code).
+- name: acquisition_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Marketing channel Plausible attributes the visit to, e.g. Referral,
+    Organic Search, Direct, Paid Search.
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    utm_campaign query parameter of the page URL, as recorded by Plausible.
+    Not parsed or normalized.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Product downloaded, e.g. "firefox". Parsed directly from events_v1.props's
+    `product` key with no normalization -- raw vendor value, not run through
+    mozfun.customer_experience.normalize_product (which has no branch for
+    Plausible-shaped input).
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Platform/OS the download was for, e.g. "win". Parsed directly from
+    events_v1.props's `platform` key, raw vendor value, not normalized.
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Firefox release channel downloaded, e.g. "release". Parsed directly from
+    events_v1.props's `release_channel` key, raw vendor value, not
+    normalized.
+- name: download_language
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Language of the download, as recorded by Plausible. Parsed directly from
+    events_v1.props's `download_language` key, raw vendor value, not
+    normalized. Missing on a non-trivial fraction of rows (~7.6% of
+    product_download events observed lacking this key entirely, as opposed
+    to occasional/rare missingness) -- NULL here means not recorded, not
+    zero or unknown-language.
+- name: method
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    How the download was initiated, as recorded by Plausible (observed value:
+    "site"). Parsed directly from events_v1.props's `method` key, raw vendor
+    value, not normalized.
+- name: download_count
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Count of product_download events for this combination of dimensions on
+    this date.

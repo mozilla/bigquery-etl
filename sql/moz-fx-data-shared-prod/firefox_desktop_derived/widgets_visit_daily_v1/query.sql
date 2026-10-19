@@ -50,6 +50,9 @@ WITH events_unnested AS (
     AND category = 'newtab'
     -- include `opened` so that is_default_ui can be derived per visit
     AND name IN ('opened', 'widgets_impression', 'widgets_user_event', 'widgets_enabled')
+    -- DENG-11596: exclude crossword keystroke/cursor noise and context menu echoes,
+    -- which were mistakenly emitted as genuine user actions. See DENG-11450.
+    AND NOT `moz-fx-data-shared-prod.udf.newtab_is_noise_widget_event`(category, name, extra)
 ),
 visit_aggregations AS (
   SELECT

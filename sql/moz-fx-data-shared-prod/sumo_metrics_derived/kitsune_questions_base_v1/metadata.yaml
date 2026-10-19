@@ -5,6 +5,8 @@ description: |
 
   The dates are in UTC timezone.
 
+  Spam and locked questions are excluded.
+
   Grain: Date x Product
 
   Single source of truth tracking:

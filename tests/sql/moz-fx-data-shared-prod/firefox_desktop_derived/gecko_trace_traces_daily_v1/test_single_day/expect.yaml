@@ -1,0 +1,11 @@
+---
+# Trace A: SHA256 of "<hash(ContentChild)>,<hash(broker_services)>". t1 lasts 400 ns, t3 lasts 600 ns.
+- submission_date: 2026-08-03
+  trace_signature: 7NOyT14irw/rcw7tcJo2fCFMhOHHwQ4voN7T37l1K9w=
+  hit_count: 2
+  avg_duration_nano: 500.0
+# Trace B: SHA256 of "<hash(ContentChild)>,<hash(HttpChannelChild)>". t2 lasts 300 ns.
+- submission_date: 2026-08-03
+  trace_signature: 0Q1la/+EIp9/nR+BnjIO4ynq8cgeHdx78h8clwC4fJ4=
+  hit_count: 1
+  avg_duration_nano: 300.0

@@ -1,0 +1,16 @@
+SELECT
+  *
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-data-stmo-prod-33f2.us.stmo-cloudsql-prod",
+    """SELECT
+         id,
+         org_id,
+         type,
+         name,
+         permissions,
+         created_at
+       FROM
+         groups
+    """
+  )

@@ -21,3 +21,4 @@ bigquery:
     - first_reported_country
     - adjust_network
 deprecated: true
+deletion_date: 2026-10-01

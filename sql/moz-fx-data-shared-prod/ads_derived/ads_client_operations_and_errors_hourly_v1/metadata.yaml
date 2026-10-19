@@ -11,6 +11,11 @@ description: |-
   operational volume by platform, country, app version, and channel.
 
   Only pings containing at least one ads_client SDK metric are included.
+
+  Desktop rows are absent for 2026-08-07 through 2026-08-23: the backfill for that
+  window was cancelled (bug 2058567) rather than replayed, because this table's
+  hourly/execution_date-bound scheduling can't be backfilled day-by-day with the
+  current tooling. Data from 2026-08-24 onward comes from the normal scheduled runs.
 owners:
   - ahanot@mozilla.com
   - mozilla/ads_data_team

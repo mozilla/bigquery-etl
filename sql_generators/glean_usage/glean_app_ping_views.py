@@ -17,7 +17,7 @@ from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
 from pathos.multiprocessing import ThreadingPool
 
-from bigquery_etl import ConfigLoader
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import get_table_dir, write_sql

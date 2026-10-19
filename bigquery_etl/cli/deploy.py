@@ -42,7 +42,7 @@ from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.routine.parse_routine import ROUTINE_FILES, RawRoutine
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
-from bigquery_etl.util.common import block_coding_agents, render
+from bigquery_etl.util.common import block_coding_agents, get_bqetl_project_root, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.util.target import (
     MATERIALIZED_VIEW,
@@ -58,6 +58,8 @@ from bigquery_etl.util.target import (
     resolve_partition_for,
 )
 from bigquery_etl.view import View
+
+ROOT = Path(__file__).parent.parent.parent
 
 log = logging.getLogger(__name__)
 
@@ -451,7 +453,7 @@ def deploy(
         if rewrite_tests:
             _rewrite_tests_for_target(
                 source_to_target_paths,
-                test_dir or ConfigLoader.project_dir / "tests" / "sql",
+                test_dir or (get_bqetl_project_root() or ROOT) / "tests" / "sql",
             )
 
         client = bigquery.Client(project=target.project_id)
@@ -536,18 +538,25 @@ def _rewrite_tests_for_target(
     if not test_dir.exists():
         return
 
+    # Queries that read a stubbed table (e.g. stable tables) are rewritten to the stub,
+    # so the test fixtures for that table must be renamed too.
+    def _source_identity(source_path: Path) -> Tuple[str, str, str]:
+        return read_source_identity_from_manifest(
+            source_path
+        ) or extract_from_query_path(source_path)
+
     # Build a lookup keyed by every form of source identity that fixture
     # filenames can use: full `<proj>.<ds>.<tbl>` and short `<ds>.<tbl>`.
     # Maps to the equivalent target identity in full form.
     src_to_tgt_id: Dict[str, str] = {}
     for source_path, target_path in source_to_target_paths.items():
-        src = extract_from_query_path(source_path)
+        src = _source_identity(source_path)
         tgt = extract_from_query_path(target_path)
         src_to_tgt_id[".".join(src)] = ".".join(tgt)
         src_to_tgt_id[f"{src[1]}.{src[2]}"] = ".".join(tgt)
 
     for source_path, target_path in source_to_target_paths.items():
-        src = extract_from_query_path(source_path)
+        src = _source_identity(source_path)
         tgt = extract_from_query_path(target_path)
         src_test_dir = test_dir.joinpath(*src)
         if not src_test_dir.exists():

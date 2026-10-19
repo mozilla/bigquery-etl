@@ -1,0 +1,41 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was last updated.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was created.
+- name: org_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash organization ID. There is only one organization.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: User's display name.
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: User's email address.
+- name: groups
+  type: INTEGER
+  mode: REPEATED
+  description: IDs of the groups the user belongs to, see `groups_v1`.
+- name: profile_image_url
+  type: STRING
+  mode: NULLABLE
+  description: URL of the user's profile image.
+- name: disabled_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the user was disabled. Null if the user is active.
+- name: details
+  type: JSON
+  mode: NULLABLE
+  description: JSON user details, such as `active_at`, the last time the user was active.

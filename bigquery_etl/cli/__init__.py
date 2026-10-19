@@ -3,7 +3,6 @@
 import logging
 import os
 import warnings
-from pathlib import Path
 
 import rich_click as click
 
@@ -26,7 +25,6 @@ from ..cli.stage import stage
 from ..cli.static import static_
 from ..cli.target import target
 from ..cli.view import view
-from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
 from ..data_governance.cli import data_governance
 from ..dependency import dependency
@@ -173,5 +171,4 @@ def cli(prog_name=None):
 
 
 if __name__ == "__main__":
-    ConfigLoader.set_project_dir(Path().absolute())
     cli()

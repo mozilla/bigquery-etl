@@ -1,0 +1,9 @@
+friendly_name: Clients Uptake Events
+description: |-
+  Derived dataset from Glean events emitted by our
+  Gecko (JS) and Application-Services (Rust) clients.
+owners:
+- mleplatre@mozilla.com
+- aplacitelli@mozilla.com
+labels:
+  owner1: mleplatre

@@ -3,6 +3,7 @@ description: |-
   Summary of site metrics from Google Analytics about firefox.com
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

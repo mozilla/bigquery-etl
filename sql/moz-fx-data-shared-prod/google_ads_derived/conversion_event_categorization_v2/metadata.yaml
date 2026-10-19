@@ -3,6 +3,7 @@ description: |-
   Classifies conversion events
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik@mozilla.com

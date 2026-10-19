@@ -4,6 +4,7 @@ description: |-
   on download token if a match is found.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: false
   owner1: kik

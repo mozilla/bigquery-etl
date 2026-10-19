@@ -17,6 +17,7 @@ from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_ide
 
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
+DEFAULT_DESCRIPTION_IN_METADATA = "Please provide a description for the query"
 DEFAULT_WORKGROUP_ACCESS = [
     dict(
         role="roles/bigquery.dataViewer",
@@ -187,8 +188,8 @@ class MonitoringMetadata:
         MonitoringMetricMetadata(blocking=True)
     )
     # Bigeye workspace ID this table is registered in. When unset, monitoring
-    # commands fall back to the --workspace CLI flag default. Must be one of
-    # `monitoring.bigeye_workspace_ids` in bqetl_project.yaml.
+    # commands fall back to the default workspace. Must be one of
+    # `monitoring.bigeye_workspaces` in bqetl_project.yaml.
     workspace: Optional[int] = attr.ib(None)
 
 
@@ -313,6 +314,7 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: Optional[bool] = attr.ib(None)
+    deprecated_app: Optional[bool] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -391,6 +393,7 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = None
+        deprecated_app = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -401,7 +404,7 @@ class Metadata:
                 )
                 description = metadata.get(
                     "description",
-                    "Please provide a description for the query",
+                    DEFAULT_DESCRIPTION_IN_METADATA,
                 )
 
                 if "labels" in metadata:
@@ -460,6 +463,8 @@ class Metadata:
                     deprecated = metadata["deprecated"]
                 if "deletion_date" in metadata:
                     deletion_date = metadata["deletion_date"]
+                if "deprecated_app" in metadata:
+                    deprecated_app = metadata["deprecated_app"]
 
                 if "monitoring" in metadata:
                     converter = cattrs.BaseConverter()
@@ -493,6 +498,7 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
+                    deprecated_app,
                 )
             except yaml.YAMLError as e:
                 raise e

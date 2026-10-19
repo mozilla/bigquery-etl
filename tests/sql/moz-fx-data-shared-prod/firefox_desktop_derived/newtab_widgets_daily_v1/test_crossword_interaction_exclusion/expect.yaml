@@ -1,0 +1,40 @@
+---
+# crossword: 2 of the 6 user events are excluded (input_letter, all_clues_opened).
+# The 4 retained events are the `interaction` with hint_revealed, the `interaction`
+# with no action_value, learn_more and puzzle_completed.
+- submission_date: 2026-05-04
+  widget_name: crossword
+  widget_engaged_clients: 1
+  widget_enabled_count: 0
+  widget_disabled_count: 0
+  widget_impression_count: 1
+  widget_user_event_count: 4
+  widget_link_click_count: 1
+  widget_setting_change_count: 0
+  widget_utility_action_count: 0
+  widget_optin_accept_count: 0
+  widget_user_action_counts:
+    - action: interaction
+      count: 2
+    - action: learn_more
+      count: 1
+    - action: puzzle_completed
+      count: 1
+# lists: the same `interaction` / input_letter event is retained because the
+# exclusion is scoped to the crossword widget
+- submission_date: 2026-05-04
+  widget_name: lists
+  widget_engaged_clients: 1
+  widget_enabled_count: 0
+  widget_disabled_count: 0
+  widget_impression_count: 0
+  widget_user_event_count: 2
+  widget_link_click_count: 0
+  widget_setting_change_count: 0
+  widget_utility_action_count: 1
+  widget_optin_accept_count: 0
+  widget_user_action_counts:
+    - action: interaction
+      count: 1
+    - action: list_create
+      count: 1

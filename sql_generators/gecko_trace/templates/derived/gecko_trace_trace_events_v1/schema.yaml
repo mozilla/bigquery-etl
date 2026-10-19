@@ -1,0 +1,14 @@
+---
+fields:
+  - name: trace_signature
+    type: STRING
+    mode: NULLABLE
+    description: FK to gecko_trace_traces_v1. Signature of the trace pattern.
+  - name: event_position
+    type: INT64
+    mode: NULLABLE
+    description: Position of this event in the trace (1-based, root to leaf).
+  - name: event_signature
+    type: STRING
+    mode: NULLABLE
+    description: FK to gecko_trace_events_v1. Signature of the event at this position.

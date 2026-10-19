@@ -1,0 +1,13 @@
+---
+# SHA256 of "dom/ipc/ContentChild.cpp\x003160\x00NS_OK": seen in t1, t2, t3.
+- submission_date: 2026-08-03
+  event_signature: mwo6lbnAgs4UB78bvUUGf3tXelFj4zODq9roG4cOtAk=
+  hit_count: 3
+# SHA256 of "security/sandbox/win/src/broker_services.cc\x00220\x00SBOX_ALL_OK": seen in t1, t3.
+- submission_date: 2026-08-03
+  event_signature: oFAAJrZuyLE61JU5VT9yxL/pTEZUplWxvsxRjv4nOfM=
+  hit_count: 2
+# SHA256 of "netwerk/protocol/http/HttpChannelChild.cpp\x00530\x00NS_ERROR_FAILURE": seen in t2.
+- submission_date: 2026-08-03
+  event_signature: bfvnu3OXkVN09LTB7CjJ3ENP4sYhAL+XVQLI/vMv0mo=
+  hit_count: 1

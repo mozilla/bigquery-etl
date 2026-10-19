@@ -219,11 +219,12 @@ def generate(
     ]
 
     # Parameters to generate datasets that union all app datasets
+    cross_app_info = unrestricted_app_info(target_project, app_info)
     generate_across_apps = [
         partial(
             table.generate_across_apps,
             target_project,
-            unrestricted_app_info(target_project, app_info),
+            cross_app_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,

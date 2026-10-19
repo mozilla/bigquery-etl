@@ -99,10 +99,11 @@ def _narrow_stable_readers(
     project_gated: Dict[str, Dict], family: str
 ) -> Optional[Set[str]]:
     """Readers of `{family}_stable` if narrower than broad, else None."""
-    entry = project_gated.get(f"{family}_stable")
-    if entry is None:
+    stable = f"{family}_stable"
+    if stable not in project_gated:
         return None
-    readers = set(entry.get("default", []))
+    # an entry with no body parses to None, read it as `default: []`
+    readers = set((project_gated[stable] or {}).get("default", []))
     if readers and readers <= BROAD_READERS:
         return None
     return readers
@@ -115,6 +116,12 @@ def is_gated_family(
 
     The glean_usage generator uses this to keep gated app datasets out of
     cross-app tables, which are written to broadly readable datasets.
+
+    Only the dataset `default` is checked, not table-level entries. A broad app with
+    individually gated pings (e.g. firefox_desktop microsurvey) is still included, so
+    those pings must be kept out of cross-app tables some other way, currently
+    `generate.glean_usage.events_monitoring.skip_pings`. The sensitivity CI check
+    only runs on checked-in queries, so it won't catch this in generated SQL.
     """
     gated = load_gated_datasets() if gated is None else gated
     return _narrow_stable_readers(gated.get(project) or {}, family) is not None
@@ -138,7 +145,7 @@ def restricted_dataset_acl(
     project_gated = gated.get(project) or {}
     readers: Optional[Set[str]] = None
     if dataset in project_gated:
-        readers = set(project_gated[dataset].get("default", []))
+        readers = set((project_gated[dataset] or {}).get("default", []))
     else:
         narrow: Dict[str, Set[str]] = {}
         for family in dataset_families:

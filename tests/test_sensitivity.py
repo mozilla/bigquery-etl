@@ -520,6 +520,17 @@ class TestRestrictedDatasetAcl:
             PROJECT, "mixed", ["acme", "beta"], "view", gated
         ) == ("view_restricted", [])
 
+    def test_entry_without_body_is_nobody(self):
+        gated = {PROJECT: {**GATED[PROJECT], "acme_derived": None}}
+        assert restricted_dataset_acl(
+            PROJECT, "acme_derived", ["acme"], "derived", gated
+        ) == ("derived_restricted", [])
+        gated = {PROJECT: {"nobody_stable": None}}
+        assert restricted_dataset_acl(PROJECT, "nobody", ["nobody"], "view", gated) == (
+            "view_restricted",
+            [],
+        )
+
     def test_resolves_per_project(self):
         assert (
             restricted_dataset_acl("other-project", "acme", ["acme"], "view", GATED)
@@ -568,6 +579,10 @@ class TestIsGatedFamily:
     def test_nobody_stable_is_gated(self):
         gated = {PROJECT: {"nobody_stable": {"default": []}}}
         assert is_gated_family(PROJECT, "nobody", gated)
+
+    def test_entry_without_body_is_gated(self):
+        # `nobody_stable:` with no body parses to None and reads as `default: []`
+        assert is_gated_family(PROJECT, "nobody", {PROJECT: {"nobody_stable": None}})
 
     def test_resolves_per_project(self):
         assert not is_gated_family("other-project", "acme", GATED)

@@ -1752,7 +1752,7 @@ bqetl_shredder_monitoring:
   default_args:
     depends_on_past: false
     email:
-      - bewu@mozilla.com
+      - benwu@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -1760,7 +1760,7 @@ bqetl_shredder_monitoring:
     retries: 2
     retry_delay: 30m
     start_date: '2024-10-01'
-  description: '[EXPERIMENTAL] Monitoring queries for shredder operation'
+  description: 'Monitoring queries for shredder operation'
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
   tags:
@@ -2926,7 +2926,7 @@ bqetl_customer_experience:
     - repo/bigquery-etl
 
 bqetl_stmo:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 4 * * *
   description: |
     Daily copies of tables from the Redash (sql.telemetry.mozilla.org) metadata
     database in Cloud SQL into stmo_external.
@@ -2939,3 +2939,26 @@ bqetl_stmo:
     depends_on_past: false
   tags:
     - impact/tier_3
+
+bqetl_remote_settings_uptake:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - remote-settings-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: remote-settings-alerts@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-10-15'
+  description: DAG for Remote Settings uptake events
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 42 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

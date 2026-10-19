@@ -1,12 +1,12 @@
----
-friendly_name: tokens table from production fxa_oauth database
+friendly_name: passkeyWraps table from production fxa database
 description: >
-  A mirror of the `tokens` table from the production `fxa_oauth` CloudSQL database,
-  excluding columns containing confidential data, updated daily to match the current state of the table.
+  A mirror of the `passkeyWraps` table from the production `fxa` CloudSQL database,
+  excluding columns containing confidential data and key material, updated daily
+  to match the current state of the table.
 
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
 owners:
-  - akomar@mozilla.com
+  - wclouser@mozilla.com
 labels:
   application: accounts_backend
   schedule: daily

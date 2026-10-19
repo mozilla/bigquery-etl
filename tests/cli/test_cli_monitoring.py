@@ -414,6 +414,24 @@ class TestMonitoring:
             assert result.exit_code == 1
             assert "Invalid BigConfig file" in result.output
 
+    def test_validate_bigconfig_monitoring_metadata_not_set(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = Path(
+                "sql/moz-fx-data-shared-prod/test/bigconfig_monitoring_metadata_not_set"
+            )
+            os.makedirs(str(SQL_DIR))
+            (SQL_DIR / BIGCONFIG_FILE).write_text("""
+                type: BIGCONFIG_FILE
+                table_deployments: []
+            """)
+            (SQL_DIR / METADATA_FILE).write_text("""
+                friendly_name: Test
+            """)
+
+            result = runner.invoke(validate, [str(SQL_DIR)])
+            assert result.exit_code == 1
+            assert "`monitoring.enabled` must be explicitly set" in result.output
+
     def test_validate_bigconfig_invalid_collection(self, runner):
         with runner.isolated_filesystem():
             SQL_DIR = Path(

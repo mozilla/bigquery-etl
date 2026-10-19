@@ -167,4 +167,11 @@ CREATE OR REPLACE VIEW
       'firefox_desktop' AS application,
     FROM
       `moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_preonboarding_v1`
+    UNION ALL
+    SELECT
+      *,
+      'logins-rust-storage' AS feature,
+      'firefox_desktop' AS application,
+    FROM
+      `moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_logins_rust_storage_v1`
   )

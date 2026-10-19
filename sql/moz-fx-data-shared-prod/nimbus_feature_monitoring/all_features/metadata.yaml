@@ -20,6 +20,7 @@ references:
   - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_fxms_message_22_v1
   - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_fxms_message_7_v1
   - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_infobar_v1
+  - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_logins_rust_storage_v1
   - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_newtabadsizingexperiment_v1
   - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_newtabinferredpersonalization_v1
   - moz-fx-data-shared-prod.nimbus_feature_monitoring.firefox_desktop_newtabmerinoohttp_v1

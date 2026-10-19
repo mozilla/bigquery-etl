@@ -1,0 +1,26 @@
+
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+# description: time partitioning field
+- mode: NULLABLE
+  name: rollout_slug
+  type: STRING
+# description: nimbus rollout slug, or empty string for all clients
+- mode: NULLABLE
+  name: dimensions
+  type: JSON
+# description: json object of grouping dimensions
+- mode: NULLABLE
+  name: count_analysis_unit_ids
+  type: INTEGER
+# description: weight to use when aggregating average-type metrics
+- mode: NULLABLE
+  name: metric
+  type: STRING
+# descrtiption: metric name, where suffix indicates aggregation method
+- mode: NULLABLE
+  name: value
+  type: FLOAT
+# description: metric value

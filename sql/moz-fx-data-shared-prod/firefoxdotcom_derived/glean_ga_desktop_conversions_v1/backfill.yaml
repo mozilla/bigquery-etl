@@ -1,0 +1,18 @@
+2026-10-26:
+  start_date: 2026-07-01
+  end_date: 2026-10-21
+  reason: 'Emit the newly added is_dau_at_least_{5,6,7}_of_first_7_days, set_default
+    and is_dau_on_days_6_or_7 conversion events (https://github.com/mozilla/bigquery-etl/pull/10054).
+    Step 3 of 3: start only after the glean_gclid_conversions_v1 backfill is Complete.
+    Uses a custom query so the cross-day dedup still sees production history before
+    the start date; end_date is before the entry date because this table processes
+    the current day with no lag.'
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  custom_query_path: sql/moz-fx-data-shared-prod/firefoxdotcom_derived/glean_ga_desktop_conversions_v1/backfill_missing_conversion_events.sql
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: true
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

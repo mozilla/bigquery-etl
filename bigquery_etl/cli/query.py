@@ -67,6 +67,7 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     DATASET_METADATA_FILE,
+    DEFAULT_DESCRIPTION_IN_METADATA,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -243,7 +244,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         view_metadata_file = view_path / "metadata.yaml"
         view_metadata = Metadata(
             friendly_name=string.capwords(name.replace("_", " ")),
-            description="Please provide a description for the query",
+            description=DEFAULT_DESCRIPTION_IN_METADATA,
             owners=[owner],
             labels={"owner": safe_owner},
         )
@@ -261,7 +262,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     metadata_file = derived_path / "metadata.yaml"
     metadata = Metadata(
         friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the query",
+        description=DEFAULT_DESCRIPTION_IN_METADATA,
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
@@ -1648,8 +1649,8 @@ def validate(
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    table_dirs = []
     dataset_dirs = set()
-    errors = []
     for query in query_files:
         click.echo(f"Validating metadata for {query}")
         if not skip_format_sql:
@@ -1666,10 +1667,7 @@ def validate(
                 billing_project=billing_project,
             )
 
-        try:
-            validate_metadata.validate(query.parent)
-        except validate_metadata.MetadataValidationError as e:
-            errors.append(str(e))
+        table_dirs.append(query.parent)
         dataset_dirs.add(query.parent.parent)
 
     if no_dryrun:
@@ -1686,11 +1684,7 @@ def validate(
             ):
                 dataset_dirs.add(dataset_path)
 
-    for dataset_dir in dataset_dirs:
-        try:
-            validate_metadata.validate_datasets(dataset_dir)
-        except validate_metadata.MetadataValidationError as e:
-            errors.append(str(e))
+    errors = validate_metadata.validate_directories(table_dirs, dataset_dirs)
 
     if len(errors) > 0:
         click.echo(

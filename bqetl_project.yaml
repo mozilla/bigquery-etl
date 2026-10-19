@@ -28,23 +28,45 @@ coding_agents:
   - moz-fx-data-proto
 
 monitoring:
-  bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
-  bigeye_workspace_ids:
-  - 463
-  - 508
-  - 509
-  - 661
-  # Per-workspace BigQuery warehouse IDs. Required for tables whose
-  # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
-  # single workspace, so an API call to one workspace's warehouse ID won't
-  # see metrics in another workspace. Falls back to bigeye_warehouse_id
-  # when a workspace isn't listed here (preserves single-workspace behavior).
-  bigeye_warehouses:
-    463: 1939
-    508: 2014
-    509: 1977
-    661: 2846
+  # Bigeye warehouses belong to a single workspace, so an API call to one workspace's warehouse ID
+  # won't see metrics in another workspace.
+  bigeye_workspaces:
+    463: # Mozilla default
+      warehouse: 1939
+      collections:
+      - name: Operational Checks
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+      - name: Customer Experience
+        notification_channels:
+        - slack: '#cx-de-collaboration'
+      - name: Home Newtab
+        notification_channels:
+        - slack: '#hnt-dev-be-alerts'
+      - name: Marketing Metrics
+        notification_channels:
+        - slack: '#marketing-data-alerts'
+      - name: Subscription Platform
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+        - email: 'phlee@mozilla.com, srose@mozilla.com'
+      - name: Test
+        notification_channels:
+        - slack: '#ds-bigeye-triage'
+    508: # Mozilla Ads
+      warehouse: 2014
+      collections:
+      - name: Ads Client
+        notification_channels:
+        - slack: '#ads-client-owners'
+    509: # Mozilla Revenue - Cat 1
+      warehouse: 1977
+      collections: []
+    661: # Marketing
+      warehouse: 2846
+      collections: []
+  default_bigeye_workspace: 463
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:
@@ -608,7 +630,6 @@ generate:
     dag_name: bqetl_terms_of_use
     bigeye_defaults:
       collection: Operational Checks
-      notification_channel: '#de-bigeye-triage'
     apps:
       fenix:
         templates:
@@ -616,21 +637,18 @@ generate:
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_ios:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_messages_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
   stable_views_redacted:
     pings:
       firefox_desktop:

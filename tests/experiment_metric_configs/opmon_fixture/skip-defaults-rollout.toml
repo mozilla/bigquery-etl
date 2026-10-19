@@ -1,0 +1,10 @@
+[project]
+platform = "firefox_desktop"
+skip_default_metrics = true
+metrics = ["custom_metric"]
+
+[project.population]
+data_source = "test_source"
+
+[metrics.custom_metric.statistics]
+sum = {}

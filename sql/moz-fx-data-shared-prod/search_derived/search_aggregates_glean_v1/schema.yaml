@@ -104,7 +104,8 @@ fields:
   field: sap_counts_total
   new_description: "The number of search access point events for this key. This is a count of events, not a sum of a
       counter, so it does not reproduce the sap column of search_aggregates_v8. Zero, not null, on a row
-      with no SAP activity. Summed over the client table rows in this row's dimensions."
+      with no SAP activity. Summed over the client table rows in this row's dimensions. Only clients on
+      Firefox 138 or later send the event this counts, so compare with legacy on that basis."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_counts_total
@@ -132,15 +133,18 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_ad_clicks_sum
-  append_description: " Summed over the client table rows in this row's dimensions."
+  append_description: " Summed over the client table rows in this row's dimensions. Steps up from Firefox 157, when the fix
+      for bug 2069054 landed; the counter_ad_clicks_ columns do not."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_ad_clicks_tagged_sum
-  append_description: " Summed over the client table rows in this row's dimensions."
+  append_description: " Summed over the client table rows in this row's dimensions. Steps up from Firefox 157, when the fix
+      for bug 2069054 landed; the counter_ad_clicks_ columns do not."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_ad_clicks_organic_sum
-  append_description: " Summed over the client table rows in this row's dimensions."
+  append_description: " Summed over the client table rows in this row's dimensions. Steps up from Firefox 157, when the fix
+      for bug 2069054 landed; the counter_ad_clicks_ columns do not."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_ads_loaded_sum

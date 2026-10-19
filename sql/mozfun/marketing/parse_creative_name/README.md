@@ -4,6 +4,10 @@ This function takes a creative name and parses out known segments.
 These segments are things like country, language, or audience; multiple
 creatives can share segments.
 
+Currently supported formats are `gads_v2` and `meta_v2`, each parsed as 7
+underscore-separated segments into `ad_network, version, creative, format,
+dimension, length, cta`.
+
 We use versioned creative names to define segments, where the ad network
 (e.g. gads) and the version (e.g. v1, v2) correspond to certain available segments
 in the creative name. We track the versions in [this spreadsheet](https://docs.google.com/spreadsheets/d/1hkK8-IKbgjsHRQq_XNm-Hr6bA8657CcpnChSywlYUMU/edit#gid=635816846).

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.stmo_query_dashboards`
+  `moz-fx-data-shared-prod.stmo.query_dashboards`
 AS
 SELECT
   queries.id AS query_id,

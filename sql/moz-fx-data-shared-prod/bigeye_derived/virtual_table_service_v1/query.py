@@ -12,7 +12,7 @@ from google.cloud import bigquery
 from bigquery_etl.config import ConfigLoader
 
 BIGEYE_API_KEY = os.environ["BIGEYE_API_KEY"]
-WORKSPACE_IDS = ConfigLoader.get("monitoring", "bigeye_workspace_ids")
+WORKSPACES = ConfigLoader.get("monitoring", "bigeye_workspaces")
 API_URL = "https://app.bigeye.com/api/v1/virtual-tables?workspaceId="
 
 
@@ -91,10 +91,10 @@ def get_bigeye_data() -> pd.DataFrame:
     """Fetch data from Bigeye API for all workspaces and combine into a single DataFrame."""
     all_data = []
 
-    if not isinstance(WORKSPACE_IDS, list):
-        raise Exception("WORKSPACE_IDS is not a list")
+    if not isinstance(WORKSPACES, dict):
+        raise Exception("WORKSPACES is not a dict")
 
-    for workspace_id in WORKSPACE_IDS:
+    for workspace_id in WORKSPACES.keys():
         try:
             response_data = make_api_request(workspace_id)
             df = process_response(response_data)

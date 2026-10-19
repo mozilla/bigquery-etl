@@ -44,4 +44,6 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.fenix.referrals
   - moz-fx-data-shared-prod.firefox_desktop.referrals
+monitoring:
+  enabled: false
 require_column_descriptions: true

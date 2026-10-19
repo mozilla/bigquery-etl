@@ -64,3 +64,5 @@ references:
   - moz-fx-data-shared-prod.fenix.active_users
   - moz-fx-data-shared-prod.fenix.firefox_android_clients
   - moz-fx-data-shared-prod.fenix.metrics_clients_last_seen
+monitoring:
+  enabled: false

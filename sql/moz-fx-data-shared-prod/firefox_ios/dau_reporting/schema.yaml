@@ -580,6 +580,10 @@ fields:
       type: FLOAT
       mode: NULLABLE
       description: "Remote override for the session sampling rate (0.0\u20131.0)."
+    - name: events_ping_acceleration_factor
+      type: FLOAT
+      mode: NULLABLE
+      description: The number of 'events' pings to accelerate each session, plus one.
     description: The Server Knobs configuration applied via applyServerKnobsConfig.
       Contains the complete configuration including metrics_enabled, pings_enabled,
       and event_threshold settings.

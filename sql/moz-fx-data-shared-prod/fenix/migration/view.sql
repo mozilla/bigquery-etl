@@ -173,7 +173,8 @@ SELECT
       ping_info.server_knobs_config.event_threshold,
       ping_info.server_knobs_config.metrics_enabled,
       ping_info.server_knobs_config.pings_enabled,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`,
     CAST(NULL AS TIMESTAMP) AS `parsed_start_time`,
     CAST(NULL AS TIMESTAMP) AS `parsed_end_time`
@@ -506,7 +507,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
@@ -839,7 +841,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
@@ -1172,7 +1175,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
@@ -1505,7 +1509,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time

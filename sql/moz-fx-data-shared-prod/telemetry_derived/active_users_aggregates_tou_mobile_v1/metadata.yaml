@@ -47,4 +47,6 @@ references:
   - moz-fx-data-shared-prod.fenix.terms_of_use_status
   - moz-fx-data-shared-prod.firefox_ios.active_users
   - moz-fx-data-shared-prod.firefox_ios.terms_of_use_status
+monitoring:
+  enabled: false
 require_column_descriptions: true

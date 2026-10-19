@@ -61,3 +61,5 @@ references:
   - moz-fx-data-shared-prod.focus_android.active_users
   - moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen
   - moz-fx-data-shared-prod.telemetry.core_clients_last_seen
+monitoring:
+  enabled: false

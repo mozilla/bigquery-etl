@@ -259,7 +259,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`
   ) AS `ping_info`,
   sample_id,
@@ -524,7 +525,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`
   ) AS `ping_info`,
   sample_id,
@@ -789,7 +791,8 @@ SELECT
         FROM
           UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
       ) AS `pings_enabled`,
-      ping_info.server_knobs_config.session_sample_rate
+      ping_info.server_knobs_config.session_sample_rate,
+      ping_info.server_knobs_config.events_ping_acceleration_factor
     ) AS `server_knobs_config`
   ) AS `ping_info`,
   sample_id,

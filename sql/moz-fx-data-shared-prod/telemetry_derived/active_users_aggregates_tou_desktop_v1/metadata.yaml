@@ -35,4 +35,6 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
   - moz-fx-data-shared-prod.firefox_desktop.terms_of_use_status
+monitoring:
+  enabled: false
 require_column_descriptions: true

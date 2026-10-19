@@ -642,6 +642,8 @@ fields:
         is enabled
     - name: session_sample_rate
       type: FLOAT
+    - name: events_ping_acceleration_factor
+      type: FLOAT
   - name: parsed_start_time
     type: TIMESTAMP
     mode: NULLABLE

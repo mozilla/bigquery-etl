@@ -52,3 +52,5 @@ references:
   - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
   - moz-fx-data-shared-prod.sumo_syndicate.kitsune_auth_user
   - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus
+monitoring:
+  enabled: false

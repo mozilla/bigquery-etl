@@ -15,8 +15,16 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: >-
-    Timestamp metric-hub was resolved as of, matching jetstream (when it last touched the experiment's enrollments table).
-    NULL means jetstream has not analyzed the experiment yet, so metric-hub HEAD was used.
+    Timestamp metric-hub was resolved as of for metric_config, matching jetstream (when it last touched the experiment's enrollments table).
+    NULL means jetstream has not analyzed the experiment yet, so metric-hub HEAD was used, or that the row has no metric_config.
+
+- name: monitoring_config_as_of
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: >-
+    Timestamp metric-hub was resolved as of for monitoring_config: the day after the experiment ended
+    (its opmon config's end_date, if set), the last day opmon monitors it.
+    NULL means the experiment is live, so metric-hub HEAD was used, or that the row has no monitoring_config.
 
 - name: resolver_fingerprint
   type: STRING
@@ -28,7 +36,7 @@ fields:
 - name: metric_config
   type: RECORD
   mode: NULLABLE
-  description: Resolved jetstream analysis configuration for the experiment.
+  description: Resolved jetstream analysis configuration for the experiment. NULL for rollouts, which jetstream does not analyze.
   fields:
   - name: has_external_config
     type: BOOL
@@ -189,5 +197,141 @@ fields:
     mode: NULLABLE
     description: >-
       Set only when the experiment's config could not be resolved at all (e.g. an invalid experiment spec).
-      Starts with "Cannot load metric-hub as of first_updated" or "Unexpected error resolving config" if the failure may not repeat,
+      Starts with "Cannot load metric-hub as of the resolution timestamp" (config_as_of) or "Unexpected error resolving config" if the failure may not repeat,
+      and such rows are retried on every run.
+
+- name: monitoring_config
+  type: RECORD
+  mode: NULLABLE
+  description: >-
+    Resolved opmon monitoring configuration, as of monitoring_config_as_of.
+    Set for rollouts, as opmon defines them (isRollout or a single branch), and for experiments with a metric-hub/opmon config, NULL otherwise.
+    Rows can have both this and metric_config.
+  fields:
+  - name: has_external_config
+    type: BOOL
+    mode: NULLABLE
+    description: Whether a slug-specific config exists in metric-hub/opmon.
+  - name: external_config_url
+    type: STRING
+    mode: NULLABLE
+    description: Link to the slug's metric-hub/opmon config, if any.
+  - name: external_config_last_modified
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Last-modified timestamp of the slug's metric-hub/opmon config, if any.
+  - name: platform
+    type: STRING
+    mode: NULLABLE
+    description: Platform whose opmon definitions and defaults were applied.
+  - name: xaxis
+    type: STRING
+    mode: NULLABLE
+    description: submission_date or build_id.
+  - name: start_date
+    type: DATE
+    mode: NULLABLE
+  - name: end_date
+    type: DATE
+    mode: NULLABLE
+  - name: reference_branch
+    type: STRING
+    mode: NULLABLE
+  - name: skip
+    type: BOOL
+    mode: NULLABLE
+    description: Whether the config marks this project as skipped from monitoring.
+  - name: skip_default_metrics
+    type: BOOL
+    mode: NULLABLE
+    description: Whether the config opts out of the platform (and rollout) default metrics.
+  - name: population_data_source
+    type: STRING
+    mode: NULLABLE
+  - name: monitor_entire_population
+    type: BOOL
+    mode: NULLABLE
+  - name: branches
+    type: STRING
+    mode: REPEATED
+    description: Branches monitored, if restricted by the config.
+  - name: group_by_dimension
+    type: STRING
+    mode: NULLABLE
+  - name: metrics
+    type: RECORD
+    mode: REPEATED
+    description: Metrics monitored, deduplicated by metric across statistics.
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: friendly_name
+      type: STRING
+      mode: NULLABLE
+    - name: description
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: category
+      type: STRING
+      mode: NULLABLE
+    - name: owner
+      type: STRING
+      mode: REPEATED
+    - name: deprecated
+      type: BOOL
+      mode: NULLABLE
+    - name: data_source
+      type: STRING
+      mode: NULLABLE
+    - name: statistics
+      type: STRING
+      mode: REPEATED
+  - name: dimensions
+    type: RECORD
+    mode: REPEATED
+    description: Dimensions the monitored population is broken down by.
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: friendly_name
+      type: STRING
+      mode: NULLABLE
+    - name: description
+      type: STRING
+      mode: NULLABLE
+  - name: alerts
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+      description: ci_overlap or threshold.
+    - name: friendly_name
+      type: STRING
+      mode: NULLABLE
+    - name: description
+      type: STRING
+      mode: NULLABLE
+    - name: metrics
+      type: STRING
+      mode: REPEATED
+  - name: metric_groups
+    type: STRING
+    mode: REPEATED
+  - name: resolution_error
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Set only when the monitoring config could not be resolved (e.g. a missing metric definition or an invalid platform).
+      Starts with "Cannot load metric-hub as of the resolution timestamp" (monitoring_config_as_of)
+      or "Unexpected error resolving config" if the failure may not repeat,
       and such rows are retried on every run.

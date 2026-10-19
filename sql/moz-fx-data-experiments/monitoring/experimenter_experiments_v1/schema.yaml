@@ -87,7 +87,8 @@ fields:
 - name: metric_config
   type: RECORD
   mode: NULLABLE
-  description: Resolved jetstream analysis configuration for the experiment.
+  description: Resolved jetstream analysis configuration for the experiment. NULL
+    for rollouts, which jetstream does not analyze.
   fields:
   - name: has_external_config
     type: BOOL
@@ -257,8 +258,8 @@ fields:
     mode: NULLABLE
     description: Set only when the experiment's config could not be resolved at all
       (e.g. an invalid experiment spec). Starts with "Cannot load metric-hub as of
-      first_updated" or "Unexpected error resolving config" if the failure may not
-      repeat, and such rows are retried on every run.
+      the resolution timestamp" (config_as_of) or "Unexpected error resolving config"
+      if the failure may not repeat, and such rows are retried on every run.
 - name: metric_config_computed_at
   type: TIMESTAMP
   mode: NULLABLE

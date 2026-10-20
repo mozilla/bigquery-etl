@@ -15,7 +15,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:fx-enterprise/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.url_classifier_harmful_addon_v1

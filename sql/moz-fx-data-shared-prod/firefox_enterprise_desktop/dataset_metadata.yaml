@@ -1,9 +1,9 @@
 friendly_name: firefox-enterprise-desktop
 description: |-
   User-facing views related to document namespace firefox-enterprise-desktop; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-enterprise-desktop
-dataset_base_acl: view
+dataset_base_acl: view_restricted
 user_facing: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:fx-enterprise/data-viewers

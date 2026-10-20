@@ -24,7 +24,6 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.firefox_desktop_derived.event_monitoring_live_v1
-  - moz-fx-data-shared-prod.firefox_enterprise_desktop_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.glam_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.glean_dictionary_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.gleanjs_docs_derived.event_monitoring_live_v1

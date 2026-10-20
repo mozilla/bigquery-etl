@@ -26,9 +26,9 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:fx-enterprise/data-viewers
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_enterprise_desktop.metrics
 monitoring:
-  enabled: true
+  enabled: false

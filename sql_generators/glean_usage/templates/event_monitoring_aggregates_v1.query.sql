@@ -59,15 +59,6 @@ WITH
           UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
         WHERE
           DATE(submission_timestamp) = @submission_date
-          {% if dataset['app_name'] == "firefox_desktop" and events_table == "events_v1" %}
-            -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
-            AND (
-              event.category = "uptake.remotecontent.result"
-              AND event.name IN ("uptake_remotesettings", "uptake_normandy")
-              AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
-              AND sample_id != 0
-            ) IS NOT TRUE
-          {% endif %}
         GROUP BY
           submission_date,
           window_start,

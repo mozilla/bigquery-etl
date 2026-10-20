@@ -442,15 +442,6 @@ metadata:
   validation:
     skip:
     - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml  # backfill compatibility issue
-    # TODO: generated tables declare level: gold, but generated unit tests aren't available to CI
-    - sql/moz-fx-data-shared-prod/fenix_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v4/metadata.yaml
-    - sql/moz-fx-data-shared-prod/firefox_ios_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v4/metadata.yaml
-    - sql/moz-fx-data-shared-prod/focus_ios_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/klar_android_derived/active_users_aggregates_v3/metadata.yaml
-    - sql/moz-fx-data-shared-prod/klar_ios_derived/active_users_aggregates_v3/metadata.yaml
 
 generate:
   glean_usage:
@@ -495,7 +486,9 @@ generate:
       - firefox_desktop_background_update
     events_monitoring:
       skip_apps:
-      - ads_backend  # restricted dataset, we don't want to include it aggregate view
+      # Apps whose stable datasets are gated in sensitivity.gated_datasets are
+      # excluded from the cross-app aggregates automatically (e.g. event_monitoring_aggregates).
+      - ads_backend  # restricted dataset
       # event pings for this app were removed but still high volume due to nimbus bugs in versions 138 to 140
       # events are still sent in the background-update ping, but they are being skipped
       # See: https://mozilla-hub.atlassian.net/browse/DENG-9715
@@ -799,6 +792,8 @@ sensitivity:
   # Configuration for the sensitive-data-flow check (bigquery_etl/sensitivity.py),
   # which flags queries that read narrowly-gated data and write it somewhere more
   # broadly readable.
+
+  # Also used by glean_usage to set workgroup access for workgroup-restricted derived datasets.
 
   # Roles that grant the ability to read row-level data. dataEditor/dataOwner are
   # rare in workgroup_access here but also confer read, so count them as readers

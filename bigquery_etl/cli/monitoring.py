@@ -56,7 +56,6 @@ BIGCONFIG_FILE = "bigconfig.yml"
 BIGCONFIG_FILE_RE = re.compile(r"^.*/([\w-]+)/(\w+)/(\w+)/bigconfig\.yml$")
 BIGCONFIG_FILE_TYPE = "BIGCONFIG_FILE"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
-QUERY_FILE = "query.sql"
 VIEW_FILE = "view.sql"
 METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL,
@@ -605,9 +604,10 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
             else:
                 bigconfig = BigConfig(type=BIGCONFIG_FILE_TYPE)
 
-            if (
-                metadata_file.parent / QUERY_FILE
-            ).exists() and "public_bigquery" not in metadata.labels:
+            if not (
+                (metadata_file.parent / VIEW_FILE).exists()
+                or "public_bigquery" in metadata.labels
+            ):
                 _add_default_metrics(
                     bigconfig=bigconfig,
                     metadata=metadata,
@@ -616,14 +616,14 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
                     table=table,
                 )
 
-                if metadata.monitoring.partition_column:
-                    bigconfig.row_creation_times = RowCreationTimes(
-                        column_selectors=[
-                            ColumnSelector(
-                                name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
-                            )
-                        ]
-                    )
+            if metadata.monitoring.partition_column:
+                bigconfig.row_creation_times = RowCreationTimes(
+                    column_selectors=[
+                        ColumnSelector(
+                            name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
+                        )
+                    ]
+                )
 
             # Apply our centralized collection configurations to the BigConfig file.
             workspace_id = _resolve_workspace(metadata)
@@ -683,7 +683,13 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
         metadata_file = bigconfig_file.parent / METADATA_FILE
         if metadata_file.exists():
             metadata = Metadata.from_file(metadata_file)
-            if not (metadata.monitoring and metadata.monitoring.enabled):
+            if metadata.monitoring is None or metadata.monitoring.enabled is None:
+                file_errors[metadata_file].append(
+                    f"When a `{BIGCONFIG_FILE}` exists then `monitoring.enabled` must be"
+                    f" explicitly set to either true or false in `{METADATA_FILE}`."
+                )
+                continue
+            if not metadata.monitoring.enabled:
                 continue
 
             try:

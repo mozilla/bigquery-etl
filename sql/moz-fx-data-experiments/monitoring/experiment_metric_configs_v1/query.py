@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Resolve jetstream/metric-hub analysis configs for Experimenter experiments."""
+"""Resolve jetstream analysis and opmon monitoring configs for Experimenter experiments."""
 
 import copy
 import datetime
@@ -27,6 +27,7 @@ from metric_config_parser.errors import (
 )
 from metric_config_parser.metric import AnalysisPeriod
 from metric_config_parser.metric import Metric as ParserMetric
+from metric_config_parser.monitoring import MonitoringSpec
 
 from bigquery_etl.experiments import NimbusExperiment, get_nimbus_experiments
 from bigquery_etl.metrics import MetricHubConfigLoader
@@ -59,6 +60,7 @@ RECOVERABLE_RESOLUTION_ERRORS = (
 )
 
 STATS_DATASET = "mozanalysis"
+DEFAULT_MONITORING_PLATFORM = "firefox_desktop"
 # Experimenter data can still change for a while after an experiment ends, so
 # resolve it on every run for the first 30 days, weekly until 90 days, then
 # only when first_updated changes.
@@ -67,7 +69,7 @@ WEEKLY_REFRESH_WINDOW = datetime.timedelta(days=90)
 MAX_ROW_AGE = datetime.timedelta(days=7)
 # A bad config fails the same way every time, but failing to load metric-hub or an
 # unexpected error may be transient or a bug, so rows with these prefixes are retried.
-AS_OF_ERROR_PREFIX = "Cannot load metric-hub as of first_updated: "
+AS_OF_ERROR_PREFIX = "Cannot load metric-hub as of the resolution timestamp: "
 UNEXPECTED_ERROR_PREFIX = "Unexpected error resolving config: "
 RETRIED_ERROR_PREFIXES = (AS_OF_ERROR_PREFIX, UNEXPECTED_ERROR_PREFIX)
 # Bump when a change to the resolution logic alters rows without changing the schema,
@@ -152,6 +154,7 @@ class PreviousRow:
     resolver_fingerprint: str | None
     needs_retry: bool
     blob: dict
+    monitoring_config_as_of: datetime.datetime | None = None
 
 
 def _to_jsonable(value):
@@ -171,13 +174,14 @@ def read_previous_rows(client: bigquery.Client, table: str) -> dict[str, Previou
         rows = list(
             client.query(
                 "SELECT normandy_slug, computed_at, config_as_of, resolver_fingerprint,"
-                f" metric_config FROM `{table}`"
+                " metric_config, monitoring_config, monitoring_config_as_of"
+                f" FROM `{table}`"
             ).result()
         )
     except (NotFound, BadRequest) as e:
         logger.warning(
             f"Cannot reuse previous rows from `{table}`, as it is missing or lacks the "
-            f"config_as_of or resolver_fingerprint column: {e}"
+            f"config_as_of, resolver_fingerprint or monitoring_config columns: {e}"
         )
         return {}
 
@@ -186,8 +190,10 @@ def read_previous_rows(client: bigquery.Client, table: str) -> dict[str, Previou
             computed_at=row.computed_at,
             config_as_of=row.config_as_of,
             resolver_fingerprint=row.resolver_fingerprint,
-            needs_retry=(row.metric_config["resolution_error"] or "").startswith(
-                RETRIED_ERROR_PREFIXES
+            needs_retry=any(
+                (config["resolution_error"] or "").startswith(RETRIED_ERROR_PREFIXES)
+                for config in (row.metric_config, row.monitoring_config)
+                if config is not None
             ),
             blob=_to_jsonable(
                 {
@@ -196,11 +202,14 @@ def read_previous_rows(client: bigquery.Client, table: str) -> dict[str, Previou
                     "config_as_of": row.config_as_of,
                     "resolver_fingerprint": row.resolver_fingerprint,
                     "metric_config": row.metric_config,
+                    "monitoring_config": row.monitoring_config,
+                    "monitoring_config_as_of": row.monitoring_config_as_of,
                 }
             ),
+            monitoring_config_as_of=row.monitoring_config_as_of,
         )
         for row in rows
-        if row.metric_config is not None
+        if row.metric_config is not None or row.monitoring_config is not None
     }
 
 
@@ -211,11 +220,22 @@ def can_reuse_row(
     now: datetime.datetime,
     fingerprint: str,
     force_refresh: bool = False,
+    has_jetstream: bool = True,
+    monitoring_as_of: datetime.datetime | None = None,
+    has_monitoring: bool = False,
 ) -> bool:
-    """Whether resolving the experiment now would give the same row as before."""
-    if force_refresh or previous is None or first_updated is None:
+    """Whether resolving the experiment now would give the same row as before.
+
+    `first_updated` and `monitoring_as_of` are the timestamps each config would be
+    resolved as of, and None where it is not resolved or uses HEAD.
+    """
+    if force_refresh or previous is None or (has_jetstream and first_updated is None):
+        return False
+    if has_monitoring and monitoring_as_of is None:
         return False
     if previous.config_as_of != first_updated or previous.needs_retry:
+        return False
+    if previous.monitoring_config_as_of != monitoring_as_of:
         return False
     if previous.resolver_fingerprint != fingerprint:
         return False
@@ -315,6 +335,66 @@ class MetricConfig:
 
 
 @attr.s(auto_attribs=True)
+class MonitoringMetric:
+    """A metric monitored by opmon, deduplicated across statistics."""
+
+    name: str
+    friendly_name: str | None
+    description: str | None
+    type: str
+    category: str | None
+    owner: list[str]
+    deprecated: bool
+    data_source: str | None
+    statistics: list[str]
+
+
+@attr.s(auto_attribs=True)
+class MonitoringDimension:
+    """A dimension opmon breaks the monitored population down by."""
+
+    name: str
+    friendly_name: str | None
+    description: str | None
+
+
+@attr.s(auto_attribs=True)
+class MonitoringAlert:
+    """An alert opmon raises on monitored metrics."""
+
+    name: str
+    type: str
+    friendly_name: str | None
+    description: str | None
+    metrics: list[str]
+
+
+@attr.s(auto_attribs=True)
+class MonitoringConfig:
+    """Resolved opmon monitoring configuration for one experiment or rollout."""
+
+    has_external_config: bool = False
+    external_config_url: str | None = None
+    external_config_last_modified: str | None = None
+    platform: str | None = None
+    xaxis: str | None = None
+    start_date: str | None = None
+    end_date: str | None = None
+    reference_branch: str | None = None
+    skip: bool | None = None
+    skip_default_metrics: bool | None = None
+    population_data_source: str | None = None
+    monitor_entire_population: bool | None = None
+    branches: list[str] = attr.Factory(list)
+    group_by_dimension: str | None = None
+    metrics: list[MonitoringMetric] = attr.Factory(list)
+    dimensions: list[MonitoringDimension] = attr.Factory(list)
+    alerts: list[MonitoringAlert] = attr.Factory(list)
+    metric_groups: list[str] = attr.Factory(list)
+    resolution_error: str | None = None
+
+
+@attr.s(auto_attribs=True)
 class Row:
     """One row written to experiment_metric_configs_v1."""
 
@@ -322,7 +402,9 @@ class Row:
     computed_at: str
     config_as_of: str | None
     resolver_fingerprint: str
-    metric_config: MetricConfig
+    metric_config: MetricConfig | None = None
+    monitoring_config: MonitoringConfig | None = None
+    monitoring_config_as_of: str | None = None
 
 
 def _find_external_config(slug: str, configs: ConfigCollection) -> Config | None:
@@ -528,47 +610,200 @@ def _resolve_or_error(
         )
 
 
+def _find_monitoring_config(slug: str, configs: ConfigCollection) -> Config | None:
+    """Return the slug's own metric-hub/opmon config, if one exists."""
+    for config in configs.configs:
+        if config.slug == slug and isinstance(config.spec, MonitoringSpec):
+            return config
+    return None
+
+
+def is_monitored_rollout(nimbus_experiment: NimbusExperiment) -> bool:
+    """Whether opmon treats the experiment as a rollout, which includes single-branch ones."""
+    return nimbus_experiment.isRollout or len(nimbus_experiment.branches) == 1
+
+
+def monitoring_as_of(
+    nimbus_experiment: NimbusExperiment,
+    now: datetime.datetime,
+    external_config: Config | None = None,
+) -> datetime.datetime | None:
+    """Return the last day opmon monitors an ended experiment, or None while it is live.
+
+    Like opmon, the slug's opmon config end_date overrides Experimenter's endDate.
+    """
+    end_date = nimbus_experiment.endDate
+    if external_config is not None and external_config.spec.project.end_date:
+        end_date = datetime.datetime.strptime(
+            external_config.spec.project.end_date, "%Y-%m-%d"
+        ).replace(tzinfo=datetime.UTC)
+    if end_date is None or end_date + datetime.timedelta(days=1) > now:
+        return None
+    return end_date + datetime.timedelta(days=1)
+
+
+def _date(value: datetime.datetime | None) -> str | None:
+    return value.date().isoformat() if value else None
+
+
+def resolve_monitoring_config(
+    nimbus_experiment: NimbusExperiment, configs: ConfigCollection
+) -> MonitoringConfig | None:
+    """Resolve one experiment's opmon config the way `opmon run` does.
+
+    None if opmon would not monitor it: not a rollout, and no opmon config in `configs`.
+    """
+    slug = nimbus_experiment.slug
+    experiment = nimbus_experiment.to_metric_config_experiment()
+    external_config = _find_monitoring_config(slug, configs)
+    if external_config is None and not is_monitored_rollout(nimbus_experiment):
+        return None
+
+    platform = (
+        (external_config.spec.project.platform if external_config else None)
+        or experiment.app_name
+        or DEFAULT_MONITORING_PLATFORM
+    )
+    definitions = configs.get_platform_definitions(platform)
+    if definitions is None:
+        raise ValueError(f"Invalid platform {platform}")
+
+    spec = MonitoringSpec.from_definition_spec(copy.deepcopy(definitions))
+    if external_config is None or not external_config.spec.project.skip_default_metrics:
+        spec.merge(configs.get_platform_defaults(platform))
+        if (
+            is_monitored_rollout(nimbus_experiment)
+            and platform == DEFAULT_MONITORING_PLATFORM
+        ):
+            spec.merge(configs.get_platform_defaults("rollout"))
+    if external_config is not None:
+        spec.merge(external_config.spec)
+
+    resolved = spec.resolve(experiment, configs)
+    project = resolved.project
+
+    statistics_by_metric: dict[str, list[str]] = {}
+    metric_by_name: dict[str, ParserMetric] = {}
+    for summary in resolved.metrics:
+        metric_by_name[summary.metric.name] = summary.metric
+        names = statistics_by_metric.setdefault(summary.metric.name, [])
+        if summary.statistic.name not in names:
+            names.append(summary.statistic.name)
+
+    return MonitoringConfig(
+        has_external_config=external_config is not None,
+        external_config_url=(
+            f"{ConfigCollection.repo_url}/blob/main/opmon/{slug}.toml"
+            if external_config is not None
+            else None
+        ),
+        external_config_last_modified=(
+            external_config.last_modified.isoformat()
+            if external_config is not None
+            else None
+        ),
+        platform=platform,
+        xaxis=project.xaxis.value,
+        start_date=_date(project.start_date),
+        end_date=_date(project.end_date),
+        reference_branch=project.reference_branch,
+        skip=project.skip,
+        skip_default_metrics=project.skip_default_metrics,
+        population_data_source=(
+            project.population.data_source.name
+            if project.population.data_source
+            else None
+        ),
+        monitor_entire_population=project.population.monitor_entire_population,
+        branches=project.population.branches,
+        group_by_dimension=(
+            project.population.group_by_dimension.name
+            if project.population.group_by_dimension
+            else None
+        ),
+        metrics=[
+            MonitoringMetric(
+                name=metric.name,
+                friendly_name=metric.friendly_name,
+                description=metric.description,
+                type=metric.type,
+                category=metric.category,
+                owner=metric.owner or [],
+                deprecated=metric.deprecated,
+                data_source=metric.data_source.name if metric.data_source else None,
+                statistics=statistics_by_metric[metric.name],
+            )
+            for metric in metric_by_name.values()
+        ],
+        dimensions=[
+            MonitoringDimension(
+                name=dimension.name,
+                friendly_name=dimension.friendly_name,
+                description=dimension.description,
+            )
+            for dimension in resolved.dimensions
+        ],
+        alerts=[
+            MonitoringAlert(
+                name=alert.name,
+                type=alert.type.value,
+                friendly_name=alert.friendly_name,
+                description=alert.description,
+                metrics=sorted({summary.metric.name for summary in alert.metrics}),
+            )
+            for alert in resolved.alerts
+        ],
+        metric_groups=[group.name for group in project.metric_groups],
+    )
+
+
+def _error_monitoring_config(
+    nimbus_experiment: NimbusExperiment, configs: ConfigCollection, message: str
+) -> MonitoringConfig:
+    return MonitoringConfig(
+        has_external_config=(
+            _find_monitoring_config(nimbus_experiment.slug, configs) is not None
+        ),
+        resolution_error=message,
+    )
+
+
+def _resolve_monitoring_or_error(
+    nimbus_experiment: NimbusExperiment, configs: ConfigCollection
+) -> MonitoringConfig | None:
+    """Resolve one experiment's monitoring config. A bad config never fails the run."""
+    try:
+        return resolve_monitoring_config(nimbus_experiment, configs)
+    except RECOVERABLE_RESOLUTION_ERRORS as e:
+        logger.warning(
+            f"Cannot resolve monitoring config for {nimbus_experiment.slug}: {e}"
+        )
+        return _error_monitoring_config(nimbus_experiment, configs, str(e))
+    except Exception as e:
+        logger.warning(
+            f"Unexpected error resolving monitoring config for {nimbus_experiment.slug}: {e}"
+        )
+        return _error_monitoring_config(
+            nimbus_experiment, configs, f"{UNEXPECTED_ERROR_PREFIX}{e}"
+        )
+
+
 def _commit_for(commits: list, timestamp: datetime.datetime):
     """Pick the commit ConfigCollection.as_of does: newest not after timestamp."""
     return next((c for c in commits if c.committed_datetime <= timestamp), commits[-1])
 
 
-def get_metric_configs(
-    nimbus_experiments: list[NimbusExperiment],
+def _resolve_by_commit(
+    items: list[tuple[NimbusExperiment, datetime.datetime | None]],
     configs: ConfigCollection,
-    first_updated_by_normalized_slug: dict[str, datetime.datetime],
-    previous_rows: dict[str, PreviousRow],
-    now: datetime.datetime,
-    fingerprint: str,
-    force_refresh: bool = False,
-) -> list[dict]:
-    """Return a row per experiment, reusing previous rows that are still valid."""
-    # jetstream does not analyze rollouts
-    nimbus_experiments = [e for e in nimbus_experiments if not e.isRollout]
-    blobs: dict[str, dict] = {}
-    to_resolve = []
-    for nimbus_experiment in nimbus_experiments:
-        first_updated = first_updated_by_normalized_slug.get(
-            _bq_normalize_name(nimbus_experiment.slug)
-        )
-        previous = previous_rows.get(nimbus_experiment.slug)
-        if can_reuse_row(
-            previous, nimbus_experiment, first_updated, now, fingerprint, force_refresh
-        ):
-            blobs[nimbus_experiment.slug] = previous.blob
-        else:
-            to_resolve.append((nimbus_experiment, first_updated))
+    resolve,
+    error_config,
+    store,
+) -> int:
+    """Resolve each (experiment, timestamp) against `configs` as of its timestamp.
 
-    def add_row(nimbus_experiment, first_updated, metric_config):
-        blobs[nimbus_experiment.slug] = attr.asdict(
-            Row(
-                normandy_slug=nimbus_experiment.slug,
-                computed_at=now.isoformat(),
-                config_as_of=first_updated.isoformat() if first_updated else None,
-                resolver_fingerprint=fingerprint,
-                metric_config=metric_config,
-            )
-        )
+    A None timestamp resolves against HEAD. Returns the number of metric-hub commits used.
+    """
 
     def as_of(timestamp):
         try:
@@ -581,21 +816,15 @@ def get_metric_configs(
     commits: list = []
     commit_index: dict[str, int] = {}
     members_by_commit: dict[str, list] = {}
-    for nimbus_experiment, first_updated in to_resolve:
-        if first_updated is None:
-            add_row(
-                nimbus_experiment,
-                None,
-                _resolve_or_error(nimbus_experiment, configs),
-            )
+    for nimbus_experiment, timestamp in items:
+        if timestamp is None:
+            store(nimbus_experiment, resolve(nimbus_experiment, configs))
         else:
             if not commits:
                 commits = list(configs.repos[0].repo.iter_commits("HEAD"))
                 commit_index = {commit.hexsha: i for i, commit in enumerate(commits)}
-            sha = _commit_for(commits, first_updated).hexsha
-            members_by_commit.setdefault(sha, []).append(
-                (nimbus_experiment, first_updated)
-            )
+            sha = _commit_for(commits, timestamp).hexsha
+            members_by_commit.setdefault(sha, []).append((nimbus_experiment, timestamp))
 
     for sha, members in members_by_commit.items():
         experiment_configs, error = as_of(members[0][1])
@@ -606,26 +835,132 @@ def get_metric_configs(
             commit_index.get(repo.commit_hash, len(commits)) <= commit_index[sha]
             for repo in experiment_configs.repos
         )
-        for i, (nimbus_experiment, first_updated) in enumerate(members):
+        for i, (nimbus_experiment, timestamp) in enumerate(members):
             if i > 0 and not shared:
-                experiment_configs, error = as_of(first_updated)
-            add_row(
+                experiment_configs, error = as_of(timestamp)
+            store(
                 nimbus_experiment,
-                first_updated,
                 (
-                    _error_config(
+                    error_config(
                         nimbus_experiment, configs, f"{AS_OF_ERROR_PREFIX}{error}"
                     )
                     if error is not None
-                    else _resolve_or_error(nimbus_experiment, experiment_configs)
+                    else resolve(nimbus_experiment, experiment_configs)
                 ),
             )
+    return len(members_by_commit)
+
+
+def get_metric_configs(
+    nimbus_experiments: list[NimbusExperiment],
+    configs: ConfigCollection,
+    first_updated_by_normalized_slug: dict[str, datetime.datetime],
+    previous_rows: dict[str, PreviousRow],
+    now: datetime.datetime,
+    fingerprint: str,
+    force_refresh: bool = False,
+    monitoring_configs: ConfigCollection | None = None,
+) -> list[dict]:
+    """Return a row per experiment, reusing previous rows that are still valid.
+
+    Rollouts get no jetstream config, as jetstream does not analyze them. Rollouts as
+    opmon defines them, and slugs with an opmon config, get a monitoring config.
+    """
+    rows: dict[str, dict] = {}
+    # (config_as_of, monitoring_config_as_of) for each row to resolve
+    to_resolve: dict[str, tuple] = {}
+    jetstream_items = []
+    monitoring_items = []
+    for nimbus_experiment in nimbus_experiments:
+        slug = nimbus_experiment.slug
+        has_jetstream = not nimbus_experiment.isRollout
+        first_updated = (
+            first_updated_by_normalized_slug.get(_bq_normalize_name(slug))
+            if has_jetstream
+            else None
+        )
+        external_monitoring_config = (
+            _find_monitoring_config(slug, monitoring_configs)
+            if monitoring_configs is not None
+            else None
+        )
+        has_monitoring = monitoring_configs is not None and (
+            is_monitored_rollout(nimbus_experiment)
+            or external_monitoring_config is not None
+        )
+        monitoring_timestamp = (
+            monitoring_as_of(nimbus_experiment, now, external_monitoring_config)
+            if has_monitoring
+            else None
+        )
+        previous = previous_rows.get(slug)
+        if can_reuse_row(
+            previous,
+            nimbus_experiment,
+            first_updated,
+            now,
+            fingerprint,
+            force_refresh,
+            has_jetstream=has_jetstream,
+            monitoring_as_of=monitoring_timestamp,
+            has_monitoring=has_monitoring,
+        ):
+            rows[slug] = previous.blob
+            continue
+        to_resolve[slug] = (first_updated, monitoring_timestamp)
+        if has_jetstream:
+            jetstream_items.append((nimbus_experiment, first_updated))
+        if has_monitoring:
+            monitoring_items.append((nimbus_experiment, monitoring_timestamp))
+
+    metric_configs: dict[str, MetricConfig] = {}
+    commit_count = _resolve_by_commit(
+        jetstream_items,
+        configs,
+        _resolve_or_error,
+        _error_config,
+        lambda nimbus_experiment, config: metric_configs.update(
+            {nimbus_experiment.slug: config}
+        ),
+    )
+    resolved_monitoring_configs: dict[str, MonitoringConfig] = {}
+    monitoring_commit_count = (
+        _resolve_by_commit(
+            monitoring_items,
+            monitoring_configs,
+            _resolve_monitoring_or_error,
+            _error_monitoring_config,
+            lambda nimbus_experiment, config: resolved_monitoring_configs.update(
+                {nimbus_experiment.slug: config}
+            ),
+        )
+        if monitoring_items
+        else 0
+    )
+
+    def isoformat(timestamp):
+        return timestamp.isoformat() if timestamp else None
+
+    for slug, (first_updated, monitoring_timestamp) in to_resolve.items():
+        rows[slug] = attr.asdict(
+            Row(
+                normandy_slug=slug,
+                computed_at=now.isoformat(),
+                config_as_of=isoformat(first_updated),
+                resolver_fingerprint=fingerprint,
+                metric_config=metric_configs.get(slug),
+                monitoring_config=resolved_monitoring_configs.get(slug),
+                monitoring_config_as_of=isoformat(monitoring_timestamp),
+            )
+        )
 
     logger.info(
-        f"Resolved {len(to_resolve)} experiments across {len(members_by_commit)} "
-        f"metric-hub commits, reused {len(nimbus_experiments) - len(to_resolve)}"
+        f"Resolved {len(to_resolve)} rows ({len(jetstream_items)} metric configs "
+        f"across {commit_count} metric-hub commits, {len(monitoring_items)} monitoring "
+        f"configs across {monitoring_commit_count} metric-hub commits), "
+        f"reused {len(nimbus_experiments) - len(to_resolve)}"
     )
-    return [blobs[nimbus_experiment.slug] for nimbus_experiment in nimbus_experiments]
+    return [rows[nimbus_experiment.slug] for nimbus_experiment in nimbus_experiments]
 
 
 def main():
@@ -653,6 +988,7 @@ def main():
         datetime.datetime.now(datetime.UTC),
         compute_fingerprint(schema.to_bigquery_schema()),
         args.force_refresh,
+        MetricHubConfigLoader.monitoring_configs(),
     )
 
     job_config = bigquery.LoadJobConfig(

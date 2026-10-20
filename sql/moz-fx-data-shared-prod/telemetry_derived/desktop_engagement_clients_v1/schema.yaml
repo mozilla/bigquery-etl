@@ -103,9 +103,11 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: The standardized version string of the client's operating system, such
-    as '10.0' for Windows 10 or '6.8.0' for a Linux kernel version. Provides a normalized
-    representation across different OS reporting formats.
+  description: On Windows, the release name from mozfun.norm.windows_version_info,
+    such as 'Windows 10', 'Windows 11', or 'Windows 10 or 11' when the build number
+    is unknown; unrecognized Windows versions fall back to the major version number.
+    On other operating systems, the major version of the OS kernel, such as '25' on
+    Mac or '6' on Linux.
 - mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING

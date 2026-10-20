@@ -24,6 +24,7 @@ QUERY_DIR = (
 )
 QUERY_PY = QUERY_DIR / "query.py"
 FIXTURE_DIR = Path(__file__).parent / "metric_hub_fixture"
+OPMON_FIXTURE_DIR = Path(__file__).parent / "opmon_fixture"
 
 # In CI the sql/ directory may be replaced with generated SQL,
 # which removes Python query files. Skip in that case.
@@ -51,6 +52,11 @@ def configs():
     return LocalConfigCollection.from_local_path(str(FIXTURE_DIR))
 
 
+@pytest.fixture(scope="module")
+def monitoring_configs():
+    return LocalConfigCollection.from_local_path(str(OPMON_FIXTURE_DIR))
+
+
 UTC = datetime.UTC
 NOW = datetime.datetime(2026, 10, 8, tzinfo=UTC)
 FIRST_UPDATED = datetime.datetime(2026, 1, 1, tzinfo=UTC)
@@ -59,16 +65,23 @@ ENDED_LONG_AGO = NOW - datetime.timedelta(days=60)
 ENDED_OVER_90_DAYS_AGO = NOW - datetime.timedelta(days=100)
 
 
-def make_nimbus_experiment(slug, outcomes=None, end_date=None, is_rollout=False):
+def make_nimbus_experiment(
+    slug,
+    outcomes=None,
+    end_date=None,
+    is_rollout=False,
+    app_name="firefox_desktop",
+    branches=("control", "treatment"),
+):
     return NimbusExperiment(
         slug=slug,
         startDate=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
         endDate=end_date,
         enrollmentEndDate=None,
         proposedEnrollment=7,
-        branches=[Branch(slug="control", ratio=1, features=None)],
+        branches=[Branch(slug=b, ratio=1, features=None) for b in branches],
         referenceBranch="control",
-        appName="firefox_desktop",
+        appName=app_name,
         appId="firefox-desktop",
         channel="release",
         channels=["release"],
@@ -144,7 +157,194 @@ class TestResolveMetricConfig:
             query.resolve_metric_config(ne, configs)
 
 
+def monitoring_metrics(monitoring_config):
+    return {m.name: m.statistics for m in monitoring_config.metrics}
+
+
+class TestResolveMonitoringConfig:
+    def test_rollout_gets_platform_and_rollout_defaults(
+        self, query, monitoring_configs
+    ):
+        ne = make_nimbus_experiment("plain-rollout", is_rollout=True)
+        config = query.resolve_monitoring_config(ne, monitoring_configs)
+
+        assert config.has_external_config is False
+        assert config.external_config_url is None
+        assert config.platform == "firefox_desktop"
+        assert config.xaxis == "submission_date"
+        assert monitoring_metrics(config) == {
+            "platform_metric": ["mean"],
+            "rollout_metric": ["sum"],
+        }
+
+    def test_non_desktop_rollout_skips_rollout_defaults(
+        self, query, monitoring_configs
+    ):
+        ne = make_nimbus_experiment("fenix-rollout", is_rollout=True, app_name="fenix")
+        config = query.resolve_monitoring_config(ne, monitoring_configs)
+
+        assert config.platform == "fenix"
+        assert monitoring_metrics(config) == {"fenix_metric": ["sum"]}
+
+    def test_external_config_merges_with_defaults(self, query, monitoring_configs):
+        ne = make_nimbus_experiment("monitored", is_rollout=True)
+        config = query.resolve_monitoring_config(ne, monitoring_configs)
+
+        assert config.has_external_config is True
+        assert config.external_config_url.endswith("/blob/main/opmon/monitored.toml")
+        assert config.reference_branch == "treatment"
+        assert monitoring_metrics(config) == {
+            "platform_metric": ["mean"],
+            "rollout_metric": ["sum"],
+            "custom_metric": ["sum"],
+        }
+
+    def test_skip_default_metrics_drops_defaults(self, query, monitoring_configs):
+        ne = make_nimbus_experiment("skip-defaults-rollout", is_rollout=True)
+        config = query.resolve_monitoring_config(ne, monitoring_configs)
+
+        assert config.skip_default_metrics is True
+        assert monitoring_metrics(config) == {"custom_metric": ["sum"]}
+
+    def test_experiment_does_not_get_rollout_defaults(self, query, monitoring_configs):
+        ne = make_nimbus_experiment("monitored")
+        config = query.resolve_monitoring_config(ne, monitoring_configs)
+
+        assert monitoring_metrics(config) == {
+            "platform_metric": ["mean"],
+            "custom_metric": ["sum"],
+        }
+
+    def test_experiment_without_opmon_config_is_not_monitored(
+        self, query, monitoring_configs
+    ):
+        # e.g. an opmon config added after the experiment ended, missing as of then
+        ne = make_nimbus_experiment("no-external-config-experiment")
+        assert query.resolve_monitoring_config(ne, monitoring_configs) is None
+
+    @pytest.mark.parametrize(
+        "slug", ["missing-metric-rollout", "invalid-platform-rollout"]
+    )
+    def test_bad_config_raises_a_recoverable_error(
+        self, query, monitoring_configs, slug
+    ):
+        ne = make_nimbus_experiment(slug, is_rollout=True)
+        with pytest.raises(query.RECOVERABLE_RESOLUTION_ERRORS):
+            query.resolve_monitoring_config(ne, monitoring_configs)
+
+
+def opmon_config(end_date=None):
+    return SimpleNamespace(
+        spec=SimpleNamespace(project=SimpleNamespace(end_date=end_date))
+    )
+
+
+class TestMonitoringAsOf:
+    @pytest.mark.parametrize(
+        "end_date, external_config, expected",
+        [
+            (None, None, None),
+            (ENDED_LONG_AGO, None, ENDED_LONG_AGO + datetime.timedelta(days=1)),
+            (
+                ENDED_LONG_AGO,
+                opmon_config(),
+                ENDED_LONG_AGO + datetime.timedelta(days=1),
+            ),
+            (
+                ENDED_LONG_AGO,
+                opmon_config("2026-09-30"),
+                datetime.datetime(2026, 10, 1, tzinfo=UTC),
+            ),
+            (
+                None,
+                opmon_config("2026-09-30"),
+                datetime.datetime(2026, 10, 1, tzinfo=UTC),
+            ),
+            (ENDED_LONG_AGO, opmon_config("2026-10-30"), None),
+            (NOW - datetime.timedelta(hours=12), None, None),
+        ],
+        ids=[
+            "live",
+            "ended",
+            "opmon config without end_date",
+            "opmon end_date overrides endDate",
+            "opmon end_date while live in Experimenter",
+            "opmon end_date in the future",
+            "ended less than a day ago",
+        ],
+    )
+    def test_monitoring_as_of(self, query, end_date, external_config, expected):
+        experiment = make_nimbus_experiment("slug-a", end_date=end_date)
+        assert query.monitoring_as_of(experiment, NOW, external_config) == expected
+
+    def test_monitored_rows_resolved_against_head_are_not_reused(self, query):
+        experiment = make_nimbus_experiment(
+            "slug-a", end_date=ENDED_LONG_AGO, is_rollout=True
+        )
+        previous = previous_row(query, config_as_of=None, monitoring_config_as_of=None)
+        assert not query.can_reuse_row(
+            previous,
+            experiment,
+            None,
+            NOW,
+            FINGERPRINT,
+            has_jetstream=False,
+            monitoring_as_of=None,
+            has_monitoring=True,
+        )
+
+
 class TestGetMetricConfigs:
+    def test_bad_monitoring_config_does_not_fail_the_run(
+        self, query, configs, monitoring_configs
+    ):
+        experiments = [
+            make_nimbus_experiment("missing-metric-rollout", is_rollout=True),
+            make_nimbus_experiment("invalid-platform-rollout", is_rollout=True),
+            make_nimbus_experiment("plain-rollout", is_rollout=True),
+        ]
+        rows = query.get_metric_configs(
+            experiments, configs, {}, {}, NOW, FINGERPRINT, False, monitoring_configs
+        )
+
+        errors = [row["monitoring_config"]["resolution_error"] for row in rows]
+        assert errors[0] is not None
+        assert "not_a_platform" in errors[1]
+        assert errors[2] is None
+        assert rows[0]["monitoring_config"]["has_external_config"] is True
+
+    def test_monitoring_config_for_rollouts_and_slugs_with_opmon_config(
+        self, query, configs, monitoring_configs
+    ):
+        experiments = [
+            make_nimbus_experiment("plain-rollout", is_rollout=True),
+            make_nimbus_experiment("monitored"),
+            make_nimbus_experiment("no-external-config-experiment"),
+        ]
+        rows = query.get_metric_configs(
+            experiments, configs, {}, {}, NOW, FINGERPRINT, False, monitoring_configs
+        )
+
+        rollout, monitored, unmonitored = rows
+        assert rollout["metric_config"] is None
+        assert rollout["monitoring_config"]["platform"] == "firefox_desktop"
+        assert monitored["metric_config"]["resolution_error"] is None
+        assert monitored["monitoring_config"]["has_external_config"] is True
+        assert unmonitored["metric_config"] is not None
+        assert unmonitored["monitoring_config"] is None
+
+    def test_no_monitoring_configs_leaves_monitoring_config_empty(self, query, configs):
+        rows = query.get_metric_configs(
+            [make_nimbus_experiment("plain-rollout", is_rollout=True)],
+            configs,
+            {},
+            {},
+            NOW,
+            FINGERPRINT,
+        )
+
+        assert rows[0]["monitoring_config"] is None
+
     def test_bad_config_does_not_fail_the_run(self, query, configs):
         experiments = [
             make_nimbus_experiment("segment-failure-experiment"),
@@ -297,6 +497,8 @@ class TestReadPreviousRows:
             computed_at=NOW,
             config_as_of=FIRST_UPDATED,
             resolver_fingerprint=FINGERPRINT,
+            monitoring_config=None,
+            monitoring_config_as_of=None,
             metric_config={
                 "resolution_error": None,
                 "overrides": [{"start_date": datetime.date(2026, 1, 2)}],
@@ -307,6 +509,8 @@ class TestReadPreviousRows:
             computed_at=NOW,
             config_as_of=None,
             resolver_fingerprint=FINGERPRINT,
+            monitoring_config=None,
+            monitoring_config_as_of=None,
             metric_config={"resolution_error": "boom"},
         )
         load_failed_row = MagicMock(
@@ -314,6 +518,8 @@ class TestReadPreviousRows:
             computed_at=NOW,
             config_as_of=FIRST_UPDATED,
             resolver_fingerprint=FINGERPRINT,
+            monitoring_config=None,
+            monitoring_config_as_of=None,
             metric_config={"resolution_error": f"{query.AS_OF_ERROR_PREFIX}boom"},
         )
         unexpected_error_row = MagicMock(
@@ -321,6 +527,8 @@ class TestReadPreviousRows:
             computed_at=NOW,
             config_as_of=FIRST_UPDATED,
             resolver_fingerprint=FINGERPRINT,
+            monitoring_config=None,
+            monitoring_config_as_of=None,
             metric_config={"resolution_error": f"{query.UNEXPECTED_ERROR_PREFIX}boom"},
         )
         client = MagicMock()
@@ -351,20 +559,59 @@ class TestReadPreviousRows:
                 "resolution_error": None,
                 "overrides": [{"start_date": "2026-01-02"}],
             },
+            "monitoring_config": None,
+            "monitoring_config_as_of": None,
         }
 
-    def test_ignores_rows_without_metric_config(self, query):
+    def test_keeps_rollout_rows_with_only_a_monitoring_config(self, query):
+        monitoring_as_of = NOW - datetime.timedelta(days=60)
+        rows = [
+            MagicMock(
+                normandy_slug="rollout-a",
+                computed_at=NOW,
+                config_as_of=None,
+                resolver_fingerprint=FINGERPRINT,
+                metric_config=None,
+                monitoring_config={"resolution_error": None},
+                monitoring_config_as_of=monitoring_as_of,
+            ),
+            MagicMock(
+                normandy_slug="rollout-b",
+                computed_at=NOW,
+                config_as_of=None,
+                resolver_fingerprint=FINGERPRINT,
+                metric_config=None,
+                monitoring_config={
+                    "resolution_error": f"{query.AS_OF_ERROR_PREFIX}boom"
+                },
+                monitoring_config_as_of=monitoring_as_of,
+            ),
+        ]
+        client = MagicMock()
+        client.query.return_value.result.return_value = rows
+
+        previous_rows = query.read_previous_rows(client, "t")
+
+        assert previous_rows["rollout-a"].monitoring_config_as_of == monitoring_as_of
+        assert previous_rows["rollout-a"].needs_retry is False
+        assert previous_rows["rollout-b"].needs_retry is True
+
+    def test_ignores_rows_without_any_config(self, query):
         rows = [
             MagicMock(
                 normandy_slug="slug-a",
                 computed_at=NOW,
                 config_as_of=FIRST_UPDATED,
+                monitoring_config=None,
+                monitoring_config_as_of=None,
                 metric_config=None,
             ),
             MagicMock(
                 normandy_slug="slug-b",
                 computed_at=NOW,
                 config_as_of=FIRST_UPDATED,
+                monitoring_config=None,
+                monitoring_config_as_of=None,
                 metric_config={"resolution_error": None},
             ),
         ]
@@ -513,7 +760,118 @@ def resolve(query):
 
 @pytest.mark.usefixtures("resolve")
 class TestGetMetricConfigsReuse:
-    def test_rollouts_are_skipped(self, query):
+    @pytest.fixture
+    def resolve_monitoring(self, query):
+        with patch.object(
+            query, "resolve_monitoring_config", return_value=query.MonitoringConfig()
+        ) as resolve_monitoring:
+            yield resolve_monitoring
+
+    def test_ended_rollout_is_monitored_as_of_the_day_after_it_ended(
+        self, query, resolve, resolve_monitoring
+    ):
+        monitoring_configs = make_fake_configs()
+        rollout = make_nimbus_experiment(
+            "rollout-a", end_date=ENDED_LONG_AGO, is_rollout=True
+        )
+        expected_as_of = ENDED_LONG_AGO + datetime.timedelta(days=1)
+
+        row = query.get_metric_configs(
+            [rollout],
+            make_fake_configs(),
+            {},
+            {},
+            NOW,
+            FINGERPRINT,
+            False,
+            monitoring_configs,
+        )[0]
+
+        monitoring_configs.as_of.assert_called_once_with(expected_as_of)
+        resolve.assert_not_called()
+        assert row["metric_config"] is None
+        assert row["config_as_of"] is None
+        assert row["monitoring_config_as_of"] == expected_as_of.isoformat()
+
+    def test_live_rollout_is_monitored_against_head(
+        self, query, resolve, resolve_monitoring
+    ):
+        monitoring_configs = make_fake_configs()
+        rollout = make_nimbus_experiment("rollout-a", is_rollout=True)
+
+        row = query.get_metric_configs(
+            [rollout],
+            make_fake_configs(),
+            {},
+            {},
+            NOW,
+            FINGERPRINT,
+            False,
+            monitoring_configs,
+        )[0]
+
+        monitoring_configs.as_of.assert_not_called()
+        assert resolve_monitoring.call_args.args[1] is monitoring_configs
+        assert row["monitoring_config_as_of"] is None
+
+    def test_single_branch_experiment_gets_both_configs(
+        self, query, resolve, resolve_monitoring
+    ):
+        experiment = make_nimbus_experiment("slug-a", branches=("control",))
+
+        row = query.get_metric_configs(
+            [experiment],
+            make_fake_configs(),
+            {},
+            {},
+            NOW,
+            FINGERPRINT,
+            False,
+            make_fake_configs(),
+        )[0]
+
+        resolve.assert_called_once()
+        resolve_monitoring.assert_called_once()
+        assert row["metric_config"] is not None
+        assert row["monitoring_config"] is not None
+
+    @pytest.mark.parametrize(
+        "previous_as_of_delta, reused",
+        [(datetime.timedelta(0), True), (datetime.timedelta(days=-1), False)],
+        ids=["same as_of", "as_of changed"],
+    )
+    def test_ended_rollout_rows_are_reused_when_monitoring_as_of_matches(
+        self, query, resolve, resolve_monitoring, previous_as_of_delta, reused
+    ):
+        rollout = make_nimbus_experiment(
+            "rollout-a", end_date=ENDED_LONG_AGO, is_rollout=True
+        )
+        previous = {
+            "rollout-a": previous_row(
+                query,
+                config_as_of=None,
+                monitoring_config_as_of=ENDED_LONG_AGO
+                + datetime.timedelta(days=1)
+                + previous_as_of_delta,
+                blob={"normandy_slug": "rollout-a", "kept": 1},
+            )
+        }
+
+        blobs = query.get_metric_configs(
+            [rollout],
+            make_fake_configs(),
+            {},
+            previous,
+            NOW,
+            FINGERPRINT,
+            False,
+            make_fake_configs(),
+        )
+
+        assert resolve_monitoring.called is not reused
+        assert (blobs[0] == {"normandy_slug": "rollout-a", "kept": 1}) is reused
+
+    def test_rollouts_have_no_jetstream_config(self, query, resolve):
         experiments = [
             make_nimbus_experiment("slug-a", end_date=ENDED_LONG_AGO),
             make_nimbus_experiment("slug-r", end_date=ENDED_LONG_AGO, is_rollout=True),
@@ -521,7 +879,10 @@ class TestGetMetricConfigsReuse:
 
         blobs = get_rows(query, experiments, make_fake_configs())
 
-        assert [b["normandy_slug"] for b in blobs] == ["slug-a"]
+        assert [b["normandy_slug"] for b in blobs] == ["slug-a", "slug-r"]
+        assert blobs[1]["metric_config"] is None
+        assert blobs[1]["config_as_of"] is None
+        assert [call.args[0].slug for call in resolve.call_args_list] == ["slug-a"]
 
     def test_experiments_without_timestamp_use_head_configs(self, query, resolve):
         configs = make_fake_configs()

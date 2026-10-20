@@ -358,7 +358,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
     if: |
-      (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
+      (needs.decide-runs.outputs.validate-bqetl == 'true' ||
+       needs.decide-runs.outputs.validate-sql == 'true' ||
+       needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
@@ -1024,6 +1026,23 @@ jobs:
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
+
+  validate-monitoring:
+    name: Validate Monitoring
+    needs: [build, generate-sql]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: *job-env
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *copy-generated-sql
+      - name: Verify that monitoring configs are valid
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl monitoring validate sql/
 
   validate-backfills:
     name: Validate Backfills

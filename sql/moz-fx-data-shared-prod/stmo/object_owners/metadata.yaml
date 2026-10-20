@@ -1,0 +1,7 @@
+friendly_name: STMO Object Owners
+description: |-
+  Owners of published Redash (sql.telemetry.mozilla.org) visualizations and dashboards. A
+  visualization is owned by its query's owner. Excludes dashboards with all-digit names, which
+  DataHub doesn't ingest. Used by the DataHub Redash usage source.
+owners:
+- bewu@mozilla.com

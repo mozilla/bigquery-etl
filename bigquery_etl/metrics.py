@@ -6,6 +6,7 @@ import attr
 from metric_config_parser.config import ConfigCollection
 
 JETSTREAM_CONFIGS_REPO = "https://github.com/mozilla/metric-hub/tree/main/jetstream"
+OPMON_CONFIGS_REPO = "https://github.com/mozilla/metric-hub/tree/main/opmon"
 
 
 class _MetricHubConfigLoader:
@@ -13,6 +14,7 @@ class _MetricHubConfigLoader:
 
     _metric_hub_configs: Optional[ConfigCollection] = None
     _experiment_configs: Optional[ConfigCollection] = None
+    _monitoring_configs: Optional[ConfigCollection] = None
 
     def metric_hub_configs(self) -> ConfigCollection:
         """Return the metric-hub root config collection."""
@@ -32,6 +34,14 @@ class _MetricHubConfigLoader:
                 [ConfigCollection.repo_url, JETSTREAM_CONFIGS_REPO]
             )
         return self._experiment_configs
+
+    def monitoring_configs(self) -> ConfigCollection:
+        """Return metric-hub root configs merged with opmon monitoring configs."""
+        if self._monitoring_configs is None:
+            self._monitoring_configs = ConfigCollection.from_github_repos(
+                [ConfigCollection.repo_url, OPMON_CONFIGS_REPO]
+            )
+        return self._monitoring_configs
 
 
 MetricHubConfigLoader = _MetricHubConfigLoader()

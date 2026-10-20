@@ -15,6 +15,9 @@
       retry_delay: 30m
   ```
   - All DAG names need to have `bqetl_` as prefix.
+  - DAGs can be tagged using a `tags` field (e.g., `tags: [impact/tier_3]`), used to filter DAGs in the Airflow UI and to track impact tier and triage status; see [Airflow Tags](https://github.com/mozilla/bigquery-etl/blob/main/docs/reference/airflow_tags.md) for details.
+  - `catchup` can be set to `true` to let Airflow backfill missed DAG runs since `start_date`; defaults to `false`.
+  - `max_active_runs` limits how many concurrent runs of the DAG are allowed; `max_active_tis_per_dag` (set under `default_args`) limits concurrent task instances across runs.
   - `schedule_interval` is either defined as a [CRON expression](https://en.wikipedia.org/wiki/Cron) or alternatively as one of the following [CRON presets](https://airflow.readthedocs.io/en/latest/dag-run.html): `once`, `hourly`, `daily`, `weekly`, `monthly`
   - `start_date` defines the first date for which the query should be executed
     - Airflow will not automatically backfill older dates if `start_date` is set in the past, backfilling can be done via the Airflow web interface

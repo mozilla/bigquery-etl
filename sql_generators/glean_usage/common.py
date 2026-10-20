@@ -78,7 +78,9 @@ def write_dataset_metadata(
         if dataset_families is None:
             dataset_families = [dataset.removesuffix("_derived")]
         workgroup_access = DEFAULT_WORKGROUP_ACCESS
-        restricted = restricted_dataset_acl(project_id, dataset, dataset_families, base_acl)
+        restricted = restricted_dataset_acl(
+            project_id, dataset, dataset_families, base_acl
+        )
         if restricted is not None:
             base_acl, workgroup_access = restricted
 
@@ -95,6 +97,24 @@ def write_dataset_metadata(
 
         logging.info(f"Writing {target}")
         target.write_text(rendered)
+
+
+def monitoring_enabled(project_id, app_name, derived_dataset, dataset_families):
+    """Whether to generate Bigeye monitoring for a derived dataset's tables.
+
+    Restricted derived datasets are skipped because the default Bigeye workspace's service
+    account can't read them. To monitor one from a workspace that can, check in a bigconfig.yml
+    and a metadata.yaml in sql/moz-fx-data-shared-prod that sets `monitoring.workspace`
+    (the bigconfig collection must exist in that workspace), and add the metadata.yaml to
+    `generate.glean_usage.skip_existing` so it isn't regenerated.
+    """
+    return (
+        app_name not in BIGCONFIG_SKIP_APPS
+        and restricted_dataset_acl(
+            project_id, derived_dataset, dataset_families, "derived"
+        )
+        is None
+    )
 
 
 def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1"):
@@ -351,7 +371,9 @@ class GleanTable:
 
         # Some apps did briefly send a baseline ping,
         # but do not do so actively anymore. This is why they get excluded.
-        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
+        enable_monitoring = monitoring_enabled(
+            project_id, app_name, derived_dataset, [app_id_info["bq_dataset_family"]]
+        )
 
         # Some apps' tables have been deprecated
         deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
@@ -555,7 +577,9 @@ class GleanTable:
             if self.per_app_id_enabled:
                 return
 
-        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
+        enable_monitoring = monitoring_enabled(
+            project_id, app_name, f"{target_dataset}_derived", families
+        )
 
         # Some apps' tables have been deprecated
         deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))

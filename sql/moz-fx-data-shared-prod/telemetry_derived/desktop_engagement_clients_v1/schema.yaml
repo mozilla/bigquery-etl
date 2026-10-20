@@ -104,9 +104,8 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
-    field: normalized_os_version
+  description: On Windows, the release name from mozfun.norm.windows_version_info, such as 'Windows 10' or 'Windows 11'.
+    On other operating systems, the major version of the OS kernel, such as '25' on Mac or '6' on Linux.
 - mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING

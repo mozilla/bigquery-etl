@@ -1347,6 +1347,10 @@ fields:
         * Number of candidate tabs shown
 
         * Number of tabs shown on the card'
+    - name: cards
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of resume cards visible when the section was shown.
     - name: channel_status
       type: INTEGER
       mode: NULLABLE
@@ -2176,6 +2180,8 @@ fields:
 
         * Position of the entry that was clicked
 
+        * The position (0-index) of the card acted on.
+
         * The position (0-index) of the Top Sites tile. For example: 2 means the third
         tile in the row.'
     - name: pre_llm_confidence
@@ -2617,6 +2623,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of history entries displayed
+    - name: total_cards
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of resume cards available, including ones hidden behind
+        "Show more".
     - name: total_completed_requests
       type: INTEGER
       mode: NULLABLE
@@ -3371,6 +3382,16 @@ fields:
         * Type of notification interaction: "open_url" (body clicked to open watched
         page), "snooze" (snooze button clicked), or "dismiss" (dismiss button clicked
         to mute notifications).'
+    - name: close_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Why the dropdown closed: "selected" (the user picked a suggestion),
+        "dismissed" (clicked elsewhere or pressed Escape without picking anything),
+        "typed_through" (kept typing until no results remained) or "left_page" (navigated
+        away or closed the tab while the dropdown was open). "left_page" is best-effort
+        on desktop: the native nsFormFillController closes the dropdown through the
+        same path as "dismissed" before this code gets a chance to see the navigation,
+        so most desktop page-leaves are reported as "dismissed" instead.'
     - name: closing_reason
       type: STRING
       mode: NULLABLE
@@ -3840,6 +3861,9 @@ fields:
         * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
         SessionRestore, SystemMenu or SlowScript
 
+        * Where the user opened the page from: "panel" for the button in the VPN panel,
+        "settings" for the button in about:settings#privacy.
+
         * The UI surface used to open the referrals tab. One of: app_menu, accounts_menu,
         preferences, help_menu, about_dialog.
 
@@ -4176,7 +4200,17 @@ fields:
     - name: flow
       type: STRING
       mode: NULLABLE
-      description: image_add, alt_text_edit.
+      description: 'Depending on the type of event:
+
+        * image_add, alt_text_edit.
+
+        * Which flow the activation started, as resolved from the flow variable of
+        the fireButton Nimbus feature: "panel" or "direct". Read from the same value
+        the widget acted on rather than from browser.fireButton.flow, so an enrollment
+        cannot make the reported flow disagree with the one the user got.
+
+        * Which flow was in effect, "panel" or "direct". Repeated from activated so
+        this event can be analysed without joining the two.'
     - name: flow_id
       type: STRING
       mode: NULLABLE
@@ -4192,7 +4226,14 @@ fields:
         * Flow id of an interaction session with a credit card form
 
         * Joins to sibling firefox.ai.runtime.engine_run and run_inference_success_flow
-        events for the same inference.'
+        events for the same inference.
+
+        * An id generated when the dropdown opened, shared with the matching dropdown_shown
+        event so the two can be correlated.
+
+        * An id generated when the dropdown opened, letting this event be correlated
+        with the matching dropdown_closed event (and any interactions in between),
+        to measure things like how often a shown dropdown leads to a removal.'
     - name: font
       type: STRING
       mode: NULLABLE
@@ -4498,7 +4539,13 @@ fields:
     - name: interaction_type
       type: STRING
       mode: NULLABLE
-      description: The type of user interaction with the CM record tile
+      description: 'Depending on the type of event:
+
+        * The type of user interaction with the CM record tile
+
+        * How the user responded to the dialog: "confirm" or "cancel".
+
+        * The secondary action that was activated: "delete" or "edit".'
     - name: interstitial_reason
       type: STRING
       mode: NULLABLE
@@ -5148,6 +5195,12 @@ fields:
 
         * Whether the user kept the value. One of: kept, edited, or cleared.
 
+        * "deleted" if data was cleared, "cancelled" if the user explicitly backed
+        out with Cancel, "dismissed" if the confirmation panel was closed without
+        a choice, for example with Escape or a click outside it, "aborted" if the
+        user confirmed but nothing was deleted because the windows could not be closed,
+        for example when the user chose to stay on a page that asked before leaving.
+
         * success or error
 
         * success or prefetch or error
@@ -5158,16 +5211,7 @@ fields:
         to start a new session rather than restore, or asked to restore with nothing
         selected - "no_data": the page had no session data to offer - "abandoned":
         the page was closed or navigated away from without any of the above - "shutdown":
-        the browser quit with the page still open; the page is restored with the session,
-        so a later impression follows
-
-        * "ready", "unavailable", or "error".
-
-        * What the user did with the generated value before submitting it. One of:
-        kept, edited, or cleared.
-
-        * How the flow ended. One of: completed (the user signed in), abandoned (the
-        user closed the sign-in tab or window without finishing), blocked (an accoun...'
+        the browser quit with th...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -5606,7 +5650,17 @@ fields:
     - name: record_type
       type: STRING
       mode: NULLABLE
-      description: 'Type of telemetry record: state or terminal.'
+      description: 'Depending on the type of event:
+
+        * The type of saved record shown in the dropdown: "formhistory", "address",
+        "payment" or "password".
+
+        * Type of telemetry record: state or terminal.
+
+        * The type of saved record the dialog is about: "address", "payment" or "password".
+
+        * The type of saved record the action applies to: "formhistory", "address",
+        "payment" or "password".'
     - name: recovery
       type: STRING
       mode: NULLABLE
@@ -6169,9 +6223,13 @@ fields:
     - name: state
       type: STRING
       mode: NULLABLE
-      description: 'Migrator state when the restore started: "RevertPending" the first
-        time the Rust backend is deactivated, "JSONPrimary" for a later startup retrying
-        a restore that did not complete.'
+      description: 'Depending on the type of event:
+
+        * Migrator state when the restore started: "RevertPending" the first time
+        the Rust backend is deactivated, "JSONPrimary" for a later startup retrying
+        a restore that did not complete.
+
+        * What the section showed: cards, empty_no_suggestions, or empty_all_dismissed.'
     - name: status
       type: STRING
       mode: NULLABLE
@@ -6241,7 +6299,14 @@ fields:
     - name: surface
       type: STRING
       mode: NULLABLE
-      description: Which UI surface.
+      description: 'Depending on the type of event:
+
+        * Where the terminal action was taken: "panel" for the confirmation panel''s
+        own buttons, "dialog" for the clear-data dialog reached either through the
+        panel''s "Choose..." link or directly. The "direct" flow has no panel and
+        so only ever reports "dialog".
+
+        * Which UI surface.'
     - name: suspicious_site
       type: STRING
       mode: NULLABLE
@@ -6501,6 +6566,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether the input `type` was ever "password".
+    - name: update_type
+      type: STRING
+      mode: NULLABLE
+      description: The change the dialog asked to confirm. Only "delete" is supported
+        right now.
     - name: updated_from
       type: STRING
       mode: NULLABLE

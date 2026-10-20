@@ -1231,6 +1231,14 @@ fields:
         action.
 
         '
+    - name: selection_menu_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the text selection actions menu is turned on in the
+        user''s settings. Always false while the Highlight to Search feature gate
+        is off.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

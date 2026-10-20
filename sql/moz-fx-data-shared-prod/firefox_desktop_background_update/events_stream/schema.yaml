@@ -1713,6 +1713,16 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The GDPR choice. The value could be "Accept", "Reject" or "Custom".
+    - name: close_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Why the dropdown closed: "selected" (the user picked a suggestion),
+        "dismissed" (clicked elsewhere or pressed Escape without picking anything),
+        "typed_through" (kept typing until no results remained) or "left_page" (navigated
+        away or closed the tab while the dropdown was open). "left_page" is best-effort
+        on desktop: the native nsFormFillController closes the dropdown through the
+        same path as "dismissed" before this code gets a chance to see the navigation,
+        so most desktop page-leaves are reported as "dismissed" instead.'
     - name: code
       type: STRING
       mode: NULLABLE
@@ -2242,7 +2252,14 @@ fields:
         * Unique identifier for this ML workflow session. Used to correlate all events
         within this session across components.
 
-        * Flow id of an interaction session with a credit card form'
+        * Flow id of an interaction session with a credit card form
+
+        * An id generated when the dropdown opened, shared with the matching dropdown_shown
+        event so the two can be correlated.
+
+        * An id generated when the dropdown opened, letting this event be correlated
+        with the matching dropdown_closed event (and any interactions in between),
+        to measure things like how often a shown dropdown leads to a removal.'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -2410,6 +2427,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The interaction type that initiated this session
+    - name: interaction_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * How the user responded to the dialog: "confirm" or "cancel".
+
+        * The secondary action that was activated: "delete" or "edit".'
     - name: issue
       type: STRING
       mode: NULLABLE
@@ -3014,6 +3039,18 @@ fields:
 
         * A string that identifies the reason for resetting the storage.local IndexedDB
         database. e.g. - "ObjectStoreNo...'
+    - name: record_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The type of saved record shown in the dropdown: "formhistory", "address",
+        "payment" or "password".
+
+        * The type of saved record the dialog is about: "address", "payment" or "password".
+
+        * The type of saved record the action applies to: "formhistory", "address",
+        "payment" or "password".'
     - name: redirects
       type: STRING
       mode: NULLABLE
@@ -3505,6 +3542,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether the input `type` was ever "password".
+    - name: update_type
+      type: STRING
+      mode: NULLABLE
+      description: The change the dialog asked to confirm. Only "delete" is supported
+        right now.
     - name: updated_from
       type: STRING
       mode: NULLABLE

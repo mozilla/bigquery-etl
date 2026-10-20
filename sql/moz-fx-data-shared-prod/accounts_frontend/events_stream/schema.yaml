@@ -731,7 +731,13 @@ fields:
     - name: browser_family
       type: STRING
       mode: NULLABLE
-      description: Browser family bucket {firefox, chrome, safari, edge, other}
+      description: 'Depending on the type of event:
+
+        * The browser that opened the page, from the user agent in the browser: firefox,
+        safari, chrome, edge or other. On iOS, Firefox, Chrome and Edge report their
+        own family, not safari.
+
+        * Browser family bucket {firefox, chrome, safari, edge, other}'
     - name: browser_major
       type: STRING
       mode: NULLABLE

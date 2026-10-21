@@ -6,3 +6,5 @@ We represent maps as Arrays of Key/Value structs:
 
 The type of the key and value you are setting must
 match the types in the map itself.
+
+Raises an error if the new key is `NULL`.

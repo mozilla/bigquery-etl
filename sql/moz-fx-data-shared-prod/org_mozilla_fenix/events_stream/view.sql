@@ -20,7 +20,6 @@ SELECT
       LAX_BOOL(event_extra.blocked) AS `blocked`,
       LAX_BOOL(event_extra.breached) AS `breached`,
       LAX_BOOL(event_extra.cache) AS `cache`,
-      LAX_BOOL(event_extra.campaign_attributed) AS `campaign_attributed`,
       LAX_BOOL(event_extra.can_stage) AS `can_stage`,
       LAX_BOOL(event_extra.cancelled) AS `cancelled`,
       LAX_BOOL(event_extra.checked) AS `checked`,

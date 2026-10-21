@@ -3018,7 +3018,11 @@ SELECT
       metrics.counter.use_counter_css_doc_css_fit_tolerance,
       metrics.counter.use_counter_css_doc_css_flow_tolerance,
       metrics.counter.use_counter_css_page_css_fit_tolerance,
-      metrics.counter.use_counter_css_page_css_flow_tolerance
+      metrics.counter.use_counter_css_page_css_flow_tolerance,
+      metrics.counter.use_counter_deprecated_ops_doc_svguse_inline_event_handler,
+      metrics.counter.use_counter_deprecated_ops_page_svguse_inline_event_handler,
+      metrics.counter.use_counter_doc_speculation_rules_header,
+      metrics.counter.use_counter_page_speculation_rules_header
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -6060,7 +6064,11 @@ SELECT
       metrics.counter.use_counter_css_doc_css_fit_tolerance,
       metrics.counter.use_counter_css_doc_css_flow_tolerance,
       metrics.counter.use_counter_css_page_css_fit_tolerance,
-      metrics.counter.use_counter_css_page_css_flow_tolerance
+      metrics.counter.use_counter_css_page_css_flow_tolerance,
+      metrics.counter.use_counter_deprecated_ops_doc_svguse_inline_event_handler,
+      metrics.counter.use_counter_deprecated_ops_page_svguse_inline_event_handler,
+      metrics.counter.use_counter_doc_speculation_rules_header,
+      metrics.counter.use_counter_page_speculation_rules_header
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -9102,7 +9110,11 @@ SELECT
       metrics.counter.use_counter_css_doc_css_fit_tolerance,
       metrics.counter.use_counter_css_doc_css_flow_tolerance,
       metrics.counter.use_counter_css_page_css_fit_tolerance,
-      metrics.counter.use_counter_css_page_css_flow_tolerance
+      metrics.counter.use_counter_css_page_css_flow_tolerance,
+      metrics.counter.use_counter_deprecated_ops_doc_svguse_inline_event_handler,
+      metrics.counter.use_counter_deprecated_ops_page_svguse_inline_event_handler,
+      metrics.counter.use_counter_doc_speculation_rules_header,
+      metrics.counter.use_counter_page_speculation_rules_header
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

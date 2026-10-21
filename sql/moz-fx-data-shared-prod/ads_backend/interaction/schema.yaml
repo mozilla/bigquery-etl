@@ -565,6 +565,27 @@ fields:
         at the time this ping was recorded.
 
         '
+  - name: labeled_quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: ad_client_relevance
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Relevance scores sent by the client in the ad request if they
+        exist. Scores are computed on the client with differential privacy and sent
+        over OHTTP, and requests that include scores never include a client identifier.
+        Each value is the decimal score, between 0 and 1, multiplied by 10,000 so
+        that it can be stored as an integer with 4 retained decimal places.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

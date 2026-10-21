@@ -488,6 +488,17 @@ fields:
         the Google Play Install Referrer library.
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: play_store_attribution_pairing_campaign
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the install referrer''s utm_content matched the pairing
+        campaign marker (`pairing-signin-prompt.campaign-utm-content`).
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE

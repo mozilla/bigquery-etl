@@ -12587,6 +12587,16 @@ fields:
       mode: NULLABLE
       description: Whether a page supplies a Sanitizer configuration that is rejected
         as invalid
+    - name: use_counter2_speculationrulesheader_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has a speculation rule set from a Speculation-Rules
+        header
+    - name: use_counter2_speculationrulesheader_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has a speculation rule set from a Speculation-Rules
+        header
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -25038,6 +25048,16 @@ fields:
           mode: NULLABLE
           description: Whether a page supplies a Sanitizer configuration that is rejected
             as invalid
+        - name: use_counter2_speculationrulesheader_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has a speculation rule set from a Speculation-Rules
+            header
+        - name: use_counter2_speculationrulesheader_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has a speculation rule set from a Speculation-Rules
+            header
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

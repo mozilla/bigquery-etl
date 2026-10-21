@@ -995,6 +995,7 @@ SELECT
       JSON_VALUE(event_extra.taar_based) AS `taar_based`,
       JSON_VALUE(event_extra.tab) AS `tab`,
       JSON_VALUE(event_extra.tab_layout) AS `tab_layout`,
+      JSON_VALUE(event_extra.tab_orientation) AS `tab_orientation`,
       JSON_VALUE(event_extra.tab_pos) AS `tab_pos`,
       JSON_VALUE(event_extra.tabgroup) AS `tabgroup`,
       JSON_VALUE(event_extra.table) AS `table`,

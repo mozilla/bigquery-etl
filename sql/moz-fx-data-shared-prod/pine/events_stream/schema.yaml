@@ -2202,6 +2202,17 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Comma-separated list of detected enterprise config (policy,modifiedRoots,thirdPartyRoots)
+    - name: entry_point
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * What the user used to open the dialog, as in dialog_opened.
+
+        * What the user used to open the dialog: "shortcut", "menu_bar", "app_menu",
+        "quick_action", "address_bar_suggestion", "sidebar_history", "settings_history",
+        "settings_site_data", "fire_button", or "other" for entry points that don''t
+        report one.'
     - name: entrypoint
       type: STRING
       mode: NULLABLE
@@ -3090,6 +3101,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Depending on the type of event:
+
+        * "deleted" if the user confirmed deleting, recorded when the deletion starts;
+        "cancelled" if the user backed out with Cancel, the dialog''s close button
+        or Escape; "dismissed" if the dialog closed without a choice, for example
+        from the Settings dialog''s close button or because its window closed.
 
         * `recovered` (focus returned and the session resumed), `ended_permanent`
         (a permanent loss inactivated it), or `unresolved_at_teardown` (a transient

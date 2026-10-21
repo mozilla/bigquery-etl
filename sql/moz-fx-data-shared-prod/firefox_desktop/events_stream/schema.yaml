@@ -560,6 +560,8 @@ fields:
 
         * Whether the action was turned on or off.
 
+        * Whether the sidebar is now set to open by default
+
         * whether the preference was enabled or disabled in any way'
     - name: encrypted
       type: BOOLEAN
@@ -4182,6 +4184,16 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * What the user used to open the dialog, as in dialog_opened.
+
+        * What the user used to open the dialog: "shortcut", "menu_bar", "app_menu",
+        "quick_action", "address_bar_suggestion", "sidebar_history", "settings_history",
+        "settings_site_data", "fire_button", or "other" for entry points that don''t
+        report one.
+
+        * Where Customize Toolbar mode was opened from. One of `toolbar_context_menu`,
+        `app_menu`, `overflow_menu`, `menu_bar` or `other`.
+
         * Where the user started from, one of: "tab_context_menu", "content_context_menu"
         or "toolbar_button".
 
@@ -4190,8 +4202,7 @@ fields:
         automatic session restore on startup - "automatic_with_taskbar_tab": automatic
         session restore after the user opened the first normal window after having
         only taskbar tabs open - "deferred_initial_state": deferred restore when opening
-        the first normal window after having closed all normal windows - "unknown":
-        caller didn''t specify'
+        the first normal window after ...'
     - name: entrypoint
       type: STRING
       mode: NULLABLE
@@ -4227,6 +4238,11 @@ fields:
         page_not_found, conversation_unavailable, pages_unreadable, nothing_to_change,
         history_limit, empty_response, invalid_json, invalid_format, or generation_failed
 
+        * Canonical error code, or absent on success: no_content, canceled, page_load_failed,
+        page_not_found, conversation_unavailable, pages_unreadable, nothing_to_change,
+        history_limit, empty_response, invalid_json, content_related, invalid_format,
+        or generation_failed
+
         * Error code if the action was unsuccessful.
 
         * Error code if the action was unsuccessful. auto_cancel when a pending confirmation
@@ -4234,13 +4250,7 @@ fields:
 
         * Canonical chat error name, or empty on success
 
-        * If the event value is "decryptionError" or "encryptionError", this contains
-        the thrown error name (for example "NS_ERROR_ILLEGAL_VALUE").
-
-        * A description of the error; one of: - DOMException:{name} (e.g., DOMException:AbortError)
-        - NS_ERROR_* - the error constructor''s name - the string "(unknown)"
-
-        * Canonical reason the flow ended. ...'
+        * If the event value is "decryptionError" or "encryptionError", this con...'
     - name: error_code
       type: STRING
       mode: NULLABLE
@@ -4606,9 +4616,14 @@ fields:
     - name: font
       type: STRING
       mode: NULLABLE
-      description: 'Heading font install, recorded beside outcome: "ready" when the
-        face was added, "unavailable" when no font bytes were sent, "error" when installing
-        the face failed.'
+      description: 'Depending on the type of event:
+
+        * Heading font install, recorded beside outcome: "ready" when the face was
+        added, "unavailable" when no font bytes were sent, "error" when installing
+        the face failed.
+
+        * Heading font status at render: "ready" when the face was added, "unavailable"
+        when it has not been added yet, "error" when installing the face already failed.'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -5620,7 +5635,14 @@ fields:
 
         * success or prefetch or error
 
+        * "ready", "unavailable", or "error".
+
         * Whether the user kept the value. One of: kept, edited, or cleared.
+
+        * "deleted" if the user confirmed deleting, recorded when the deletion starts;
+        "cancelled" if the user backed out with Cancel, the dialog''s close button
+        or Escape; "dismissed" if the dialog closed without a choice, for example
+        from the Settings dialog''s close button or because its window closed.
 
         * "deleted" if data was cleared, "cancelled" if the user explicitly backed
         out with Cancel, "dismissed" if the confirmation panel was closed without
@@ -5629,12 +5651,7 @@ fields:
         for example when the user chose to stay on a page that asked before leaving.
 
         * What became of the page, one of: - "restore_all": the session was restored
-        with every window and tab selected - "restore_subset": the session was restored
-        with some windows or tabs deselected - "start_new_session": the user chose
-        to start a new session rather than restore, or asked to restore with nothing
-        selected - "no_data": the page had no session data to offer - "abandoned":
-        the page was closed or navigated away from without any of the above - "shutdown":
-        the browser quit with th...'
+        with every window and tab selected - "restore_subset": the session was restore...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -6811,6 +6828,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The layout of the tab strip (horizontal or vertical)
+    - name: tab_orientation
+      type: STRING
+      mode: NULLABLE
+      description: The tab orientation at the time customize mode was opened. One
+        of `vertical` or `horizontal`.
     - name: tab_pos
       type: STRING
       mode: NULLABLE

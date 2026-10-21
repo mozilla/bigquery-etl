@@ -428,6 +428,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: true if cache is selected to be cleared
+    - name: campaign_attributed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this install was attributed to the pairing campaign marker
+        (`pairing-signin-prompt.campaign-utm-content`).
     - name: can_stage
       type: BOOLEAN
       mode: NULLABLE

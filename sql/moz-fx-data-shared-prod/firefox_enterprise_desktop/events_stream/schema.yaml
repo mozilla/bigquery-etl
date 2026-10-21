@@ -3843,6 +3843,13 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * What the user used to open the dialog, as in dialog_opened.
+
+        * What the user used to open the dialog: "shortcut", "menu_bar", "app_menu",
+        "quick_action", "address_bar_suggestion", "sidebar_history", "settings_history",
+        "settings_site_data", "fire_button", or "other" for entry points that don''t
+        report one.
+
         * Where the user started from, one of: "tab_context_menu", "content_context_menu"
         or "toolbar_button".
 
@@ -3884,6 +3891,11 @@ fields:
         page_not_found, conversation_unavailable, pages_unreadable, nothing_to_change,
         history_limit, empty_response, invalid_json, invalid_format, or generation_failed
 
+        * Canonical error code, or absent on success: no_content, canceled, page_load_failed,
+        page_not_found, conversation_unavailable, pages_unreadable, nothing_to_change,
+        history_limit, empty_response, invalid_json, content_related, invalid_format,
+        or generation_failed
+
         * Error code if Undo was not successful
 
         * If the event value is "decryptionError" or "encryptionError", this contains
@@ -3892,15 +3904,7 @@ fields:
         * A description of the error; one of: - DOMException:{name} (e.g., DOMException:AbortError)
         - NS_ERROR_* - the error constructor''s name - the string "(unknown)"
 
-        * Error code if the action was unsuccessful.
-
-        * Error code if the action was unsuccessful. auto_cancel when a pending confirmation
-        was followed by a new user prompt.
-
-        * Canonical chat error name, or empty on success
-
-        * Canonical reason the flow ended. One of: "" on success; "invalid_query"
-        when the...'
+        * Error code if the action was u...'
     - name: error_code
       type: STRING
       mode: NULLABLE
@@ -5195,6 +5199,11 @@ fields:
 
         * Whether the user kept the value. One of: kept, edited, or cleared.
 
+        * "deleted" if the user confirmed deleting, recorded when the deletion starts;
+        "cancelled" if the user backed out with Cancel, the dialog''s close button
+        or Escape; "dismissed" if the dialog closed without a choice, for example
+        from the Settings dialog''s close button or because its window closed.
+
         * "deleted" if data was cleared, "cancelled" if the user explicitly backed
         out with Cancel, "dismissed" if the confirmation panel was closed without
         a choice, for example with Escape or a click outside it, "aborted" if the
@@ -5207,11 +5216,7 @@ fields:
 
         * What became of the page, one of: - "restore_all": the session was restored
         with every window and tab selected - "restore_subset": the session was restored
-        with some windows or tabs deselected - "start_new_session": the user chose
-        to start a new session rather than restore, or asked to restore with nothing
-        selected - "no_data": the page had no session data to offer - "abandoned":
-        the page was closed or navigated away from without any of the above - "shutdown":
-        the browser quit with th...'
+        with some windows or tabs deselected...'
     - name: output_hash
       type: STRING
       mode: NULLABLE

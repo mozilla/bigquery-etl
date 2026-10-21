@@ -40,6 +40,7 @@ SELECT
     STRUCT(
       metrics.timing_distribution.play_store_attribution_attribution_time
     ) AS `timing_distribution`,
+    STRUCT(metrics.boolean.play_store_attribution_pairing_campaign) AS `boolean`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
       metrics.text.meta_attribution_data
@@ -97,6 +98,7 @@ SELECT
     STRUCT(
       metrics.timing_distribution.play_store_attribution_attribution_time
     ) AS `timing_distribution`,
+    STRUCT(metrics.boolean.play_store_attribution_pairing_campaign) AS `boolean`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
       metrics.text.meta_attribution_data
@@ -154,6 +156,7 @@ SELECT
     STRUCT(
       metrics.timing_distribution.play_store_attribution_attribution_time
     ) AS `timing_distribution`,
+    STRUCT(metrics.boolean.play_store_attribution_pairing_campaign) AS `boolean`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
       metrics.text.meta_attribution_data
@@ -246,6 +249,7 @@ SELECT
         metrics.timing_distribution.play_store_attribution_attribution_time.values
       ) AS `play_store_attribution_attribution_time`
     ) AS `timing_distribution`,
+    STRUCT(metrics.boolean.play_store_attribution_pairing_campaign) AS `boolean`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
       metrics.text.meta_attribution_data
@@ -348,6 +352,7 @@ SELECT
         metrics.timing_distribution.play_store_attribution_attribution_time.values
       ) AS `play_store_attribution_attribution_time`
     ) AS `timing_distribution`,
+    STRUCT(metrics.boolean.play_store_attribution_pairing_campaign) AS `boolean`,
     STRUCT(
       metrics.text.play_store_attribution_install_referrer_response,
       metrics.text.meta_attribution_data

@@ -22789,6 +22789,36 @@ fields:
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_deprecated_ops_doc_svguse_inline_event_handler
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used SVGUseInlineEventHandler. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_svguse_inline_event_handler
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used SVGUseInlineEventHandler. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_speculation_rules_header
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has a speculation rule set from a Speculation-Rules
+        header. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_speculation_rules_header
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has a speculation rule set from a Speculation-Rules
+        header. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

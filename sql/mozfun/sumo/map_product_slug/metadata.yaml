@@ -4,7 +4,8 @@ description: |
 
   Legacy SUMO-specific mapper. Current production SUMO queries (GA4, Zendesk,
   Kitsune) use mozfun.customer_experience.normalize_product instead.
-  Eliminates 44-line CASE statements duplicated across multiple queries.
+  No longer referenced by any production query; CASE-statement duplication is
+  now avoided via mozfun.customer_experience.normalize_product.
 
   Example:
     SELECT sumo.map_product_slug('/firefox/') -- Returns: 'firefox'

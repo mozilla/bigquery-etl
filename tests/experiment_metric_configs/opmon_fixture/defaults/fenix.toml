@@ -1,0 +1,10 @@
+[project]
+platform = "fenix"
+xaxis = "submission_date"
+metrics = ["fenix_metric"]
+
+[project.population]
+data_source = "test_source"
+
+[metrics.fenix_metric.statistics]
+sum = {}

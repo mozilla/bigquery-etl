@@ -12,14 +12,17 @@ owners:
 labels:
   incremental: true
   owner1: mleplatre
+  dag: bqetl_remote_settings_uptake
+  owner2: aplacitelli
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_remote_settings_uptake
+  task_name: remote_settings_clients_uptake_events_v1
 bigquery:
   time_partitioning:
     type: day
-    field: 'submission_timestamp'
+    field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 365
+    expiration_days: 365.0
   clustering:
     fields:
     - normalized_channel

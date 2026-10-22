@@ -163,7 +163,8 @@ CREATE OR REPLACE VIEW
               event_threshold INT64,
               metrics_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
               pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
-              session_sample_rate FLOAT64
+              session_sample_rate FLOAT64,
+              events_ping_acceleration_factor FLOAT64
             >
         ) AS server_knobs_config,
         ping_info.parsed_start_time AS parsed_start_time,

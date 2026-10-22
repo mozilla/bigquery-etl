@@ -46,6 +46,7 @@ Files (for example ones with changes) that should be deployed to stage need to b
 * `--dataset-suffix` is an optional suffix that will be added to the datasets deployed to stage
 * `--copy-sql-to-tmp-dir` copies SQL stored in `sql/` to a temporary folder. Reference updates and any other modifications required to run the stage deploy will be performed in this temporary directory. This is an optional parameter. If not specified, changes get applied to the files directly and can be reverted, for example, by running `git checkout -- sql/`
 * (optional) `--remove-updated-artifacts` removes artifact files that have been deployed from the "prod" folders. This ensures that tests don't run on outdated or undeployed artifacts.
+* Coding agents (automated AI agents) may only run `stage deploy` against an allow-listed dev project, as configured via `coding_agents.dev_project_allowlist` in `bqetl_project.yaml`, while impersonating a sandbox service account.
 
 Deployed stage artifacts can be deleted from `moz-fx-data-integration-tests` by running:
 

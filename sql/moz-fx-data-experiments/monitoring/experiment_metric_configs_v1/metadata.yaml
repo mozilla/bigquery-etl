@@ -2,11 +2,17 @@
 friendly_name: Experiment metric configs
 description: |
   Resolved jetstream/metric-hub analysis configuration (metrics, statistics,
-  segments, overrides) for each experiment returned by the Experimenter API,
-  except rollouts, which jetstream does not analyze.
+  segments, overrides) for each experiment returned by the Experimenter API.
+  Rollouts, which jetstream does not analyze, have no metric_config.
 
-  Like jetstream, each experiment is resolved against metric-hub as of the
-  time jetstream last touched it (config_as_of), or HEAD if it has not been
+  Rollouts (isRollout or a single branch) and any slugs with a
+  metric-hub/opmon config also get a monitoring_config.
+  Ended ones are resolved against metric-hub as of the day after they ended
+  (monitoring_config_as_of), live ones against HEAD. Like opmon, an opmon
+  config's end_date overrides Experimenter's.
+
+  Like jetstream, each experiment's metric_config is resolved against metric-hub as of the
+  time jetstream first touched it (config_as_of), or HEAD if it has not been
   analyzed yet. Since resolving as of a past commit is slow, rows are reused
   from the previous run for experiments that ended over 30 days ago: until
   they are 7 days old, and for experiments that ended over 90 days ago, until

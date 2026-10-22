@@ -1832,6 +1832,24 @@ bqetl_cohort_daily_churn:
   tags:
     - impact/tier_2
 
+bqetl_new_profile_churn:
+  schedule_interval: 50 14 * * *
+  description: |
+    Builds the new-profile churn client tables, new_profile_churn_clients_v2
+    and recent_new_profile_churn_clients_v2, daily.
+  default_args:
+    owner: data-product-kpis-wg@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - data-product-kpis-wg@mozilla.com
+    start_date: "2026-10-14"
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_firefox_installer_aggregates:
   default_args:
     depends_on_past: false
@@ -2908,7 +2926,7 @@ bqetl_customer_experience:
     - repo/bigquery-etl
 
 bqetl_stmo:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 4 * * *
   description: |
     Daily copies of tables from the Redash (sql.telemetry.mozilla.org) metadata
     database in Cloud SQL into stmo_external.
@@ -2921,3 +2939,26 @@ bqetl_stmo:
     depends_on_past: false
   tags:
     - impact/tier_3
+
+bqetl_remote_settings_uptake:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - remote-settings-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: remote-settings-alerts@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-10-15'
+  description: DAG for Remote Settings uptake events
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 42 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

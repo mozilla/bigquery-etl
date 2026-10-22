@@ -24,6 +24,8 @@ scheduling:
   # containing (run time - 2 hours) instead of the default (run time - 1 hour)
   # so each day partition gets a final rewrite at 01:00 the next day.
   date_partition_parameter: null
+  # backfills bind submission_date to each date and write that day's partition
+  backfill_date_partition_parameter: submission_date
   destination_table: reservations_timeline_v1${{ (logical_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}
   parameters:
   - submission_date:DATE:{{ (logical_date - macros.timedelta(hours=1)).strftime("%Y-%m-%d") }}

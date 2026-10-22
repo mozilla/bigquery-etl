@@ -1,0 +1,41 @@
+friendly_name: Search Aggregates Glean
+description: |
+  Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated across
+  unique sets of dimensions with `client_id` removed. The Glean analogue of
+  `search_aggregates_v8`, and it runs alongside it. See the README for column provenance, how
+  dimensions are resolved, and caveats.
+
+  Firefox 138 floor. `sap_counts_total` comes from the `sap.counts` event, which only Firefox
+  138 and later send, and clients on older versions are essentially absent from the Glean
+  search data. A comparison with the legacy search tables therefore needs to filter both sides
+  to Firefox 138 and later. Without that filter the Glean tables read low against legacy, and
+  by more where many clients are still on older versions.
+
+  The `serp_ad_clicks_*` columns step up from Firefox 157, when the fix for bug 2069054
+  landed. The `counter_ad_clicks_*` columns do not step, so the two series diverge by version.
+
+  `client_count` is `COUNT(DISTINCT client_id)` and cannot be summed across rows. Four
+  `counter_*` columns cannot be sliced by `partner_code`; the README says which.
+
+  `country` and the other client dimensions are resolved to one value per client-day, and
+  `is_acer_distribution` replaces `is_acer_cohort` without the legacy Acer list. The README
+  describes both.
+
+  A given day's partition here is produced a day later than the `search_aggregates_v8`
+  partition for the same day, because the client table it reads is.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_search
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null

@@ -252,6 +252,29 @@ class DryRun:
         return skip_files
 
     @staticmethod
+    def is_skipped(file, sql_dir=ConfigLoader.get("default", "sql_dir")) -> bool:
+        """Return whether dry runs are skipped for the file.
+
+        Copies of artifacts made for a --target (outside of the stage root
+        handled by skipped_files()) have paths that aren't on the skip list,
+        so these are matched based on the source recorded in their manifest.
+        """
+        if str(file) in DryRun.skipped_files(sql_dir=sql_dir):
+            return True
+
+        # Local import: util.target imports from this module.
+        from .util.target import read_source_identity_from_manifest
+
+        source = read_source_identity_from_manifest(Path(file))
+        if source is None:
+            return False
+        source_equivalent = "/".join(("sql", *source, Path(file).name))
+        return any(
+            fnmatch.fnmatchcase(source_equivalent, pat)
+            for pat in ConfigLoader.get("dry_run", "skip", fallback=[])
+        )
+
+    @staticmethod
     def clear_cache():
         """Clear dry run cache directory."""
         cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
@@ -264,9 +287,7 @@ class DryRun:
 
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in self.skipped_files(
-            sql_dir=self.sql_dir
-        )
+        return self.respect_skip and self.is_skipped(self.sqlfile, sql_dir=self.sql_dir)
 
     def get_sql(self):
         """Get SQL content."""

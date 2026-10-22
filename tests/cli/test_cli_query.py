@@ -1436,52 +1436,6 @@ def main(submission_date):
                 grant_dryrun_access=False,
             )
 
-    @patch("bigquery_etl.cli.query.DryRun.skipped_files")
-    @patch("bigquery_etl.cli.query.ensure_dataset_exists")
-    @patch("bigquery_etl.cli.query.bigquery.Client")
-    @patch("bigquery_etl.cli.query.get_credentials")
-    @patch("bigquery_etl.cli.query.get_id_token")
-    @patch("bigquery_etl.cli.query.deploy_table")
-    def test_deploy_with_target_respects_dryrun_skip(
-        self,
-        mock_deploy_table,
-        mock_get_id_token,
-        mock_get_credentials,
-        mock_client,
-        mock_ensure_dataset_exists,
-        mock_skipped_files,
-        runner,
-    ):
-        mock_get_id_token.return_value = None
-        mock_get_credentials.return_value = None
-
-        with runner.isolated_filesystem():
-            src_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
-            os.makedirs(src_dir)
-            with open(f"{src_dir}/query.sql", "w") as f:
-                f.write("SELECT 1")
-            # the skip list refers to the source path, not the target copy
-            mock_skipped_files.return_value = {f"{src_dir}/query.sql"}
-
-            result = runner.invoke(
-                deploy,
-                ["telemetry_derived.query_v1"],
-                obj={"target": Target(name="dev", project_id="sandbox")},
-            )
-
-            assert result.exit_code == 0, result.output
-            assert "The following deploys were skipped" in result.output
-            mock_deploy_table.assert_not_called()
-
-            result = runner.invoke(
-                deploy,
-                ["telemetry_derived.query_v1", "--ignore-dryrun-skip"],
-                obj={"target": Target(name="dev", project_id="sandbox")},
-            )
-
-            assert result.exit_code == 0, result.output
-            mock_deploy_table.assert_called_once()
-
     @patch("bigquery_etl.cli.query.deploy_table")
     def test_deploy_with_target_and_destination_table(self, mock_deploy_table, runner):
         with runner.isolated_filesystem():

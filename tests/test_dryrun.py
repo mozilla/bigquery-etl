@@ -387,6 +387,55 @@ class TestDryRun:
         # Only artifact files (.sql/.py) get added, not schema.yaml.
         assert str(stage_dir / "schema.yaml") not in skipped
 
+    def test_is_skipped_matches_target_copy_via_manifest(self, tmp_path):
+        """A copy made for a --target outside the stage root matches via its manifest."""
+        sql_dir = tmp_path / "sql"
+        source_dir = sql_dir / "src-proj" / "src_ds" / "skipped_v1"
+        source_dir.mkdir(parents=True)
+        (source_dir / "query.sql").write_text("SELECT 1")
+        target_dir = sql_dir / "moz-fx-data-proto" / "dev_src_ds" / "skipped_v1"
+        target_dir.mkdir(parents=True)
+        (target_dir / "bqetl_target_info.yaml").write_text(
+            yaml.dump(
+                {
+                    "source_project": "src-proj",
+                    "source_dataset": "src_ds",
+                    "source_table": "skipped_v1",
+                }
+            )
+        )
+        (target_dir / "query.sql").write_text("SELECT 1")
+        other_dir = sql_dir / "moz-fx-data-proto" / "dev_src_ds" / "other_v1"
+        other_dir.mkdir(parents=True)
+        (other_dir / "bqetl_target_info.yaml").write_text(
+            yaml.dump(
+                {
+                    "source_project": "src-proj",
+                    "source_dataset": "src_ds",
+                    "source_table": "other_v1",
+                }
+            )
+        )
+        (other_dir / "query.sql").write_text("SELECT 1")
+
+        def _config_get(*args, **kwargs):
+            if args[:2] == ("dry_run", "skip"):
+                return ["sql/src-proj/src_ds/skipped_v1/query.sql"]
+            if args[:2] == ("default", "test_project"):
+                return "moz-fx-data-integration-tests"
+            if args[:2] == ("default", "sql_dir"):
+                return str(sql_dir)
+            return kwargs.get("fallback", None)
+
+        with patch("bigquery_etl.dryrun.ConfigLoader.get", side_effect=_config_get):
+            assert DryRun.is_skipped(target_dir / "query.sql", sql_dir=sql_dir)
+            assert not DryRun.is_skipped(other_dir / "query.sql", sql_dir=sql_dir)
+            # files without a manifest only match the skip list itself
+            assert not DryRun.is_skipped(
+                sql_dir / "src-proj" / "src_ds" / "no_manifest_v1" / "query.sql",
+                sql_dir=sql_dir,
+            )
+
     def test_use_cache_false_disables_caching(self, tmp_query_path):
         """Test that use_cache=False disables all caching functionality."""
         query_file = tmp_query_path / "query.sql"

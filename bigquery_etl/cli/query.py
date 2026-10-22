@@ -2560,7 +2560,7 @@ def _update_query_schema(
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
+    if respect_dryrun_skip and DryRun.is_skipped(query_file):
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -2899,28 +2899,9 @@ def deploy(
         if str(artifact_file) not in skip_schema_deploy()
     ]
 
-    skipped_deploys = []
-
     # with --target, deploy copies of the artifacts in the target project
     # instead of the production tables they were defined for
     if target:
-        # the dry run skip list refers to the source paths, so it no longer
-        # matches once the artifacts are copied to the target
-        if respect_dryrun_skip:
-            dryrun_skipped_files = DryRun.skipped_files()
-            for artifact_file in artifact_files:
-                if str(artifact_file) in dryrun_skipped_files:
-                    print(
-                        f"Skipped deploy for {artifact_file}: "
-                        f"(Dry run skipped for {artifact_file}.)"
-                    )
-                    skipped_deploys.append(artifact_file)
-            artifact_files = [
-                artifact_file
-                for artifact_file in artifact_files
-                if artifact_file not in skipped_deploys
-            ]
-
         # artifacts already defined in the target project are deployed as they are
         source_files = [
             artifact_file
@@ -2971,7 +2952,7 @@ def deploy(
         id_token=id_token,
     )
 
-    failed_deploys, external_deploys = [], []
+    failed_deploys, skipped_deploys, external_deploys = [], [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
             executor.submit(_deploy, artifact_file): artifact_file

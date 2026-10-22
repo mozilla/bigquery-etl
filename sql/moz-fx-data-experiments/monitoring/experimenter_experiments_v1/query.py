@@ -27,6 +27,10 @@ parser.add_argument("--sql_dir", default="sql/")
 parser.add_argument("--dry_run", action="store_true")
 
 
+def _unstructure(converter: cattrs.BaseConverter, record):
+    return converter.unstructure(dict(record)) if record is not None else None
+
+
 def read_metric_configs(project: str, dataset: str, table: str) -> dict:
     """Get resolved metric configs from their table and join on normandy_slug.
 
@@ -35,9 +39,15 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
     try:
         client = bigquery.Client(project)
         rows = client.query(
-            "SELECT normandy_slug, metric_config, computed_at"
+            "SELECT normandy_slug,"
+            " IF(metric_config IS NULL, NULL,"
+            " (SELECT AS STRUCT metric_config.*, config_as_of AS as_of)) AS metric_config,"
+            " IF(monitoring_config IS NULL, NULL,"
+            " (SELECT AS STRUCT monitoring_config.*, monitoring_config_as_of AS as_of))"
+            " AS monitoring_config,"
+            " computed_at"
             f" FROM `{project}.{dataset}.{table}`"
-            " WHERE metric_config IS NOT NULL"
+            " WHERE metric_config IS NOT NULL OR monitoring_config IS NOT NULL"
         ).result()
 
         # load_table_from_json can't serialize datetime/date objects, so unstructure them
@@ -47,7 +57,8 @@ def read_metric_configs(project: str, dataset: str, table: str) -> dict:
 
         return {
             row.normandy_slug: (
-                converter.unstructure(dict(row.metric_config)),
+                _unstructure(converter, row.metric_config),
+                _unstructure(converter, row.monitoring_config),
                 row.computed_at.isoformat() if row.computed_at else None,
             )
             for row in rows
@@ -69,7 +80,8 @@ def attach_metric_configs(blob: list, metric_configs: dict) -> None:
     for row in blob:
         metric_config = metric_configs.get(row["normandy_slug"])
         row["metric_config"] = metric_config[0] if metric_config else None
-        row["metric_config_computed_at"] = metric_config[1] if metric_config else None
+        row["monitoring_config"] = metric_config[1] if metric_config else None
+        row["metric_config_computed_at"] = metric_config[2] if metric_config else None
 
 
 def main():

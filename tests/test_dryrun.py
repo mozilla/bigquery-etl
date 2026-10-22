@@ -436,6 +436,36 @@ class TestDryRun:
                 sql_dir=sql_dir,
             )
 
+    def test_corrupt_manifest_warns(self, tmp_path, capsys):
+        """A corrupt manifest is reported for stage and target copies alike."""
+        sql_dir = tmp_path / "sql"
+        test_project = "moz-fx-data-integration-tests"
+        stage_dir = sql_dir / test_project / "any_dataset" / "any_table_dir"
+        target_dir = sql_dir / "moz-fx-data-proto" / "dev_src_ds" / "skipped_v1"
+        for copy_dir in (stage_dir, target_dir):
+            copy_dir.mkdir(parents=True)
+            (copy_dir / "bqetl_target_info.yaml").write_text("source_project: [")
+            (copy_dir / "query.sql").write_text("SELECT 1")
+
+        def _config_get(*args, **kwargs):
+            if args[:2] == ("dry_run", "skip"):
+                return ["sql/src-proj/src_ds/skipped_v1/query.sql"]
+            if args[:2] == ("default", "test_project"):
+                return test_project
+            if args[:2] == ("default", "sql_dir"):
+                return str(sql_dir)
+            return kwargs.get("fallback", None)
+
+        with patch("bigquery_etl.dryrun.ConfigLoader.get", side_effect=_config_get):
+            assert str(stage_dir / "query.sql") not in DryRun.skipped_files(
+                sql_dir=sql_dir
+            )
+            assert not DryRun.is_skipped(target_dir / "query.sql", sql_dir=sql_dir)
+
+        err = capsys.readouterr().err
+        assert f"could not read manifest {stage_dir}" in err
+        assert f"could not read manifest {target_dir}" in err
+
     def test_use_cache_false_disables_caching(self, tmp_query_path):
         """Test that use_cache=False disables all caching functionality."""
         query_file = tmp_query_path / "query.sql"

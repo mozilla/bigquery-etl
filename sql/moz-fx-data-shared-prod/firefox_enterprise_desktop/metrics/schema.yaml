@@ -1239,6 +1239,17 @@ fields:
         is off.
 
         '
+    - name: smart_window_sidebar_open_by_default
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records if the user currently has the Smart Window sidebar set
+        to open
+
+        by default, as set by the `browser.smartwindow.sidebar.openByDefault`
+
+        pref.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11695,10 +11706,6 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram FX_SESSION_RESTORE_NUMBER_OF_EAGER_TABS_RESTORED.
 
-        As of bug 2071519 this is recorded on every restore attempt, including attempts
-        that produced no eagerly-restored tab. Data from earlier versions excludes
-        those startups.
-
         '
     - name: session_restore_number_of_tabs_restored
       type: RECORD
@@ -11723,11 +11730,6 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram FX_SESSION_RESTORE_NUMBER_OF_TABS_RESTORED.
 
-        As of bug 2071519, 0 is recorded and will land in the underflow bucket. Before
-        that, a restore that produced no eagerly-restored tab recorded nothing at
-        all, so data from earlier versions excludes those startups and reads higher
-        than it should.
-
         '
     - name: session_restore_number_of_windows_restored
       type: RECORD
@@ -11751,10 +11753,6 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram FX_SESSION_RESTORE_NUMBER_OF_WINDOWS_RESTORED.
-
-        As of bug 2071519 this is recorded on every restore attempt, including attempts
-        that produced no eagerly-restored tab. Data from earlier versions excludes
-        those startups.
 
         '
     - name: telemetry_archive_directories_count

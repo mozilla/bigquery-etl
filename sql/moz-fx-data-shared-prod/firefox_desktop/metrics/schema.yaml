@@ -14527,6 +14527,24 @@ fields:
         upgrade backups, failed.
 
         '
+    - name: sap_impression_counts_text_selection
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of impressions of the search action in the text selection
+        menu. The
+
+        counter''s label is the engine''s identifier if it''s an app-provided
+
+        engine. Otherwise the label is "none".
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

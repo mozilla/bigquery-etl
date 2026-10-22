@@ -526,6 +526,8 @@ fields:
 
         * Boolean indicating if that type of memory was enabled or disabled
 
+        * Whether the sidebar is now set to open by default
+
         * whether the preference was enabled or disabled in any way'
     - name: encrypted
       type: BOOLEAN
@@ -1426,14 +1428,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Milliseconds from mousedown to showing.
-
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
         when its timer was armed, such as at browser start, reports the missed time
         plus about one second, because overdue timers are armed one second out. Larger
         values mostly measure time the browser was closed or asleep. Absent for manual
         runs and when the stored scheduled time could not be parsed.
+
+        * Milliseconds from mousedown to showing.
 
         * Milliseconds waiting on previous
 
@@ -1483,10 +1485,10 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Engine creation time in milliseconds
-
         * Total time of the run from start to its terminal event, including page extraction
         and the model call.
+
+        * Engine creation time in milliseconds
 
         * how long it took to reach the step from start
 
@@ -1821,6 +1823,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The same as SecurityPolicyViolationEvent's lineNumber.
+    - name: magnitude
+      type: INTEGER
+      mode: NULLABLE
+      description: floor(log2(abs(usage))), the order of magnitude of the negative
+        value.
     - name: memories
       type: INTEGER
       mode: NULLABLE
@@ -3185,6 +3192,10 @@ fields:
         "view-page".
 
         * Which button was clicked, either "set_default" or "not_now".'
+    - name: call_site
+      type: STRING
+      mode: NULLABLE
+      description: Which code path decreased the usage.
     - name: caller
       type: STRING
       mode: NULLABLE
@@ -3382,6 +3393,11 @@ fields:
         * Type of notification interaction: "open_url" (body clicked to open watched
         page), "snooze" (snooze button clicked), or "dismiss" (dismiss button clicked
         to mute notifications).'
+    - name: client
+      type: STRING
+      mode: NULLABLE
+      description: 'The quota client whose usage is negative: "idb", "cache", "ls"
+        or "fs".'
     - name: close_reason
       type: STRING
       mode: NULLABLE
@@ -3850,6 +3866,9 @@ fields:
         "settings_site_data", "fire_button", or "other" for entry points that don''t
         report one.
 
+        * Where Customize Toolbar mode was opened from. One of `toolbar_context_menu`,
+        `app_menu`, `overflow_menu`, `menu_bar` or `other`.
+
         * Where the user started from, one of: "tab_context_menu", "content_context_menu"
         or "toolbar_button".
 
@@ -3858,8 +3877,7 @@ fields:
         automatic session restore on startup - "automatic_with_taskbar_tab": automatic
         session restore after the user opened the first normal window after having
         only taskbar tabs open - "deferred_initial_state": deferred restore when opening
-        the first normal window after having closed all normal windows - "unknown":
-        caller didn''t specify'
+        the first normal window after ...'
     - name: entrypoint
       type: STRING
       mode: NULLABLE
@@ -4241,9 +4259,14 @@ fields:
     - name: font
       type: STRING
       mode: NULLABLE
-      description: 'Heading font install, recorded beside outcome: "ready" when the
-        face was added, "unavailable" when no font bytes were sent, "error" when installing
-        the face failed.'
+      description: 'Depending on the type of event:
+
+        * Heading font install, recorded beside outcome: "ready" when the face was
+        added, "unavailable" when no font bytes were sent, "error" when installing
+        the face failed.
+
+        * Heading font status at render: "ready" when the face was added, "unavailable"
+        when it has not been added yet, "error" when installing the face already failed.'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -5197,6 +5220,8 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * "ready", "unavailable", or "error".
+
         * Whether the user kept the value. One of: kept, edited, or cleared.
 
         * "deleted" if the user confirmed deleting, recorded when the deletion starts;
@@ -5215,8 +5240,7 @@ fields:
         * success or prefetch or error
 
         * What became of the page, one of: - "restore_all": the session was restored
-        with every window and tab selected - "restore_subset": the session was restored
-        with some windows or tabs deselected...'
+        with every window and tab selected - "restore_subset": the session was restore...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -6336,6 +6360,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The layout of the tab strip (horizontal or vertical)
+    - name: tab_orientation
+      type: STRING
+      mode: NULLABLE
+      description: The tab orientation at the time customize mode was opened. One
+        of `vertical` or `horizontal`.
     - name: tab_pos
       type: STRING
       mode: NULLABLE

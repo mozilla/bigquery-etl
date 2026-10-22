@@ -1099,6 +1099,11 @@ fields:
         * The number of exceptions in the list.
 
         * The number of selected items removed.'
+    - name: magnitude
+      type: INTEGER
+      mode: NULLABLE
+      description: floor(log2(abs(usage))), the order of magnitude of the negative
+        value.
     - name: memory_bytes
       type: INTEGER
       mode: NULLABLE
@@ -1687,6 +1692,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Which button was clicked, either "set_default" or "not_now".
+    - name: call_site
+      type: STRING
+      mode: NULLABLE
+      description: Which code path decreased the usage.
     - name: caller
       type: STRING
       mode: NULLABLE
@@ -1806,6 +1815,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The GDPR choice. The value could be "Accept", "Reject" or "Custom".
+    - name: client
+      type: STRING
+      mode: NULLABLE
+      description: 'The quota client whose usage is negative: "idb", "cache", "ls"
+        or "fs".'
     - name: close_reason
       type: STRING
       mode: NULLABLE

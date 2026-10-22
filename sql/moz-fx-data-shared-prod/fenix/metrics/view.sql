@@ -432,7 +432,9 @@ SELECT
       metrics.counter.browser_engine_full_page_capture_attempted,
       metrics.counter.background_notification_helper_wake,
       metrics.counter.ipprotection_exclusions_rule_applied,
-      metrics.counter.ipprotection_inclusions_rule_applied
+      metrics.counter.ipprotection_inclusions_rule_applied,
+      metrics.counter.listen_to_page_audio_ran_out,
+      metrics.counter.listen_to_page_thermal_throttling_entered
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1248,7 +1250,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
-      metrics.labeled_counter.geolocation_request_activation
+      metrics.labeled_counter.geolocation_request_activation,
+      metrics.labeled_counter.listen_to_page_session_max_thermal_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1415,7 +1418,8 @@ SELECT
       metrics.string.startup_profiles_ini_status,
       metrics.string.glean_database_load_error,
       metrics.string.preferences_toolbar_tab_strip_shortcut,
-      metrics.string.tracking_protection_privacy_report_notification_availability
+      metrics.string.tracking_protection_privacy_report_notification_availability,
+      metrics.string.listen_to_page_tts_engine
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1903,7 +1907,16 @@ SELECT
       metrics.timing_distribution.http_altsvc_h3_expired_staleness,
       metrics.timing_distribution.media_speech_recognition_model_load_time,
       metrics.timing_distribution.media_speech_recognition_result_latency,
-      metrics.timing_distribution.media_speech_recognition_session_init_time
+      metrics.timing_distribution.media_speech_recognition_session_init_time,
+      metrics.timing_distribution.listen_to_page_chunk_gap_duration,
+      metrics.timing_distribution.listen_to_page_chunk_synthesis_duration,
+      metrics.timing_distribution.listen_to_page_extraction_duration,
+      metrics.timing_distribution.listen_to_page_opening_synthesis_duration,
+      metrics.timing_distribution.listen_to_page_playback_start_duration,
+      metrics.timing_distribution.listen_to_page_preparation_duration,
+      metrics.timing_distribution.listen_to_page_seek_latency,
+      metrics.timing_distribution.listen_to_page_seek_latency_queued,
+      metrics.timing_distribution.listen_to_page_time_to_first_audio
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1963,7 +1976,9 @@ SELECT
       metrics.memory_distribution.networking_http_3_final_w_max,
       metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
       metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate,
-      metrics.memory_distribution.image_decode_speed_jxl
+      metrics.memory_distribution.image_decode_speed_jxl,
+      metrics.memory_distribution.listen_to_page_chunk_audio_size,
+      metrics.memory_distribution.listen_to_page_opening_chunk_audio_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2769,7 +2784,9 @@ SELECT
       metrics.counter.browser_engine_full_page_capture_attempted,
       metrics.counter.background_notification_helper_wake,
       metrics.counter.ipprotection_exclusions_rule_applied,
-      metrics.counter.ipprotection_inclusions_rule_applied
+      metrics.counter.ipprotection_inclusions_rule_applied,
+      metrics.counter.listen_to_page_audio_ran_out,
+      metrics.counter.listen_to_page_thermal_throttling_entered
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3585,7 +3602,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
-      metrics.labeled_counter.geolocation_request_activation
+      metrics.labeled_counter.geolocation_request_activation,
+      metrics.labeled_counter.listen_to_page_session_max_thermal_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3752,7 +3770,8 @@ SELECT
       metrics.string.startup_profiles_ini_status,
       metrics.string.glean_database_load_error,
       metrics.string.preferences_toolbar_tab_strip_shortcut,
-      metrics.string.tracking_protection_privacy_report_notification_availability
+      metrics.string.tracking_protection_privacy_report_notification_availability,
+      metrics.string.listen_to_page_tts_engine
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4240,7 +4259,16 @@ SELECT
       metrics.timing_distribution.http_altsvc_h3_expired_staleness,
       metrics.timing_distribution.media_speech_recognition_model_load_time,
       metrics.timing_distribution.media_speech_recognition_result_latency,
-      metrics.timing_distribution.media_speech_recognition_session_init_time
+      metrics.timing_distribution.media_speech_recognition_session_init_time,
+      metrics.timing_distribution.listen_to_page_chunk_gap_duration,
+      metrics.timing_distribution.listen_to_page_chunk_synthesis_duration,
+      metrics.timing_distribution.listen_to_page_extraction_duration,
+      metrics.timing_distribution.listen_to_page_opening_synthesis_duration,
+      metrics.timing_distribution.listen_to_page_playback_start_duration,
+      metrics.timing_distribution.listen_to_page_preparation_duration,
+      metrics.timing_distribution.listen_to_page_seek_latency,
+      metrics.timing_distribution.listen_to_page_seek_latency_queued,
+      metrics.timing_distribution.listen_to_page_time_to_first_audio
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4300,7 +4328,9 @@ SELECT
       metrics.memory_distribution.networking_http_3_final_w_max,
       metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
       metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate,
-      metrics.memory_distribution.image_decode_speed_jxl
+      metrics.memory_distribution.image_decode_speed_jxl,
+      metrics.memory_distribution.listen_to_page_chunk_audio_size,
+      metrics.memory_distribution.listen_to_page_opening_chunk_audio_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -5126,7 +5156,9 @@ SELECT
       metrics.counter.browser_engine_full_page_capture_attempted,
       metrics.counter.background_notification_helper_wake,
       metrics.counter.ipprotection_exclusions_rule_applied,
-      metrics.counter.ipprotection_inclusions_rule_applied
+      metrics.counter.ipprotection_inclusions_rule_applied,
+      metrics.counter.listen_to_page_audio_ran_out,
+      metrics.counter.listen_to_page_thermal_throttling_entered
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5942,7 +5974,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
-      metrics.labeled_counter.geolocation_request_activation
+      metrics.labeled_counter.geolocation_request_activation,
+      metrics.labeled_counter.listen_to_page_session_max_thermal_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6109,7 +6142,8 @@ SELECT
       metrics.string.startup_profiles_ini_status,
       metrics.string.glean_database_load_error,
       metrics.string.preferences_toolbar_tab_strip_shortcut,
-      metrics.string.tracking_protection_privacy_report_notification_availability
+      metrics.string.tracking_protection_privacy_report_notification_availability,
+      metrics.string.listen_to_page_tts_engine
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6597,7 +6631,16 @@ SELECT
       metrics.timing_distribution.http_altsvc_h3_expired_staleness,
       metrics.timing_distribution.media_speech_recognition_model_load_time,
       metrics.timing_distribution.media_speech_recognition_result_latency,
-      metrics.timing_distribution.media_speech_recognition_session_init_time
+      metrics.timing_distribution.media_speech_recognition_session_init_time,
+      metrics.timing_distribution.listen_to_page_chunk_gap_duration,
+      metrics.timing_distribution.listen_to_page_chunk_synthesis_duration,
+      metrics.timing_distribution.listen_to_page_extraction_duration,
+      metrics.timing_distribution.listen_to_page_opening_synthesis_duration,
+      metrics.timing_distribution.listen_to_page_playback_start_duration,
+      metrics.timing_distribution.listen_to_page_preparation_duration,
+      metrics.timing_distribution.listen_to_page_seek_latency,
+      metrics.timing_distribution.listen_to_page_seek_latency_queued,
+      metrics.timing_distribution.listen_to_page_time_to_first_audio
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -6657,7 +6700,9 @@ SELECT
       metrics.memory_distribution.networking_http_3_final_w_max,
       metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
       metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate,
-      metrics.memory_distribution.image_decode_speed_jxl
+      metrics.memory_distribution.image_decode_speed_jxl,
+      metrics.memory_distribution.listen_to_page_chunk_audio_size,
+      metrics.memory_distribution.listen_to_page_opening_chunk_audio_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

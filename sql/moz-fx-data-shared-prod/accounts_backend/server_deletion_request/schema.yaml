@@ -418,6 +418,26 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: account_user_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The firefox/mozilla account id
+
+        '
+    - name: account_user_id_sha256
+      type: STRING
+      mode: NULLABLE
+      description: 'A hex string of a sha256 hash of the account''s uid
+
+        '
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE

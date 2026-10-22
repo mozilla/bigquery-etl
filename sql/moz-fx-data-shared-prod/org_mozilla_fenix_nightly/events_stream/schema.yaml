@@ -428,6 +428,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: true if cache is selected to be cleared
+    - name: campaign_attributed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this install was attributed to the pairing campaign marker
+        (`pairing-signin-prompt.campaign-utm-content`).
     - name: can_stage
       type: BOOLEAN
       mode: NULLABLE
@@ -1280,6 +1285,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: How many countries the refreshed list contained.
+    - name: magnitude
+      type: INTEGER
+      mode: NULLABLE
+      description: floor(log2(abs(usage))), the order of magnitude of the negative
+        value.
     - name: memory_bytes
       type: INTEGER
       mode: NULLABLE
@@ -1969,6 +1979,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Which button was clicked, either "set_default" or "not_now".
+    - name: call_site
+      type: STRING
+      mode: NULLABLE
+      description: Which code path decreased the usage.
     - name: caller
       type: STRING
       mode: NULLABLE
@@ -2105,6 +2119,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The GDPR choice. The value could be "Accept", "Reject" or "Custom".
+    - name: client
+      type: STRING
+      mode: NULLABLE
+      description: 'The quota client whose usage is negative: "idb", "cache", "ls"
+        or "fs".'
     - name: close_reason
       type: STRING
       mode: NULLABLE
@@ -3504,17 +3523,17 @@ fields:
         * The type of operation that failed (e.g. "add", "modify", "remove", "remove-all",
         "migration", etc.).
 
-        * "search", "list", "count" or "record_password_use".
-
         * Which engine request failed: "activate" or "deactivate". Both are reported
         through the same action, so error_code alone cannot tell them apart.
+
+        * "refresh" if a selection in effect vanished from a refreshed list, or "restore"
+        if a saved selection was unavailable before it was applied.
+
+        * "search", "list", "count" or "record_password_use".
 
         * "user_action" when the user tapped a location in the location list, "restore"
         when a saved location was applied at startup, "reset" when the previous location
         was put back after a failed switch.
-
-        * "refresh" if a selection in effect vanished from a refreshed list, or "restore"
-        if a saved selection was unavailable before it was applied.
 
         * The operation being performed when the incompatible format was found (e.g.
         addLogin, modifyLogin, removeLogin).'
@@ -3784,11 +3803,11 @@ fields:
         the request: the reply is asynchronous, so the two can differ. One of "uninitialized",
         "idle", "activating", "active", "data_limit_reached", "connection_error".
 
-        * Proxy state when the change happened. One of "uninitialized", "idle", "activating",
-        "active", "data_limit_reached", "connection_error".
-
         * Proxy state when the reset was recorded. One of "uninitialized", "idle",
-        "activating", "active", "data_limit_reached", "connection_error".'
+        "activating", "active", "data_limit_reached", "connection_error".
+
+        * Proxy state when the change happened. One of "uninitialized", "idle", "activating",
+        "active", "data_limit_reached", "connection_error".'
     - name: psi_full_avg10
       type: STRING
       mode: NULLABLE
@@ -4050,8 +4069,15 @@ fields:
         the request: the reply is asynchronous, so the two can differ. One of "uninitialized",
         "unavailable", "unauthenticated", "opted_out", "ready".
 
+        * Service state when the engine reported the failure. Not the state that issued
+        the request: the reply is asynchronous, so the two can differ. One of "uninitialized",
+        "unavailable", "unauthenticated", "ready".
+
         * Service state when the reset was recorded. One of "uninitialized", "unavailable",
-        "unauthenticated", "opted_out", "ready".'
+        "unauthenticated", "opted_out", "ready".
+
+        * Service state when the reset was recorded. One of "uninitialized", "unavailable",
+        "unauthenticated", "ready".'
     - name: session_id
       type: STRING
       mode: NULLABLE

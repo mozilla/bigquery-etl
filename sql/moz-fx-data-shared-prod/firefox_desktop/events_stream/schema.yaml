@@ -1589,14 +1589,14 @@ fields:
 
         * Milliseconds from mousedown to showing.
 
-        * Milliseconds waiting on previous
-
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
         when its timer was armed, such as at browser start, reports the missed time
         plus about one second, because overdue timers are armed one second out. Larger
         values mostly measure time the browser was closed or asleep. Absent for manual
         runs and when the stored scheduled time could not be parsed.
+
+        * Milliseconds waiting on previous
 
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
@@ -1648,12 +1648,12 @@ fields:
 
         * Milliseconds the card stayed open
 
+        * Total time of the run from start to its terminal event, including page extraction
+        and the model call.
+
         * Engine creation time in milliseconds
 
         * how long it took to reach the step from start
-
-        * Total time of the run from start to its terminal event, including page extraction
-        and the model call.
 
         * Total session duration in milliseconds.
 
@@ -1942,10 +1942,10 @@ fields:
 
         * Time in ms to start processing the request
 
-        * Milliseconds to output first sentence
-
         * Time spent in the model call only, excluding page extraction and the account
-        token fetch. Only present when the model call completed.'
+        token fetch. Only present when the model call completed.
+
+        * Milliseconds to output first sentence'
     - name: latency_ms
       type: INTEGER
       mode: NULLABLE
@@ -1984,6 +1984,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The same as SecurityPolicyViolationEvent's lineNumber.
+    - name: magnitude
+      type: INTEGER
+      mode: NULLABLE
+      description: floor(log2(abs(usage))), the order of magnitude of the negative
+        value.
     - name: mean_tabs
       type: INTEGER
       mode: NULLABLE
@@ -3110,10 +3115,10 @@ fields:
 
         * whether the user saved or canceled generating a label
 
-        * whether the user saved or canceled
-
         * The action taken on the page. Possible values are: `clicked`, `clicked_accept`,
         `clicked_reject`, `clicked_more_options`, `expanded`, `submitted`.
+
+        * whether the user saved or canceled
 
         * User''s action on the dialogue - "view" (impression), "try_it_now", "close"
 
@@ -3471,6 +3476,10 @@ fields:
         "view-page".
 
         * Which button was clicked, either "set_default" or "not_now".'
+    - name: call_site
+      type: STRING
+      mode: NULLABLE
+      description: Which code path decreased the usage.
     - name: caller
       type: STRING
       mode: NULLABLE
@@ -3683,6 +3692,11 @@ fields:
         * Type of notification interaction: "open_url" (body clicked to open watched
         page), "snooze" (snooze button clicked), or "dismiss" (dismiss button clicked
         to mute notifications).'
+    - name: client
+      type: STRING
+      mode: NULLABLE
+      description: 'The quota client whose usage is negative: "idb", "cache", "ls"
+        or "fs".'
     - name: close_reason
       type: STRING
       mode: NULLABLE
@@ -6092,15 +6106,15 @@ fields:
 
         * The reason for the unenrollment
 
-        * What triggered the history display: ask or restore
-
-        * The reason the client is in the noted status
-
         * Why the run happened: manual (the user asked, which includes the automatic
         first check the chat card triggers right after creation), trigger_time (the
         schedule fired less than five minutes after the scheduled time) or delayed
         (the schedule fired five minutes or more late, mostly because the browser
         was closed or asleep).
+
+        * What triggered the history display: ask or restore
+
+        * The reason the client is in the noted status
 
         * A code describing the reason the unenroll failed.
 

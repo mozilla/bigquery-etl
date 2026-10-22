@@ -51,3 +51,9 @@ fields:
   description: >-
     Creative theme parsed from the asset name (the segment after `rt<N>`), for example privacy, sync,
     tab-groups. Not normalized. NULL when the name does not follow the UAC naming convention.
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    Date of the asset_lookup snapshot partition this table was built from. The query fails if no
+    snapshot loaded in the last 7 days.

@@ -208,6 +208,9 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
 Supports `--defer-to-target` (same as `query run`) and `--dry-run` to preview
 without making changes.
 
+`./bqetl --target dev query schema deploy <dataset>.<table>` also deploys table
+schemas to the target project.
+
 ### 4. Backfill testing
 
 Both the lower-level `query backfill` and the managed `backfill initiate`/`complete`

@@ -1,0 +1,34 @@
+friendly_name: Google Ads Assets
+description: |-
+  One row per Google Ads asset, with its content, taken from the latest
+  daily snapshot of the Google Ads BigQuery Data Transfer
+  (`moz-fx-data-marketing-prod.google_ads_dts_mmc.p_ads_asset_lookup_*`).
+
+  Includes all asset types (IMAGE, YOUTUBE_VIDEO, TEXT, SITELINK, ...).
+  `thumbnail_url` is the image URL for image assets, or the YouTube
+  `hqdefault` image for video assets.
+
+  `language`, `rt` and `raw_theme` are parsed from asset names that follow
+  the UAC creative naming convention
+  `uac_<language>_rt<N>_<theme>_<aspect ratio>_<MM-YY>_<seq>...`.
+  They are NULL when the name does not follow the convention.
+
+  The table is fully rebuilt every day from the most recent snapshot
+  partition, so it reflects the current state of each asset.
+  `snapshot_date` shows which snapshot was used. The query fails, and the
+  previous table stays in place, if no snapshot loaded in the last 7 days.
+owners:
+- phlee@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields:
+    - asset_type
+references: {}

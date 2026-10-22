@@ -55,13 +55,25 @@
         OFFSET(0)
       ] AS normalized_os_version,
       ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp ASC LIMIT 1)[OFFSET(0)] AS isp,
+     -- earliest non-null value with its date; the final SELECT keeps it only
+     -- if it is from first_seen_date, to match the incremental path
       ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
+        IF(
+          metrics.string.startup_profile_selection_reason IS NULL,
+          NULL,
+          STRUCT(
+            DATE(submission_timestamp) AS submission_date,
+            metrics.string.startup_profile_selection_reason AS reason
+          )
+        ) IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
         ORDER BY
+          DATE(submission_timestamp) ASC,
+          ping_info.seq ASC,
           submission_timestamp ASC
         LIMIT
           1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
       ARRAY_AGG(client_info.architecture RESPECT NULLS ORDER BY submission_timestamp ASC)[
         SAFE_OFFSET(0)
       ] AS architecture,
@@ -83,7 +95,13 @@
       sample_id
   )
   SELECT
-    *
+    * REPLACE (
+      IF(
+        startup_profile_selection_reason_first.submission_date = first_seen_date,
+        startup_profile_selection_reason_first.reason,
+        NULL
+      ) AS startup_profile_selection_reason_first
+    )
   FROM
     baseline
 {% else %}
@@ -141,12 +159,14 @@
       ] AS normalized_os_version,
       ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp ASC LIMIT 1)[OFFSET(0)] AS isp,
       ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
+        metrics.string.startup_profile_selection_reason IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
         ORDER BY
+          ping_info.seq ASC,
           submission_timestamp ASC
         LIMIT
           1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
       ARRAY_AGG(client_info.architecture RESPECT NULLS ORDER BY submission_timestamp ASC)[
         SAFE_OFFSET(0)
       ] AS architecture,

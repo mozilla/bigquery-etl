@@ -204,13 +204,6 @@ class DryRun:
         # via each stage dir's bqetl_target_info.yaml manifest (written by
         # prepare_target_directory) — layout-independent, so any future
         # bqetl_targets.yaml rename scheme still works.
-        #
-        # Match with fnmatchcase (case-sensitive on all platforms, unlike
-        # fnmatch which is case-insensitive on Windows/macOS) for
-        # deterministic dev-vs-CI behavior. Note: fnmatch's `*` matches `/`
-        # — fine here because source_equivalent always has the fixed
-        # `sql/<proj>/<ds>/<table>/<file>` shape, but it's a semantic
-        # difference from glob.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
         skip_patterns = ConfigLoader.get("dry_run", "skip", fallback=[])
         stage_root = sql_dir / test_project if test_project else None
@@ -218,38 +211,73 @@ class DryRun:
             # Local import: util.target imports from this module.
             from .util.target import MANIFEST_FILENAME
 
-            artifact_suffixes = (".sql", ".py")
             for manifest_path in stage_root.rglob(MANIFEST_FILENAME):
-                try:
-                    manifest = yaml.safe_load(manifest_path.read_text()) or {}
-                except (yaml.YAMLError, OSError) as e:
-                    # Surface so a corrupt manifest doesn't silently drop
-                    # its artifact off the skip list — the resulting dryrun
-                    # failure would otherwise mask the real cause.
-                    click.echo(
-                        f"Warning: could not read manifest {manifest_path}: {e}",
-                        err=True,
-                    )
-                    continue
-                src_project = manifest.get("source_project")
-                src_dataset = manifest.get("source_dataset")
-                src_table = manifest.get("source_table")
-                if not (src_project and src_dataset and src_table):
-                    continue
-                for stage_file in manifest_path.parent.iterdir():
-                    if stage_file.suffix not in artifact_suffixes:
-                        continue
-                    source_equivalent = (
-                        f"sql/{src_project}/{src_dataset}/"
-                        f"{src_table}/{stage_file.name}"
-                    )
-                    if any(
-                        fnmatch.fnmatchcase(source_equivalent, pat)
-                        for pat in skip_patterns
-                    ):
-                        skip_files.add(str(stage_file))
+                skip_files |= DryRun._manifest_skipped_files(
+                    manifest_path, skip_patterns
+                )
 
         return skip_files
+
+    @staticmethod
+    def is_skipped(file, sql_dir=ConfigLoader.get("default", "sql_dir")) -> bool:
+        """Return whether dry runs are skipped for the file.
+
+        Copies of artifacts made for a --target (outside of the stage root
+        handled by skipped_files()) have paths that aren't on the skip list,
+        so these are matched based on the source recorded in their manifest.
+        """
+        if str(file) in DryRun.skipped_files(sql_dir=sql_dir):
+            return True
+
+        # Local import: util.target imports from this module.
+        from .util.target import MANIFEST_FILENAME
+
+        manifest_path = Path(file).parent / MANIFEST_FILENAME
+        skip_patterns = ConfigLoader.get("dry_run", "skip", fallback=[])
+        if not manifest_path.exists() or not skip_patterns:
+            return False
+        return str(file) in DryRun._manifest_skipped_files(manifest_path, skip_patterns)
+
+    @staticmethod
+    def _manifest_skipped_files(manifest_path: Path, skip_patterns) -> Set[str]:
+        """Return the artifact files next to the manifest whose source is skipped.
+
+        Match with fnmatchcase (case-sensitive on all platforms, unlike
+        fnmatch which is case-insensitive on Windows/macOS) for
+        deterministic dev-vs-CI behavior. Note: fnmatch's `*` matches `/`
+        — fine here because source_equivalent always has the fixed
+        `sql/<proj>/<ds>/<table>/<file>` shape, but it's a semantic
+        difference from glob.
+        """
+        try:
+            manifest = yaml.safe_load(manifest_path.read_text()) or {}
+        except (yaml.YAMLError, OSError) as e:
+            # Surface so a corrupt manifest doesn't silently drop
+            # its artifact off the skip list — the resulting dryrun
+            # failure would otherwise mask the real cause.
+            click.echo(
+                f"Warning: could not read manifest {manifest_path}: {e}",
+                err=True,
+            )
+            return set()
+        src_project = manifest.get("source_project")
+        src_dataset = manifest.get("source_dataset")
+        src_table = manifest.get("source_table")
+        if not (src_project and src_dataset and src_table):
+            return set()
+
+        artifact_suffixes = (".sql", ".py")
+        return {
+            str(file)
+            for file in manifest_path.parent.iterdir()
+            if file.suffix in artifact_suffixes
+            and any(
+                fnmatch.fnmatchcase(
+                    f"sql/{src_project}/{src_dataset}/{src_table}/{file.name}", pat
+                )
+                for pat in skip_patterns
+            )
+        }
 
     @staticmethod
     def clear_cache():
@@ -264,9 +292,7 @@ class DryRun:
 
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in self.skipped_files(
-            sql_dir=self.sql_dir
-        )
+        return self.respect_skip and self.is_skipped(self.sqlfile, sql_dir=self.sql_dir)
 
     def get_sql(self):
         """Get SQL content."""

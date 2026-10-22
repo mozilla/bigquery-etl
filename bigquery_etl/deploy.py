@@ -47,9 +47,7 @@ def deploy_table(
     # Under --isolated, schema.yaml is authoritative and the table must
     # still be created so downstream views can reference it. Skip the
     # dryrun-based validation but proceed with the deploy.
-    dryrun_skipped = (
-        respect_dryrun_skip and str(artifact_file) in DryRun.skipped_files()
-    )
+    dryrun_skipped = respect_dryrun_skip and DryRun.is_skipped(artifact_file)
     if dryrun_skipped and not isolated:
         raise SkippedDeployException(f"Dry run skipped for {artifact_file}.")
 

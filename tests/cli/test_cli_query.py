@@ -28,6 +28,7 @@ from bigquery_etl.cli.query import (
 from bigquery_etl.metadata.parse_metadata import PartitionType
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
+from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.target import Target
 
 DEFAULT_SAMPLING_BATCH_SIZE = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
@@ -1378,6 +1379,77 @@ def main(submission_date):
             result = runner.invoke(deploy, ["telemetry_derived.query_v1"])
 
             assert result.exit_code == 0
+            mock_deploy_table.assert_not_called()
+
+    @patch("bigquery_etl.cli.query.ensure_dataset_exists")
+    @patch("bigquery_etl.cli.query.bigquery.Client")
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy_with_target(
+        self,
+        mock_deploy_table,
+        mock_get_id_token,
+        mock_get_credentials,
+        mock_client,
+        mock_ensure_dataset_exists,
+        runner,
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            src_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(src_dir)
+            with open(f"{src_dir}/query.sql", "w") as f:
+                f.write("SELECT 1")
+            with open(f"{src_dir}/metadata.yaml", "w") as f:
+                f.write(
+                    yaml.dump(
+                        {
+                            "friendly_name": "test",
+                            "description": "test",
+                            "owners": ["test@example.org"],
+                        }
+                    )
+                )
+
+            result = runner.invoke(
+                deploy,
+                ["telemetry_derived.query_v1"],
+                obj={"target": Target(name="dev", project_id="sandbox")},
+            )
+
+            assert result.exit_code == 0, result.output
+            mock_deploy_table.assert_called_once()
+            artifact_file = mock_deploy_table.call_args.args[0]
+            # the table is deployed to the target project, not to prod
+            assert extract_from_query_path(artifact_file)[0] == "sandbox"
+            assert mock_deploy_table.call_args.kwargs["destination_table"] is None
+            assert mock_deploy_table.call_args.kwargs["use_cloud_function"] is False
+            project, dataset, _ = extract_from_query_path(artifact_file)
+            mock_ensure_dataset_exists.assert_called_once_with(
+                mock_client.return_value,
+                f"{project}.{dataset}",
+                expiration_hours=None,
+                grant_dryrun_access=False,
+            )
+
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy_with_target_and_destination_table(self, mock_deploy_table, runner):
+        with runner.isolated_filesystem():
+            result = runner.invoke(
+                deploy,
+                [
+                    "telemetry_derived.query_v1",
+                    "--destination-table=moz-fx-data-shared-prod.telemetry_derived.t",
+                ],
+                obj={"target": Target(name="dev", project_id="sandbox")},
+            )
+
+            # click usage error
+            assert result.exit_code == 2
             mock_deploy_table.assert_not_called()
 
     def test_materialized_view_has_changes(self):

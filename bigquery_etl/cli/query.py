@@ -84,7 +84,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files
+from ..util.target import ensure_dataset_exists, prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -2560,7 +2560,7 @@ def _update_query_schema(
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
+    if respect_dryrun_skip and DryRun.is_skipped(query_file):
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -2767,9 +2767,13 @@ def _update_query_schema(
 
     Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
+    With --target, the schema is deployed to the target project instead.
+
     Examples:
 
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
+
+    ./bqetl --target dev query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
 @block_coding_agents
@@ -2833,6 +2837,13 @@ def deploy(
         )
         sys.exit(1)
 
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
     query_files = []
     metadata_files = []
     for project_id in project_ids:
@@ -2863,6 +2874,9 @@ def deploy(
             )
         if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
+        artifact_dir = ctx.obj["TMP_DIR"]
+    else:
+        artifact_dir = sql_dir
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
@@ -2878,6 +2892,52 @@ def deploy(
             if file.is_file()
         )
     ]
+
+    artifact_files = [
+        artifact_file
+        for artifact_file in query_files + metadata_files_without_query_file
+        if str(artifact_file) not in skip_schema_deploy()
+    ]
+
+    # with --target, deploy copies of the artifacts in the target project
+    # instead of the production tables they were defined for
+    if target:
+        # artifacts already defined in the target project are deployed as they are
+        source_files = [
+            artifact_file
+            for artifact_file in artifact_files
+            if extract_from_query_path(artifact_file)[0] != target.project_id
+        ]
+        artifact_files = [
+            artifact_file
+            for artifact_file in artifact_files
+            if artifact_file not in source_files
+        ] + prepare_target_files(
+            source_files,
+            artifact_dir,
+            target.project_id,
+            target,
+            defer_to_target=False,
+            isolated=False,
+            auto_deploy=False,
+        )
+
+        client = bigquery.Client(project=target.project_id, credentials=credentials)
+        for dataset_ref in sorted(
+            {
+                ".".join(extract_from_query_path(artifact_file)[:2])
+                for artifact_file in artifact_files
+            }
+        ):
+            ensure_dataset_exists(
+                client,
+                dataset_ref,
+                expiration_hours=target.expire_after_hours,
+                grant_dryrun_access=target.grant_dryrun_access,
+            )
+
+        # the dry run cloud function doesn't have access to the target project
+        use_cloud_function = False
 
     _deploy = partial(
         deploy_table,
@@ -2896,8 +2956,7 @@ def deploy(
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
             executor.submit(_deploy, artifact_file): artifact_file
-            for artifact_file in query_files + metadata_files_without_query_file
-            if str(artifact_file) not in skip_schema_deploy()
+            for artifact_file in artifact_files
         }
         for future in futures.as_completed(future_to_query):
             artifact_file = future_to_query[future]

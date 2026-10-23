@@ -257,16 +257,19 @@ class Schema:
                     if attributes and node_attr_key not in attributes:
                         continue
 
+                    node_attr_value = node.get(node_attr_key)
+
                     if node_attr_key == "type":
                         # sometimes types have multiple names (e.g. INT64 and INTEGER)
                         # make it consistent here
                         other_node_attr_value = self._type_mapping.get(
                             other_node_attr_value, other_node_attr_value
                         )
-                        node[node_attr_key] = self._type_mapping.get(
-                            node[node_attr_key],
-                            node[node_attr_key],
+                        node_attr_value = self._type_mapping.get(
+                            node_attr_value, node_attr_value
                         )
+                        if update and node_attr_value is not None:
+                            node[node_attr_key] = node_attr_value
 
                     if node_attr_key not in node:
                         if update:
@@ -291,7 +294,7 @@ class Schema:
                                     raise Exception(
                                         f"{node_attr_key} missing in {prefix}.{field_path}"
                                     )
-                    elif node[node_attr_key] != other_node_attr_value:
+                    elif node_attr_value != other_node_attr_value:
                         # check field attribute diffs
                         if node_attr_key == "description":
                             # overwrite descripton for the "other" schema

@@ -217,13 +217,6 @@ class Schema:
 
         return True
 
-    @staticmethod
-    def _node_with_mode(node):
-        """Add default value for mode to node."""
-        if "mode" in node:
-            return node
-        return {"mode": "NULLABLE", **node}
-
     def _traverse(
         self,
         prefix,
@@ -237,9 +230,11 @@ class Schema:
         ignore_incompatible_fields=False,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
-        nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
+        nodes = {n["name"]: n for n in columns}
+        # In some cases the `mode` attribute is omitted for nullable fields, but since this method relies on
+        # looping over the attributes of `other_nodes` we fill in `mode` for those to ensure it's processed.
         other_nodes = {
-            n["name"]: Schema._node_with_mode(n)
+            n["name"]: n if "mode" in n else {"mode": "NULLABLE", **n}
             for n in other_columns
             if exclude is None or n["name"] not in exclude
         }
@@ -257,6 +252,7 @@ class Schema:
                     if attributes and node_attr_key not in attributes:
                         continue
 
+                    node_has_attr = node_attr_key in node
                     node_attr_value = node.get(node_attr_key)
 
                     if node_attr_key == "type":
@@ -270,8 +266,13 @@ class Schema:
                         )
                         if update and node_attr_value is not None:
                             node[node_attr_key] = node_attr_value
+                    elif node_attr_key == "mode":
+                        # In some cases the `mode` attribute is omitted for nullable fields.
+                        if not node_has_attr:
+                            node_attr_value = "NULLABLE"
+                            node_has_attr = True
 
-                    if node_attr_key not in node:
+                    if not node_has_attr:
                         if update:
                             # add field attributes if not exists in schema
                             node[node_attr_key] = other_node_attr_value

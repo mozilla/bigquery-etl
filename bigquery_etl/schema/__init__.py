@@ -244,31 +244,34 @@ class Schema:
             if exclude is None or n["name"] not in exclude
         }
 
-        for node_name, node in other_nodes.items():
-            field_path = node["name"] + (".[]" if node["mode"] == "REPEATED" else "")
-            dtype = node["type"]
+        for node_name, other_node in other_nodes.items():
+            field_path = other_node["name"] + (
+                ".[]" if other_node["mode"] == "REPEATED" else ""
+            )
+            dtype = other_node["type"]
 
             if node_name in nodes:
                 # node exists in schema, update attributes where necessary
-                for node_attr_key, node_attr_value in node.items():
+                node = nodes[node_name]
+                for node_attr_key, other_node_attr_value in other_node.items():
                     if attributes and node_attr_key not in attributes:
                         continue
 
                     if node_attr_key == "type":
                         # sometimes types have multiple names (e.g. INT64 and INTEGER)
                         # make it consistent here
-                        node_attr_value = self._type_mapping.get(
-                            node_attr_value, node_attr_value
+                        other_node_attr_value = self._type_mapping.get(
+                            other_node_attr_value, other_node_attr_value
                         )
-                        nodes[node_name][node_attr_key] = self._type_mapping.get(
-                            nodes[node_name][node_attr_key],
-                            nodes[node_name][node_attr_key],
+                        node[node_attr_key] = self._type_mapping.get(
+                            node[node_attr_key],
+                            node[node_attr_key],
                         )
 
-                    if node_attr_key not in nodes[node_name]:
+                    if node_attr_key not in node:
                         if update:
                             # add field attributes if not exists in schema
-                            nodes[node_name][node_attr_key] = node_attr_value
+                            node[node_attr_key] = other_node_attr_value
                             # Netlify has a problem starting 2022-03-07 where lots of
                             # logging slows down builds to the point where our builds hit
                             # the time limit and fail (bug 1761292), and this print
@@ -288,7 +291,7 @@ class Schema:
                                     raise Exception(
                                         f"{node_attr_key} missing in {prefix}.{field_path}"
                                     )
-                    elif nodes[node_name][node_attr_key] != node_attr_value:
+                    elif node[node_attr_key] != other_node_attr_value:
                         # check field attribute diffs
                         if node_attr_key == "description":
                             # overwrite descripton for the "other" schema
@@ -302,12 +305,12 @@ class Schema:
                                     f"for {prefix}.{field_path} are incompatible"
                                 )
 
-                if dtype == "RECORD" and nodes[node_name]["type"] == "RECORD":
+                if dtype == "RECORD" and node["type"] == "RECORD":
                     # keep traversing nested fields
                     self._traverse(
                         f"{prefix}.{field_path}",
-                        nodes[node_name]["fields"],
                         node["fields"],
+                        other_node["fields"],
                         update=update,
                         add_missing_fields=add_missing_fields,
                         ignore_missing_fields=ignore_missing_fields,
@@ -317,10 +320,10 @@ class Schema:
             else:
                 if update and add_missing_fields:
                     # node does not exist in schema, add to schema
-                    if node["type"] == "RECORD":  # deep copy record fields
-                        columns.append(ujson.loads(ujson.dumps(node)))
+                    if other_node["type"] == "RECORD":  # deep copy record fields
+                        columns.append(ujson.loads(ujson.dumps(other_node)))
                     else:
-                        columns.append(node.copy())
+                        columns.append(other_node.copy())
                     print(f"Field {node_name} added to {prefix}")
                 else:
                     if not ignore_missing_fields:

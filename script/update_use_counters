@@ -1,5 +1,20 @@
 #!/usr/bin/env python
 
+"""Update the use counter list in the use_counters SQL generator templates.
+
+Usage: script/update_use_counters /path/to/firefox
+
+Reads dom/base/use_counter_metrics.yaml from a Firefox checkout and merges
+any new use counters and denominators into
+sql_generators/use_counters/templates/templating.yaml.
+
+This script only adds names. Counters that Firefox has removed are never
+dropped from templating.yaml. This is deliberate: keeping them means the
+old columns stay in the generated queries and remain queryable.
+
+Afterwards, run `./bqetl generate use_counters` to check the result.
+"""
+
 import os
 import sys
 

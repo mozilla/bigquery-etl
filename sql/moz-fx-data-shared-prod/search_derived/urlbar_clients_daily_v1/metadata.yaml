@@ -1,0 +1,30 @@
+friendly_name: Urlbar Clients Daily
+description: |-
+  One row per desktop client (Glean client_id) per day, with click, shown, abandonment and
+  annoyance counts for every urlbar result type, nested in `results`. One element per
+  (window_mode, sap, interaction, result_type), keyed on the raw result type.
+
+  Built from firefox_desktop_derived.urlbar_events_v2 and reuses the click logic of
+  urlbar_events_daily. It holds no KPI logic: it stores every result type, including those
+  the search KPI excludes, and applies no version or channel filter.
+  search_derived.kpi_component_map decides which result types count toward the KPI.
+  Country, version and channel aren't stored here; join desktop_client_day_dims_v1.
+owners:
+- ctroy@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+require_column_descriptions: true

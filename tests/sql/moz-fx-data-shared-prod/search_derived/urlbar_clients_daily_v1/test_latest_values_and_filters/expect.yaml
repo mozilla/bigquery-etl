@@ -1,0 +1,28 @@
+# NULL columns are omitted: the harness drops null keys from the result row.
+
+# Prefs from e2 (the latest), legacy id from e1 (the latest non-null). Only the two
+# 2026-10-14 sessions are counted.
+- submission_date: "2026-10-14"
+  client_id: client-a
+  legacy_telemetry_client_id: legacy-a
+  sample_id: 1
+  pref_suggest_enabled: true
+  pref_sponsored_enabled: false
+  pref_online_suggest_available: true
+  pref_online_suggest_enabled: true
+  pref_data_collection: true
+  is_bot: false
+  sessions_total: 2
+  sessions_engaged: 0
+  sessions_abandoned: 2
+  results:
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: search_engine
+    product_result_type: search_engine
+    result_group: heuristic
+    clicks: 0
+    sessions_shown: 2
+    sessions_shown_abandoned: 2
+    annoyances: 0

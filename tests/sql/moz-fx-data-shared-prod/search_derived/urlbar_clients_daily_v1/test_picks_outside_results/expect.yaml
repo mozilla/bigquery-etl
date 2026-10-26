@@ -1,0 +1,51 @@
+# NULL columns are omitted: the harness drops null keys from the result row.
+# Row and element order don't matter.
+
+# result_group is NULL on the input_field and action_* elements: the picks weren't in
+# the results list.
+- submission_date: "2026-10-14"
+  client_id: client-a
+  sample_id: 1
+  is_bot: false
+  sessions_total: 2
+  sessions_engaged: 2
+  sessions_abandoned: 0
+  results:
+  - window_mode: classic
+    sap: urlbar
+    interaction: pasted
+    result_type: search_engine
+    product_result_type: search_engine
+    result_group: heuristic
+    clicks: 0
+    sessions_shown: 1
+    sessions_shown_abandoned: 0
+    annoyances: 0
+  - window_mode: classic
+    sap: urlbar
+    interaction: pasted
+    result_type: input_field
+    product_result_type: other
+    clicks: 1
+    sessions_shown: 0
+    sessions_shown_abandoned: 0
+    annoyances: 0
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: search_engine
+    product_result_type: search_engine
+    result_group: heuristic
+    clicks: 0
+    sessions_shown: 1
+    sessions_shown_abandoned: 0
+    annoyances: 0
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: action_tabgroup-0
+    product_result_type: other
+    clicks: 1
+    sessions_shown: 0
+    sessions_shown_abandoned: 0
+    annoyances: 0

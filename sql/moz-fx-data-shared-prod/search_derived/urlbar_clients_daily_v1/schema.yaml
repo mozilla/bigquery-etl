@@ -1,0 +1,119 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: The Glean client identifier (client_info.client_id). One row per client_id
+    and submission_date.
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: The legacy telemetry client_id reported by the client, latest non-null value
+    that day. Carried alongside client_id, the Glean identifier this table is keyed on, so
+    a row can be joined to legacy telemetry tables.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id. The clustering field.
+- name: pref_suggest_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether non-sponsored Firefox Suggest suggestions are enabled, latest value
+    that day.
+- name: pref_sponsored_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether sponsored Firefox Suggest suggestions are enabled, latest value that
+    day.
+- name: pref_online_suggest_available
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether online Suggest is available to the client, latest value that day.
+- name: pref_online_suggest_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether online Suggest is enabled by the user, latest value that day.
+- name: pref_data_collection
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the user opted in to Suggest data collection, latest value that day.
+- name: is_bot
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client is on the shared bot list. The flag is kept on the row
+    rather than dropping the client, so the exclusion can be audited. FALSE on every row
+    until a bot list exists.
+- name: sessions_total
+  type: INTEGER
+  mode: NULLABLE
+  description: Completed urlbar sessions (sessions with a terminal event) that day. 0 for a
+    client whose only events that day were non-terminal, such as a dismissal.
+- name: sessions_engaged
+  type: INTEGER
+  mode: NULLABLE
+  description: Completed sessions that ended with the user picking a result. Equals the sum
+    of results.clicks.
+- name: sessions_abandoned
+  type: INTEGER
+  mode: NULLABLE
+  description: Completed sessions that ended in abandonment.
+- name: results
+  type: RECORD
+  mode: REPEATED
+  description: One element per distinct (window_mode, sap, interaction, result_type) the
+    client saw or picked that day.
+  fields:
+  - name: window_mode
+    type: STRING
+    mode: NULLABLE
+    description: 'The window the session took place in: classic, private or smartwindow.
+      Taken from the session''s terminal event.'
+  - name: sap
+    type: STRING
+    mode: NULLABLE
+    description: Search access point of the session, e.g. urlbar, urlbar_newtab, smartbar.
+      Taken from the session's terminal event.
+  - name: interaction
+    type: STRING
+    mode: NULLABLE
+    description: How the user interacted with the urlbar, e.g. typed, pasted, topsites.
+      Taken from the session's terminal event.
+  - name: result_type
+    type: STRING
+    mode: NULLABLE
+    description: Raw type identifier for the result, as reported in telemetry, e.g.
+      rust_adm_sponsored. Includes input_field and action_* for picks that weren't in the
+      results list (paste-and-go, quick actions).
+  - name: product_result_type
+    type: STRING
+    mode: NULLABLE
+    description: Product type identifier for the result, from
+      mozfun.norm.result_type_to_product_name. Several raw types can share one.
+  - name: result_group
+    type: STRING
+    mode: NULLABLE
+    description: Result group this result belongs to, e.g. heuristic, suggest. NULL for
+      picks that weren't in the results list.
+  - name: clicks
+    type: INTEGER
+    mode: NULLABLE
+    description: Completed engaged sessions whose selected result has this raw type. At most
+      one per session, so clicks sum to sessions_engaged.
+  - name: sessions_shown
+    type: INTEGER
+    mode: NULLABLE
+    description: Completed sessions where this raw type was among the results. Doesn't sum
+      across elements; to count sessions by product type, don't sum raw types that share a
+      product name.
+  - name: sessions_shown_abandoned
+    type: INTEGER
+    mode: NULLABLE
+    description: Completed sessions where this raw type was among the results and the
+      session ended in abandonment. Never larger than sessions_abandoned.
+  - name: annoyances
+    type: INTEGER
+    mode: NULLABLE
+    description: Dismiss, "show less" and other annoyance actions on this raw type.

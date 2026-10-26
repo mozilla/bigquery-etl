@@ -456,6 +456,80 @@ class TestQuerySchema:
         assert fields[1]["description"] == "The client_info"
         assert fields[1]["fields"][0]["description"] == "The build identifier"
 
+    def test_compare_descriptions(self):
+        schema_1_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+              description: "The submission_date"
+            """)
+
+        # A differing description.
+        schema_2_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+              description: "Date of the submission"
+            """)
+
+        # No description at all, like a dry run schema.
+        schema_3_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+            """)
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+        schema_3 = Schema.from_json(yaml.safe_load(schema_3_yaml))
+
+        # Descriptions are ignored by default, including by `compatible()`.
+        assert schema_1.equal(schema_2)
+        assert schema_1.equal(schema_3)
+        assert schema_3.equal(schema_1)
+        assert schema_1.compatible(schema_3)
+        assert schema_3.compatible(schema_1)
+
+        # Descriptions are compared when `compare_descriptions` is true.
+        assert schema_1.equal(schema_1, compare_descriptions=True)
+        assert not schema_1.equal(schema_2, compare_descriptions=True)
+        assert not schema_1.equal(schema_3, compare_descriptions=True)
+        assert not schema_3.equal(schema_1, compare_descriptions=True)
+
+    def test_compare_nested_descriptions(self):
+        schema_1_yaml = dedent("""
+            fields:
+            - name: client_info
+              type: RECORD
+              mode: NULLABLE
+              fields:
+              - name: app_build
+                type: STRING
+                mode: NULLABLE
+                description: "The build identifier"
+            """)
+
+        schema_2_yaml = dedent("""
+            fields:
+            - name: client_info
+              type: RECORD
+              mode: NULLABLE
+              fields:
+              - name: app_build
+                type: STRING
+                mode: NULLABLE
+            """)
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+
+        assert schema_1.equal(schema_2)
+        assert not schema_1.equal(schema_2, compare_descriptions=True)
+        assert not schema_2.equal(schema_1, compare_descriptions=True)
+
     def test_bigquery_conversion(self):
         bq_schema = [
             SchemaField(

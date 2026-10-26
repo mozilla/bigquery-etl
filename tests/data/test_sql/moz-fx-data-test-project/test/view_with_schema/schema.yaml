@@ -1,0 +1,5 @@
+fields:
+- name: a
+  type: INTEGER
+  mode: NULLABLE
+  description: Description from the schema file

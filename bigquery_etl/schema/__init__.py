@@ -172,14 +172,26 @@ class Schema:
                 ignore_missing_fields=ignore_missing_fields,
             )
 
-    def equal(self, other: "Schema") -> bool:
-        """Compare to another schema."""
+    def equal(self, other: "Schema", compare_descriptions: bool = False) -> bool:
+        """Compare to another schema.
+
+        Field descriptions aren't compared by default because schemas are often
+        compared against dry run schemas, which never have descriptions.
+        """
         try:
             self._traverse(
-                "root", self.schema["fields"], other.schema["fields"], update=False
+                "root",
+                self.schema["fields"],
+                other.schema["fields"],
+                update=False,
+                compare_descriptions=compare_descriptions,
             )
             self._traverse(
-                "root", other.schema["fields"], self.schema["fields"], update=False
+                "root",
+                other.schema["fields"],
+                self.schema["fields"],
+                update=False,
+                compare_descriptions=compare_descriptions,
             )
         except Exception as e:
             print(e)
@@ -228,6 +240,7 @@ class Schema:
         exclude=None,
         attributes=None,
         ignore_incompatible_fields=False,
+        compare_descriptions=False,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
         nodes = {n["name"]: n for n in columns}
@@ -286,10 +299,10 @@ class Schema:
                             # )
                         else:
                             if node_attr_key == "description":
-                                print(
-                                    "Warning: descriptions for "
-                                    f"{prefix}.{field_path} differ"
-                                )
+                                if compare_descriptions:
+                                    raise Exception(
+                                        f"description missing in {prefix}.{field_path}"
+                                    )
                             else:
                                 if not ignore_incompatible_fields:
                                     raise Exception(
@@ -298,10 +311,15 @@ class Schema:
                     elif node_attr_value != other_node_attr_value:
                         # check field attribute diffs
                         if node_attr_key == "description":
-                            # overwrite descripton for the "other" schema
-                            print(
-                                f"Warning: descriptions for {prefix}.{field_path} differ."
-                            )
+                            if update:
+                                # When updating, the existing schema's description takes precedence.
+                                print(
+                                    f"Warning: descriptions for {prefix}.{field_path} differ."
+                                )
+                            elif compare_descriptions:
+                                raise Exception(
+                                    f"descriptions for {prefix}.{field_path} differ"
+                                )
                         elif node_attr_key != "fields":
                             if not ignore_incompatible_fields:
                                 raise Exception(
@@ -320,6 +338,7 @@ class Schema:
                         ignore_missing_fields=ignore_missing_fields,
                         attributes=attributes,
                         ignore_incompatible_fields=ignore_incompatible_fields,
+                        compare_descriptions=compare_descriptions,
                     )
             else:
                 if update and add_missing_fields:

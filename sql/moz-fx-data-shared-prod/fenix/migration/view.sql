@@ -39,9 +39,32 @@ SELECT
     STRUCT(client_info.distribution.name, CAST(NULL AS JSON) AS `ext`) AS `distribution`
   ) AS `client_info`,
   document_id,
-  events,
+  ARRAY(
+    SELECT
+      STRUCT(
+        events.category,
+        events.extra,
+        events.name,
+        events.timestamp,
+        STRUCT(
+          events.session.event_seq,
+          events.session.session_id,
+          events.session.session_sample_rate,
+          events.session.session_seq,
+          events.session.session_start_time
+        ) AS `session`
+      )
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
   STRUCT(
-    metadata.geo,
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
     STRUCT(
       metadata.header.date,
       metadata.header.dnt,
@@ -56,7 +79,7 @@ SELECT
       CAST(NULL AS STRUCT<`tls_version` STRING, `tls_cipher_hex` STRING>) AS `parsed_x_lb_tags`
     ) AS `header`,
     metadata.user_agent,
-    metadata.isp
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
   ) AS `metadata`,
   STRUCT(
     STRUCT(

@@ -30,7 +30,7 @@ Some changes do not need a managed backfill at all, see [Changes that do not req
 
 Some tables rebuild their whole history on every scheduled run, so a query change propagates across the full window on the next scheduled run with no managed backfill. This applies when **both** of these hold (otherwise, use a managed backfill as described below):
 
-- `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset or `0` (unset defaults to `0`), so each run `WRITE_TRUNCATE`s the **whole table**, not one partition. (A non-zero offset writes only the shifted partition; omitting `date_partition_parameter` defaults it to `submission_date`, one partition per day. Neither rebuilds history.)
+- `scheduling.date_partition_parameter` is `null` **and** `date_partition_offset` is unset or `0` (unset defaults to `0`), so each run `WRITE_TRUNCATE`s the **whole table**, not one partition. (A non-zero offset writes only the shifted partition; omitting `date_partition_parameter` defaults it to `submission_date`, one partition per day; a templated `$` partition in `destination_table`, as in hourly tables rewriting a daily partition, writes only that partition. None of these rebuild history.)
 - The query recomputes the full or a rolling window from its sources every run (e.g. `WHERE submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)`), so the truncate rewrites history instead of leaving a single day.
 
 **Note** A self-referential table that reads its own prior output does not qualify — a `depends_on_past: true` / `is_init()` first-seen table like `telemetry_derived.clients_first_seen_v3` carries earlier values forward, so a logic change reaches only new rows and must be rebuilt with `--reinitialize-table` (see the table below).

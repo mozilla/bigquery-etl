@@ -35,6 +35,7 @@ from ..backfill.utils import (
     get_effective_retention_days,
     qualified_table_name_matching,
     resolve_date_partition_parameter,
+    resolve_scheduling_parameters,
 )
 from ..cli import check
 from ..cli.format import format
@@ -719,7 +720,9 @@ def _backfill_script(
     default="{}",
     help=(
         "Pass overrides as a JSON string for scheduling sections: "
-        "parameters and/or date_partition_parameter as needed."
+        "parameters and/or date_partition_parameter as needed. A "
+        "date_partition_parameter override has no effect on tables that set "
+        "backfill_date_partition_parameter; override that instead."
     ),
 )
 @backfill_options.override_retention()
@@ -911,7 +914,7 @@ def backfill(
         scheduling_metadata = metadata.scheduling.copy()
         scheduling_metadata.update(json.loads(scheduling_overrides))
         date_partition_parameter = resolve_date_partition_parameter(scheduling_metadata)
-        scheduling_parameters = scheduling_metadata.get("parameters", [])
+        scheduling_parameters = resolve_scheduling_parameters(scheduling_metadata)
         date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
         client = bigquery.Client(project=project_id)

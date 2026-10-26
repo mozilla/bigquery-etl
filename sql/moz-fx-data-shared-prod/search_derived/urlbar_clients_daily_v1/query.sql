@@ -172,6 +172,11 @@ client_results AS (
         sessions_shown_abandoned,
         annoyances
       )
+      ORDER BY
+        window_mode,
+        sap,
+        interaction,
+        result_type
     ) AS results
   FROM
     elements

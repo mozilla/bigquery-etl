@@ -1,5 +1,5 @@
 # NULL columns are omitted: the harness drops null keys from the result row.
-# Row and element order don't matter.
+# Elements are sorted by window_mode, sap, interaction, result_type, as in the query.
 
 # result_group is NULL on the input_field and action_* elements: the picks weren't in
 # the results list.
@@ -14,16 +14,6 @@
   - window_mode: classic
     sap: urlbar
     interaction: pasted
-    result_type: search_engine
-    product_result_type: search_engine
-    result_group: heuristic
-    clicks: 0
-    sessions_shown: 1
-    sessions_shown_abandoned: 0
-    annoyances: 0
-  - window_mode: classic
-    sap: urlbar
-    interaction: pasted
     result_type: input_field
     product_result_type: other
     clicks: 1
@@ -32,7 +22,7 @@
     annoyances: 0
   - window_mode: classic
     sap: urlbar
-    interaction: typed
+    interaction: pasted
     result_type: search_engine
     product_result_type: search_engine
     result_group: heuristic
@@ -47,5 +37,15 @@
     product_result_type: other
     clicks: 1
     sessions_shown: 0
+    sessions_shown_abandoned: 0
+    annoyances: 0
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: search_engine
+    product_result_type: search_engine
+    result_group: heuristic
+    clicks: 0
+    sessions_shown: 1
     sessions_shown_abandoned: 0
     annoyances: 0

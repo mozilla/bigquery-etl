@@ -82,7 +82,9 @@ SELECT
       metrics.boolean.networking_cookie_file_present,
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
-      metrics.boolean.profiles_store_id_mismatch
+      metrics.boolean.profiles_store_id_mismatch,
+      metrics.boolean.network_akamai_waf_blocked,
+      metrics.boolean.network_akamai_waf_blocked_subresource
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -774,7 +776,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
-      metrics.labeled_counter.geolocation_request_activation
+      metrics.labeled_counter.geolocation_request_activation,
+      metrics.labeled_counter.network_akamai_document_loads
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2133,7 +2136,9 @@ SELECT
       metrics.boolean.networking_cookie_file_present,
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
-      metrics.boolean.profiles_store_id_mismatch
+      metrics.boolean.profiles_store_id_mismatch,
+      metrics.boolean.network_akamai_waf_blocked,
+      metrics.boolean.network_akamai_waf_blocked_subresource
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -2825,7 +2830,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
-      metrics.labeled_counter.geolocation_request_activation
+      metrics.labeled_counter.geolocation_request_activation,
+      metrics.labeled_counter.network_akamai_document_loads
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4184,7 +4190,9 @@ SELECT
       metrics.boolean.networking_cookie_file_present,
       metrics.boolean.profiles_path_in_profiles_ini,
       metrics.boolean.profiles_store_id_in_profiles_ini,
-      metrics.boolean.profiles_store_id_mismatch
+      metrics.boolean.profiles_store_id_mismatch,
+      metrics.boolean.network_akamai_waf_blocked,
+      metrics.boolean.network_akamai_waf_blocked_subresource
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -4876,7 +4884,8 @@ SELECT
       metrics.labeled_counter.geolocation_network_link_change,
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
-      metrics.labeled_counter.geolocation_request_activation
+      metrics.labeled_counter.geolocation_request_activation,
+      metrics.labeled_counter.network_akamai_document_loads
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

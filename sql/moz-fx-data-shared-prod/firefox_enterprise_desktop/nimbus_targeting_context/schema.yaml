@@ -580,6 +580,20 @@ fields:
         was evaluated while push was running.
 
         '
+    - name: nimbus_targeting_context_previous_session_end
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Timestamp of the previously closed session.
+
+        '
+    - name: nimbus_targeting_context_profile_last_use
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The UNIX timestamp of when the profile was last used before the
+        current session, or zero if it could not be determined. This is the more recent
+        of the previous session''s lock file time and the prefs.js modification time.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

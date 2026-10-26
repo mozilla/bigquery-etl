@@ -738,6 +738,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Was this a background update?
+    - name: is_block
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this was a block or an unblock.
     - name: is_customizing
       type: BOOLEAN
       mode: NULLABLE
@@ -1072,6 +1076,10 @@ fields:
         * Whether the prompt was sent from Smart Window.
 
         * Whether the menu was shown in Smart Window.'
+    - name: smartblock_embed_toggles_shown
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether any SmartBlock embed toggles were shown in the Trust Panel.
     - name: smartblockEmbedTogglesShown
       type: BOOLEAN
       mode: NULLABLE
@@ -1786,7 +1794,9 @@ fields:
 
         * Milliseconds to output first sentence
 
-        * Time in ms to start processing the request'
+        * Time in ms to start processing the request
+
+        * Time from response request start to the first rendered assistant character'
     - name: latency_ms
       type: INTEGER
       mode: NULLABLE
@@ -2849,6 +2859,8 @@ fields:
         * The action taken on the page. Possible values are: `clicked`, `clicked_accept`,
         `clicked_reject`, `clicked_more_options`, `expanded`, `submitted`.
 
+        * How this click happened
+
         * Which action was clicked.
 
         * The action that was taken by the user, remove or cancel
@@ -2862,9 +2874,7 @@ fields:
 
         * Which action was clicked, e.g., ai, search, copy.
 
-        * Which action was toggled, e.g., ai, search, copy, master.
-
-        * What ...'
+        * Which action was toggled, e.g., ai, sea...'
     - name: action_id
       type: STRING
       mode: NULLABLE
@@ -3035,6 +3045,22 @@ fields:
         * present, empty.
 
         * present, empty, skipped.'
+    - name: app_state_before_click
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window` or `unknown`.
+        Only determined on Windows and macOS. `background_no_window` means no browser
+        windows were open, and is only reported on macOS.
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window`, `closed` or
+        `unknown`. Only determined on Windows and macOS. `background_no_window` means
+        Firefox was running with no browser windows open. `closed` means the click
+        launched Firefox because it wasn''t running, and is only reported on Windows,
+        as macOS removes Firefox''s notifications when it quits.'
     - name: appearance
       type: STRING
       mode: NULLABLE
@@ -5131,13 +5157,16 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * How the panel was opened, one of "shieldButtonClicked", "embedPlaceholderButton",
-        or "unknown" when it was opened without a reason.
-
         * How the panel was opened: "shieldButtonClicked" when the user clicked the
         shield icon in the URL bar, "embedPlaceholderButton" when it was opened from
         a SmartBlock embed placeholder, or "unknown" when it was opened without a
-        reason.'
+        reason.
+
+        * How the panel was opened, one of "shieldButtonClicked", "embedPlaceholderButton",
+        or "unknown" when it was opened without a reason.
+
+        * How the Trust Panel was opened, one of ["shieldButtonClicked", "embedPlaceholderButton",
+        "unknown"]. Same values as the opening_reason extra of trustpanel.opened.'
     - name: openingReason
       type: STRING
       mode: NULLABLE
@@ -6079,6 +6108,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Source of the share. One of "bookmarks", "tabs", "tab_group".
+    - name: shim_id
+      type: STRING
+      mode: NULLABLE
+      description: The SmartBlock shim id for the tracker being toggled.
     - name: shortcut
       type: STRING
       mode: NULLABLE
@@ -6144,9 +6177,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Category of the site requesting notification permissions
-
         * Category of the site that triggered the notification
+
+        * Category of the site requesting notification permissions
 
         * Category of the site whose notification permission was revoked'
     - name: site_permission

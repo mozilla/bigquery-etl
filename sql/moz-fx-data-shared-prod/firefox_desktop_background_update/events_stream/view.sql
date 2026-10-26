@@ -233,6 +233,7 @@ SELECT
       JSON_VALUE(event_extra.address_line3) AS `address_line3`,
       JSON_VALUE(event_extra.age) AS `age`,
       JSON_VALUE(event_extra.alt_text_type) AS `alt_text_type`,
+      JSON_VALUE(event_extra.app_state_before_click) AS `app_state_before_click`,
       JSON_VALUE(event_extra.auto_admin) AS `auto_admin`,
       JSON_VALUE(event_extra.backend) AS `backend`,
       JSON_VALUE(event_extra.backend_source_revision) AS `backend_source_revision`,

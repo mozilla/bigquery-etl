@@ -252,6 +252,7 @@ SELECT
       JSON_VALUE(event_extra.admin_user) AS `admin_user`,
       JSON_VALUE(event_extra.age) AS `age`,
       JSON_VALUE(event_extra.alt_text_type) AS `alt_text_type`,
+      JSON_VALUE(event_extra.app_state_before_click) AS `app_state_before_click`,
       JSON_VALUE(event_extra.appearance) AS `appearance`,
       JSON_VALUE(event_extra.auto_admin) AS `auto_admin`,
       JSON_VALUE(event_extra.backend) AS `backend`,

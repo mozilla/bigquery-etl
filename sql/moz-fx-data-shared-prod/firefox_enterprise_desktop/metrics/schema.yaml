@@ -1250,6 +1250,20 @@ fields:
         pref.
 
         '
+    - name: network_akamai_waf_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true when a document or frame load served by Akamai is
+        a 403 "Access Denied" page from the Akamai WAF (body references errors.edgesuite.net).
+
+        '
+    - name: network_akamai_waf_blocked_subresource
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true when a subresource load served by Akamai is a 403
+        "Access Denied" page from the Akamai WAF (body references errors.edgesuite.net).
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -22411,6 +22425,39 @@ fields:
         "failed" means the session file was not written. "session_written_backup_failed"
         means the session file was written but a later step, such as taking or pruning
         upgrade backups, failed.
+
+        '
+    - name: network_akamai_document_loads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts document and frame loads served by Akamai, labeled by whether
+        the response was the Akamai WAF "Access Denied" page (403 with a body referencing
+        errors.edgesuite.net), a different 403 response, or any other response.
+
+        '
+    - name: sap_impression_counts_text_selection
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of impressions of the search action in the text selection
+        menu. The
+
+        counter''s label is the engine''s identifier if it''s an app-provided
+
+        engine. Otherwise the label is "none".
 
         '
   - name: labeled_custom_distribution

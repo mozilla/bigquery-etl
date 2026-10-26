@@ -3022,7 +3022,13 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_doc_svguse_inline_event_handler,
       metrics.counter.use_counter_deprecated_ops_page_svguse_inline_event_handler,
       metrics.counter.use_counter_doc_speculation_rules_header,
-      metrics.counter.use_counter_page_speculation_rules_header
+      metrics.counter.use_counter_page_speculation_rules_header,
+      metrics.counter.use_counter_doc_akamai_forbidden,
+      metrics.counter.use_counter_doc_akamai_used,
+      metrics.counter.use_counter_doc_akamai_waf_blocked,
+      metrics.counter.use_counter_page_akamai_forbidden,
+      metrics.counter.use_counter_page_akamai_used,
+      metrics.counter.use_counter_page_akamai_waf_blocked
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

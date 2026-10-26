@@ -12597,6 +12597,32 @@ fields:
       mode: NULLABLE
       description: Whether a page has a speculation rule set from a Speculation-Rules
         header
+    - name: use_counter2_akamaiforbidden_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document had a load get a 403 from Akamai that is not
+        the WAF block page
+    - name: use_counter2_akamaiforbidden_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page had a load get a 403 from Akamai that is not the
+        WAF block page
+    - name: use_counter2_akamaiused_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document loaded a document or subresource served by Akamai
+    - name: use_counter2_akamaiused_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page loaded a document or subresource served by Akamai
+    - name: use_counter2_akamaiwafblocked_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document had a load blocked by the Akamai WAF
+    - name: use_counter2_akamaiwafblocked_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page had a load blocked by the Akamai WAF
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -25058,6 +25084,33 @@ fields:
           mode: NULLABLE
           description: Whether a page has a speculation rule set from a Speculation-Rules
             header
+        - name: use_counter2_akamaiforbidden_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document had a load get a 403 from Akamai that is
+            not the WAF block page
+        - name: use_counter2_akamaiforbidden_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page had a load get a 403 from Akamai that is not
+            the WAF block page
+        - name: use_counter2_akamaiused_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document loaded a document or subresource served
+            by Akamai
+        - name: use_counter2_akamaiused_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page loaded a document or subresource served by Akamai
+        - name: use_counter2_akamaiwafblocked_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document had a load blocked by the Akamai WAF
+        - name: use_counter2_akamaiwafblocked_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page had a load blocked by the Akamai WAF
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

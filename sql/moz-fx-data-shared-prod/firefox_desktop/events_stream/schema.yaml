@@ -552,13 +552,13 @@ fields:
 
         * New/current state is enabled
 
+        * Whether the action was turned on or off.
+
         * Boolean indicating if that type of memory was enabled or disabled
 
         * True if the feature is enabled.
 
         * Whether launch on login was turned on (true) or off (false).
-
-        * Whether the action was turned on or off.
 
         * Whether the sidebar is now set to open by default
 
@@ -799,6 +799,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True if IP Protection was started in a private browsing window.
+    - name: interacted
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the user completed an action from the menu.
     - name: is_addon_active
       type: BOOLEAN
       mode: NULLABLE
@@ -808,6 +812,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Was this a background update?
+    - name: is_block
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether this was a block or an unblock.
     - name: is_customizing
       type: BOOLEAN
       mode: NULLABLE
@@ -1194,9 +1202,13 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Whether the prompt was sent from Smart Window.
+        * Whether the menu was shown in Smart Window.
 
-        * Whether the menu was shown in Smart Window.'
+        * Whether the prompt was sent from Smart Window.'
+    - name: smartblock_embed_toggles_shown
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether any SmartBlock embed toggles were shown in the Trust Panel.
     - name: smartblockEmbedTogglesShown
       type: BOOLEAN
       mode: NULLABLE
@@ -1659,6 +1671,8 @@ fields:
 
         * How long the migration took (in milliseconds).
 
+        * Milliseconds the menu was shown.
+
         * Total time of the run from start to completion, including page extraction
         and the model call.
 
@@ -1945,7 +1959,9 @@ fields:
         * Time spent in the model call only, excluding page extraction and the account
         token fetch. Only present when the model call completed.
 
-        * Milliseconds to output first sentence'
+        * Milliseconds to output first sentence
+
+        * Time from response request start to the first rendered assistant character'
     - name: latency_ms
       type: INTEGER
       mode: NULLABLE
@@ -3125,11 +3141,11 @@ fields:
         * Whether the toggle was used to enable or disable auto-open. Possible values
         are `enabled` and `disabled`.
 
+        * How this click happened
+
         * Whether the panel was hidden or shown.
 
-        * Whether the icon was used to open or close the Shopping sidebar.
-
-        * W...'
+        * Which action was clicked, e.g., ai, search...'
     - name: action_id
       type: STRING
       mode: NULLABLE
@@ -3306,6 +3322,10 @@ fields:
         such as research, will record their own values.
 
         * The agent the command routes to: "watch", "research", or "schedule"'
+    - name: ai
+      type: STRING
+      mode: NULLABLE
+      description: State of the AI toggle, one of on, off or absent.
     - name: alt_text_type
       type: STRING
       mode: NULLABLE
@@ -3314,6 +3334,22 @@ fields:
         * present, empty.
 
         * present, empty, skipped.'
+    - name: app_state_before_click
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window` or `unknown`.
+        Only determined on Windows and macOS. `background_no_window` means no browser
+        windows were open, and is only reported on macOS.
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window`, `closed` or
+        `unknown`. Only determined on Windows and macOS. `background_no_window` means
+        Firefox was running with no browser windows open. `closed` means the click
+        launched Firefox because it wasn''t running, and is only reported on Windows,
+        as macOS removes Firefox''s notifications when it quits.'
     - name: appearance
       type: STRING
       mode: NULLABLE
@@ -3880,6 +3916,10 @@ fields:
       mode: NULLABLE
       description: 'The cause of the current confirmation context. Values: [success,
         pref-change, network-change, shutdown]'
+    - name: copy
+      type: STRING
+      mode: NULLABLE
+      description: State of the copy toggle, one of on, off or absent.
     - name: country
       type: STRING
       mode: NULLABLE
@@ -4992,6 +5032,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: passport issue date year field result
+    - name: item
+      type: STRING
+      mode: NULLABLE
+      description: Which entry was clicked, e.g., settings.
     - name: key_system
       type: STRING
       mode: NULLABLE
@@ -5556,13 +5600,16 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * How the panel was opened, one of "shieldButtonClicked", "embedPlaceholderButton",
-        or "unknown" when it was opened without a reason.
-
         * How the panel was opened: "shieldButtonClicked" when the user clicked the
         shield icon in the URL bar, "embedPlaceholderButton" when it was opened from
         a SmartBlock embed placeholder, or "unknown" when it was opened without a
-        reason.'
+        reason.
+
+        * How the panel was opened, one of "shieldButtonClicked", "embedPlaceholderButton",
+        or "unknown" when it was opened without a reason.
+
+        * How the Trust Panel was opened, one of ["shieldButtonClicked", "embedPlaceholderButton",
+        "unknown"]. Same values as the opening_reason extra of trustpanel.opened.'
     - name: openingReason
       type: STRING
       mode: NULLABLE
@@ -6388,6 +6435,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Percentage of window scrolled in Reader Mode (whole number)
+    - name: search
+      type: STRING
+      mode: NULLABLE
+      description: State of the search toggle, one of on, off or absent.
     - name: search_domain
       type: STRING
       mode: NULLABLE
@@ -6543,6 +6594,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Source of the share. One of "bookmarks", "tabs", "tab_group".
+    - name: shim_id
+      type: STRING
+      mode: NULLABLE
+      description: The SmartBlock shim id for the tracker being toggled.
     - name: shortcut
       type: STRING
       mode: NULLABLE
@@ -6616,9 +6671,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Category of the site requesting notification permissions
-
         * Category of the site that triggered the notification
+
+        * Category of the site requesting notification permissions
 
         * Category of the site whose notification permission was revoked'
     - name: site_permission

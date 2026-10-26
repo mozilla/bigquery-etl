@@ -1744,12 +1744,12 @@ fields:
         device), "all_devices" (sent to all devices), or "manage_devices" (opened
         device management).
 
+        * How this click happened
+
         * The action that was taken by the user, remove or cancel
 
         * Whether the toggle was used to enable or disable ads. Possible values are
-        `enabled` and `disabled`.
-
-        * How this click happened'
+        `enabled` and `disabled`.'
     - name: action_uuid
       type: STRING
       mode: NULLABLE
@@ -1887,6 +1887,22 @@ fields:
         ''com.google.android.apps.dynamite'', ''com.whatsapp'', ''com.tencent.mm'',
         ''com.Slack'', ''com.discord'', ''com.android.bluetooth'', ''com.google.android.gms'',
         ''org.mozilla.fenix.COPY_LINK_TO_CLIPBOARD'
+    - name: app_state_before_click
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window` or `unknown`.
+        Only determined on Windows and macOS. `background_no_window` means no browser
+        windows were open, and is only reported on macOS.
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window`, `closed` or
+        `unknown`. Only determined on Windows and macOS. `background_no_window` means
+        Firefox was running with no browser windows open. `closed` means the click
+        launched Firefox because it wasn''t running, and is only reported on Windows,
+        as macOS removes Firefox''s notifications when it quits.'
     - name: auto_admin
       type: STRING
       mode: NULLABLE
@@ -3146,6 +3162,12 @@ fields:
         * The BCP 47 language the page is read in.
 
         * The BCP 47 language of the page.'
+    - name: language_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Where the language came from: `page` when the page declares a
+        usable language, or `device` when it declares none and the device language
+        is used instead.'
     - name: last_line
       type: STRING
       mode: NULLABLE

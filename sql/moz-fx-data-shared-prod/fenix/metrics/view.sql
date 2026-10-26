@@ -140,7 +140,9 @@ SELECT
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.power_saving_mode_active_at_startup,
       metrics.boolean.metrics_is_android_automotive,
-      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled
+      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
+      metrics.boolean.network_akamai_waf_blocked,
+      metrics.boolean.network_akamai_waf_blocked_subresource
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1251,7 +1253,8 @@ SELECT
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
       metrics.labeled_counter.geolocation_request_activation,
-      metrics.labeled_counter.listen_to_page_session_max_thermal_status
+      metrics.labeled_counter.listen_to_page_session_max_thermal_status,
+      metrics.labeled_counter.network_akamai_document_loads
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2492,7 +2495,9 @@ SELECT
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.power_saving_mode_active_at_startup,
       metrics.boolean.metrics_is_android_automotive,
-      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled
+      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
+      metrics.boolean.network_akamai_waf_blocked,
+      metrics.boolean.network_akamai_waf_blocked_subresource
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3603,7 +3608,8 @@ SELECT
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
       metrics.labeled_counter.geolocation_request_activation,
-      metrics.labeled_counter.listen_to_page_session_max_thermal_status
+      metrics.labeled_counter.listen_to_page_session_max_thermal_status,
+      metrics.labeled_counter.network_akamai_document_loads
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4864,7 +4870,9 @@ SELECT
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.power_saving_mode_active_at_startup,
       metrics.boolean.metrics_is_android_automotive,
-      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled
+      metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
+      metrics.boolean.network_akamai_waf_blocked,
+      metrics.boolean.network_akamai_waf_blocked_subresource
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5975,7 +5983,8 @@ SELECT
       metrics.labeled_counter.background_notification_helper_toggled,
       metrics.labeled_counter.web_notification_push_subscribe_origin,
       metrics.labeled_counter.geolocation_request_activation,
-      metrics.labeled_counter.listen_to_page_session_max_thermal_status
+      metrics.labeled_counter.listen_to_page_session_max_thermal_status,
+      metrics.labeled_counter.network_akamai_document_loads
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

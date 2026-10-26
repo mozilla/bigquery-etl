@@ -22819,6 +22819,52 @@ fields:
         to calculate the rate.
 
         '
+    - name: use_counter_doc_akamai_forbidden
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document had a load get a 403 from Akamai that is not
+        the WAF block page. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_akamai_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document loaded a document or subresource served by
+        Akamai. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_doc_akamai_waf_blocked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document had a load blocked by the Akamai WAF. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_akamai_forbidden
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page had a load get a 403 from Akamai that is not the
+        WAF block page. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_akamai_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page loaded a document or subresource served by Akamai.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_akamai_waf_blocked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page had a load blocked by the Akamai WAF. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

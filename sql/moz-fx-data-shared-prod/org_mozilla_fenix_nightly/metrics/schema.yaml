@@ -1222,6 +1222,20 @@ fields:
         is currently scheduled.
 
         '
+    - name: network_akamai_waf_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true when a document or frame load served by Akamai is
+        a 403 "Access Denied" page from the Akamai WAF (body references errors.edgesuite.net).
+
+        '
+    - name: network_akamai_waf_blocked_subresource
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true when a subresource load served by Akamai is a 403
+        "Access Denied" page from the Akamai WAF (body references errors.edgesuite.net).
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -19789,6 +19803,21 @@ fields:
         thermal HAL can forecast thermal headroom, which indicates devices
 
         advanced enough to give accurate measurements.
+
+        '
+    - name: network_akamai_document_loads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts document and frame loads served by Akamai, labeled by whether
+        the response was the Akamai WAF "Access Denied" page (403 with a body referencing
+        errors.edgesuite.net), a different 403 response, or any other response.
 
         '
   - name: labeled_custom_distribution

@@ -1365,9 +1365,9 @@ fields:
         device), "all_devices" (sent to all devices), or "manage_devices" (opened
         device management).
 
-        * The action that was taken by the user, remove or cancel
+        * How this click happened
 
-        * How this click happened'
+        * The action that was taken by the user, remove or cancel'
     - name: active
       type: STRING
       mode: NULLABLE
@@ -1477,6 +1477,22 @@ fields:
         * present, empty.
 
         * present, empty, skipped.'
+    - name: app_state_before_click
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window` or `unknown`.
+        Only determined on Windows and macOS. `background_no_window` means no browser
+        windows were open, and is only reported on macOS.
+
+        * The state of the application before the notification was clicked. One of
+        `foreground`, `background_with_window`, `background_no_window`, `closed` or
+        `unknown`. Only determined on Windows and macOS. `background_no_window` means
+        Firefox was running with no browser windows open. `closed` means the click
+        launched Firefox because it wasn''t running, and is only reported on Windows,
+        as macOS removes Firefox''s notifications when it quits.'
     - name: auto_admin
       type: STRING
       mode: NULLABLE

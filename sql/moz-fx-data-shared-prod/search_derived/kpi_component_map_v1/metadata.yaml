@@ -1,0 +1,16 @@
+friendly_name: Search KPI Component Map
+description: |-
+  Which urlbar result types count toward the search KPI, and as which component. One row per
+  raw result type per period of validity (effective_from to effective_to).
+
+  search_kpi_clients_daily_v1 joins urlbar_clients_daily_v1 to this table on result_type and
+  submission_date to split Suggest clicks into suggest_sponsored, suggest_nonsponsored and
+  ai_chat; everything else is excluded. To change the definition, add or close rows here and
+  bump definition_version, then backfill the KPI tables.
+
+  Covers every raw result type clicked or shown in urlbar_events_v2 since 2024-09, plus every
+  name known to mozfun.norm.result_type_to_product_name. Truncated result-type fragments
+  that are shown but never clicked are left out.
+owners:
+- ctroy@mozilla.com
+require_column_descriptions: true

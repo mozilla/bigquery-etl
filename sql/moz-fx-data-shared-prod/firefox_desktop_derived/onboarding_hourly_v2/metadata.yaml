@@ -12,6 +12,7 @@ labels:
 scheduling:
   dag_name: bqetl_messaging_system_hourly
   date_partition_parameter: null
+  backfill_date_partition_parameter: submission_date
   destination_table: onboarding_hourly_v2${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:

@@ -18,6 +18,7 @@ labels:
 scheduling:
   dag_name: bqetl_newtab_interactions_hourly
   date_partition_parameter: null
+  backfill_date_partition_parameter: submission_date
   destination_table: newtab_interactions_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:

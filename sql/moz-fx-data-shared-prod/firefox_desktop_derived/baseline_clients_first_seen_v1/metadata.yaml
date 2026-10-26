@@ -42,6 +42,9 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
+  backfill_deng11768.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1
+  - moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1

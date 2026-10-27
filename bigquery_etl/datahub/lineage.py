@@ -127,7 +127,7 @@ class LineageTooLargeError(Exception):
     """DataHub refused a lineage query (maxRelations limit)."""
 
 
-class AuthError(Exception):
+class AuthError(requests.HTTPError):
     """DataHub rejected the token (HTTP 401/403)."""
 
 
@@ -183,7 +183,9 @@ class DataHubClient:
                 continue
             # Retrying won't fix a bad or expired token.
             if resp.status_code in (401, 403):
-                raise AuthError(f"HTTP {resp.status_code} from {self.endpoint}")
+                raise AuthError(
+                    f"HTTP {resp.status_code} from {self.endpoint}", response=resp
+                )
             if resp.status_code == 429 or resp.status_code >= 500:
                 if last_attempt:
                     resp.raise_for_status()

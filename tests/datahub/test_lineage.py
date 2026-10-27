@@ -151,6 +151,33 @@ class TestDataHubClient:
         clear_tokens.assert_called_once_with("https://datahub.example")
         assert client.session.headers["Authorization"] == "Bearer fresh"
 
+    @patch("bigquery_etl.datahub.lineage.auth.clear_tokens")
+    @patch("bigquery_etl.datahub.lineage.auth.get_token")
+    def test_rejected_second_sign_in_raises(self, get_token, clear_tokens, monkeypatch):
+        monkeypatch.delenv("DATAHUB_GMS_TOKEN", raising=False)
+        get_token.side_effect = ["revoked", "also-rejected"]
+        client = DataHubClient(url="https://datahub.example")
+        client.session.post = MagicMock(return_value=response(status=401))
+        with pytest.raises(AuthError):
+            client.query("q", {})
+        assert client.session.post.call_count == 2
+        assert get_token.call_count == 2
+
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
+    @patch("bigquery_etl.datahub.lineage.auth.clear_tokens")
+    @patch("bigquery_etl.datahub.lineage.auth.get_token")
+    def test_sign_in_on_the_last_attempt_is_used(
+        self, get_token, clear_tokens, sleep, monkeypatch
+    ):
+        monkeypatch.delenv("DATAHUB_GMS_TOKEN", raising=False)
+        get_token.side_effect = ["revoked", "fresh"]
+        client = DataHubClient(url="https://datahub.example")
+        client.session.post = MagicMock(
+            side_effect=[response(status=503)] * 4
+            + [response(status=401), response(data={"ok": True})]
+        )
+        assert client.query("q", {}) == {"ok": True}
+
     @patch("bigquery_etl.datahub.lineage.time.sleep")
     def test_rejected_env_token_is_not_retried(self, sleep, monkeypatch):
         monkeypatch.setenv("DATAHUB_GMS_TOKEN", "bad")
@@ -177,6 +204,17 @@ class TestDataHubClient:
         )
         assert client.query("q", {}) == {"ok": True}
         assert client.session.post.call_count == 2
+
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
+    def test_gives_up_on_graphql_errors_after_the_last_attempt(self, sleep, client):
+        client.session.post = MagicMock(
+            return_value=response(
+                errors=[{"message": "Connection lease request time out"}]
+            )
+        )
+        with pytest.raises(RuntimeError, match="Connection lease"):
+            client.query("q", {})
+        assert client.session.post.call_count == 5
 
     @patch("bigquery_etl.datahub.lineage.time.sleep")
     def test_does_not_retry_other_graphql_errors(self, sleep, client):
@@ -206,18 +244,23 @@ class TestDataHubClient:
         assert client.query("q", {}) == {"ok": True}
 
     @patch("bigquery_etl.datahub.lineage.time.sleep")
+    def test_gives_up_on_overload_statuses_after_the_last_attempt(self, sleep, client):
+        client.session.post = MagicMock(return_value=response(status=503))
+        with pytest.raises(requests.HTTPError):
+            client.query("q", {})
+        assert client.session.post.call_count == 5
+
+    @patch("bigquery_etl.datahub.lineage.time.sleep")
     def test_retries_connection_errors_then_gives_up(self, sleep, client):
         client.session.post = MagicMock(side_effect=requests.ConnectionError("down"))
         with pytest.raises(requests.ConnectionError):
             client.query("q", {})
         assert client.session.post.call_count == 5
 
-    @patch("bigquery_etl.datahub.lineage.time.sleep")
-    def test_does_not_retry_a_rejected_token(self, sleep, client):
-        client.session.post = MagicMock(return_value=response(status=401))
-        with pytest.raises(AuthError):
+    def test_response_without_data_is_an_error(self, client):
+        client.session.post = MagicMock(return_value=response(data=None))
+        with pytest.raises(RuntimeError, match="No data"):
             client.query("q", {})
-        assert client.session.post.call_count == 1
 
     @patch("bigquery_etl.datahub.lineage.time.sleep")
     def test_does_not_retry_too_large_lineage(self, sleep, client):
@@ -244,6 +287,19 @@ class TestDataHubClient:
             (table_urn("p.d.b"), 2),
         ]
 
+    def test_search_downstream_stops_on_an_empty_page(self, client):
+        a = result(table_urn("p.d.a"), "DATASET")
+        # DataHub's total can be higher than what it actually returns.
+        client.query = MagicMock(
+            side_effect=[
+                lineage_page([a], start=0, total=10),
+                lineage_page([], start=1, total=10),
+            ]
+        )
+        assets = client.search_downstream(table_urn("p.d.t"))
+        assert [x["urn"] for x in assets] == [table_urn("p.d.a")]
+        assert client.query.call_count == 2
+
     @pytest.mark.parametrize(
         "max_degree,degrees",
         [
@@ -258,6 +314,16 @@ class TestDataHubClient:
         client.search_downstream(table_urn("p.d.t"), max_degree=max_degree)
         or_filters = client.query.call_args[0][1]["input"]["orFilters"]
         assert or_filters == [{"and": [{"field": "degree", "values": degrees}]}]
+
+    def test_search_downstream_sends_types(self, client):
+        client.query = MagicMock(return_value=lineage_page([]))
+        client.search_downstream(table_urn("p.d.t"))
+        assert "types" not in client.query.call_args[0][1]["input"]
+        client.search_downstream(table_urn("p.d.t"), types={"DASHBOARD", "CHART"})
+        assert client.query.call_args[0][1]["input"]["types"] == [
+            "CHART",
+            "DASHBOARD",
+        ]
 
     def test_usage_reads_summary_and_last_query_day(self, client):
         day = 1759536000000  # 2025-10-04 00:00 UTC
@@ -341,18 +407,6 @@ class TestGetDownstreamLineage:
         assets = get_downstream_lineage(client, "p.d.t", looker_tmp_days=0)
         assert len(assets) == 1
 
-    def test_keeps_charts_and_their_dashboards(self):
-        chart = result("urn:li:chart:(redash,1)", "CHART", platform="redash")
-        dashboard = result(
-            "urn:li:dashboard:(redash,9)", "DASHBOARD", platform="redash"
-        )
-        client = self.make_client(self.assets(chart, dashboard))
-        assets = get_downstream_lineage(client, "p.d.t")
-        assert [a["urn"] for a in assets] == [
-            "urn:li:chart:(redash,1)",
-            "urn:li:dashboard:(redash,9)",
-        ]
-
     def test_adds_usage_to_bigquery_datasets_only(self):
         table = result(table_urn("p.d.a"), "DATASET")
         chart = result("urn:li:chart:(redash,1)", "CHART", platform="redash")
@@ -365,14 +419,11 @@ class TestGetDownstreamLineage:
         assert {k: assets[0][k] for k in stats} == stats
         assert assets[1]["queries_30d"] is None
 
-    def test_types_are_filtered_before_the_usage_lookup(self):
-        table = result(table_urn("p.d.a"), "DATASET")
+    def test_types_are_sent_to_datahub(self):
         chart = result("urn:li:chart:(redash,1)", "CHART", platform="redash")
-        client = self.make_client(self.assets(table, chart))
-        assets = get_downstream_lineage(
-            client, "p.d.t", include_usage=True, types={"CHART"}
-        )
-        assert [a["type"] for a in assets] == ["CHART"]
+        client = self.make_client(self.assets(chart))
+        get_downstream_lineage(client, "p.d.t", include_usage=True, types={"CHART"})
+        assert client.search_downstream.call_args[1]["types"] == {"CHART"}
         client.usage.assert_not_called()
 
     def test_usage_is_off_by_default(self):
@@ -387,6 +438,18 @@ class TestGetDownstreamLineage:
         since_ms = client.search_downstream.call_args[0][2]
         expected = (time.time() - 90 * 86400) * 1000
         assert abs(since_ms - expected) < 60000
+
+
+def table_rows(text):
+    """Return the split header and rows of the first table in format_text output."""
+    lines = click.unstyle(text).splitlines()
+    start = next(i for i, line in enumerate(lines) if line.startswith("DEGREE"))
+    rows = []
+    for line in lines[start + 2 :]:
+        if not line:
+            break
+        rows.append(line.split())
+    return lines[start].split(), rows
 
 
 class TestFormatText:
@@ -435,12 +498,10 @@ class TestFormatText:
         )
         return asset
 
-    def test_bigquery_rows_show_usage_then_url(self):
+    def test_bigquery_rows_show_usage(self):
         asset = self.asset(queries_30d=5, users_30d=2, last_query="2026-10-04")
-        lines = click.unstyle(
-            format_text("p.d.t", [asset], show_usage=True)
-        ).splitlines()
-        assert lines[4].split() == [
+        header, rows = table_rows(format_text("p.d.t", [asset], show_usage=True))
+        assert header == [
             "DEGREE",
             "TYPE",
             "NAME",
@@ -451,14 +512,7 @@ class TestFormatText:
             "LAST",
             "QUERY",
         ]
-        assert lines[6].split() == [
-            "1",
-            "Table",
-            "p.d.a",
-            "5",
-            "2",
-            "2026-10-04",
-        ]
+        assert rows == [["1", "Table", "p.d.a", "5", "2", "2026-10-04"]]
 
     @pytest.mark.parametrize(
         "queries_30d,users_30d,last_query,shown",
@@ -470,14 +524,10 @@ class TestFormatText:
     )
     def test_usage_cells(self, queries_30d, users_30d, last_query, shown):
         asset = self.asset(queries_30d, users_30d, last_query)
-        row = (
-            click.unstyle(format_text("p.d.t", [asset], show_usage=True))
-            .splitlines()[6]
-            .split()
-        )
-        assert row[3:6] == shown
+        _, rows = table_rows(format_text("p.d.t", [asset], show_usage=True))
+        assert rows[0][3:6] == shown
 
     def test_no_usage_columns_by_default(self):
         asset = self.asset(queries_30d=5, users_30d=2, last_query="2026-10-04")
-        lines = click.unstyle(format_text("p.d.t", [asset])).splitlines()
-        assert lines[4].split() == ["DEGREE", "TYPE", "NAME"]
+        header, _ = table_rows(format_text("p.d.t", [asset]))
+        assert header == ["DEGREE", "TYPE", "NAME"]

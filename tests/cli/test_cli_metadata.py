@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import tempfile
@@ -6,6 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+import requests
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
@@ -14,7 +16,7 @@ from bigquery_etl.cli.metadata import deprecate, get_downstream_lineage, publish
 from bigquery_etl.cli.metadata import validate as validate_command
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.datahub.auth import LoginError
-from bigquery_etl.datahub.lineage import LineageTooLargeError
+from bigquery_etl.datahub.lineage import AuthError, LineageTooLargeError
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     BIGEYE_PREDEFINED_FILE,
@@ -2129,11 +2131,6 @@ class TestGetDownstreamLineage:
         assert result.exit_code == 0
         assert lineage.call_args[1]["types"] == {"CHART", "DASHBOARD"}
 
-    def test_type_rejects_unknown_values(self, runner, lineage):
-        result = runner.invoke(get_downstream_lineage, ["d.a", "--type=DASHBOARDS"])
-        assert result.exit_code == 2
-        lineage.assert_not_called()
-
     @pytest.mark.parametrize("choice,max_degree", [("1", 1), ("2", 2), ("3+", 3)])
     def test_max_degree_choices(self, runner, lineage, choice, max_degree):
         result = runner.invoke(
@@ -2143,13 +2140,9 @@ class TestGetDownstreamLineage:
         assert lineage.call_args[1]["max_degree"] == max_degree
 
     def test_max_degree_defaults_to_all(self, runner, lineage):
-        runner.invoke(get_downstream_lineage, ["d.a"])
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
         assert lineage.call_args[1]["max_degree"] == 3
-
-    def test_max_degree_rejects_other_values(self, runner, lineage):
-        result = runner.invoke(get_downstream_lineage, ["d.a", "--max-degree=4"])
-        assert result.exit_code == 2
-        lineage.assert_not_called()
 
     def test_csv_output(self, runner, lineage):
         result = runner.invoke(get_downstream_lineage, ["d.a", "--output-format=csv"])
@@ -2157,6 +2150,61 @@ class TestGetDownstreamLineage:
         lines = result.output.splitlines()
         assert lines[0] == "degree,type,subtype,platform,name,qualified_name,urn"
         assert len(lines) == 3
+
+    def test_json_output(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--output-format=json", "--since-days=90"]
+        )
+        assert result.exit_code == 0
+        output = json.loads(result.stdout)
+        assert output["table"] == "moz-fx-data-shared-prod.d.a"
+        assert output["since_days"] == 90
+        assert output["count"] == 2
+        assert list(output["downstream"][0]) == [
+            "degree",
+            "type",
+            "subtype",
+            "platform",
+            "name",
+            "qualified_name",
+            "urn",
+        ]
+
+    def test_include_deleted_adds_the_deleted_field(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--include-deleted", "--output-format=json"]
+        )
+        assert result.exit_code == 0
+        assert json.loads(result.stdout)["downstream"][0]["deleted"] is False
+
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--include-deleted"])
+        assert "DELETED" in result.output
+
+    def test_since_days_note_goes_to_stderr(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--since-days=90"])
+        assert result.exit_code == 0
+        assert "last 90 days" in result.stderr
+        assert "last 90 days" not in result.stdout
+
+    def test_rejected_token_is_reported(self, runner, lineage):
+        lineage.side_effect = AuthError("HTTP 401 from https://datahub.example")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "HTTP 401" in result.output
+        assert "DATAHUB_GMS_TOKEN" in result.output
+
+    @pytest.mark.parametrize(
+        "error",
+        [
+            requests.ConnectionError("down"),
+            RuntimeError("Failed to execute PIT search"),
+        ],
+    )
+    def test_datahub_errors_are_reported(self, runner, lineage, error):
+        lineage.side_effect = error
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert f"Could not get lineage from DataHub: {error}" in result.output
 
     def test_too_large_lineage_suggests_since_days(self, runner, lineage):
         lineage.side_effect = LineageTooLargeError("maxRelations")

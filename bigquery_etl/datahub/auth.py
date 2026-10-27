@@ -15,6 +15,7 @@ import json
 import os
 import secrets
 import sys
+import tempfile
 import time
 import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -52,10 +53,15 @@ def _load_cache() -> dict[str, Any]:
 def _save_cache(cache: dict[str, Any]) -> None:
     path = cache_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Create the file readable by the owner only, since it holds tokens.
-    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as f:
-        json.dump(cache, f, indent=2)
+    # mkstemp creates the file readable by the owner only, since it holds tokens.
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(cache, f, indent=2)
+        os.replace(tmp, path)
+    except BaseException:
+        os.unlink(tmp)
+        raise
 
 
 def clear_tokens(url: str) -> None:
@@ -76,7 +82,11 @@ def discover(url: str) -> dict[str, Any]:
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
     resp.raise_for_status()
-    return resp.json()
+    metadata = resp.json()
+    for key in ("authorization_endpoint", "token_endpoint", "registration_endpoint"):
+        if not metadata.get(key):
+            raise LoginError(f"DataHub OAuth metadata has no {key}.")
+    return metadata
 
 
 def register_client(registration_endpoint: str, redirect_uri: str) -> str:
@@ -94,7 +104,10 @@ def register_client(registration_endpoint: str, redirect_uri: str) -> str:
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
     resp.raise_for_status()
-    return resp.json()["client_id"]
+    client_id = resp.json().get("client_id")
+    if not client_id:
+        raise LoginError("DataHub client registration returned no client_id.")
+    return client_id
 
 
 def pkce_pair() -> tuple[str, str]:
@@ -109,7 +122,10 @@ def _token_request(token_endpoint: str, data: dict[str, str]) -> dict[str, Any]:
     resp = requests.post(token_endpoint, data=data, timeout=REQUEST_TIMEOUT_SECONDS)
     if resp.status_code >= 400:
         raise LoginError(f"DataHub token request failed: HTTP {resp.status_code}")
-    return resp.json()
+    tokens = resp.json()
+    if not tokens.get("access_token"):
+        raise LoginError("DataHub token response has no access_token.")
+    return tokens
 
 
 def _store_tokens(entry: dict[str, Any], tokens: dict[str, Any]) -> None:
@@ -124,16 +140,25 @@ class _CallbackServer(HTTPServer):
     """Local server that receives the authorization code from the browser."""
 
     params: dict[str, str]
+    path: str
+    state: str
 
 
 class _CallbackHandler(BaseHTTPRequestHandler):
-    def do_GET(self):  # noqa: N802 (name defined by BaseHTTPRequestHandler)
-        query = parse_qs(urlparse(self.path).query)
-        if "code" not in query and "error" not in query:
+    def do_GET(self) -> None:  # noqa: N802 (name defined by BaseHTTPRequestHandler)
+        server: _CallbackServer = self.server  # type: ignore[assignment]
+        url = urlparse(self.path)
+        query = parse_qs(url.query)
+        # Ignore anything but DataHub's redirect for this sign-in.
+        if (
+            url.path != server.path
+            or query.get("state") != [server.state]
+            or ("code" not in query and "error" not in query)
+        ):
             self.send_response(404)
             self.end_headers()
             return
-        self.server.params = {k: v[0] for k, v in query.items()}  # type: ignore[attr-defined]
+        server.params = {k: v[0] for k, v in query.items()}
         ok = "code" in query
         self.send_response(200 if ok else 400)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -152,6 +177,7 @@ class _CallbackHandler(BaseHTTPRequestHandler):
 def _start_callback_server(port: int) -> _CallbackServer:
     server = _CallbackServer(("127.0.0.1", port), _CallbackHandler)
     server.params = {}
+    server.path = "/callback"
     return server
 
 
@@ -166,6 +192,7 @@ def browser_login(url: str, entry: dict[str, Any]) -> None:
             server = _start_callback_server(urlparse(entry["redirect_uri"]).port or 0)
         except OSError:
             server = None
+    reused = server is not None
     if server is None:
         server = _start_callback_server(0)
         redirect_uri = f"http://127.0.0.1:{server.server_port}/callback"
@@ -174,8 +201,22 @@ def browser_login(url: str, entry: dict[str, Any]) -> None:
         )
         entry["redirect_uri"] = redirect_uri
 
+    try:
+        _sign_in(url, entry, metadata, server)
+    except LoginError:
+        if reused:
+            # DataHub may have dropped this client; register again next time.
+            entry.pop("client_id", None)
+            entry.pop("redirect_uri", None)
+        raise
+
+
+def _sign_in(
+    url: str, entry: dict[str, Any], metadata: dict[str, Any], server: _CallbackServer
+) -> None:
     verifier, challenge = pkce_pair()
     state = secrets.token_urlsafe(32)
+    server.state = state
     authorize_url = (
         metadata["authorization_endpoint"]
         + "?"
@@ -217,9 +258,6 @@ def browser_login(url: str, entry: dict[str, Any]) -> None:
         raise LoginError(
             f"DataHub sign-in failed: {params.get('error_description') or params['error']}"
         )
-    if params.get("state") != state:
-        raise LoginError("DataHub sign-in failed: state mismatch.")
-
     tokens = _token_request(
         metadata["token_endpoint"],
         {
@@ -265,7 +303,9 @@ def get_token(url: str) -> str:
     ):
         return entry["access_token"]
 
-    if not _refresh(url, entry):
-        browser_login(url, entry)
-    _save_cache(cache)
+    try:
+        if not _refresh(url, entry):
+            browser_login(url, entry)
+    finally:
+        _save_cache(cache)
     return entry["access_token"]

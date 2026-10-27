@@ -7,8 +7,9 @@ description: |-
   Built from firefox_desktop_derived.urlbar_events_v2 and reuses the click logic of
   urlbar_events_daily. It holds no KPI logic: it stores every result type, including those
   the search KPI excludes, and applies no version or channel filter.
-  search_derived.kpi_component_map decides which result types count toward the KPI.
-  Country, version and channel aren't stored here; join desktop_client_day_dims_v1.
+  search_derived.kpi_component_map_v1 decides which result types count toward the KPI.
+  Country, version and channel aren't stored here; join
+  search_derived.desktop_client_day_dims_v1.
 owners:
 - ctroy@mozilla.com
 labels:

@@ -12,6 +12,7 @@ WITH events AS (
     event_id,
     event_name,
     event_action,
+    seq,
     event_timestamp,
     is_terminal,
     selected_result,
@@ -135,14 +136,20 @@ client_totals AS (
   GROUP BY
     client_id
 ),
--- Identifiers and the latest pref values that day.
+-- Identifiers and the latest pref values that day. event_timestamp restarts in every
+-- events ping, so order by the ping's seq first.
 client_attributes AS (
   SELECT
     client_id,
     ANY_VALUE(sample_id) AS sample_id,
-    ARRAY_AGG(legacy_telemetry_client_id IGNORE NULLS ORDER BY event_timestamp DESC LIMIT 1)[
-      SAFE_OFFSET(0)
-    ] AS legacy_telemetry_client_id,
+    ARRAY_AGG(
+      legacy_telemetry_client_id IGNORE NULLS
+      ORDER BY
+        seq DESC,
+        event_timestamp DESC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS legacy_telemetry_client_id,
     ARRAY_AGG(
       STRUCT(
         pref_fx_suggestions AS pref_suggest_enabled,
@@ -152,6 +159,7 @@ client_attributes AS (
         pref_data_collection
       )
       ORDER BY
+        seq DESC,
         event_timestamp DESC
       LIMIT
         1

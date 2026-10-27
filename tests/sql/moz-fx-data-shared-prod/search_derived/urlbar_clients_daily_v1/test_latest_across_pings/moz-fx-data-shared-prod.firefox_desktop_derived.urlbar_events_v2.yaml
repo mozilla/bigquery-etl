@@ -1,0 +1,45 @@
+# event_timestamp restarts in every events ping, so the latest values come from the
+# highest seq first. The later ping (seq 6) has the smaller timestamp.
+
+# Earlier ping, late in that ping: sponsored on, old legacy id.
+- submission_date: "2026-10-14"
+  glean_client_id: client-d
+  legacy_telemetry_client_id: legacy-old
+  sample_id: 4
+  seq: 5
+  event_name: abandonment
+  event_timestamp: 900
+  event_id: e1
+  pref_fx_suggestions: true
+  pref_sponsored_suggestions: true
+  pref_ohttp_available: false
+  pref_ohttp_enabled: false
+  pref_data_collection: false
+  interaction: typed
+  event_action: abandoned
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
+# Later ping, early in that ping: sponsored off, new legacy id.
+- submission_date: "2026-10-14"
+  glean_client_id: client-d
+  legacy_telemetry_client_id: legacy-new
+  sample_id: 4
+  seq: 6
+  event_name: abandonment
+  event_timestamp: 50
+  event_id: e2
+  pref_fx_suggestions: true
+  pref_sponsored_suggestions: false
+  pref_ohttp_available: true
+  pref_ohttp_enabled: true
+  pref_data_collection: true
+  interaction: typed
+  event_action: abandoned
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}

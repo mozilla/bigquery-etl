@@ -89,6 +89,7 @@ SELECT
       LAX_BOOL(event_extra.poisoned) AS `poisoned`,
       LAX_BOOL(event_extra.primary_password_set) AS `primary_password_set`,
       LAX_BOOL(event_extra.psi_available) AS `psi_available`,
+      LAX_BOOL(event_extra.reopened_after_removal) AS `reopened_after_removal`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.restricted) AS `restricted`,
       LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,

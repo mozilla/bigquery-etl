@@ -105,6 +105,7 @@ SELECT
       LAX_BOOL(event_extra.progress_predates_cutoff) AS `progress_predates_cutoff`,
       LAX_BOOL(event_extra.psi_available) AS `psi_available`,
       LAX_BOOL(event_extra.referrer_is_fenix) AS `referrer_is_fenix`,
+      LAX_BOOL(event_extra.reopened_after_removal) AS `reopened_after_removal`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.restricted) AS `restricted`,
       LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,

@@ -143,6 +143,7 @@ SELECT
       LAX_BOOL(event_extra.reader_mode) AS `reader_mode`,
       LAX_BOOL(event_extra.recomputed) AS `recomputed`,
       LAX_BOOL(event_extra.recovered) AS `recovered`,
+      LAX_BOOL(event_extra.reopened_after_removal) AS `reopened_after_removal`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.restarted_by_os) AS `restarted_by_os`,
       LAX_BOOL(event_extra.restricted) AS `restricted`,

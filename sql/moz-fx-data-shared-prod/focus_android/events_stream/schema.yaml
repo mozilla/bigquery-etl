@@ -745,6 +745,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: PSI values are available.
+    - name: reopened_after_removal
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True when this is the automatic reopen after a record removal prompt,
+        false otherwise.
     - name: reset_disabled
       type: BOOLEAN
       mode: NULLABLE
@@ -1843,13 +1848,22 @@ fields:
     - name: close_reason
       type: STRING
       mode: NULLABLE
-      description: 'Why the dropdown closed: "selected" (the user picked a suggestion),
-        "dismissed" (clicked elsewhere or pressed Escape without picking anything),
-        "typed_through" (kept typing until no results remained) or "left_page" (navigated
-        away or closed the tab while the dropdown was open). "left_page" is best-effort
-        on desktop: the native nsFormFillController closes the dropdown through the
-        same path as "dismissed" before this code gets a chance to see the navigation,
-        so most desktop page-leaves are reported as "dismissed" instead.'
+      description: 'Depending on the type of event:
+
+        * Why the dropdown closed: "selected" (the user picked a suggestion), "dismissed"
+        (clicked elsewhere or pressed Escape without picking anything), "typed_through"
+        (kept typing until no results remained) or "left_page" (navigated away or
+        closed the tab while the dropdown was open). "left_page" is best-effort on
+        desktop: the native nsFormFillController closes the dropdown through the same
+        path as "dismissed" before this code gets a chance to see the navigation,
+        so most desktop page-leaves are reported as "dismissed" instead.
+
+        * Why the dropdown closed: "selected" (the user picked a suggestion), "dismissed"
+        (clicked elsewhere or pressed Escape without picking anything), "typed_through"
+        (kept typing until no results remained), "removal_prompt" (hidden because
+        a record removal reauthentication or confirmation prompt took focus; usually
+        followed by a dropdown_shown with the same flow_id) or "left_page" (navigated
+        away or closed the tab while the dropdown was open). "left_page" is be...'
     - name: codecs
       type: STRING
       mode: NULLABLE
@@ -2133,8 +2147,13 @@ fields:
     - name: entrypoint
       type: STRING
       mode: NULLABLE
-      description: How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu,
-        KeyShortcut, SessionRestore, SystemMenu or SlowScript
+      description: 'Depending on the type of event:
+
+        * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
+        SessionRestore, SystemMenu or SlowScript
+
+        * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
+        SessionRestore or SystemMenu'
     - name: error
       type: STRING
       mode: NULLABLE
@@ -2418,9 +2437,17 @@ fields:
         * An id generated when the dropdown opened, shared with the matching dropdown_shown
         event so the two can be correlated.
 
+        * An id generated when the dropdown opened, shared with the matching dropdown_shown
+        event so the two can be correlated. It is reused when the dropdown reopens
+        after a record removal prompt.
+
         * An id generated when the dropdown opened, letting this event be correlated
         with the matching dropdown_closed event (and any interactions in between),
-        to measure things like how often a shown dropdown leads to a removal.'
+        to measure things like how often a shown dropdown leads to a removal.
+
+        * An id generated when the dropdown opened, letting this event be correlated
+        with the matching dropdown_closed event (and any interactions in between),
+        to measure things like how often a shown dropdown leads to...'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE

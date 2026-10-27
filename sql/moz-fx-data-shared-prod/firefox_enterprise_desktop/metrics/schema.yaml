@@ -1264,6 +1264,13 @@ fields:
         "Access Denied" page from the Akamai WAF (body references errors.edgesuite.net).
 
         '
+    - name: selection_menu_copy_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the text selection actions menu would show the copy
+        action.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -1,13 +1,29 @@
-2026-10-26:
+2026-10-27:
   start_date: 2025-05-01
   end_date: 2026-10-21
-  reason: DENG-11768. Recompute startup_profile_selection_reason_first with the new logic
-    (lowest ping_info.seq, skip nulls, first-seen date only, PR 10052) for first-seen
-    dates before the deploy. The new logic is live from 2026-10-22. Start date is
-    when the Glean metric began.
+  reason: DENG-11768. Rerun of the 2026-10-26 entry. Recompute startup_profile_selection_reason_first
+    with the new logic (lowest ping_info.seq, skip nulls, first-seen date only, PR 10052)
+    for first-seen dates before the deploy. The new logic is live from 2026-10-22. Start
+    date is when the Glean metric began.
   watchers:
   - phlee@mozilla.com
   status: Initiate
+  custom_query_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_first_seen_v1/backfill_deng11768.sql
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: true
+  override_depends_on_past_null_partition: true
+  ignore_date_partition_offset: false
+
+2026-10-26:
+  start_date: 2025-05-01
+  end_date: 2026-10-21
+  reason: DENG-11768. Cancelled because Shredder deleted clients from production after
+    the staging table was written, so completing it would restore deleted clients.
+    Replaced by the 2026-10-27 entry.
+  watchers:
+  - phlee@mozilla.com
+  status: Cancelled
   custom_query_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_first_seen_v1/backfill_deng11768.sql
   shredder_mitigation: false
   override_retention_limit: false

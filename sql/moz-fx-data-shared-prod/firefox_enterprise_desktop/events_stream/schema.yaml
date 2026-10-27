@@ -514,6 +514,8 @@ fields:
 
         * Whether the monitor is enabled (the spec''s status).
 
+        * Whether the action was turned on or off.
+
         * True if the feature is enabled.
 
         * Chatbot was already enabled.
@@ -521,8 +523,6 @@ fields:
         * New/current state is enabled
 
         * Whether launch on login was turned on (true) or off (false).
-
-        * Whether the action was turned on or off.
 
         * Boolean indicating if that type of memory was enabled or disabled
 
@@ -729,6 +729,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True if IP Protection was started in a private browsing window.
+    - name: interacted
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the user completed an action from the menu.
     - name: is_addon_active
       type: BOOLEAN
       mode: NULLABLE
@@ -989,6 +993,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the engine became ready again after the recovery attempt
+    - name: reopened_after_removal
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True when this is the automatic reopen after a record removal prompt,
+        false otherwise.
     - name: reset_disabled
       type: BOOLEAN
       mode: NULLABLE
@@ -1073,9 +1082,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Whether the prompt was sent from Smart Window.
+        * Whether the menu was shown in Smart Window.
 
-        * Whether the menu was shown in Smart Window.'
+        * Whether the prompt was sent from Smart Window.'
     - name: smartblock_embed_toggles_shown
       type: BOOLEAN
       mode: NULLABLE
@@ -1436,14 +1445,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Milliseconds from mousedown to showing.
+
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
         when its timer was armed, such as at browser start, reports the missed time
         plus about one second, because overdue timers are armed one second out. Larger
         values mostly measure time the browser was closed or asleep. Absent for manual
         runs and when the stored scheduled time could not be parsed.
-
-        * Milliseconds from mousedown to showing.
 
         * Milliseconds waiting on previous
 
@@ -1505,6 +1514,8 @@ fields:
         * Milliseconds the card stayed open
 
         * How long the migration took (in milliseconds).
+
+        * Milliseconds the menu was shown.
 
         * Time in ms to process the request
 
@@ -2863,6 +2874,10 @@ fields:
 
         * Which action was clicked.
 
+        * Which action was clicked, e.g., ai, search, copy.
+
+        * Which action was toggled, e.g., ai, search, copy, master.
+
         * The action that was taken by the user, remove or cancel
 
         * The `action` of the system (chrome privileged) alert that Firefox was launched
@@ -2870,11 +2885,7 @@ fields:
 
         * User''s action on the dialogue - "view" (impression), "try_it_now", "close"
 
-        * Whether the panel was hidden or shown.
-
-        * Which action was clicked, e.g., ai, search, copy.
-
-        * Which action was toggled, e.g., ai, sea...'
+        * Whether the panel wa...'
     - name: action_id
       type: STRING
       mode: NULLABLE
@@ -3037,6 +3048,10 @@ fields:
         such as research, will record their own values.
 
         * The agent the command routes to: "watch", "research", or "schedule"'
+    - name: ai
+      type: STRING
+      mode: NULLABLE
+      description: State of the AI toggle, one of on, off or absent.
     - name: alt_text_type
       type: STRING
       mode: NULLABLE
@@ -3427,13 +3442,22 @@ fields:
     - name: close_reason
       type: STRING
       mode: NULLABLE
-      description: 'Why the dropdown closed: "selected" (the user picked a suggestion),
-        "dismissed" (clicked elsewhere or pressed Escape without picking anything),
-        "typed_through" (kept typing until no results remained) or "left_page" (navigated
-        away or closed the tab while the dropdown was open). "left_page" is best-effort
-        on desktop: the native nsFormFillController closes the dropdown through the
-        same path as "dismissed" before this code gets a chance to see the navigation,
-        so most desktop page-leaves are reported as "dismissed" instead.'
+      description: 'Depending on the type of event:
+
+        * Why the dropdown closed: "selected" (the user picked a suggestion), "dismissed"
+        (clicked elsewhere or pressed Escape without picking anything), "typed_through"
+        (kept typing until no results remained) or "left_page" (navigated away or
+        closed the tab while the dropdown was open). "left_page" is best-effort on
+        desktop: the native nsFormFillController closes the dropdown through the same
+        path as "dismissed" before this code gets a chance to see the navigation,
+        so most desktop page-leaves are reported as "dismissed" instead.
+
+        * Why the dropdown closed: "selected" (the user picked a suggestion), "dismissed"
+        (clicked elsewhere or pressed Escape without picking anything), "typed_through"
+        (kept typing until no results remained), "removal_prompt" (hidden because
+        a record removal reauthentication or confirmation prompt took focus; usually
+        followed by a dropdown_shown with the same flow_id) or "left_page" (navigated
+        away or closed the tab while the dropdown was open). "left_page" is be...'
     - name: closing_reason
       type: STRING
       mode: NULLABLE
@@ -3589,6 +3613,10 @@ fields:
       mode: NULLABLE
       description: 'The cause of the current confirmation context. Values: [success,
         pref-change, network-change, shutdown]'
+    - name: copy
+      type: STRING
+      mode: NULLABLE
+      description: State of the copy toggle, one of on, off or absent.
     - name: country
       type: STRING
       mode: NULLABLE
@@ -3919,7 +3947,10 @@ fields:
         preferences, help_menu, about_dialog.
 
         * Where the card came from: browser_action (a chat request handled by the
-        manage_tabs tool) or resume (a "Pick up where you left off" pill)'
+        manage_tabs tool) or resume (a "Pick up where you left off" pill)
+
+        * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
+        SessionRestore or SystemMenu'
     - name: error
       type: STRING
       mode: NULLABLE
@@ -4279,9 +4310,15 @@ fields:
         * An id generated when the dropdown opened, shared with the matching dropdown_shown
         event so the two can be correlated.
 
+        * An id generated when the dropdown opened, shared with the matching dropdown_shown
+        event so the two can be correlated. It is reused when the dropdown reopens
+        after a record removal prompt.
+
         * An id generated when the dropdown opened, letting this event be correlated
         with the matching dropdown_closed event (and any interactions in between),
-        to measure things like how often a shown dropdown leads to a removal.'
+        to measure things like how often a shown dropdown leads to a removal.
+
+        * An id generated when the drop...'
     - name: font
       type: STRING
       mode: NULLABLE
@@ -4594,11 +4631,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * The type of user interaction with the CM record tile
-
         * How the user responded to the dialog: "confirm" or "cancel".
 
-        * The secondary action that was activated: "delete" or "edit".'
+        * The secondary action that was activated: "delete" or "edit".
+
+        * The type of user interaction with the CM record tile'
     - name: interstitial_reason
       type: STRING
       mode: NULLABLE
@@ -4626,6 +4663,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: passport issue date year field result
+    - name: item
+      type: STRING
+      mode: NULLABLE
+      description: Which entry was clicked, e.g., settings.
     - name: key_system
       type: STRING
       mode: NULLABLE
@@ -5713,12 +5754,12 @@ fields:
         * The type of saved record shown in the dropdown: "formhistory", "address",
         "payment" or "password".
 
-        * Type of telemetry record: state or terminal.
-
         * The type of saved record the dialog is about: "address", "payment" or "password".
 
         * The type of saved record the action applies to: "formhistory", "address",
-        "payment" or "password".'
+        "payment" or "password".
+
+        * Type of telemetry record: state or terminal.'
     - name: recovery
       type: STRING
       mode: NULLABLE
@@ -5966,6 +6007,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Percentage of window scrolled in Reader Mode (whole number)
+    - name: search
+      type: STRING
+      mode: NULLABLE
+      description: State of the search toggle, one of on, off or absent.
     - name: search_domain
       type: STRING
       mode: NULLABLE

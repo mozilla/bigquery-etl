@@ -14,7 +14,8 @@ fields:
 - name: region_name
   description: Region name. These are based on the UN Statistics Division standard
     country or area codes for statistical use (M49), but with the "Americas" region
-    split into "North America" and "South America".
+    split into "North America" and "South America". Also has catch-all rows with
+    region_name "Unknown" and "Rest of World".
   type: STRING
   mode: REQUIRED
 - name: subregion_name

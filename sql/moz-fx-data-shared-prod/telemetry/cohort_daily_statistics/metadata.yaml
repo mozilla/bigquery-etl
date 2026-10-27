@@ -8,6 +8,13 @@ description: 'Cohort Daily Statistics tracks retention for a cohort with
 
   attributes at the time the cohort started (rather than the
 
-  values at activity time)'
+  values at activity time)
+
+
+  The underlying table is partitioned on activity_date (not cohort_date) and
+
+  requires a partition filter, so always filter on activity_date, even for
+
+  cohort-centric queries.'
 owners:
 - kwindau@mozilla.com

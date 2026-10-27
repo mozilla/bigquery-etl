@@ -6,7 +6,8 @@ fields:
   - name: user_type
     mode: NULLABLE
     type: STRING
-    description: The user type, i.e. human or bot, using the devices
+    description: The user type, i.e. human or bot, using the devices. Values are 'Human' and 'Bot'
+      (not 'LIKELY_HUMAN' / 'LIKELY_AUTOMATED' as in browser_usage).
   - name: location
     mode: NULLABLE
     type: STRING

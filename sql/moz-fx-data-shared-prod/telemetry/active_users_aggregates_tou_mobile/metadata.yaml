@@ -8,6 +8,9 @@ description: |-
   As of 2026-03-09, this table only looks at the fenix and ios apps for mobile.
   Focus and klar are not in scope as of this date.
 
+  submission_date in this table is a TIMESTAMP (midnight UTC), not a DATE like
+  in other active users tables. Use DATE(submission_date) when joining or filtering.
+
   Jira ticket: https://mozilla-hub.atlassian.net/browse/DO-2122
 owners:
 - rbaffourawuah@mozilla.com

@@ -198,6 +198,7 @@ class TestRunQuery:
             ],
         )
 
+    @patch("google.auth.default", Mock(return_value=(None, None)))
     @patch("subprocess.check_call")
     @patch("google.cloud.bigquery.Client")
     def test_run_query_billing_project_temp_udf(
@@ -235,7 +236,9 @@ class TestRunQuery:
         )
         assert result.exit_code == 0
 
-        assert mock_query_call.call_count == 1
+        # session creation and the query itself
+        assert mock_query_call.call_count == 2
+        assert mock_query_call.call_args.args[0] == "SELECT 1"
 
         # udf define query
         assert mock_query_and_wait_call.call_count == 1
@@ -316,9 +319,7 @@ class TestRunQuery:
         metadata_file = query_file_path / "metadata.yaml"
         metadata_file.write_text(yaml.dump(metadata_conf))
 
-        with patch("subprocess.check_call") as mock_call:
-            mock_call.return_value = True
-
+        with patch("bigquery_etl.cli.query._execute_query") as mock_execute:
             # Call _run_query directly with ignore_public_dataset=True
             _run_query(
                 query_files=[query_file],
@@ -332,9 +333,9 @@ class TestRunQuery:
 
             # The destination table should NOT be changed to the public project
             # when ignore_public_dataset=True
-            assert mock_call.call_args.args == (
+            assert mock_execute.call_args.args == (
+                "SELECT 1",
                 [
-                    "bq",
                     "query",
                     "--project_id=moz-fx-data-shared-prod",
                     "--destination_table=query_v1",
@@ -343,4 +344,43 @@ class TestRunQuery:
                     "--dataset_id=test",
                 ],
             )
-            assert "stdin" in mock_call.call_args.kwargs
+
+    @patch("google.auth.default", return_value=(None, "default-project"))
+    @patch("google.cloud.bigquery.Client")
+    def test_execute_query_with_client(self, mock_client, mock_auth_default):
+        from bigquery_etl.cli.query import QUERY_SCOPES, _execute_query
+
+        with patch("subprocess.check_call") as mock_call:
+            _execute_query(
+                "SELECT 1",
+                [
+                    "query",
+                    "--project_id=project-1",
+                    "--dataset_id=dataset_1",
+                    "--destination_table=table_v1$20240101",
+                    "--replace",
+                    "--use_legacy_sql=False",
+                    "--parameter=submission_date:DATE:2024-01-01",
+                ],
+            )
+
+        assert mock_call.call_count == 0
+        mock_auth_default.assert_called_once_with(scopes=QUERY_SCOPES)
+        assert mock_client.call_args.kwargs["project"] == "project-1"
+        query_text = mock_client.return_value.query.call_args.args[0]
+        job_config = mock_client.return_value.query.call_args.kwargs["job_config"]
+        assert query_text == "SELECT 1"
+        assert job_config.destination.table_id == "table_v1$20240101"
+        assert job_config.write_disposition == "WRITE_TRUNCATE"
+        mock_client.return_value.query.return_value.result.assert_called_once()
+
+    @patch("google.cloud.bigquery.Client")
+    def test_execute_query_falls_back_to_bq(self, mock_client):
+        from bigquery_etl.cli.query import _execute_query
+
+        query_arguments = ["query", "--project_id=project-1", "--unknown_flag"]
+        with patch("subprocess.check_call") as mock_call:
+            _execute_query("SELECT 1", query_arguments)
+
+        assert mock_call.call_args.args == (["bq"] + query_arguments,)
+        assert mock_client.call_count == 0

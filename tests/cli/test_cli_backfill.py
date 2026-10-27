@@ -2404,14 +2404,14 @@ class TestBackfill:
         assert delete_table.call_count == 1
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill(
         self,
         mock_from_query_file,
         mock_deploy_table,
-        check_call,
+        execute_query,
         mock_client,
         runner,
     ):
@@ -2481,26 +2481,31 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill_without_schema_should_pass(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2561,26 +2566,31 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill_with_valid_billing_project_from_entry(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2646,17 +2656,17 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 

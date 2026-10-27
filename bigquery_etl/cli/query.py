@@ -22,6 +22,7 @@ from pathlib import Path
 from traceback import print_exc
 from typing import Callable, Iterable, Optional
 
+import google.auth
 import rich_click as click
 import sqlparse
 import yaml
@@ -82,6 +83,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
+from ..util.bq_query_args import parse_bq_query_args
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
@@ -115,6 +117,11 @@ DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
 GLOBAL_SCHEMA_NAME = "global.yaml"
+# Drive scope lets queries read external tables backed by Google Sheets
+QUERY_SCOPES = [
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/drive.readonly",
+]
 
 
 @click.group(help="Commands for managing queries.")
@@ -1285,14 +1292,7 @@ def _run_query(
             # when running the query
             query_arguments.append(f"--dataset_id={dataset_id}")
 
-        # write rendered query to a temporary file;
-        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
-        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-            query_stream.write(query_text)
-            query_stream.seek(0)
-
-            # run the query as shell command so that passed parameters can be used as is
-            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+        _execute_query(query_text, query_arguments)
 
         # If the entire table was overwritten then redeploy the table schema to add back field descriptions.
         schema_file = query_file.parent / SCHEMA_FILE
@@ -1337,6 +1337,40 @@ def _run_query(
                         f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
                         err=True,
                     )
+
+
+def _execute_query(query_text: str, query_arguments: list):
+    """Run the query with the BigQuery client, or with bq if the arguments aren't supported."""
+    parsed = parse_bq_query_args(query_arguments)
+
+    if parsed is None:
+        logging.info("Running query with bq: %s", query_arguments)
+        # write rendered query to a temporary file;
+        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
+        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+            query_stream.write(query_text)
+            query_stream.seek(0)
+
+            # run the query as shell command so that passed parameters can be used as is
+            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+        return
+
+    project, job_config = parsed
+    credentials, default_project = google.auth.default(scopes=QUERY_SCOPES)
+    client = bigquery.Client(
+        project=project or default_project, credentials=credentials
+    )
+    job = client.query(query_text, job_config=job_config)
+
+    if job_config.dry_run:
+        click.echo(
+            "Query successfully validated. Running this query will process "
+            f"{job.total_bytes_processed} bytes."
+        )
+        return
+
+    click.echo(f"Running query job {job.project}:{job.location}.{job.job_id}")
+    job.result()
 
 
 def create_query_session(

@@ -36,17 +36,24 @@ VALUE_FLAGS = {
 
 
 def _parse_flags(args: List[str]) -> Optional[dict]:
-    """Parse `--flag`, `--noflag` and `--flag=value` arguments into a dict.
+    """Parse `--flag`, `--noflag`, `--flag=value` and `--flag value` arguments into a dict.
 
     Returns None if an argument isn't a supported flag.
     """
     flags: dict = {name: [] for name in REPEATED_FLAGS}
-    for arg in args:
+    tokens = iter(args)
+    for arg in tokens:
         if arg == "query":
             continue
         if not arg.startswith("--"):
             return None
         name, has_value, value = arg[2:].partition("=")
+
+        if not has_value and (name in REPEATED_FLAGS or name in VALUE_FLAGS):
+            value = next(tokens, "")
+            if not value or value.startswith("--"):
+                return None
+            has_value = "="
 
         if name in BOOLEAN_FLAGS:
             if not has_value:

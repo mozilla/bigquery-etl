@@ -65,6 +65,38 @@ class TestParseBqQueryArgs:
         )
         assert job_config.dry_run is True
 
+    def test_space_separated_values(self):
+        # e.g. the events_stream_v1 generator's scheduling arguments
+        _, job_config = parse_bq_query_args(
+            [
+                "query",
+                "--project_id",
+                "p",
+                "--destination_table=p.d.t",
+                "--schema_update_option",
+                "ALLOW_FIELD_ADDITION",
+                "--parameter",
+                "submission_date:DATE:2024-01-01",
+            ]
+        )
+        assert job_config.schema_update_options == ["ALLOW_FIELD_ADDITION"]
+        assert job_config.query_parameters[0].name == "submission_date"
+
+    def test_append_table_noreplace(self):
+        # used by `query initialize` and some scheduled queries
+        _, job_config = parse_bq_query_args(
+            [
+                "query",
+                "--project_id=p",
+                "--destination_table=d.t",
+                "--format=none",
+                "--append_table",
+                "--noreplace",
+                "--parameter=sample_id:INT64:0",
+            ]
+        )
+        assert job_config.write_disposition == "WRITE_APPEND"
+
     def test_noreplace(self):
         _, job_config = parse_bq_query_args(
             ["--project_id=p", "--destination_table=d.t", "--noreplace"]
@@ -79,7 +111,8 @@ class TestParseBqQueryArgs:
             ["query", "--project_id=p", "--format=pretty"],
             # unsupported flags and values
             ["query", "--project_id=p", "--format=none", "--label=a:b"],
-            ["query", "--project_id=p", "--format=none", "--parameter", "a:INT64:1"],
+            ["query", "--project_id=p", "--format=none", "--parameter"],
+            ["query", "--project_id=p", "--format=none", "--parameter", "--dry_run"],
             ["query", "--project_id=p", "--format=none", "--use_legacy_sql=true"],
             ["query", "--project_id=p", "--format=none", "--dry_run=maybe"],
             [

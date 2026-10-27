@@ -112,7 +112,12 @@ def test_periods_do_not_overlap(rows):
 
 
 def test_every_udf_result_type_is_mapped(rows):
-    """Every raw name in result_type_to_product_name has a row in the map."""
+    """Every raw name in result_type_to_product_name has a row in the map.
+
+    Only the names in the UDF's `IN (...)` lists can be checked. Its `LIKE` branches
+    match names nobody can list in advance; test_udf_like_branches_are_known covers
+    those.
+    """
     udf = UDF_PATH.read_text()
     udf_names = {
         name
@@ -144,5 +149,39 @@ def test_every_udf_result_type_is_mapped(rows):
         "  reason               one sentence on why it counts or doesn't\n"
         f"  definition_version   {next_version}\n\n"
         "Not sure which component? Ask the people listed under `owners:` in"
-        f" {METADATA_PATH}."
+        f" {METADATA_PATH}.\n\n"
+        "This only covers names in the UDF's `IN (...)` lists, not ones matched by"
+        " its `LIKE` branches."
     )
+
+
+def test_udf_like_branches_are_known():
+    """The UDF's only LIKE branch is the one this module knows how to check."""
+    patterns = set(re.findall(r"\bLIKE\s*\(?\s*'([^']+)'", UDF_PATH.read_text()))
+    assert patterns == {"rust_%_opt_in"}, (
+        f"{UDF_PATH.relative_to(ROOT)} now has these LIKE patterns:"
+        f" {', '.join(sorted(patterns)) or 'none'}. Names matched by a pattern can't"
+        " be listed, so test_every_udf_result_type_is_mapped can't check them, and"
+        " a newly clicked one only fails later, in search_kpi_clients_daily_v1's"
+        " unmapped-type check. Decide which component the pattern's names belong"
+        f" to, add rows to {DATA_PATH} for the ones seen so far, and add a check"
+        " like test_rust_opt_in_rows_are_excluded."
+    )
+
+
+def test_rust_opt_in_rows_are_excluded(rows):
+    """Rows matched by the UDF's rust_%_opt_in branch are excluded consent prompts."""
+    for row in rows:
+        if not re.fullmatch(r"rust_.*_opt_in", row["result_type"]):
+            continue
+        assert row["component"] == "excluded", (
+            f"{row['result_type']} in {DATA_PATH} is a Suggest opt-in prompt, which"
+            " is a consent prompt and not a result, so its component must be"
+            f" excluded, not {row['component']}."
+        )
+        assert row["product_result_type"] == row["result_type"][len("rust_") :], (
+            f"{row['result_type']} in {DATA_PATH} has product_result_type"
+            f" {row['product_result_type']}, but the UDF's rust_%_opt_in branch"
+            " returns the name without its rust_ prefix:"
+            f" {row['result_type'][len('rust_'):]}."
+        )

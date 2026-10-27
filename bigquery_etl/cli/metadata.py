@@ -595,7 +595,7 @@ def get_downstream_lineage(
             since_days=since_days,
             include_deleted=include_deleted,
             include_usage=include_usage,
-            types={t.upper() for t in types},
+            types=set(types),
             looker_tmp_days=looker_tmp_days,
             max_degree=DATAHUB_LINEAGE_DEGREES.index(max_degree) + 1,
         )

@@ -161,7 +161,8 @@ class DataHubClient:
     def query(self, query: str, variables: dict[str, Any]) -> dict[str, Any]:
         """Run a GraphQL query and return its data."""
         signed_in_again = False
-        for attempt in range(MAX_ATTEMPTS):
+        attempt = 0
+        while True:
             last_attempt = attempt == MAX_ATTEMPTS - 1
             try:
                 resp = self.session.post(
@@ -173,6 +174,7 @@ class DataHubClient:
                 if last_attempt:
                     raise
                 time.sleep(2 ** (attempt + 1))
+                attempt += 1
                 continue
 
             if resp.status_code == 401 and self.signed_in and not signed_in_again:
@@ -186,11 +188,14 @@ class DataHubClient:
                 if last_attempt:
                     resp.raise_for_status()
                 time.sleep(2 ** (attempt + 1))
+                attempt += 1
                 continue
             resp.raise_for_status()
 
             body = resp.json()
             if not body.get("errors"):
+                if body.get("data") is None:
+                    raise RuntimeError(f"No data in response from {self.endpoint}")
                 return body["data"]
             message = body["errors"][0].get("message") or ""
             if "maxRelations" in message:
@@ -199,7 +204,7 @@ class DataHubClient:
             if last_attempt or not any(m in message for m in TRANSIENT_ERRORS):
                 raise RuntimeError(message)
             time.sleep(2 ** (attempt + 1))
-        raise AssertionError("unreachable")
+            attempt += 1
 
     def search_downstream(
         self,
@@ -207,6 +212,7 @@ class DataHubClient:
         include_deleted: bool = False,
         since_ms: Optional[int] = None,
         max_degree: Optional[int] = None,
+        types: Optional[set[str]] = None,
     ) -> list[dict[str, Any]]:
         """Return the downstream assets of urn, up to max_degree hops.
 
@@ -243,6 +249,8 @@ class DataHubClient:
                     "lineageFlags": lineage_flags,
                 }
             }
+            if types:
+                variables["input"]["types"] = sorted(types)
             page = self.query(LINEAGE_QUERY, variables)["searchAcrossLineage"]
             results += [to_asset(r) for r in page["searchResults"]]
             start += page["count"]
@@ -393,13 +401,11 @@ def get_downstream_lineage(
     cutoff_ms = int((now - looker_tmp_days * 86400) * 1000) if looker_tmp_days else None
 
     assets = client.search_downstream(
-        table_urn(table), include_deleted, since_ms, max_degree=max_degree
+        table_urn(table), include_deleted, since_ms, max_degree=max_degree, types=types
     )
     assets = [a for a in assets if not is_stale_looker_tmp(a["urn"], cutoff_ms)]
     if not include_deleted:
         assets = [a for a in assets if not a["deleted"]]
-    if types:
-        assets = [a for a in assets if a["type"] in types]
 
     if include_usage:
         # Usage is only recorded for BigQuery tables and views.

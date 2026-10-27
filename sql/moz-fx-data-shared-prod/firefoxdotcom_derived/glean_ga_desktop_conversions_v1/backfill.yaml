@@ -9,7 +9,7 @@
     the current day with no lag.'
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   custom_query_path: sql/moz-fx-data-shared-prod/firefoxdotcom_derived/glean_ga_desktop_conversions_v1/backfill_missing_conversion_events.sql
   shredder_mitigation: false
   override_retention_limit: false

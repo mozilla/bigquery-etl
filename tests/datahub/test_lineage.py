@@ -13,6 +13,7 @@ from bigquery_etl.datahub.lineage import (
     get_downstream_lineage,
     is_stale_looker_tmp,
     qualified_name,
+    sql_path,
     table_urn,
     to_asset,
 )
@@ -98,6 +99,56 @@ class TestQualifiedName:
             browsePathV2={"path": [{"name": "Default", "entity": None}]},
         )["entity"]
         assert qualified_name(entity) == "Retention Table"
+
+
+class TestSqlPath:
+    @pytest.fixture
+    def sql_dir(self, tmp_path):
+        for table in ["telemetry_derived/a_v1", "telemetry/a"]:
+            (tmp_path / "moz-fx-data-shared-prod" / table).mkdir(parents=True)
+        return tmp_path
+
+    def asset(self, name, entity_type="DATASET", platform="bigquery"):
+        return to_asset(
+            result(
+                table_urn(name),
+                entity_type,
+                platform=platform,
+                properties={"qualifiedName": name},
+            )
+        )
+
+    def test_table_in_sql_dir(self, sql_dir):
+        asset = self.asset("moz-fx-data-shared-prod.telemetry_derived.a_v1")
+        assert (
+            sql_path(asset, sql_dir)
+            == sql_dir / "moz-fx-data-shared-prod" / "telemetry_derived" / "a_v1"
+        )
+
+    def test_user_facing_view_maps_to_its_source(self, sql_dir):
+        asset = self.asset("mozdata.telemetry.a")
+        assert (
+            sql_path(asset, sql_dir)
+            == sql_dir / "moz-fx-data-shared-prod" / "telemetry" / "a"
+        )
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "moz-fx-data-shared-prod.operational_monitoring_derived.x_v1",
+            "mozdata.analysis.x_v1",
+            "other-project.telemetry_derived.a_v1",
+        ],
+    )
+    def test_table_outside_sql_dir(self, sql_dir, name):
+        assert sql_path(self.asset(name), sql_dir) is None
+
+    def test_other_platforms(self, sql_dir):
+        name = "moz-fx-data-shared-prod.telemetry_derived.a_v1"
+        assert sql_path(self.asset(name, platform="looker"), sql_dir) is None
+
+    def test_name_without_three_parts(self, sql_dir):
+        assert sql_path(self.asset("telemetry_derived.a_v1"), sql_dir) is None
 
 
 class TestStaleLookerTmp:

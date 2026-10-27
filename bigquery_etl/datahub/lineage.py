@@ -4,11 +4,13 @@ import os
 import re
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Optional
 
 import click
 import requests
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.datahub import auth
 
 DEFAULT_DATAHUB_URL = "https://mozilla.acryl.io"
@@ -397,6 +399,24 @@ def get_downstream_lineage(
     With include_usage, BigQuery tables and views also get their query count,
     user count and last query date for the last 30 days (one extra request
     per 100 of them).
+
+    Each asset looks like:
+
+        {
+            "degree": 1,
+            "type": "DATASET",
+            "subtype": "Table",
+            "platform": "bigquery",
+            "name": "desktop_retention_aggregates_v1",
+            "qualified_name": "moz-fx-data-shared-prod.firefox_desktop_derived.desktop_retention_aggregates_v1",
+            "urn": "urn:li:dataset:(urn:li:dataPlatform:bigquery,moz-fx-data-shared-prod.firefox_desktop_derived.desktop_retention_aggregates_v1,PROD)",
+            "deleted": False,
+            "queries_30d": None,
+            "users_30d": None,
+            "last_query": None,
+        }
+
+    Assets are sorted by degree, type and name.
     """
     now = time.time()
     since_ms = int((now - since_days * 86400) * 1000) if since_days else None
@@ -421,6 +441,30 @@ def get_downstream_lineage(
 def is_bigquery_dataset(asset: dict[str, Any]) -> bool:
     """Return True for BigQuery tables and views."""
     return asset["platform"] == "bigquery" and asset["type"] == "DATASET"
+
+
+def sql_path(asset: dict[str, Any], sql_dir: Optional[str] = None) -> Optional[Path]:
+    """Return the sql/ directory defining a BigQuery table or view, or None.
+
+    Views published to the user-facing project (mozdata) map to their source
+    in the default project. None means the asset isn't defined in sql_dir:
+    another platform, generated SQL, or a table made outside bigquery-etl.
+    """
+    if not is_bigquery_dataset(asset):
+        return None
+    parts = asset["qualified_name"].split(".")
+    if len(parts) != 3:
+        return None
+    project, dataset, table = parts
+    if project == ConfigLoader.get(
+        "default", "user_facing_project", fallback="mozdata"
+    ):
+        project = ConfigLoader.get(
+            "default", "project", fallback="moz-fx-data-shared-prod"
+        )
+    sql_dir = sql_dir or ConfigLoader.get("default", "sql_dir", fallback="sql")
+    path = Path(sql_dir) / project / dataset / table
+    return path if path.is_dir() else None
 
 
 def last_query_text(asset: dict[str, Any]) -> str:

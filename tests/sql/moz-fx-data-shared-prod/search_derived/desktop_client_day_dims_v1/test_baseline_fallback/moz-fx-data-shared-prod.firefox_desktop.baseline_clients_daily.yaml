@@ -1,0 +1,29 @@
+# b: Mac is written as Darwin, and distribution_id comes from distribution.name, not
+# baseline's own distribution_id column.
+- submission_date: "2026-10-20"
+  client_id: b
+  sample_id: 2
+  country: CA
+  locale: fr-CA
+  app_display_version: "158.0.1"
+  normalized_os: Mac
+  normalized_os_version: "24.1.0"
+  app_channel: release
+  normalized_channel: release
+  distribution_id: default
+  distribution:
+    name: acer-g
+  is_default_browser: true
+  policies_is_enterprise: false
+# n: no metrics ping that day, so no default engine or home region.
+- submission_date: "2026-10-20"
+  client_id: n
+  sample_id: 3
+  country: BR
+  locale: pt-BR
+  app_display_version: "157.0"
+  normalized_os: Windows
+  normalized_os_version: "10.0"
+  app_channel: esr
+  normalized_channel: esr
+  is_default_browser: false

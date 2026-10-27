@@ -1,0 +1,30 @@
+# NULL columns are omitted: the harness drops null keys from the result row.
+
+- submission_date: "2026-10-14"
+  client_id: client-c
+  sample_id: 3
+  is_bot: false
+  sessions_total: 0
+  sessions_engaged: 0
+  sessions_abandoned: 0
+  results:
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: history
+    product_result_type: history
+    result_group: general
+    clicks: 0
+    sessions_shown: 0
+    sessions_shown_abandoned: 0
+    annoyances: 1
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: search_suggest
+    product_result_type: search_suggest
+    result_group: suggested
+    clicks: 0
+    sessions_shown: 0
+    sessions_shown_abandoned: 0
+    annoyances: 0

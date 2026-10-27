@@ -47,7 +47,12 @@ session_types AS (
       AND e.selected_result = r.result_type
     ) AS clicked,
     LOGICAL_OR(e.is_terminal AND e.event_name = 'abandonment') AS abandoned,
-    COUNTIF(e.event_action = 'annoyance' AND e.selected_result = r.result_type) AS annoyances
+    -- One per event, however many results of this type it showed.
+    IF(
+      LOGICAL_OR(e.event_action = 'annoyance' AND e.selected_result = r.result_type),
+      1,
+      0
+    ) AS annoyances
   FROM
     events AS e
   CROSS JOIN

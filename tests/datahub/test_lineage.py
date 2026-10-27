@@ -183,9 +183,11 @@ class TestDataHubClient:
         monkeypatch.setenv("DATAHUB_GMS_TOKEN", "bad")
         client = DataHubClient(url="https://datahub.example")
         client.session.post = MagicMock(return_value=response(status=401))
-        with pytest.raises(AuthError):
+        with pytest.raises(AuthError) as e:
             client.query("q", {})
         assert client.session.post.call_count == 1
+        assert isinstance(e.value, requests.HTTPError)
+        assert e.value.response.status_code == 401
 
     def test_reads_token_and_url_from_environment(self, monkeypatch):
         monkeypatch.setenv("DATAHUB_GMS_TOKEN", "env-token")

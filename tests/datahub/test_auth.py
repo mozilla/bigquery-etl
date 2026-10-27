@@ -178,26 +178,6 @@ class TestBrowserLogin:
             with pytest.raises(auth.LoginError, match="access_token"):
                 auth.get_token(URL)
 
-
-@patch("bigquery_etl.datahub.auth.requests.get")
-def test_discover_requires_the_endpoints(get):
-    get.return_value.json.return_value = {
-        k: v for k, v in METADATA.items() if k != "registration_endpoint"
-    }
-    with pytest.raises(auth.LoginError, match="registration_endpoint"):
-        auth.discover(URL)
-
-
-def test_save_cache_replaces_the_file_owner_only():
-    path = auth.cache_path()
-    path.parent.mkdir(parents=True)
-    path.write_text("{}")
-    path.chmod(0o644)
-    auth._save_cache({URL: {"access_token": "a"}})
-    assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
-    assert json.loads(path.read_text()) == {URL: {"access_token": "a"}}
-    assert os.listdir(path.parent) == [path.name]
-
     @patch("bigquery_etl.datahub.auth.requests.post", return_value=token_response())
     @patch("bigquery_etl.datahub.auth.discover", return_value=METADATA)
     def test_reuses_the_registered_port_when_free(self, discover, post):
@@ -233,6 +213,26 @@ def test_save_cache_replaces_the_file_owner_only():
         cached = json.loads(auth.cache_path().read_text())[URL]
         assert cached["client_id"] == "client-2"
         assert cached["redirect_uri"] != old_uri
+
+
+@patch("bigquery_etl.datahub.auth.requests.get")
+def test_discover_requires_the_endpoints(get):
+    get.return_value.json.return_value = {
+        k: v for k, v in METADATA.items() if k != "registration_endpoint"
+    }
+    with pytest.raises(auth.LoginError, match="registration_endpoint"):
+        auth.discover(URL)
+
+
+def test_save_cache_replaces_the_file_owner_only():
+    path = auth.cache_path()
+    path.parent.mkdir(parents=True)
+    path.write_text("{}")
+    path.chmod(0o644)
+    auth._save_cache({URL: {"access_token": "a"}})
+    assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
+    assert json.loads(path.read_text()) == {URL: {"access_token": "a"}}
+    assert os.listdir(path.parent) == [path.name]
 
 
 class TestCachedTokens:

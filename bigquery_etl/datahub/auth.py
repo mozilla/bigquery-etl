@@ -6,6 +6,10 @@ at /.well-known/oauth-authorization-server, lets clients register themselves
 PKCE. The resulting access token works for the GraphQL API, and a refresh token
 renews it without opening the browser again.
 
+This is hand-rolled rather than built on the MCP SDK's OAuthClientProvider:
+that one is async-only, needs a newer pydantic plus about ten more packages,
+and only refreshes correctly if we patch its internal state.
+
 DATAHUB_GMS_TOKEN, when set, takes precedence over all of this.
 """
 

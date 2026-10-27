@@ -38,9 +38,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Language code parsed from the asset name (the segment after `uac_`), for example en, de, hi. Kept as
-    written in the name, so Japanese is `jp`, not the ISO code `ja`. NULL when the name does not follow
-    the UAC naming convention.
+    Language of the creative, parsed from the asset name (the segment after `uac_`), for example en, de,
+    hi. Kept as written in the name, so Japanese is `jp`, not the ISO code `ja`. This is not the market:
+    the market is the country of the campaign the asset runs in, and one language can run in several
+    markets (for example, Spanish assets in FR campaigns). NULL when the name does not follow the UAC
+    naming convention.
 - name: rt
   type: INTEGER
   mode: NULLABLE
@@ -49,8 +51,9 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Creative theme parsed from the asset name (the segment after `rt<N>`), for example privacy, sync,
-    tab-groups. Not normalized. NULL when the name does not follow the UAC naming convention.
+    Theme label parsed from the asset name (the segment after `rt<N>`), for example privacy, sync,
+    tab-groups. Not normalized. This is not the official theme: the theme of an asset is the name of the
+    ad group it runs in. NULL when the name does not follow the UAC naming convention.
 - name: snapshot_date
   type: DATE
   mode: NULLABLE

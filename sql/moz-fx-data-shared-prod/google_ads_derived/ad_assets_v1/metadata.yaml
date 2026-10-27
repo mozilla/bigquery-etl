@@ -12,6 +12,8 @@ description: |-
   the UAC creative naming convention
   `uac_<language>_rt<N>_<theme>_<aspect ratio>_<MM-YY>_<seq>...`.
   They are NULL when the name does not follow the convention.
+  `language` is not the market (the market is the campaign's country), and
+  `raw_theme` is not the official theme (the theme is the ad group name).
 
   The table is fully rebuilt every day from the most recent snapshot
   partition, so it reflects the current state of each asset.

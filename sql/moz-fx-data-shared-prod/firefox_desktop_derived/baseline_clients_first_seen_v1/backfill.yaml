@@ -7,7 +7,7 @@
     date is when the Glean metric began.
   watchers:
   - phlee@mozilla.com
-  status: Initiate
+  status: Complete
   custom_query_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_first_seen_v1/backfill_deng11768.sql
   shredder_mitigation: false
   override_retention_limit: false

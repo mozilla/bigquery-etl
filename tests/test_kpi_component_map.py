@@ -41,6 +41,25 @@ def _date(value):
     return datetime.date.fromisoformat(value) if value else None
 
 
+def _udf_products():
+    """Return {raw name: product name} from the UDF's `IN (...)` lists."""
+    udf = UDF_PATH.read_text()
+    branches = re.findall(r"\bIN\s*\(([^)]*)\)\s*THEN\s+(\S+)", udf)
+    assert len(branches) == len(re.findall(r"\bIN\s*\(", udf)), (
+        f"Some `IN (...)` list in {UDF_PATH.relative_to(ROOT)} isn't followed by"
+        " THEN; if the UDF's layout changed, update the parsing here."
+    )
+    products = {}
+    for in_list, then in branches:
+        assert then == "res" or re.fullmatch(r"'[^']*'", then), (
+            f"{UDF_PATH.relative_to(ROOT)} has `THEN {then}`. This module only"
+            " understands a quoted name or `res`; update the parsing here."
+        )
+        for name in re.findall(r"'([^']+)'", in_list):
+            products[name] = name if then == "res" else then.strip("'")
+    return products
+
+
 def test_columns_match_schema(fields, rows):
     """Columns are in schema order, required ones are filled and values parse."""
     names = [field["name"] for field in fields]
@@ -118,12 +137,7 @@ def test_every_udf_result_type_is_mapped(rows):
     match names nobody can list in advance; test_udf_like_branches_are_known covers
     those.
     """
-    udf = UDF_PATH.read_text()
-    udf_names = {
-        name
-        for in_list in re.findall(r"\bIN\s*\(([^)]*)\)", udf)
-        for name in re.findall(r"'([^']+)'", in_list)
-    }
+    udf_names = set(_udf_products())
     assert udf_names, (
         f"Found no result type names in {UDF_PATH.relative_to(ROOT)}. This test"
         " reads the names from its `IN ('...')` lists; if the UDF's layout"
@@ -152,6 +166,26 @@ def test_every_udf_result_type_is_mapped(rows):
         f" {METADATA_PATH}.\n\n"
         "This only covers names in the UDF's `IN (...)` lists, not ones matched by"
         " its `LIKE` branches."
+    )
+
+
+def test_product_result_type_matches_udf(rows):
+    """product_result_type is what result_type_to_product_name returns."""
+    products = _udf_products()
+    stale = [
+        f"  {row['result_type']}: {row['product_result_type']} in the map,"
+        f" {products[row['result_type']]} in the UDF"
+        for row in rows
+        if row["result_type"] in products
+        and row["product_result_type"] != products[row["result_type"]]
+    ]
+    assert not stale, (
+        f"product_result_type in {DATA_PATH} no longer matches"
+        " mozfun.norm.result_type_to_product_name for these result types:\n"
+        + "\n".join(stale)
+        + "\n\nThe column copies the UDF's output so readers see the same label"
+        " everywhere. Update it to what the UDF returns now, and bump"
+        " definition_version on the changed rows as for any change to the map."
     )
 
 

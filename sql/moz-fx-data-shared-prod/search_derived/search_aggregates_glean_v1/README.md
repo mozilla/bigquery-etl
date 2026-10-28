@@ -4,7 +4,7 @@
 
 Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated across unique sets of dimensions with `client_id` removed. The Glean analogue of `search_aggregates_v8`, and it runs alongside it.
 
-* **Grain:** `submission_date` and the dimension columns: `normalized_engine`, `partner_code`, `source`, `country`, `row_country`, `distribution_id`, `is_acer_distribution`, `locale`, `app_version`, `os`, `os_version`, `channel`, `normalized_channel`, `is_default_browser`, `policies_is_enterprise`, `default_search_engine_display_name`, `default_private_search_engine_display_name`, `home_region` and `normalized_default_search_engine`
+* **Grain:** `submission_date` and the dimension columns: `normalized_engine`, `partner_code`, `source`, `country`, `row_country`, `distribution_id`, `is_acer_distribution`, `locale`, `app_version`, `os`, `normalized_os`, `os_version`, `channel`, `normalized_channel`, `is_default_browser`, `policies_is_enterprise`, `default_search_engine_display_name`, `default_private_search_engine_display_name`, `home_region` and `normalized_default_search_engine`
 * **Sources:**
   * `search_derived.search_clients_daily_glean_v1` — every measure and every dimension except `is_default_browser`
   * `firefox_desktop.baseline_clients_daily` — `is_default_browser`, where it has a value
@@ -31,6 +31,8 @@ A client's rows on one day can disagree, because the client table builds each ro
 **Every other client dimension**, from `is_default_browser` and `app_version` to `distribution_id`, takes its value from the event-backed side first (rows with SERP or SAP activity), then the latest `ping_end_time`, then the value itself, and skips NULLs. `is_default_browser` is only filled on the event-backed side, so it is taken from `firefox_desktop.baseline_clients_daily` when that has a value, because the metrics ping carries none.
 
 `normalized_default_search_engine` is derived from the resolved default search engine provider id.
+
+`os` and `normalized_os` are resolved separately, so in a rare client-day with rows on different operating systems they can come from different rows. `os` is the raw client value and `normalized_os` is the bucketed name (Windows, Mac, Linux or Other).
 
 ## Known behaviours
 

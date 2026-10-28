@@ -50,6 +50,10 @@ fields:
   append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: normalized_os
+  append_description: " Resolved to one value per client-day like os, but separately, so the two can differ in a rare client-day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: os_version
   append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time."
 - !include-field

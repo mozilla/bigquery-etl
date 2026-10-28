@@ -146,7 +146,16 @@ client_day_dims_cte AS (
     )[SAFE_OFFSET(0)] AS normalized_channel,
     ARRAY_AGG(os IGNORE NULLS ORDER BY is_event_backed DESC, end_ts DESC, os LIMIT 1)[
       SAFE_OFFSET(0)
-    ] AS os
+    ] AS os,
+    ARRAY_AGG(
+      normalized_os IGNORE NULLS
+      ORDER BY
+        is_event_backed DESC,
+        end_ts DESC,
+        normalized_os
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS normalized_os
   FROM
     (
       SELECT
@@ -165,6 +174,7 @@ client_day_dims_cte AS (
         channel,
         normalized_channel,
         os,
+        normalized_os,
         (
           COALESCE(sap_counts_total, 0) > 0
           OR COALESCE(serp_counts_total, 0) > 0
@@ -205,6 +215,7 @@ SELECT
   cdd.locale,
   cdd.app_version,
   cdd.os,
+  cdd.normalized_os,
   cdd.os_version,
   cdd.channel,
   cdd.normalized_channel,
@@ -276,6 +287,7 @@ GROUP BY
   cdd.locale,
   cdd.app_version,
   cdd.os,
+  cdd.normalized_os,
   cdd.os_version,
   cdd.channel,
   cdd.normalized_channel,

@@ -1,6 +1,6 @@
 2026-10-27:
-  start_date: 2024-10-14
-  end_date: 2026-10-25
+  start_date: 2024-10-16
+  end_date: 2026-10-26
   reason: Populate the new table with historical cohorts, back to the oldest one the 775-day source retention allows. DENG-11734
   watchers:
     - kbammarito@mozilla.com

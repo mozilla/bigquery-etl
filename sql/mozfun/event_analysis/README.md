@@ -4,6 +4,11 @@ These functions are specific for use with the `events_daily` and `event_types` t
 By themselves, these two tables are nearly impossible to use since the event history
 is compressed; however, these stored procedures should make the data accessible.
 
+The `events_daily` and `event_types` tables are generated per-dataset by the
+`sql_generators/events_daily` code generator, using a `templating.yaml`
+config for each dataset. Generated `events_daily` tables are partitioned by
+`submission_date` and clustered by `sample_id`.
+
 The `events_daily` table is created as a result of two steps:
 1. Map each event to a single UTF8 char which will represent it
 2. Group each client-day and store a string that records, using the

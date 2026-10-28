@@ -66,6 +66,13 @@ WITH
               AND event.name IN ("uptake_remotesettings", "uptake_normandy")
               AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
               AND sample_id != 0
+              AND (
+                -- client-side sampling started on version 145 on Desktop, for uptake_remotesettings only
+                mozfun.norm.extract_version(client_info.app_display_version, 'major') <= 144
+                OR event.name = "uptake_normandy"
+                -- sampling lowered from 1% to 0.03% on 2026-10-20. Earlier dates stay filtered so backfills match.
+                OR DATE(submission_timestamp) <= '2026-10-21'
+              )
             ) IS NOT TRUE
           {% endif %}
         GROUP BY

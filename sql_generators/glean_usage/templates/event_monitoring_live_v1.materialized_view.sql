@@ -41,6 +41,11 @@ IF
               -- udfs like mozfun.norm.extract_version can't be used in materialized views
               AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC) >= 143
               AND sample_id != 0
+              AND (
+                -- client-side sampling started on version 145 on Desktop, for uptake_remotesettings only
+                CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC) <= 144
+                OR event.name = 'uptake_normandy'
+              )
             ) IS NOT TRUE
         {% endif %}
       ){{ "," if not loop.last }}

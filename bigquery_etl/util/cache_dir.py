@@ -4,7 +4,16 @@ import os
 import stat
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Set
+
+# cache dirs already warned about, so rejected dirs don't print on every access
+_warned: Set[Path] = set()
+
+
+def _warn_once(cache_dir: Path, message: str) -> None:
+    if cache_dir not in _warned:
+        _warned.add(cache_dir)
+        print(f"[CACHE] {message}")
 
 
 def get_private_cache_dir(name: str) -> Optional[Path]:
@@ -21,20 +30,24 @@ def get_private_cache_dir(name: str) -> Optional[Path]:
         cache_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
         st = os.lstat(cache_dir)
     except OSError as e:
-        print(f"[CACHE] Unable to create cache directory {cache_dir}: {e}")
+        _warn_once(cache_dir, f"Unable to create cache directory {cache_dir}: {e}")
         return None
 
     if not stat.S_ISDIR(st.st_mode):
-        print(f"[CACHE] {cache_dir} is not a directory, skipping cache")
+        _warn_once(cache_dir, f"{cache_dir} is not a directory, skipping cache")
         return None
 
     # ownership and permission bits aren't meaningful on Windows
     if hasattr(os, "getuid"):
         if st.st_uid != os.getuid():
-            print(f"[CACHE] {cache_dir} is not owned by current user, skipping cache")
+            _warn_once(
+                cache_dir, f"{cache_dir} is not owned by current user, skipping cache"
+            )
             return None
         if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
-            print(f"[CACHE] {cache_dir} is writable by other users, skipping cache")
+            _warn_once(
+                cache_dir, f"{cache_dir} is writable by other users, skipping cache"
+            )
             return None
         # no one else could have written to it, so it's safe to tighten
         # permissions (e.g. a directory restored with default permissions in CI)

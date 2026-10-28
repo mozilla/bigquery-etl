@@ -49,6 +49,8 @@ except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
 
+DRYRUN_CACHE_DIR_NAME = "bigquery_etl_dryrun_cache"
+
 QUERY_PARAMETER_TYPE_VALUES = {
     "DATE": "2019-01-01",
     "DATETIME": "2019-01-01 00:00:00",
@@ -255,7 +257,7 @@ class DryRun:
     @staticmethod
     def clear_cache():
         """Clear dry run cache directory."""
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir = Path(tempfile.gettempdir()) / DRYRUN_CACHE_DIR_NAME
         if cache_dir.exists():
             try:
                 shutil.rmtree(cache_dir)
@@ -304,7 +306,7 @@ class DryRun:
     @staticmethod
     def _get_cache_dir():
         """Get the cache directory path, or None if it can't be used safely."""
-        return get_private_cache_dir("bigquery_etl_dryrun_cache")
+        return get_private_cache_dir(DRYRUN_CACHE_DIR_NAME)
 
     def _read_cache_file(self, cache_file, ttl_seconds):
         """Read and return cached data from a pickle file with TTL check."""

@@ -47,3 +47,12 @@ class TestGetPrivateCacheDir:
         (tmp_path / "test_cache").symlink_to(tmp_path / "target")
 
         assert get_private_cache_dir("test_cache") is None
+
+    def test_warns_once_for_rejected_dir(self, tmp_path, capsys):
+        (tmp_path / "test_cache").mkdir()
+        os.chmod(tmp_path / "test_cache", 0o777)
+
+        get_private_cache_dir("test_cache")
+        get_private_cache_dir("test_cache")
+
+        assert capsys.readouterr().out.count("skipping cache") == 1

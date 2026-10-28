@@ -986,6 +986,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of cores on the machine.
+    - name: count
+      type: INTEGER
+      mode: NULLABLE
+      description: How many times the dropdown was withheld on the form's fields,
+        counted at most once per field focus.
     - name: cpu_milliseconds
       type: INTEGER
       mode: NULLABLE
@@ -1816,6 +1821,8 @@ fields:
 
         * The category whose consumer failed, e.g. "browser-window-idle-tasks".
 
+        * Autofill category of the field: "address", "creditCard" or "passport".
+
         * Autofill category. Either "creditcard" or "address"
 
         * Autofill category. Either "creditcard", "address" or "passport"'
@@ -2470,7 +2477,10 @@ fields:
         * Name of the field being affected by the method
 
         * Name of the field being affected by the method, filled when method is `popup_shown`
-        or `filled_modified`.'
+        or `filled_modified`.
+
+        * The field name the field was classified as before its autocomplete attribute
+        changed, such as "address-line1".'
     - name: fieldType
       type: STRING
       mode: NULLABLE

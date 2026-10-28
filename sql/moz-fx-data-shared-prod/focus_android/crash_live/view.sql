@@ -92,7 +92,10 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_time,
+      metrics.datetime.crash_jump_list_shell_call_start
+    ) AS `datetime`,
     STRUCT(
       ARRAY(
         SELECT
@@ -355,7 +358,10 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_time,
+      metrics.datetime.crash_jump_list_shell_call_start
+    ) AS `datetime`,
     STRUCT(
       ARRAY(
         SELECT
@@ -618,7 +624,10 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_time,
+      metrics.datetime.crash_jump_list_shell_call_start
+    ) AS `datetime`,
     STRUCT(
       ARRAY(
         SELECT

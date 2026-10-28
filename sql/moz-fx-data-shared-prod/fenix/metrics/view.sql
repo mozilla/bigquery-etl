@@ -142,7 +142,8 @@ SELECT
       metrics.boolean.metrics_is_android_automotive,
       metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
       metrics.boolean.network_akamai_waf_blocked,
-      metrics.boolean.network_akamai_waf_blocked_subresource
+      metrics.boolean.network_akamai_waf_blocked_subresource,
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2497,7 +2498,8 @@ SELECT
       metrics.boolean.metrics_is_android_automotive,
       metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
       metrics.boolean.network_akamai_waf_blocked,
-      metrics.boolean.network_akamai_waf_blocked_subresource
+      metrics.boolean.network_akamai_waf_blocked_subresource,
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -4872,7 +4874,8 @@ SELECT
       metrics.boolean.metrics_is_android_automotive,
       metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
       metrics.boolean.network_akamai_waf_blocked,
-      metrics.boolean.network_akamai_waf_blocked_subresource
+      metrics.boolean.network_akamai_waf_blocked_subresource,
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

@@ -84,7 +84,8 @@ SELECT
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.network_akamai_waf_blocked,
-      metrics.boolean.network_akamai_waf_blocked_subresource
+      metrics.boolean.network_akamai_waf_blocked_subresource,
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -2138,7 +2139,8 @@ SELECT
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.network_akamai_waf_blocked,
-      metrics.boolean.network_akamai_waf_blocked_subresource
+      metrics.boolean.network_akamai_waf_blocked_subresource,
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -4192,7 +4194,8 @@ SELECT
       metrics.boolean.profiles_store_id_in_profiles_ini,
       metrics.boolean.profiles_store_id_mismatch,
       metrics.boolean.network_akamai_waf_blocked,
-      metrics.boolean.network_akamai_waf_blocked_subresource
+      metrics.boolean.network_akamai_waf_blocked_subresource,
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,

@@ -23,7 +23,12 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_jump_list_shell_call_start,
+      metrics.datetime.raw_crash_jump_list_shell_call_start,
+      metrics.datetime.crash_time,
+      metrics.datetime.raw_crash_time
+    ) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
@@ -146,7 +151,12 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_jump_list_shell_call_start,
+      metrics.datetime.raw_crash_jump_list_shell_call_start,
+      metrics.datetime.crash_time,
+      metrics.datetime.raw_crash_time
+    ) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
@@ -269,7 +279,12 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_jump_list_shell_call_start,
+      metrics.datetime.raw_crash_jump_list_shell_call_start,
+      metrics.datetime.crash_time,
+      metrics.datetime.raw_crash_time
+    ) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
@@ -392,7 +407,12 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_jump_list_shell_call_start,
+      metrics.datetime.raw_crash_jump_list_shell_call_start,
+      metrics.datetime.crash_time,
+      metrics.datetime.raw_crash_time
+    ) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
@@ -515,7 +535,12 @@ SELECT
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
-    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.datetime.crash_jump_list_shell_call_start,
+      metrics.datetime.raw_crash_jump_list_shell_call_start,
+      metrics.datetime.crash_time,
+      metrics.datetime.raw_crash_time
+    ) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,

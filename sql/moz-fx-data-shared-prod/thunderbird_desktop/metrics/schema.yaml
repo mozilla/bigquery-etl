@@ -737,6 +737,14 @@ fields:
         "Access Denied" page from the Akamai WAF (body references errors.edgesuite.net).
 
         '
+    - name: quotamanager_had_temporary_storage_usage_underflow
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the in-memory total temporary storage usage tracked by
+        the quota manager went negative at least once during this session. False means
+        the quota manager was initialized and no underflow was seen.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

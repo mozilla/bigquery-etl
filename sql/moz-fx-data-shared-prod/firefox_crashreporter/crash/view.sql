@@ -10,6 +10,10 @@ SELECT
       SELECT AS STRUCT
         metrics.* REPLACE (
           STRUCT(
+            mozfun.glean.parse_datetime(
+              metrics.datetime.crash_jump_list_shell_call_start
+            ) AS crash_jump_list_shell_call_start,
+            metrics.datetime.crash_jump_list_shell_call_start AS raw_crash_jump_list_shell_call_start,
             mozfun.glean.parse_datetime(metrics.datetime.crash_time) AS crash_time,
             metrics.datetime.crash_time AS raw_crash_time
           ) AS datetime

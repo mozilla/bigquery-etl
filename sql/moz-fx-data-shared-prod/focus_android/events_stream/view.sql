@@ -142,6 +142,7 @@ SELECT
       LAX_INT64(event_extra.columnnumber) AS `columnnumber`,
       LAX_INT64(event_extra.comments_count) AS `comments_count`,
       LAX_INT64(event_extra.cores) AS `cores`,
+      LAX_INT64(event_extra.count) AS `count`,
       LAX_INT64(event_extra.cpu_milliseconds) AS `cpu_milliseconds`,
       LAX_INT64(event_extra.cpu_utilization) AS `cpu_utilization`,
       LAX_INT64(event_extra.create_rust_store_ms) AS `create_rust_store_ms`,

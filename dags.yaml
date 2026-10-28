@@ -1832,6 +1832,24 @@ bqetl_cohort_daily_churn:
   tags:
     - impact/tier_2
 
+bqetl_new_profile_churn:
+  schedule_interval: 50 14 * * *
+  description: |
+    Builds the new-profile churn client tables, new_profile_churn_clients_v2
+    and recent_new_profile_churn_clients_v2, daily.
+  default_args:
+    owner: data-product-kpis-wg@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - data-product-kpis-wg@mozilla.com
+    start_date: "2026-10-14"
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_firefox_installer_aggregates:
   default_args:
     depends_on_past: false

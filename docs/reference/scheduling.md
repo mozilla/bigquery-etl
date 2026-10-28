@@ -33,6 +33,7 @@
   - Additional scheduling options:
     - `depends_on_past` keeps query from getting executed if the previous schedule for the query hasn't succeeded
     - `date_partition_parameter` - by default set to `submission_date`; can be set to `null` if query doesn't write to a partitioned table
+    - `backfill_date_partition_parameter` - only read by `bqetl backfill`. For tables with a null `date_partition_parameter` that pick their partition through a templated `destination_table` and DATE parameter (e.g. hourly runs rewriting a daily partition), names the parameter that backfills bind to each date. See [Backfilling a table](../cookbooks/backfilling_a_table.md#what-can-be-backfilled-with-bqetl-backfill)
     - `parameters` specifies a list of query parameters, e.g. `["n_clients:INT64:500"]`
     - `arguments` - a list of arguments passed when running the query, for example: `["--append_table"]`
     - `referenced_tables` - manually curated list of tables a Python or BigQuery script depends on; for `query.sql` files dependencies will get determined automatically and should only be overwritten manually if really necessary

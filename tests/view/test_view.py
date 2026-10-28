@@ -43,6 +43,18 @@ class TestView:
             / "view.sql"
         )
 
+    @pytest.fixture
+    def schema_view(self):
+        return View.from_file(
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "view_with_schema"
+            / "view.sql"
+        )
+
     def test_from_file(self, simple_view):
         assert simple_view.dataset == "test"
         assert simple_view.project == "moz-fx-data-test-project"
@@ -217,6 +229,68 @@ class TestView:
 
         assert simple_view.has_changes()
         assert "schema" in capsys.readouterr().out
+
+    @patch("bigquery_etl.dryrun.DryRun")
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_without_schema_file(
+        self, mock_client, mock_dryrun, simple_view
+    ):
+        # Without a schema file no descriptions get deployed, and the dry run schema
+        # used instead never has any, so descriptions aren't compared.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
+        deployed_view.schema = [
+            SchemaField("a", "INT", description="Description in BigQuery")
+        ]
+        mock_client.return_value.get_table.return_value = deployed_view
+        mock_dryrun.return_value.get_schema.return_value = {
+            "fields": [{"name": "a", "type": "INT"}]
+        }
+
+        assert not simple_view.schema_path.is_file()
+        assert not simple_view.has_changes()
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_missing_field_description(
+        self, mock_client, schema_view, capsys
+    ):
+        # A description the deployed view is missing gets filled in on publish.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        deployed_view.schema = [SchemaField("a", "INTEGER")]
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert schema_view.has_changes()
+        assert "schema" in capsys.readouterr().out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_differing_field_descriptions(
+        self, mock_client, schema_view, capsys
+    ):
+        # Publishing recreates the view without descriptions before applying the ones
+        # in the schema file, so a differing description is a change.
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        deployed_view.schema = [
+            SchemaField("a", "INTEGER", description="Description in BigQuery")
+        ]
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert schema_view.has_changes()
+        assert "schema" in capsys.readouterr().out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_view_has_changes_matching_field_descriptions(
+        self, mock_client, schema_view
+    ):
+        deployed_view = Mock()
+        deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", schema_view.content)
+        deployed_view.schema = [
+            SchemaField("a", "INTEGER", description="Description from the schema file")
+        ]
+        mock_client.return_value.get_table.return_value = deployed_view
+
+        assert not schema_view.has_changes()
 
     @patch("bigquery_etl.cli.view.get_id_token")
     def test_collect_views_authorized_only(self, mock_get_id_token, runner):

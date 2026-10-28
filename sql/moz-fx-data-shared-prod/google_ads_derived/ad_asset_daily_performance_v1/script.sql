@@ -43,6 +43,9 @@ performance AS (
     _PARTITIONDATE
     BETWEEN DATE_SUB(@submission_date, INTERVAL @lookback_days DAY)
     AND @submission_date
+    AND segments_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL @lookback_days DAY)
+    AND @submission_date
 )
 SELECT
   performance.segments_date AS `date`,

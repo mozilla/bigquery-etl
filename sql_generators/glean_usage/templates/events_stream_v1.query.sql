@@ -220,6 +220,16 @@ CROSS JOIN
         )
         AND app_version_major <= 149
       ) IS NOT TRUE
+      -- See https://mozilla-hub.atlassian.net/browse/RMST-553
+      -- Server knobs were introduced in 145, so sample earlier versions here instead.
+      -- Android has both the Gecko and the Rust implementations.
+      AND (
+        normalized_channel = 'release'
+        AND event.category IN ('uptake.remotecontent.result', 'remote_settings')
+        AND event.name = 'uptake_remotesettings'
+        AND app_version_major IN (143, 144)
+        AND sample_id != 0
+      ) IS NOT TRUE
   {% elif app_name == "firefox_ios" %}
     WHERE
       -- See https://mozilla-hub.atlassian.net/browse/RMST-504

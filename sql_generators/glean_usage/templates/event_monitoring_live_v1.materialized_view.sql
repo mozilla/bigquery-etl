@@ -57,6 +57,19 @@ IF
               AND event.name = 'uptake_remotesettings'
               AND sample_id != 0
             ) IS NOT TRUE
+        {% elif dataset == "org_mozilla_firefox" and events_table == "events_v1" %}
+          WHERE
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-553
+            -- Server knobs were introduced in 145, so sample earlier versions here instead.
+            -- Android has both the Gecko and the Rust implementations.
+            (
+              event.category IN ('uptake.remotecontent.result', 'remote_settings')
+              AND event.name = 'uptake_remotesettings'
+              -- udfs like mozfun.norm.extract_version can't be used in materialized views
+              AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC)
+              IN (143, 144)
+              AND sample_id != 0
+            ) IS NOT TRUE
         {% endif %}
       ){{ "," if not loop.last }}
     {% endfor -%},

@@ -78,3 +78,11 @@ WHERE
     BETWEEN 133
     AND 135
   ) IS NOT TRUE
+  -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+  AND (
+    event_category = "uptake.remotecontent.result"
+    AND event_method = "uptake"
+    AND normalized_channel = 'release'
+    AND mozfun.norm.extract_version(app_version, 'major') >= 143
+    AND sample_id != 0
+  ) IS NOT TRUE

@@ -93,7 +93,8 @@ def parse_bq_query_args(
     """Return the project and job config for `bq query` arguments.
 
     Returns None if the arguments use flags that aren't supported here, or if
-    `bq` would print query results, so the caller can fall back to `bq`.
+    the query results are only shown on the console, so the caller can fall
+    back to `bq`.
     """
     flags = _parse_flags(args)
     if flags is None:
@@ -107,7 +108,10 @@ def parse_bq_query_args(
         return None
     if flags.get("replace") and flags.get("append_table"):
         return None
-    # only bq prints query results
+    # Results that are only shown on the console are left to bq, which prints them.
+    # With a destination table the client is used and results aren't printed, unlike
+    # bq: scheduled queries write to a destination without --format=none and need
+    # the client for its credential scopes.
     if not (destination or dry_run or flags.get("format") == "none"):
         return None
 

@@ -2,10 +2,13 @@ friendly_name: Telemetry Health Glean Metric Errors
 description: |
   Counts of metrics with recorded errors and the fraction of clients affected, per day.
   Combines data from Firefox Desktop, Firefox Android, and Firefox iOS.
+
+  This data is calculated for the full population of every application.
 owners:
   - jrediger@mozilla.com
   - glean-team@mozilla.com
 labels:
+  sql_generator: telemetry_health
   incremental: true
   schedule: daily
 scheduling:

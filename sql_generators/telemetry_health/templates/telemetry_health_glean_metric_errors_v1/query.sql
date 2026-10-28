@@ -11,70 +11,31 @@
       normalized_channel,
       {% endif %}
       DATE(submission_timestamp) AS submission_date,
-      * EXCEPT (normalized_channel),
+      metrics,
     FROM
       `{{ project_id }}.{{ app_id }}_stable.metrics_v1`
     WHERE
       DATE(submission_timestamp) = @submission_date
   ),
-  invalid_labels AS (
+  errors AS (
     SELECT
       submission_date,
       application,
       normalized_channel,
-      'Invalid Key' AS error_type,
+      e.error_type,
       label.key AS metric,
       SUM(label.value) AS counts,
-      COUNT(DISTINCT client_info.client_id) AS affected_clients
+      COUNT(DISTINCT client_id) AS affected_clients
     FROM
       sample
     CROSS JOIN
-      UNNEST(metrics.labeled_counter.glean_error_invalid_label) AS label
-    GROUP BY ALL
-  ),
-  invalid_values AS (
-    SELECT
-      submission_date,
-      application,
-      normalized_channel,
-      'Invalid Value' AS error_type,
-      value.key AS metric,
-      SUM(value.value) AS counts,
-      COUNT(DISTINCT client_info.client_id) AS affected_clients
-    FROM
-      sample
-    CROSS JOIN
-      UNNEST(metrics.labeled_counter.glean_error_invalid_value) AS value
-    GROUP BY ALL
-  ),
-  invalid_state AS (
-    SELECT
-      submission_date,
-      application,
-      normalized_channel,
-      'Invalid State' AS error_type,
-      value.key AS metric,
-      SUM(value.value) AS counts,
-      COUNT(DISTINCT client_info.client_id) AS affected_clients
-    FROM
-      sample
-    CROSS JOIN
-      UNNEST(metrics.labeled_counter.glean_error_invalid_state) AS value
-    GROUP BY ALL
-  ),
-  invalid_overflow AS (
-    SELECT
-      submission_date,
-      application,
-      normalized_channel,
-      'Invalid Overflow' AS error_type,
-      value.key AS metric,
-      SUM(value.value) AS counts,
-      COUNT(DISTINCT client_info.client_id) AS affected_clients
-    FROM
-      sample
-    CROSS JOIN
-      UNNEST(metrics.labeled_counter.glean_error_invalid_overflow) AS value
+      UNNEST([
+        STRUCT('Invalid Label' AS error_type, metrics.labeled_counter.glean_error_invalid_label AS errors),
+        ('Invalid Value', metrics.labeled_counter.glean_error_invalid_value),
+        ('Invalid State', metrics.labeled_counter.glean_error_invalid_state),
+        ('Invalid Overflow', metrics.labeled_counter.glean_error_invalid_overflow)
+      ]) AS e
+    CROSS JOIN UNNEST(e.errors) AS label
     GROUP BY ALL
   ),
   all_clients AS (
@@ -82,7 +43,7 @@
       submission_date,
       application,
       normalized_channel,
-      COUNT(DISTINCT client_info.client_id) AS total_clients
+      COUNT(DISTINCT client_id) AS total_clients
     FROM
       sample
     GROUP BY ALL
@@ -98,15 +59,7 @@
     d.affected_clients,
     d.affected_clients / c.total_clients AS fraction_clients_affected,
     c.total_clients,
-  FROM (
-    SELECT * FROM invalid_labels
-    UNION ALL
-    SELECT * FROM invalid_values
-    UNION ALL
-    SELECT * FROM invalid_state
-    UNION ALL
-    SELECT * FROM invalid_overflow
-  ) d
+  FROM errors d
   INNER JOIN all_clients c
     USING (submission_date, application, normalized_channel)
 )

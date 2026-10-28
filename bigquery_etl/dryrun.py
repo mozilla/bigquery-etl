@@ -40,6 +40,7 @@ from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
+from .util.cache_dir import get_private_cache_dir
 from .util.common import render
 
 try:
@@ -302,10 +303,8 @@ class DryRun:
 
     @staticmethod
     def _get_cache_dir():
-        """Get the cache directory path."""
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        return cache_dir
+        """Get the cache directory path, or None if it can't be used safely."""
+        return get_private_cache_dir("bigquery_etl_dryrun_cache")
 
     def _read_cache_file(self, cache_file, ttl_seconds):
         """Read and return cached data from a pickle file with TTL check."""
@@ -362,12 +361,18 @@ class DryRun:
         if ttl_seconds is None:
             ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
 
-        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return None
+        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
         return self._read_cache_file(cache_file, ttl_seconds)
 
     def _save_cached_result(self, cache_key, result):
         """Save dry run result to disk cache using atomic write."""
-        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return
+        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
         self._write_cache_file(cache_file, result)
 
         # save table metadata separately if present
@@ -388,13 +393,19 @@ class DryRun:
 
         # table identifier as cache key
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return None
+        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
         return self._read_cache_file(cache_file, ttl_seconds)
 
     def _save_cached_table_metadata(self, table_identifier, metadata):
         """Save table metadata to disk cache using atomic write."""
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return
+        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
         self._write_cache_file(cache_file, metadata)
 
     @cached_property

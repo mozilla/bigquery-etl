@@ -74,6 +74,15 @@ WITH
                 OR DATE(submission_timestamp) <= '2026-10-21'
               )
             ) IS NOT TRUE
+          {% elif dataset['bq_dataset_family'] == "org_mozilla_ios_firefox" and events_table == "events_v1" %}
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-504
+            -- Server knobs are not available on iOS yet, so sample here instead.
+            -- iOS only has the Rust implementation, hence the `remote_settings` category.
+            AND (
+              event.category = "remote_settings"
+              AND event.name = "uptake_remotesettings"
+              AND sample_id != 0
+            ) IS NOT TRUE
           {% endif %}
         GROUP BY
           submission_date,

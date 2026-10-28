@@ -22,8 +22,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: "The country the client table carried on the row itself, which is the country of the last report
-      behind that row. Differs from country for the under 1% of client-days where the client's location
-      changed during the day, typically a VPN toggling."
+      behind that row. Differs from country for client-days where the client's location changed during
+      the day, typically a VPN toggling."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: distribution_id
@@ -34,8 +34,8 @@ fields:
   description: "TRUE when distribution_id contains 'acer', meaning an Acer distribution, and FALSE otherwise,
       including when distribution_id is null. Replaces is_acer_cohort in search_aggregates_v8, which was
       TRUE for clients that are NOT Acer and also checked the search.acer_cohort list of legacy client
-      ids. That list is not carried, so clients that were on an Acer distribution before 2023 and no
-      longer are show FALSE here."
+      ids. That list is not carried, so clients that were once on an Acer distribution and no longer
+      are show FALSE here."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: locale
@@ -101,8 +101,8 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: "The number of distinct clients in this row's dimensions with at least one enabled ad-blocking add-on
-      installed. Not summable across rows. Unreliable before about 2025-06, because the add-on probe rolled out
-      gradually through 2025."
+      installed. Not summable across rows. Unreliable in older data, because the add-on probe rolled out
+      gradually."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: sap_counts_total
@@ -187,9 +187,10 @@ fields:
   new_name: counter_searches_organic_sum
   prepend_description: "Renames legacy_searches_organic_sum in search_clients_daily_glean_v1. "
   new_description: "Organic, meaning non-partner, in-content searches from the browser.search.content Glean labeled
-      counter. Runs below the organic column of search_aggregates_v8 by a margin that is not yet
-      root-caused, so prefer search_aggregates_v8 for organic levels. Zero, not null, where the metrics
-      ping carried nothing for this key. Summed over the client table rows in this row's dimensions."
+      counter. Does not reconcile exactly with the organic column of search_aggregates_v8, which drops
+      rows with very large counts. Automated profiles inflate this column, so it cannot be trended
+      or compared with v8 without a bot filter. Zero, not null, where the metrics ping carried
+      nothing for this key. Summed over the client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_with_ads_tagged_sum

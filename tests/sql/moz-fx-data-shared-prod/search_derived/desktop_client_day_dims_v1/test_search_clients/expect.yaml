@@ -2,6 +2,7 @@
 - submission_date: "2026-10-20"
   client_id: s
   sample_id: 1
+  profile_group_id: group-s
   dims_source: search_clients_daily
   country: US
   locale: de

@@ -1,8 +1,9 @@
 # Only is_default_browser is taken from baseline for a client with search rows, as in
-# search_aggregates_glean_v1; its country and version are ignored.
+# search_aggregates_glean_v1; its country, version and profile group are ignored.
 - submission_date: "2026-10-20"
   client_id: s
   sample_id: 1
+  profile_group_id: group-baseline
   country: FR
   locale: fr
   app_display_version: "159.0"

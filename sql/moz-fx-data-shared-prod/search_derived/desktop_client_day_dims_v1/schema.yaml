@@ -11,6 +11,11 @@ fields:
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: sample_id
   append_description: " The clustering field."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: profile_group_id
+  append_description: " The ID experiment analyses join on. Chosen like the other columns,
+    by dims_source."
 - name: dims_source
   type: STRING
   mode: NULLABLE

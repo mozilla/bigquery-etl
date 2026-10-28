@@ -3,6 +3,7 @@
 - submission_date: "2026-10-20"
   client_id: b
   sample_id: 2
+  profile_group_id: group-b
   country: CA
   locale: fr-CA
   app_display_version: "158.0.1"

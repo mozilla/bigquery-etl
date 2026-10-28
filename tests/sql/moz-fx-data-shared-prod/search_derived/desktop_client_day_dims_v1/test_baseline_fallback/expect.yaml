@@ -2,6 +2,7 @@
 - submission_date: "2026-10-20"
   client_id: b
   sample_id: 2
+  profile_group_id: group-b
   dims_source: baseline_and_metrics
   country: CA
   locale: fr-CA

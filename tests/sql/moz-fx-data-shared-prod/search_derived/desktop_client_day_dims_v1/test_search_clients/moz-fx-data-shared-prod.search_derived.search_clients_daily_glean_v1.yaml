@@ -5,6 +5,7 @@
   sample_id: 1
   country: US
   ping_end_time: "2026-10-20T10:00:00.000+00:00"
+  profile_group_id: group-s-early
   sap_counts_total: 1
   serp_counts_total: 0
   is_default_browser: false
@@ -24,6 +25,7 @@
   sample_id: 1
   country: US
   ping_end_time: "2026-10-20T12:00:00.000+00:00"
+  profile_group_id: group-s-late
   sap_counts_total: 0
   serp_counts_total: 0
   app_version: "158.0.1"
@@ -39,6 +41,7 @@
   sample_id: 1
   country: DE
   ping_end_time: "2026-10-20T11:00:00.000+00:00"
+  profile_group_id: group-s
   sap_counts_total: 1
   serp_counts_total: 0
   is_default_browser: false

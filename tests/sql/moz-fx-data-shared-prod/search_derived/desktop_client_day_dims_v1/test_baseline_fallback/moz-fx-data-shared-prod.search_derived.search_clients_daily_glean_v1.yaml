@@ -2,6 +2,7 @@
 - submission_date: "2026-10-19"
   client_id: b
   sample_id: 2
+  profile_group_id: group-b-old
   country: US
   ping_end_time: "2026-10-19T10:00:00.000+00:00"
   sap_counts_total: 1

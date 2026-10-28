@@ -53,6 +53,15 @@ client_day_dims_cte AS (
     submission_date,
     ANY_VALUE(sample_id) AS sample_id,
     ARRAY_AGG(
+      profile_group_id IGNORE NULLS
+      ORDER BY
+        is_event_backed DESC,
+        end_ts DESC,
+        profile_group_id
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS profile_group_id,
+    ARRAY_AGG(
       is_default_browser IGNORE NULLS
       ORDER BY
         is_event_backed DESC,
@@ -157,6 +166,7 @@ client_day_dims_cte AS (
         client_id,
         submission_date,
         sample_id,
+        profile_group_id,
         is_default_browser,
         app_version,
         default_search_engine_provider_id,
@@ -193,6 +203,7 @@ baseline AS (
     client_id,
     submission_date,
     sample_id,
+    profile_group_id,
     country,
     locale,
     app_display_version AS app_version,
@@ -254,6 +265,7 @@ dims AS (
   SELECT
     COALESCE(cdd.client_id, b.client_id) AS client_id,
     COALESCE(cdd.sample_id, b.sample_id) AS sample_id,
+    IF(cdd.client_id IS NOT NULL, cdd.profile_group_id, b.profile_group_id) AS profile_group_id,
     CASE
       WHEN cdd.client_id IS NOT NULL
         THEN 'search_clients_daily'
@@ -314,6 +326,7 @@ SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
+  profile_group_id,
   dims_source,
   country,
   locale,

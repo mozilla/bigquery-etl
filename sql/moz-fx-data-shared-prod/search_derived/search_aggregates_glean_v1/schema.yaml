@@ -188,9 +188,8 @@ fields:
   prepend_description: "Renames legacy_searches_organic_sum in search_clients_daily_glean_v1. "
   new_description: "Organic, meaning non-partner, in-content searches from the browser.search.content Glean labeled
       counter. Does not reconcile exactly with the organic column of search_aggregates_v8, which drops
-      rows with very large counts. Automated profiles inflate this column, so it cannot be trended
-      or compared with v8 without a bot filter. Zero, not null, where the metrics ping carried
-      nothing for this key. Summed over the client table rows in this row's dimensions."
+      rows with very large counts. Zero, not null, where the metrics ping carried nothing for this
+      key. Summed over the client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_with_ads_tagged_sum

@@ -14,6 +14,12 @@ fields:
   description: The legacy telemetry client_id reported by the client, latest non-null value
     that day. Carried alongside client_id, the Glean identifier this table is keyed on, so
     a row can be joined to legacy telemetry tables.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: The profile group identifier reported by the client
+    (metrics.uuid.legacy_telemetry_profile_group_id), latest non-null value that day. The
+    ID experiment analyses join on.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

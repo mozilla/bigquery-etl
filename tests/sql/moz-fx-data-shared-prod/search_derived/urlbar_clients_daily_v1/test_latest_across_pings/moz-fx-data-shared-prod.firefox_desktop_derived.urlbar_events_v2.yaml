@@ -1,10 +1,11 @@
 # event_timestamp restarts in every events ping, so the latest values come from the
 # highest seq first. The later ping (seq 6) has the smaller timestamp.
 
-# Earlier ping, late in that ping: sponsored on, old legacy id.
+# Earlier ping, late in that ping: sponsored on, old legacy and profile group ids.
 - submission_date: "2026-10-14"
   glean_client_id: client-d
   legacy_telemetry_client_id: legacy-old
+  profile_group_id: group-old
   sample_id: 4
   seq: 5
   event_name: abandonment
@@ -22,10 +23,11 @@
   sap: urlbar
   results:
   - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
-# Later ping, early in that ping: sponsored off, new legacy id.
+# Later ping, early in that ping: sponsored off, new legacy and profile group ids.
 - submission_date: "2026-10-14"
   glean_client_id: client-d
   legacy_telemetry_client_id: legacy-new
+  profile_group_id: group-new
   sample_id: 4
   seq: 6
   event_name: abandonment

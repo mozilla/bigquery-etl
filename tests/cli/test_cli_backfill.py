@@ -8,7 +8,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 from click.utils import strip_ansi
-from google.api_core.exceptions import NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 
 from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
@@ -2494,6 +2494,58 @@ class TestBackfill:
                 arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.query._execute_query")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_partitioned_backfill_query_error(
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
+    ):
+        """BigQuery client errors are reported like bq errors."""
+        execute_query.side_effect = BadRequest("Syntax error")
+        mock_client().get_table.side_effect = [
+            NotFound("staging backup not found"),
+            None,
+            None,
+        ]
+
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/schema.yaml", "w"
+        ) as f:
+            f.write(yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]}))
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml", "w"
+        ) as f:
+            f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
+            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+          override_retention_limit: True""")
+
+        result = runner.invoke(
+            initiate,
+            ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+        )
+
+        assert result.exit_code == 1
+        assert isinstance(result.exception, ValueError)
+        assert "Backfill initiate resulted in error" in str(result.exception)
+        assert isinstance(result.exception.__cause__, BadRequest)
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.query._execute_query")

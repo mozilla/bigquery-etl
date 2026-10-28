@@ -14,7 +14,7 @@
   default_private_search_engine_display_name: Google
   home_region: US
   policies_is_enterprise: false
-  os: Windows_NT
+  os: Windows
   os_version: "10.0"
   locale: en-US
   channel: release
@@ -29,7 +29,7 @@
   app_version: "158.0.1"
   default_search_engine_provider_id: ddg
   home_region: NL
-  os: Windows_NT
+  os: Windows
   os_version: "10.0"
   locale: en-US
   channel: release
@@ -48,7 +48,7 @@
   default_private_search_engine_display_name: Bing
   home_region: DE
   policies_is_enterprise: true
-  os: Windows_NT
+  os: Windows
   os_version: "10.0"
   locale: de
   distribution_id: acer-001

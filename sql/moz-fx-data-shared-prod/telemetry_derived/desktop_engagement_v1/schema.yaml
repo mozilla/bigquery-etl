@@ -93,7 +93,7 @@ fields:
   name: normalized_os_version
   type: STRING
   description: !include-field-description
-    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    table: moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_clients_v1
     field: normalized_os_version
 - mode: NULLABLE
   name: country

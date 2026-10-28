@@ -8,7 +8,7 @@ import rich_click as click
 from ..cli.query import DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
 from ..cli.utils import EmailType, QualifiedTableNameType
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
-from .utils import qualified_table_name_matching
+from .utils import has_null_date_partition_parameter, qualified_table_name_matching
 
 DATE_TYPE = click.DateTime(formats=["%Y-%m-%d"])
 
@@ -118,10 +118,8 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
             "Override depends-on-past end date check?", default=False
         )
 
-    null_date_partition = (
-        metadata is not None
-        and "date_partition_parameter" in metadata.scheduling
-        and metadata.scheduling["date_partition_parameter"] is None
+    null_date_partition = metadata is not None and has_null_date_partition_parameter(
+        metadata.scheduling
     )
     if depends_on_past and null_date_partition:
         result["reinitialize_table"] = click.confirm(

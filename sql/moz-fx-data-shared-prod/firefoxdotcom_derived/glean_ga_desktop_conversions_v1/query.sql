@@ -28,6 +28,16 @@ WITH potential_new_conversions AS (
         THEN "is_dau_at_least_3_of_first_7_days"
       WHEN "is_dau_at_least_2_of_first_7_days"
         THEN "is_dau_at_least_2_of_first_7_days"
+      WHEN "is_dau_at_least_5_of_first_7_days"
+        THEN "is_dau_at_least_5_of_first_7_days"
+      WHEN "is_dau_at_least_6_of_first_7_days"
+        THEN "is_dau_at_least_6_of_first_7_days"
+      WHEN "is_dau_at_least_7_of_first_7_days"
+        THEN "is_dau_at_least_7_of_first_7_days"
+      WHEN "set_default"
+        THEN "set_default"
+      WHEN "is_dau_on_days_6_or_7"
+        THEN "is_dau_on_days_6_or_7"
       ELSE NULL
     END AS conversion_name,
   FROM
@@ -44,7 +54,12 @@ WITH potential_new_conversions AS (
         first_wk_3_actv_days_and_24_active_minutes,
         is_dau_at_least_4_of_first_7_days,
         is_dau_at_least_3_of_first_7_days,
-        is_dau_at_least_2_of_first_7_days
+        is_dau_at_least_2_of_first_7_days,
+        is_dau_at_least_5_of_first_7_days,
+        is_dau_at_least_6_of_first_7_days,
+        is_dau_at_least_7_of_first_7_days,
+        set_default,
+        is_dau_on_days_6_or_7
       )
     )
   WHERE

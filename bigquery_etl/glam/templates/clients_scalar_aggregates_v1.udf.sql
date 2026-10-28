@@ -67,7 +67,12 @@ RETURNS {{ user_data_type }} AS (
         scalar_averages
     )
     SELECT
-      ARRAY_AGG(({{ user_data_attributes }}, agg_type, value))
+      ARRAY_AGG(
+        ({{ user_data_attributes }}, agg_type, value)
+        ORDER BY
+          {{ user_data_attributes }},
+          agg_type
+      )
     FROM
       merged_data
   )

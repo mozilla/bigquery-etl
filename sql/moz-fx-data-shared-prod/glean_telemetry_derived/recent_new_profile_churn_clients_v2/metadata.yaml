@@ -3,7 +3,7 @@ description: |-
   Recent client-level churn metrics for new Firefox Desktop profiles, covering cohorts
   not yet present in new_profile_churn_clients_v2 (i.e. cohorts within the last 30 days
   whose data is still filling in). Structure is identical to new_profile_churn_clients_v2;
-  day columns are partially populated with NULLs for days not yet available. The entire
+  day columns and churn flags are NULL until the cohort has the days of data they need. The entire
   table is overwritten on each daily run. Intended to be unioned with
   new_profile_churn_clients_v2 for a complete view of all cohorts.
 

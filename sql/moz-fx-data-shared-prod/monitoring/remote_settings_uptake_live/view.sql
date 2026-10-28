@@ -11,8 +11,12 @@ WITH all_implementations AS (
     'firefox_desktop' AS normalized_app_id,
     IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
     submission_timestamp,
+    sample_id,
     client_info.client_id AS client_id,
     client_info.app_display_version AS app_display_version,
+    SAFE_CAST(
+      mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER
+    ) AS major_version,
     normalized_channel,
     normalized_os,
     normalized_os_version,
@@ -31,8 +35,12 @@ WITH all_implementations AS (
         '{{ app }}' AS normalized_app_id,
         IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
         submission_timestamp,
+        sample_id,
         client_info.client_id AS client_id,
         client_info.app_display_version AS app_display_version,
+        SAFE_CAST(
+          mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER
+        ) AS major_version,
         normalized_channel,
         normalized_os,
         normalized_os_version,
@@ -52,8 +60,12 @@ WITH all_implementations AS (
         '{{ app }}' AS normalized_app_id,
         IF(e.category = 'remote_settings', 'rust', 'gecko') AS implementation,
         submission_timestamp,
+        sample_id,
         client_info.client_id AS client_id,
         client_info.app_display_version AS app_display_version,
+        SAFE_CAST(
+          mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER
+        ) AS major_version,
         normalized_channel,
         normalized_os,
         normalized_os_version,
@@ -88,3 +100,16 @@ SELECT
   SAFE_CAST(mozfun.map.get_key(event_extra, 'duration') AS INT64) AS extra_duration,
 FROM
   all_implementations
+WHERE
+  -- Keep only the 1% sample where the client does not sample itself.
+  (
+    sample_id != 0
+    AND normalized_channel = 'release'
+    AND major_version >= 143
+    AND (
+      -- No server knobs on iOS
+      platform = 'ios'
+      -- Server knobs introduced in 145
+      OR major_version <= 144
+    )
+  ) IS NOT TRUE

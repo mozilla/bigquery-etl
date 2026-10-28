@@ -16,6 +16,8 @@ Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated a
 
 **Four counters carry no partner code of their own:** `counter_searches_with_ads_tagged_sum`, `counter_searches_with_ads_organic_sum`, `counter_ad_clicks_tagged_sum` and `counter_ad_clicks_organic_sum`. The client table places each on one `partner_code` per client, engine and source, so they are correct summed across `partner_code` and not when sliced by it.
 
+**`sap_kpi` is `sap_counts_total` without runaway rows.** It leaves out client table rows with 10,000 or more SAP for one client, day, engine, `partner_code` and `source`, which is the cap `search_aggregates_v8` applies. `sap_counts_total` keeps them. The rule lives in the `sap_exclusion_reason` column of the view `search.search_clients_daily_glean`, which this query reads, and is applied to the client table's rows before they are aggregated.
+
 **`client_count` is `COUNT(DISTINCT client_id)` within the row's dimensions.** A client can appear in several rows, so it cannot be summed across rows to give a number of clients.
 
 **`is_acer_distribution` is true when `distribution_id` contains `acer`.** It replaces `is_acer_cohort` in `search_aggregates_v8`, which was true for clients that are not Acer. That column also checked the `search.acer_cohort` list of legacy `client_id`s, which this table does not do, so clients that were on an Acer distribution before 2023 and no longer are show false here.

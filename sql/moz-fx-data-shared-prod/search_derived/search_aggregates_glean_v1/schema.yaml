@@ -110,6 +110,13 @@ fields:
       counter, so it does not reproduce the sap column of search_aggregates_v8. Zero, not null, on a row
       with no SAP activity. Summed over the client table rows in this row's dimensions. Only clients on
       Firefox 138 or later send the event this counts, so compare with legacy on that basis."
+- name: sap_kpi
+  type: INTEGER
+  mode: NULLABLE
+  description: "sap_counts_total without the client table rows that carry 10,000 or more SAP events for one
+      client, day, engine, partner_code and source. search_clients_daily_v8 drops the same rows.
+      sap_counts_total keeps them. Zero, not null, on a row with no SAP activity. Summed over the
+      client table rows in this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_counts_total

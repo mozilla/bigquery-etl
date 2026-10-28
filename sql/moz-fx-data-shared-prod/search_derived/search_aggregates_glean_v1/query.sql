@@ -1,7 +1,7 @@
 -- Query for search_derived.search_aggregates_glean_v1
 --
 -- Glean counterpart of search_aggregates_v8. Drops client_id from
--- search_clients_daily_glean_v1 and keeps the dimensions.
+-- search_clients_daily_glean (the view over search_clients_daily_glean_v1) and keeps the dimensions.
 -- The client table's legacy_ counters are renamed counter_ here.
 WITH client_day_country_cte AS (
   -- One country per client-day, as in search_clients_daily_v8. A client's rows can carry
@@ -20,7 +20,7 @@ WITH client_day_country_cte AS (
         COUNT(*) AS n_rows,
         MAX(mozfun.glean.parse_datetime(ping_end_time)) AS last_end_time
       FROM
-        `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
+        `moz-fx-data-shared-prod.search.search_clients_daily_glean`
       WHERE
         submission_date = @submission_date
       GROUP BY
@@ -181,7 +181,7 @@ client_day_dims_cte AS (
         ) AS is_event_backed,
         mozfun.glean.parse_datetime(ping_end_time) AS end_ts
       FROM
-        `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
+        `moz-fx-data-shared-prod.search.search_clients_daily_glean`
       WHERE
         submission_date = @submission_date
     )
@@ -239,6 +239,8 @@ SELECT
   COUNT(DISTINCT scd.client_id) AS client_count,
   COUNT(DISTINCT IF(scd.has_adblocker_addon, scd.client_id, NULL)) AS clients_with_adblocker_addon,
   SUM(scd.sap_counts_total) AS sap_counts_total,
+  -- sap_counts_total without the rows that have a sap_exclusion_reason.
+  SUM(IF(scd.sap_exclusion_reason IS NULL, scd.sap_counts_total, 0)) AS sap_kpi,
   SUM(scd.serp_counts_total) AS serp_counts_total,
   SUM(scd.serp_searches_tagged_count) AS serp_searches_tagged_count,
   SUM(scd.serp_follow_on_searches_tagged_count) AS serp_follow_on_searches_tagged_count,
@@ -260,7 +262,7 @@ SELECT
   SUM(scd.legacy_ad_clicks_tagged_sum) AS counter_ad_clicks_tagged_sum,
   SUM(scd.legacy_ad_clicks_organic_sum) AS counter_ad_clicks_organic_sum,
 FROM
-  `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1` AS scd
+  `moz-fx-data-shared-prod.search.search_clients_daily_glean` AS scd
 LEFT JOIN
   client_day_country_cte AS cdc
   ON scd.client_id = cdc.client_id

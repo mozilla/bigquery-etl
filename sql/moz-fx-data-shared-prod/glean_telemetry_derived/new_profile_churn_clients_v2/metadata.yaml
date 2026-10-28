@@ -5,9 +5,10 @@ description: |-
   flag for each of days 0-30 indicating whether the client was active on that day (TRUE) or
   inactive (FALSE). Derived churn signals include churn risk after 5 and 7 days, churned after
   1 or 2 days of activity, and immediately churned (never active in the 28 days from the cohort
-  date). Each cohort is written 30 days after its cohort date, with 31 days of data, so its flags
-  have values; recent_new_profile_churn_clients_v2 holds the younger cohorts, whose flags are
-  NULL until the cohort has the days of data a flag needs. Client attributes such as country,
+  date). Each cohort is written 30 days after its cohort date, with 31 days of data, so its day
+  flags and churn flags have values; recent_new_profile_churn_clients_v2 holds the younger
+  cohorts, whose day flags and churn flags are NULL until the cohort has the days of data a flag
+  needs. Client attributes such as country,
   channel, OS, attribution, and distribution are captured from the client's
   baseline_clients_first_seen_v1 row.
 

@@ -297,4 +297,6 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Whether Firefox was the default browser on the client's first-seen day, the most
-    common value across that day's baseline pings.
+    common value across that day's baseline pings. NULL when none of that day's pings reported it,
+    or when baseline_clients_daily_v1 has no row for the client that day, as for a client it drops
+    for sending over 150,000 pings.

@@ -293,3 +293,8 @@ fields:
   mode: NULLABLE
   description: Whether the profile matches the automated segment tracked in DENG-11590, per
     udf.is_desktop_argument_profile_automation. FALSE when an input is unknown.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether Firefox was the default browser on the client's first-seen day, the most
+    common value across that day's baseline pings.

@@ -59,6 +59,10 @@ session_types AS (
     events AS e
   CROSS JOIN
     UNNEST(e.results) AS r
+  -- An empty result type comes from an event whose results extra was empty. It can't be
+  -- clicked and has no row in the KPI map. The session still counts in the client totals.
+  WHERE
+    r.result_type != ''
   GROUP BY
     e.client_id,
     e.event_id,

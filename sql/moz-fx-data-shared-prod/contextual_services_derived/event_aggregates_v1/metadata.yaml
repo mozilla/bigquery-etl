@@ -18,3 +18,7 @@ bigquery:
     fields:
       - source
       - event_type
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:ads/data-viewers

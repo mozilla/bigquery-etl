@@ -28,23 +28,45 @@ coding_agents:
   - moz-fx-data-proto
 
 monitoring:
-  bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
-  bigeye_workspace_ids:
-  - 463
-  - 508
-  - 509
-  - 661
-  # Per-workspace BigQuery warehouse IDs. Required for tables whose
-  # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
-  # single workspace, so an API call to one workspace's warehouse ID won't
-  # see metrics in another workspace. Falls back to bigeye_warehouse_id
-  # when a workspace isn't listed here (preserves single-workspace behavior).
-  bigeye_warehouses:
-    463: 1939
-    508: 2014
-    509: 1977
-    661: 2846
+  # Bigeye warehouses belong to a single workspace, so an API call to one workspace's warehouse ID
+  # won't see metrics in another workspace.
+  bigeye_workspaces:
+    463: # Mozilla default
+      warehouse: 1939
+      collections:
+      - name: Operational Checks
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+      - name: Customer Experience
+        notification_channels:
+        - slack: '#cx-de-collaboration'
+      - name: Home Newtab
+        notification_channels:
+        - slack: '#hnt-dev-be-alerts'
+      - name: Marketing Metrics
+        notification_channels:
+        - slack: '#marketing-data-alerts'
+      - name: Subscription Platform
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+        - email: 'phlee@mozilla.com, srose@mozilla.com'
+      - name: Test
+        notification_channels:
+        - slack: '#ds-bigeye-triage'
+    508: # Mozilla Ads
+      warehouse: 2014
+      collections:
+      - name: Ads Client
+        notification_channels:
+        - slack: '#ads-client-owners'
+    509: # Mozilla Revenue - Cat 1
+      warehouse: 1977
+      collections: []
+    661: # Marketing
+      warehouse: 2846
+      collections: []
+  default_bigeye_workspace: 463
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:
@@ -117,6 +139,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  # dry run SA can't use the STMO Cloud SQL connection
+  - sql/moz-fx-data-shared-prod/stmo_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
   - sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_funnel_v1/query.sql
@@ -462,7 +486,9 @@ generate:
       - firefox_desktop_background_update
     events_monitoring:
       skip_apps:
-      - ads_backend  # restricted dataset, we don't want to include it aggregate view
+      # Apps whose stable datasets are gated in sensitivity.gated_datasets are
+      # excluded from the cross-app aggregates automatically (e.g. event_monitoring_aggregates).
+      - ads_backend  # restricted dataset
       # event pings for this app were removed but still high volume due to nimbus bugs in versions 138 to 140
       # events are still sent in the background-update ping, but they are being skipped
       # See: https://mozilla-hub.atlassian.net/browse/DENG-9715
@@ -606,7 +632,6 @@ generate:
     dag_name: bqetl_terms_of_use
     bigeye_defaults:
       collection: Operational Checks
-      notification_channel: '#de-bigeye-triage'
     apps:
       fenix:
         templates:
@@ -614,21 +639,18 @@ generate:
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_ios:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_messages_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
   stable_views_redacted:
     pings:
       firefox_desktop:
@@ -645,6 +667,14 @@ generate:
     - firefox_desktop_background_update
     - firefox_desktop_background_defaultagent
     - firefox_desktop_background_tasks
+    # Bigeye freshness/volume only see new clients (first_seen_city_date).
+    # Apps with sparse new clients get a 28-day lookback.
+    low_volume_apps:
+    - focus_ios
+    - klar_android
+    # New clients too rare (months apart); freshness/volume disabled.
+    skip_freshness_volume_apps:
+    - klar_ios
 
 geo_deprecation:
   skip_apps:
@@ -756,11 +786,14 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/onboarding_completed_clients_v1
 
 sensitivity:
   # Configuration for the sensitive-data-flow check (bigquery_etl/sensitivity.py),
   # which flags queries that read narrowly-gated data and write it somewhere more
   # broadly readable.
+
+  # Also used by glean_usage to set workgroup access for workgroup-restricted derived datasets.
 
   # Roles that grant the ability to read row-level data. dataEditor/dataOwner are
   # rare in workgroup_access here but also confer read, so count them as readers

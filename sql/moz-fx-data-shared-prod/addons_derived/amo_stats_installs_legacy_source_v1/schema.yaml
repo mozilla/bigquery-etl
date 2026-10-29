@@ -10,6 +10,8 @@ fields:
 - name: total_downloads
   type: INTEGER
   mode: NULLABLE
+  description: Total number of distinct Firefox clients that triggered an addon install event for this addon
+    on the submission date, derived from the addonsManager install_stats telemetry event.
 - name: downloads_per_source
   type: RECORD
   mode: REPEATED

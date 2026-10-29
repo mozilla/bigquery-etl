@@ -5,6 +5,8 @@ description: |
 
   The dates are in UTC timezone.
 
+  Spam and locked questions are excluded.
+
   Grain: Date x Product
 
   Single source of truth tracking:
@@ -32,3 +34,5 @@ scheduling:
   dag_name: bqetl_sumo_metrics
   date_partition_parameter: null
   depends_on_past: false
+monitoring:
+  enabled: false

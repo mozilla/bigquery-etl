@@ -2,8 +2,6 @@ type: BIGCONFIG_FILE
 table_deployments:
   - collection:
       name: {{ bigeye_collection }}
-      notification_channels:
-        - slack: '{{ bigeye_notification_slack_channel }}'
 
     deployments:
       - fq_table_name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}

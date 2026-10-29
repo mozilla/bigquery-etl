@@ -7,6 +7,8 @@
 - May use [dags.utils.gcp.bigquery_etl_query] to simplify airflow configuration
   e.g. see [dags.main_summary.exact_mau28_by_dimensions]
 - May use [script/generate_incremental_table] to automate backfilling
+- May use `bqetl query backfill` for ad-hoc backfills or `bqetl backfill create`
+  to start the managed, PR-reviewed backfill workflow
 - Should use `WRITE_TRUNCATE` mode or `bq query --replace` to replace
   partitions atomically to prevent duplicate data
 - Will have tooling to generate an optimized _mostly materialized view_ that
@@ -29,5 +31,8 @@
       period and the last day will be the same whether or not the partition
       preceding the first day was missing because values are only impacted by
       27 preceding days
+- Airflow will not automatically backfill older dates when `start_date` is
+  set in the past; backfilling must be done via the Airflow web interface or
+  CLI
 
 [dags.main_summary.exact_mau28_by_dimensions]: https://github.com/mozilla/telemetry-airflow/blob/89a6dc3/dags/main_summary.py#L385-L390

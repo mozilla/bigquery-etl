@@ -1,0 +1,10 @@
+[project]
+platform = "firefox_desktop"
+metrics = ["custom_metric"]
+reference_branch = "treatment"
+
+[project.population]
+data_source = "test_source"
+
+[metrics.custom_metric.statistics]
+sum = {}

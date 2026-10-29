@@ -16,8 +16,17 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 from ..util import extract_from_query_path, standard_args
-from ..util.common import extract_last_group_by_from_query, project_dirs
-from .parse_metadata import METADATA_FILE, DatasetMetadata, Metadata
+from ..util.common import (
+    extract_last_group_by_from_query,
+    get_unittests_dir,
+    project_dirs,
+)
+from .parse_metadata import (
+    DEFAULT_DESCRIPTION_IN_METADATA,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
 
 parser = ArgumentParser(description=__doc__)
 
@@ -334,7 +343,7 @@ def validate_asset_level(query_dir, metadata):
         # Check table description.
         results["description"] = (
             metadata.description
-            and metadata.description != "Please provide a description for the query"
+            and metadata.description != DEFAULT_DESCRIPTION_IN_METADATA
         )
 
         # Check unittest.
@@ -349,8 +358,8 @@ def validate_asset_level(query_dir, metadata):
         if not results["unittests"]:
             query_path = Path(query_dir)
             if len(query_path.parents) >= 4:
-                new_unittest_path = (
-                    query_path.parents[3] / "tests" / Path(*query_path.parts[-4:])
+                new_unittest_path = get_unittests_dir(query_path.parents[2]) / Path(
+                    *query_path.parts[-3:]
                 )
                 results["unittests"] = new_unittest_path.exists() and any(
                     name.startswith("test_") for name in os.listdir(new_unittest_path)
@@ -426,11 +435,23 @@ def validate_col_desc_enforced(query_dir, metadata):
 
 
 def validate_deprecation(metadata, path):
-    """Check that deprecated is True when deletion date exists."""
+    """Check that deprecated and deletion_date are set together.
+
+    Tables of deprecated apps (`deprecated_app: true`) are exempt from
+    requiring a deletion_date.
+    """
     if metadata.deletion_date and not metadata.deprecated:
         click.echo(
             f"Deletion date should only be added when table is deprecated in {path}"
         )
+        return False
+
+    if (
+        metadata.deprecated
+        and metadata.deletion_date is None
+        and not metadata.deprecated_app
+    ):
+        click.echo(f"deletion_date required for deprecated table in {path}")
         return False
 
     return True
@@ -868,6 +889,22 @@ def validate_datasets(target):
         raise MetadataValidationError(
             f"Dataset metadata validation failed for {target}"
         )
+
+
+def validate_directories(table_dirs, dataset_dirs):
+    """Validate table and dataset metadata directories, returning error messages."""
+    errors = []
+    for table_dir in table_dirs:
+        try:
+            validate(table_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    for dataset_dir in dataset_dirs:
+        try:
+            validate_datasets(dataset_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    return errors
 
 
 def main():

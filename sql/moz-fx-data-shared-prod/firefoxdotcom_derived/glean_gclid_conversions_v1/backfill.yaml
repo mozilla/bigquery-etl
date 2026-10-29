@@ -1,0 +1,15 @@
+2026-10-22:
+  start_date: 2026-07-01
+  end_date: 2026-10-21
+  reason: 'Populate the newly added is_dau_at_least_{5,6,7}_of_first_7_days, set_default
+    and is_dau_on_days_6_or_7 columns (https://github.com/mozilla/bigquery-etl/pull/10054).
+    Step 2 of 3: start only after the glean_conversion_event_categorization_v1 backfill
+    (https://github.com/mozilla/bigquery-etl/pull/10055) is Complete.'
+  watchers:
+  - kik@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

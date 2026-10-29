@@ -8,3 +8,9 @@ description: |-
 owners:
 - jbuckley@mozilla.com
 - wdawson@mozilla.com
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:platform/access-events

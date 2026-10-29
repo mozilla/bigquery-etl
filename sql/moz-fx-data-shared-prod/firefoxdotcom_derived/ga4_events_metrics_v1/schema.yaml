@@ -1,0 +1,116 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the events.
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    GA4 event name. Events outside the tracked list are grouped as 'other'. product_download overlaps
+    firefox_download, firefox_mobile_download and focus_download, so do not add them together. Always
+    filter on event_name.
+- name: hostname
+  type: STRING
+  mode: NULLABLE
+  description: Host of the page, lowercased. Use www.firefox.com for the production site.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale prefix of the page path, e.g. en-US. NULL when there is none.
+- name: page_path
+  type: STRING
+  mode: NULLABLE
+  description: Page path without locale prefix, query string or fragment.
+- name: page_type
+  type: STRING
+  mode: NULLABLE
+  description: Page category from the first path segment.
+- name: whatsnew_version
+  type: STRING
+  mode: NULLABLE
+  description: Firefox version of a What's New Page. NULL for other pages.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country name as reported by GA4.
+- name: cta_uid
+  type: STRING
+  mode: NULLABLE
+  description: From the uid event parameter. Only filled for cta_click.
+- name: cta_type
+  type: STRING
+  mode: NULLABLE
+  description: From the type event parameter. Only filled for cta_click.
+- name: link_position
+  type: STRING
+  mode: NULLABLE
+  description: From the position event parameter. Only filled for cta_click and link_click.
+- name: link_id
+  type: STRING
+  mode: NULLABLE
+  description: From the link_id event parameter. Only filled for cta_click and link_click.
+- name: link_classes
+  type: STRING
+  mode: NULLABLE
+  description: From the link_classes event parameter. Only filled for cta_click and link_click.
+- name: link_text
+  type: STRING
+  mode: NULLABLE
+  description: Text of the clicked CTA or link, from the text event parameter. Only filled for cta_click and link_click.
+- name: link_url
+  type: STRING
+  mode: NULLABLE
+  description: Destination of the clicked CTA or link without query string or fragment. Only filled for cta_click and link_click.
+- name: gtm_tag_name
+  type: STRING
+  mode: NULLABLE
+  description: From the gtm_tag_name event parameter. Only filled for cta_click and link_click.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: From the product event parameter. Only filled for the download events.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: From the platform event parameter. Only filled for the download events.
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+  description: From the release_channel event parameter. Only filled for the download events.
+- name: download_language
+  type: STRING
+  mode: NULLABLE
+  description: From the download_language event parameter. Only filled for the download events.
+- name: method
+  type: STRING
+  mode: NULLABLE
+  description: From the method event parameter. Only filled for the download events and send_to_device.
+- name: widget_type
+  type: STRING
+  mode: NULLABLE
+  description: From the type event parameter. Only filled for widget_action.
+- name: widget_action
+  type: STRING
+  mode: NULLABLE
+  description: From the action event parameter. Only filled for widget_action.
+- name: widget_name
+  type: STRING
+  mode: NULLABLE
+  description: From the name event parameter. Only filled for widget_action.
+- name: newsletter_id
+  type: STRING
+  mode: NULLABLE
+  description: From the newsletter_id event parameter. Only filled for newsletter_subscribe.
+- name: percent_scrolled
+  type: INTEGER
+  mode: NULLABLE
+  description: From the percent_scrolled event parameter. Only filled for scroll.
+- name: event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of events. Filter on event_name before summing.
+- name: total_engagement_time_ms
+  type: INTEGER
+  mode: NULLABLE
+  description: Sum of engagement time in milliseconds. Divide by event_count within a single event_name for an average.

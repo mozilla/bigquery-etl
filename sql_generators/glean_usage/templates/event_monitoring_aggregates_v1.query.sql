@@ -1,10 +1,12 @@
 -- Generated via ./bqetl generate glean_usage
 WITH
+{% set cte = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"]
    and dataset['bq_dataset_family'] in event_tables_per_dataset %}
+  {% if not cte.first %},{% endif %}
+  {% set cte.first = false %}
   {% if dataset['bq_dataset_family'] in manual_refresh_apps -%}
     {{ dataset['bq_dataset_family'] }}_aggregated AS (
       -- Use event_monitoring_live_v1 for apps that use manual refreshes
@@ -120,25 +122,21 @@ WITH
         experiment_branch
     )
   {% endif %}
-  {% if not outer_loop.last -%}
-  ,
-  {% endif -%}
 {% endif %}
 {% endfor %}
 {% endfor %}
 
+{% set union = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"]
    and dataset['bq_dataset_family'] in event_tables_per_dataset %}
+  {% if not union.first %}UNION ALL{% endif %}
+  {% set union.first = false %}
   SELECT
     *
   FROM
     {{ dataset['bq_dataset_family'] }}_aggregated
-  {% if not outer_loop.last -%}
-  UNION ALL
-  {% endif -%}
 {% endif %}
 {% endfor %}
 {% endfor %}

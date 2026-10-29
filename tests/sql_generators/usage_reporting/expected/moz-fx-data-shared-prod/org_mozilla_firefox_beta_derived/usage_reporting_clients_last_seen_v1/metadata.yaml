@@ -13,6 +13,7 @@ labels:
 scheduling:
   dag_name: bqetl_usage_reporting
   task_group: fenix
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

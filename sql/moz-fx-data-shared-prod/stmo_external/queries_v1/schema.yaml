@@ -1,0 +1,81 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was last updated.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was created.
+- name: org_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash organization ID. There is only one organization.
+- name: data_source_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the data source the query runs against, see `data_sources_v1`.
+- name: latest_query_data_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the most recent result, see `query_results_v1`.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: Display name.
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: Description entered by the user.
+- name: query
+  type: STRING
+  mode: NULLABLE
+  description: SQL text of the query.
+- name: query_hash
+  type: STRING
+  mode: NULLABLE
+  description: Hash of the query text, used to match rows in `query_results_v1`.
+- name: user_email
+  type: STRING
+  mode: NULLABLE
+  description: Email of the user who created the object. Legacy column, use `user_id` instead.
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the user who created the object, see `users_v1`.
+- name: last_modified_by_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the user who last modified the query, see `users_v1`.
+- name: is_archived
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the object has been archived (deleted in the Redash UI).
+- name: options
+  type: JSON
+  mode: NULLABLE
+  description: JSON query options, including parameter definitions.
+- name: version
+  type: INTEGER
+  mode: NULLABLE
+  description: Version number, incremented on each save.
+- name: is_draft
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the object is an unpublished draft.
+- name: schedule_failures
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of consecutive failures of the scheduled refresh.
+- name: tags
+  type: STRING
+  mode: REPEATED
+  description: Tags added by users.
+- name: schedule
+  type: JSON
+  mode: NULLABLE
+  description: JSON refresh schedule. Null if the query isn't scheduled.

@@ -318,6 +318,8 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    # only read by backfills, see resolve_date_partition_parameter
+    backfill_date_partition_parameter: Optional[str] = None
     table_partition_type: Optional[str] = None
     table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset

@@ -1,0 +1,5 @@
+# Empty on purpose. Every row this test asserts reaches the output through the legacy
+# FULL OUTER JOIN alone, so both pipelines are left with no rows at all -- if a label
+# case only worked because a SERP impression happened to share its key, that would not
+# be visible here.
+[]

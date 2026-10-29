@@ -2,142 +2,186 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: client_id
 - mode: NULLABLE
   name: cohort_date
   type: DATE
-  description: Cohort Date - First Seen Date
+  description: The first seen date of the client, used as the cohort entry date. Rows in this table represent
+    clients whose first ping was received on this date.
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: activity_segment
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: app_version
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
-  description: Attribution Campaign
+  description: The optional attribution campaign associated with the Firefox installation, equivalent to
+    the UTM campaign parameter. Sourced from Desktop clients only; null for Mobile rows.
 - mode: NULLABLE
   name: attribution_content
   type: STRING
-  description: Attribution Content
+  description: The optional attribution content parameter associated with the Firefox installation, equivalent
+    to the UTM content parameter. Sourced from Desktop clients only; null for Mobile rows.
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description: Attribution Experiment
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_experiment
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: Attribution Medium
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_medium
 - mode: NULLABLE
   name: attribution_source
   type: STRING
-  description: Attribution Source
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_source
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: attribution_variation
 - mode: NULLABLE
   name: city
   type: STRING
-  description: City
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: city
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: country
 - mode: NULLABLE
   name: device_model
   type: STRING
-  description: Device Model
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: device_model
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_active_users_v1/schema.yaml
+    field: locale
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING
-  description: Normalized app Name
+  description: The normalized name of the Firefox application (e.g., 'Firefox Desktop', 'Fenix', 'Firefox
+    iOS'). Derived from the app_name field in the source active users tables.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: The normalized release channel on which the application is distributed (e.g., 'release',
+    'beta', 'nightly', 'esr'). Null values may indicate the channel could not be determined.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: The normalized name of the operating system on which the client is running (e.g., 'Windows',
+    'Linux', 'Android', 'iOS', 'Mac'). Derived from the Glean 'os' metric.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: Normalized Operating System Version
+  description: The user-visible version string of the operating system (e.g., '10.0', '15', '8.1.0'). If
+    version detection fails, this may be set to 'Unknown'.
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Major or first part of the operating system version running at the
-    client. E.g. for version "100.9.11", the major is 100.
+  description: The major (first) component of the operating system version string. For example, for version
+    '10.0.1' the major version is 10. Defaults to 0 when the version cannot be parsed.
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Minor part of the operating system version running at the client. E.g.
-    for version "100.9.11", the minor is 9.
+  description: The minor (second) component of the operating system version string. For example, for version
+    '10.0.1' the minor version is 0. Defaults to 0 when the version cannot be parsed.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: Adjust Ad Group - Available for Mobile Only
+  description: The Adjust attribution ad group associated with the mobile client's acquisition. Only populated
+    for Mobile rows; null for Desktop.
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: Adjust Campaign - Available for Mobile Only
+  description: The Adjust attribution campaign name associated with the mobile client's acquisition. Only
+    populated for Mobile rows; null for Desktop.
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: Adjust Creative - Available for Mobile Only
+  description: The Adjust attribution creative identifier associated with the mobile client's acquisition
+    (e.g., 'Display', 'Search GoogleSearch'). Only populated for Mobile rows; null for Desktop.
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: Adjust Network - Available for Mobile Only
+  description: The Adjust attribution network through which the mobile client was acquired (e.g., 'Google
+    Ads ACI', 'Organic', 'Facebook Installs'). Only populated for Mobile rows; null for Desktop.
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Campaign - Available for Mobile Only
+  description: The Google Play Store install referrer campaign parameter for the mobile client (e.g., a
+    campaign identifier or URL-encoded campaign string). Only populated for Mobile rows; null for Desktop.
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Medium - Available for Mobile Only
+  description: The Google Play Store install referrer medium parameter for the mobile client (e.g., 'organic',
+    'preload', 'referral'). Only populated for Mobile rows; null for Desktop.
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Source - Available for Mobile Only
+  description: The Google Play Store install referrer source parameter for the mobile client (e.g., 'google-play',
+    'eea-browser-choice', 'apps.facebook.com'). Only populated for Mobile rows; null for Desktop.
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Content - Available for Mobile Only
+  description: The Google Play Store install referrer content parameter for the mobile client, often an
+    RTA (Return-To-App) token or other content identifier. Only populated for Mobile rows; null for Desktop.
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Term - Available for Mobile Only
+  description: The Google Play Store install referrer term (keyword) parameter for the mobile client, typically
+    the search term that led to the install. Only populated for Mobile rows; null for Desktop.
 - name: row_source
   type: STRING
   mode: NULLABLE
-  description: Flag indicating source - i.e. Desktop or Mobile
+  description: Indicates whether the row originates from a Desktop or Mobile client. Values are 'Desktop'
+    (sourced from firefox_desktop active users) or 'Mobile' (sourced from telemetry mobile active users).
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
-  description: Play Store Attribution Install Referrer Response
+  description: The raw Google Play Store install referrer response string for the mobile client, containing
+    URL-encoded UTM parameters (e.g., 'utm_source=google-play&utm_medium=organic'). Only populated for Mobile
+    rows; null for Desktop.
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: The source through which the application was installed, such as 'com.android.vending' for the Google Play Store. A null value indicates
+  description: The package name of the app store or installer through which the mobile application was installed
+    (e.g., 'com.android.vending' for the Google Play Store, 'com.sec.android.app.samsungapps' for the Samsung
+    Galaxy Store). Only populated for Mobile rows; null for Desktop. A null value for Mobile rows indicates
     the install source could not be determined.

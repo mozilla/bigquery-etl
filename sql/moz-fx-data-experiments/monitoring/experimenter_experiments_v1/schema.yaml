@@ -87,7 +87,22 @@ fields:
 - !include-field
   file: /sql/moz-fx-data-experiments/monitoring/experiment_metric_configs_v1/schema.yaml
   field: metric_config
+  append_fields:
+  - !include-field
+    file: /sql/moz-fx-data-experiments/monitoring/experiment_metric_configs_v1/schema.yaml
+    field: config_as_of
+    new_name: as_of
+- !include-field
+  file: /sql/moz-fx-data-experiments/monitoring/experiment_metric_configs_v1/schema.yaml
+  field: monitoring_config
+  append_fields:
+  - !include-field
+    file: /sql/moz-fx-data-experiments/monitoring/experiment_metric_configs_v1/schema.yaml
+    field: monitoring_config_as_of
+    new_name: as_of
 - !include-field
   file: /sql/moz-fx-data-experiments/monitoring/experiment_metric_configs_v1/schema.yaml
   field: computed_at
   new_name: metric_config_computed_at
+  append_description: >-
+    Applies to both metric_config and monitoring_config, which are resolved together.

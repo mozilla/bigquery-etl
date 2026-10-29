@@ -20,7 +20,7 @@ WITH events_stream_union AS (
   {% endfor %}
 )
 SELECT
-  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  event_id,
   * EXCEPT (event_id),
   {% if extras_by_type %}
     {{ event_extras_by_type_struct(extras_by_type) }} AS extras

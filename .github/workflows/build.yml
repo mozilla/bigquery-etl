@@ -75,7 +75,7 @@ jobs:
             sql/moz-fx-data-shared-prod/udf/**
             sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
       - id: changed-files-sql
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
@@ -88,20 +88,21 @@ jobs:
             bigquery_etl/query_scheduling/**
             tests/sql/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
       - id: changed-files-bqetl
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
             bqetl_project.yaml
             bigquery_etl/**
+            sql_generators/**
             tests/**
             script/bqetl
             script/entrypoint
             requirements.txt
             requirements.in
             .github/workflows/**
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
       - name: Decide which jobs to run
         id: set-flags
         env:
@@ -141,7 +142,7 @@ jobs:
       # Not the shared *setup-python anchor because the other ones reference needs.build.outputs.python-version
       - name: Set up Python
         id: setup_python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -183,7 +184,7 @@ jobs:
       - &setup-python
         name: Set up Python
         id: setup_python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ needs.build.outputs.python-version }}
           cache: 'pip'
@@ -242,7 +243,7 @@ jobs:
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: sql/**/query.sql
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
       # A changed query reads sensitive (restricted/workgroup-gated) data and
       # writes to a more broadly readable destination that no team owns. This is
       # advisory: rather than block or make the author edit CODEOWNERS, it just
@@ -357,7 +358,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
     if: |
-      (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
+      (needs.decide-runs.outputs.validate-bqetl == 'true' ||
+       needs.decide-runs.outputs.validate-sql == 'true' ||
+       needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
@@ -428,6 +431,9 @@ jobs:
       id-token: write
       contents: read
     environment: *job-env
+    outputs:
+      generated-sql-commit: ${{ steps.generate.outputs.generated-sql-commit }}
+      generated-sql-changed: ${{ steps.generate.outputs.generated-sql-changed }}
     steps:
       - &checkout-with-creds
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -439,6 +445,7 @@ jobs:
       - *restore-venv
       - *auth-gcp-dryrun
       - name: Generate SQL content
+        id: generate
         env:
           TRIGGER_SQL_GENERATION: ${{ github.event.inputs.trigger-sql-generation }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
@@ -452,27 +459,39 @@ jobs:
           git clone -b generated-sql https://github.com/mozilla/bigquery-etl ~/remote-generated-sql
           cd ~/remote-generated-sql
 
-          if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
-            echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
-            git checkout tags/c-${MAIN_MERGE_BASE:0:9}
-          else
-            export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
-            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
-            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+          # Find the newest tagged main commit at or before the merge base
+          GENERATED_SQL_COMMIT=""
+          LOOKUP_START=$MAIN_MERGE_BASE
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            # On main the merge base is this commit. Start from its parent so a
+            # re-run doesn't pick up the tag this run's push-generated-sql
+            # already created.
+            LOOKUP_START="$GITHUB_SHA^"
+          fi
+          if [[ -n $MAIN_MERGE_BASE ]]; then
+            # get the hash of the most recent commit that matches a c-{hash} tag
+            GENERATED_SQL_COMMIT=$(git -C "$GITHUB_WORKSPACE" rev-list --first-parent "$LOOKUP_START" \
+              | grep -m1 -Fx -f <(git tag -l 'c-*' | sed 's/^c-//') || true)
           fi
 
-          # Get the state in which main was in when the generated-sql branch was created and pushed
+          if [[ -n $GENERATED_SQL_COMMIT ]]; then
+            echo "Using generated sql from tag c-$GENERATED_SQL_COMMIT"
+            git checkout "tags/c-$GENERATED_SQL_COMMIT"
+          else
+            GENERATED_SQL_COMMIT=$(git describe --tags --abbrev=0)
+            GENERATED_SQL_COMMIT=${GENERATED_SQL_COMMIT#c-}
+            echo "No tagged ancestor of the merge base; using latest tag c-$GENERATED_SQL_COMMIT"
+          fi
+          # deploy-changes-to-stage diffs against the same generated sql
+          echo "generated-sql-commit=$GENERATED_SQL_COMMIT" >> "$GITHUB_OUTPUT"
+
+          # Check out main at the commit the generated sql was created from instead of the merge
+          # base. If a commit between them never had its output pushed (CI failure or still
+          # running), the generated sql would be missing its changes.
           cd ~
           git clone -b main https://github.com/mozilla/bigquery-etl ~/remote-bigquery-etl-main
           cd ~/remote-bigquery-etl-main
-          export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
-          git checkout $LATEST_TAG_GENERATED_SQL
-          echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
-
-          if [[ -n $MAIN_MERGE_BASE ]]; then
-            echo "Checking out $MAIN_MERGE_BASE for diff"
-            git checkout $MAIN_MERGE_BASE
-          fi
+          git checkout "$GENERATED_SQL_COMMIT"
 
           cd $GITHUB_WORKSPACE
           export GENERATED_SQL_CHANGED=false
@@ -497,6 +516,9 @@ jobs:
             GENERATED_SQL_CHANGED=true
           fi
 
+          # Records whether the generators ran (generated-sql-changed=true/false) so later jobs can read it
+          echo "generated-sql-changed=$GENERATED_SQL_CHANGED" >> "$GITHUB_OUTPUT"
+
           mkdir -p /tmp/workspace/generated-sql
           cp bqetl_project.yaml /tmp/workspace/generated-sql/
 
@@ -514,6 +536,16 @@ jobs:
 
             cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
             cp -a sql/. /tmp/workspace/generated-sql/sql
+
+            # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
+            # no deleted or renamed SQL file, not a push to main, no manual trigger).
+            # Keep only their tests/ output for metadata validation.
+            for unittests_dir in sql_generators/*/templates/unittests; do
+              PATH=".venv/bin:$PATH" script/bqetl generate "$(basename "$(dirname "$(dirname "$unittests_dir")")")" \
+                --output-dir /tmp/generated-tests-temporary/sql/ \
+                --target-project moz-fx-data-shared-prod
+            done
+            cp -r /tmp/generated-tests-temporary/tests /tmp/workspace/generated-sql/tests
           fi
 
           PATH=".venv/bin:$PATH" script/bqetl query schema render \
@@ -527,17 +559,27 @@ jobs:
             --sql-dir /tmp/workspace/generated-sql/sql/ \
             /tmp/workspace/generated-sql/sql/
           PATH=".venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
+
+          # Moves the generated tests out of generated-sql into their own artifact, generated-unittests,
+          # which the validate-metadata and deploy-changes-to-stage jobs download;
+          # private CI downloads only generated-sql, so it never receives them
+          mkdir -p /tmp/workspace/generated-unittests
+          mv /tmp/workspace/generated-sql/tests /tmp/workspace/generated-unittests/tests
       - name: Copy schema cache for reuse in other jobs
         run: |
           mkdir -p /tmp/workspace/schema-cache
           if [ -d /tmp/bigquery_etl_schemas ]; then
             cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
           fi
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: generated-unittests
+          path: /tmp/workspace/generated-unittests
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
@@ -551,6 +593,7 @@ jobs:
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       contents: read
+      statuses: write
     outputs:
       pr-number: ${{ steps.context.outputs.pr_number }}
       commit-sha: ${{ steps.context.outputs.commit_sha }}
@@ -580,8 +623,15 @@ jobs:
           PR_NUMBER: ${{ steps.context.outputs.pr_number }}
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
+          IS_MERGE_GROUP: ${{ github.event_name == 'merge_group' }}
         run: |
           if [[ -z "$TRIGGER_TOKEN" ]]; then
+            # Private CI is a required check on PRs and merge groups, so without
+            # a dispatch they'd wait on it forever
+            if [[ "$GITHUB_EVENT_NAME" == "pull_request" || "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
+              echo "::error::No private repo token available, can't dispatch private CI"
+              exit 1
+            fi
             echo "::warning::No private repo token available, skipping dispatch"
             exit 0
           fi
@@ -595,13 +645,71 @@ jobs:
               --arg pr "$PR_NUMBER" \
               --arg run_id "$RUN_ID" \
               --argjson is_main "${IS_MAIN:-false}" \
-              '{event_type: "bqetl-ci", client_payload: {bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id, is_main_push: $is_main}}')")
+              --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
+              '{event_type: "bqetl-ci", client_payload: {
+                bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
+                is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
 
           if [[ "$HTTP_STATUS" != "204" ]]; then
             echo "::error::Failed to dispatch private CI (HTTP $HTTP_STATUS)"
             exit 1
           fi
           echo "Dispatched bqetl-ci event to private-bigquery-etl"
+      - name: Report private CI dispatch failure
+        # Without a dispatch nothing reports the required status, so fail it
+        # here instead of leaving PRs and merge groups waiting on it
+        if: failure() && (github.event_name == 'pull_request' || github.event_name == 'merge_group')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
+            -f state=error \
+            -f context="private-bigquery-etl / Private CI" \
+            -f target_url="$RUN_URL" \
+            -f description="Failed to dispatch private CI, see Trigger Private CI job"
+
+  skip-private-ci:
+    name: Report Private CI Skipped
+    runs-on: ubuntu-latest
+    needs: [decide-runs, trigger-private-ci]
+    # When private CI isn't dispatched nothing else reports its required
+    # status, so PRs and merge groups would wait on it forever. That happens
+    # when it isn't needed, but also when an upstream job (e.g. Generate SQL)
+    # fails or is cancelled and trigger-private-ci gets skipped
+    if: |
+      always() &&
+      (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
+      needs.trigger-private-ci.result == 'skipped'
+    permissions:
+      statuses: write
+    steps:
+      - name: Report status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DECIDE_RUNS_RESULT: ${{ needs.decide-runs.result }}
+          VALIDATE_SQL: ${{ needs.decide-runs.outputs.validate-sql }}
+          DEPLOY: ${{ needs.decide-runs.outputs.deploy }}
+        run: |
+          if [[ "$DECIDE_RUNS_RESULT" != "success" ]]; then
+            state=error
+            description="Couldn't determine whether private CI is needed"
+          elif [[ "$VALIDATE_SQL" == "true" || "$DEPLOY" == "true" ]]; then
+            state=error
+            description="Private CI not dispatched because an upstream job failed"
+          else
+            state=success
+            description="Not needed: no SQL, DAG or workflow changes"
+          fi
+
+          gh api "repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
+            -f state="$state" \
+            -f context="private-bigquery-etl / Private CI" \
+            -f target_url="$RUN_URL" \
+            -f description="$description"
 
   docs:
     name: Build and Deploy Documentation
@@ -619,7 +727,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-generated-sql
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
@@ -658,7 +766,7 @@ jobs:
       - *download-generated-sql
       - &download-schema-cache
         name: Download schema cache if available
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         continue-on-error: true
         with:
           name: schema-cache
@@ -673,11 +781,33 @@ jobs:
         run: |
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
+      # Copies the generated tests into tests/sql/ only when the changed flag is true, so test-sql runs them
+      - if: needs.generate-sql.outputs.generated-sql-changed == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: generated-unittests
+          path: /tmp/workspace/generated-unittests
+      - name: Move generated unit tests into place
+        if: needs.generate-sql.outputs.generated-sql-changed == 'true'
+        run: cp -r /tmp/workspace/generated-unittests/tests/sql/. tests/sql/
       - name: Pull in generated-sql branch from remote
+        env:
+          GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
         run: |
           git clone --single-branch --branch generated-sql \
             https://github.com/mozilla/bigquery-etl \
             generated-sql
+          # Diff against the generated sql that generate-sql started from, not the
+          # branch head. On main, push-generated-sql runs alongside this job and
+          # can push this commit's output before the clone above, which leaves
+          # nothing to deploy. On PRs the head can include main changes the PR
+          # doesn't have, which would deploy the PR's older copies of them.
+          if [[ -n "$GENERATED_SQL_COMMIT" ]]; then
+            echo "Diffing against generated-sql at c-$GENERATED_SQL_COMMIT"
+            git -C generated-sql checkout -q "tags/c-$GENERATED_SQL_COMMIT"
+          else
+            echo "::warning::generate-sql didn't report a baseline, diffing against the generated-sql head"
+          fi
           # Normalize file permissions to avoid false positives in diffs
           find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
@@ -722,7 +852,7 @@ jobs:
           mkdir -p /tmp/workspace/staged-generated-sql
           cp -r sql/ /tmp/workspace/staged-generated-sql/sql
           cp -r tests/ /tmp/workspace/staged-generated-sql/tests
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -742,7 +872,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-staged-sql
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -861,12 +991,9 @@ jobs:
 
   validate-metadata:
     name: Validate Metadata
-    needs: [build, decide-runs]
+    needs: [build, generate-sql]
     runs-on: ubuntu-latest
-    if: |
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
-      id-token: write
       contents: read
     environment: *job-env
     steps:
@@ -876,13 +1003,18 @@ jobs:
       - name: Validate workgroup access configuration on main
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
-      - *auth-gcp-dryrun
+      - *download-generated-sql
+      - *copy-generated-sql
+      # Copies the generated tests into tests/sql/, where metadata validate looks
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: generated-unittests
+          path: /tmp/workspace/generated-unittests
+      - name: Move generated unit tests into place
+        run: cp -r /tmp/workspace/generated-unittests/tests/sql/. tests/sql/
       - name: Verify that metadata files are valid
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl query validate \
-            --no-dryrun --skip-format-sql
+          PATH=".venv/bin:$PATH" script/bqetl metadata validate
       - name: Copy generated SQL for debugging
         if: failure()
         run: |
@@ -890,10 +1022,27 @@ jobs:
           cp -r sql /tmp/debug_artifacts/sql
       - name: Upload debug artifacts
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
+
+  validate-monitoring:
+    name: Validate Monitoring
+    needs: [build, generate-sql]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: *job-env
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *copy-generated-sql
+      - name: Verify that monitoring configs are valid
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl monitoring validate sql/
 
   validate-backfills:
     name: Validate Backfills
@@ -924,7 +1073,7 @@ jobs:
     if: *is-main-deploy
     environment: *deploy-env
     steps:
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
@@ -1006,7 +1155,7 @@ jobs:
           fi
           echo "Verified: Tag is on main branch"
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install deployment tools
@@ -1014,4 +1163,4 @@ jobs:
       - name: Build distribution files
         run: python -m build --sdist --wheel
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # v1.14.2
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3

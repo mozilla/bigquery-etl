@@ -1,0 +1,6 @@
+friendly_name: STMO Query Dashboards
+description: |-
+  Redash (sql.telemetry.mozilla.org) queries and the dashboards that show them, based on the
+  current widgets on each dashboard.
+owners:
+- bewu@mozilla.com

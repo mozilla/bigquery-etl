@@ -2,13 +2,29 @@
 friendly_name: Experiment metric configs
 description: |
   Resolved jetstream/metric-hub analysis configuration (metrics, statistics,
-  segments, overrides) for each experiment returned by the Experimenter API,
-  refreshed daily against metric-hub HEAD.
+  segments, overrides) for each experiment returned by the Experimenter API.
+  Rollouts, which jetstream does not analyze, have no metric_config.
+
+  Rollouts (isRollout or a single branch) and any slugs with a
+  metric-hub/opmon config also get a monitoring_config.
+  Ended ones are resolved against metric-hub as of the day after they ended
+  (monitoring_config_as_of), live ones against HEAD. Like opmon, an opmon
+  config's end_date overrides Experimenter's.
+
+  Like jetstream, each experiment's metric_config is resolved against metric-hub as of the
+  time jetstream first touched it (config_as_of), or HEAD if it has not been
+  analyzed yet. Since resolving as of a past commit is slow, rows are reused
+  from the previous run for experiments that ended over 30 days ago: until
+  they are 7 days old, and for experiments that ended over 90 days ago, until
+  first_updated changes. Rows are also re-resolved when the schema structure,
+  the metric-config-parser version or RESOLVER_VERSION in query.py changes
+  (resolver_fingerprint), so bump RESOLVER_VERSION when changing how rows are
+  resolved. Run with --force-refresh to re-resolve everything.
 
   Read by monitoring.experimenter_experiments_v1's ten-minute import task,
-  which nests this table's metric_config column into its own rows on a
-  best-effort basis. That read is deliberately not declared as an Airflow
-  dependency, so a delay here never blocks the ten-minute import.
+  which nests this table's metric_config and monitoring_config columns into
+  its own rows on a best-effort basis. That read is deliberately not declared
+  as an Airflow dependency, so a delay here never blocks the ten-minute import.
 labels:
   incremental: false
   schedule: daily

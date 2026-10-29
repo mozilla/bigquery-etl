@@ -11,6 +11,7 @@ from bigquery_etl.util import target as target_module
 from bigquery_etl.util.common import render
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
+    METADATA_FILE,
     SCHEMA_FILE,
     Target,
     _normalize_table_ref,
@@ -25,6 +26,7 @@ from bigquery_etl.util.target import (
     read_source_identity_from_manifest,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
+    resolve_partition_for,
     target_ref_for_source,
 )
 
@@ -788,6 +790,87 @@ class TestCollectTargetDependencies:
         mock_fetch_schema.assert_not_called()
 
 
+class TestResolvePartitionFor:
+    """Partitioning metadata is authoritative if a `metadata.yaml` file exists, falling back to guessing based on the dataset suffix."""
+
+    def _write_metadata(
+        self, sql_dir: Path, project: str, dataset: str, table: str, extra_yaml: str
+    ):
+        """Write a minimal `metadata.yaml` with the specified trailing extra YAML."""
+        table_dir = sql_dir / project / dataset / table
+        table_dir.mkdir(parents=True)
+        (table_dir / METADATA_FILE).write_text(
+            "friendly_name: Test Table\n"
+            "description: A table used for testing.\n"
+            "owners:\n"
+            "- test@mozilla.com\n" + extra_yaml
+        )
+
+    def test_no_metadata_in_stable_dataset(self, tmp_path):
+        assert (
+            resolve_partition_for(str(tmp_path), "foo", "bar_stable", "baz_v1")
+            == "submission_timestamp"
+        )
+
+    def test_no_metadata_in_derived_dataset(self, tmp_path):
+        assert (
+            resolve_partition_for(str(tmp_path), "foo", "bar_derived", "baz_v1")
+            == "submission_date"
+        )
+
+    def test_no_metadata_in_unknown_dataset(self, tmp_path):
+        assert resolve_partition_for(str(tmp_path), "foo", "bar", "baz_v1") is None
+
+    def test_metadata_with_no_time_partitioning(self, tmp_path):
+        self._write_metadata(
+            tmp_path,
+            "foo",
+            "bar_derived",
+            "baz_v1",
+            "bigquery:\n  time_partitioning: null\n",
+        )
+
+        assert (
+            resolve_partition_for(str(tmp_path), "foo", "bar_derived", "baz_v1") is None
+        )
+
+    def test_metadata_with_time_partitioning_column(self, tmp_path):
+        self._write_metadata(
+            tmp_path,
+            "foo",
+            "bar_derived",
+            "baz_v1",
+            "bigquery:\n"
+            "  time_partitioning:\n"
+            "    type: day\n"
+            "    field: first_seen_date\n"
+            "    require_partition_filter: true\n",
+        )
+
+        assert (
+            resolve_partition_for(str(tmp_path), "foo", "bar_derived", "baz_v1")
+            == "first_seen_date"
+        )
+
+    def test_metadata_with_ingestion_time_partitioning(self, tmp_path):
+        self._write_metadata(
+            tmp_path,
+            "foo",
+            "bar_derived",
+            "baz_v1",
+            "bigquery:\n"
+            "  time_partitioning:\n"
+            "    type: day\n"
+            "    field: null\n"
+            "    require_partition_filter: false\n",
+        )
+
+        assert (
+            resolve_partition_for(str(tmp_path), "foo", "bar_derived", "baz_v1")
+            == "_PARTITIONTIME"
+        )
+
+
 class TestFetchStubSchema:
     """
     When both get_table and dry run fail to get a schema, the stub table should fall back
@@ -910,6 +993,65 @@ class TestRewriteTestsForTarget:
         assert (tgt_test_dir / "tgt-p.tgt_ds.tbl.schema.yaml").exists()
         # Source files preserved at their original location.
         assert (src_test_dir / "src-p.src_ds.tbl.yaml").exists()
+
+    def test_renames_fixtures_for_stubbed_tables(self, tmp_path):
+        """Table stubs (e.g. for a stable table) should have their tests renamed."""
+        from bigquery_etl.cli.deploy import _rewrite_tests_for_target
+
+        source_artifact = tmp_path / "sql" / "src-p" / "src_ds" / "tbl" / "query.sql"
+        source_artifact.parent.mkdir(parents=True)
+        source_artifact.write_text("SELECT * FROM `src-p.src_stable.upstream_v1`")
+        target_artifact = (
+            tmp_path / "sql" / "tgt-p" / "tgt_ds" / "src_p__src_ds__tbl" / "query.sql"
+        )
+        target_artifact.parent.mkdir(parents=True)
+        target_artifact.write_text("SELECT 1")
+
+        stub = (
+            tmp_path
+            / "sql"
+            / "tgt-p"
+            / "tgt_ds"
+            / "src_p__src_stable__upstream_v1"
+            / "query.py"
+        )
+        stub.parent.mkdir(parents=True)
+        stub.write_text("# stub")
+        (stub.parent / MANIFEST_FILENAME).write_text(
+            yaml.dump(
+                {
+                    "source_project": "src-p",
+                    "source_dataset": "src_stable",
+                    "source_table": "upstream_v1",
+                }
+            )
+        )
+
+        src_test_dir = tmp_path / "tests" / "sql" / "src-p" / "src_ds" / "tbl" / "test"
+        src_test_dir.mkdir(parents=True)
+        (src_test_dir / "src-p.src_stable.upstream_v1.yaml").write_text("- a: 1")
+        (src_test_dir / "src-p.src_stable.upstream_v1.schema.yaml").write_text(
+            "fields: []"
+        )
+
+        _rewrite_tests_for_target(
+            {source_artifact: target_artifact, stub: stub},
+            tmp_path / "tests" / "sql",
+        )
+
+        tgt_test_dir = (
+            tmp_path
+            / "tests"
+            / "sql"
+            / "tgt-p"
+            / "tgt_ds"
+            / "src_p__src_ds__tbl"
+            / "test"
+        )
+        stub_id = "tgt-p.tgt_ds.src_p__src_stable__upstream_v1"
+        assert (tgt_test_dir / f"{stub_id}.yaml").exists()
+        assert (tgt_test_dir / f"{stub_id}.schema.yaml").exists()
+        assert not (tgt_test_dir / "src-p.src_stable.upstream_v1.yaml").exists()
 
 
 class TestResolveIsolatedSchema:

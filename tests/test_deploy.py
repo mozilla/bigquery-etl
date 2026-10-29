@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from unittest.mock import patch
 
 import pytest
@@ -90,6 +91,57 @@ class TestDeploy:
             deploy.SkippedDeployException, match="null destination_table configured"
         ):
             deploy.deploy_table(artifact_file=query_path / "query.sql")
+
+    @staticmethod
+    def _deprecated_query_path(tmp_path, deletion_date):
+        query_path = (
+            tmp_path / "sql" / "moz-fx-data-shared-prod" / "test" / "test_query_v1"
+        )
+        query_path.mkdir(parents=True)
+        (query_path / "query.sql").write_text("SELECT 1")
+        (query_path / "schema.yaml").write_text(
+            yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]})
+        )
+        (query_path / "metadata.yaml").write_text(
+            yaml.dump({"deprecated": True, "deletion_date": deletion_date})
+        )
+        return query_path
+
+    def test_deploy_deprecated_past_deletion_date_raises_skip(self, tmp_path):
+        query_path = self._deprecated_query_path(
+            tmp_path, deletion_date=date.today() - timedelta(days=1)
+        )
+
+        with pytest.raises(
+            deploy.SkippedDeployException, match="deprecated with deletion_date"
+        ):
+            deploy.deploy_table(artifact_file=query_path / "query.sql")
+
+    def test_deploy_deprecated_on_deletion_date_raises_skip(self, tmp_path):
+        query_path = self._deprecated_query_path(tmp_path, deletion_date=date.today())
+
+        with pytest.raises(
+            deploy.SkippedDeployException, match="deprecated with deletion_date"
+        ):
+            deploy.deploy_table(artifact_file=query_path / "query.sql")
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.dryrun.DryRun")
+    def test_deploy_deprecated_before_deletion_date(
+        self, mock_dryrun, mock_client, tmp_path
+    ):
+        mock_dryrun().get_schema.return_value = {
+            "fields": [{"name": "f0_", "type": "INTEGER"}]
+        }
+        client = mock_client.return_value
+        client.get_table.side_effect = NotFound("table not found")
+        query_path = self._deprecated_query_path(
+            tmp_path, deletion_date=date.today() + timedelta(days=1)
+        )
+
+        deploy.deploy_table(artifact_file=query_path / "query.sql")
+
+        client.create_table.assert_called_once()
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.dryrun.DryRun")

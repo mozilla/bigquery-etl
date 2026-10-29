@@ -1289,17 +1289,16 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of words in the page content.
-    - name: lineNumber
-      type: INTEGER
-      mode: NULLABLE
-      description: The line in `fileName` the thrown error was created at. Line numbers
-        change between builds, so read them against the build that recorded the event.
-        Absent if the thrown value carries no line, or if `fileName` is "other" or
-        absent.
     - name: linenumber
       type: INTEGER
       mode: NULLABLE
-      description: The same as SecurityPolicyViolationEvent's lineNumber.
+      description: 'Depending on the type of event:
+
+        * The same as SecurityPolicyViolationEvent''s lineNumber.
+
+        * The line in `fileName` the thrown error was created at. Line numbers change
+        between builds, so read them against the build that recorded the event. Absent
+        if the thrown value carries no line, or if `fileName` is "other" or absent.'
     - name: list_size
       type: INTEGER
       mode: NULLABLE
@@ -2846,21 +2845,21 @@ fields:
         * Information about the file that triggered eval
 
         * Information about the filename that was requested to be loaded'
-    - name: fileName
-      type: STRING
-      mode: NULLABLE
-      description: The URI of the file the thrown error was created in, from a JS
-        error's `fileName` or an XPCOM exception or DOMException's `filename`, e.g.
-        "chrome://browser/content/sidebar/browser-sidebar.js". This can differ from
-        `module` when the consumer calls into other code. "other" for anything outside
-        moz-src://, resource:// and chrome://, such as a local path or a moz-extension://
-        URI, and for a file name containing whitespace, such as the "a -> b" name
-        of a script loaded by another or the "a line 7 > eval" name of evaluated code.
-        Absent if the thrown value carries no file, e.g. a bare nsresult.
     - name: filename
       type: STRING
       mode: NULLABLE
-      description: Filename
+      description: 'Depending on the type of event:
+
+        * Filename
+
+        * The URI of the file the thrown error was created in, from a JS error''s
+        `fileName` or an XPCOM exception or DOMException''s `filename`, e.g. "chrome://browser/content/sidebar/browser-sidebar.js".
+        This can differ from `module` when the consumer calls into other code. "other"
+        for anything outside moz-src://, resource:// and chrome://, such as a local
+        path or a moz-extension:// URI, and for a file name containing whitespace,
+        such as the "a -> b" name of a script loaded by another or the "a line 7 >
+        eval" name of evaluated code. Absent if the thrown value carries no file,
+        e.g. a bare nsresult.'
     - name: filter
       type: STRING
       mode: NULLABLE

@@ -299,8 +299,10 @@ SELECT
       LAX_INT64(event_extra.length) AS `length`,
       LAX_INT64(event_extra.levenshtein_distance) AS `levenshtein_distance`,
       LAX_INT64(event_extra.lineno) AS `lineno`,
-      LAX_INT64(event_extra.lineNumber) AS `lineNumber`,
-      LAX_INT64(event_extra.linenumber) AS `linenumber`,
+      COALESCE(
+        LAX_INT64(event_extra.linenumber),
+        LAX_INT64(event_extra.lineNumber)
+      ) AS `linenumber`,
       LAX_INT64(event_extra.magnitude) AS `magnitude`,
       LAX_INT64(event_extra.mean_tabs) AS `mean_tabs`,
       LAX_INT64(event_extra.median_tabs) AS `median_tabs`,
@@ -687,8 +689,7 @@ SELECT
       JSON_VALUE(event_extra.file_name) AS `file_name`,
       JSON_VALUE(event_extra.filedetails) AS `filedetails`,
       JSON_VALUE(event_extra.fileinfo) AS `fileinfo`,
-      JSON_VALUE(event_extra.filename) AS `filename`,
-      JSON_VALUE(event_extra.fileName) AS `fileName`,
+      COALESCE(JSON_VALUE(event_extra.filename), JSON_VALUE(event_extra.fileName)) AS `filename`,
       JSON_VALUE(event_extra.filter) AS `filter`,
       JSON_VALUE(event_extra.filtering) AS `filtering`,
       JSON_VALUE(event_extra.first_panel) AS `first_panel`,

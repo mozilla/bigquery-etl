@@ -21,6 +21,7 @@ DATA_PATH = (TABLE_DIR / "data.csv").relative_to(ROOT)
 METADATA_PATH = (TABLE_DIR / "metadata.yaml").relative_to(ROOT)
 UDF_PATH = ROOT / "sql" / "mozfun" / "norm" / "result_type_to_product_name" / "udf.sql"
 COMPONENTS = {"suggest_sponsored", "suggest_nonsponsored", "ai_chat", "excluded"}
+PLATFORMS = {"desktop"}
 FAR_FUTURE = datetime.date(9999, 12, 31)
 
 
@@ -101,8 +102,22 @@ def test_components_are_known(rows):
     )
 
 
+def test_platforms_are_known(rows):
+    """Every platform is one the KPI builds; any other value would never be joined."""
+    unknown = {
+        row["result_type"]: row["platform"]
+        for row in rows
+        if row["platform"] not in PLATFORMS
+    }
+    assert not unknown, (
+        f"Unknown platform in {DATA_PATH}: {unknown}. Use one of"
+        f" {', '.join(sorted(PLATFORMS))}. To add a platform, add it to PLATFORMS"
+        " here once search_kpi_clients_daily_v1 joins on it."
+    )
+
+
 def test_periods_do_not_overlap(rows):
-    """A result type matches at most one row on any date, so no click counts twice."""
+    """One row per result type and platform on any date, so no click counts twice."""
     periods = defaultdict(list)
     for row in rows:
         try:
@@ -117,21 +132,22 @@ def test_periods_do_not_overlap(rows):
             f" ({row['effective_from']}), so the row never applies. effective_to is"
             " exclusive: it's the first date the row no longer applies."
         )
-        periods[row["result_type"]].append((start, end))
-    for result_type, spans in periods.items():
+        periods[(row["result_type"], row["platform"])].append((start, end))
+    for (result_type, platform), spans in periods.items():
         spans.sort()
         for (_, end), (next_start, _) in zip(spans, spans[1:]):
             assert end <= next_start, (
-                f"{result_type} has two rows in {DATA_PATH} that both apply on"
-                f" {next_start}. search_kpi_clients_daily_v1 joins on result_type"
-                " and date, so its clicks would be counted twice. To change how a"
+                f"{result_type} has two {platform} rows in {DATA_PATH} that both"
+                f" apply on {next_start}. search_kpi_clients_daily_v1 joins on"
+                " result_type, platform and date, so its clicks would be counted"
+                " twice. To change how a"
                 " result type counts from some date, set the old row's"
                 " effective_to to the new row's effective_from."
             )
 
 
 def test_every_udf_result_type_is_mapped(rows):
-    """Every raw name in result_type_to_product_name has a row in the map.
+    """Every raw name in result_type_to_product_name has a desktop row in the map.
 
     Only the names in the UDF's `IN (...)` lists can be checked. Its `LIKE` branches
     match names nobody can list in advance; test_udf_like_branches_are_known covers
@@ -143,16 +159,19 @@ def test_every_udf_result_type_is_mapped(rows):
         " reads the names from its `IN ('...')` lists; if the UDF's layout"
         " changed, update the parsing here."
     )
-    missing = sorted(udf_names - {row["result_type"] for row in rows})
+    missing = sorted(
+        udf_names - {row["result_type"] for row in rows if row["platform"] == "desktop"}
+    )
     next_version = max(int(row["definition_version"]) for row in rows) + 1
     assert not missing, (
         f"These result types are in mozfun.norm.result_type_to_product_name but"
-        f" have no row in the search KPI component map: {', '.join(missing)}.\n\n"
+        f" have no desktop row in the search KPI component map: {', '.join(missing)}.\n\n"
         "Why: search_kpi_clients_daily_v1 looks up every clicked urlbar result type"
         " in this map to decide whether it counts toward the search KPI. A clicked"
         " type with no row fails its daily build.\n\n"
         f"To fix, add one row per name to {DATA_PATH}:\n"
         "  result_type          the raw name\n"
+        "  platform             desktop\n"
         "  product_result_type  what the UDF returns for it\n"
         "  component            suggest_sponsored, suggest_nonsponsored, ai_chat"
         " or excluded\n"

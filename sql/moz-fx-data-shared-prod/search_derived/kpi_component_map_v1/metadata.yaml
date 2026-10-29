@@ -1,7 +1,7 @@
 friendly_name: Search KPI Component Map
 description: |-
   Which urlbar result types count toward the search KPI, and as which component. One row per
-  raw result type per period of validity (effective_from to effective_to).
+  raw result type and platform per period of validity (effective_from to effective_to).
 
   search_kpi_clients_daily_v1 joins urlbar_clients_daily_v1 to this table on result_type and
   submission_date to split Suggest clicks into suggest_sponsored, suggest_nonsponsored and

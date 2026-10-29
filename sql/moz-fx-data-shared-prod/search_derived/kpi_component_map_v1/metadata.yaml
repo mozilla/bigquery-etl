@@ -8,9 +8,11 @@ description: |-
   ai_chat; everything else is excluded. To change the definition, add or close rows here and
   bump definition_version, then backfill the KPI tables.
 
-  Covers every raw result type clicked or shown in urlbar_events_v2 since 2024-09, plus every
-  name known to mozfun.norm.result_type_to_product_name. Truncated result-type fragments
-  that are shown but never clicked are left out.
+  Covers the raw result types clicked or shown in a 1% sample of urlbar_events_v2 since
+  2024-09, those clicked by anyone from 2026-10-13 to 2026-10-26, every name known to
+  mozfun.norm.result_type_to_product_name, and the result types in Firefox's urlbar
+  metrics.yaml. Truncated result-type fragments that are shown but never clicked are left
+  out. Rarer types will turn up in the backfill; add a row for each.
 owners:
 - data-search-wg@mozilla.com
 require_column_descriptions: true

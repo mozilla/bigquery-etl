@@ -40,4 +40,9 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1
   - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1
   - moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1
+monitoring:
+  enabled: true
+  collection: Operational Checks
+  partition_column: cohort_date
+  partition_column_set: true
 require_column_descriptions: true

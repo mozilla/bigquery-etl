@@ -220,6 +220,8 @@ def _merge_extras_by_type(
             extra = extras_by_type[extra_type][extra_key]
             extra["type"] = extra_type
             extra["names"].extend(other_extra["names"])
+            if not extra.get("name"):
+                extra["name"] = other_extra["name"]
             extra["descriptions"].extend(other_extra["descriptions"])
 
 
@@ -232,8 +234,7 @@ def _deduplicate_extras_by_type(
     """
     for extras in extras_by_type.values():
         for extra in extras.values():
-            name_counts = Counter(extra["names"])
-            extra["names"] = sorted(name_counts, key=lambda n: (-name_counts[n], n))
+            extra["names"] = [name for name, _ in Counter(extra["names"]).most_common()]
             extra["name"] = extra["names"][0]
             extra["descriptions"] = [
                 description
@@ -270,6 +271,8 @@ def get_glean_app_event_extras_by_type(
                         extra = extras_by_type[extra_type][extra_name.lower()]
                         extra["type"] = extra_type
                         extra["names"].append(extra_name)
+                        if not extra.get("name"):
+                            extra["name"] = extra_name
                         # Normalize whitespace in the descriptions to make them a single line.
                         if description := (extra_info.get("description") or "").strip():
                             extra["descriptions"].append(" ".join(description.split()))

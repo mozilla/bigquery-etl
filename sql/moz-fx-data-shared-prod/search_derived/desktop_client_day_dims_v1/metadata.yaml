@@ -1,0 +1,44 @@
+friendly_name: Desktop Client Day Dimensions
+description: |-
+  One row per Firefox Desktop client (Glean client_id) per day, with one value for each
+  dimension: country, locale, version, OS, channel, distribution, default browser,
+  enterprise policy, default search engine and home region. Tables that count different
+  things per client-day join it so they split by the same values; the search KPI joins it
+  for both its SAP and Suggest halves.
+
+  Clients with a search_clients_daily_glean_v1 row that day get the values
+  search_aggregates_glean_v1 picks for them, so splits match that table exactly. Other
+  clients get baseline_clients_daily's values, plus default engine and home region from
+  their metrics ping that day. dims_source says which applied.
+owners:
+- data-search-wg@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_search
+  owner1: data-search-wg
+scheduling:
+  dag_name: bqetl_search
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily
+  - moz-fx-data-shared-prod.firefox_desktop.metrics
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+require_column_descriptions: true

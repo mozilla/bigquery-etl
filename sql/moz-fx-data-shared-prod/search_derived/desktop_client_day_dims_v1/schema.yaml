@@ -1,0 +1,143 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: "A unique identifier (UUID) for the client.\n One row per client_id\
+    \ and submission_date."
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: "A number, 0-99, that samples by client_id and allows filtering data\
+    \ for analysis. It is a pipeline-generated artifact that should match between\
+    \ pings.\n The clustering field."
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: "A UUID uniquely identifying the profile group, not shared with other\
+    \ telemetry data.\n The ID experiment analyses join on. Chosen like the other\
+    \ columns, by dims_source."
+- name: dims_source
+  type: STRING
+  mode: NULLABLE
+  description: 'Where this row''s values come from. search_clients_daily: the client
+    has a search_clients_daily_glean_v1 row that day, and every column is the value
+    search_aggregates_glean_v1 picks for it. baseline_and_metrics: no search row;
+    values from firefox_desktop.baseline_clients_daily, with the default engine columns
+    and home_region from the client''s metrics ping that day. baseline: the same,
+    but the client sent no metrics ping that day, so the default engine columns and
+    home_region are null.'
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The country of the client on this day, one value per client-day. For
+    search_clients_daily rows, the country on the most rows of that client-day in
+    search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the country
+    code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's country.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: "Set of language- and/or country-based preferences for a user interface.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value."
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: "User visible version string (e.g. \"1.0.3\") for the browser.\n Resolved\
+    \ to one value per client-day: the event-backed side first, then the latest ping_end_time.\
+    \ Otherwise baseline_clients_daily's value (app_display_version)."
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: The major version of app_version, from mozfun.norm.browser_version_info.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's normalized_os, with\
+    \ Mac written as Darwin to match."
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: "Version of the operating system version running at the client. E.g.\
+    \ \"100.9.11\".\n Resolved to one value per client-day: the event-backed side\
+    \ first, then the latest ping_end_time. Otherwise baseline_clients_daily's normalized_os_version."
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's app_channel."
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value."
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: "The distribution id associated with the install of Firefox.\n Resolved\
+    \ to one value per client-day: the event-backed side first, then the latest ping_end_time.\
+    \ Otherwise baseline_clients_daily's distribution.name, the same field; not its\
+    \ distribution_id column, which is a different metric."
+- name: is_acer_distribution
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when distribution_id contains 'acer', meaning an Acer distribution,
+    and FALSE otherwise, including when distribution_id is null. As in search_aggregates_glean_v1.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "A flag indicating whether the browser is set as the default browser\
+    \ on the client side.\n Resolved to one value per client-day: firefox_desktop.baseline_clients_daily\
+    \ when it has one, then the event-backed side, then the latest ping_end_time."
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "Whether the client was under enterprise policy on this day, taken\
+    \ as the most common value across the day's events with ties broken toward the\
+    \ latest event.\n Resolved to one value per client-day: the event-backed side\
+    \ first, then the latest ping_end_time. Otherwise baseline_clients_daily's value."
+- name: default_search_engine_provider_id
+  type: STRING
+  mode: NULLABLE
+  description: "The unique identifier for application provided engines. For third-party\
+    \ engines, this will be \"other\".\n Resolved to one value per client-day: the\
+    \ event-backed side first, then the latest ping_end_time. Otherwise the latest\
+    \ non-null value from the client's metrics ping that day; null if it sent none\
+    \ (see dims_source)."
+- name: default_search_engine_display_name
+  type: STRING
+  mode: NULLABLE
+  description: "The display name of the default search engine. This should not be\
+    \ relied upon to identify users with application provided engines - use the provider\
+    \ id.\n Resolved to one value per client-day: the event-backed side first, then\
+    \ the latest ping_end_time. Otherwise the latest non-null value from the client's\
+    \ metrics ping that day; null if it sent none (see dims_source)."
+- name: default_private_search_engine_display_name
+  type: STRING
+  mode: NULLABLE
+  description: "The display name of the default private search engine. This should\
+    \ not be relied upon to identify users with application provided engines - use\
+    \ the provider id.\n Resolved to one value per client-day: the event-backed side\
+    \ first, then the latest ping_end_time. Otherwise the latest non-null value from\
+    \ the client's metrics ping that day; null if it sent none (see dims_source)."
+- name: home_region
+  type: STRING
+  mode: NULLABLE
+  description: "The region code of the user as identified by the client.\n Resolved\
+    \ to one value per client-day: the event-backed side first, then the latest ping_end_time.\
+    \ Otherwise the latest non-null value from the client's metrics ping that day;\
+    \ null if it sent none (see dims_source)."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: The default search engine grouped as Google, Bing or DuckDuckGo, and
+    null for any other. Matches substrings of default_search_engine_provider_id, as
+    search_aggregates_glean_v1 does. Null where the provider id is null or names another
+    engine.

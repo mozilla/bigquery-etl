@@ -77,7 +77,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: 'The window the session took place in: classic, private or smartwindow.
-      Taken from the session''s terminal event.'
+      Taken from the session''s terminal event. NULL on Firefox versions before 151, which
+      don''t report it, so older history can''t be split by window.'
   - name: sap
     type: STRING
     mode: NULLABLE

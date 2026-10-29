@@ -1,12 +1,19 @@
--- udf.newtab_is_noise_widget_event identifies crossword widget events that were
--- mistakenly emitted as genuine user actions.
+-- udf.newtab_is_noise_widget_event identifies widget events that were mistakenly
+-- recorded as genuine user actions and must not contribute to any interaction or
+-- engagement count.
 --
--- DENG-11596: the crossword widget emitted a `widgets_user_event` on every keystroke
--- and cursor move, plus echoes of context menu actions. Those events are not real user
--- actions and must not contribute to any interaction count.
+-- Whats covered:
 --
--- The action values are enumerated as a denylist so that newly introduced action values
--- default to being counted. See DENG-11450 for how the criteria were established.
+-- DENG-11596 (crossword): the widget emitted a `widgets_user_event` on every keystroke
+-- and cursor move, plus echoes of context menu actions.
+--
+-- DENG-11798 (privacy): impression events were emitted as `widgets_user_event` with
+-- `user_action` of `trackers_blocked_impression` or `message_impression`, so impressions
+-- were counted as interactions. Widget impressions remain counted separately via the
+-- `widgets_impression` event, which this function does not affect.
+--
+-- Values are enumerated as a denylist so that newly introduced action values default to
+-- being counted.
 --
 -- The result is wrapped in COALESCE so that an event whose `user_action` or
 -- `action_value` key is absent returns FALSE (treated as a genuine event) rather than
@@ -20,21 +27,34 @@ RETURNS BOOLEAN AS (
   COALESCE(
     event_category = 'newtab'
     AND event_name = 'widgets_user_event'
-    AND mozfun.map.get_key(event_details, 'widget_name') = 'crossword'
-    AND mozfun.map.get_key(event_details, 'user_action') = 'interaction'
-    AND mozfun.map.get_key(event_details, 'action_value') IN (
-      -- keystroke and cursor noise
-      'input_letter',
-      'cell_click',
-      'backspace',
-      'next_clue_button',
-      'previous_clue_button',
-      'review_clue_selected',
-      -- context menu echoes
-      'all_clues_opened',
-      'all_clues_closed',
-      'reveal_grid_requested',
-      'reveal_grid_completed'
+    AND (
+      -- DENG-11596: crossword keystroke/cursor noise and context menu echoes
+      (
+        mozfun.map.get_key(event_details, 'widget_name') = 'crossword'
+        AND mozfun.map.get_key(event_details, 'user_action') = 'interaction'
+        AND mozfun.map.get_key(event_details, 'action_value') IN (
+          -- keystroke and cursor noise
+          'input_letter',
+          'cell_click',
+          'backspace',
+          'next_clue_button',
+          'previous_clue_button',
+          'review_clue_selected',
+          -- context menu echoes
+          'all_clues_opened',
+          'all_clues_closed',
+          'reveal_grid_requested',
+          'reveal_grid_completed'
+        )
+      )
+      -- DENG-11798: privacy widget impressions recorded as user actions
+      OR (
+        mozfun.map.get_key(event_details, 'widget_name') = 'privacy'
+        AND mozfun.map.get_key(event_details, 'user_action') IN (
+          'trackers_blocked_impression',
+          'message_impression'
+        )
+      )
     ),
     FALSE
   )
@@ -128,6 +148,65 @@ SELECT
       'newtab',
       'widgets_impression',
       [STRUCT('widget_name' AS key, 'crossword' AS value)]
+    )
+  ),
+  -- DENG-11798 excluded: privacy widget impressions recorded as user actions
+  mozfun.assert.true(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_user_event',
+      [
+        STRUCT('widget_name' AS key, 'privacy' AS value),
+        ('user_action', 'trackers_blocked_impression')
+      ]
+    )
+  ),
+  mozfun.assert.true(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_user_event',
+      [STRUCT('widget_name' AS key, 'privacy' AS value), ('user_action', 'message_impression')]
+    )
+  ),
+  -- retained: genuine privacy widget actions
+  mozfun.assert.false(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_user_event',
+      [STRUCT('widget_name' AS key, 'privacy' AS value), ('user_action', 'tracking_message_click')]
+    )
+  ),
+  mozfun.assert.false(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_user_event',
+      [STRUCT('widget_name' AS key, 'privacy' AS value), ('user_action', 'message_cta_click')]
+    )
+  ),
+  -- retained: privacy widget event with no user_action key. Must be FALSE rather than
+  -- NULL, otherwise `WHERE NOT ...` would silently drop the event.
+  mozfun.assert.false(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_user_event',
+      [STRUCT('widget_name' AS key, 'privacy' AS value)]
+    )
+  ),
+  -- retained: the same impression action values on a different widget are unaffected
+  mozfun.assert.false(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_user_event',
+      [STRUCT('widget_name' AS key, 'crossword' AS value), ('user_action', 'message_impression')]
+    )
+  ),
+  -- retained: privacy widget impressions arriving as the `widgets_impression` event are
+  -- never noise - impression counts are preserved
+  mozfun.assert.false(
+    udf.newtab_is_noise_widget_event(
+      'newtab',
+      'widgets_impression',
+      [STRUCT('widget_name' AS key, 'privacy' AS value)]
     )
   ),
   -- retained: a different event category

@@ -215,8 +215,8 @@ SELECT
   a.prefs.pref_online_suggest_available,
   a.prefs.pref_online_suggest_enabled,
   a.prefs.pref_data_collection,
-  -- No shared bot list exists yet.
-  FALSE AS is_bot,
+  -- Unknown, not FALSE: no shared bot list exists yet.
+  CAST(NULL AS BOOL) AS is_bot,
   c.sessions_total,
   c.sessions_engaged,
   c.sessions_abandoned,

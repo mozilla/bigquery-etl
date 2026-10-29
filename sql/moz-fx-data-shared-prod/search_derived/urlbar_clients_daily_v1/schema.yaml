@@ -50,8 +50,9 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Whether the client is on the shared bot list. The flag is kept on the row
-    rather than dropping the client, so the exclusion can be audited. FALSE on every row
-    until a bot list exists.
+    rather than dropping the client, so the exclusion can be audited. NULL (unknown) on
+    every row until a bot list exists, so filter with `is_bot IS NOT TRUE`, because `NOT
+    is_bot` drops NULL rows.
 - name: sessions_total
   type: INTEGER
   mode: NULLABLE

@@ -4,7 +4,6 @@
 - submission_date: "2026-10-14"
   client_id: client-b
   sample_id: 2
-  is_bot: false
   sessions_total: 0
   sessions_engaged: 0
   sessions_abandoned: 0

@@ -820,8 +820,6 @@ fields:
         * Page is viewed to "setup", "inline setup" or "replace" backup authentication
         codes
 
-        * The surface the passkey sign-in started on: ''emailfirst'' or ''signin''.
-
         * Differentiates OTP/passwordless flows (''otp'') from third-party auth flows
         (''third_party_auth'').
 
@@ -840,7 +838,8 @@ fields:
         ''authentication_failed'', ''challenge_expired'', or ''unexpected''. See first_passkey_submit_frontend_error
         for full definitions.
 
-        * C...'
+        * Categorized WebAuthn or sign-in error: ''not_allowed'', ''not_readable'',
+        ''no...'
     - name: referrer
       type: STRING
       mode: NULLABLE

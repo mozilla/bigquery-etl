@@ -11,7 +11,7 @@ description: |-
   clients get baseline_clients_daily's values, plus default engine and home region from
   their metrics ping that day. dims_source says which applied.
 owners:
-- ctroy@mozilla.com
+- data-search-wg@mozilla.com
 labels:
   incremental: true
   schedule: daily

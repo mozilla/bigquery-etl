@@ -12,5 +12,5 @@ description: |-
   name known to mozfun.norm.result_type_to_product_name. Truncated result-type fragments
   that are shown but never clicked are left out.
 owners:
-- ctroy@mozilla.com
+- data-search-wg@mozilla.com
 require_column_descriptions: true

@@ -2,7 +2,7 @@
 -- recorded as genuine user actions and must not contribute to any interaction or
 -- engagement count.
 --
--- Whats covered:
+-- What's covered:
 --
 -- DENG-11596 (crossword): the widget emitted a `widgets_user_event` on every keystroke
 -- and cursor move, plus echoes of context menu actions.

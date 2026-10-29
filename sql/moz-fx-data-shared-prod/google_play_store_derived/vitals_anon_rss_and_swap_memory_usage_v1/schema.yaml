@@ -49,6 +49,4 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: |-
-    Count of distinct users for which memory metrics were reported during the aggregation period.
-    Care must be taken not to aggregate this count further, as it may result in users being counted
-    multiple times.
+    Count of distinct users for which memory metrics were reported during the aggregation period.x

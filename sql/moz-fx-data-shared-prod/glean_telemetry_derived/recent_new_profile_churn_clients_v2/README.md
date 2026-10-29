@@ -2,7 +2,7 @@
 
 ## Description
 
-The cohorts too young to be complete in `glean_telemetry_derived.new_profile_churn_clients_v2`, with the same columns. `cohort_cutoff` starts at the day after the newest cohort there, or 30 days before the run date if that table has none, so the two tables never hold the same cohort.
+The cohorts too young to be complete in `glean_telemetry_derived.new_profile_churn_clients_v2`, with the same columns. `cohort_cutoff` starts at the day after the newest cohort there, or 30 days before the run date if that table has none, so the two tables hold the same cohort only briefly during a daily run. The `glean_telemetry.new_profile_churn_clients` view reads `new_profile_churn_clients_v2` only for cohorts before the earliest cohort in `recent_new_profile_churn_clients_v2`, so the view takes any shared cohort from `recent_new_profile_churn_clients_v2`.
 
 Each run rewrites the whole table, so day and churn flags fill in as the cohorts age, and each cohort leaves once it is written to `new_profile_churn_clients_v2`.
 

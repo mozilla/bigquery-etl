@@ -7,8 +7,8 @@ One row per Firefox Desktop new profile per cohort, with a day flag for each of 
 * **Grain:** `client_id`, `cohort_date`
 * **Main fields:** `client_id`, `cohort_date`, `sample_id` (a clustering field, not part of the grain), the day flags `day_0` to `day_30`, the churn flags, `is_desktop_argument_profile_automation` and `is_default_browser`
 * **Sources:** `firefox_desktop.baseline_clients_last_seen` for activity, `firefox_desktop_derived.baseline_clients_first_seen_v1` for cohort membership and attributes, `firefox_desktop_derived.desktop_dau_distribution_id_history_v1` for `distribution_id` where Glean lacks it, and `firefox_desktop_derived.baseline_clients_daily_v1` for `is_default_browser`
-* **Companion table:** `glean_telemetry_derived.recent_new_profile_churn_clients_v2` holds the same columns for cohorts too young to be complete. Its `cohort_cutoff` starts the day after the newest cohort here, so the two tables never hold the same cohort.
-* **Downstream:** the `glean_telemetry.new_profile_churn_clients` view will union this table with `recent_new_profile_churn_clients_v2` once it switches to v2 (DENG-11734); until then it reads the v1 tables. The view and this table require a filter on `cohort_date`.
+* **Companion table:** `glean_telemetry_derived.recent_new_profile_churn_clients_v2` holds the same columns for cohorts too young to be complete. Its `cohort_cutoff` starts the day after the newest cohort here, so the two tables hold the same cohort only briefly during a daily run. The `glean_telemetry.new_profile_churn_clients` view reads `new_profile_churn_clients_v2` only for cohorts before the earliest cohort in `recent_new_profile_churn_clients_v2`, so the view takes any shared cohort from `recent_new_profile_churn_clients_v2`.
+* **Downstream:** the `glean_telemetry.new_profile_churn_clients` view unions this table with `recent_new_profile_churn_clients_v2`. The view and this table require a filter on `cohort_date`.
 
 ## Flags
 

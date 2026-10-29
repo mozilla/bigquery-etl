@@ -11,7 +11,7 @@ description: |-
   Country, version and channel aren't stored here; join
   search_derived.desktop_client_day_dims_v1.
 owners:
-- ctroy@mozilla.com
+- data-search-wg@mozilla.com
 labels:
   incremental: true
   schedule: daily

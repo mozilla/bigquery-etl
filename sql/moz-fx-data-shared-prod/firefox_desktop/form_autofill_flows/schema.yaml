@@ -1,0 +1,132 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    Date the events were received (UTC). A flow that continues after midnight is
+    split across two days.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Glean client ID.
+- name: form_type
+  type: STRING
+  mode: NULLABLE
+  description: Form type, `address` or `credit_card`.
+- name: flow
+  type: STRING
+  mode: NULLABLE
+  description: Flow ID. Autofill tags all the events of one form interaction with this ID.
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy telemetry client ID of the same profile.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Profile group ID. Nimbus experiments randomize on this ID.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sample ID (0-99) derived from the client ID.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Release channel, for example release, beta or nightly.
+- name: app_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Firefox major version.
+- name: app_build_date
+  type: DATE
+  mode: NULLABLE
+  description: Build date, from client_info.app_build. Use it for the nightly model eras.
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country of the client, from geo IP.
+- name: ml_version
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Revision of the ML field classifier, from the `mlversion` extra of
+    detected_address_form_ext. NULL for credit card forms, before the extra was
+    added, and when the ML feature is off.
+- name: client_daily_event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Number of autofill events the client sent on this day, over all flows. Used
+    for the high-volume client flag.
+- name: is_form_submitted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if a submitted_* event was received for the flow on this day.
+- name: has_autofill
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if autofill filled at least one field in the flow.
+- name: has_popup
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the autofill popup was shown on at least one field in the flow.
+- name: has_inferred_field
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if at least one field type was inferred (regex, fathom or ml).
+- name: has_autocomplete_field
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if at least one field type came from the autocomplete attribute.
+- name: detected_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Number of fields with an inferred type (regex, fathom or ml). Same as metric-
+    hub `form_autofill_forms`.
+- name: autofilled_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Number of inferred fields that autofill filled. Equals modified_fields +
+    net_kept_fields.
+- name: modified_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of inferred, autofilled fields that the user then edited.
+- name: net_kept_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of inferred, autofilled fields that the user did not edit.
+- name: fields
+  type: RECORD
+  mode: REPEATED
+  description: One entry per field named by an event of the flow.
+  fields:
+  - name: field
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Field type, for example `postal-code` or `cc-number`. Sub-field names are
+      folded (tel-* to tel, country-name to country, cc-given-name to cc-name,
+      address-housenumber to the street field).
+  - name: detection_method
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      How the field type was found - `autocomplete`, `regex`, `fathom`, `ml` or
+      `other`. NULL if no detected_* event named the field. If the events
+      disagree, the order is ml, fathom, regex, autocomplete. The `ml` value is
+      only sent from version 155; before that, ML detections show as `regex`.
+  - name: is_autofilled
+    type: BOOLEAN
+    mode: NULLABLE
+    description: True if autofill filled the field.
+  - name: is_modified
+    type: BOOLEAN
+    mode: NULLABLE
+    description: True if a filled_modified_* event named the field. Use together with is_autofilled.
+  - name: is_popup_shown
+    type: BOOLEAN
+    mode: NULLABLE
+    description: True if the autofill popup was shown on the field.

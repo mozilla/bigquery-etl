@@ -1,0 +1,14 @@
+friendly_name: Form Autofill Flows
+description: |-
+  One row per client, day and form autofill interaction ("flow") on Firefox
+  Desktop, for address and credit card forms. Each row has the per-field
+  detection method (autocomplete, regex, fathom, ml), and if the field was
+  autofilled, modified by the user, or showed the autofill popup.
+
+  This is a view over `events_stream` (about 300M rows per day), so always
+  filter on `submission_date`. The field definitions follow the metric-hub data
+  source `form_autofill_forms` (mozilla/metric-hub#1668).
+
+  A flow that continues after midnight is split across two rows (DENG-11568).
+owners:
+- phlee@mozilla.com

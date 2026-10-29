@@ -1,0 +1,36 @@
+friendly_name: Form Autofill Fields Daily
+description: |-
+  Daily Firefox Desktop form autofill counts per field and detection method
+  (autocomplete, regex, fathom, ml), for address and credit card forms. Used to
+  monitor the address autofill ML field classifier against the heuristics, by
+  field, country and version (DENG-11568).
+
+  Field counts (`detected_fields`, `autofilled_fields`, `modified_fields`,
+  `net_kept_fields`) are per (flow, field). Modify rate = modified_fields /
+  autofilled_fields. Popup counts are per flow and use the detection method of
+  the field that showed the popup. Do not sum popup counts across fields for an
+  overall rate, because one flow can show popups on more than one field; use
+  `form_autofill_forms_daily` for that.
+
+  Filter `is_high_volume_client = FALSE` to remove the few clients that send
+  most of the detection events.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_form_autofill
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - form_type
+    - normalized_channel
+    - field
+require_column_descriptions: true

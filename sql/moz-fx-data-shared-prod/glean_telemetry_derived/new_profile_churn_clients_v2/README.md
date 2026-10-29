@@ -38,4 +38,4 @@ One scheduled run per day, in `bqetl_new_profile_churn`, writing the cohort 30 d
 
 ## History
 
-Partitions expire after 775 days, matching `firefox_desktop_derived.baseline_clients_last_seen_v1`. A backfill will fill every cohort from the oldest available partition of that table onward; until it completes, the table holds only the cohorts written since deploy.
+Partitions expire after 775 days, matching `firefox_desktop_derived.baseline_clients_last_seen_v1`. A backfill filled every cohort from the oldest partition of that table available at the time onward.

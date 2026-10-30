@@ -85,4 +85,11 @@ WHERE
     AND normalized_channel = 'release'
     AND mozfun.norm.extract_version(app_version, 'major') >= 143
     AND sample_id != 0
+    AND (
+      -- client-side sampling started on version 145 on Desktop, for uptake_remotesettings only
+      mozfun.norm.extract_version(app_version, 'major') <= 144
+      OR event_object = 'normandy'
+      -- sampling lowered from 1% to 0.03% on 2026-10-20. Earlier dates stay filtered so backfills match.
+      OR submission_date <= '2026-10-21'
+    )
   ) IS NOT TRUE

@@ -61,7 +61,7 @@
     d.metric,
     d.counts,
     d.affected_clients,
-    d.affected_clients / c.total_clients AS fraction_clients_affected,
+    d.affected_clients / c.total_clients AS fraction_affected_clients,
     c.total_clients,
   FROM errors d
   INNER JOIN all_clients c

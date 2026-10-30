@@ -1,6 +1,6 @@
 friendly_name: Search Aggregates Glean
 description: |
-  Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated across
+  Daily desktop search activity from `search_clients_daily_glean`, aggregated across
   unique sets of dimensions with `client_id` removed. The Glean analogue of
   `search_aggregates_v8`, and it runs alongside it. See the README for column provenance, how
   dimensions are resolved, and caveats.

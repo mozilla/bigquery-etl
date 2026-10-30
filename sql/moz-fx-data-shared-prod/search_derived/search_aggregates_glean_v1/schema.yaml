@@ -15,7 +15,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: "The country of the client on this day, one value per client-day: the country on the most rows of
-      that client-day in search_clients_daily_glean_v1, ties to the country whose latest row has the
+      that client-day in search_clients_daily_glean, ties to the country whose latest row has the
       latest ping_end_time, then to the country code. Mirrors the one country per client-day in
       search_clients_daily_v8. See row_country for the value on the row itself."
 - name: row_country
@@ -114,9 +114,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: "sap_counts_total without the client table rows that carry 10,000 or more SAP events for one
-      client, day, engine, partner_code and source. search_clients_daily_v8 drops the same rows.
-      sap_counts_total keeps them. Zero, not null, on a row with no SAP activity. Summed over the
-      client table rows in this row's dimensions."
+      client, day, engine, partner_code and source. Applies the same 10,000 threshold as
+      search_clients_daily_v8, on the equivalent client-day row. sap_counts_total keeps those rows.
+      Zero, not null, on a row with no SAP activity. Summed over the client table rows in this
+      row's dimensions. Only SAP is filtered: every other measure on the same row, such as the serp_
+      and counter_ columns, still includes the rows that sap_kpi leaves out."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: serp_counts_total
@@ -194,9 +196,9 @@ fields:
   new_name: counter_searches_organic_sum
   prepend_description: "Renames legacy_searches_organic_sum in search_clients_daily_glean_v1. "
   new_description: "Organic, meaning non-partner, in-content searches from the browser.search.content Glean labeled
-      counter. Does not reconcile exactly with the organic column of search_aggregates_v8, which drops
-      rows with very large counts. Zero, not null, where the metrics ping carried nothing for this
-      key. Summed over the client table rows in this row's dimensions."
+      counter. Does not reconcile exactly with the organic column of search_aggregates_v8. Zero, not
+      null, where the metrics ping carried nothing for this key. Summed over the client table rows in
+      this row's dimensions."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
   field: legacy_searches_with_ads_tagged_sum

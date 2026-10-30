@@ -2,11 +2,11 @@
 
 ## Description
 
-Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated across unique sets of dimensions with `client_id` removed. The Glean analogue of `search_aggregates_v8`, and it runs alongside it.
+Daily desktop search activity from `search_clients_daily_glean`, aggregated across unique sets of dimensions with `client_id` removed. The Glean analogue of `search_aggregates_v8`, and it runs alongside it.
 
 * **Grain:** `submission_date` and the dimension columns: `normalized_engine`, `partner_code`, `source`, `country`, `row_country`, `distribution_id`, `is_acer_distribution`, `locale`, `app_version`, `os`, `normalized_os`, `os_version`, `channel`, `normalized_channel`, `is_default_browser`, `policies_is_enterprise`, `default_search_engine_display_name`, `default_private_search_engine_display_name`, `home_region` and `normalized_default_search_engine`
 * **Sources:**
-  * `search_derived.search_clients_daily_glean_v1` — every measure and every dimension except `is_default_browser`
+  * `search.search_clients_daily_glean`, the view over `search_derived.search_clients_daily_glean_v1` — every measure and every dimension except `is_default_browser`
   * `firefox_desktop.baseline_clients_daily` — `is_default_browser`, where it has a value
 * **Downstream:** the view `search.search_aggregates_glean`, which exposes this table unchanged
 
@@ -16,7 +16,7 @@ Daily desktop search activity from `search_clients_daily_glean_v1`, aggregated a
 
 **Four counters carry no partner code of their own:** `counter_searches_with_ads_tagged_sum`, `counter_searches_with_ads_organic_sum`, `counter_ad_clicks_tagged_sum` and `counter_ad_clicks_organic_sum`. The client table places each on one `partner_code` per client, engine and source, so they are correct summed across `partner_code` and not when sliced by it.
 
-**`sap_kpi` is `sap_counts_total` without runaway rows.** It leaves out client table rows with 10,000 or more SAP for one client, day, engine, `partner_code` and `source`, which is the cap `search_aggregates_v8` applies. `sap_counts_total` keeps them. The rule lives in the `sap_exclusion_reason` column of the view `search.search_clients_daily_glean`, which this query reads, and is applied to the client table's rows before they are aggregated.
+**`sap_kpi` is `sap_counts_total` without runaway rows.** It leaves out client table rows with 10,000 or more SAP for one client, day, engine, `partner_code` and `source`, which is the cap `search_aggregates_v8` applies. `sap_counts_total` keeps them. The rule lives in the `sap_exclusion_reason` column of the view `search.search_clients_daily_glean`, which this query reads, and is applied to the client table's rows before they are aggregated. **Only SAP is filtered.** Every other measure on those rows, such as the `serp_` and `counter_` columns, still includes them, unlike a `WHERE sap_exclusion_reason IS NULL` on the view, which drops those rows from every measure.
 
 **`client_count` is `COUNT(DISTINCT client_id)` within the row's dimensions.** A client can appear in several rows, so it cannot be summed across rows to give a number of clients.
 

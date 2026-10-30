@@ -1,0 +1,46 @@
+friendly_name: Search DAU Aggregates Glean
+description: |-
+  Daily desktop DAU by search behavior, per partner: `dau_w_engine_as_default` and
+  `dau_engaged_w_sap`. The Glean desktop counterpart of the desktop arm of
+  `search_dau_aggregates_v1`.
+
+  Desktop only. The mobile arm of `search_dau_aggregates_v1` already reads Glean, so it is not
+  copied here, and `device` is always `desktop`. Read mobile rows from the legacy table with
+  `device = 'mobile'`. Reading that table without the filter counts desktop twice.
+
+  DAU comes from `firefox_desktop.baseline_active_users`, so it runs higher than the legacy
+  table's, as copied profiles give several Glean ids for one legacy id. The default engine and
+  `distribution_id` of every DAU client come from the nearest metrics ping within 7 days before
+  to 1 day after the date, so clients that did not search still count.
+
+  Things to know when reading it:
+  * The counts are distinct clients per row and are not additive. A client who searched on
+    several engines in a day has a row per engine, so summing `dau_w_engine_as_default` across
+    `normalized_engine` counts them once per engine, as the legacy table does.
+  * `sap_category` and `dau_engaged_w_sap` only cover Firefox 138 and later. Filter both sides
+    to 138+ when comparing with the legacy tables.
+  * `ad_click_category_serp` steps up at Firefox 157. `ad_click_category` does not.
+  * Searchers who are not DAU on their search day are not in the table.
+
+  Open decision: the Bing arm does not exclude clients on the `search.acer_cohort` list, which
+  is keyed on the legacy `client_id`, so Bing DAU includes Acer clients the legacy table
+  excluded. To be finalized before the table feeds revenue reporting.
+
+  See the README in this directory for the full description.
+
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_search_dashboard
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null

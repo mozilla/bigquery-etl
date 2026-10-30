@@ -1,0 +1,105 @@
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c1
+  country: US
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c2
+  country: US
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c3
+  country: DE
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c4
+  country: US
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c5
+  country: FR
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c6
+  country: US
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c7
+  country: XX
+  channel: release
+  is_dau: false
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c8
+  country: YY
+  channel: release
+  is_dau: true
+  app_name: MozillaOnline
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c9
+  country: GB
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c10
+  country: RU
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-20'
+  sample_id: 0
+  client_id: c11
+  country: ZZ
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c12
+  country: JP
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c13
+  country: IT
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c14
+  country: BR
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c15
+  country: AR
+  channel: release
+  is_dau: true
+  app_name: Firefox Desktop

@@ -127,17 +127,29 @@ class TestParseBqQueryArgs:
         # like bq, which sends {"value": None}
         assert parameter.to_api_repr()["parameterValue"] == {"value": None}
 
-    def test_json_parameter(self):
+    def test_json_parameters(self):
         _, job_config = parse_bq_query_args(
             [
                 "query",
                 "--project_id=p",
                 "--format=none",
-                '--parameter=a:JSON:{"b": [1, 2]}',
+                '--parameter=object:JSON:{"b": [1, 2]}',
+                "--parameter=json_null:JSON:null",
+                "--parameter=sql_null:JSON:NULL",
+                "--parameter=big_number:JSON:12345678901234567890.123456789",
             ]
         )
-        parameter = job_config.query_parameters[0]
-        assert parameter.to_api_repr()["parameterValue"] == {"value": '{"b": [1, 2]}'}
+        # what is sent to the API; like bq, JSON text is sent unchanged
+        values = {
+            p["name"]: p["parameterValue"]
+            for p in job_config.to_api_repr()["query"]["queryParameters"]
+        }
+        assert values == {
+            "object": {"value": '{"b": [1, 2]}'},
+            "json_null": {"value": "null"},
+            "sql_null": {"value": None},
+            "big_number": {"value": "12345678901234567890.123456789"},
+        }
 
     @pytest.mark.parametrize(
         "args,reason",
@@ -188,14 +200,6 @@ class TestParseBqQueryArgs:
             (
                 ["query", "--project_id=p", "--format=none", "--parameter=a:1"],
                 "name:type:value",
-            ),
-            (
-                ["query", "--project_id=p", "--format=none", "--parameter=a:JSON:{"],
-                "isn't valid JSON",
-            ),
-            (
-                ["query", "--project_id=p", "--format=none", "--parameter=a:JSON:null"],
-                "JSON null",
             ),
             # destination can't be resolved without a project
             (

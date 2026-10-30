@@ -1,7 +1,6 @@
 """Translate `bq query` command line flags into a BigQuery client job config."""
 
-import json
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from google.cloud import bigquery
 
@@ -38,6 +37,20 @@ VALUE_FLAGS = {
 
 class UnsupportedQueryArgumentsError(ValueError):
     """The `bq query` arguments can't be run with the BigQuery client."""
+
+
+class _JsonTextQueryParameter(bigquery.ScalarQueryParameter):
+    """JSON query parameter that sends the given JSON text unchanged, like bq.
+
+    The client serializes JSON parameter values itself, which would send a JSON
+    null as SQL NULL and can change numbers when parsing and re-serializing.
+    """
+
+    def to_api_repr(self) -> dict:
+        """Return the API representation with the JSON text as the value."""
+        resource = super().to_api_repr()
+        resource["parameterValue"]["value"] = self.value
+        return resource
 
 
 def _parse_flags(args: List[str]) -> dict:
@@ -96,24 +109,12 @@ def _parse_parameter(parameter: str) -> bigquery.ScalarQueryParameter:
             f"Parameter type `{type_}` in `{parameter}` isn't supported"
         )
 
-    parameter_value: Any = value
     if value == "NULL":
         # like bq, NULL is a null value of any type
-        parameter_value = None
-    elif type_ == "JSON":
-        # the client serializes JSON values, so it needs the parsed value
-        try:
-            parameter_value = json.loads(value)
-        except ValueError:
-            raise UnsupportedQueryArgumentsError(
-                f"Parameter `{parameter}` isn't valid JSON"
-            )
-        if parameter_value is None:
-            # would be sent as a SQL NULL rather than a JSON null
-            raise UnsupportedQueryArgumentsError(
-                f"JSON null in parameter `{parameter}` isn't supported"
-            )
-    return bigquery.ScalarQueryParameter(name, type_, parameter_value)
+        return bigquery.ScalarQueryParameter(name, type_, None)
+    if type_ == "JSON":
+        return _JsonTextQueryParameter(name, type_, value)
+    return bigquery.ScalarQueryParameter(name, type_, value)
 
 
 def parse_bq_query_args(

@@ -3,6 +3,7 @@
 (
   WITH sample AS (
     SELECT
+      "{{app_id}}" as app_id,
       "{{ application_names[app_id] }}" AS application,
       client_info.client_id,
       {% if application_names[app_id] == "Firefox for Android" %}
@@ -20,6 +21,7 @@
   errors AS (
     SELECT
       submission_date,
+      app_id,
       application,
       normalized_channel,
       e.error_type,
@@ -41,6 +43,7 @@
   all_clients AS (
     SELECT
       submission_date,
+      app_id,
       application,
       normalized_channel,
       COUNT(DISTINCT client_id) AS total_clients
@@ -51,6 +54,7 @@
 
   SELECT
     d.submission_date,
+    d.app_id,
     d.application,
     d.normalized_channel,
     d.error_type,
@@ -61,7 +65,7 @@
     c.total_clients,
   FROM errors d
   INNER JOIN all_clients c
-    USING (submission_date, application, normalized_channel)
+    USING (submission_date, app_id, application, normalized_channel)
 )
 {% if not loop.last %}
 UNION ALL

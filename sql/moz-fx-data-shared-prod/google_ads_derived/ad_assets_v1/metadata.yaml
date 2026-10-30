@@ -1,6 +1,6 @@
 friendly_name: Google Ads Assets
 description: |-
-  One row per Google Ads asset, with its content, taken from the latest
+  One row per Google Ads asset, with its content, taken from the
   daily snapshot of the Google Ads BigQuery Data Transfer
   (`moz-fx-data-marketing-prod.google_ads_dts_mmc.p_ads_asset_lookup_*`).
 
@@ -15,10 +15,12 @@ description: |-
   `language` is not the market (the market is the campaign's country), and
   `raw_theme` is not the official theme (the theme is the ad group name).
 
-  The table is fully rebuilt every day from the most recent snapshot
-  partition, so it reflects the current state of each asset.
-  `snapshot_date` shows which snapshot was used. The query fails, and the
-  previous table stays in place, if no snapshot loaded in the last 7 days.
+  The table is fully rebuilt every day. It keeps each asset's most recent
+  row across all snapshots, so assets removed in Google Ads keep their
+  content for historical performance rows. `last_seen_date` is the latest
+  snapshot that includes the asset, and `snapshot_date` is the latest
+  snapshot overall. The query fails, and the previous table stays in place,
+  if no snapshot loaded in the last 7 days.
 owners:
 - phlee@mozilla.com
 - data-marketing-wg@mozilla.com

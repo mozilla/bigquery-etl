@@ -54,9 +54,15 @@ fields:
     Theme label parsed from the asset name (the segment after `rt<N>`), for example privacy, sync,
     tab-groups. Not normalized. This is not the official theme: the theme of an asset is the name of the
     ad group it runs in. NULL when the name does not follow the UAC naming convention.
+- name: last_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    Date of the most recent asset_lookup snapshot that includes this asset. Content comes from that
+    snapshot. A date earlier than snapshot_date means the asset is no longer in Google Ads.
 - name: snapshot_date
   type: DATE
   mode: NULLABLE
   description: >-
-    Date of the asset_lookup snapshot partition this table was built from. The query fails if no
-    snapshot loaded in the last 7 days.
+    Date of the latest asset_lookup snapshot when this table was built. The same for every row. The
+    query fails if no snapshot loaded in the last 7 days.

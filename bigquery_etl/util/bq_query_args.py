@@ -1,6 +1,7 @@
 """Translate `bq query` command line flags into a BigQuery client job config."""
 
-from typing import List, Optional, Tuple
+import json
+from typing import Any, List, Optional, Tuple
 
 from google.cloud import bigquery
 
@@ -35,24 +36,25 @@ VALUE_FLAGS = {
 }
 
 
-def _parse_flags(args: List[str]) -> Optional[dict]:
-    """Parse `--flag`, `--noflag`, `--flag=value` and `--flag value` arguments into a dict.
+class UnsupportedQueryArgumentsError(ValueError):
+    """The `bq query` arguments can't be run with the BigQuery client."""
 
-    Returns None if an argument isn't a supported flag.
-    """
+
+def _parse_flags(args: List[str]) -> dict:
+    """Parse `--flag`, `--noflag`, `--flag=value` and `--flag value` arguments into a dict."""
     flags: dict = {name: [] for name in REPEATED_FLAGS}
     tokens = iter(args)
     for arg in tokens:
         if arg == "query":
             continue
         if not arg.startswith("--"):
-            return None
+            raise UnsupportedQueryArgumentsError(f"Unexpected argument `{arg}`")
         name, has_value, value = arg[2:].partition("=")
 
         if not has_value and (name in REPEATED_FLAGS or name in VALUE_FLAGS):
             value = next(tokens, "")
             if not value or value.startswith("--"):
-                return None
+                raise UnsupportedQueryArgumentsError(f"Missing value for `{arg}`")
             has_value = "="
 
         if name in BOOLEAN_FLAGS:
@@ -61,59 +63,89 @@ def _parse_flags(args: List[str]) -> Optional[dict]:
             elif value.lower() in ("true", "false"):
                 flags[name] = value.lower() == "true"
             else:
-                return None
+                raise UnsupportedQueryArgumentsError(
+                    f"Unexpected boolean value in `{arg}`"
+                )
         elif name.startswith("no") and name[2:] in BOOLEAN_FLAGS and not has_value:
             flags[name[2:]] = False
-        elif name in REPEATED_FLAGS and has_value:
+        elif name in REPEATED_FLAGS:
             flags[name].append(value)
-        elif name in VALUE_FLAGS and has_value:
+        elif name in VALUE_FLAGS:
             # like bq, the last value wins
             flags[name] = value
         else:
-            return None
+            raise UnsupportedQueryArgumentsError(f"Unsupported flag `{arg}`")
     return flags
 
 
-def _parse_parameter(parameter: str) -> Optional[bigquery.ScalarQueryParameter]:
+def _parse_parameter(parameter: str) -> bigquery.ScalarQueryParameter:
     """Parse a `name:type:value` query parameter; an empty type means STRING."""
     parts = parameter.split(":", 2)
     if len(parts) != 3:
-        return None
+        raise UnsupportedQueryArgumentsError(
+            f"Parameter `{parameter}` isn't in the name:type:value format"
+        )
     name, type_, value = parts
     type_ = type_.upper() or "STRING"
-    # positional parameters, NULL values and array/struct types are left to bq
-    if not name or type_ not in SCALAR_PARAMETER_TYPES or value == "NULL":
-        return None
-    return bigquery.ScalarQueryParameter(name, type_, value)
+    if not name:
+        raise UnsupportedQueryArgumentsError(
+            f"Positional parameter `{parameter}` isn't supported"
+        )
+    if type_ not in SCALAR_PARAMETER_TYPES:
+        raise UnsupportedQueryArgumentsError(
+            f"Parameter type `{type_}` in `{parameter}` isn't supported"
+        )
+
+    parameter_value: Any = value
+    if value == "NULL":
+        # like bq, NULL is a null value of any type
+        parameter_value = None
+    elif type_ == "JSON":
+        # the client serializes JSON values, so it needs the parsed value
+        try:
+            parameter_value = json.loads(value)
+        except ValueError:
+            raise UnsupportedQueryArgumentsError(
+                f"Parameter `{parameter}` isn't valid JSON"
+            )
+        if parameter_value is None:
+            # would be sent as a SQL NULL rather than a JSON null
+            raise UnsupportedQueryArgumentsError(
+                f"JSON null in parameter `{parameter}` isn't supported"
+            )
+    return bigquery.ScalarQueryParameter(name, type_, parameter_value)
 
 
 def parse_bq_query_args(
     args: List[str],
-) -> Optional[Tuple[Optional[str], bigquery.QueryJobConfig]]:
+) -> Tuple[Optional[str], bigquery.QueryJobConfig]:
     """Return the project and job config for `bq query` arguments.
 
-    Returns None if the arguments use flags that aren't supported here, or if
-    the query results are only shown on the console, so the caller can fall
-    back to `bq`.
+    Raises UnsupportedQueryArgumentsError if the arguments use flags that
+    aren't supported here, or if the query results are only shown on the
+    console, so the caller can fall back to `bq`.
     """
     flags = _parse_flags(args)
-    if flags is None:
-        return None
 
     project = flags.get("project_id")
     destination = flags.get("destination_table")
     dry_run = flags.get("dry_run", False)
 
     if flags.get("use_legacy_sql", False):
-        return None
-    if flags.get("replace") and flags.get("append_table"):
-        return None
+        raise UnsupportedQueryArgumentsError("Legacy SQL isn't supported")
     # Results that are only shown on the console are left to bq, which prints them.
     # With a destination table the client is used and results aren't printed, unlike
     # bq: scheduled queries write to a destination without --format=none and need
     # the client for its credential scopes.
-    if not (destination or dry_run or flags.get("format") == "none"):
-        return None
+    if not (
+        destination
+        or dry_run
+        or flags.get("format") == "none"
+        or flags.get("max_rows") == "0"
+    ):
+        raise UnsupportedQueryArgumentsError(
+            "Query results would be printed, which only bq does"
+        )
 
     job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
 
@@ -131,20 +163,20 @@ def parse_bq_query_args(
             job_config.destination = bigquery.TableReference.from_string(
                 destination, default_project=project
             )
-    except ValueError:
-        return None
+    except ValueError as e:
+        raise UnsupportedQueryArgumentsError(
+            f"Can't resolve the default dataset or destination table: {e}"
+        )
 
-    if flags.get("append_table"):
-        job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
-    elif flags.get("replace"):
+    # like bq, --replace takes precedence over --append_table
+    if flags.get("replace"):
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+    elif flags.get("append_table"):
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
     elif flags.get("replace") is False:
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_EMPTY
 
-    parameters = [_parse_parameter(p) for p in flags["parameter"]]
-    if None in parameters:
-        return None
-    job_config.query_parameters = parameters
+    job_config.query_parameters = [_parse_parameter(p) for p in flags["parameter"]]
 
     if flags["schema_update_option"]:
         job_config.schema_update_options = flags["schema_update_option"]

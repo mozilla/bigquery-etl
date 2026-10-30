@@ -83,7 +83,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
-from ..util.bq_query_args import parse_bq_query_args
+from ..util.bq_query_args import UnsupportedQueryArgumentsError, parse_bq_query_args
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
@@ -1249,7 +1249,14 @@ def _run_query(
             # callers that need different semantics pass --append_table or --noreplace explicitly.
             if not any(
                 flag in query_arguments
-                for flag in ("--replace", "--append_table", "--noreplace")
+                for flag in (
+                    "--append_table",
+                    "--append_table=true",
+                    "--replace",
+                    "--replace=true",
+                    "--replace=false",
+                    "--noreplace",
+                )
             ):
                 query_arguments.append("--replace")
 
@@ -1341,10 +1348,19 @@ def _run_query(
 
 def _execute_query(query_text: str, query_arguments: list):
     """Run the query with the BigQuery client, or with bq if the arguments aren't supported."""
-    parsed = parse_bq_query_args(query_arguments)
+    parsed = None
+    try:
+        parsed = parse_bq_query_args(query_arguments)
+    except UnsupportedQueryArgumentsError as e:
+        logging.info("Running query with bq (%s): %s", e, query_arguments)
+    except Exception as e:
+        logging.warning(
+            "Error parsing query arguments, running query with bq (%s): %s",
+            e,
+            query_arguments,
+        )
 
     if parsed is None:
-        logging.info("Running query with bq: %s", query_arguments)
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
         with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
@@ -1360,17 +1376,26 @@ def _execute_query(query_text: str, query_arguments: list):
     client = bigquery.Client(
         project=project or default_project, credentials=credentials
     )
+    logging.info(
+        "Running query with BigQuery client in %s: %s",
+        client.project,
+        job_config.to_api_repr(),
+    )
     job = client.query(query_text, job_config=job_config)
 
     if job_config.dry_run:
         click.echo(
-            "Query successfully validated. Running this query will process "
-            f"{job.total_bytes_processed} bytes."
+            "Query successfully validated. Running this query would process "
+            f"an estimated {job.total_bytes_processed:,} bytes."
         )
         return
 
-    click.echo(f"Running query job {job.project}:{job.location}.{job.job_id}")
+    click.echo(f"Running query job {job.project}:{job.location}.{job.job_id}...")
     job.result()
+    click.echo(
+        f"Query job {job.project}:{job.location}.{job.job_id} is done. "
+        f"It processed {job.total_bytes_processed:,} bytes."
+    )
 
 
 def create_query_session(

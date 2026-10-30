@@ -1,8 +1,12 @@
+import re
 from datetime import date
 
 import pytest
 
-from bigquery_etl.util.bq_query_args import parse_bq_query_args
+from bigquery_etl.util.bq_query_args import (
+    UnsupportedQueryArgumentsError,
+    parse_bq_query_args,
+)
 
 
 class TestParseBqQueryArgs:
@@ -103,37 +107,103 @@ class TestParseBqQueryArgs:
         )
         assert job_config.write_disposition == "WRITE_EMPTY"
 
-    @pytest.mark.parametrize(
-        "args",
-        [
-            # bq prints results
-            ["query", "--project_id=p"],
-            ["query", "--project_id=p", "--format=pretty"],
-            # unsupported flags and values
-            ["query", "--project_id=p", "--format=none", "--label=a:b"],
-            ["query", "--project_id=p", "--format=none", "--parameter"],
-            ["query", "--project_id=p", "--format=none", "--parameter", "--dry_run"],
-            ["query", "--project_id=p", "--format=none", "--use_legacy_sql=true"],
-            ["query", "--project_id=p", "--format=none", "--dry_run=maybe"],
-            [
-                "--project_id=p",
-                "--destination_table=d.t",
-                "--replace",
-                "--append_table",
-            ],
-            # unsupported parameters
-            ["query", "--project_id=p", "--format=none", "--parameter=:INT64:1"],
-            ["query", "--project_id=p", "--format=none", "--parameter=a:INT64:NULL"],
+    def test_replace_takes_precedence_over_append_table(self):
+        # like bq
+        _, job_config = parse_bq_query_args(
+            ["--project_id=p", "--destination_table=d.t", "--replace", "--append_table"]
+        )
+        assert job_config.write_disposition == "WRITE_TRUNCATE"
+
+    def test_max_rows_zero_without_destination(self):
+        _, job_config = parse_bq_query_args(["query", "--project_id=p", "--max_rows=0"])
+        assert job_config.destination is None
+
+    def test_null_parameter(self):
+        _, job_config = parse_bq_query_args(
+            ["query", "--project_id=p", "--format=none", "--parameter=a:INT64:NULL"]
+        )
+        parameter = job_config.query_parameters[0]
+        assert parameter.value is None
+        # like bq, which sends {"value": None}
+        assert parameter.to_api_repr()["parameterValue"] == {"value": None}
+
+    def test_json_parameter(self):
+        _, job_config = parse_bq_query_args(
             [
                 "query",
                 "--project_id=p",
                 "--format=none",
-                "--parameter=a:ARRAY<INT64>:[1]",
-            ],
-            ["query", "--project_id=p", "--format=none", "--parameter=a:1"],
+                '--parameter=a:JSON:{"b": [1, 2]}',
+            ]
+        )
+        parameter = job_config.query_parameters[0]
+        assert parameter.to_api_repr()["parameterValue"] == {"value": '{"b": [1, 2]}'}
+
+    @pytest.mark.parametrize(
+        "args,reason",
+        [
+            (["query", "--project_id=p"], "would be printed"),
+            (["query", "--project_id=p", "--format=pretty"], "would be printed"),
+            (["query", "--project_id=p", "--max_rows=10"], "would be printed"),
+            (
+                ["query", "--project_id=p", "--format=none", "--label=a:b"],
+                "Unsupported flag `--label=a:b`",
+            ),
+            (
+                ["query", "--project_id=p", "--format=none", "--parameter"],
+                "Missing value for `--parameter`",
+            ),
+            (
+                [
+                    "query",
+                    "--project_id=p",
+                    "--format=none",
+                    "--parameter",
+                    "--dry_run",
+                ],
+                "Missing value for `--parameter`",
+            ),
+            (["query", "p.d.t"], "Unexpected argument `p.d.t`"),
+            (
+                ["query", "--project_id=p", "--format=none", "--use_legacy_sql=true"],
+                "Legacy SQL",
+            ),
+            (
+                ["query", "--project_id=p", "--format=none", "--dry_run=maybe"],
+                "Unexpected boolean value",
+            ),
+            (
+                ["query", "--project_id=p", "--format=none", "--parameter=:INT64:1"],
+                "Positional parameter",
+            ),
+            (
+                [
+                    "query",
+                    "--project_id=p",
+                    "--format=none",
+                    "--parameter=a:ARRAY<INT64>:[1]",
+                ],
+                "Parameter type `ARRAY<INT64>`",
+            ),
+            (
+                ["query", "--project_id=p", "--format=none", "--parameter=a:1"],
+                "name:type:value",
+            ),
+            (
+                ["query", "--project_id=p", "--format=none", "--parameter=a:JSON:{"],
+                "isn't valid JSON",
+            ),
+            (
+                ["query", "--project_id=p", "--format=none", "--parameter=a:JSON:null"],
+                "JSON null",
+            ),
             # destination can't be resolved without a project
-            ["query", "--destination_table=table_v1", "--dataset_id=test"],
+            (
+                ["query", "--destination_table=table_v1", "--dataset_id=test"],
+                "Can't resolve",
+            ),
         ],
     )
-    def test_unsupported(self, args):
-        assert parse_bq_query_args(args) is None
+    def test_unsupported(self, args, reason):
+        with pytest.raises(UnsupportedQueryArgumentsError, match=re.escape(reason)):
+            parse_bq_query_args(args)

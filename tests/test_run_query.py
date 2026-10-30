@@ -218,6 +218,7 @@ class TestRunQuery:
         # bigquery.client().query().session_info.session_id = ...
         mock_query_call = Mock()
         mock_query_call.return_value.session_info.session_id = "1234567890"
+        mock_query_call.return_value.total_bytes_processed = 0
         mock_client.return_value.query = mock_query_call
 
         mock_query_and_wait_call = Mock()
@@ -347,9 +348,10 @@ class TestRunQuery:
 
     @patch("google.auth.default", return_value=(None, "default-project"))
     @patch("google.cloud.bigquery.Client")
-    def test_execute_query_with_client(self, mock_client, mock_auth_default):
+    def test_execute_query_with_client(self, mock_client, mock_auth_default, capsys):
         from bigquery_etl.cli.query import QUERY_SCOPES, _execute_query
 
+        mock_client.return_value.query.return_value.total_bytes_processed = 1234
         with patch("subprocess.check_call") as mock_call:
             _execute_query(
                 "SELECT 1",
@@ -373,12 +375,30 @@ class TestRunQuery:
         assert job_config.destination.table_id == "table_v1$20240101"
         assert job_config.write_disposition == "WRITE_TRUNCATE"
         mock_client.return_value.query.return_value.result.assert_called_once()
+        assert "It processed 1,234 bytes." in capsys.readouterr().out
 
     @patch("google.cloud.bigquery.Client")
     def test_execute_query_falls_back_to_bq(self, mock_client):
         from bigquery_etl.cli.query import _execute_query
 
         query_arguments = ["query", "--project_id=project-1", "--unknown_flag"]
+        with patch("subprocess.check_call") as mock_call:
+            _execute_query("SELECT 1", query_arguments)
+
+        assert mock_call.call_args.args == (["bq"] + query_arguments,)
+        assert mock_client.call_count == 0
+
+    @patch("google.cloud.bigquery.Client")
+    @patch(
+        "bigquery_etl.cli.query.parse_bq_query_args",
+        side_effect=RuntimeError("unexpected"),
+    )
+    def test_execute_query_falls_back_to_bq_on_parsing_error(
+        self, mock_parse, mock_client
+    ):
+        from bigquery_etl.cli.query import _execute_query
+
+        query_arguments = ["query", "--project_id=project-1", "--format=none"]
         with patch("subprocess.check_call") as mock_call:
             _execute_query("SELECT 1", query_arguments)
 

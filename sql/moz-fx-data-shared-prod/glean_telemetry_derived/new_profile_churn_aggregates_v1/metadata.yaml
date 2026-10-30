@@ -1,0 +1,26 @@
+friendly_name: New Profile Churn Aggregates - Desktop Glean
+description: |-
+  New-profile churn and early churn-risk counts for Firefox Desktop, one row per cohort
+  (first_seen_date) and combination of audience columns, excluding bot-flagged profiles.
+  Built from glean_telemetry.new_profile_churn_clients and rebuilt in full on each run.
+  Each churn and churn-risk count is NULL until its cohort has the days of data the count needs.
+
+  Jira: https://mozilla-hub.atlassian.net/browse/DENG-11664
+owners:
+- data-product-kpis-wg@mozilla.com
+labels:
+  incremental: false
+  owner1: data-product-kpis-wg
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_new_profile_churn
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: cohort_date
+    require_partition_filter: false
+    expiration_days: null
+require_column_descriptions: true

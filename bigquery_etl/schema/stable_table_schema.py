@@ -4,7 +4,6 @@ import json
 import os
 import pickle
 import tarfile
-import tempfile
 import urllib.request
 from dataclasses import dataclass
 from functools import cache
@@ -14,6 +13,7 @@ from typing import List
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
+from bigquery_etl.util.cache_dir import get_private_cache_dir
 
 
 @dataclass
@@ -80,12 +80,13 @@ def get_stable_table_schemas() -> List[SchemaFile]:
 
     # create cache file path based on the schemas URI
     commit_hash = schemas_uri.split("/")[-1].replace(".tar.gz", "")
-    cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_schemas")
-    os.makedirs(cache_dir, exist_ok=True)
-    cache_file = os.path.join(cache_dir, f"schemas_{commit_hash}.pkl")
+    cache_dir = get_private_cache_dir("bigquery_etl_schemas")
+    cache_file = (
+        os.path.join(cache_dir, f"schemas_{commit_hash}.pkl") if cache_dir else None
+    )
 
     # check if cached file exists and load it
-    if os.path.exists(cache_file):
+    if cache_file and os.path.exists(cache_file):
         print(f"Loading cached schemas from {cache_file}")
         try:
             with open(cache_file, "rb") as f:
@@ -180,11 +181,12 @@ def get_stable_table_schemas() -> List[SchemaFile]:
     ]
 
     # Cache the processed schemas
-    try:
-        with open(cache_file, "wb") as f:
-            pickle.dump(schemas, f)
-        print(f"Cached schemas to {cache_file}")
-    except (pickle.PickleError, OSError) as e:
-        print(f"Failed to cache schemas: {e}")
+    if cache_file:
+        try:
+            with open(cache_file, "wb") as f:
+                pickle.dump(schemas, f)
+            print(f"Cached schemas to {cache_file}")
+        except (pickle.PickleError, OSError) as e:
+            print(f"Failed to cache schemas: {e}")
 
     return schemas

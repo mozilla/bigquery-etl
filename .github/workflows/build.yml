@@ -516,6 +516,20 @@ jobs:
             GENERATED_SQL_CHANGED=true
           fi
 
+          # Checked-in metadata.yaml overrides for generated views (e.g. workgroup_access
+          # for fenix.crash) are merged into the generated metadata by the generators,
+          # so copying a changed override over generated-sql would be wrong
+          if [ "$GENERATED_SQL_CHANGED" = "false" ]; then
+            CHANGED_OVERRIDES=$(PATH=".venv/bin:$PATH" python -m bigquery_etl.util.sql_overlay \
+              changed-overrides sql ~/remote-generated-sql/sql \
+              --base ~/remote-bigquery-etl-main/sql)
+            if [[ -n "$CHANGED_OVERRIDES" ]]; then
+              echo "Metadata overrides for generated views changed; re-generate SQL"
+              echo "$CHANGED_OVERRIDES"
+              GENERATED_SQL_CHANGED=true
+            fi
+          fi
+
           # Records whether the generators ran (generated-sql-changed=true/false) so later jobs can read it
           echo "generated-sql-changed=$GENERATED_SQL_CHANGED" >> "$GITHUB_OUTPUT"
 
@@ -535,7 +549,11 @@ jobs:
             echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
             cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
-            cp -a sql/. /tmp/workspace/generated-sql/sql
+            # A plain copy would replace generated metadata.yaml files with their
+            # unchanged checked-in overrides
+            PATH=".venv/bin:$PATH" python -m bigquery_etl.util.sql_overlay \
+              copy sql /tmp/workspace/generated-sql/sql \
+              --base ~/remote-bigquery-etl-main/sql
 
             # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
             # no deleted or renamed SQL file, not a push to main, no manual trigger).
@@ -624,6 +642,9 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
           IS_MERGE_GROUP: ${{ github.event_name == 'merge_group' }}
+          # Private CI builds its main baseline from this generated-sql tag so the
+          # diff it posts doesn't pick up main changes newer than the PR's base
+          GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
         run: |
           if [[ -z "$TRIGGER_TOKEN" ]]; then
             # Private CI is a required check on PRs and merge groups, so without
@@ -644,10 +665,12 @@ jobs:
               --arg sha "$COMMIT_SHA" \
               --arg pr "$PR_NUMBER" \
               --arg run_id "$RUN_ID" \
+              --arg generated_sql_commit "$GENERATED_SQL_COMMIT" \
               --argjson is_main "${IS_MAIN:-false}" \
               --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
               '{event_type: "bqetl-ci", client_payload: {
                 bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
+                generated_sql_commit: $generated_sql_commit,
                 is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
 
           if [[ "$HTTP_STATUS" != "204" ]]; then

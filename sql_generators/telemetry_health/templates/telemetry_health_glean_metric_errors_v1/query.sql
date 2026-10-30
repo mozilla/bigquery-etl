@@ -8,7 +8,7 @@
       {% if application_names[app_id] == "Firefox for Android" %}
       mozfun.norm.fenix_app_info("{{ app_id }}", client_info.app_build).channel AS normalized_channel,
       {% else %}
-      normalized_channel,
+      COALESCE(normalized_channel, 'Other') AS normalized_channel,
       {% endif %}
       DATE(submission_timestamp) AS submission_date,
       metrics,

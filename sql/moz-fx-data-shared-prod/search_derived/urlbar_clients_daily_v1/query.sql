@@ -7,7 +7,6 @@
 WITH events AS (
   SELECT
     glean_client_id AS client_id,
-    legacy_telemetry_client_id,
     profile_group_id,
     sample_id,
     event_id,
@@ -147,14 +146,6 @@ client_attributes AS (
   SELECT
     client_id,
     ANY_VALUE(sample_id) AS sample_id,
-    ARRAY_AGG(
-      legacy_telemetry_client_id IGNORE NULLS
-      ORDER BY
-        seq DESC,
-        event_timestamp DESC
-      LIMIT
-        1
-    )[SAFE_OFFSET(0)] AS legacy_telemetry_client_id,
     ARRAY_AGG(profile_group_id IGNORE NULLS ORDER BY seq DESC, event_timestamp DESC LIMIT 1)[
       SAFE_OFFSET(0)
     ] AS profile_group_id,
@@ -207,7 +198,6 @@ client_results AS (
 SELECT
   @submission_date AS submission_date,
   c.client_id,
-  a.legacy_telemetry_client_id,
   a.profile_group_id,
   a.sample_id,
   a.prefs.pref_suggest_enabled,

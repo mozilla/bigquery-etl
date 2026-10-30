@@ -8,12 +8,6 @@ fields:
   mode: NULLABLE
   description: The Glean client identifier (client_info.client_id). One row per client_id
     and submission_date.
-- name: legacy_telemetry_client_id
-  type: STRING
-  mode: NULLABLE
-  description: The legacy telemetry client_id reported by the client, latest non-null value
-    that day. Carried alongside client_id, the Glean identifier this table is keyed on, so
-    a row can be joined to legacy telemetry tables.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

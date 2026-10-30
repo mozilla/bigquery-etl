@@ -263,8 +263,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="search_derived.desktop_client_day_dims_v1"
     ): DESKTOP_GLEAN_SRC,
-    # Keyed on the Glean id, like search_clients_daily_glean_v1 above; the carried
-    # legacy_telemetry_client_id needs no second target for the same reason.
     client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"

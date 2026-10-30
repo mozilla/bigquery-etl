@@ -1,9 +1,8 @@
 # NULL columns are omitted: the harness drops null keys from the result row.
 
-# Prefs, legacy and profile group ids from e2, the event in the later ping.
+# Prefs and profile group id from e2, the event in the later ping.
 - submission_date: "2026-10-14"
   client_id: client-d
-  legacy_telemetry_client_id: legacy-new
   profile_group_id: group-new
   sample_id: 4
   pref_suggest_enabled: true

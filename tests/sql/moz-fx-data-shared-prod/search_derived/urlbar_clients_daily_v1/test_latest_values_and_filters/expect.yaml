@@ -1,10 +1,9 @@
 # NULL columns are omitted: the harness drops null keys from the result row.
 
-# Prefs from e2 (the latest), legacy and profile group ids from e1 (the latest non-null). Only the two
+# Prefs from e2 (the latest), profile group id from e1 (the latest non-null). Only the two
 # 2026-10-14 sessions are counted.
 - submission_date: "2026-10-14"
   client_id: client-a
-  legacy_telemetry_client_id: legacy-a
   profile_group_id: group-a
   sample_id: 1
   pref_suggest_enabled: true

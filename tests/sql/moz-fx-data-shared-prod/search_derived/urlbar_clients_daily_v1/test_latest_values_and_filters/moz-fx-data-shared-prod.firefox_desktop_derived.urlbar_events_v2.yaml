@@ -1,10 +1,9 @@
-# Prefs come from the client's latest event that day; the legacy and profile group ids
-# are the latest non-null ones. The last two rows must be filtered out.
+# Prefs come from the client's latest event that day; the profile group id is the
+# latest non-null one. The last two rows must be filtered out.
 
-# Earlier event: sponsored on, legacy and profile group ids present.
+# Earlier event: sponsored on, profile group id present.
 - submission_date: "2026-10-14"
   glean_client_id: client-a
-  legacy_telemetry_client_id: legacy-a
   profile_group_id: group-a
   sample_id: 1
   event_name: abandonment
@@ -22,7 +21,7 @@
   sap: urlbar
   results:
   - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
-# Latest event: sponsored off, legacy and profile group ids null.
+# Latest event: sponsored off, profile group id null.
 - submission_date: "2026-10-14"
   glean_client_id: client-a
   sample_id: 1
@@ -43,7 +42,6 @@
   - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
 # No Glean client id: dropped.
 - submission_date: "2026-10-14"
-  legacy_telemetry_client_id: legacy-orphan
   sample_id: 3
   event_name: abandonment
   event_timestamp: 100

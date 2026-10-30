@@ -1,0 +1,139 @@
+result_type,platform,product_result_type,component,effective_from,effective_to,reason,definition_version
+action,desktop,quick_action,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+action_addons,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+"action_addons,themes",desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_bookmarks,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_clear,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_colorpicker,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_contextual-search,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_downloads,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_editpdf,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_extensions,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_firefoxview,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_fxms_backup,desktop,other,excluded,1970-01-01,,"Messaging System action, not a result that replaces a search",1
+action_fxms_refresh,desktop,other,excluded,1970-01-01,,"Messaging System action, not a result that replaces a search",1
+action_fxms_sync,desktop,other,excluded,1970-01-01,,"Messaging System action, not a result that replaces a search",1
+action_fxms_troubleshoot,desktop,other,excluded,1970-01-01,,"Messaging System action, not a result that replaces a search",1
+action_help,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_inspect,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_labs,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_library,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_logins,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_manageai,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_matched-contextual-search,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_mute,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_none,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_omcspotlighttest,desktop,other,excluded,1970-01-01,,"Messaging System action, not a result that replaces a search",1
+action_print,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_private,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_refresh,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_restart,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_savepdf,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_screenshot,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_settings,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_tabgroup-0,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_tabgroup-1,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_tabgroup-2,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_tabswitch,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_themes,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_translate,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_update,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+action_viewsource,desktop,other,excluded,1970-01-01,,"Quick action (a browser command), not a result that replaces a search",1
+addon,desktop,xchannels_add_on,excluded,1970-01-01,,"Results from installed extensions that use the omnibox API; third-party, not Firefox Suggest",1
+addons_shortcut_moved,desktop,other,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+ai_chat,desktop,ai_chat,ai_chat,1970-01-01,,Sends the query to the AI chatbot instead of a search engine. Counted provisionally,1
+ai_search_fallback,desktop,other,excluded,1970-01-01,,Not yet identified (first seen 2026-06-29); excluded until confirmed,1
+autofill_about,desktop,about_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_adaptive,desktop,adaptive_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_adaptive_origin,desktop,adaptive_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_adaptive_url,desktop,adaptive_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_origin,desktop,autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_unknown,desktop,other,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_url,desktop,autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+bookmark,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+bookmark_adaptive,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+bookmark_adaptive_serp,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+bookmark_serp,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+calc,desktop,calculator,excluded,1970-01-01,,"Firefox feature that answers in the address bar; not a Suggest result",1
+clipboard,desktop,clipboard,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+dynamic_wikipedia,desktop,wikipedia_dynamic,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+experimental_addon,desktop,other,excluded,1970-01-01,,"Results from an experimental extension API; third-party, not Firefox Suggest",1
+fxsuggest_data_sharing_opt_in,desktop,online_suggest_opt_in,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+history,desktop,history,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+history_adaptive,desktop,history_adaptive,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+history_adaptive_serp,desktop,history_adaptive_serp,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+history_autofill_fallback_origin,desktop,autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+history_semantic,desktop,history_semantic,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+history_semantic_serp,desktop,history_semantic_serp,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+history_serp,desktop,history_serp,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+input_field,desktop,other,excluded,1970-01-01,,"Paste-and-go or drop-and-go: no result was picked, and a search it starts is counted as a SAP",1
+intervention_clear,desktop,quick_action,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+intervention_refresh,desktop,quick_action,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+intervention_unknown,desktop,quick_action,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+intervention_update,desktop,quick_action,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+keyword,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+merino_adm_nonsponsored,desktop,wikipedia_enhanced,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+merino_adm_sponsored,desktop,admarketplace_sponsored,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+merino_amo,desktop,other,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+merino_flights,desktop,flights,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+merino_market,desktop,market,suggest_nonsponsored,1970-01-01,,"Opens a results page but records no SAP, so it counts as a Suggest click",1
+merino_polygon,desktop,merino_market_opt_in,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+merino_sports,desktop,sports,suggest_nonsponsored,1970-01-01,,"Opens a results page but records no SAP, so it counts as a Suggest click",1
+merino_top_picks,desktop,navigational,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
+merino_weather,desktop,weather,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+merino_wikipedia,desktop,wikipedia_dynamic,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+merino_yelp,desktop,yelp_suggestion,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+ml_yelp,desktop,yelp_suggestion,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+recent_search,desktop,recent_search,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+remote_tab,desktop,tabs,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+restrict_keyword_actions,desktop,restrict_keyword_actions,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+restrict_keyword_bookmarks,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+restrict_keyword_history,desktop,restrict_keyword_history,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+restrict_keyword_tabs,desktop,restrict_keyword_tabs,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+rs_adm_nonsponsored,desktop,wikipedia_enhanced,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+rs_adm_sponsored,desktop,admarketplace_sponsored,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+rs_amo,desktop,suggest_add_on,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+rs_mdn,desktop,mdn,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+rs_pocket,desktop,pocket_collection,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
+rust_adm_nonsponsored,desktop,wikipedia_enhanced,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+rust_adm_sponsored,desktop,admarketplace_sponsored,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+rust_amo,desktop,suggest_add_on,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+rust_exposure,desktop,other,excluded,1970-01-01,,Invisible row that measures exposure in experiments: not a result,1
+rust_fakespot_amazon,desktop,fakespot_suggest,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
+rust_fakespot_bestbuy,desktop,fakespot_suggest,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
+rust_fakespot_walmart,desktop,fakespot_suggest,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
+rust_important_dates,desktop,important_dates,excluded,1970-01-01,,"Opens a results page and records a SAP, so SAP already counts it",1
+rust_market,desktop,other,excluded,1970-01-01,,Shown only before the market card launched (Aug 2025) and never clicked,1
+rust_market_opt_in,desktop,market_opt_in,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+rust_mdn,desktop,mdn,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+rust_pocket,desktop,pocket_collection,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
+rust_temporal,desktop,other,excluded,1970-01-01,,"Seasonal search suggestion: the click runs a default-engine search, so SAP should already count it. Provisional until that SAP is confirmed",1
+rust_vpn,desktop,vpn,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+rust_yelp,desktop,yelp_suggestion,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+search_engine,desktop,search_engine,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+search_history,desktop,search_history,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+search_shortcut_button,desktop,other,excluded,1970-01-01,,"Search engine shortcut button, not a Suggest result",1
+search_suggest,desktop,search_suggest,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+search_suggest_rich,desktop,search_suggest_rich,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+site_specific_contextual_search,desktop,other,excluded,1970-01-01,,"Search this site: opens a results page, so SAP should already count it. SAP not yet verified for this type",1
+suggest_non_sponsor,desktop,wikipedia_enhanced,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
+suggest_sponsor,desktop,admarketplace_sponsored,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+tab,desktop,open_tab,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+tab_adaptive,desktop,open_tab,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+tab_adaptive_serp,desktop,open_tab,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+tab_semantic,desktop,tab_semantic,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+tab_semantic_serp,desktop,tab_semantic_serp,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+tab_serp,desktop,open_tab_to_serp,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+tab_to_search,desktop,tab_to_search,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+tip_dismissal_acknowledgment,desktop,other,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+tip_onboard,desktop,tip,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+tip_persist,desktop,tip,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+tip_redirect,desktop,tip,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+tip_unknown,desktop,other,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
+top_site,desktop,top_site,excluded,1970-01-01,,"No query was typed, so no search was replaced",1
+trending_search,desktop,trending_suggestion,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+trending_search_rich,desktop,trending_suggestion,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1
+unit,desktop,unit_converter,excluded,1970-01-01,,"Firefox feature that answers in the address bar; not a Suggest result",1
+unknown,desktop,other,excluded,1970-01-01,,"Firefox couldn't classify the result, so it can't be shown to be Suggest",1
+url,desktop,url,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+weather,desktop,weather,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1

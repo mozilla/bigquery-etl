@@ -1,0 +1,33 @@
+fields:
+- name: result_type
+  type: STRING
+  mode: REQUIRED
+  description: Raw urlbar result type, as recorded in urlbar_events_v2 and urlbar_clients_daily_v1 (`results.result_type`).
+- name: platform
+  type: STRING
+  mode: REQUIRED
+  description: Platform the row applies to. desktop for now; mobile Suggest will add its own rows. At most one row per result_type and platform on any date.
+- name: product_result_type
+  type: STRING
+  mode: REQUIRED
+  description: Product name for the result type, from mozfun.norm.result_type_to_product_name. For readability only; join on result_type.
+- name: component
+  type: STRING
+  mode: REQUIRED
+  description: KPI component a click on this result type counts toward. One of suggest_sponsored, suggest_nonsponsored, ai_chat or excluded.
+- name: effective_from
+  type: DATE
+  mode: REQUIRED
+  description: First submission_date this row applies to (inclusive). 1970-01-01 means the row has always applied.
+- name: effective_to
+  type: DATE
+  mode: NULLABLE
+  description: Last submission_date this row applies to (exclusive). NULL means the row still applies.
+- name: reason
+  type: STRING
+  mode: REQUIRED
+  description: Plain-English reason the result type counts or is excluded.
+- name: definition_version
+  type: INTEGER
+  mode: REQUIRED
+  description: Version of the KPI definition that set this row. Bumped on every change to the map.

@@ -944,6 +944,80 @@ class TestQuery:
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
 
+    def test_query_backfill_backfill_date_partition_parameter(self, runner):
+        """An hourly table that rewrites a daily partition through a templated
+        destination_table and parameter is backfilled per partition when it sets
+        backfill_date_partition_parameter. The templated parameter is replaced by the
+        backfill date instead of failing to parse."""
+        with (
+            runner.isolated_filesystem(),
+            # Mock client to avoid NotFound
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("subprocess.check_call", autospec=True) as check_call,
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT TIMESTAMP('2021-01-01') AS submission_hour "
+                    "WHERE DATE(submission_hour) = @submission_date"
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {
+                    "dag_name": "bqetl_test",
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "submission_date",
+                    "destination_table": "query_v1${{ (execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d') }}",
+                    "parameters": [
+                        "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}",
+                        "conversion_window:INT64:30",
+                    ],
+                },
+                "bigquery": {
+                    "time_partitioning": {"type": "day", "field": "submission_hour"}
+                },
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--start_date=2021-01-05",
+                    "--end_date=2021-01-06",
+                    "--parallelism=0",
+                    "--override-retention-range-limit",
+                ],
+            )
+
+            assert result.exit_code == 0, result.output
+            assert check_call.call_count == 2
+
+            for call, day in zip(check_call.call_args_list, (5, 6)):
+                args = call.args[0]
+                assert [a for a in args if a.startswith("--destination_table")] == [
+                    "--destination_table=moz-fx-data-shared-prod:telemetry_derived."
+                    f"query_v1$2021010{day}"
+                ]
+                assert [a for a in args if "--parameter=submission_date" in a] == [
+                    f"--parameter=submission_date:DATE:2021-01-0{day}"
+                ]
+                assert [a for a in args if "--parameter=conversion_window" in a] == [
+                    "--parameter=conversion_window:INT64:30"
+                ]
+
     def test_query_backfill_python_script(self, runner):
         """Valid script backfill should execute script for each backfill date."""
         with (

@@ -1,0 +1,17 @@
+- client_id: age_30
+  sample_id: 1
+  submission_date: 2026-09-01
+  is_default_browser: true
+- client_id: age_30
+  sample_id: 1
+  submission_date: 2026-09-02
+  is_default_browser: false
+- client_id: age_7
+  sample_id: 5
+  submission_date: 2026-09-24
+  is_default_browser: false
+# Not the client's first-seen day, so age_4 reads NULL
+- client_id: age_4
+  sample_id: 8
+  submission_date: 2026-09-28
+  is_default_browser: true

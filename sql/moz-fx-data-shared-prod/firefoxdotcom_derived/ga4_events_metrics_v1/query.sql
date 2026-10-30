@@ -72,7 +72,8 @@ classified AS (
         'newsletter_subscribe',
         'dimension_set',
         'send_to_device',
-        'default_browser_set'
+        'default_browser_set',
+        'experiment_view'
       ),
       raw_event_name,
       'other'

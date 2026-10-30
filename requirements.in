@@ -7,7 +7,7 @@
 # image, check for version overlaps between requirements.txt and
 # requirements-private.txt first.
 attrs==25.4.0
-authlib==1.6.12
+authlib==1.9.1
 beautifulsoup4==4.14.3
 bigeye-sdk==0.8.5
 black==26.10.1
@@ -19,7 +19,7 @@ exceptiongroup==1.3.1 # for backwards compatibility with python < 3.11
 flake8==4.0.1
 fredapi==0.5.2
 gcsfs==2026.1.0
-gitpython==3.1.62
+gitpython==3.2.1
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.
 google-cloud-bigquery==3.40.0
 google-genai==1.68.0

@@ -5,9 +5,6 @@ description: |-
   Columns, order, and nested structs match the source view, so the source
   documentation describes this table as-is.
 
-  This table cannot be backfilled using bqetl due to the submission_date configuration, so
-  write historical data into it directly if needed.
-
   See for more details: https://docs.cloud.google.com/bigquery/docs/information-schema-reservation-timeline
 owners:
 - bewu@mozilla.com
@@ -24,6 +21,8 @@ scheduling:
   # containing (run time - 2 hours) instead of the default (run time - 1 hour)
   # so each day partition gets a final rewrite at 01:00 the next day.
   date_partition_parameter: null
+  # backfills bind submission_date to each date and write that day's partition
+  backfill_date_partition_parameter: submission_date
   destination_table: reservations_timeline_v1${{ (logical_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}
   parameters:
   - submission_date:DATE:{{ (logical_date - macros.timedelta(hours=1)).strftime("%Y-%m-%d") }}

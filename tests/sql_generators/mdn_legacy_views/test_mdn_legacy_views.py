@@ -25,6 +25,7 @@ YARI_SCHEMA = Schema(
                     ),
                 ],
             ),
+            {**_field("events", "RECORD", [_field("name")]), "mode": "REPEATED"},
             _field("submission_timestamp", "TIMESTAMP"),
         ]
     }
@@ -61,6 +62,8 @@ def test_generate_view():
         "CAST(NULL AS STRUCT<`events_ping_acceleration_factor` FLOAT64>) "
         "AS `server_knobs_config`"
     ) in fred_select
+    # missing repeated fields are empty arrays rather than NULL
+    assert "CAST([] AS ARRAY<STRUCT<`name` STRING>>) AS `events`" in fred_select
     # Yari fields are listed explicitly, so upstream additions can't break the view
     assert "SELECT *" not in yari_select
     assert "ping_info.server_knobs_config.events_ping_acceleration_factor" in (

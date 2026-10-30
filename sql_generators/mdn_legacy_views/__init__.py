@@ -52,7 +52,9 @@ def generate_view(view_name, project_id, yari_schema, fred_schema):
             view_name=view_name,
             yari_table=yari_table,
             fred_query=fred_query(view_name, project_id),
-            fred_select=fred_select,
+            # use empty arrays for repeated fields that Fred doesn't provide,
+            # since ARRAY_LENGTH() and IS NULL treat NULL arrays differently
+            fred_select=fred_select.replace("CAST(NULL AS ARRAY<", "CAST([] AS ARRAY<"),
             yari_select=yari_select,
         )
     )

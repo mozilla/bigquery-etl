@@ -4,16 +4,16 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.glean_telemetry_derived.recent_new_profile_churn_clients_v1`
+  `moz-fx-data-shared-prod.glean_telemetry_derived.recent_new_profile_churn_clients_v2`
 UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.glean_telemetry_derived.new_profile_churn_clients_v1`
+  `moz-fx-data-shared-prod.glean_telemetry_derived.new_profile_churn_clients_v2`
 WHERE
   cohort_date < (
     SELECT
       MIN(cohort_date)
     FROM
-      `moz-fx-data-shared-prod.glean_telemetry_derived.recent_new_profile_churn_clients_v1`
+      `moz-fx-data-shared-prod.glean_telemetry_derived.recent_new_profile_churn_clients_v2`
   )

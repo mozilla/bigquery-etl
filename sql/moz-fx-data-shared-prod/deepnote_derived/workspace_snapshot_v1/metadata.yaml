@@ -1,0 +1,27 @@
+friendly_name: Deepnote Workspace Snapshot
+description: |-
+  Daily snapshot of the projects, notebooks, Streamlit apps and machines in
+  Mozilla's default Deepnote workspace, from the Deepnote API (GET /v2/projects,
+  /v2/streamlit-apps, /v2/notebooks/{id}/schedule) and the Deepnote MCP server's get_machine tool.
+
+  Only includes projects visible to the API key. `last_run_at` and `is_scheduled`
+  reflect scheduled and API runs, not interactive execution in the editor.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  arguments: ["--date", "{{ ds }}"]
+  date_partition_parameter: null
+  secrets:
+  - deploy_target: DEEPNOTE_API_KEY
+    key: bqetl_deepnote_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: snapshot_date
+    require_partition_filter: false
+    expiration_days: null

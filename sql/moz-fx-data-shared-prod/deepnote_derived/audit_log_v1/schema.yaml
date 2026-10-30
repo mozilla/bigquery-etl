@@ -1,0 +1,49 @@
+fields:
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Hash of the event's content, used to deduplicate overlapping exports.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the event happened.
+- name: actor_type
+  type: STRING
+  mode: NULLABLE
+  description: "`user` for actions in the Deepnote UI, `api` for actions through the API (including MCP)."
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote user ID of the actor (the API key owner for API actions).
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: Email of the actor.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace (team) ID.
+- name: resource_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the affected resource; its type depends on event_type, see the table description.
+- name: user_agent
+  type: STRING
+  mode: NULLABLE
+  description: User agent of the request.
+- name: event_type
+  type: STRING
+  mode: NULLABLE
+  description: Audit log event type, e.g. project_viewed, notebook_executed, block_created.
+- name: metadata
+  type: JSON
+  mode: NULLABLE
+  description: Event-specific metadata.
+- name: source_file
+  type: STRING
+  mode: NULLABLE
+  description: GCS URI of the export the row was first imported from.
+- name: loaded_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was imported.

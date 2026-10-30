@@ -1,0 +1,53 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date (UTC).
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Users with any audit log activity on the day (excluding ephemeral API key churn).
+- name: dau_ui
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active in the Deepnote UI on the day.
+- name: dau_api
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active through the API/MCP on the day.
+- name: dau_creators
+  type: INTEGER
+  mode: NULLABLE
+  description: Users who edited, executed or created content on the day.
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active in the 7 days ending on submission_date.
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active in the 28 days ending on submission_date.
+- name: first_seen_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Users whose first audit log event is on this date.
+- name: members_added
+  type: INTEGER
+  mode: NULLABLE
+  description: Workspace members added.
+- name: members_removed
+  type: INTEGER
+  mode: NULLABLE
+  description: Workspace members removed.
+- name: covered_days_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Days of the trailing 28 covered by audit log exports.
+- name: is_mau_complete
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the trailing 28 days are fully covered by audit log exports.
+- name: total_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Cumulative distinct users seen in the audit log up to submission_date.

@@ -1,0 +1,97 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the job was created.
+- name: creation_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the job was created.
+- name: start_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the job started.
+- name: end_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the job ended.
+- name: job_id
+  type: STRING
+  mode: NULLABLE
+  description: BigQuery job ID.
+- name: gcp_project_id
+  type: STRING
+  mode: NULLABLE
+  description: GCP project the job ran (and was billed) in.
+- name: principal_email
+  type: STRING
+  mode: NULLABLE
+  description: Principal that ran the job (service account or user for OAuth integrations).
+- name: is_deepnote_service_account
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the job ran as a Deepnote service account.
+- name: query_source
+  type: STRING
+  mode: NULLABLE
+  description: sql_block, schema_browser or python_client, see the table description.
+- name: submitted_by
+  type: STRING
+  mode: NULLABLE
+  description: "From the query comment: user, scheduling, api or detached."
+- name: deepnote_user_email
+  type: STRING
+  mode: NULLABLE
+  description: From the query comment, the Deepnote user that ran the block (or owns the schedule).
+- name: deepnote_workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: From the query comment, the Deepnote workspace ID.
+- name: deepnote_project_id
+  type: STRING
+  mode: NULLABLE
+  description: From the query comment, the Deepnote project ID.
+- name: deepnote_notebook_id
+  type: STRING
+  mode: NULLABLE
+  description: From the query comment, the Deepnote notebook ID.
+- name: state
+  type: STRING
+  mode: NULLABLE
+  description: Job state.
+- name: error_reason
+  type: STRING
+  mode: NULLABLE
+  description: Error reason if the job failed.
+- name: cache_hit
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the result came from the query cache.
+- name: statement_type
+  type: STRING
+  mode: NULLABLE
+  description: Statement type, e.g. SELECT.
+- name: reservation_id
+  type: STRING
+  mode: NULLABLE
+  description: Reservation the job ran in, null for on-demand.
+- name: total_bytes_processed
+  type: INTEGER
+  mode: NULLABLE
+  description: Bytes processed.
+- name: total_bytes_billed
+  type: INTEGER
+  mode: NULLABLE
+  description: Bytes billed.
+- name: total_slot_ms
+  type: INTEGER
+  mode: NULLABLE
+  description: Slot milliseconds consumed.
+- name: duration_ms
+  type: INTEGER
+  mode: NULLABLE
+  description: Job run time from start to end in milliseconds.
+- name: query_hash
+  type: STRING
+  mode: NULLABLE
+  description: Hash of the query with literals normalized, to group repeated queries.

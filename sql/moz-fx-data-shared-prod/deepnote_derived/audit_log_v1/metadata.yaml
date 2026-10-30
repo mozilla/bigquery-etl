@@ -1,0 +1,37 @@
+friendly_name: Deepnote Audit Log
+description: |-
+  Events from the audit log of Mozilla's default Deepnote workspace
+  (see https://deepnote.com/docs/audit-log).
+
+  Imported from CSV exports placed in
+  gs://moz-fx-data-shared-prod-analysis/deepnote/audit_logs/ (currently uploaded
+  manually; replace with the audit log export endpoint once Deepnote provides it).
+  Exports overlap, so rows are deduplicated on a hash of their content; fully
+  identical events (same timestamp, user, resource and metadata) collapse into one.
+
+  The `ip` column of the export is not imported. Contains user emails, so access is
+  restricted to data engineering.
+
+  `resource_id` refers to different entities depending on `event_type`: the project
+  for project_*/file_*/notebook_executed/notebook_viewed events, the notebook for
+  notebook_edited/blocks_reordered, a block for block_* events, a run for run_viewed,
+  the workspace for workspace_* events. Block and run events carry projectId and
+  notebookId in `metadata`.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: created_at
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - event_type

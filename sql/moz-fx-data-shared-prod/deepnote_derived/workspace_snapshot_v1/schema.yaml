@@ -1,0 +1,145 @@
+fields:
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the snapshot.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: project_name
+  type: STRING
+  mode: NULLABLE
+  description: Project name.
+- name: project_type
+  type: STRING
+  mode: NULLABLE
+  description: "`standard`, `notebook` or `agent`."
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the project was created.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the project was last updated, as reported by the API.
+- name: folder_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the folder containing the project.
+- name: folder_path
+  type: STRING
+  mode: NULLABLE
+  description: Folder path of the project, e.g. "User Folders/jdoe" or "Team Folders/Ads".
+- name: notebooks
+  type: RECORD
+  mode: REPEATED
+  description: Notebooks in the project.
+  fields:
+  - name: notebook_id
+    type: STRING
+    mode: NULLABLE
+    description: Deepnote notebook ID.
+  - name: name
+    type: STRING
+    mode: NULLABLE
+    description: Notebook name.
+  - name: created_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Time the notebook was created.
+  - name: is_init
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether this is the project's init notebook.
+  - name: is_scheduled
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the notebook has a schedule (one per project at most).
+  - name: last_run_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Time of the last scheduled or API run.
+  - name: schedule
+    type: RECORD
+    mode: NULLABLE
+    description: The notebook's schedule (GET /v2/notebooks/{id}/schedule), null if not scheduled.
+    fields:
+    - name: cron
+      type: STRING
+      mode: NULLABLE
+      description: Five-field cron expression, evaluated in `timezone`.
+    - name: timezone
+      type: STRING
+      mode: NULLABLE
+      description: IANA timezone of the schedule.
+    - name: next_run_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: Next scheduled run.
+    - name: is_paused
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the schedule is paused (e.g. auto-paused after repeated failures).
+    - name: pause_reason
+      type: STRING
+      mode: NULLABLE
+      description: Why the schedule is paused.
+- name: streamlit_apps
+  type: RECORD
+  mode: REPEATED
+  description: Streamlit apps served by the project.
+  fields:
+  - name: streamlit_app_id
+    type: STRING
+    mode: NULLABLE
+    description: Streamlit app ID.
+  - name: entrypoint
+    type: STRING
+    mode: NULLABLE
+    description: Project file the app runs.
+  - name: url
+    type: STRING
+    mode: NULLABLE
+    description: URL the app is served on.
+  - name: created_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Time the app was created.
+  - name: status
+    type: STRING
+    mode: NULLABLE
+    description: "App status at snapshot time: `running`, `starting` or `unavailable` (machine stopped, e.g. idle; not an error)."
+- name: machine
+  type: RECORD
+  mode: NULLABLE
+  description: Machine used by the project's editor, live runs and Streamlit apps at snapshot time (detached runs use their own machines).
+  fields:
+  - name: status
+    type: STRING
+    mode: NULLABLE
+    description: Machine status, e.g. stopped, starting, running.
+  - name: type_id
+    type: STRING
+    mode: NULLABLE
+    description: Machine type ID, e.g. lake.
+  - name: type_name
+    type: STRING
+    mode: NULLABLE
+    description: Machine type name, e.g. "CPU (Basic)".
+  - name: vcpus
+    type: FLOAT
+    mode: NULLABLE
+    description: vCPUs of the machine type.
+  - name: memory_gib
+    type: FLOAT
+    mode: NULLABLE
+    description: Memory of the machine type in GiB.
+  - name: gpu_count
+    type: INTEGER
+    mode: NULLABLE
+    description: GPUs of the machine type.
+  - name: idle_shutdown_seconds
+    type: INTEGER
+    mode: NULLABLE
+    description: Seconds of inactivity after which the machine shuts down.

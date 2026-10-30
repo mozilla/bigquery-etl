@@ -1,0 +1,25 @@
+friendly_name: Deepnote Notebook Runs
+description: |-
+  Runs of notebooks in Mozilla's default Deepnote workspace, from the Deepnote API
+  (GET /v2/notebooks/{id}/runs). Covers scheduled and API-triggered runs, not
+  interactive execution in the editor (see audit_log_v1 notebook_executed events).
+
+  Run status is one of pending, running, success, error, internal_error, stopped.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+  secrets:
+  - deploy_target: DEEPNOTE_API_KEY
+    key: bqetl_deepnote_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: created_at
+    require_partition_filter: false
+    expiration_days: null

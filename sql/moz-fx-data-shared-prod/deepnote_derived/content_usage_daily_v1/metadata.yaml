@@ -1,0 +1,25 @@
+friendly_name: Deepnote Content Usage Daily
+description: |-
+  Daily views, edits, executions, hardware starts and exports per Deepnote project
+  and notebook in Mozilla's default workspace, from the audit log. notebook_id is
+  null for project-level events that don't name a notebook (e.g. project_viewed).
+
+  channel is `ui` for actions in the Deepnote UI and `api` for actions through
+  the API/MCP (e.g. agents reading, editing or running notebooks). Distinct user
+  counts are per row and can't be summed across rows. Streamlit app views are not
+  in the audit log. active_users_sketch is an HLL++ sketch of the active users
+  (HLL_COUNT.MERGE it to count distinct users over several days or rows).
+  Rebuilt in full daily.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

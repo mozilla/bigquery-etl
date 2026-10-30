@@ -1,0 +1,31 @@
+friendly_name: Deepnote Content Inventory
+description: |-
+  One row per project in the latest snapshot of Mozilla's default Deepnote
+  workspace, with notebooks and Streamlit apps, audit log usage over the last 28
+  days of the audit log, scheduled/API runs, BigQuery usage attributed via SQL
+  block query comments (slot_hours_28d is the cost driver on reservations;
+  tib_billed_28d overstates LIMIT/preview queries), and derived flags:
+
+  - usage_status: active; unused_28d (no activity in the Deepnote UI, no
+    executions and no scheduled/API runs in the last 28 days of the audit log;
+    API/MCP reads and edits alone don't count); or no_activity_in_audit_log (no
+    event since audit_log_start_date). "Unused" is only as reliable as the audit
+    log coverage.
+  - is_broken: the last scheduled/API run failed
+
+  Streamlit app views and errors are not available from the audit log or API;
+  running_streamlit_apps only reflects whether the app's machine was up at
+  snapshot time. Rebuilt in full daily.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

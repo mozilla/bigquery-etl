@@ -1,0 +1,27 @@
+friendly_name: Deepnote Query Cost Daily
+description: |-
+  Daily BigQuery usage (jobs, bytes billed, slot hours, duration) of Mozilla's
+  default Deepnote workspace by query source, Deepnote project and notebook, from
+  query_jobs_v1. Only sql_block queries can be attributed to a project/notebook;
+  python_client (code blocks, Streamlit apps) and schema_browser queries have null
+  project_id. Detached, API and scheduled runs execute in a temporary copy of the
+  project; jobs from those copies are attributed to the source project/notebook via
+  the audit log (executedNotebookId) or the scheduled run's time window. Projects that never appeared in a workspace snapshot get their last
+  name from the audit log, or `(deleted project)`, `(unattributed run copy)` (a run copy that
+  couldn't be resolved) or `(unknown project)`. Deepnote queries run on reservations, so slot_hours is the cost
+  driver (cost_usd applies the list-price formula of monitoring.bigquery_usage);
+  bytes billed overstates queries like `SELECT * ... LIMIT n` that bill a
+  full scan but execute in seconds. Rebuilt in full daily.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

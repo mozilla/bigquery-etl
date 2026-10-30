@@ -1,0 +1,26 @@
+friendly_name: Deepnote Active Users Daily
+description: |-
+  Daily active users (DAU), 7-day (WAU) and 28-day (MAU) active users of Mozilla's
+  default Deepnote workspace, based on the audit log. A user is active on a day if
+  they have any audit log event, excluding ephemeral API key creation/deletion.
+
+  total_users is the cumulative number of distinct users seen in the audit log up to
+  that date. dau_ui counts activity from a browser (the Deepnote UI), dau_api activity through the API, MCP or scripts,
+  dau_creators users who edited, executed or created content. first_seen_users is
+  the number of users whose first audit log event is on that date (inflated at
+  the start of the audit log and after gaps between exports). is_mau_complete is
+  false when the trailing 28 days are not fully covered by audit log exports.
+  Rebuilt in full daily.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

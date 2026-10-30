@@ -2962,3 +2962,18 @@ bqetl_remote_settings_uptake:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_deepnote:
+  schedule_interval: 0 4 * * *
+  description: |
+    Imports the Deepnote audit log, Deepnote API snapshots and Deepnote-originated
+    BigQuery jobs, and builds usage monitoring aggregates.
+  default_args:
+    owner: ascholtz@mozilla.com
+    email:
+      - ascholtz@mozilla.com
+    start_date: "2026-10-29"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

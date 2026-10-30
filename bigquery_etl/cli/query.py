@@ -1245,11 +1245,13 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
-            # default to WRITE_TRUNCATE so re-runs overwrite existing data.
-            # callers that need different semantics pass --append_table or --noreplace explicitly.
+        # default to WRITE_TRUNCATE so re-runs overwrite existing data, including for
+        # public tables. callers that need different semantics pass --append_table or
+        # --noreplace explicitly.
+        if destination_table is not None and query_file.name != "script.sql":
             if not any(
-                flag in query_arguments
-                for flag in (
+                arg.lower()
+                in (
                     "--append_table",
                     "--append_table=true",
                     "--replace",
@@ -1257,6 +1259,7 @@ def _run_query(
                     "--replace=false",
                     "--noreplace",
                 )
+                for arg in query_arguments
             ):
                 query_arguments.append("--replace")
 

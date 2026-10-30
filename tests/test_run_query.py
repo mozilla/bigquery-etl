@@ -118,6 +118,7 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=mozilla-public-data:test.query_v1",
+                    "--replace",
                     "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
@@ -404,3 +405,25 @@ class TestRunQuery:
 
         assert mock_call.call_args.args == (["bq"] + query_arguments,)
         assert mock_client.call_count == 0
+
+    def test_run_query_no_default_replace_with_append_table(self, tmp_path):
+        from bigquery_etl.cli.query import _run_query
+
+        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+        os.makedirs(query_file_path)
+        query_file = query_file_path / "query.sql"
+        query_file.write_text("SELECT 1")
+
+        with patch("bigquery_etl.cli.query._execute_query") as mock_execute:
+            _run_query(
+                query_files=[query_file],
+                project_id="moz-fx-data-shared-prod",
+                public_project_id="mozilla-public-data",
+                destination_table="query_v1",
+                dataset_id="test",
+                query_arguments=["query", "--append_table=True"],
+            )
+
+        query_arguments = mock_execute.call_args.args[1]
+        assert "--append_table=True" in query_arguments
+        assert "--replace" not in query_arguments

@@ -25,31 +25,29 @@ augmented_monthly_subscriptions AS (
     COALESCE(DATE(subscription.ended_at), LEAST(month_end_date, CURRENT_DATE())) AS effective_date
   FROM
     monthly_subscriptions
-),
-augmented_monthly_subscriptions_2 AS (
+)
+FROM
+  augmented_monthly_subscriptions AS monthly_subscriptions
+LEFT JOIN
+  `moz-fx-data-shared-prod.subscription_platform.vat_rates_history` AS vat_rates
+  ON monthly_subscriptions.subscription.country_code = vat_rates.country_code
+  AND (monthly_subscriptions.effective_date BETWEEN vat_rates.valid_from AND vat_rates.valid_to)
+LEFT JOIN
+  `moz-fx-data-shared-prod.subscription_platform.exchange_rates_history` AS usd_exchange_rates
+  ON monthly_subscriptions.subscription.plan_currency = usd_exchange_rates.base_currency
+  AND usd_exchange_rates.quote_currency = 'USD'
+  AND (
+    monthly_subscriptions.effective_date
+    BETWEEN usd_exchange_rates.valid_from
+    AND usd_exchange_rates.valid_to
+  )
+|>
   SELECT
     monthly_subscriptions.*,
     vat_rates.vat_rate AS country_vat_rate,
     usd_exchange_rates.exchange_rate AS plan_currency_usd_exchange_rate,
-  FROM
-    augmented_monthly_subscriptions AS monthly_subscriptions
-  LEFT JOIN
-    `moz-fx-data-shared-prod.subscription_platform.vat_rates_history` AS vat_rates
-    ON monthly_subscriptions.subscription.country_code = vat_rates.country_code
-    AND (monthly_subscriptions.effective_date BETWEEN vat_rates.valid_from AND vat_rates.valid_to)
-  LEFT JOIN
-    `moz-fx-data-shared-prod.subscription_platform.exchange_rates_history` AS usd_exchange_rates
-    ON monthly_subscriptions.subscription.plan_currency = usd_exchange_rates.base_currency
-    AND usd_exchange_rates.quote_currency = 'USD'
-    AND (
-      monthly_subscriptions.effective_date
-      BETWEEN usd_exchange_rates.valid_from
-      AND usd_exchange_rates.valid_to
-    )
-),
-augmented_monthly_subscriptions_3 AS (
-  SELECT
-    *,
+|>
+  EXTEND
     LEAST(
       (
         mozfun.utils.timestamp_diff_complete_months(
@@ -70,12 +68,8 @@ augmented_monthly_subscriptions_3 AS (
       ),
       0
     ) AS months_after_current_period_before_ongoing_discount_ends
-  FROM
-    augmented_monthly_subscriptions_2
-),
-augmented_monthly_subscriptions_4 AS (
-  SELECT
-    *,
+|>
+  EXTEND
     CASE
       WHEN COALESCE(subscription.ongoing_discount_amount, 0) = 0
         THEN 0
@@ -93,12 +87,8 @@ augmented_monthly_subscriptions_4 AS (
           (12 - current_period_annual_recurring_revenue_months)
         )
     END AS ongoing_discounted_annual_recurring_revenue_months
-  FROM
-    augmented_monthly_subscriptions_3
-),
-augmented_monthly_subscriptions_5 AS (
-  SELECT
-    *,
+|>
+  EXTEND
     IF(
       subscription.is_active IS NOT TRUE
       OR subscription.is_trial IS TRUE,
@@ -152,12 +142,8 @@ augmented_monthly_subscriptions_5 AS (
         )
       )
     ) AS annual_recurring_gross_revenue
-  FROM
-    augmented_monthly_subscriptions_4
-),
-augmented_monthly_subscriptions_6 AS (
-  SELECT
-    *,
+|>
+  EXTEND
     ROUND(
       (
         (monthly_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0)))
@@ -182,47 +168,43 @@ augmented_monthly_subscriptions_6 AS (
       ),
       2
     ) AS annual_recurring_revenue
-  FROM
-    augmented_monthly_subscriptions_5
-)
-SELECT
-  id,
-  month_start_date,
-  month_end_date,
-  service_id,
-  service_subscriptions_history_id,
-  (
-    SELECT AS STRUCT
-      subscription.* EXCEPT (first_touch_attribution),  -- DENG-9858
-      country_vat_rate,
-      plan_currency_usd_exchange_rate,
-      IF(
-        subscription.plan_currency = 'USD',
-        subscription.plan_amount,
-        ROUND((subscription.plan_amount * plan_currency_usd_exchange_rate), 2)
-      ) AS plan_amount_usd,
-      IF(
-        subscription.plan_currency = 'USD',
-        subscription.current_period_discount_amount,
-        ROUND((subscription.current_period_discount_amount * plan_currency_usd_exchange_rate), 2)
-      ) AS current_period_discount_amount_usd,
-      IF(
-        subscription.plan_currency = 'USD',
-        subscription.ongoing_discount_amount,
-        ROUND((subscription.ongoing_discount_amount * plan_currency_usd_exchange_rate), 2)
-      ) AS ongoing_discount_amount_usd,
-      IF(
-        subscription.plan_currency = 'USD',
-        monthly_recurring_revenue,
-        ROUND((monthly_recurring_revenue * plan_currency_usd_exchange_rate), 2)
-      ) AS monthly_recurring_revenue_usd,
-      IF(
-        subscription.plan_currency = 'USD',
-        annual_recurring_revenue,
-        ROUND((annual_recurring_revenue * plan_currency_usd_exchange_rate), 2)
-      ) AS annual_recurring_revenue_usd
-  ) AS subscription,
-  was_active_at_month_start,
-  was_active_at_month_end
-FROM
-  augmented_monthly_subscriptions_6
+|>
+  SELECT
+    id,
+    month_start_date,
+    month_end_date,
+    service_id,
+    service_subscriptions_history_id,
+    (
+      SELECT AS STRUCT
+        subscription.* EXCEPT (first_touch_attribution),  -- DENG-9858
+        country_vat_rate,
+        plan_currency_usd_exchange_rate,
+        IF(
+          subscription.plan_currency = 'USD',
+          subscription.plan_amount,
+          ROUND((subscription.plan_amount * plan_currency_usd_exchange_rate), 2)
+        ) AS plan_amount_usd,
+        IF(
+          subscription.plan_currency = 'USD',
+          subscription.current_period_discount_amount,
+          ROUND((subscription.current_period_discount_amount * plan_currency_usd_exchange_rate), 2)
+        ) AS current_period_discount_amount_usd,
+        IF(
+          subscription.plan_currency = 'USD',
+          subscription.ongoing_discount_amount,
+          ROUND((subscription.ongoing_discount_amount * plan_currency_usd_exchange_rate), 2)
+        ) AS ongoing_discount_amount_usd,
+        IF(
+          subscription.plan_currency = 'USD',
+          monthly_recurring_revenue,
+          ROUND((monthly_recurring_revenue * plan_currency_usd_exchange_rate), 2)
+        ) AS monthly_recurring_revenue_usd,
+        IF(
+          subscription.plan_currency = 'USD',
+          annual_recurring_revenue,
+          ROUND((annual_recurring_revenue * plan_currency_usd_exchange_rate), 2)
+        ) AS annual_recurring_revenue_usd
+    ) AS subscription,
+    was_active_at_month_start,
+    was_active_at_month_end

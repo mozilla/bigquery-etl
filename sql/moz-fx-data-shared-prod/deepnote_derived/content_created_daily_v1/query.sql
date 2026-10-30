@@ -1,115 +1,104 @@
--- Content created per day in the default Deepnote workspace, by content type.
--- Each item is counted once, on the day it was first created; deletions are ignored.
-WITH audit_log AS (
+-- Content that currently exists in the default Deepnote workspace (latest workspace
+-- snapshot), counted on the day it was created, by content type.
+WITH latest AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1`
-),
--- excludes the temporary project copies that detached and scheduled runs execute in
-real_projects AS (
-  SELECT
-    resource_id AS project_id
-  FROM
-    audit_log
-  WHERE
-    event_type = 'project_created'
-  UNION DISTINCT
-  SELECT
-    project_id
-  FROM
     `moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1`
+  WHERE
+    snapshot_date = (
+      SELECT
+        MAX(snapshot_date)
+      FROM
+        `moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1`
+    )
+),
+first_published AS (
+  SELECT
+    IF(event_type = 'notebook_published', JSON_VALUE(metadata, '$.notebookId'), resource_id) AS id,
+    event_type,
+    MIN(created_at) AS published_at,
+  FROM
+    `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1`
+  WHERE
+    event_type IN ('notebook_published', 'static_site_published')
+  GROUP BY
+    id,
+    event_type
 ),
 items AS (
-  -- notebooks
   SELECT
     'notebook' AS content_type,
-    CONCAT(
-      resource_id,
-      '/',
-      JSON_VALUE(metadata, '$.path'),
-      '/',
-      CAST(created_at AS STRING)
-    ) AS item_id,
-    created_at,
+    notebook.created_at,
   FROM
-    audit_log
+    latest
+  CROSS JOIN
+    UNNEST(notebooks) AS notebook
   WHERE
-    event_type = 'file_created'
-    AND JSON_VALUE(metadata, '$.type') = 'notebook'
-    AND resource_id IN (SELECT project_id FROM real_projects)
+    NOT IFNULL(notebook.is_init, FALSE)
   UNION ALL
-  -- Streamlit apps; apps created in the UI log no app ID, so identify them by project and entrypoint
   SELECT
     'streamlit_app',
-    CONCAT(resource_id, '/', IFNULL(JSON_VALUE(metadata, '$.entrypoint'), '')),
-    created_at,
+    app.created_at,
   FROM
-    audit_log
-  WHERE
-    event_type = 'streamlit_app_created'
-    AND resource_id IN (SELECT project_id FROM real_projects)
+    latest
+  CROSS JOIN
+    UNNEST(streamlit_apps) AS app
   UNION ALL
-  -- native apps: notebooks published as Deepnote apps
+  -- native apps: existing notebooks that were published as Deepnote apps
   SELECT
     'native_app',
-    JSON_VALUE(metadata, '$.notebookId'),
-    created_at,
+    first_published.published_at,
   FROM
-    audit_log
-  WHERE
-    event_type = 'notebook_published'
+    latest
+  CROSS JOIN
+    UNNEST(notebooks) AS notebook
+  JOIN
+    first_published
+    ON first_published.id = notebook.notebook_id
+    AND first_published.event_type = 'notebook_published'
   UNION ALL
-  -- analyses started with the mozdata plugin's /mozdata:ask, which creates an "Exploration log" notebook
+  -- analyses started with the mozdata plugin's /mozdata:ask, which adds an "Exploration log" notebook
   SELECT
     'ask_analysis',
-    resource_id,
-    created_at,
+    latest.created_at,
   FROM
-    audit_log
+    latest
   WHERE
-    (
-      (event_type = 'file_renamed' AND JSON_VALUE(metadata, '$.to') = 'Exploration log')
-      OR (event_type = 'file_created' AND JSON_VALUE(metadata, '$.path') = 'Exploration log')
-    )
-    AND resource_id IN (SELECT project_id FROM real_projects)
+    EXISTS (SELECT 1 FROM UNNEST(notebooks) WHERE name = 'Exploration log')
   UNION ALL
-  -- analyses packaged with /mozdata:package, which publishes _deepnote_static/report.html as a static site
+  -- analyses packaged with /mozdata:package, which publishes _deepnote_static/report.html
   SELECT
     'packaged_analysis',
-    resource_id,
-    created_at,
+    COALESCE(first_published.published_at, latest.created_at),
   FROM
-    audit_log
+    latest
+  LEFT JOIN
+    first_published
+    ON first_published.id = latest.project_id
+    AND first_published.event_type = 'static_site_published'
   WHERE
-    event_type = 'static_site_published'
-    AND resource_id IN (
-      SELECT
-        resource_id
-      FROM
-        audit_log
-      WHERE
-        event_type IN ('file_created', 'file_edited', 'file_uploaded')
-        AND JSON_VALUE(metadata, '$.path') = '_deepnote_static/report.html'
-    )
-),
-first_created AS (
+    '_deepnote_static/report.html' IN UNNEST(latest.files)
+  UNION ALL
+  -- dashboards built with the mozdata plugin's dashboard skill: a Streamlit app serving app.py
+  -- in a project that also holds the skill's metadata.yaml
   SELECT
-    content_type,
-    item_id,
-    MIN(created_at) AS created_at,
+    'dashboard_skill_app',
+    app.created_at,
   FROM
-    items
-  GROUP BY
-    content_type,
-    item_id
+    latest
+  CROSS JOIN
+    UNNEST(streamlit_apps) AS app
+  WHERE
+    app.entrypoint = 'app.py'
+    AND 'metadata.yaml' IN UNNEST(latest.files)
 )
 SELECT
   DATE(created_at) AS submission_date,
   content_type,
   COUNT(*) AS created,
 FROM
-  first_created
+  items
 GROUP BY
   submission_date,
   content_type

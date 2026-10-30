@@ -4,8 +4,12 @@ description: |-
   and notebook in Mozilla's default workspace, from the audit log. notebook_id is
   null for project-level events that don't name a notebook (e.g. project_viewed).
 
-  channel is `ui` for actions in the Deepnote UI and `api` for actions through
-  the API/MCP (e.g. agents reading, editing or running notebooks). Distinct user
+  channel is `ui` for actions from a browser (the Deepnote UI) and `api` for
+  everything else: the API, MCP, scripts and Deepnote's own server (the audit log's
+  actor_type labels server-side echoes of API edits as user actions). Non-browser
+  notebook_edited events are dropped, since they echo API block changes that are
+  already counted. UI edits are notebook_edited events, which Deepnote batches, so
+  UI and API edit counts are not in the same unit. Distinct user
   counts are per row and can't be summed across rows. Streamlit app views are not
   in the audit log. active_users_sketch is an HLL++ sketch of the active users
   (HLL_COUNT.MERGE it to count distinct users over several days or rows).

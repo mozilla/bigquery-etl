@@ -4,7 +4,8 @@ WITH activity AS (
   SELECT DISTINCT
     DATE(created_at) AS activity_date,
     user_id,
-    actor_type,
+    -- browser user agents are the Deepnote UI (actor_type labels API echoes as "user")
+    IF(STARTS_WITH(IFNULL(user_agent, ''), 'Mozilla/'), 'ui', 'api') AS channel,
     event_type IN (
       'notebook_edited',
       'block_created',
@@ -79,11 +80,9 @@ daily AS (
   SELECT
     submission_date,
     COUNT(DISTINCT IF(activity_date = submission_date, user_id, NULL)) AS dau,
+    COUNT(DISTINCT IF(activity_date = submission_date AND channel = 'ui', user_id, NULL)) AS dau_ui,
     COUNT(
-      DISTINCT IF(activity_date = submission_date AND actor_type = 'user', user_id, NULL)
-    ) AS dau_ui,
-    COUNT(
-      DISTINCT IF(activity_date = submission_date AND actor_type = 'api', user_id, NULL)
+      DISTINCT IF(activity_date = submission_date AND channel = 'api', user_id, NULL)
     ) AS dau_api,
     COUNT(
       DISTINCT IF(activity_date = submission_date AND is_creating, user_id, NULL)

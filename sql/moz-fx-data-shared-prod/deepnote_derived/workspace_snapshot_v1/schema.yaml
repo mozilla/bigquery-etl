@@ -143,3 +143,24 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Seconds of inactivity after which the machine shuts down.
+- name: files
+  type: STRING
+  mode: REPEATED
+  description: Paths of the project's files (from the MCP get_project tool), e.g. app.py, _deepnote_static/report.html.
+- name: static_site
+  type: RECORD
+  mode: NULLABLE
+  description: Static website settings of the project (served from _deepnote_static/).
+  fields:
+  - name: sharing_enabled
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the static site is shared.
+  - name: published
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the static site is published.
+  - name: url
+    type: STRING
+    mode: NULLABLE
+    description: URL of the static site.

@@ -47,7 +47,9 @@ events AS (
   SELECT
     DATE(created_at) AS submission_date,
     user_id,
-    actor_type,
+    -- actor_type is unreliable: server-side echoes of API/MCP edits are logged as "user".
+    -- Browser user agents are the Deepnote UI; everything else is the API, MCP or scripts.
+    IF(STARTS_WITH(IFNULL(user_agent, ''), 'Mozilla/'), 'ui', 'api') AS channel,
     event_type,
     COALESCE(
       JSON_VALUE(metadata, '$.notebookId'),
@@ -135,7 +137,7 @@ SELECT
   submission_date,
   project_id,
   notebook_id,
-  IF(actor_type = 'user', 'ui', 'api') AS channel,
+  channel,
   COUNT(*) AS events,
   COUNTIF(activity = 'view') AS views,
   COUNTIF(activity = 'edit') AS edits,
@@ -151,6 +153,9 @@ FROM
 WHERE
   project_id IS NOT NULL
   AND activity IS NOT NULL
+  -- notebook_edited from non-browser clients echoes API block changes already counted
+  -- as block_created/block_deleted/blocks_reordered
+  AND NOT (event_type = 'notebook_edited' AND channel = 'api')
 GROUP BY
   submission_date,
   project_id,

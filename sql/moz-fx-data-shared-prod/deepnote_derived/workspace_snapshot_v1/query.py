@@ -1,7 +1,8 @@
 """Snapshot projects, notebooks, Streamlit apps and machines of the Deepnote workspace.
 
-The public REST API has no machine endpoint, so machine types are read through the
-read-only `get_machine` tool of the Deepnote MCP server, which accepts the same API key
+The public REST API has no machine or file endpoints, so machine types and project
+files are read through the read-only `get_machine` and `get_project` tools of the
+Deepnote MCP server, which accepts the same API key
 (https://deepnote.com/docs/deepnote-mcp).
 """
 
@@ -74,24 +75,33 @@ def get_schedule(session, notebook_id):
     }
 
 
-def get_machine(session, project_id):
-    """Return the machine of a project's editor/apps via the MCP get_machine tool."""
+def mcp_tool(session, name, arguments):
+    """Call a read-only Deepnote MCP tool and return its structured result (None on error)."""
     response = session.post(
         MCP_URL,
         json={
             "jsonrpc": "2.0",
             "id": 1,
             "method": "tools/call",
-            "params": {"name": "get_machine", "arguments": {"projectId": project_id}},
+            "params": {"name": name, "arguments": arguments},
         },
         headers={"Accept": "application/json, text/event-stream"},
         timeout=60,
     )
     response.raise_for_status()
     result = response.json().get("result") or {}
-    machine = (result.get("structuredContent") or {}).get("machine")
-    if result.get("isError") or not machine:
-        logging.warning(f"No machine for project {project_id}: {result}")
+    if result.get("isError"):
+        logging.warning(f"MCP {name}({arguments}) failed: {result}")
+        return None
+    return result.get("structuredContent")
+
+
+def get_machine(session, project_id):
+    """Return the machine of a project's editor/apps."""
+    machine = (mcp_tool(session, "get_machine", {"projectId": project_id}) or {}).get(
+        "machine"
+    )
+    if not machine:
         return None
     machine_type = machine.get("type") or {}
     return {
@@ -105,9 +115,28 @@ def get_machine(session, project_id):
     }
 
 
+def get_files(session, project_id):
+    """Return a project's file paths and static site settings."""
+    project = mcp_tool(session, "get_project", {"projectId": project_id}) or {}
+    project = project.get("project", project)
+    static = project.get("staticFiles") or {}
+    files = [f["path"] for f in project.get("files") or [] if f.get("type") == "file"]
+    static_site = (
+        {
+            "sharing_enabled": static.get("sharingEnabled"),
+            "published": static.get("published"),
+            "url": static.get("url"),
+        }
+        if static
+        else None
+    )
+    return files, static_site
+
+
 def to_row(session, snapshot_date, project):
     """Convert an API project into a table row."""
     folder = project.get("folder") or {}
+    files, static_site = get_files(session, project["id"])
     return {
         "snapshot_date": snapshot_date.isoformat(),
         "project_id": project["id"],
@@ -135,6 +164,8 @@ def to_row(session, snapshot_date, project):
         ],
         "streamlit_apps": list_streamlit_apps(session, project["id"]),
         "machine": get_machine(session, project["id"]),
+        "files": files,
+        "static_site": static_site,
     }
 
 

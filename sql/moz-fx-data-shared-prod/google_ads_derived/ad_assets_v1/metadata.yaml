@@ -1,7 +1,7 @@
 friendly_name: Google Ads Assets
 description: |-
   One row per Google Ads asset, with its content, taken from the
-  daily snapshot of the Google Ads BigQuery Data Transfer
+  daily snapshots of the Google Ads BigQuery Data Transfer
   (`moz-fx-data-marketing-prod.google_ads_dts_mmc.p_ads_asset_lookup_*`).
 
   Includes all asset types (IMAGE, YOUTUBE_VIDEO, TEXT, SITELINK, ...).

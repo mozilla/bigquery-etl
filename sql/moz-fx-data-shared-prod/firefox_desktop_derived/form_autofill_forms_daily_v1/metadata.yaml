@@ -1,0 +1,36 @@
+friendly_name: Form Autofill Forms Daily
+description: |-
+  Daily Firefox Desktop form autofill counts per form interaction ("flow"), for
+  address and credit card forms (DENG-11568). Use it for overall rates that must
+  count each form once, for example the popup acceptance rate =
+  popup_autofilled_flows / popup_flows. For the breakdown by field, use
+  `form_autofill_fields_daily`.
+
+  `has_inferred_field` and `has_autocomplete_field` classify the flow by the
+  detection methods of its fields. A flow can have both.
+
+  The field counts (`detected_fields`, `autofilled_fields`, `modified_fields`,
+  `net_kept_fields`) use the metric-hub `form_autofill_forms` definitions: only
+  fields with an inferred type (regex, fathom or ml) count.
+
+  Filter `is_high_volume_client = FALSE` to remove the few clients that send
+  most of the detection events.
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_form_autofill
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - form_type
+    - normalized_channel
+require_column_descriptions: true

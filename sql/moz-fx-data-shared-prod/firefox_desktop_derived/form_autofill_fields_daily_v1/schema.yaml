@@ -1,0 +1,80 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the events were received (UTC).
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Release channel, for example release, beta or nightly.
+- name: app_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Firefox major version. Use it for the beta and release model eras.
+- name: app_build_date
+  type: DATE
+  mode: NULLABLE
+  description: Build date. Use it for the nightly model eras.
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country of the client, from geo IP.
+- name: form_type
+  type: STRING
+  mode: NULLABLE
+  description: Form type, `address` or `credit_card`.
+- name: ml_version
+  type: STRING
+  mode: NULLABLE
+  description: Revision of the ML field classifier. Address forms only.
+- name: is_high_volume_client
+  type: BOOLEAN
+  mode: NULLABLE
+  description: >-
+    True if the client sent more than 400 autofill events on this day. Filter it
+    out to remove the few clients that send most of the detection events.
+- name: field
+  type: STRING
+  mode: NULLABLE
+  description: Field type, for example `postal-code` or `cc-number`.
+- name: detection_method
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    How the field type was found - `autocomplete`, `regex`, `fathom`, `ml` or
+    `other`. NULL if no detected_* event named the field. The `ml` value is only
+    sent from version 155; before that, ML detections show as `regex`.
+- name: detected_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of (flow, field) pairs where the field was detected.
+- name: autofilled_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of (flow, field) pairs where autofill filled the field.
+- name: modified_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Number of (flow, field) pairs where autofill filled the field and the user
+    then edited it. Modify rate = modified_fields / autofilled_fields.
+- name: net_kept_fields
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Number of (flow, field) pairs where autofill filled the field and the user did
+    not edit it.
+- name: popup_flows
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of flows where the autofill popup was shown on this field.
+- name: popup_autofilled_flows
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Of popup_flows, the number where autofill filled at least one field of the
+    form. Acceptance rate = popup_autofilled_flows / popup_flows.
+- name: submitted_flows
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of flows with this field that were submitted.

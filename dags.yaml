@@ -2962,3 +2962,27 @@ bqetl_remote_settings_uptake:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_form_autofill:
+  default_args:
+    depends_on_past: false
+    email:
+      - phlee@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: phlee@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-10-28'
+  description: |
+    Firefox Desktop form autofill tables (address and credit card) used to
+    evaluate the address autofill ML field classifier against the heuristics
+    (DENG-11568). Both tables read the view firefox_desktop.form_autofill_flows,
+    which reads firefox_desktop.events_stream.
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

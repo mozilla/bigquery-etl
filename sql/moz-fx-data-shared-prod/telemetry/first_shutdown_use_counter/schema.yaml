@@ -12623,6 +12623,22 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page had a load blocked by the Akamai WAF
+    - name: use_counter2_navigationtransition_to_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationTransition.to
+    - name: use_counter2_navigationtransition_to_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationTransition.to
+    - name: use_counter2_navigationtransition_to_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationTransition.to
+    - name: use_counter2_navigationtransition_to_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationTransition.to
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -25111,6 +25127,22 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page had a load blocked by the Akamai WAF
+        - name: use_counter2_navigationtransition_to_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationTransition.to
+        - name: use_counter2_navigationtransition_to_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationTransition.to
+        - name: use_counter2_navigationtransition_to_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationTransition.to
+        - name: use_counter2_navigationtransition_to_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationTransition.to
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

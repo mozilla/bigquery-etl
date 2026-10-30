@@ -1,0 +1,68 @@
+fields:
+- name: asset_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads asset ID. Unique in this table.
+- name: asset_name
+  type: STRING
+  mode: NULLABLE
+  description: Asset name as set in Google Ads. Often NULL for non-media assets (text, sitelinks, locations).
+- name: asset_type
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads asset type, for example IMAGE, YOUTUBE_VIDEO, TEXT, SITELINK.
+- name: image_url
+  type: STRING
+  mode: NULLABLE
+  description: Full-size image URL. Set only for IMAGE assets.
+- name: youtube_video_id
+  type: STRING
+  mode: NULLABLE
+  description: YouTube video ID. Set only for YOUTUBE_VIDEO assets.
+- name: youtube_video_title
+  type: STRING
+  mode: NULLABLE
+  description: YouTube video title. Set only for YOUTUBE_VIDEO assets.
+- name: text
+  type: STRING
+  mode: NULLABLE
+  description: Text content. Set only for TEXT assets.
+- name: thumbnail_url
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Preview image for the asset. The image URL for IMAGE assets, or
+    https://i.ytimg.com/vi/<youtube_video_id>/hqdefault.jpg for YOUTUBE_VIDEO assets. NULL for other
+    asset types.
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Language of the creative, parsed from the asset name (the segment after `uac_`), for example en, de,
+    hi. Kept as written in the name, so Japanese is `jp`, not the ISO code `ja`. This is not the market:
+    the market is the country of the campaign the asset runs in, and one language can run in several
+    markets (for example, Spanish assets in FR campaigns). NULL when the name does not follow the UAC
+    naming convention.
+- name: rt
+  type: INTEGER
+  mode: NULLABLE
+  description: The number N parsed from the `rt<N>` segment of the asset name. NULL when the name does not follow the UAC naming convention.
+- name: raw_theme
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Theme label parsed from the asset name (the segment after `rt<N>`), for example privacy, sync,
+    tab-groups. Not normalized. This is not the official theme: the theme of an asset is the name of the
+    ad group it runs in. NULL when the name does not follow the UAC naming convention.
+- name: last_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    Date of the most recent asset_lookup snapshot that includes this asset. Content comes from that
+    snapshot. A date earlier than snapshot_date means the asset is no longer in Google Ads.
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    Date of the latest asset_lookup snapshot when this table was built. The same for every row. The
+    query fails if no snapshot loaded in the last 7 days.

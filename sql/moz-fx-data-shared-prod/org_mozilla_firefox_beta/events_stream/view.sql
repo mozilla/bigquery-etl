@@ -319,6 +319,7 @@ SELECT
       JSON_VALUE(event_extra.category_name) AS `category_name`,
       JSON_VALUE(event_extra.caught_exceptio) AS `caught_exceptio`,
       JSON_VALUE(event_extra.cause) AS `cause`,
+      JSON_VALUE(event_extra.cc_csc) AS `cc_csc`,
       JSON_VALUE(event_extra.cc_exp) AS `cc_exp`,
       JSON_VALUE(event_extra.cc_exp_month) AS `cc_exp_month`,
       JSON_VALUE(event_extra.cc_exp_year) AS `cc_exp_year`,

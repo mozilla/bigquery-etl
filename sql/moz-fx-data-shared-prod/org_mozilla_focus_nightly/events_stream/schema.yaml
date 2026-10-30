@@ -855,13 +855,13 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Number of prior restore attempts across sessions (0 on the first attempt).
-        Restores stop being attempted once this reaches its budget.
-
         * How many launches had already tried and failed before this one, 0 on the
         first. A retry emits an otherwise identical event, so this is what separates
         a profile that failed once from one failing every time. The migrator gives
         up after 3.
+
+        * Number of prior restore attempts across sessions (0 on the first attempt).
+        Restores stop being attempted once this reaches its budget.
 
         * Number of prior migration attempts across sessions (0 on the first attempt).'
     - name: attemptCount
@@ -979,11 +979,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Wall-clock duration of the migration, in milliseconds.
+
         * Duration of the migration in milliseconds.
 
         * Duration of the restore in milliseconds, measured with a monotonic clock.
-
-        * Wall-clock duration of the migration, in milliseconds.
 
         * Duration of the call as seen by the caller, measured in LoginManager around
         the delegation to the active backend.'
@@ -1498,7 +1498,10 @@ fields:
 
         * How this click happened
 
-        * The action that was taken by the user, remove or cancel'
+        * The action that was taken by the user, remove or cancel
+
+        * "add": a code is saved for a card that had none. "edit": the stored code
+        is changed. "clear": the stored code is removed.'
     - name: action_performed
       type: STRING
       mode: NULLABLE
@@ -1780,6 +1783,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The interruption cause, `system_transient` or `system_permanent`.
+    - name: cc_csc
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * credit card security code (CVV) field result
+
+        * Credit card security code (CVV) field result'
     - name: cc_exp
       type: STRING
       mode: NULLABLE
@@ -2037,8 +2048,6 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Direction of the m-section. recvonly, sendonly, sendrecv or inactive.
-
         * Which way the addresses were copied: "to_rust" for the migration into the
         Rust store, "to_json" for the copy back when the pref that chooses the store
         is turned off again. A profile can do both, so this is what keeps the two
@@ -2047,7 +2056,9 @@ fields:
         * Which way the credit cards were copied: "to_rust" for the migration into
         the Rust store, "to_json" for the copy back when the pref that chooses the
         store is turned off again. A profile can do both, so this is what keeps the
-        two apart.'
+        two apart.
+
+        * Direction of the m-section. recvonly, sendonly, sendrecv or inactive.'
     - name: directive
       type: STRING
       mode: NULLABLE
@@ -2196,6 +2207,11 @@ fields:
         otherwise, including when records were rejected or came up short: the counts
         already describe that.
 
+        * The UniFFI error variant when the migration threw, for grouping, or "SourceChanged"
+        when the JSON store was written to while it was copied into the Rust store,
+        which fails the run. Absent otherwise, including when records were rejected
+        or came up short: the counts already describe that.
+
         * The error code after users click the email alias generation panel. When
         the event is successful, the error_code is 0.
 
@@ -2213,12 +2229,12 @@ fields:
 
         * The error message or exception string from the failure.
 
-        * The fatal error that aborted the run, or empty if the run completed.
-
         * A normalized, PII-stripped message: the first reason a record was rejected,
         or the error text where the migration threw. One example to read rather than
         a set to aggregate -- rejected records in one batch nearly always share a
         cause. Absent when the counts say it all.
+
+        * The fatal error that aborted the run, or empty if the run completed.
 
         * Records the error message. Likely errors include "Cr.NS_ERROR_FAILURE" and
         "Cr.NS_ERROR_ABORT". If no error then "NO_ERROR".
@@ -2374,11 +2390,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Name of the field being affected by the method. Used by `popup_shown`, `filled_modified`
-        and `cleared` methods.
-
         * Name of the field being affected by the method. Used by `popup_shown` and
         `filled_modified` methods.
+
+        * Name of the field being affected by the method. Used by `popup_shown`, `filled_modified`
+        and `cleared` methods.
 
         * Name of the field being affected by the event
 
@@ -3351,14 +3367,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * The result of the OS Authentication.
-
-        * Optionally, the name of the error that occurred.
-
         * "ok" when the store copied into ended up holding exactly what the source
         holds -- every record arrived and nothing the source lacks survived, compared
         by guid rather than by count -- so the profile could be handed to it; otherwise
         "error".
+
+        * The result of the OS Authentication.
+
+        * Optionally, the name of the error that occurred.
 
         * The error code, converted to a string.
 
@@ -3388,12 +3404,12 @@ fields:
 
         * Unique identifier for the migration run.
 
+        * A fresh id per run, so that the migrate_record_divergence events a run emitted
+        join to it unambiguously.
+
         * Unique identifier for the restore run.
 
         * The migrate_to_rust run this record was copied by.
-
-        * A fresh id per run, so that the migrate_record_divergence events a run emitted
-        join to it unambiguously.
 
         * Unique identifier for the migration run
 
@@ -3904,8 +3920,9 @@ fields:
 
         * The value is the ID of the add-on.
 
-        * The event value. This is either "started", "success", "decryptionError"
-        or "encryptionError". "started" gets emitted...'
+        * Flow id of an interaction session with a credit card form
+
+        * The event value. This is either "started", "success", "d...'
     - name: variant_shown
       type: STRING
       mode: NULLABLE

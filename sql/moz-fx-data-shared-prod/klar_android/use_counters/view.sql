@@ -3028,7 +3028,11 @@ SELECT
       metrics.counter.use_counter_doc_akamai_waf_blocked,
       metrics.counter.use_counter_page_akamai_forbidden,
       metrics.counter.use_counter_page_akamai_used,
-      metrics.counter.use_counter_page_akamai_waf_blocked
+      metrics.counter.use_counter_page_akamai_waf_blocked,
+      metrics.counter.use_counter_doc_navigationtransition_to_getter,
+      metrics.counter.use_counter_doc_navigationtransition_to_setter,
+      metrics.counter.use_counter_page_navigationtransition_to_getter,
+      metrics.counter.use_counter_page_navigationtransition_to_setter
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

@@ -1333,7 +1333,9 @@ SELECT
       metrics.quantity.nimbus_qa_prefs_int_user_value,
       metrics.quantity.devtools_localmode_mappings_count,
       metrics.quantity.ipprotection_exclusions_count,
-      metrics.quantity.ipprotection_inclusions_count
+      metrics.quantity.ipprotection_inclusions_count,
+      metrics.quantity.formautofill_creditcards_saved_count,
+      metrics.quantity.formautofill_creditcards_saved_cvv_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3689,7 +3691,9 @@ SELECT
       metrics.quantity.nimbus_qa_prefs_int_user_value,
       metrics.quantity.devtools_localmode_mappings_count,
       metrics.quantity.ipprotection_exclusions_count,
-      metrics.quantity.ipprotection_inclusions_count
+      metrics.quantity.ipprotection_inclusions_count,
+      metrics.quantity.formautofill_creditcards_saved_count,
+      metrics.quantity.formautofill_creditcards_saved_cvv_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -6065,7 +6069,9 @@ SELECT
       metrics.quantity.nimbus_qa_prefs_int_user_value,
       metrics.quantity.devtools_localmode_mappings_count,
       metrics.quantity.ipprotection_exclusions_count,
-      metrics.quantity.ipprotection_inclusions_count
+      metrics.quantity.ipprotection_inclusions_count,
+      metrics.quantity.formautofill_creditcards_saved_count,
+      metrics.quantity.formautofill_creditcards_saved_cvv_count
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,

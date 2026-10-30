@@ -536,6 +536,30 @@ fields:
         (e.g. over_limit); empty if not flagged.
 
         '
+    - name: ad_ad_set_version_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Version identifier for the ad set in the Mozilla Ads API.
+
+        '
+    - name: ad_ad_version_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Version identifier for the ad in the Mozilla Ads API.
+
+        '
+    - name: ad_campaign_version_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Version identifier for the campaign in the Mozilla Ads API.
+
+        '
+    - name: ad_creative_version_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Version identifier for the creative in the Mozilla Ads API.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

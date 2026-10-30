@@ -39331,6 +39331,23 @@ fields:
       description: 'The number of site inclusions the user has set.
 
         '
+    - name: formautofill_creditcards_saved_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of credit cards saved in the store serving them. Read
+        when the store loads at startup and after every change, so it is sent on every
+        metrics ping, unlike autofill_profiles_count, which is only set when a card
+        is added or edited.
+
+        '
+    - name: formautofill_creditcards_saved_cvv_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of saved credit cards that have a security code (CVV)
+        saved. Read and sent like saved_count. Reports only the count, never the code
+        or its length.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

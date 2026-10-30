@@ -6,7 +6,7 @@ fields:
 - name: platform
   type: STRING
   mode: REQUIRED
-  description: Platform the row applies to. desktop on every row for now; mobile Suggest will add its own rows. A result type has at most one row per platform on any date.
+  description: Platform the row applies to. desktop for now; mobile Suggest will add its own rows. At most one row per result_type and platform on any date.
 - name: product_result_type
   type: STRING
   mode: REQUIRED

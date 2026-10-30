@@ -5,6 +5,8 @@ description: |-
   - org.mozilla.firefox_beta
   - org.mozilla.fenix
   - org.mozilla.focus
+  - org.mozilla.klar
+  - org.mozilla.firefox.vpn
 
   Docs: https://developers.google.com/play/developer/reporting/reference/rest/v1beta1/vitals.anonrssandswapmemoryusage
 owners:

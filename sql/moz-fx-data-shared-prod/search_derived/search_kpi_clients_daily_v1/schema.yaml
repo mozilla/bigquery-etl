@@ -1,0 +1,97 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: submission_date
+  append_description: ""
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: desktop, android or ios. Part of the row key, because each platform has its
+    own client ID space. Only desktop for now.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: The Glean client identifier (client_info.client_id) for the platform. One
+    row per platform, client_id and submission_date.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: The profile group identifier, the ID experiment analyses join on.
+    urlbar_clients_daily_v1's value when the client has one, otherwise
+    desktop_client_day_dims_v1's.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number from 0 to 99 derived from client_id, for sampling. The clustering
+    field after platform.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: country
+  append_description: " From desktop_client_day_dims_v1; null if the client has no row there."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: normalized_channel
+  append_description: " From desktop_client_day_dims_v1."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: os
+  append_description: " From desktop_client_day_dims_v1."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: app_version_major
+  append_description: " From desktop_client_day_dims_v1."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: normalized_default_search_engine
+  append_description: " From desktop_client_day_dims_v1."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: is_default_browser
+  append_description: " From desktop_client_day_dims_v1."
+- name: sap
+  type: INTEGER
+  mode: NULLABLE
+  description: Searches started from a Firefox search access point that day, the sum of
+    search_clients_daily_glean_v1.sap_counts_total over the client's rows. 0 if none.
+- name: suggest_sponsored
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on result types kpi_component_map_v1 maps to suggest_sponsored that
+    day (AMP, weather, Yelp). 0 if none.
+- name: suggest_nonsponsored
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on result types kpi_component_map_v1 maps to suggest_nonsponsored
+    that day (Wikipedia, MDN, add-ons, market, sports and others). 0 if none.
+- name: ai_chat
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on result types kpi_component_map_v1 maps to ai_chat that day (Smart
+    Window "Ask"). 0 if none.
+- name: search_queries
+  type: INTEGER
+  mode: NULLABLE
+  description: The KPI for this client-day, sap + suggest_sponsored + suggest_nonsponsored
+    + ai_chat.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: is_bot
+  append_description: " NULL too for clients not in urlbar_clients_daily_v1."
+- name: in_urlbar
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when the client has a urlbar_clients_daily_v1 row that day. Every such
+    client is kept, so a row with search_queries = 0 is an urlbar user whose picks didn't
+    count. FALSE rows always have sap > 0.
+- name: meets_population_rules
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when the row meets the KPI's population rules, currently Firefox 138 or
+    later (the SAP probe floor), applied to SAP and Suggest alike. FALSE when
+    app_version_major is below 138 or unknown. Daily totals and experiment metrics filter
+    on it.
+- name: definition_version
+  type: INTEGER
+  mode: NULLABLE
+  description: The kpi_component_map_v1 definition_version this row was built with, the
+    highest among the map rows in effect that day.

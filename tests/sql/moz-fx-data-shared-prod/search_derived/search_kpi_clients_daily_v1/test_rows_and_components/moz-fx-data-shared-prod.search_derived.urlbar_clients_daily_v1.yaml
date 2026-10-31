@@ -1,0 +1,45 @@
+# client-a: Suggest clicks of every component, plus clicks that don't count (history,
+# an unmapped action_* type, rust_yelp after it became excluded) and an unmapped type
+# that was only shown, which must not trip the guard.
+- submission_date: "2026-10-28"
+  client_id: client-a
+  profile_group_id: group-a-urlbar
+  sample_id: 1
+  sessions_total: 6
+  sessions_engaged: 6
+  sessions_abandoned: 0
+  results:
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 2, sessions_shown: 2}
+  - {window_mode: smart, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 1, sessions_shown: 1}
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_wikipedia, clicks: 1, sessions_shown: 1}
+  - {window_mode: smart, sap: urlbar, interaction: typed, result_type: smartwindow_assistant, clicks: 1, sessions_shown: 1}
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: history, clicks: 1, sessions_shown: 3}
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: action_new_thing, clicks: 1, sessions_shown: 1}
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_yelp, clicks: 1, sessions_shown: 1}
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: brand_new_type, clicks: 0, sessions_shown: 1}
+# client-b: urlbar user whose only click doesn't count. Kept, with zeros.
+- submission_date: "2026-10-28"
+  client_id: client-b
+  profile_group_id: group-b
+  sample_id: 2
+  sessions_total: 1
+  sessions_engaged: 1
+  sessions_abandoned: 0
+  results:
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: history, clicks: 1, sessions_shown: 1}
+# client-c: no profile group id here (falls back to dims), no results at all.
+- submission_date: "2026-10-28"
+  client_id: client-c
+  sample_id: 3
+  sessions_total: 1
+  sessions_engaged: 0
+  sessions_abandoned: 1
+# Another day: ignored.
+- submission_date: "2026-10-27"
+  client_id: client-a
+  sample_id: 1
+  sessions_total: 1
+  sessions_engaged: 1
+  sessions_abandoned: 0
+  results:
+  - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 9, sessions_shown: 1}

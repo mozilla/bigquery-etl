@@ -597,6 +597,8 @@ jobs:
     outputs:
       pr-number: ${{ steps.context.outputs.pr_number }}
       commit-sha: ${{ steps.context.outputs.commit_sha }}
+      workflow-run-id: ${{ steps.dispatch.outputs.workflow_run_id }}
+      workflow-html-url: ${{ steps.dispatch.outputs.html_url }}
     environment: *job-env
     steps:
       - name: Determine context
@@ -624,6 +626,8 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
           IS_MERGE_GROUP: ${{ github.event_name == 'merge_group' }}
+          PRIVATE_WORKFLOW: ${{ vars.PRIVATE_CI_WORKFLOW || 'build.yml' }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [[ -z "$TRIGGER_TOKEN" ]]; then
             # Private CI is a required check on PRs and merge groups, so without
@@ -636,25 +640,81 @@ jobs:
             exit 0
           fi
 
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+          # Attempt workflow_dispatch with return_run_details=true to retrieve run ID and HTML URL
+          DISPATCH_PAYLOAD=$(jq -n \
+            --arg ref "main" \
+            --arg sha "$COMMIT_SHA" \
+            --arg pr "$PR_NUMBER" \
+            --arg run_id "$RUN_ID" \
+            --arg is_main "${IS_MAIN:-false}" \
+            --arg is_merge_group "${IS_MERGE_GROUP:-false}" \
+            '{
+              ref: $ref,
+              inputs: {
+                bqetl_commit_sha: $sha,
+                bqetl_pr_number: $pr,
+                bqetl_run_id: $run_id,
+                is_main_push: $is_main,
+                is_merge_group: $is_merge_group
+              },
+              return_run_details: true
+            }')
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
             -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${PRIVATE_REPO}/dispatches" \
-            -d "$(jq -n \
-              --arg sha "$COMMIT_SHA" \
-              --arg pr "$PR_NUMBER" \
-              --arg run_id "$RUN_ID" \
-              --argjson is_main "${IS_MAIN:-false}" \
-              --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
-              '{event_type: "bqetl-ci", client_payload: {
-                bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
-                is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
+            "https://api.github.com/repos/${PRIVATE_REPO}/actions/workflows/${PRIVATE_WORKFLOW}/dispatches" \
+            -d "$DISPATCH_PAYLOAD")
 
-          if [[ "$HTTP_STATUS" != "204" ]]; then
-            echo "::error::Failed to dispatch private CI (HTTP $HTTP_STATUS)"
-            exit 1
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          if [[ "$HTTP_STATUS" =~ ^20[0-4]$ ]]; then
+            echo "Dispatched workflow_dispatch to ${PRIVATE_REPO} (${PRIVATE_WORKFLOW})"
+            PRIVATE_RUN_ID=$(echo "$BODY" | jq -r '.workflow_run_id // empty')
+            HTML_URL=$(echo "$BODY" | jq -r '.html_url // empty')
+
+            if [[ -n "$PRIVATE_RUN_ID" && -n "$HTML_URL" ]]; then
+              echo "workflow_run_id=${PRIVATE_RUN_ID}" >> "$GITHUB_OUTPUT"
+              echo "html_url=${HTML_URL}" >> "$GITHUB_OUTPUT"
+              echo "Private CI run ID: ${PRIVATE_RUN_ID}"
+              echo "Private CI run URL: ${HTML_URL}"
+
+              if [[ "$GITHUB_EVENT_NAME" == "pull_request" || "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
+                gh api "repos/${GITHUB_REPOSITORY}/statuses/${COMMIT_SHA}" \
+                  -f state=pending \
+                  -f context="private-bigquery-etl / Private CI" \
+                  -f target_url="${HTML_URL}" \
+                  -f description="Private CI running (run ${PRIVATE_RUN_ID})" || true
+              fi
+
+              {
+                echo "### Private CI Run"
+                echo "Triggered run: [${PRIVATE_RUN_ID}](${HTML_URL})"
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "::warning::workflow_dispatch returned HTTP $HTTP_STATUS ($BODY). Falling back to repository_dispatch..."
+            FALLBACK_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${PRIVATE_REPO}/dispatches" \
+              -d "$(jq -n \
+                --arg sha "$COMMIT_SHA" \
+                --arg pr "$PR_NUMBER" \
+                --arg run_id "$RUN_ID" \
+                --argjson is_main "${IS_MAIN:-false}" \
+                --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
+                '{event_type: "bqetl-ci", client_payload: {
+                  bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
+                  is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
+
+            if [[ "$FALLBACK_STATUS" != "204" ]]; then
+              echo "::error::Failed to dispatch private CI via workflow_dispatch ($HTTP_STATUS) and repository_dispatch ($FALLBACK_STATUS)"
+              exit 1
+            fi
+            echo "Dispatched bqetl-ci event to private-bigquery-etl via repository_dispatch fallback"
           fi
-          echo "Dispatched bqetl-ci event to private-bigquery-etl"
       - name: Report private CI dispatch failure
         # Without a dispatch nothing reports the required status, so fail it
         # here instead of leaving PRs and merge groups waiting on it

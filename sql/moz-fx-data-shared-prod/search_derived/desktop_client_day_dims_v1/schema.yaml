@@ -1,0 +1,116 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: submission_date
+  append_description: ""
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: client_id
+  append_description: " One row per client_id and submission_date."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: sample_id
+  append_description: " The clustering field."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: profile_group_id
+  append_description: " The ID experiment analyses join on. Chosen like the other columns,
+    by dims_source."
+- name: dims_source
+  type: STRING
+  mode: NULLABLE
+  description: "Where this row's values come from. search_clients_daily: the client has a
+      search_clients_daily_glean_v1 row that day, and every column is the value
+      search_aggregates_glean_v1 picks for it. baseline_and_metrics: no search row; values
+      from firefox_desktop.baseline_clients_daily, with the default engine columns and
+      home_region from the client's metrics ping that day. baseline: the same, but the client
+      sent no metrics ping that day, so the default engine columns and home_region are null."
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: "The country of the client on this day, one value per client-day. For
+      search_clients_daily rows, the country on the most rows of that client-day in
+      search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the country
+      code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's country."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: locale
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's value."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: app_version
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's value (app_display_version)."
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: "The major version of app_version, from mozfun.norm.browser_version_info."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: os
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's normalized_os, with Mac written as Darwin to match."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: os_version
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's normalized_os_version."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: channel
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's app_channel."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: normalized_channel
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's value."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: distribution_id
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's distribution.name, the same field; not its distribution_id column, which is a different metric."
+- name: is_acer_distribution
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "TRUE when distribution_id contains 'acer', meaning an Acer distribution, and
+      FALSE otherwise, including when distribution_id is null. As in
+      search_aggregates_glean_v1."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: is_default_browser
+  append_description: " Resolved to one value per client-day: firefox_desktop.baseline_clients_daily when it has one, then the event-backed side, then
+      the latest ping_end_time."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: policies_is_enterprise
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise
+      baseline_clients_daily's value."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_search_engine_provider_id
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise the latest non-null
+      value from the client's metrics ping that day; null if it sent none (see dims_source)."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_search_engine_display_name
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise the latest non-null
+      value from the client's metrics ping that day; null if it sent none (see dims_source)."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: default_private_search_engine_display_name
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise the latest non-null
+      value from the client's metrics ping that day; null if it sent none (see dims_source)."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+  field: home_region
+  append_description: " Resolved to one value per client-day: the event-backed side first, then the latest ping_end_time. Otherwise the latest non-null
+      value from the client's metrics ping that day; null if it sent none (see dims_source)."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and null for
+      any other. Matches substrings of default_search_engine_provider_id, as
+      search_aggregates_glean_v1 does. Null where the provider id is null or names another
+      engine."

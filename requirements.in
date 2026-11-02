@@ -7,7 +7,7 @@
 # image, check for version overlaps between requirements.txt and
 # requirements-private.txt first.
 attrs==25.4.0
-authlib==1.6.12
+authlib==1.9.1
 beautifulsoup4==4.14.3
 bigeye-sdk==0.8.5
 black==26.10.1

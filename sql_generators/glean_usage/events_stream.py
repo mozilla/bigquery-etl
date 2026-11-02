@@ -138,11 +138,11 @@ class EventsStreamTable(GleanTable):
         for app_id_info in app_ids_info:
             app_id_extras_by_type = get_glean_app_event_extras_by_type(
                 app_id_info["v1_name"],
-                skip_descriptions_deduplication=True,
+                skip_deduplication=True,
             )
             _merge_extras_by_type(extras_by_type, app_id_extras_by_type)
-        # Deduplicate the descriptions only after we have all of them so we can accurately tell which are most common.
-        _deduplicate_extras_by_type_descriptions(extras_by_type)
+        # Deduplicate only after we have all names and descriptions so we can accurately tell which are most common.
+        _deduplicate_extras_by_type(extras_by_type)
 
         custom_render_kwargs = {"extras_by_type": extras_by_type}
 
@@ -198,9 +198,15 @@ def get_glean_app_ping_expiration_days(v1_name: str, ping: str = "events") -> in
 
 
 def _extras_by_type_dict() -> dict[str, dict[str, dict]]:
-    """Return a nested `defaultdict` setup for an `extras_by_type` dictionary indexed by type and name."""
+    """Return a nested `defaultdict` setup for an `extras_by_type` dictionary indexed by type and lowercased name.
+
+    BigQuery column names are case-insensitive, so extras whose names only differ by case
+    (e.g. `lineNumber` and `linenumber`) are grouped together, with each spelling collected in `names`.
+    """
     return defaultdict(
-        lambda: defaultdict(lambda: {"name": "", "type": "", "descriptions": []})
+        lambda: defaultdict(
+            lambda: {"name": "", "type": "", "names": [], "descriptions": []}
+        )
     )
 
 
@@ -210,19 +216,26 @@ def _merge_extras_by_type(
 ) -> None:
     """Merge `other_extras_by_type` into `extras_by_type`."""
     for extra_type, other_extras in other_extras_by_type.items():
-        for extra_name, other_extra in other_extras.items():
-            extra = extras_by_type[extra_type][extra_name]
-            extra["name"] = extra_name
+        for extra_key, other_extra in other_extras.items():
+            extra = extras_by_type[extra_type][extra_key]
             extra["type"] = extra_type
+            extra["names"].extend(other_extra["names"])
+            if not extra.get("name"):
+                extra["name"] = other_extra["name"]
             extra["descriptions"].extend(other_extra["descriptions"])
 
 
-def _deduplicate_extras_by_type_descriptions(
+def _deduplicate_extras_by_type(
     extras_by_type: dict[str, dict[str, dict]],
 ) -> None:
-    """Deduplicate the `extras_by_type` descriptions, putting the most commonly used descriptions first."""
+    """Deduplicate the `extras_by_type` names and descriptions, putting the most commonly used ones first.
+
+    The most commonly used spelling of each extra's name is used as its column name.
+    """
     for extras in extras_by_type.values():
         for extra in extras.values():
+            extra["names"] = [name for name, _ in Counter(extra["names"]).most_common()]
+            extra["name"] = extra["names"][0]
             extra["descriptions"] = [
                 description
                 for description, _ in Counter(extra["descriptions"]).most_common()
@@ -234,9 +247,12 @@ def get_glean_app_event_extras_by_type(
     v1_name: str,
     ping: str = "events",
     cutoff_date: Optional[date] = None,
-    skip_descriptions_deduplication: bool = False,
+    skip_deduplication: bool = False,
 ) -> dict[str, dict[str, dict]]:
-    """Return the Glean app's event extras for the specified ping, indexed by type and name, with normalized descriptions collected in a list."""
+    """Return the Glean app's event extras for the specified ping, indexed by type and lowercased name.
+
+    Each extra's name spellings and normalized descriptions are collected in lists.
+    """
     extras_by_type = _extras_by_type_dict()
     repository = get_glean_app_repository(v1_name)
 
@@ -252,9 +268,11 @@ def get_glean_app_event_extras_by_type(
                 if ping in history["send_in_pings"] and last_date >= cutoff_date:
                     for extra_name, extra_info in history["extra_keys"].items():
                         extra_type = extra_info.get("type", "string")
-                        extra = extras_by_type[extra_type][extra_name]
-                        extra["name"] = extra_name
+                        extra = extras_by_type[extra_type][extra_name.lower()]
                         extra["type"] = extra_type
+                        extra["names"].append(extra_name)
+                        if not extra.get("name"):
+                            extra["name"] = extra_name
                         # Normalize whitespace in the descriptions to make them a single line.
                         if description := (extra_info.get("description") or "").strip():
                             extra["descriptions"].append(" ".join(description.split()))
@@ -262,11 +280,11 @@ def get_glean_app_event_extras_by_type(
     for dependency in repository["dependencies"]:
         dependency_v1_name = get_glean_dependency_v1_name(dependency)
         dependency_extras_by_type = get_glean_app_event_extras_by_type(
-            dependency_v1_name, ping, cutoff_date, skip_descriptions_deduplication=True
+            dependency_v1_name, ping, cutoff_date, skip_deduplication=True
         )
         _merge_extras_by_type(extras_by_type, dependency_extras_by_type)
 
-    if not skip_descriptions_deduplication:
-        _deduplicate_extras_by_type_descriptions(extras_by_type)
+    if not skip_deduplication:
+        _deduplicate_extras_by_type(extras_by_type)
 
     return extras_by_type

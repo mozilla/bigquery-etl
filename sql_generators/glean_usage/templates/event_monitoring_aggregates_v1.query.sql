@@ -66,6 +66,33 @@ WITH
               AND event.name IN ("uptake_remotesettings", "uptake_normandy")
               AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
               AND sample_id != 0
+              AND (
+                -- client-side sampling started on version 145 on Desktop, for uptake_remotesettings only
+                mozfun.norm.extract_version(client_info.app_display_version, 'major') <= 144
+                OR event.name = "uptake_normandy"
+                -- sampling lowered from 1% to 0.03% on 2026-10-20. Earlier dates stay filtered so backfills match.
+                OR DATE(submission_timestamp) <= '2026-10-21'
+              )
+            ) IS NOT TRUE
+          {% elif dataset['bq_dataset_family'] == "org_mozilla_ios_firefox" and events_table == "events_v1" %}
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-504
+            -- Server knobs are not available on iOS yet, so sample here instead.
+            -- iOS only has the Rust implementation, hence the `remote_settings` category.
+            AND (
+              event.category = "remote_settings"
+              AND event.name = "uptake_remotesettings"
+              AND sample_id != 0
+            ) IS NOT TRUE
+          {% elif dataset['bq_dataset_family'] == "org_mozilla_firefox" and events_table == "events_v1" %}
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-553
+            -- Server knobs were introduced in 145, so sample earlier versions here instead.
+            -- Android has both the Gecko and the Rust implementations.
+            AND (
+              event.category IN ("uptake.remotecontent.result", "remote_settings")
+              AND event.name = "uptake_remotesettings"
+              AND mozfun.norm.extract_version(client_info.app_display_version, 'major')
+              IN (143, 144)
+              AND sample_id != 0
             ) IS NOT TRUE
           {% endif %}
         GROUP BY

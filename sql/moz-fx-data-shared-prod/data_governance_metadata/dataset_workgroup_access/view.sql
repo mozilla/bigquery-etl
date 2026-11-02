@@ -31,7 +31,9 @@ LEFT JOIN
   UNNEST(acc.workgroups) AS wg_name
 LEFT JOIN
   `moz-fx-data-shared-prod.mozcloud.workgroups` AS wgs
-  ON wg_name = wgs.workgroup
+  -- mozcloud.workgroups is keyed by the bare workgroup (e.g. "ads"), while
+  -- wg_name carries the role too (e.g. "ads/data-viewers").
+  ON SPLIT(wg_name, "/")[OFFSET(0)] = wgs.workgroup
 WHERE
   acc.collected_at = (
     SELECT

@@ -1,0 +1,12 @@
+friendly_name: Airflow task instance history
+description: |-
+  https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dag-run.html#task-instance-history
+labels:
+  incremental: false
+owners:
+  - srose@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  date_partition_parameter: null
+  depends_on_fivetran:
+    - task_id: fivetran_airflow_metadata_import

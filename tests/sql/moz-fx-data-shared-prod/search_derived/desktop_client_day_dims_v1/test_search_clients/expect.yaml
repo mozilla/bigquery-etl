@@ -1,0 +1,23 @@
+# NULL columns are omitted: the harness drops null keys from the result row.
+- submission_date: "2026-10-20"
+  client_id: s
+  sample_id: 1
+  profile_group_id: group-s
+  dims_source: search_clients_daily
+  country: US
+  locale: de
+  app_version: "158.0"
+  app_version_major: "158"
+  os: Windows
+  os_version: "10.0"
+  channel: release
+  normalized_channel: release
+  distribution_id: acer-001
+  is_acer_distribution: true
+  is_default_browser: true
+  policies_is_enterprise: true
+  default_search_engine_provider_id: bing
+  default_search_engine_display_name: Bing
+  default_private_search_engine_display_name: Bing
+  home_region: DE
+  normalized_default_search_engine: Bing

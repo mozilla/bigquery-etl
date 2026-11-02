@@ -547,41 +547,25 @@ def _existing_artifact_file(source_dir: Path) -> Optional[Path]:
     return None
 
 
-def _partition_field_from_metadata(
-    sql_dir: str, project: str, dataset: str, table: str
-) -> Optional[str]:
-    """Read the partition column from the source table's metadata.yaml, if any.
-
-    Returns None when the file doesn't exist, can't be parsed, or doesn't
-    declare a `time_partitioning.field`. Callers should fall back to
-    `default_partition_for(dataset)` in that case.
-    """
-    md_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
-    if not md_path.is_file():
-        return None
-    try:
-        md = Metadata.from_file(str(md_path))
-    except Exception:
-        return None
-    tp = getattr(md, "bigquery", None)
-    tp = getattr(tp, "time_partitioning", None) if tp else None
-    return getattr(tp, "field", None) if tp else None
-
-
 def resolve_partition_for(
     sql_dir: str, project: str, dataset: str, table: str
 ) -> Optional[str]:
     """Return the partition-filter column for a source table.
 
-    Prefers `time_partitioning.field` from the source's metadata.yaml in the
-    local repo. Falls back to a suffix-based guess (`default_partition_for`)
-    for tables that aren't managed here or whose metadata doesn't declare a
-    partition column. Returns None when neither source applies — callers
-    fall through to an unfiltered query.
+    Prefers `bigquery.time_partitioning.field` from the source's `metadata.yaml` in the
+    local repo. Falls back to a dataset suffix-based guess (`default_partition_for`)
+    for tables that aren't managed here. Returns None when neither source applies,
+    so callers fall back to an unfiltered query.
     """
-    return _partition_field_from_metadata(
-        sql_dir, project, dataset, table
-    ) or default_partition_for(dataset)
+    metadata_file = Path(sql_dir) / project / dataset / table / METADATA_FILE
+    if metadata_file.is_file():
+        metadata = Metadata.from_file(metadata_file)
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            return metadata.bigquery.time_partitioning.field or "_PARTITIONTIME"
+        else:
+            return None
+
+    return default_partition_for(dataset)
 
 
 def default_partition_for(dataset: str) -> Optional[str]:

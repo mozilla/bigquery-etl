@@ -1,10 +1,18 @@
 friendly_name: {{friendly_name}}
 description: |-
   Derived data for {{ dataset }}
-dataset_base_acl: derived
+dataset_base_acl: {{ dataset_base_acl }}
 user_facing: false
 labels: {}
+{%- if workgroup_access %}
 workgroup_access:
-- role: roles/bigquery.dataViewer
+{%- for access in workgroup_access %}
+- role: {{ access.role }}
   members:
-  - workgroup:mozilla-confidential/data-viewers
+  {%- for member in access.members %}
+  - {{ member }}
+  {%- endfor %}
+{%- endfor %}
+{%- else %}
+workgroup_access: []
+{%- endif %}

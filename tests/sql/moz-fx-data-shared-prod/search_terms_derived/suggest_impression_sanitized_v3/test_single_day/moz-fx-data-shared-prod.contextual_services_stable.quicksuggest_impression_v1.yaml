@@ -95,7 +95,7 @@
     - key: suggest-exp
       value:
         branch: control
-# merino session dedup: rid_multi_high wins because it has a higher sequence_no
+# sid_multi: impressions for both requests in the session (see rid_multi_low below)
 - submission_timestamp: "2021-01-01 13:20:30"
   request_id: rid_multi_high
   search_query: null
@@ -139,6 +139,105 @@
   release_channel: release
   position: 40
   reporting_url: "url_norm"
+  scenario: "online"
+  version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
+# impression for the earlier request of sid_multi; still gets its own query
+- submission_timestamp: "2021-01-01 13:20:10"
+  request_id: rid_multi_low
+  search_query: null
+  advertiser: pizza place
+  block_id: 121
+  context_id: cid_multi_low
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: CO
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 21
+  reporting_url: "url_multi_low"
+  scenario: "online"
+  version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
+# merino record for rid_redeliver is logged twice; impression yields one row
+- submission_timestamp: "2021-01-01 14:00:00"
+  request_id: rid_redeliver
+  search_query: null
+  advertiser: redeliver store
+  block_id: 160
+  context_id: cid_redeliver
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: WA
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 60
+  reporting_url: "url_redeliver"
+  scenario: "online"
+  version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
+# merino records without session_id; each impression still gets its query
+- submission_timestamp: "2021-01-01 14:10:00"
+  request_id: rid_no_session_a
+  search_query: null
+  advertiser: no session store
+  block_id: 170
+  context_id: cid_no_session_a
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: OR
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 70
+  reporting_url: "url_no_session_a"
+  scenario: "online"
+  version: "94.0.2"
+  experiments:
+    - key: suggest-exp
+      value:
+        branch: control
+- submission_timestamp: "2021-01-01 14:11:00"
+  request_id: rid_no_session_b
+  search_query: null
+  advertiser: no session store
+  block_id: 171
+  context_id: cid_no_session_b
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: OR
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 71
+  reporting_url: "url_no_session_b"
   scenario: "online"
   version: "94.0.2"
   experiments:

@@ -1,0 +1,43 @@
+fields:
+  - name: event
+    type: STRING
+    mode: REQUIRED
+  - name: worker_pool_id
+    type: STRING
+    mode: REQUIRED
+  - name: provider_id
+    type: STRING
+    mode: REQUIRED
+  - name: worker_group
+    type: STRING
+    mode: NULLABLE
+  - name: worker_id
+    type: STRING
+    mode: NULLABLE
+  - name: launch_config_id
+    type: STRING
+    mode: NULLABLE
+  - name: capacity
+    type: INTEGER
+    mode: NULLABLE
+  - name: reason
+    type: STRING
+    mode: NULLABLE
+  - name: error_id
+    type: STRING
+    mode: NULLABLE
+  - name: error_kind
+    type: STRING
+    mode: NULLABLE
+  - name: error_title
+    type: STRING
+    mode: NULLABLE
+  - name: error_code
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: submission_date
+    type: DATE
+    mode: REQUIRED

@@ -3,6 +3,9 @@
 This UDF (`determine_tiles_per_row_v1`) determines the number of tiles displayed per row on the Firefox Newtab page,
 based on the layout type and window width.
 
+> Note: this version does not support the newer `POSTNOVA_GRID` or `POSTNOVA_SECTION` layout types returned by
+> `determine_grid_layout_v1`; use `determine_tiles_per_row_v2` for those layouts.
+
 ## 📥 Input Parameters
 
 | Parameter Name             | Type    | Description                                                                                                                                                                                                                                                                        |

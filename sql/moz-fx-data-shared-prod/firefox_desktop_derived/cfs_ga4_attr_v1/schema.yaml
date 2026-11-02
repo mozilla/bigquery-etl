@@ -314,3 +314,15 @@ fields:
 - name: ga4_ad_crosschannel_default_channel_group
   type: STRING
   mode: NULLABLE
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_build_id
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: startup_profile_selection_reason_first

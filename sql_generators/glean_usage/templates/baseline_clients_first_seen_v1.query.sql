@@ -85,10 +85,20 @@ WITH
         metadata.isp.name
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
+     -- earliest non-null value with its date; the final SELECT keeps it only
+     -- if it is from first_seen_date, to match the incremental path
      ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
-        ORDER BY submission_timestamp ASC LIMIT 1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+        IF(
+          metrics.string.startup_profile_selection_reason IS NULL,
+          NULL,
+          STRUCT(
+            DATE(submission_timestamp) AS submission_date,
+            metrics.string.startup_profile_selection_reason AS reason
+          )
+        ) IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
+        ORDER BY DATE(submission_timestamp) ASC, ping_info.seq ASC, submission_timestamp ASC LIMIT 1
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
      ARRAY_AGG(
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
@@ -124,6 +134,16 @@ WITH
   FROM baseline
   LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
+{% elif app_name == "firefox_desktop" %}
+  SELECT
+    * REPLACE (
+      IF(
+        startup_profile_selection_reason_first.submission_date = first_seen_date,
+        startup_profile_selection_reason_first.reason,
+        NULL
+      ) AS startup_profile_selection_reason_first
+    )
+  FROM baseline
 {% else %}
   SELECT * FROM baseline
 {% endif %}
@@ -213,9 +233,10 @@ _baseline AS (
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
       ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
-        ORDER BY submission_timestamp ASC LIMIT 1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+        metrics.string.startup_profile_selection_reason IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
+        ORDER BY ping_info.seq ASC, submission_timestamp ASC LIMIT 1
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
      ARRAY_AGG(
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
@@ -391,9 +412,10 @@ _current AS (
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
       ARRAY_AGG(
-        metrics.string.startup_profile_selection_reason
-        ORDER BY submission_timestamp ASC LIMIT 1
-      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+        metrics.string.startup_profile_selection_reason IGNORE NULLS
+        -- use the first ping the client sent (lowest seq), not the first to arrive
+        ORDER BY ping_info.seq ASC, submission_timestamp ASC LIMIT 1
+      )[SAFE_OFFSET(0)] AS startup_profile_selection_reason_first,
      ARRAY_AGG(
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC

@@ -9,6 +9,8 @@ from pathlib import Path
 import pytest
 from google.cloud import bigquery, storage
 
+from bigquery_etl.util import common
+
 TEST_BUCKET = "moz-fx-data-integration-tests-bigquery-etl"
 
 
@@ -33,6 +35,12 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if "integration" in item.keywords:
             item.add_marker(skip_integration)
+
+
+@pytest.fixture(autouse=True)
+def unblock_coding_agents(monkeypatch):
+    """Let tests invoke commands wrapped in `block_coding_agents`."""
+    monkeypatch.setattr(common, "_BLOCK_CODING_AGENTS", False)
 
 
 @pytest.fixture

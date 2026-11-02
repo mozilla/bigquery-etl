@@ -25,7 +25,8 @@ clients_last_seen_info AS (
     cls.days_since_seen,
     cls.active_hours_sum,
     cls.days_visited_1_uri_bits,
-    cls.days_interacted_bits
+    cls.days_interacted_bits,
+    IF(COALESCE(cls.is_default_browser, FALSE), 1, 0) AS default_browser
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` cls
   JOIN
@@ -63,6 +64,7 @@ clients_last_seen_raw AS (
     a.active_hours_sum,
     a.days_visited_1_uri_bits,
     a.days_interacted_bits,
+    a.default_browser,
     b.search_with_ads_count_all
   FROM
     clients_last_seen_info a
@@ -85,6 +87,12 @@ client_activity_first_7_days AS (
           THEN BIT_COUNT(days_visited_1_uri_bits & days_interacted_bits)
       END
     ) AS dou, --total # of days of activity during their first 7 days of main pings
+    ANY_VALUE(
+      CASE
+        WHEN submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
+          THEN days_visited_1_uri_bits & days_interacted_bits
+      END
+    ) AS dau_bits, -- dau_bits during client's first 7 days
   -- if a client doesn't send a ping on `submission_date` their last active day's value will be carried forward
   -- so we only take measurements from days that they send a ping.
     SUM(
@@ -100,7 +108,8 @@ client_activity_first_7_days AS (
           THEN COALESCE(search_with_ads_count_all, 0)
         ELSE 0
       END
-    ) AS search_with_ads_count_all
+    ) AS search_with_ads_count_all,
+    SUM(default_browser) AS default_browser_number_of_days
   FROM
     clients_last_seen_raw
   GROUP BY
@@ -120,8 +129,10 @@ combined AS (
       cfs.country
     ) AS country, -- Conversion events & LTV are based on their first observed country in CLS, use that country if its available
     COALESCE(dou, 0) AS dou,
+    COALESCE(dau_bits, 0) AS dau_bits,
     COALESCE(active_hours_sum, 0) AS active_hours_sum,
-    COALESCE(search_with_ads_count_all, 0) AS search_with_ads_count_all
+    COALESCE(search_with_ads_count_all, 0) AS search_with_ads_count_all,
+    COALESCE(default_browser_number_of_days, 0) AS default_browser_number_of_days
   FROM
     clients_first_seen_9_days_ago AS cfs
   LEFT JOIN
@@ -147,5 +158,10 @@ SELECT
   IF(dou >= 4, TRUE, FALSE) AS is_dau_at_least_4_of_first_7_days,
   IF(dou >= 3, TRUE, FALSE) AS is_dau_at_least_3_of_first_7_days,
   IF(dou >= 2, TRUE, FALSE) AS is_dau_at_least_2_of_first_7_days,
+  IF(dou >= 5, TRUE, FALSE) AS is_dau_at_least_5_of_first_7_days,
+  IF(dou >= 6, TRUE, FALSE) AS is_dau_at_least_6_of_first_7_days,
+  IF(dou >= 7, TRUE, FALSE) AS is_dau_at_least_7_of_first_7_days,
+  default_browser_number_of_days > 0 AS set_default,
+  mozfun.bits28.active_in_range(dau_bits, -1, 2) AS is_dau_on_days_6_or_7,
 FROM
   combined

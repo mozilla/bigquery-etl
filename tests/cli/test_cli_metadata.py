@@ -11,6 +11,8 @@ from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
+from bigquery_etl.cli.metadata import validate as validate_command
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     BIGEYE_PREDEFINED_FILE,
@@ -1692,6 +1694,81 @@ class TestMetadata:
             captured = capfd.readouterr()
             assert result is True
             assert expected_exc in captured.out
+
+    def _write_table(
+        self, root, metadata, project="moz-fx-data-shared-prod", dataset="test_derived"
+    ):
+        table_dir = Path(root) / project / dataset / "test_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "metadata.yaml").write_text(yaml.safe_dump(metadata))
+        (table_dir / "query.sql").write_text("SELECT 1")
+
+    def test_validate_command_valid(self, runner):
+        with runner.isolated_filesystem():
+            self._write_table("sql", {"friendly_name": "Test", "labels": {}})
+            result = runner.invoke(
+                validate_command, ["test_derived.test_v1", "--sql_dir=sql"]
+            )
+            assert result.exit_code == 0, result.output
+            assert "Validated metadata for 1 tables" in result.output
+
+    @property
+    def _invalid_metadata(self):
+        return {
+            "friendly_name": "Test",
+            "labels": {"public_json": True},
+            "owners": ["test@example.org"],
+        }
+
+    def test_validate_command_all_projects(self, runner):
+        with runner.isolated_filesystem():
+            self._write_table("sql", {"friendly_name": "Test"})
+            self._write_table(
+                "sql",
+                self._invalid_metadata,
+                project="moz-fx-data-other",
+            )
+            assert runner.invoke(validate_command, ["--sql_dir=sql"]).exit_code == 1
+            result = runner.invoke(
+                validate_command,
+                ["--sql_dir=sql", "--project-id=moz-fx-data-shared-prod"],
+            )
+            assert result.exit_code == 0, result.output
+
+    def test_validate_command_honors_skip(self, runner):
+        skip = ["sql/moz-fx-data-shared-prod/test_derived/test_v1/metadata.yaml"]
+        real_get = ConfigLoader.get
+        with (
+            runner.isolated_filesystem(),
+            patch.object(
+                ConfigLoader,
+                "get",
+                side_effect=lambda *a, **kw: (
+                    skip
+                    if a == ("metadata", "validation", "skip")
+                    else real_get(*a, **kw)
+                ),
+            ),
+        ):
+            self._write_table("sql", self._invalid_metadata)
+            result = runner.invoke(validate_command, ["--sql_dir=sql"])
+            assert result.exit_code == 0, result.output
+
+    def test_validate_command_dataset_only_directory(self, runner):
+        with runner.isolated_filesystem():
+            dataset_dir = Path("sql/moz-fx-data-shared-prod/bad_live")
+            dataset_dir.mkdir(parents=True)
+            (dataset_dir / "dataset_metadata.yaml").write_text(
+                yaml.safe_dump(
+                    {
+                        "friendly_name": "Bad",
+                        "description": "Bad dataset",
+                        "dataset_base_acl": "derived",
+                        "user_facing": False,
+                    }
+                )
+            )
+            assert runner.invoke(validate_command, ["--sql_dir=sql"]).exit_code == 1
 
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""

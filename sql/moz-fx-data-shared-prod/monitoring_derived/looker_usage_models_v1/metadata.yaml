@@ -5,3 +5,9 @@ description: |-
   This is run via docker-etl.
 owners:
 - ascholtz@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null

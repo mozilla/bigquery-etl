@@ -5,4 +5,11 @@ description: |
   - The histogram values will be summed per-bucket
   - The count will be summed
   - Other fields will take the mode_last
+
+  Known limitation: merging an array that contains a NULL histogram, or a
+  histogram with a NULL/malformed `range` field, can fail at query time with
+  a BigQuery "Array cannot have a null element" error. See
+  https://github.com/mozilla/bigquery-etl/issues/1181 and
+  https://github.com/mozilla/bigquery-etl/issues/1606. Workaround: filter out
+  NULL or malformed histograms before aggregating.
 friendly_name: Histogram Merge

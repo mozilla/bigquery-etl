@@ -1,0 +1,21 @@
+friendly_name: Airflow task instance history
+description: |-
+  https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dag-run.html#task-instance-history
+owners:
+- srose@mozilla.com
+labels:
+  dag: bqetl_monitoring_airflow
+  owner1: srose
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  date_partition_parameter: null
+  depends_on_fivetran:
+  - task_id: fivetran_airflow_metadata_import
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.task_instance_history
+require_column_descriptions: false

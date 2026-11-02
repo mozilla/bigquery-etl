@@ -342,7 +342,12 @@ class View:
 
         table_schema = Schema.from_bigquery_schema(table.schema)
 
-        if self.schema is not None and not self.schema.equal(table_schema):
+        # `CREATE OR REPLACE VIEW` recreates the view without any field descriptions,
+        # so publishing applies every description in the schema file (if there is one),
+        # which makes any difference in descriptions a change.
+        if self.schema is not None and not self.schema.equal(
+            table_schema, compare_descriptions=self.schema_path.is_file()
+        ):
             print(f"view {target_view_id} will change: schema does not match")
             return True
 

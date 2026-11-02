@@ -18,6 +18,8 @@ mozfun.customer_experience.cx_normalize_product(raw STRING, source STRING) -> ST
 
 The full canonical-name set is defined by the `THEN` clauses in [`udf.sql`](./udf.sql).
 
+Note some canonical names differ from the legacy [`normalize_product`](../normalize_product/README.md) UDF (e.g. `'MDN Plus'` vs `'Mdn Plus'`; `'Fenix'`/`'Firefox iOS'`/`'Firefox Desktop'` vs `'Firefox Android'`/`'Firefox'`) — prefer this UDF's naming for new work.
+
 ## Rules by source
 
 ### Zendesk and Kitsune

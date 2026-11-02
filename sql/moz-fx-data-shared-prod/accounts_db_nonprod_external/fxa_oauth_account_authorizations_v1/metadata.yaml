@@ -7,6 +7,10 @@ description: >
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa_oauth
 owners:
   - wclouser@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:fxa/rp-active-accounts-stage
 labels:
   application: accounts_backend
   schedule: daily

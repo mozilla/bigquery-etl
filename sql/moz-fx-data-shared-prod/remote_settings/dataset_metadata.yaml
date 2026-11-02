@@ -1,0 +1,13 @@
+friendly_name: Remote Settings
+description: |-
+  Views for accessing Remote Settings derived data
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:remote-settings/telescope

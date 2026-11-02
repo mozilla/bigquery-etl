@@ -4,6 +4,7 @@ description: |-
 owners:
 - kik@mozilla.com
 - sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

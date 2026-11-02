@@ -1,0 +1,15 @@
+friendly_name: STMO External
+description: |-
+  Tables copied from the Redash (sql.telemetry.mozilla.org) metadata database in Cloud SQL,
+  excluding columns that contain credentials or query result data.
+
+  Tables are mozilla-confidential and exclude fields that are potentially sensitive.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  # https://mozilla-hub.atlassian.net/browse/DENG-11717
+  - workgroup:dataplatform/external-datahub

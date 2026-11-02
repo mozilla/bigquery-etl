@@ -1,0 +1,11 @@
+2026-09-16:
+  start_date: 2024-08-03
+  end_date: 2026-05-13
+  reason: Correct Glean server `event_timestamp` values (DENG-10432).
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  custom_query_path: sql/moz-fx-data-shared-prod/accounts_backend_derived/events_stream_v1/backfill_deng10432.sql
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

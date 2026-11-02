@@ -99,6 +99,10 @@ SELECT
   clients_daily.device_model,
   clients_daily.normalized_os AS os,
   clients_daily.normalized_os_version AS os_version,
+  -- Not populated for this product; kept for union compatibility with fenix.
+  CAST(NULL AS BOOLEAN) AS is_onboarded,
+  -- Not populated for this product; kept for union compatibility with fenix.
+  CAST(NULL AS STRING) AS app_version_at_onboarding_completion,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily
 INNER JOIN

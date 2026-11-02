@@ -1,0 +1,11 @@
+---
+friendly_name: Gecko Trace Traces Daily
+description: |-
+  Daily trace pattern counts across all Firefox applications, with stable ids.
+
+  Each row has one (app_id, submission_date, trace_signature), its count and
+  its average duration. Sum hit_count by stable_trace_id over a date range to
+  count a trace pattern across Firefox releases.
+
+owners:
+  - jjalkanen@mozilla.com

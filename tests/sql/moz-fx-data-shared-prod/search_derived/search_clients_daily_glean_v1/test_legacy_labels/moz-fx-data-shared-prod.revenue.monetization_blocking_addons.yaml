@@ -1,0 +1,3 @@
+# Empty on purpose. No client here carries an addon, so has_adblocker_addon is FALSE on
+# every row by COALESCE rather than by the lookup missing.
+[]

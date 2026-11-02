@@ -2,10 +2,9 @@ friendly_name: Blogs Daily Summary V2
 description: |-
   Daily summary Google analytics data for blog.mozilla.org
 owners:
-- mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
   table_type: aggregate
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4

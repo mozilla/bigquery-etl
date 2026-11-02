@@ -32,17 +32,30 @@ _core_clients_first_seen AS (
 {% endmacro %}
 
 
+{% macro event_extra_value(extra_type, extra_name) -%}
+  {% if extra_type == 'boolean' -%}
+    LAX_BOOL(event_extra.{{ extra_name }})
+  {%- elif extra_type == 'quantity' -%}
+    LAX_INT64(event_extra.{{ extra_name }})
+  {%- else -%}
+    JSON_VALUE(event_extra.{{ extra_name }})
+  {%- endif %}
+{%- endmacro %}
+
 {% macro event_extras_by_type_struct(extras_by_type) %}
   STRUCT(
-    {% for extra_type in extras_by_type | sort %}
+    {% for extra_type, extras in extras_by_type | dictsort %}
       STRUCT(
-        {% for extra in extras_by_type[extra_type] | sort %}
-          {% if extra_type == 'boolean' %}
-            LAX_BOOL(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
-          {% elif extra_type == 'quantity' %}
-            LAX_INT64(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+        {% for extra_key, extra in extras | dictsort %}
+          {# Extras whose names only differ by case map to the same column, but are separate JSON keys. #}
+          {% if extra['names'] | length > 1 %}
+            COALESCE(
+              {% for extra_name in extra['names'] %}
+                {{ event_extra_value(extra_type, extra_name) }}{{ ',' if not loop.last else '' }}
+              {% endfor %}
+            ) AS `{{ extra['name'] }}`{{ ',' if not loop.last else '' }}
           {% else %}
-            JSON_VALUE(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+            {{ event_extra_value(extra_type, extra['name']) }} AS `{{ extra['name'] }}`{{ ',' if not loop.last else '' }}
           {% endif %}
         {% endfor %}
       ) AS `{{ extra_type }}`{{ ',' if not loop.last else '' }}

@@ -79,7 +79,14 @@ RETURNS ARRAY<
         scalar_averages
     )
     SELECT
-      ARRAY_AGG((metric, metric_type, key, agg_type, value))
+      ARRAY_AGG(
+        (metric, metric_type, key, agg_type, value)
+        ORDER BY
+          metric,
+          metric_type,
+          key,
+          agg_type
+      )
     FROM
       merged_data
   )

@@ -32,9 +32,13 @@ fields:
 - mode: NULLABLE
   name: search_cohort
   type: STRING
+  description: An identifier for a search-related experiment cohort the client was enrolled in. Null for
+    most clients who are not part of any search cohort.
 - mode: NULLABLE
   name: addon_version
   type: STRING
+  description: The version of the `followonsearch@mozilla.com` addon installed on the client. Null if the
+    addon is not installed.
 - mode: NULLABLE
   name: os
   type: STRING
@@ -46,72 +50,117 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: The date when the client was first observed sending telemetry, used as a proxy for the profile
+    creation date.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: The identifier or name of the client's default search engine provider. Deprecated in favor
+    of engine data fields.
 - mode: NULLABLE
   name: default_search_engine_data_load_path
   type: STRING
+  description: The anonymized path of the default search engine's XML file, indicating how the engine was
+    installed (e.g., built-in, addon, or external URL).
 - mode: NULLABLE
   name: default_search_engine_data_submission_url
   type: STRING
+  description: The HTTP URL used to submit queries to the client's default search engine. Not recorded for
+    user-installed engines to protect privacy.
 - mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
+  description: The mean number of active addons installed on the client across sessions reported on this
+    day. Null when no session data is available.
 - mode: NULLABLE
   name: user_pref_browser_search_region
   type: STRING
+  description: The ISO 3166-1 alpha-2 region code stored in the browser's search region preference, used
+    to determine region-specific search defaults.
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: The version string of the operating system running on the client, as reported by the telemetry
+    environment.
 - mode: NULLABLE
   name: first_reported_country
   type: STRING
+  description: The ISO 3166-1 alpha-2 country code reported when the client was first seen, sourced from
+    the clients_first_seen table.
 - mode: NULLABLE
   name: max_concurrent_tab_count_max
   type: INTEGER
+  description: The maximum number of tabs open concurrently across all sessions on the most recently observed
+    day. Null when no session data is available.
 - mode: NULLABLE
   name: tab_open_event_count_sum
   type: INTEGER
+  description: The total number of tab open events across all sessions on the most recently observed day.
+    Null when no session data is available.
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+  description: The total number of hours the browser was actively used (i.e., the user interacted with the
+    browser) on the most recently observed day.
 - mode: NULLABLE
   name: subsession_hours_sum
   type: FLOAT
+  description: The total number of hours covered by all subsessions reported on the most recently observed
+    day, including both active and idle time.
 - mode: NULLABLE
   name: sessions_started_on_this_day
   type: INTEGER
+  description: The number of browser sessions started on the most recently observed day.
 - mode: NULLABLE
   name: total_uri_count_sum
   type: INTEGER
+  description: The total number of URIs loaded by the client on the most recently observed day. Null when
+    no browsing data is available.
 - mode: NULLABLE
   name: organic
   type: INTEGER
+  description: The total number of organic (non-SAP) search counts on the most recently observed day; searches
+    made without a partner search code.
 - mode: NULLABLE
   name: sap
   type: INTEGER
+  description: The total number of search access point (SAP) searches on the most recently observed day;
+    searches initiated from a Firefox search access point (e.g. urlbar, searchbar, new tab, context menu).
 - mode: NULLABLE
   name: unknown
   type: INTEGER
+  description: The total number of searches with an unknown or unclassified source on the most recently
+    observed day.
 - mode: NULLABLE
   name: tagged_sap
   type: INTEGER
+  description: The total number of tagged SAP searches on the most recently observed day; SAP searches that
+    include a partner tracking tag in the query.
 - mode: NULLABLE
   name: tagged_follow_on
   type: INTEGER
+  description: The total number of tagged follow-on searches on the most recently observed day; searches
+    triggered as follow-ons from a tagged SAP search.
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
+  description: The total number of ad clicks on search engine result pages on the most recently observed
+    day.
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: The total number of search engine result pages that contained ads on the most recently observed
+    day.
 - mode: NULLABLE
   name: total_searches
   type: INTEGER
+  description: The total number of searches across all engines and sources on the most recently observed
+    day, summing organic, SAP, unknown, tagged SAP, and tagged follow-on counts.
 - mode: NULLABLE
   name: tagged_searches
   type: INTEGER
+  description: The total number of tagged searches (tagged SAP plus tagged follow-on) on the most recently
+    observed day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -138,24 +187,40 @@ fields:
 - mode: NULLABLE
   name: days_seen_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) representing which of the past 365 days the client was
+    seen sending telemetry, with the rightmost bit corresponding to the current day.
 - mode: NULLABLE
   name: days_searched_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) representing which of the past 365 days the client performed
+    at least one search, with the rightmost bit corresponding to the current day.
 - mode: NULLABLE
   name: days_tagged_searched_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) representing which of the past 365 days the client performed
+    at least one tagged search, with the rightmost bit corresponding to the current day.
 - mode: NULLABLE
   name: days_searched_with_ads_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) representing which of the past 365 days the client viewed
+    at least one search result page containing ads, with the rightmost bit corresponding to the current
+    day.
 - mode: NULLABLE
   name: days_clicked_ads_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) representing which of the past 365 days the client clicked
+    at least one ad on a search result page, with the rightmost bit corresponding to the current day.
 - mode: NULLABLE
   name: days_first_seen_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) encoding the number of days since the client was first
+    seen, allowing rolling window calculations of client age.
 - mode: NULLABLE
   name: days_dau_bytes
   type: BYTES
+  description: A 365-bit array (packed as bytes) with a single bit set marking the first day within the
+    past 365 days that the client qualified as a daily active user (active hours > 0 and at least one URI
+    loaded); the bit shifts left one position each day.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING

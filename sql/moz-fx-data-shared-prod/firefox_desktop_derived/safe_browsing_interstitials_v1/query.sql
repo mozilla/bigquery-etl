@@ -26,6 +26,12 @@
 -- the real per-encounter rate, and the inflation cannot be divided out --
 -- neither metric carries a navigation or session key.
 -- Do not present these ratios as point estimates.
+--
+-- VERSION SPLIT. Firefox 142 is the first version that records page.load_error
+-- for Safe Browsing. Firefox 141 and older send the ui_events actions only. So
+-- rows below 142 have actions with zero displays, which is real data and not a
+-- mapping drift. app_version_major is carried through so the checks can tell
+-- the two apart.
 WITH base AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -35,6 +41,14 @@ WITH base AS (
     IFNULL(normalized_channel, '??') AS normalized_channel,
     IFNULL(normalized_os, '??') AS normalized_os,
     IFNULL(normalized_country_code, '??') AS country,
+    -- -1 rather than NULL for the same join reason as the '??' above. It means
+    -- the version string did not parse.
+    IFNULL(
+      SAFE_CAST(
+        mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS INT64
+      ),
+      -1
+    ) AS app_version_major,
     client_info.client_id AS client_id,
     metrics.dual_labeled_counter.page_load_error AS page_load_error,
     metrics.custom_distribution.urlclassifier_ui_events.values AS ui_events
@@ -49,6 +63,7 @@ displays AS (
     normalized_channel,
     normalized_os,
     country,
+    app_version_major,
     CASE
       scope_label.key
       WHEN 'top'
@@ -83,6 +98,7 @@ displays AS (
     normalized_channel,
     normalized_os,
     country,
+    app_version_major,
     scope,
     threat_type
 ),
@@ -92,6 +108,7 @@ actions AS (
     normalized_channel,
     normalized_os,
     country,
+    app_version_major,
     CASE
       WHEN event_code
         BETWEEN 1
@@ -133,6 +150,7 @@ actions AS (
         normalized_channel,
         normalized_os,
         country,
+        app_version_major,
         client_id,
         SAFE_CAST(ui_event.key AS INT64) AS event_code,
         ui_event.value AS event_count
@@ -149,6 +167,7 @@ actions AS (
     normalized_channel,
     normalized_os,
     country,
+    app_version_major,
     threat_type,
     scope
 )
@@ -167,9 +186,19 @@ SELECT
   IFNULL(actions.left_site, 0) AS left_site,
   IFNULL(actions.proceeded_anyway, 0) AS proceeded_anyway,
   IFNULL(actions.left_site_clients, 0) AS left_site_clients,
-  IFNULL(actions.proceeded_anyway_clients, 0) AS proceeded_anyway_clients
+  IFNULL(actions.proceeded_anyway_clients, 0) AS proceeded_anyway_clients,
+  -- Last in the list so adding it to the deployed table is an append.
+  app_version_major
 FROM
   displays
 FULL OUTER JOIN
   actions
-  USING (submission_date, normalized_channel, normalized_os, country, threat_type, scope)
+  USING (
+    submission_date,
+    normalized_channel,
+    normalized_os,
+    country,
+    app_version_major,
+    threat_type,
+    scope
+  )

@@ -78,3 +78,12 @@ fields:
     Distinct clients that overrode a warning within this one row. Not additive
     across rows; see display_clients. Compare against proceeded_anyway to see
     whether overriding is a one-off or a habit.
+- name: app_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Firefox major version that sent the ping, or -1 when the version string did
+    not parse. Part of the row grain. Firefox 142 is the first version that
+    records page.load_error for Safe Browsing, so rows below 142 carry actions
+    with displays of 0. Filter to 142 and above before forming any
+    action/displays ratio.

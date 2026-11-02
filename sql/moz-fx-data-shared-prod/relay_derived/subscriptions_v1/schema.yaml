@@ -2,123 +2,235 @@ fields:
 - name: customer_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: customer_id
 - name: subscription_id
   type: STRING
   mode: NULLABLE
+  description: Identifier for this subscription plan period. This is the Stripe subscription ID, with a `-N` suffix
+    added for the Nth plan-change record of the same Stripe subscription. The unsuffixed ID is in
+    original_subscription_id for suffixed records.
 - name: original_subscription_id
   type: STRING
   mode: NULLABLE
+  description: The original Stripe subscription ID before any plan changes created a new sequence record.
+    Populated only when the current row represents a continuation (plan change) of a prior subscription;
+    null for the initial subscription record.
 - name: plan_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_id
 - name: status
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: status
 - name: event_timestamp
   type: TIMESTAMP
   mode: NULLABLE
 - name: subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: When the current subscription plan period started. This is the plan start time for plan-change records,
+    otherwise the Stripe subscription start date. Null while a trial is ongoing or if the subscription ended
+    during its trial.
 - name: original_subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: Start date of the underlying Stripe subscription (the same for all plan-change records). Null
+    while a trial is ongoing or if the subscription ended during its trial.
 - name: subscription_start_reason
   type: STRING
   mode: NULLABLE
+  description: The reason this subscription period started. Values include 'New' (first-time subscriber),
+    'Resurrected' (returning subscriber), 'Plan Change' (started due to a plan switch), and 'Converted Trial'
+    (converted from a free trial). Null when the subscription start date is null.
 - name: trial_start
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: trial_start
 - name: trial_end
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: trial_end
 - name: canceled_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: canceled_at
 - name: canceled_for_customer_at
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: canceled_for_customer_at
 - name: cancel_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: cancel_at
 - name: cancel_at_period_end
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: cancel_at_period_end
 - name: ended_at
   type: TIMESTAMP
   mode: NULLABLE
+  description: When the current subscription plan period ended. This is the plan end time for plan-change records,
+    otherwise the Stripe subscription end time if it is before the current date. Null for active subscriptions,
+    including those with a scheduled future end.
 - name: ended_reason
   type: STRING
   mode: NULLABLE
+  description: The reason the subscription ended. Values include 'Plan Change' (when a plan change caused
+    the record to close), 'Cancelled by Customer' (when the customer explicitly cancelled or cancel-at-period-end
+    was set), and 'Payment Failed' (for involuntary churn). Null for active subscriptions.
 - name: fxa_uid
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: fxa_uid
 - name: country
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: country
 - name: country_name
   type: STRING
   mode: NULLABLE
+  description: The standardized full country name corresponding to the subscriber's billing country code,
+    derived from the static third-party country name lookup table.
 - name: provider
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: provider
 - name: plan_amount
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_amount
 - name: plan_currency
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_currency
 - name: plan_interval
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_interval
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_interval_count
 - name: plan_interval_timezone
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: plan_interval_timezone
 - name: product_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: product_id
 - name: product_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: product_name
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
+  description: A human-readable string identifying the pricing plan, formed by concatenating the billing
+    interval count, interval unit, currency, and price amount (e.g., '1-year-usd-11.88').
 - name: billing_grace_period
   type: INTERVAL
   mode: NULLABLE
+  description: The grace period interval applied after a failed payment before the subscription is considered
+    lapsed. Set to 7 days for both Stripe and PayPal (as PayPal is billed through Stripe).
 - name: has_refunds
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: has_refunds
 - name: has_fraudulent_charges
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: has_fraudulent_charges
 - name: has_fraudulent_charge_refunds
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: has_fraudulent_charge_refunds
 - name: promotion_codes
   type: STRING
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: promotion_codes
 - name: promotion_discounts_amount
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/schema.yaml
+    field: promotion_discounts_amount
 - name: customer_start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: The earliest subscription start date across all subscriptions for this customer, representing
+    when the customer first became a paying subscriber.
 - name: end_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: The effective end date of the subscription; the `ended_at` timestamp if the subscription
+    has ended, otherwise the current date for active subscriptions.
 - name: months_retained
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months the subscriber was retained for this subscription,
+    calculated from `subscription_start_date` to `end_date` using the billing grace period.
 - name: original_subscription_months_retained
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months retained since the original subscription start date
+    (or the current subscription start if no original exists), calculated to `end_date` using the billing
+    grace period. Spans across plan changes.
 - name: current_months_since_subscription_start
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months elapsed from this subscription's start date to the
+    current date, accounting for the billing grace period.
 - name: current_months_since_original_subscription_start
   type: INTEGER
   mode: NULLABLE
+  description: The number of complete billing months elapsed from the original subscription start date (or
+    current subscription start if no original exists) to the current date, accounting for the billing grace
+    period.

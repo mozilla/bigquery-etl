@@ -13,7 +13,7 @@
   normalized_os_version: "17.5"
   normalized_channel: "release"
   position: 1
-  reporting_url: "https://ads.allizom.com/report/abc123"
+  reporting_url: "https://imp.mt48.net/imp?id=abc123"
   scenario: "shopping"
   version: "1.2.0"
   timestamp: "2025-06-16T09:00:01Z"
@@ -40,7 +40,7 @@
   normalized_os_version: "17.5"
   normalized_channel: "release"
   position: 2
-  reporting_url: "https://ads.allizom.com/report/abc123"
+  reporting_url: "https://imp.mt48.net/imp?id=abc123"
   scenario: "shopping"
   version: "1.2.0"
   timestamp: "2025-06-16T09:00:03Z"
@@ -67,7 +67,7 @@
   normalized_os_version: "11"
   normalized_channel: "release"
   position: 1
-  reporting_url: "https://ads.allizom.com/report/xyz789"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
@@ -94,7 +94,7 @@
   normalized_os_version: "11"
   normalized_channel: "release"
   position: 1
-  reporting_url: "https://ads.allizom.com/report/xyz789"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
@@ -121,7 +121,7 @@
   normalized_os_version: "11"
   normalized_channel: "release"
   position: 1
-  reporting_url: "https://ads.allizom.com/report/xyz789"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
@@ -131,6 +131,94 @@
   browser: "Edge"
   os_family: "Windows"
   session_id: "sess_uk990"
+  sequence_no: 1
+
+# Mozilla-supplied (non-AMP) interaction is excluded due to having
+# a reporting_url with a Mozilla host on the /v1/st path (which
+# udf.is_moz_supplied_suggestion matches).
+- request_id: "req_1007"
+  submission_timestamp: "2025-06-16T10:16:20Z"
+  telemetry_query: "fly away now!"
+  advertiser: "FakeMozillaAdvertiser"
+  block_id: 1
+  context_id: "ctx_003"
+  sample_id: 301
+  is_clicked: true
+  locale: "en-GB"
+  country: "GB"
+  region: "ENG"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "release"
+  position: 1
+  reporting_url: "https://ads.mozilla.org/v1/st?suggestion_id=abc123"
+  scenario: "travel"
+  version: "2.0.0"
+  timestamp: "2025-06-16T10:16:20Z"
+  query: "fly away now!"
+  dma: ""
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_uk991"
+  sequence_no: 1
+
+# Same, with the staging host in the reporting_url; also excluded.
+- request_id: "req_1011"
+  submission_timestamp: "2025-06-16T10:17:20Z"
+  telemetry_query: "fly away now!"
+  advertiser: "FakeMozillaAdvertiser"
+  block_id: 1
+  context_id: "ctx_003"
+  sample_id: 302
+  is_clicked: true
+  locale: "en-GB"
+  country: "GB"
+  region: "ENG"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "release"
+  position: 1
+  reporting_url: "https://ads.allizom.org/v1/st?suggestion_id=def456"
+  scenario: "travel"
+  version: "2.0.0"
+  timestamp: "2025-06-16T10:17:20Z"
+  query: "fly away now!"
+  dma: ""
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_uk992"
+  sequence_no: 1
+
+# Non-sponsored suggestions carry no reporting_url.
+# udf.is_moz_supplied_suggestion returns FALSE for NULL, so these rows keep reaching
+# the feed as they did before Mozilla-supplied suggestions existed.
+- request_id: "req_1008"
+  submission_timestamp: "2025-06-16T12:30:00Z"
+  telemetry_query: "José Guadalupe Posada"
+  advertiser: "wikipedia"
+  block_id: 0
+  context_id: "ctx_004"
+  sample_id: 401
+  is_clicked: false
+  locale: "en-US"
+  country: "US"
+  region: "NY"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "release"
+  position: 1
+  reporting_url: null
+  scenario: ""
+  version: "2.0.0"
+  timestamp: "2025-06-16T12:30:00Z"
+  query: "José Guadalupe Posada"
+  dma: ""
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_us777"
   sequence_no: 1
 
 - request_id: "req_1009"
@@ -148,7 +236,7 @@
   normalized_os_version: "11"
   normalized_channel: "somethingelse"
   position: 1
-  reporting_url: "https://ads.allizom.com/report/xyz789"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
@@ -175,7 +263,7 @@
   normalized_os_version: "11"
   normalized_channel: "release"
   position: 1
-  reporting_url: "https://ads.allizom.com/report/xyz789"
+  reporting_url: "https://imp.mt48.net/imp?id=xyz789"
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"

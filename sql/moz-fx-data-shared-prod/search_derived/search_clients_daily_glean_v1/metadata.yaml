@@ -1,0 +1,41 @@
+friendly_name: Search Clients Daily Glean
+description: |
+  A daily aggregate of desktop searches, one row per (client_id, submission_date, normalized_engine, partner_code, source).
+
+  Combines the SAP and SERP pipelines and the Glean legacy-parity counters with full outer
+  joins, so a row is emitted when any of the three has activity. Columns present on more than
+  one side prefer SERP, then SAP, then the legacy counters. A serp_, sap_ or legacy_ prefix
+  marks a column that side supplies alone, so the prefix tells you which columns read 0 or
+  null on a row built without that side.
+
+  The seven legacy_ columns are a second measurement of the same searches, taken from the
+  browser.search.content / withads / adclicks labeled counters rather than from SERP
+  impressions.
+
+  Built on Glean, and runs alongside `search_clients_daily_v8`; the legacy_ columns carry a
+  v8-comparable number from this table alone.
+
+  A given day's partition here is produced a day later than v8's partition for the same day,
+  because this query processes the previous day so the SERP partition it reads exists.
+owners:
+- akommasani@mozilla.com
+- kbammarito@mozilla.com
+labels:
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_search
+  # serp_events_v2 populates the previous day's partition on each run and declares that lag
+  # through its destination_table rather than through a date_partition_offset, so this table
+  # has no upstream date_partition_offset to inherit. Processing the previous day here reads a
+  # SERP partition that exists.
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+    - sample_id

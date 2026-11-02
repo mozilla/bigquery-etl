@@ -3,3 +3,5 @@ description: |-
   Aggregated event counts for sponsored tiles
 owners:
   - rburwei@mozilla.com
+deprecated: true
+deletion_date: 2026-12-18

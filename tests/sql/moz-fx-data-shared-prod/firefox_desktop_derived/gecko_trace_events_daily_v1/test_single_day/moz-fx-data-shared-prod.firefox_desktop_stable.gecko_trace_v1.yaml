@@ -1,0 +1,76 @@
+---
+# Trace A (t1, t3): ContentChild -> broker_services. Trace B (t2): ContentChild -> HttpChannelChild.
+- submission_timestamp: 2026-08-03T10:00:00
+  metrics:
+    object:
+      gecko_trace_traces_data:
+        resource_spans:
+          - scope_spans:
+              - spans:
+                  - trace_id: t1
+                    span_id: s1
+                    start_time_unix_nano: 100
+                    end_time_unix_nano: 500
+                    events:
+                      - attributes: {source.file: dom/ipc/ContentChild.cpp, source.line: 3160, result: NS_OK}
+                  - trace_id: t1
+                    span_id: s2
+                    parent_span_id: s1
+                    start_time_unix_nano: 200
+                    end_time_unix_nano: 400
+                    events:
+                      - attributes: {source.file: security/sandbox/win/src/broker_services.cc, source.line: 220, result: SBOX_ALL_OK}
+- submission_timestamp: 2026-08-03T11:00:00
+  metrics:
+    object:
+      gecko_trace_traces_data:
+        resource_spans:
+          - scope_spans:
+              - spans:
+                  - trace_id: t2
+                    span_id: s3
+                    start_time_unix_nano: 1000
+                    end_time_unix_nano: 1300
+                    events:
+                      - attributes: {source.file: dom/ipc/ContentChild.cpp, source.line: 3160, result: NS_OK}
+                  - trace_id: t2
+                    span_id: s4
+                    parent_span_id: s3
+                    start_time_unix_nano: 1100
+                    end_time_unix_nano: 1200
+                    events:
+                      - attributes: {source.file: netwerk/protocol/http/HttpChannelChild.cpp, source.line: 530, result: NS_ERROR_FAILURE}
+- submission_timestamp: 2026-08-03T12:00:00
+  metrics:
+    object:
+      gecko_trace_traces_data:
+        resource_spans:
+          - scope_spans:
+              - spans:
+                  - trace_id: t3
+                    span_id: s5
+                    start_time_unix_nano: 100
+                    end_time_unix_nano: 700
+                    events:
+                      - attributes: {source.file: dom/ipc/ContentChild.cpp, source.line: 3160, result: NS_OK}
+                  - trace_id: t3
+                    span_id: s6
+                    parent_span_id: s5
+                    start_time_unix_nano: 200
+                    end_time_unix_nano: 400
+                    events:
+                      - attributes: {source.file: security/sandbox/win/src/broker_services.cc, source.line: 220, result: SBOX_ALL_OK}
+# Previous day: must be excluded by the submission_date filter.
+- submission_timestamp: 2026-08-02T23:00:00
+  metrics:
+    object:
+      gecko_trace_traces_data:
+        resource_spans:
+          - scope_spans:
+              - spans:
+                  - trace_id: t0
+                    span_id: s0
+                    start_time_unix_nano: 1
+                    end_time_unix_nano: 2
+                    events:
+                      - attributes: {source.file: dom/ipc/ContentChild.cpp, source.line: 3160, result: NS_OK}

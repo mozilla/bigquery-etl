@@ -241,9 +241,9 @@ Then create your pull request, either from the GitHub web interface or the comma
 
 **Note** At this point, the CI is expected to fail because the schema does not exist yet in BigQuery. This will be handled in the next step.
 
-This example assumes that `origin` points to your fork. Adjust the last push invocation appropriately if you have a different [remote](https://git-scm.com/docs/git-remote) set.
+This example assumes that `origin` points to `mozilla/bigquery-etl` itself. All of Mozilla has write access, so push your branch here rather than to a fork as [CI does not run on pull requests from forks](common_workflows.md#making-a-pull-request). Adjust the last push invocation appropriately if you have a different [remote](https://git-scm.com/docs/git-remote) set.
 
-Speaking of forks, note that if you're making this pull request from a fork, many jobs will currently fail due to lack of credentials. In fact, even if you're pushing to the origin, you'll get failures because the table is not yet created. That brings us to the next step, but before going further it's generally best to get someone to review your work: at this point we have more than enough for people to provide good feedback on.
+You'll still see failures at this point because the table is not yet created. That brings us to the next step, but before going further it's generally best to get someone to review your work: at this point we have more than enough for people to provide good feedback on.
 
 ## Creating an initial table
 

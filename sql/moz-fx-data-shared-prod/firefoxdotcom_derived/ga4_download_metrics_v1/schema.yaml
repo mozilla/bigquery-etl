@@ -1,0 +1,73 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the download events.
+- name: hostname
+  type: STRING
+  mode: NULLABLE
+  description: Host of the page the download happened on, lowercased. Use www.firefox.com for the production site.
+- name: landing_locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale prefix of the session's landing page, e.g. en-US.
+- name: landing_page
+  type: STRING
+  mode: NULLABLE
+  description: Path of the session's landing page without host, locale prefix or query string, e.g. /landing/get/.
+- name: landing_page_type
+  type: STRING
+  mode: NULLABLE
+  description: Category of the landing page from its first path segment, using the same values as page_type in ga4_events_metrics_v1.
+- name: download_page_type
+  type: STRING
+  mode: NULLABLE
+  description: Category of the page the download event fired on, using the same values as landing_page_type.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country name as reported by GA4.
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.manual_source.
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.manual_medium.
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.manual_campaign_name.
+- name: channel_group
+  type: STRING
+  mode: NULLABLE
+  description: GA4 default channel group of the session.
+- name: ad_platform
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.ad_crosschannel_source_platform.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: Product downloaded, from the product event parameter.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: Platform of the download, from the platform event parameter.
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+  description: Release channel of the download, from the release_channel event parameter.
+- name: download_language
+  type: STRING
+  mode: NULLABLE
+  description: Language of the downloaded build, from the download_language event parameter.
+- name: method
+  type: STRING
+  mode: NULLABLE
+  description: How the download was completed, from the method event parameter.
+- name: download_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of product_download events. Counts events, not distinct users or sessions.

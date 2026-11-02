@@ -1,12 +1,18 @@
 2026-08-24:
   start_date: 2026-08-07
   end_date: 2026-08-23
-  reason: Backfill desktop's ads_client history now that Firefox desktop is a source
-    (bug 2058567); volumes are thin (1-2 pings/day) so this is cheap. Range starts
-    at the metric's actual landing date in Nightly.
+  reason: 'Backfill desktop''s ads_client history now that Firefox desktop is a source
+    (bug 2058567). Cancelled: this table cannot be replayed day-by-day - the hourly
+    schedule binds submission_date off execution_date, which `bqetl query backfill`
+    cannot parse, and date_partition_parameter is null, so `backfill complete` would
+    fail on a null partition. The only supported route is reinitialize_table, which
+    rebuilds every partition from the _stable tables (including mobile from 2026-02-01),
+    and that is not worth the scan while the table is still in development. Desktop
+    data flows in from the scheduled runs; 2026-08-07 to 2026-08-23 is intentionally
+    left empty.'
   watchers:
   - ahanot@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

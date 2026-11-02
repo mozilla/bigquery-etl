@@ -28,7 +28,6 @@ def _generate_table_files(
     target_project,
     templates_dir,
     bigeye_collection,
-    bigeye_slack_channel,
     enable_monitoring,
     sql_base_dir,
 ):
@@ -42,7 +41,6 @@ def _generate_table_files(
         name=name_part,
         version=version_part,
         bigeye_collection=bigeye_collection,
-        bigeye_notification_slack_channel=bigeye_slack_channel,
     )
 
     metadata_rendered = env.get_template("metadata.yaml.jinja").render(
@@ -66,13 +64,14 @@ def _generate_table_files(
     schema.to_yaml_file(stable_table_bigconfig_dir / SCHEMA_FILE)
 
 
-def generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring, parallelism=8):
+def generate_stable_table_bigconfig_files(
+    target_project, output_dir, enable_monitoring, parallelism=8
+):
     """Generate the metadata and bigconfig files and write to correct directories."""
     templates_dir = Path(__file__).parent / "templates"
     sql_base_dir = Path(output_dir) / target_project
 
     bigeye_collection = "Operational Checks"
-    bigeye_slack_channel = "#de-bigeye-triage"
 
     stable_table_bigconfigs = ConfigLoader.get("monitoring", "stable_tables_monitoring")
 
@@ -89,7 +88,6 @@ def generate_stable_table_bigconfig_files(target_project, output_dir, enable_mon
                 target_project=target_project,
                 templates_dir=templates_dir,
                 bigeye_collection=bigeye_collection,
-                bigeye_slack_channel=bigeye_slack_channel,
                 enable_monitoring=enable_monitoring,
                 sql_base_dir=sql_base_dir,
             ),

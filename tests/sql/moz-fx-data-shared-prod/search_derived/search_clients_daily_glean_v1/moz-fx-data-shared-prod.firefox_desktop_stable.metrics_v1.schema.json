@@ -1,0 +1,765 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "time_partitioning_field"
+  },
+  {
+    "name": "document_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_country_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_os",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_os_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_info",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "app_display_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "app_channel",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "locale",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "os",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "os_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "windows_build_number",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "first_run_date",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "distribution",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "name",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ping_info",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "start_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "end_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "seq",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "experiments",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "value",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "branch",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "extra",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "type",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "enrollment_id",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "metrics",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "legacy_telemetry_client_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "legacy_telemetry_profile_group_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "boolean",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "policies_is_enterprise",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_default_overridden_by_third_party",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_private_overridden_by_third_party",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "string",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "region_home_region",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_default_display_name",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_default_load_path",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_default_partner_code",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_default_provider_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_private_display_name",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_private_load_path",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_private_partner_code",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_private_provider_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "url2",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "search_engine_default_submission_url",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "search_engine_private_submission_url",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "quantity",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "browser_engagement_max_concurrent_tab_count",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "object",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "addons_active_addons",
+            "type": "JSON",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "labeled_counter",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "browser_search_content_urlbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_urlbar_handoff",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_urlbar_persisted",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_urlbar_searchmode",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_tabhistory",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_unknown",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_searchbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_contextmenu",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_contextmenu_visual",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_reload",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_about_home",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_about_newtab",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_system",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_webextension",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_smartbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_aiwindow_assistant",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_content_smartwindow_assistant",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_urlbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_urlbar_handoff",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_urlbar_persisted",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_urlbar_searchmode",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_tabhistory",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_unknown",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_searchbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_contextmenu",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_contextmenu_visual",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_reload",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_about_home",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_about_newtab",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_system",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_webextension",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_smartbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_aiwindow_assistant",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_withads_smartwindow_assistant",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_urlbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_urlbar_handoff",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_urlbar_persisted",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_urlbar_searchmode",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_tabhistory",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_unknown",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_searchbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_contextmenu",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_contextmenu_visual",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_reload",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_about_home",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_about_newtab",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_system",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_webextension",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_smartbar",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_aiwindow_assistant",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          },
+          {
+            "name": "browser_search_adclicks_smartwindow_assistant",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              { "name": "key", "type": "STRING", "mode": "NULLABLE" },
+              { "name": "value", "type": "INTEGER", "mode": "NULLABLE" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -37,4 +37,5 @@ bigquery:
     - app_name
     - attribution_medium
 deprecated: true
+deletion_date: 2026-10-01
 require_column_descriptions: false

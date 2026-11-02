@@ -3,6 +3,7 @@ description: |-
   A mapping from campaign_id to campaign_name for google_ads campaigns.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: false
 scheduling:

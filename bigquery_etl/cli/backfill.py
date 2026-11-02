@@ -45,6 +45,7 @@ from ..backfill.utils import (
     get_scheduled_backfills,
     qualified_table_name_matching,
     query_supports_reinitialize,
+    resolve_date_partition_parameter,
     validate_table_metadata,
 )
 from ..backfill.validate import (
@@ -55,6 +56,7 @@ from ..backfill.validate import (
     validate_file,
     validate_query_script_options,
     validate_reinitialize_sampling_batch_size_value,
+    validate_shredder_mitigation_partition_field,
 )
 from ..cli.query import DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE, _run_init_query
 from ..cli.query import backfill as query_backfill
@@ -370,6 +372,7 @@ def create(
 
     if (backfill_file.parent / METADATA_FILE).exists():
         validate_depends_on_past_end_date(new_entry, backfill_file)
+        validate_shredder_mitigation_partition_field(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)
 
@@ -1257,11 +1260,10 @@ def _initialize_previous_partition(
                 f"{metadata.bigquery.time_partitioning.type}"
             )
 
-    partition_param, offset = "submission_date", 0
+    partition_param: Optional[str] = "submission_date"
+    offset = 0
     if metadata.scheduling:
-        partition_param = metadata.scheduling.get(
-            "date_partition_parameter", partition_param
-        )
+        partition_param = resolve_date_partition_parameter(metadata.scheduling)
         if not backfill_entry.ignore_date_partition_offset:
             offset = metadata.scheduling.get("date_partition_offset", offset)
 
@@ -1438,10 +1440,11 @@ def _copy_backfill_staging_to_prod(
         )
         # If date_partition_parameter isn't set it's assumed to be submission_date:
         # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
-        partition_param, offset = "submission_date", 0
+        partition_param: Optional[str] = "submission_date"
+        offset = 0
         if table_metadata.scheduling:
-            partition_param = table_metadata.scheduling.get(
-                "date_partition_parameter", partition_param
+            partition_param = resolve_date_partition_parameter(
+                table_metadata.scheduling
             )
             if not entry.ignore_date_partition_offset:
                 offset = table_metadata.scheduling.get("date_partition_offset", offset)

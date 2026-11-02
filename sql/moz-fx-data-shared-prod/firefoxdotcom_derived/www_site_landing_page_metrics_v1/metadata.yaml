@@ -2,10 +2,9 @@ friendly_name: WWW Site Landing Page Metrics V1
 description: |-
   Aggregated metrics for the www.firefox.com landing page sourced from Google Analytics 4 (GA4)
 owners:
-- mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
   table_type: aggregate
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom

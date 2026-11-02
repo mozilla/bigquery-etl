@@ -6,6 +6,7 @@ description: |-
   as users convert.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

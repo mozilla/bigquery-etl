@@ -7,15 +7,17 @@ import re
 from collections import namedtuple
 from functools import cache
 from pathlib import Path
+from typing import List, Set
 
 import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
+from bigquery_etl.metadata.parse_metadata import DEFAULT_WORKGROUP_ACCESS
 from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
+from bigquery_etl.sensitivity import restricted_dataset_acl
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
 PROBEINFO_URL = "https://probeinfo.telemetry.mozilla.org"
@@ -40,11 +42,21 @@ DEPRECATED_APP_LIST = ConfigLoader.get(
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
 
 
-def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
+def write_dataset_metadata(
+    output_dir,
+    full_table_id,
+    derived_dataset_metadata=False,
+    project_id="moz-fx-data-shared-prod",
+    dataset_families=None,
+):
     """
     Add dataset_metadata.yaml to public facing datasets.
 
     Does not overwrite existing dataset_metadata.yaml files.
+
+    `dataset_families` are the bq_dataset_families the dataset reads from: single app id for
+    per-app_id datasets or all app ids for an app for per-app datasets. access is restricted when
+    any of their stable datasets is gated.
     """
     d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
     d.parent.mkdir(parents=True, exist_ok=True)
@@ -57,19 +69,52 @@ def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=F
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         if derived_dataset_metadata:
             dataset_metadata = env.get_template("derived_dataset_metadata.yaml")
+            base_acl = "derived"
         else:
             dataset_metadata = env.get_template("dataset_metadata.yaml")
+            base_acl = "view"
+
+        dataset = d.parent.name
+        if dataset_families is None:
+            dataset_families = [dataset.removesuffix("_derived")]
+        workgroup_access = DEFAULT_WORKGROUP_ACCESS
+        restricted = restricted_dataset_acl(
+            project_id, dataset, dataset_families, base_acl
+        )
+        if restricted is not None:
+            base_acl, workgroup_access = restricted
+
         rendered = dataset_metadata.render(
             {
                 "friendly_name": " ".join(
                     [p.capitalize() for p in d.parent.name.split("_")]
                 ),
-                "dataset": d.parent.name,
+                "dataset": dataset,
+                "dataset_base_acl": base_acl,
+                "workgroup_access": workgroup_access,
             }
         )
 
         logging.info(f"Writing {target}")
         target.write_text(rendered)
+
+
+def monitoring_enabled(project_id, app_name, derived_dataset, dataset_families):
+    """Whether to generate Bigeye monitoring for a derived dataset's tables.
+
+    Restricted derived datasets are skipped because the default Bigeye workspace's service
+    account can't read them. To monitor one from a workspace that can, check in a bigconfig.yml
+    and a metadata.yaml in sql/moz-fx-data-shared-prod that sets `monitoring.workspace`
+    (the bigconfig collection must exist in that workspace), and add the metadata.yaml to
+    `generate.glean_usage.skip_existing` so it isn't regenerated.
+    """
+    return (
+        app_name not in BIGCONFIG_SKIP_APPS
+        and restricted_dataset_acl(
+            project_id, derived_dataset, dataset_families, "derived"
+        )
+        is None
+    )
 
 
 def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1"):
@@ -274,6 +319,7 @@ class GleanTable:
         self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
+        self.cross_channel_schema_template = None
         self.base_table_name = "baseline_v1"
         self.possible_query_parameters = {"submission_date": "DATE"}
 
@@ -315,8 +361,9 @@ class GleanTable:
         bigconfig_filename = f"{self.target_table_id}.bigconfig.yml"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
+        view_schema_filename = f"{self.target_table_id[:-3]}.schema.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
-        schema_filename = f"{self.target_table_id}.schema.yaml"
+        table_schema_filename = f"{self.target_table_id}.schema.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -324,7 +371,9 @@ class GleanTable:
 
         # Some apps did briefly send a baseline ping,
         # but do not do so actively anymore. This is why they get excluded.
-        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
+        enable_monitoring = monitoring_enabled(
+            project_id, app_name, derived_dataset, [app_id_info["bq_dataset_family"]]
+        )
 
         # Some apps' tables have been deprecated
         deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
@@ -387,17 +436,17 @@ class GleanTable:
 
         # Schema files are optional, except for Python queries without a SQL query to dry run
         try:
-            schema = render(
-                schema_filename,
+            table_schema = render(
+                table_schema_filename,
                 format=False,
                 template_folder=PATH / "templates",
                 **render_kwargs,
             )
         except TemplateNotFound:
-            schema = None
+            table_schema = None
             if query_python:
                 if query_sql:
-                    schema = Schema(
+                    table_schema = Schema(
                         DryRun(
                             os.path.join(project_id, *table.split("."), "query.sql"),
                             content=query_sql,
@@ -408,6 +457,15 @@ class GleanTable:
                     ).to_yaml()
                 else:
                     raise
+        try:
+            view_schema = render(
+                view_schema_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            view_schema = None
 
         if enable_monitoring:
             try:
@@ -457,8 +515,11 @@ class GleanTable:
             if bigconfig_contents:
                 artifacts.append(Artifact(table, "bigconfig.yml", bigconfig_contents))
 
-            if schema:
-                artifacts.append(Artifact(table, "schema.yaml", schema))
+            if table_schema:
+                artifacts.append(Artifact(table, "schema.yaml", table_schema))
+
+            if view_schema:
+                artifacts.append(Artifact(view, "schema.yaml", view_schema))
 
             for artifact in artifacts:
                 destination = (
@@ -474,7 +535,7 @@ class GleanTable:
                     skip_existing=skip_existing,
                 )
 
-            write_dataset_metadata(output_dir, view)
+            write_dataset_metadata(output_dir, view, project_id=project_id)
 
     def generate_per_app(
         self,
@@ -505,6 +566,7 @@ class GleanTable:
             (a["bq_dataset_family"], a.get("app_channel", "release"))
             for a in app_ids_info
         ]
+        families = [family for family, _ in datasets]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
             # This app only has a single channel, and the app_name
@@ -515,7 +577,9 @@ class GleanTable:
             if self.per_app_id_enabled:
                 return
 
-        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
+        enable_monitoring = monitoring_enabled(
+            project_id, app_name, f"{target_dataset}_derived", families
+        )
 
         # Some apps' tables have been deprecated
         deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
@@ -549,16 +613,37 @@ class GleanTable:
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
             if output_dir:
-                write_dataset_metadata(output_dir, view)
+                write_dataset_metadata(
+                    output_dir, view, project_id=project_id, dataset_families=families
+                )
 
-            if output_dir:
-                skip_existing = (
-                    str(get_table_dir(output_dir, view) / "view.sql")
-                    in skip_existing_artifacts
-                )
+                view_dir = get_table_dir(output_dir, view)
                 write_sql(
-                    output_dir, view, "view.sql", sql, skip_existing=skip_existing
+                    output_dir,
+                    view,
+                    "view.sql",
+                    sql,
+                    skip_existing=(
+                        str(view_dir / "view.sql") in skip_existing_artifacts
+                    ),
                 )
+
+                if self.cross_channel_schema_template:
+                    view_schema = render(
+                        self.cross_channel_schema_template,
+                        format=False,
+                        template_folder=PATH / "templates",
+                        **render_kwargs,
+                    )
+                    write_sql(
+                        output_dir,
+                        view,
+                        "schema.yaml",
+                        view_schema,
+                        skip_existing=(
+                            str(view_dir / "schema.yaml") in skip_existing_artifacts
+                        ),
+                    )
         else:
             query_filename = f"{target_view_name}.query.sql"
             query_sql = render(
@@ -615,8 +700,16 @@ class GleanTable:
                         skip_existing=skip_existing,
                     )
 
-                write_dataset_metadata(output_dir, view)
-                write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)
+                write_dataset_metadata(
+                    output_dir, view, project_id=project_id, dataset_families=families
+                )
+                write_dataset_metadata(
+                    output_dir,
+                    table,
+                    derived_dataset_metadata=True,
+                    project_id=project_id,
+                    dataset_families=families,
+                )
 
     def generate_across_apps(
         self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8

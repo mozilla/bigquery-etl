@@ -27,9 +27,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Merge pull-request
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
    * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to create new datasets earlier
-1. Backfill data
-   * Option 1: via Airflow interface
-   * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
+1. Backfill data by following the [Backfilling a table](https://mozilla.github.io/bigquery-etl/cookbooks/backfilling_a_table/) cookbook, which uses a `backfill.yaml` file and `./bqetl backfill create`
 
 ## Update an existing query
 
@@ -268,9 +266,21 @@ pip-compile --generate-hashes requirements.in
 deactivate
 ```
 
-## Making a pull request from a fork
+## Making a pull request
 
-Pull requests from forks are gated by the `Fork PR Gate` workflow (`.github/workflows/fork-gate.yml`). Every fork PR pauses for a repository maintainer to approve the `external-fork` environment before any CI runs. Approval is per-SHA: each new push to the fork re-fires the gate. Once approved, `build.yml` runs all jobs in trusted context via `workflow_run`. No manual workflow trigger is needed.
+Push your branch to `mozilla/bigquery-etl` itself and open the pull request from there. All of Mozilla has write access to this repository, so you do not need a fork:
+
+```bash
+git clone git@github.com:mozilla/bigquery-etl.git
+cd bigquery-etl
+git checkout -b my-branch
+# ... make your changes, commit ...
+git push origin my-branch
+```
+
+**Pull requests from forks are not supported, and no CI will run on them.** The jobs need repository secrets to reach BigQuery, which GitHub withholds from fork pull requests. Opening one gets you a comment explaining this and no checks. Push the same branch to this repository and open the pull request from there instead.
+
+If you cannot push to this repository, ask in [#data-help](https://mozilla.slack.com/archives/C4D5ZA91B).
 
 ## Building the Documentation
 

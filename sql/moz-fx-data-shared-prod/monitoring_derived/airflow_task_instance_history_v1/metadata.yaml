@@ -10,3 +10,4 @@ scheduling:
   date_partition_parameter: null
   depends_on_fivetran:
     - task_id: fivetran_airflow_metadata_import
+require_column_descriptions: false

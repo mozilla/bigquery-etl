@@ -201,6 +201,15 @@ base_org_mozilla_firefox_events_v1 AS (
     UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-553
+            -- Server knobs were introduced in 145, so sample earlier versions here instead.
+            -- Android has both the Gecko and the Rust implementations.
+    AND (
+      event.category IN ("uptake.remotecontent.result", "remote_settings")
+      AND event.name = "uptake_remotesettings"
+      AND mozfun.norm.extract_version(client_info.app_display_version, 'major') IN (143, 144)
+      AND sample_id != 0
+    ) IS NOT TRUE
   GROUP BY
     submission_date,
     window_start,
@@ -882,6 +891,14 @@ base_org_mozilla_ios_firefox_events_v1 AS (
     UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-504
+            -- Server knobs are not available on iOS yet, so sample here instead.
+            -- iOS only has the Rust implementation, hence the `remote_settings` category.
+    AND (
+      event.category = "remote_settings"
+      AND event.name = "uptake_remotesettings"
+      AND sample_id != 0
+    ) IS NOT TRUE
   GROUP BY
     submission_date,
     window_start,

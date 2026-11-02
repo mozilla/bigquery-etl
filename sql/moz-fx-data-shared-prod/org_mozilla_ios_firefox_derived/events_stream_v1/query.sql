@@ -128,3 +128,13 @@ FROM
 CROSS JOIN
   UNNEST(events) AS event
   WITH OFFSET AS event_offset
+WHERE
+      -- See https://mozilla-hub.atlassian.net/browse/RMST-504
+      -- Server knobs are not available on iOS yet, so sample here instead.
+      -- iOS only has the Rust implementation, hence the `remote_settings` category.
+  (
+    normalized_channel = 'release'
+    AND event.category = 'remote_settings'
+    AND event.name = 'uptake_remotesettings'
+    AND sample_id != 0
+  ) IS NOT TRUE

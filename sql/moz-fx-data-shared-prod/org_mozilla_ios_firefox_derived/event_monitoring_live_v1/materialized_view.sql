@@ -36,6 +36,15 @@ WITH base_events_v1 AS (
   LEFT JOIN
           -- Add * extra to every event to get total event count
     UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+  WHERE
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-504
+            -- Server knobs are not available on iOS yet, so sample here instead.
+            -- iOS only has the Rust implementation, hence the `remote_settings` category.
+    (
+      event.category = 'remote_settings'
+      AND event.name = 'uptake_remotesettings'
+      AND sample_id != 0
+    ) IS NOT TRUE
 ),
 base_first_session_v1 AS (
   SELECT

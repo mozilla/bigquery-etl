@@ -23,6 +23,7 @@ from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
 from bigquery_etl.util.process_pool import process_pool
 
+# test
 BOT_GENERATED = (
     'LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated'
 )

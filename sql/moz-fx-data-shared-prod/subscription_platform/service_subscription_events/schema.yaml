@@ -1,5 +1,6 @@
 fields: !include-fields
   table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
+  force_nullable_mode: true
   field_replacements:
   - !include-field
     table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1

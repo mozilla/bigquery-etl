@@ -24,6 +24,7 @@ fields:
   field: subscription
   new_description: |-
     The service subscription as it ostensibly was at the end of the day.
+  force_nullable_mode: true
 - name: was_active_at_day_start
   type: BOOLEAN
   mode: NULLABLE

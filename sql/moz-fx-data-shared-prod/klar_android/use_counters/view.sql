@@ -3032,7 +3032,9 @@ SELECT
       metrics.counter.use_counter_doc_navigationtransition_to_getter,
       metrics.counter.use_counter_doc_navigationtransition_to_setter,
       metrics.counter.use_counter_page_navigationtransition_to_getter,
-      metrics.counter.use_counter_page_navigationtransition_to_setter
+      metrics.counter.use_counter_page_navigationtransition_to_setter,
+      metrics.counter.use_counter_css_doc_css_text_autospace_size,
+      metrics.counter.use_counter_css_page_css_text_autospace_size
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

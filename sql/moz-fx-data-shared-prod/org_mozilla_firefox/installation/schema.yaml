@@ -423,6 +423,22 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: installation_last_seen_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The date (YYYY-MM-DD, local time) the app was last opened before
+        the
+
+        current install. The stored date is updated on the first app open of each
+
+        app process. Not set on the first install. Recorded once per
+
+        install.
+
+        '
+    - name: raw_installation_last_seen_date
+      type: STRING
+      mode: NULLABLE
     - name: installation_timestamp
       type: TIMESTAMP
       mode: NULLABLE
@@ -450,6 +466,18 @@ fields:
 
 
         This metric is only attached to a ping if it already contains other data.
+
+        '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: installation_install_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times the app has been installed on this device,
+
+        including the current install, across reinstalls. Recorded per install.
 
         '
 - name: normalized_app_name

@@ -11,6 +11,10 @@ SELECT
         metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
           STRUCT(
             mozfun.glean.parse_datetime(
+              metrics.datetime.installation_last_seen_date
+            ) AS installation_last_seen_date,
+            metrics.datetime.installation_last_seen_date AS raw_installation_last_seen_date,
+            mozfun.glean.parse_datetime(
               metrics.datetime.installation_timestamp
             ) AS installation_timestamp,
             metrics.datetime.installation_timestamp AS raw_installation_timestamp

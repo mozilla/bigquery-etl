@@ -489,6 +489,10 @@ fields:
         existed and the query derivation produced a query). False when the CTA page
         rendered but the Search button was suppressed (no engine, connectivity lost,
         or an unusable host), leaving Reload only.
+    - name: cvv_saving_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether saving security codes was turned on when the user responded.
     - name: description
       type: BOOLEAN
       mode: NULLABLE
@@ -548,9 +552,9 @@ fields:
 
         * Chatbot was already enabled.
 
-        * True if IP Protection was turned on.
-
         * New/current state is enabled
+
+        * True if IP Protection was turned on.
 
         * Whether the action was turned on or off.
 
@@ -562,7 +566,9 @@ fields:
 
         * Whether the sidebar is now set to open by default
 
-        * whether the preference was enabled or disabled in any way'
+        * whether the preference was enabled or disabled in any way
+
+        * The new state, true when saving security codes is on.'
     - name: encrypted
       type: BOOLEAN
       mode: NULLABLE
@@ -668,6 +674,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the migration had errors.
+    - name: had_saved_cvv
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether at least one saved card had a security code when the setting
+        changed.
     - name: hadPreviousJwt
       type: BOOLEAN
       mode: NULLABLE
@@ -1454,6 +1465,11 @@ fields:
         * Number of prior restore attempts across sessions (0 on the first attempt).
         Restores stop being attempted once this reaches its budget.
 
+        * How many launches had already tried and failed before this one, 0 on the
+        first. A retry emits an otherwise identical event, so this is what separates
+        a profile that failed once from one failing every time. The migrator gives
+        up after 10. Always 0 for "to_json", which is not limited.
+
         * Number of prior migration attempts across sessions (0 on the first attempt).'
     - name: attemptCount
       type: INTEGER
@@ -1472,6 +1488,11 @@ fields:
         adjustments the user saw before making that change. Counts adjustments strictly
         before this event, so the first automatic adjustment of a session reports
         0.
+    - name: available
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of items of this resource type that the other browser
+        had available to migrate. Not set if the migrator cannot count them.
     - name: average_chunk_time
       type: INTEGER
       mode: NULLABLE
@@ -1609,14 +1630,14 @@ fields:
 
         * Milliseconds from mousedown to showing.
 
+        * Milliseconds waiting on previous
+
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
         when its timer was armed, such as at browser start, reports the missed time
         plus about one second, because overdue timers are armed one second out. Larger
         values mostly measure time the browser was closed or asleep. Absent for manual
         runs and when the stored scheduled time could not be parsed.
-
-        * Milliseconds waiting on previous
 
         * For scheduled runs, how long after the scheduled time the run started. A
         timer that fired on time reports close to zero. A run that was already overdue
@@ -1694,11 +1715,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * The amount of time in Ms since the user opened the SmartWindow
-
         * Wall-clock duration of the migration, in milliseconds.
 
         * Duration of the migration in milliseconds.
+
+        * The amount of time in Ms since the user opened the SmartWindow
 
         * Duration of the restore in milliseconds, measured with a monotonic clock.
 
@@ -1964,10 +1985,10 @@ fields:
 
         * Time in ms to start processing the request
 
+        * Milliseconds to output first sentence
+
         * Time spent in the model call only, excluding page extraction and the account
         token fetch. Only present when the model call completed.
-
-        * Milliseconds to output first sentence
 
         * Time from response request start to the first rendered assistant character'
     - name: latency_ms
@@ -2128,10 +2149,13 @@ fields:
     - name: migrated
       type: INTEGER
       mode: NULLABLE
-      description: Number of records the import reported as written. A record the
-        store copied into already held under the same timeLastModified is left alone,
-        so source_total minus migrated minus failed is the number that needed nothing
-        doing.
+      description: 'Depending on the type of event:
+
+        * Number of records the import reported as written. A record the store copied
+        into already held under the same timeLastModified is left alone, so source_total
+        minus migrated minus failed is the number that needed nothing doing.
+
+        * The number of items of this resource type that were actually migrated.'
     - name: ml_label_length
       type: INTEGER
       mode: NULLABLE
@@ -2438,6 +2462,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Previous width in pixels.
+    - name: primary_password_deferrals
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many startups in a row the primary password prompt for the
+        migration had been canceled: on a run, before it started; on a deferred startup,
+        including this one.'
     - name: processing_duration
       type: INTEGER
       mode: NULLABLE
@@ -2824,9 +2854,9 @@ fields:
 
         * Time to process the request
 
-        * How long the process took.
-
         * Milliseconds to fetch and extract page
+
+        * How long the process took.
 
         * Milliseconds to generate full result
 
@@ -4016,6 +4046,13 @@ fields:
       mode: NULLABLE
       description: (optional, present if object is "full") Whether the default path
         was used
+    - name: deferral_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Why the migration was deferred, only set with the end state "Deferred":
+        "primary_password_canceled" when the user canceled the primary password prompt,
+        or "primary_password_limit" when it was not shown because it had been canceled
+        too often.'
     - name: deletedBy
       type: STRING
       mode: NULLABLE
@@ -4204,11 +4241,13 @@ fields:
         * Migrator state after the run, e.g. "RustPrimary" when the migration completed
         or "MigrationPending" when it did not.
 
+        * Migrator state after the run, e.g. "RustPrimary" when the migration completed
+        or "MigrationPending" when it did not, or "Deferred" when it did not run because
+        the primary password was not entered.
+
         * Outcome of the run: "Restored" when every login made it into the JSON store,
         "Incomplete" when individual logins failed, "Deferred" when the primary password
-        was locked and the restore is waiting for the unlock, "Aborted" when the browser
-        shut down mid-run, "SyncSkipped" when Sync is set up to carry logins and brings
-        them back itself, "TooManyLogins" when the Rust store h...'
+        was locked and th...'
     - name: engagement_type
       type: STRING
       mode: NULLABLE
@@ -4298,6 +4337,9 @@ fields:
         * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
         SessionRestore, SystemMenu or SlowScript
 
+        * Where the migration wizard was opened from. One of the values of MigrationUtils.MIGRATION_ENTRYPOINTS,
+        for example "aboutwelcome", "preferences" or "file_menu".
+
         * Where the user opened the page from: "panel" for the button in the VPN panel,
         "settings" for the button in about:settings#privacy.
 
@@ -4350,6 +4392,11 @@ fields:
         present if the object is "fill_username". When the event is successful, the
         error_code is 0.
 
+        * The UniFFI error variant when the migration threw, for grouping, or "SourceChanged"
+        when the JSON store was written to while it was copied into the Rust store,
+        which fails the run. Absent otherwise, including when records were rejected
+        or came up short: the counts already describe that.
+
         * One of the monitor run error codes: network_error, timeout, rate_limit,
         auth_error, content_extraction_error, canceled, interrupted, model_error,
         prompt_load_error or unknown_error. Only present when success is false. Never
@@ -4361,11 +4408,6 @@ fields:
         * The UniFFI error variant when the migration threw, for grouping. Absent
         otherwise, including when records were rejected or came up short: the counts
         already describe that.
-
-        * The UniFFI error variant when the migration threw, for grouping, or "SourceChanged"
-        when the JSON store was written to while it was copied into the Rust store,
-        which fails the run. Absent otherwise, including when records were rejected
-        or came up short: the counts already describe that.
 
         * The error c...'
     - name: error_kind
@@ -4380,16 +4422,16 @@ fields:
 
         * The error message or exception string from the failure.
 
+        * A normalized, PII-stripped message: the first reason a record was rejected,
+        or the error text where the migration threw. One example to read rather than
+        a set to aggregate -- rejected records in one batch nearly always share a
+        cause. Absent when the counts say it all.
+
         * What the failure is attributed to, from a closed set of reasons shared with
         the chat: connectionFailure, fxaTokenUnavailable, modelConfigUnavailable,
         offline, promptLoadFailure or remoteSettingsUnavailable. Anything else, including
         a bug of our own, is genericError. Never a free form message, and absent on
         success.
-
-        * A normalized, PII-stripped message: the first reason a record was rejected,
-        or the error text where the migration threw. One example to read rather than
-        a set to aggregate -- rejected records in one batch nearly always share a
-        cause. Absent when the counts say it all.
 
         * The fatal error that aborted the run, or empty if the run completed.
 
@@ -4705,6 +4747,9 @@ fields:
 
         * Flow id of an interaction session with a credit card form
 
+        * Flow id of the interaction session with the credit card form, shared with
+        the credit card form events.
+
         * Joins to sibling firefox.ai.runtime.engine_run and run_inference_success_flow
         events for the same inference.
 
@@ -4716,10 +4761,7 @@ fields:
         after a record removal prompt.
 
         * An id generated when the dropdown opened, letting this event be correlated
-        with the matching dropdown_closed event (and any interactions in between),
-        to measure things like how often a shown dropdown leads to a removal.
-
-        * An id generated when the drop...'
+        with the matching dropdown_closed event (and any interactions in betwee...'
     - name: font
       type: STRING
       mode: NULLABLE
@@ -5213,9 +5255,9 @@ fields:
 
         * Which input was used: fullpage, sidebar, or urlbar
 
-        * Which input was used to request history: fullpage, sidebar, or urlbar
-
         * Which input was used: fullpage, sidebar, or urlbar.
+
+        * Which input was used to request history: fullpage, sidebar, or urlbar
 
         * Which input was used to request history: home, urlbar, or sidebar
 
@@ -5343,6 +5385,9 @@ fields:
         * The key of the browser that was selected.
 
         * The key of the browser that had a profile selected for it.
+
+        * The key of the migrator that performed the migration, for example "chrome"
+        or "safari".
 
         * The key of the browser that had resources selected for it.'
     - name: mime_type
@@ -6081,7 +6126,10 @@ fields:
 
         * Type of prompt shown: disambiguation, batch_preview, or safety_confirmation
 
-        * Type of prompt shown - disambiguation, batch_preview, or safety_confirmation'
+        * Type of prompt shown - disambiguation, batch_preview, or safety_confirmation
+
+        * "new_card" for the save doorhanger of a new card, "existing_card" for the
+        update doorhanger offering to add a security code to a saved card.'
     - name: prompt_version
       type: STRING
       mode: NULLABLE
@@ -6091,11 +6139,11 @@ fields:
 
         * Major version of the chat prompt used for this request.
 
+        * Remote Settings prompt configuration version, or empty if unavailable
+
         * Version of the generation prompt config.
 
         * Version of the relevant tabs prompt config.
-
-        * Remote Settings prompt configuration version, or empty if unavailable
 
         * Version of the classification prompt config.'
     - name: property
@@ -6117,8 +6165,6 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Selected provider id.
-
         * The name of the `UrlbarProvider` that provided the selected result. The
         possible values are: `AboutPages`, `AliasEngines`, `Autofill`, `BookmarkKeywords`,
         `calculator`, `UrlbarProviderContextualSearch`, `HeuristicFallback`, `HistoryUrlHeuristic`,
@@ -6130,6 +6176,8 @@ fields:
         And also, if selected_result is `experimental_addon`, it means that the user
         selected a result from an add-on using the urlbar experimental API. In this
         case, this will be the provider name specified by the add-on.
+
+        * Selected provider id.
 
         * The name of the provider.
 
@@ -6314,6 +6362,11 @@ fields:
         * The video resolution used for EME playback
 
         * The video resolution used for playback'
+    - name: resource_type
+      type: STRING
+      mode: NULLABLE
+      description: The resource type that was migrated. One of "history", "formdata",
+        "passwords", "bookmarks", "payment_methods" or "extensions".
     - name: response
       type: STRING
       mode: NULLABLE
@@ -6337,19 +6390,17 @@ fields:
 
         * Optionally, the name of the error that occurred.
 
+        * "ok" when the store copied into ended up holding exactly what the source
+        holds -- every record arrived and nothing the source lacks survived, compared
+        by guid rather than by count -- so the profile could be handed to it; otherwise
+        "error". A "to_json" copy hands the profile back to the JSON store either
+        way, so an "error" there means some records did not make it back.
+
         * The error code, converted to a string.
 
-        * "ok", or "error" when initialization aborted with a fatal error.
+        * The outcome of the prompt.
 
-        * "switch" when an existing tab was focused, "new" when a tab was opened,
-        "error" when that attempt failed.
-
-        * Outcome of the action: success, partial_success, no_match, cancelled, or
-        error.
-
-        * The outcome of the attempt to pin, values include: - `success_pinned`: The
-        pin request was affirmed by the user. - `success_rejected`: The pin request
-        was rejected by the user or system. - `success_fi...'
+        * "ok", or "error" when initialization aborted with a fat...'
     - name: results
       type: STRING
       mode: NULLABLE
@@ -6392,10 +6443,10 @@ fields:
 
         * Unique identifier for the login change event
 
-        * Unique identifier for the migration run.
-
         * A fresh id per run, so that the migrate_record_divergence events a run emitted
         join to it unambiguously.
+
+        * Unique identifier for the migration run.
 
         * Unique identifier for the restore run.
 
@@ -6562,6 +6613,13 @@ fields:
       mode: NULLABLE
       description: The sanitized type of the "self uri", which is roughly similar
         to the documentURI. This follows eval_usage_system_context sanitization procedure.
+    - name: semantic_distances
+      type: STRING
+      mode: NULLABLE
+      description: Comma separated list, aligned with `results`, of the cosine distance
+        between the search string and each semantic history result, converted to an
+        integer between 0 and 100. Non-semantic results have an empty entry. Only
+        recorded when semantic results were shown.
     - name: server_content_process_stack
       type: STRING
       mode: NULLABLE
@@ -7120,8 +7178,13 @@ fields:
     - name: tool_name
       type: STRING
       mode: NULLABLE
-      description: Name of the invoked tool, e.g. "run_search", "get_open_tabs", "search_browsing_history",
+      description: 'Depending on the type of event:
+
+        * Name of the invoked tool, e.g. "run_search", "get_open_tabs", "search_browsing_history",
         "get_user_memories"
+
+        * Name of the requested tool, e.g. "run_search", "get_open_tabs", "search_browsing_history",
+        "get_user_memories"'
     - name: top_preferred_language
       type: STRING
       mode: NULLABLE

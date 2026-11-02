@@ -733,6 +733,15 @@ fields:
         Recorded at startup and whenever a widget is enabled or disabled.
 
         '
+    - name: newtab_widgets_home_list
+      type: STRING
+      mode: REPEATED
+      description: 'The list of widget telemetry names pinned to the Home space that
+        it currently shows. Recorded at startup and whenever the user pins or unpins
+        a widget or a widget is enabled or disabled. Only set in layouts where users
+        pin widgets to Home, so an empty list means nothing is pinned there.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

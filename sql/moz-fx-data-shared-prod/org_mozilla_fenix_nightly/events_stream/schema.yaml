@@ -469,6 +469,10 @@ fields:
         existed and the query derivation produced a query). False when the CTA page
         rendered but the Search button was suppressed (no engine, connectivity lost,
         or an unusable host), leaving Reload only.
+    - name: cvv_saving_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether saving security codes was turned on when the user responded.
     - name: data_fetched
       type: BOOLEAN
       mode: NULLABLE
@@ -528,7 +532,9 @@ fields:
 
         * Whether or not studies is enabled from Settings screen.
 
-        * Whether or not the preference is enabled'
+        * Whether or not the preference is enabled
+
+        * The new state, true when saving security codes is on.'
     - name: engine_available
       type: BOOLEAN
       mode: NULLABLE
@@ -558,6 +564,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether or not the tab had unsubmitted form data when it was killed.
+    - name: had_saved_cvv
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether at least one saved card had a security code when the setting
+        changed.
     - name: hadPreviousJwt
       type: BOOLEAN
       mode: NULLABLE
@@ -987,6 +998,11 @@ fields:
 
         * Number of prior restore attempts across sessions (0 on the first attempt).
         Restores stop being attempted once this reaches its budget.
+
+        * How many launches had already tried and failed before this one, 0 on the
+        first. A retry emits an otherwise identical event, so this is what separates
+        a profile that failed once from one failing every time. The migrator gives
+        up after 10. Always 0 for "to_json", which is not limited.
 
         * Number of prior migration attempts across sessions (0 on the first attempt).'
     - name: attemptCount
@@ -1477,6 +1493,12 @@ fields:
         * The position of the clicked top site suggestion.
 
         * The position of the clicked trending search suggestion.'
+    - name: primary_password_deferrals
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many startups in a row the primary password prompt for the
+        migration had been canceled: on a run, before it started; on a deferred startup,
+        including this one.'
     - name: profile_count
       type: INTEGER
       mode: NULLABLE
@@ -1762,7 +1784,12 @@ fields:
         `enabled` and `disabled`.
 
         * "add": a code is saved for a card that had none. "edit": the stored code
-        is changed. "clear": the stored code is removed.'
+        is changed. "clear": the stored code is removed.
+
+        * "save" when the card is saved or updated, "save_new" when an existing card
+        is saved as a new payment method, "not_now" (new_card) or "no_thanks" (existing_card)
+        when the Dismiss button is clicked, "never_save" when the user stops saving
+        cards, and "...'
     - name: action_uuid
       type: STRING
       mode: NULLABLE
@@ -2323,6 +2350,13 @@ fields:
         * The name of video decoder used for playback.
 
         * The name of the decoder when the error occurred.'
+    - name: deferral_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Why the migration was deferred, only set with the end state "Deferred":
+        "primary_password_canceled" when the user canceled the primary password prompt,
+        or "primary_password_limit" when it was not shown because it had been canceled
+        too often.'
     - name: deletedBy
       type: STRING
       mode: NULLABLE
@@ -2476,11 +2510,13 @@ fields:
         * Migrator state after the run, e.g. "RustPrimary" when the migration completed
         or "MigrationPending" when it did not.
 
+        * Migrator state after the run, e.g. "RustPrimary" when the migration completed
+        or "MigrationPending" when it did not, or "Deferred" when it did not run because
+        the primary password was not entered.
+
         * Outcome of the run: "Restored" when every login made it into the JSON store,
         "Incomplete" when individual logins failed, "Deferred" when the primary password
-        was locked and the restore is waiting for the unlock, "Aborted" when the browser
-        shut down mid-run, "SyncSkipped" when Sync is set up to carry logins and brings
-        them back itself, "TooManyLogins" when the Rust store h...'
+        was locked and th...'
     - name: engine
       type: STRING
       mode: NULLABLE
@@ -2589,14 +2625,14 @@ fields:
 
         * The error code or number associated with the error, if available.
 
-        * The UniFFI error variant when the migration threw, for grouping. Absent
-        otherwise, including when records were rejected or came up short: the counts
-        already describe that.
-
         * The UniFFI error variant when the migration threw, for grouping, or "SourceChanged"
         when the JSON store was written to while it was copied into the Rust store,
         which fails the run. Absent otherwise, including when records were rejected
         or came up short: the counts already describe that.
+
+        * The UniFFI error variant when the migration threw, for grouping. Absent
+        otherwise, including when records were rejected or came up short: the counts
+        already describe that.
 
         * The error code after users click the email alias generation panel. When
         the event is successful, the error_code is 0.
@@ -2898,6 +2934,9 @@ fields:
 
         * Flow id of an interaction session with a credit card form
 
+        * Flow id of the interaction session with the credit card form, shared with
+        the credit card form events.
+
         * An id generated when the dropdown opened, shared with the matching dropdown_shown
         event so the two can be correlated.
 
@@ -2910,8 +2949,7 @@ fields:
         to measure things like how often a shown dropdown leads to a removal.
 
         * An id generated when the dropdown opened, letting this event be correlated
-        with the matching dropdown_closed event (and any interactions in between),
-        to measure things like how often a shown dropdown leads to...'
+        with the matching dropdown_c...'
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -3866,6 +3904,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: True if the user enables the prompt, false otherwise.
+    - name: prompt_type
+      type: STRING
+      mode: NULLABLE
+      description: '"new_card" for the save doorhanger of a new card, "existing_card"
+        for the update doorhanger offering to add a security code to a saved card.'
     - name: prompt_was_displayed
       type: STRING
       mode: NULLABLE
@@ -4021,14 +4064,20 @@ fields:
 
         * Optionally, the name of the error that occurred.
 
+        * "ok" when the store copied into ended up holding exactly what the source
+        holds -- every record arrived and nothing the source lacks survived, compared
+        by guid rather than by count -- so the profile could be handed to it; otherwise
+        "error". A "to_json" copy hands the profile back to the JSON store either
+        way, so an "error" there means some records did not make it back.
+
         * The error code, converted to a string.
+
+        * The outcome of the prompt.
 
         * "ok", or "error" when initialization aborted with a fatal error.
 
         * The outcome of the Nimbus event recording attempt. One of "success", "cancelled",
-        or "error".
-
-        * The outcome of the prompt.'
+        or "error".'
     - name: results
       type: STRING
       mode: NULLABLE
@@ -4050,10 +4099,10 @@ fields:
 
         * Unique identifier for the login change event
 
-        * Unique identifier for the migration run.
-
         * A fresh id per run, so that the migrate_record_divergence events a run emitted
         join to it unambiguously.
+
+        * Unique identifier for the migration run.
 
         * Unique identifier for the restore run.
 

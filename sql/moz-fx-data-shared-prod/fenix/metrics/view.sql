@@ -143,7 +143,8 @@ SELECT
       metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
       metrics.boolean.network_akamai_waf_blocked,
       metrics.boolean.network_akamai_waf_blocked_subresource,
-      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow,
+      metrics.boolean.formautofill_creditcards_cvv_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1255,7 +1256,8 @@ SELECT
       metrics.labeled_counter.web_notification_push_subscribe_origin,
       metrics.labeled_counter.geolocation_request_activation,
       metrics.labeled_counter.listen_to_page_session_max_thermal_status,
-      metrics.labeled_counter.network_akamai_document_loads
+      metrics.labeled_counter.network_akamai_document_loads,
+      metrics.labeled_counter.network_apple_fast_datapath_probe
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2269,7 +2271,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
       metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent,
       metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
-      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_last_answer_to_attempt
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -2501,7 +2504,8 @@ SELECT
       metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
       metrics.boolean.network_akamai_waf_blocked,
       metrics.boolean.network_akamai_waf_blocked_subresource,
-      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow,
+      metrics.boolean.formautofill_creditcards_cvv_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3613,7 +3617,8 @@ SELECT
       metrics.labeled_counter.web_notification_push_subscribe_origin,
       metrics.labeled_counter.geolocation_request_activation,
       metrics.labeled_counter.listen_to_page_session_max_thermal_status,
-      metrics.labeled_counter.network_akamai_document_loads
+      metrics.labeled_counter.network_akamai_document_loads,
+      metrics.labeled_counter.network_apple_fast_datapath_probe
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4627,7 +4632,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
       metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent,
       metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
-      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_last_answer_to_attempt
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -4879,7 +4885,8 @@ SELECT
       metrics.boolean.tracking_protection_privacy_report_notification_worker_scheduled,
       metrics.boolean.network_akamai_waf_blocked,
       metrics.boolean.network_akamai_waf_blocked_subresource,
-      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow
+      metrics.boolean.quotamanager_had_temporary_storage_usage_underflow,
+      metrics.boolean.formautofill_creditcards_cvv_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5991,7 +5998,8 @@ SELECT
       metrics.labeled_counter.web_notification_push_subscribe_origin,
       metrics.labeled_counter.geolocation_request_activation,
       metrics.labeled_counter.listen_to_page_session_max_thermal_status,
-      metrics.labeled_counter.network_akamai_document_loads
+      metrics.labeled_counter.network_akamai_document_loads,
+      metrics.labeled_counter.network_apple_fast_datapath_probe
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -7005,7 +7013,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
       metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent,
       metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
-      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_last_answer_to_attempt
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,

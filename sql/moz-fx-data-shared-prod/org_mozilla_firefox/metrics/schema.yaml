@@ -1244,6 +1244,13 @@ fields:
         the quota manager was initialized and no underflow was seen.
 
         '
+    - name: formautofill_creditcards_cvv_saving_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether saving security codes (CVV) is turned on. Set at startup,
+        so it is sent on every metrics ping. Only set when security codes are supported.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -20462,6 +20469,20 @@ fields:
       description: 'Counts document and frame loads served by Akamai, labeled by whether
         the response was the Akamai WAF "Access Denied" page (403 with a body referencing
         errors.edgesuite.net), a different 403 response, or any other response.
+
+        '
+    - name: network_apple_fast_datapath_probe
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Outcome of the Apple fast datapath (sendmsg_x/recvmsg_x) probe
+        at startup. Only recorded on Apple platforms.
 
         '
   - name: quantity
@@ -52991,6 +53012,48 @@ fields:
       description: 'Happy Eyeballs: end-to-end time in milliseconds from algorithm
         start to a successful connection or final failure, keyed by whether the algorithm
         ultimately succeeded or failed.
+
+        '
+    - name: netwerk_happy_eyeballs_last_answer_to_attempt
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Happy Eyeballs: time in milliseconds from the last positive DNS
+        answer to the first connection attempt of a single algorithm run, i.e. the
+        time spent waiting after happy_eyeballs_dns_answer_spread ends. Recorded once
+        per run.
+
+        Labels describe what ended the wait: - no_wait: No algorithmic wait, or gap
+        below 1 ms; may include processing delay. - address_negative: Negative preferred-family
+        answer ended the wait. - https_negative: Negative HTTPS answer ended the wait.
+        - address_timeout: Timer expired awaiting the preferred address family. -
+        https_timeout: Timer expired awaiting HTTPS. - both_timeout: Timer expired
+        awaiting both.
 
         '
   - name: labeled_quantity

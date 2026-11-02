@@ -1279,6 +1279,23 @@ fields:
         the quota manager was initialized and no underflow was seen.
 
         '
+    - name: formautofill_creditcards_cvv_saving_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether saving security codes (CVV) is turned on. Set at startup,
+        so it is sent on every metrics ping. Only set when security codes are supported.
+
+        '
+    - name: theme_picker_native_theme
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether native theme styling is enabled, i.e. the value of the
+        `browser.theme.native-theme` preference. Its default differs by platform.
+        Recorded at startup and again on each daily idle. A default value doesn''t
+        distinguish users who never changed the setting from users who changed it
+        and switched back.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -22488,6 +22505,20 @@ fields:
         engine. Otherwise the label is "none".
 
         '
+    - name: network_apple_fast_datapath_probe
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Outcome of the Apple fast datapath (sendmsg_x/recvmsg_x) probe
+        at startup. Only recorded on Apple platforms.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -24448,6 +24479,43 @@ fields:
         1..4 = Action (3 is unused), 5 = Click outside (unused), 6 = Leave page, 7
         = Use ''X'' (unused), 8 = Not now (unused), 10 = Open submenu, 11 = Learn
         more. Add 20 if happened after reopen.)
+
+        '
+    - name: netwerk_happy_eyeballs_last_answer_to_attempt
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Happy Eyeballs: time in milliseconds from the last positive DNS
+        answer to the first connection attempt of a single algorithm run, i.e. the
+        time spent waiting after happy_eyeballs_dns_answer_spread ends. Recorded once
+        per run.
+
+        Labels describe what ended the wait: - no_wait: No algorithmic wait, or gap
+        below 1 ms; may include processing delay. - address_negative: Negative preferred-family
+        answer ended the wait. - https_negative: Negative HTTPS answer ended the wait.
+        - address_timeout: Timer expired awaiting the preferred address family. -
+        https_timeout: Timer expired awaiting HTTPS. - both_timeout: Timer expired
+        awaiting both.
 
         '
   - name: labeled_memory_distribution
@@ -28245,6 +28313,151 @@ fields:
         made by the Jump List builder, labeled by which call it was. Only calls that
         returned are recorded; a call that never returns leaves the JumpListShellCallStart
         crash annotation set instead.
+
+        '
+    - name: browser_migration_bookmarks_import_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long it took to import bookmarks from another browser, keyed
+        by the key of the migrator that performed the migration. Each resource of
+        this type is timed separately.
+
+        '
+    - name: browser_migration_cards_import_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long it took to import credit card entries from another browser,
+        keyed by the key of the migrator that performed the migration. Each resource
+        of this type is timed separately.
+
+        '
+    - name: browser_migration_extensions_import_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long it took to import extensions from another browser, keyed
+        by the key of the migrator that performed the migration. Each resource of
+        this type is timed separately.
+
+        '
+    - name: browser_migration_history_import_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long it took to import history from another browser, keyed
+        by the key of the migrator that performed the migration. Each resource of
+        this type is timed separately.
+
+        '
+    - name: browser_migration_logins_import_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long it took to import logins (passwords) from another browser,
+        keyed by the key of the migrator that performed the migration. Each resource
+        of this type is timed separately.
 
         '
   - name: memory_distribution
@@ -32364,6 +32577,16 @@ fields:
       mode: NULLABLE
       description: 'The version of Gtk 3 in use. This metric was generated to correspond
         to the Legacy Telemetry scalar widget.gtk_version.
+
+        '
+    - name: theme_picker_appearance
+      type: STRING
+      mode: NULLABLE
+      description: 'The current appearance mode from the theme picker, one of `"light"`,
+        `"dark"`, or `"device"`, derived from the `ui.systemUsesDarkTheme` preference.
+        Recorded at startup and again on each daily idle. A value of `"device"` doesn''t
+        distinguish users who never changed the setting from users who changed it
+        and switched back.
 
         '
   - name: string_list

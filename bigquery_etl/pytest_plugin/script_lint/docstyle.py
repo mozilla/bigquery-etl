@@ -7,14 +7,14 @@ from . import is_python_executable
 
 
 # adapted from
-# https://github.com/henry0312/pytest-docstyle/blob/v2.2.0/src/pytest_pydocstyle.py#L37-L46
-def pytest_collect_file(parent, path):
+# https://github.com/henry0312/pytest-pydocstyle/blob/v2.4.0/src/pytest_pydocstyle.py#L38-L51
+def pytest_collect_file(file_path, path, parent):
     """Collect docstyle tests."""
     config = parent.config
     if config.getoption("pydocstyle") and is_python_executable(path):
         parser = pydocstyle.config.ConfigurationParser()
-        args = [str(path.basename), "--match", ".*"]
+        args = [file_path.name, "--match", ".*"]
         with _patch_sys_argv(args):
             parser.parse()
-        for filename, _, _ in parser.get_files_to_check():
-            return File.from_parent(parent=parent, fspath=path, config_parser=parser)
+        for filename, *_ in parser.get_files_to_check():
+            return File.from_parent(parent=parent, path=file_path, config_parser=parser)

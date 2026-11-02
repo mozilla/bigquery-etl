@@ -5,8 +5,15 @@ description: |-
 
   search_kpi_clients_daily_v1 joins urlbar_clients_daily_v1 to this table on result_type and
   submission_date to split Suggest clicks into suggest_sponsored, suggest_nonsponsored and
-  ai_chat; everything else is excluded. To change the definition, add or close rows here and
-  bump definition_version, then backfill the KPI tables.
+  ai_chat; everything else is excluded.
+
+  To change the definition, set definition_version on every row you add or edit to the
+  current max + 1, then backfill the KPI tables over the dates the change affects:
+  - Correction (a result type was mapped wrong all along, or a new type turns up): edit or
+    add the row with effective_from 1970-01-01 and backfill all history.
+  - Change from a date onward (e.g. a type becomes sponsored when a product launches): set
+    effective_to on the old row to that date, add a new row with effective_from on that date,
+    and backfill from that date. Earlier dates keep the old definition.
 
   Covers the raw result types clicked or shown in a 1% sample of urlbar_events_v2 since
   2024-09, those clicked by anyone from 2026-10-13 to 2026-10-26, every name known to

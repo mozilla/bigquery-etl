@@ -22,7 +22,7 @@ fields:
 - name: effective_to
   type: DATE
   mode: NULLABLE
-  description: Last submission_date this row applies to (exclusive). NULL means the row still applies.
+  description: First submission_date this row no longer applies to. NULL means the row still applies.
 - name: reason
   type: STRING
   mode: REQUIRED

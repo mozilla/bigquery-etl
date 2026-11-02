@@ -107,7 +107,7 @@ rust_market,desktop,other,excluded,1970-01-01,,Shown only before the market card
 rust_market_opt_in,desktop,market_opt_in,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
 rust_mdn,desktop,mdn,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping the results page",1
 rust_pocket,desktop,pocket_collection,suggest_nonsponsored,1970-01-01,,"Retired Suggest type that went straight to the destination, skipping the results page",1
-rust_temporal,desktop,other,excluded,1970-01-01,,"Seasonal search suggestion: the click runs a default-engine search, so SAP should already count it. Provisional until that SAP is confirmed",1
+rust_temporal,desktop,other,excluded,1970-01-01,,"Seasonal search suggestion: the click runs a default-engine search, which SAP already counts",1
 rust_vpn,desktop,vpn,excluded,1970-01-01,,"Browser actions, tips, consent prompts and promotions: not results",1
 rust_yelp,desktop,yelp_suggestion,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
 search_engine,desktop,search_engine,excluded,1970-01-01,,"Opens a results page, so SAP already counts it",1

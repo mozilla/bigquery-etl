@@ -402,6 +402,57 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_doc_css_content_visibility
     ) AS use_counter_css_doc_css_content_visibility,
     SUM(
+      metrics.counter.use_counter_css_doc_css_corner_block_end_shape
+    ) AS use_counter_css_doc_css_corner_block_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_block_start_shape
+    ) AS use_counter_css_doc_css_corner_block_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_bottom_left_shape
+    ) AS use_counter_css_doc_css_corner_bottom_left_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_bottom_right_shape
+    ) AS use_counter_css_doc_css_corner_bottom_right_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_bottom_shape
+    ) AS use_counter_css_doc_css_corner_bottom_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_end_end_shape
+    ) AS use_counter_css_doc_css_corner_end_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_end_start_shape
+    ) AS use_counter_css_doc_css_corner_end_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_inline_end_shape
+    ) AS use_counter_css_doc_css_corner_inline_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_inline_start_shape
+    ) AS use_counter_css_doc_css_corner_inline_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_left_shape
+    ) AS use_counter_css_doc_css_corner_left_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_right_shape
+    ) AS use_counter_css_doc_css_corner_right_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_shape
+    ) AS use_counter_css_doc_css_corner_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_start_end_shape
+    ) AS use_counter_css_doc_css_corner_start_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_start_start_shape
+    ) AS use_counter_css_doc_css_corner_start_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_top_left_shape
+    ) AS use_counter_css_doc_css_corner_top_left_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_top_right_shape
+    ) AS use_counter_css_doc_css_corner_top_right_shape,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_corner_top_shape
+    ) AS use_counter_css_doc_css_corner_top_shape,
+    SUM(
       metrics.counter.use_counter_css_doc_css_counter_increment
     ) AS use_counter_css_doc_css_counter_increment,
     SUM(
@@ -427,6 +478,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     ) AS use_counter_css_doc_css_fill_opacity,
     SUM(metrics.counter.use_counter_css_doc_css_fill_rule) AS use_counter_css_doc_css_fill_rule,
     SUM(metrics.counter.use_counter_css_doc_css_filter) AS use_counter_css_doc_css_filter,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_fit_tolerance
+    ) AS use_counter_css_doc_css_fit_tolerance,
     SUM(metrics.counter.use_counter_css_doc_css_flex) AS use_counter_css_doc_css_flex,
     SUM(metrics.counter.use_counter_css_doc_css_flex_basis) AS use_counter_css_doc_css_flex_basis,
     SUM(
@@ -441,6 +495,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_css_doc_css_flood_opacity
     ) AS use_counter_css_doc_css_flood_opacity,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_flow_tolerance
+    ) AS use_counter_css_doc_css_flow_tolerance,
     SUM(metrics.counter.use_counter_css_doc_css_font) AS use_counter_css_doc_css_font,
     SUM(metrics.counter.use_counter_css_doc_css_font_family) AS use_counter_css_doc_css_font_family,
     SUM(
@@ -509,6 +566,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_doc_css_font_variation_settings
     ) AS use_counter_css_doc_css_font_variation_settings,
     SUM(metrics.counter.use_counter_css_doc_css_font_weight) AS use_counter_css_doc_css_font_weight,
+    SUM(metrics.counter.use_counter_css_doc_css_font_width) AS use_counter_css_doc_css_font_width,
     SUM(
       metrics.counter.use_counter_css_doc_css_forced_color_adjust
     ) AS use_counter_css_doc_css_forced_color_adjust,
@@ -615,7 +673,11 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_doc_css_lighting_color
     ) AS use_counter_css_doc_css_lighting_color,
     SUM(metrics.counter.use_counter_css_doc_css_line_break) AS use_counter_css_doc_css_line_break,
+    SUM(metrics.counter.use_counter_css_doc_css_line_clamp) AS use_counter_css_doc_css_line_clamp,
     SUM(metrics.counter.use_counter_css_doc_css_line_height) AS use_counter_css_doc_css_line_height,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_link_parameters
+    ) AS use_counter_css_doc_css_link_parameters,
     SUM(metrics.counter.use_counter_css_doc_css_list_style) AS use_counter_css_doc_css_list_style,
     SUM(
       metrics.counter.use_counter_css_doc_css_list_style_image
@@ -653,6 +715,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_doc_css_margin_right
     ) AS use_counter_css_doc_css_margin_right,
     SUM(metrics.counter.use_counter_css_doc_css_margin_top) AS use_counter_css_doc_css_margin_top,
+    SUM(metrics.counter.use_counter_css_doc_css_margin_trim) AS use_counter_css_doc_css_margin_trim,
     SUM(metrics.counter.use_counter_css_doc_css_marker) AS use_counter_css_doc_css_marker,
     SUM(metrics.counter.use_counter_css_doc_css_marker_end) AS use_counter_css_doc_css_marker_end,
     SUM(metrics.counter.use_counter_css_doc_css_marker_mid) AS use_counter_css_doc_css_marker_mid,
@@ -810,7 +873,13 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_doc_css_moz_force_broken_image_icon
     ) AS use_counter_css_doc_css_moz_force_broken_image_icon,
     SUM(metrics.counter.use_counter_css_doc_css_moz_hyphens) AS use_counter_css_doc_css_moz_hyphens,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_moz_image_decoding
+    ) AS use_counter_css_doc_css_moz_image_decoding,
     SUM(metrics.counter.use_counter_css_doc_css_moz_inert) AS use_counter_css_doc_css_moz_inert,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_moz_line_scroll_amount
+    ) AS use_counter_css_doc_css_moz_line_scroll_amount,
     SUM(
       metrics.counter.use_counter_css_doc_css_moz_margin_end
     ) AS use_counter_css_doc_css_moz_margin_end,
@@ -839,6 +908,12 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_css_doc_css_moz_perspective_origin
     ) AS use_counter_css_doc_css_moz_perspective_origin,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_block
+    ) AS use_counter_css_doc_css_moz_scrollbar_inset_block,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_moz_scrollbar_inset_inline
+    ) AS use_counter_css_doc_css_moz_scrollbar_inset_inline,
     SUM(
       metrics.counter.use_counter_css_doc_css_moz_subtree_hidden_only_visually
     ) AS use_counter_css_doc_css_moz_subtree_hidden_only_visually,
@@ -2271,6 +2346,57 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_page_css_content_visibility
     ) AS use_counter_css_page_css_content_visibility,
     SUM(
+      metrics.counter.use_counter_css_page_css_corner_block_end_shape
+    ) AS use_counter_css_page_css_corner_block_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_block_start_shape
+    ) AS use_counter_css_page_css_corner_block_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_bottom_left_shape
+    ) AS use_counter_css_page_css_corner_bottom_left_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_bottom_right_shape
+    ) AS use_counter_css_page_css_corner_bottom_right_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_bottom_shape
+    ) AS use_counter_css_page_css_corner_bottom_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_end_end_shape
+    ) AS use_counter_css_page_css_corner_end_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_end_start_shape
+    ) AS use_counter_css_page_css_corner_end_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_inline_end_shape
+    ) AS use_counter_css_page_css_corner_inline_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_inline_start_shape
+    ) AS use_counter_css_page_css_corner_inline_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_left_shape
+    ) AS use_counter_css_page_css_corner_left_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_right_shape
+    ) AS use_counter_css_page_css_corner_right_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_shape
+    ) AS use_counter_css_page_css_corner_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_start_end_shape
+    ) AS use_counter_css_page_css_corner_start_end_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_start_start_shape
+    ) AS use_counter_css_page_css_corner_start_start_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_top_left_shape
+    ) AS use_counter_css_page_css_corner_top_left_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_top_right_shape
+    ) AS use_counter_css_page_css_corner_top_right_shape,
+    SUM(
+      metrics.counter.use_counter_css_page_css_corner_top_shape
+    ) AS use_counter_css_page_css_corner_top_shape,
+    SUM(
       metrics.counter.use_counter_css_page_css_counter_increment
     ) AS use_counter_css_page_css_counter_increment,
     SUM(
@@ -2300,6 +2426,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     ) AS use_counter_css_page_css_fill_opacity,
     SUM(metrics.counter.use_counter_css_page_css_fill_rule) AS use_counter_css_page_css_fill_rule,
     SUM(metrics.counter.use_counter_css_page_css_filter) AS use_counter_css_page_css_filter,
+    SUM(
+      metrics.counter.use_counter_css_page_css_fit_tolerance
+    ) AS use_counter_css_page_css_fit_tolerance,
     SUM(metrics.counter.use_counter_css_page_css_flex) AS use_counter_css_page_css_flex,
     SUM(metrics.counter.use_counter_css_page_css_flex_basis) AS use_counter_css_page_css_flex_basis,
     SUM(
@@ -2318,6 +2447,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_css_page_css_flood_opacity
     ) AS use_counter_css_page_css_flood_opacity,
+    SUM(
+      metrics.counter.use_counter_css_page_css_flow_tolerance
+    ) AS use_counter_css_page_css_flow_tolerance,
     SUM(metrics.counter.use_counter_css_page_css_font) AS use_counter_css_page_css_font,
     SUM(
       metrics.counter.use_counter_css_page_css_font_family
@@ -2390,6 +2522,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_css_page_css_font_weight
     ) AS use_counter_css_page_css_font_weight,
+    SUM(metrics.counter.use_counter_css_page_css_font_width) AS use_counter_css_page_css_font_width,
     SUM(
       metrics.counter.use_counter_css_page_css_forced_color_adjust
     ) AS use_counter_css_page_css_forced_color_adjust,
@@ -2502,9 +2635,13 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_page_css_lighting_color
     ) AS use_counter_css_page_css_lighting_color,
     SUM(metrics.counter.use_counter_css_page_css_line_break) AS use_counter_css_page_css_line_break,
+    SUM(metrics.counter.use_counter_css_page_css_line_clamp) AS use_counter_css_page_css_line_clamp,
     SUM(
       metrics.counter.use_counter_css_page_css_line_height
     ) AS use_counter_css_page_css_line_height,
+    SUM(
+      metrics.counter.use_counter_css_page_css_link_parameters
+    ) AS use_counter_css_page_css_link_parameters,
     SUM(metrics.counter.use_counter_css_page_css_list_style) AS use_counter_css_page_css_list_style,
     SUM(
       metrics.counter.use_counter_css_page_css_list_style_image
@@ -2544,6 +2681,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_css_page_css_margin_right
     ) AS use_counter_css_page_css_margin_right,
     SUM(metrics.counter.use_counter_css_page_css_margin_top) AS use_counter_css_page_css_margin_top,
+    SUM(
+      metrics.counter.use_counter_css_page_css_margin_trim
+    ) AS use_counter_css_page_css_margin_trim,
     SUM(metrics.counter.use_counter_css_page_css_marker) AS use_counter_css_page_css_marker,
     SUM(metrics.counter.use_counter_css_page_css_marker_end) AS use_counter_css_page_css_marker_end,
     SUM(metrics.counter.use_counter_css_page_css_marker_mid) AS use_counter_css_page_css_marker_mid,
@@ -2707,7 +2847,13 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_css_page_css_moz_hyphens
     ) AS use_counter_css_page_css_moz_hyphens,
+    SUM(
+      metrics.counter.use_counter_css_page_css_moz_image_decoding
+    ) AS use_counter_css_page_css_moz_image_decoding,
     SUM(metrics.counter.use_counter_css_page_css_moz_inert) AS use_counter_css_page_css_moz_inert,
+    SUM(
+      metrics.counter.use_counter_css_page_css_moz_line_scroll_amount
+    ) AS use_counter_css_page_css_moz_line_scroll_amount,
     SUM(
       metrics.counter.use_counter_css_page_css_moz_margin_end
     ) AS use_counter_css_page_css_moz_margin_end,
@@ -2736,6 +2882,12 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_css_page_css_moz_perspective_origin
     ) AS use_counter_css_page_css_moz_perspective_origin,
+    SUM(
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_block
+    ) AS use_counter_css_page_css_moz_scrollbar_inset_block,
+    SUM(
+      metrics.counter.use_counter_css_page_css_moz_scrollbar_inset_inline
+    ) AS use_counter_css_page_css_moz_scrollbar_inset_inline,
     SUM(
       metrics.counter.use_counter_css_page_css_moz_subtree_hidden_only_visually
     ) AS use_counter_css_page_css_moz_subtree_hidden_only_visually,
@@ -3875,8 +4027,17 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack
     ) AS use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all
+    ) AS use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys
+    ) AS use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
     ) AS use_counter_deprecated_ops_doc_idbobject_store_create_index_locale,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_moz_get_all
+    ) AS use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
     SUM(
       metrics.counter.use_counter_deprecated_ops_doc_idbopen_dboptions_storage_type
     ) AS use_counter_deprecated_ops_doc_idbopen_dboptions_storage_type,
@@ -3995,6 +4156,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_doc_svgnearest_viewport_element
     ) AS use_counter_deprecated_ops_doc_svgnearest_viewport_element,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_svguse_inline_event_handler
+    ) AS use_counter_deprecated_ops_doc_svguse_inline_event_handler,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_doc_sync_xmlhttp_request_deprecated
     ) AS use_counter_deprecated_ops_doc_sync_xmlhttp_request_deprecated,
     SUM(
@@ -4097,8 +4261,17 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
     ) AS use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all
+    ) AS use_counter_deprecated_ops_page_idbindex_moz_get_all,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_idbindex_moz_get_all_keys
+    ) AS use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_page_idbobject_store_create_index_locale
     ) AS use_counter_deprecated_ops_page_idbobject_store_create_index_locale,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_moz_get_all
+    ) AS use_counter_deprecated_ops_page_idbobject_store_moz_get_all,
     SUM(
       metrics.counter.use_counter_deprecated_ops_page_idbopen_dboptions_storage_type
     ) AS use_counter_deprecated_ops_page_idbopen_dboptions_storage_type,
@@ -4217,6 +4390,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_page_svgnearest_viewport_element
     ) AS use_counter_deprecated_ops_page_svgnearest_viewport_element,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_page_svguse_inline_event_handler
+    ) AS use_counter_deprecated_ops_page_svguse_inline_event_handler,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_page_sync_xmlhttp_request_deprecated
     ) AS use_counter_deprecated_ops_page_sync_xmlhttp_request_deprecated,
     SUM(
@@ -4237,6 +4413,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_deprecated_ops_page_xsltdeprecated
     ) AS use_counter_deprecated_ops_page_xsltdeprecated,
+    SUM(metrics.counter.use_counter_doc_akamai_forbidden) AS use_counter_doc_akamai_forbidden,
+    SUM(metrics.counter.use_counter_doc_akamai_used) AS use_counter_doc_akamai_used,
+    SUM(metrics.counter.use_counter_doc_akamai_waf_blocked) AS use_counter_doc_akamai_waf_blocked,
     SUM(
       metrics.counter.use_counter_doc_animation_commitstyles
     ) AS use_counter_doc_animation_commitstyles,
@@ -4362,6 +4541,10 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_doc_document_onwebkitfullscreenerror
     ) AS use_counter_doc_document_onwebkitfullscreenerror,
     SUM(metrics.counter.use_counter_doc_document_open) AS use_counter_doc_document_open,
+    SUM(metrics.counter.use_counter_doc_document_parsehtml) AS use_counter_doc_document_parsehtml,
+    SUM(
+      metrics.counter.use_counter_doc_document_parsehtmlunsafe
+    ) AS use_counter_doc_document_parsehtmlunsafe,
     SUM(
       metrics.counter.use_counter_doc_document_pictureinpictureelement
     ) AS use_counter_doc_document_pictureinpictureelement,
@@ -4420,6 +4603,10 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_domparser_parsefromstring
     ) AS use_counter_doc_domparser_parsefromstring,
+    SUM(metrics.counter.use_counter_doc_edit_context_canvas) AS use_counter_doc_edit_context_canvas,
+    SUM(
+      metrics.counter.use_counter_doc_editcontext_constructor
+    ) AS use_counter_doc_editcontext_constructor,
     SUM(
       metrics.counter.use_counter_doc_element_attachshadow
     ) AS use_counter_doc_element_attachshadow,
@@ -4436,10 +4623,19 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_doc_element_releasepointercapture
     ) AS use_counter_doc_element_releasepointercapture,
     SUM(
+      metrics.counter.use_counter_doc_element_requestfullscreen
+    ) AS use_counter_doc_element_requestfullscreen,
+    SUM(
+      metrics.counter.use_counter_doc_element_requestpointerlock
+    ) AS use_counter_doc_element_requestpointerlock,
+    SUM(
       metrics.counter.use_counter_doc_element_scrollintoviewifneeded
     ) AS use_counter_doc_element_scrollintoviewifneeded,
     SUM(metrics.counter.use_counter_doc_element_setcapture) AS use_counter_doc_element_setcapture,
     SUM(metrics.counter.use_counter_doc_element_sethtml) AS use_counter_doc_element_sethtml,
+    SUM(
+      metrics.counter.use_counter_doc_element_sethtmlunsafe
+    ) AS use_counter_doc_element_sethtmlunsafe,
     SUM(
       metrics.counter.use_counter_doc_element_setpointercapture
     ) AS use_counter_doc_element_setpointercapture,
@@ -4469,6 +4665,21 @@ WITH use_counts_by_day_version_and_country_stg AS (
     ) AS use_counter_doc_fe_specular_lighting,
     SUM(metrics.counter.use_counter_doc_fe_tile) AS use_counter_doc_fe_tile,
     SUM(metrics.counter.use_counter_doc_fe_turbulence) AS use_counter_doc_fe_turbulence,
+    SUM(
+      metrics.counter.use_counter_doc_file_system_file_handle_move
+    ) AS use_counter_doc_file_system_file_handle_move,
+    SUM(
+      metrics.counter.use_counter_doc_file_system_handle_move_stringified_object
+    ) AS use_counter_doc_file_system_handle_move_stringified_object,
+    SUM(
+      metrics.counter.use_counter_doc_filesystemhandle_move_filesystemdirectoryhandle
+    ) AS use_counter_doc_filesystemhandle_move_filesystemdirectoryhandle,
+    SUM(
+      metrics.counter.use_counter_doc_filesystemhandle_move_filesystemdirectoryhandle_usvstring
+    ) AS use_counter_doc_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+    SUM(
+      metrics.counter.use_counter_doc_filesystemhandle_move_usvstring
+    ) AS use_counter_doc_filesystemhandle_move_usvstring,
     SUM(
       metrics.counter.use_counter_doc_filtered_cross_origin_iframe
     ) AS use_counter_doc_filtered_cross_origin_iframe,
@@ -5038,8 +5249,62 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_doc_reportingobserver_constructor
     ) AS use_counter_doc_reportingobserver_constructor,
     SUM(
+      metrics.counter.use_counter_doc_requested_keyboard_lock
+    ) AS use_counter_doc_requested_keyboard_lock,
+    SUM(
+      metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement
+    ) AS use_counter_doc_requested_pointer_lock_unadjusted_movement,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_attributes
+    ) AS use_counter_doc_sanitizer_config_attributes,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_comments
+    ) AS use_counter_doc_sanitizer_config_comments,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_data_attributes
+    ) AS use_counter_doc_sanitizer_config_data_attributes,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_element_attributes
+    ) AS use_counter_doc_sanitizer_config_element_attributes,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_element_remove_attributes
+    ) AS use_counter_doc_sanitizer_config_element_remove_attributes,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_elements
+    ) AS use_counter_doc_sanitizer_config_elements,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_javascript_urls
+    ) AS use_counter_doc_sanitizer_config_javascript_urls,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_processing_instructions
+    ) AS use_counter_doc_sanitizer_config_processing_instructions,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_remove_attributes
+    ) AS use_counter_doc_sanitizer_config_remove_attributes,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_remove_elements
+    ) AS use_counter_doc_sanitizer_config_remove_elements,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_remove_processing_instructions
+    ) AS use_counter_doc_sanitizer_config_remove_processing_instructions,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_config_replace_with_children_elements
+    ) AS use_counter_doc_sanitizer_config_replace_with_children_elements,
+    SUM(
       metrics.counter.use_counter_doc_sanitizer_constructor
     ) AS use_counter_doc_sanitizer_constructor,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_default_config
+    ) AS use_counter_doc_sanitizer_default_config,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_empty_config
+    ) AS use_counter_doc_sanitizer_empty_config,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_invalid_config
+    ) AS use_counter_doc_sanitizer_invalid_config,
+    SUM(
+      metrics.counter.use_counter_doc_sanitizer_removeunsafe
+    ) AS use_counter_doc_sanitizer_removeunsafe,
     SUM(metrics.counter.use_counter_doc_sanitizer_sanitize) AS use_counter_doc_sanitizer_sanitize,
     SUM(metrics.counter.use_counter_doc_scheduler_posttask) AS use_counter_doc_scheduler_posttask,
     SUM(
@@ -5051,6 +5316,49 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_shadowroot_pictureinpictureelement
     ) AS use_counter_doc_shadowroot_pictureinpictureelement,
+    SUM(metrics.counter.use_counter_doc_shadowroot_sethtml) AS use_counter_doc_shadowroot_sethtml,
+    SUM(
+      metrics.counter.use_counter_doc_shadowroot_sethtmlunsafe
+    ) AS use_counter_doc_shadowroot_sethtmlunsafe,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_document_source
+    ) AS use_counter_doc_speculation_rules_document_source,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_eagerness_conservative
+    ) AS use_counter_doc_speculation_rules_eagerness_conservative,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_eagerness_eager
+    ) AS use_counter_doc_speculation_rules_eagerness_eager,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_eagerness_immediate
+    ) AS use_counter_doc_speculation_rules_eagerness_immediate,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_eagerness_moderate
+    ) AS use_counter_doc_speculation_rules_eagerness_moderate,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_header
+    ) AS use_counter_doc_speculation_rules_header,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_list_source
+    ) AS use_counter_doc_speculation_rules_list_source,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_prefetch
+    ) AS use_counter_doc_speculation_rules_prefetch,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_script_tag
+    ) AS use_counter_doc_speculation_rules_script_tag,
+    SUM(
+      metrics.counter.use_counter_doc_speculation_rules_tag
+    ) AS use_counter_doc_speculation_rules_tag,
+    SUM(
+      metrics.counter.use_counter_doc_speechrecognition_available
+    ) AS use_counter_doc_speechrecognition_available,
+    SUM(
+      metrics.counter.use_counter_doc_speechrecognition_install
+    ) AS use_counter_doc_speechrecognition_install,
+    SUM(
+      metrics.counter.use_counter_doc_speechrecognition_start
+    ) AS use_counter_doc_speechrecognition_start,
     SUM(
       metrics.counter.use_counter_doc_svgsvgelement_currentscale_getter
     ) AS use_counter_doc_svgsvgelement_currentscale_getter,
@@ -5489,6 +5797,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_you_tube_flash_embed
     ) AS use_counter_doc_you_tube_flash_embed,
+    SUM(metrics.counter.use_counter_page_akamai_forbidden) AS use_counter_page_akamai_forbidden,
+    SUM(metrics.counter.use_counter_page_akamai_used) AS use_counter_page_akamai_used,
+    SUM(metrics.counter.use_counter_page_akamai_waf_blocked) AS use_counter_page_akamai_waf_blocked,
     SUM(
       metrics.counter.use_counter_page_animation_commitstyles
     ) AS use_counter_page_animation_commitstyles,
@@ -5614,6 +5925,10 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_page_document_onwebkitfullscreenerror
     ) AS use_counter_page_document_onwebkitfullscreenerror,
     SUM(metrics.counter.use_counter_page_document_open) AS use_counter_page_document_open,
+    SUM(metrics.counter.use_counter_page_document_parsehtml) AS use_counter_page_document_parsehtml,
+    SUM(
+      metrics.counter.use_counter_page_document_parsehtmlunsafe
+    ) AS use_counter_page_document_parsehtmlunsafe,
     SUM(
       metrics.counter.use_counter_page_document_pictureinpictureelement
     ) AS use_counter_page_document_pictureinpictureelement,
@@ -5675,6 +5990,12 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_page_domparser_parsefromstring
     ) AS use_counter_page_domparser_parsefromstring,
     SUM(
+      metrics.counter.use_counter_page_edit_context_canvas
+    ) AS use_counter_page_edit_context_canvas,
+    SUM(
+      metrics.counter.use_counter_page_editcontext_constructor
+    ) AS use_counter_page_editcontext_constructor,
+    SUM(
       metrics.counter.use_counter_page_element_attachshadow
     ) AS use_counter_page_element_attachshadow,
     SUM(
@@ -5690,10 +6011,19 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_page_element_releasepointercapture
     ) AS use_counter_page_element_releasepointercapture,
     SUM(
+      metrics.counter.use_counter_page_element_requestfullscreen
+    ) AS use_counter_page_element_requestfullscreen,
+    SUM(
+      metrics.counter.use_counter_page_element_requestpointerlock
+    ) AS use_counter_page_element_requestpointerlock,
+    SUM(
       metrics.counter.use_counter_page_element_scrollintoviewifneeded
     ) AS use_counter_page_element_scrollintoviewifneeded,
     SUM(metrics.counter.use_counter_page_element_setcapture) AS use_counter_page_element_setcapture,
     SUM(metrics.counter.use_counter_page_element_sethtml) AS use_counter_page_element_sethtml,
+    SUM(
+      metrics.counter.use_counter_page_element_sethtmlunsafe
+    ) AS use_counter_page_element_sethtmlunsafe,
     SUM(
       metrics.counter.use_counter_page_element_setpointercapture
     ) AS use_counter_page_element_setpointercapture,
@@ -5727,6 +6057,21 @@ WITH use_counts_by_day_version_and_country_stg AS (
     ) AS use_counter_page_fe_specular_lighting,
     SUM(metrics.counter.use_counter_page_fe_tile) AS use_counter_page_fe_tile,
     SUM(metrics.counter.use_counter_page_fe_turbulence) AS use_counter_page_fe_turbulence,
+    SUM(
+      metrics.counter.use_counter_page_file_system_file_handle_move
+    ) AS use_counter_page_file_system_file_handle_move,
+    SUM(
+      metrics.counter.use_counter_page_file_system_handle_move_stringified_object
+    ) AS use_counter_page_file_system_handle_move_stringified_object,
+    SUM(
+      metrics.counter.use_counter_page_filesystemhandle_move_filesystemdirectoryhandle
+    ) AS use_counter_page_filesystemhandle_move_filesystemdirectoryhandle,
+    SUM(
+      metrics.counter.use_counter_page_filesystemhandle_move_filesystemdirectoryhandle_usvstring
+    ) AS use_counter_page_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+    SUM(
+      metrics.counter.use_counter_page_filesystemhandle_move_usvstring
+    ) AS use_counter_page_filesystemhandle_move_usvstring,
     SUM(
       metrics.counter.use_counter_page_filtered_cross_origin_iframe
     ) AS use_counter_page_filtered_cross_origin_iframe,
@@ -6302,8 +6647,62 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_page_reportingobserver_constructor
     ) AS use_counter_page_reportingobserver_constructor,
     SUM(
+      metrics.counter.use_counter_page_requested_keyboard_lock
+    ) AS use_counter_page_requested_keyboard_lock,
+    SUM(
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
+    ) AS use_counter_page_requested_pointer_lock_unadjusted_movement,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_attributes
+    ) AS use_counter_page_sanitizer_config_attributes,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_comments
+    ) AS use_counter_page_sanitizer_config_comments,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_data_attributes
+    ) AS use_counter_page_sanitizer_config_data_attributes,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_element_attributes
+    ) AS use_counter_page_sanitizer_config_element_attributes,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_element_remove_attributes
+    ) AS use_counter_page_sanitizer_config_element_remove_attributes,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_elements
+    ) AS use_counter_page_sanitizer_config_elements,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_javascript_urls
+    ) AS use_counter_page_sanitizer_config_javascript_urls,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_processing_instructions
+    ) AS use_counter_page_sanitizer_config_processing_instructions,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_remove_attributes
+    ) AS use_counter_page_sanitizer_config_remove_attributes,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_remove_elements
+    ) AS use_counter_page_sanitizer_config_remove_elements,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_remove_processing_instructions
+    ) AS use_counter_page_sanitizer_config_remove_processing_instructions,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_config_replace_with_children_elements
+    ) AS use_counter_page_sanitizer_config_replace_with_children_elements,
+    SUM(
       metrics.counter.use_counter_page_sanitizer_constructor
     ) AS use_counter_page_sanitizer_constructor,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_default_config
+    ) AS use_counter_page_sanitizer_default_config,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_empty_config
+    ) AS use_counter_page_sanitizer_empty_config,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_invalid_config
+    ) AS use_counter_page_sanitizer_invalid_config,
+    SUM(
+      metrics.counter.use_counter_page_sanitizer_removeunsafe
+    ) AS use_counter_page_sanitizer_removeunsafe,
     SUM(metrics.counter.use_counter_page_sanitizer_sanitize) AS use_counter_page_sanitizer_sanitize,
     SUM(metrics.counter.use_counter_page_scheduler_posttask) AS use_counter_page_scheduler_posttask,
     SUM(
@@ -6315,6 +6714,49 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_page_shadowroot_pictureinpictureelement
     ) AS use_counter_page_shadowroot_pictureinpictureelement,
+    SUM(metrics.counter.use_counter_page_shadowroot_sethtml) AS use_counter_page_shadowroot_sethtml,
+    SUM(
+      metrics.counter.use_counter_page_shadowroot_sethtmlunsafe
+    ) AS use_counter_page_shadowroot_sethtmlunsafe,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_document_source
+    ) AS use_counter_page_speculation_rules_document_source,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_eagerness_conservative
+    ) AS use_counter_page_speculation_rules_eagerness_conservative,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_eagerness_eager
+    ) AS use_counter_page_speculation_rules_eagerness_eager,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_eagerness_immediate
+    ) AS use_counter_page_speculation_rules_eagerness_immediate,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_eagerness_moderate
+    ) AS use_counter_page_speculation_rules_eagerness_moderate,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_header
+    ) AS use_counter_page_speculation_rules_header,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_list_source
+    ) AS use_counter_page_speculation_rules_list_source,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_prefetch
+    ) AS use_counter_page_speculation_rules_prefetch,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_script_tag
+    ) AS use_counter_page_speculation_rules_script_tag,
+    SUM(
+      metrics.counter.use_counter_page_speculation_rules_tag
+    ) AS use_counter_page_speculation_rules_tag,
+    SUM(
+      metrics.counter.use_counter_page_speechrecognition_available
+    ) AS use_counter_page_speechrecognition_available,
+    SUM(
+      metrics.counter.use_counter_page_speechrecognition_install
+    ) AS use_counter_page_speechrecognition_install,
+    SUM(
+      metrics.counter.use_counter_page_speechrecognition_start
+    ) AS use_counter_page_speechrecognition_start,
     SUM(
       metrics.counter.use_counter_page_svgsvgelement_currentscale_getter
     ) AS use_counter_page_svgsvgelement_currentscale_getter,
@@ -6859,6 +7301,21 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_worker_dedicated_cookiestore_set
     ) AS use_counter_worker_dedicated_cookiestore_set,
     SUM(
+      metrics.counter.use_counter_worker_dedicated_file_system_file_handle_move
+    ) AS use_counter_worker_dedicated_file_system_file_handle_move,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_file_system_handle_move_stringified_object
+    ) AS use_counter_worker_dedicated_file_system_handle_move_stringified_object,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_filesystemhandle_move_filesystemdirectoryhandle
+    ) AS use_counter_worker_dedicated_filesystemhandle_move_filesystemdirectoryhandle,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_filesystemhandle_move_filesystemdirectoryhandle_usvstring
+    ) AS use_counter_worker_dedicated_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_filesystemhandle_move_usvstring
+    ) AS use_counter_worker_dedicated_filesystemhandle_move_usvstring,
+    SUM(
       metrics.counter.use_counter_worker_dedicated_mls_deriveexporter
     ) AS use_counter_worker_dedicated_mls_deriveexporter,
     SUM(
@@ -7060,6 +7517,21 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_worker_service_cookiestore_set
     ) AS use_counter_worker_service_cookiestore_set,
     SUM(
+      metrics.counter.use_counter_worker_service_file_system_file_handle_move
+    ) AS use_counter_worker_service_file_system_file_handle_move,
+    SUM(
+      metrics.counter.use_counter_worker_service_file_system_handle_move_stringified_object
+    ) AS use_counter_worker_service_file_system_handle_move_stringified_object,
+    SUM(
+      metrics.counter.use_counter_worker_service_filesystemhandle_move_filesystemdirectoryhandle
+    ) AS use_counter_worker_service_filesystemhandle_move_filesystemdirectoryhandle,
+    SUM(
+      metrics.counter.use_counter_worker_service_filesystemhandle_move_filesystemdirectoryhandle_usvstring
+    ) AS use_counter_worker_service_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+    SUM(
+      metrics.counter.use_counter_worker_service_filesystemhandle_move_usvstring
+    ) AS use_counter_worker_service_filesystemhandle_move_usvstring,
+    SUM(
       metrics.counter.use_counter_worker_service_mls_deriveexporter
     ) AS use_counter_worker_service_mls_deriveexporter,
     SUM(
@@ -7258,6 +7730,21 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_worker_shared_cookiestore_set
     ) AS use_counter_worker_shared_cookiestore_set,
+    SUM(
+      metrics.counter.use_counter_worker_shared_file_system_file_handle_move
+    ) AS use_counter_worker_shared_file_system_file_handle_move,
+    SUM(
+      metrics.counter.use_counter_worker_shared_file_system_handle_move_stringified_object
+    ) AS use_counter_worker_shared_file_system_handle_move_stringified_object,
+    SUM(
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle
+    ) AS use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
+    SUM(
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring
+    ) AS use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+    SUM(
+      metrics.counter.use_counter_worker_shared_filesystemhandle_move_usvstring
+    ) AS use_counter_worker_shared_filesystemhandle_move_usvstring,
     SUM(
       metrics.counter.use_counter_worker_shared_mls_deriveexporter
     ) AS use_counter_worker_shared_mls_deriveexporter,
@@ -7544,6 +8031,23 @@ pivoted_raw AS (
         use_counter_css_doc_css_container_type,
         use_counter_css_doc_css_content,
         use_counter_css_doc_css_content_visibility,
+        use_counter_css_doc_css_corner_block_end_shape,
+        use_counter_css_doc_css_corner_block_start_shape,
+        use_counter_css_doc_css_corner_bottom_left_shape,
+        use_counter_css_doc_css_corner_bottom_right_shape,
+        use_counter_css_doc_css_corner_bottom_shape,
+        use_counter_css_doc_css_corner_end_end_shape,
+        use_counter_css_doc_css_corner_end_start_shape,
+        use_counter_css_doc_css_corner_inline_end_shape,
+        use_counter_css_doc_css_corner_inline_start_shape,
+        use_counter_css_doc_css_corner_left_shape,
+        use_counter_css_doc_css_corner_right_shape,
+        use_counter_css_doc_css_corner_shape,
+        use_counter_css_doc_css_corner_start_end_shape,
+        use_counter_css_doc_css_corner_start_start_shape,
+        use_counter_css_doc_css_corner_top_left_shape,
+        use_counter_css_doc_css_corner_top_right_shape,
+        use_counter_css_doc_css_corner_top_shape,
         use_counter_css_doc_css_counter_increment,
         use_counter_css_doc_css_counter_reset,
         use_counter_css_doc_css_counter_set,
@@ -7560,6 +8064,7 @@ pivoted_raw AS (
         use_counter_css_doc_css_fill_opacity,
         use_counter_css_doc_css_fill_rule,
         use_counter_css_doc_css_filter,
+        use_counter_css_doc_css_fit_tolerance,
         use_counter_css_doc_css_flex,
         use_counter_css_doc_css_flex_basis,
         use_counter_css_doc_css_flex_direction,
@@ -7570,6 +8075,7 @@ pivoted_raw AS (
         use_counter_css_doc_css_float,
         use_counter_css_doc_css_flood_color,
         use_counter_css_doc_css_flood_opacity,
+        use_counter_css_doc_css_flow_tolerance,
         use_counter_css_doc_css_font,
         use_counter_css_doc_css_font_family,
         use_counter_css_doc_css_font_feature_settings,
@@ -7596,6 +8102,7 @@ pivoted_raw AS (
         use_counter_css_doc_css_font_variant_position,
         use_counter_css_doc_css_font_variation_settings,
         use_counter_css_doc_css_font_weight,
+        use_counter_css_doc_css_font_width,
         use_counter_css_doc_css_forced_color_adjust,
         use_counter_css_doc_css_gap,
         use_counter_css_doc_css_grid,
@@ -7642,7 +8149,9 @@ pivoted_raw AS (
         use_counter_css_doc_css_letter_spacing,
         use_counter_css_doc_css_lighting_color,
         use_counter_css_doc_css_line_break,
+        use_counter_css_doc_css_line_clamp,
         use_counter_css_doc_css_line_height,
+        use_counter_css_doc_css_link_parameters,
         use_counter_css_doc_css_list_style,
         use_counter_css_doc_css_list_style_image,
         use_counter_css_doc_css_list_style_position,
@@ -7658,6 +8167,7 @@ pivoted_raw AS (
         use_counter_css_doc_css_margin_left,
         use_counter_css_doc_css_margin_right,
         use_counter_css_doc_css_margin_top,
+        use_counter_css_doc_css_margin_trim,
         use_counter_css_doc_css_marker,
         use_counter_css_doc_css_marker_end,
         use_counter_css_doc_css_marker_mid,
@@ -7723,7 +8233,9 @@ pivoted_raw AS (
         use_counter_css_doc_css_moz_font_language_override,
         use_counter_css_doc_css_moz_force_broken_image_icon,
         use_counter_css_doc_css_moz_hyphens,
+        use_counter_css_doc_css_moz_image_decoding,
         use_counter_css_doc_css_moz_inert,
+        use_counter_css_doc_css_moz_line_scroll_amount,
         use_counter_css_doc_css_moz_margin_end,
         use_counter_css_doc_css_moz_margin_start,
         use_counter_css_doc_css_moz_math_variant,
@@ -7734,6 +8246,8 @@ pivoted_raw AS (
         use_counter_css_doc_css_moz_padding_start,
         use_counter_css_doc_css_moz_perspective,
         use_counter_css_doc_css_moz_perspective_origin,
+        use_counter_css_doc_css_moz_scrollbar_inset_block,
+        use_counter_css_doc_css_moz_scrollbar_inset_inline,
         use_counter_css_doc_css_moz_subtree_hidden_only_visually,
         use_counter_css_doc_css_moz_tab_size,
         use_counter_css_doc_css_moz_text_size_adjust,
@@ -8271,6 +8785,23 @@ pivoted_raw AS (
         use_counter_css_page_css_container_type,
         use_counter_css_page_css_content,
         use_counter_css_page_css_content_visibility,
+        use_counter_css_page_css_corner_block_end_shape,
+        use_counter_css_page_css_corner_block_start_shape,
+        use_counter_css_page_css_corner_bottom_left_shape,
+        use_counter_css_page_css_corner_bottom_right_shape,
+        use_counter_css_page_css_corner_bottom_shape,
+        use_counter_css_page_css_corner_end_end_shape,
+        use_counter_css_page_css_corner_end_start_shape,
+        use_counter_css_page_css_corner_inline_end_shape,
+        use_counter_css_page_css_corner_inline_start_shape,
+        use_counter_css_page_css_corner_left_shape,
+        use_counter_css_page_css_corner_right_shape,
+        use_counter_css_page_css_corner_shape,
+        use_counter_css_page_css_corner_start_end_shape,
+        use_counter_css_page_css_corner_start_start_shape,
+        use_counter_css_page_css_corner_top_left_shape,
+        use_counter_css_page_css_corner_top_right_shape,
+        use_counter_css_page_css_corner_top_shape,
         use_counter_css_page_css_counter_increment,
         use_counter_css_page_css_counter_reset,
         use_counter_css_page_css_counter_set,
@@ -8287,6 +8818,7 @@ pivoted_raw AS (
         use_counter_css_page_css_fill_opacity,
         use_counter_css_page_css_fill_rule,
         use_counter_css_page_css_filter,
+        use_counter_css_page_css_fit_tolerance,
         use_counter_css_page_css_flex,
         use_counter_css_page_css_flex_basis,
         use_counter_css_page_css_flex_direction,
@@ -8297,6 +8829,7 @@ pivoted_raw AS (
         use_counter_css_page_css_float,
         use_counter_css_page_css_flood_color,
         use_counter_css_page_css_flood_opacity,
+        use_counter_css_page_css_flow_tolerance,
         use_counter_css_page_css_font,
         use_counter_css_page_css_font_family,
         use_counter_css_page_css_font_feature_settings,
@@ -8323,6 +8856,7 @@ pivoted_raw AS (
         use_counter_css_page_css_font_variant_position,
         use_counter_css_page_css_font_variation_settings,
         use_counter_css_page_css_font_weight,
+        use_counter_css_page_css_font_width,
         use_counter_css_page_css_forced_color_adjust,
         use_counter_css_page_css_gap,
         use_counter_css_page_css_grid,
@@ -8369,7 +8903,9 @@ pivoted_raw AS (
         use_counter_css_page_css_letter_spacing,
         use_counter_css_page_css_lighting_color,
         use_counter_css_page_css_line_break,
+        use_counter_css_page_css_line_clamp,
         use_counter_css_page_css_line_height,
+        use_counter_css_page_css_link_parameters,
         use_counter_css_page_css_list_style,
         use_counter_css_page_css_list_style_image,
         use_counter_css_page_css_list_style_position,
@@ -8385,6 +8921,7 @@ pivoted_raw AS (
         use_counter_css_page_css_margin_left,
         use_counter_css_page_css_margin_right,
         use_counter_css_page_css_margin_top,
+        use_counter_css_page_css_margin_trim,
         use_counter_css_page_css_marker,
         use_counter_css_page_css_marker_end,
         use_counter_css_page_css_marker_mid,
@@ -8450,7 +8987,9 @@ pivoted_raw AS (
         use_counter_css_page_css_moz_font_language_override,
         use_counter_css_page_css_moz_force_broken_image_icon,
         use_counter_css_page_css_moz_hyphens,
+        use_counter_css_page_css_moz_image_decoding,
         use_counter_css_page_css_moz_inert,
+        use_counter_css_page_css_moz_line_scroll_amount,
         use_counter_css_page_css_moz_margin_end,
         use_counter_css_page_css_moz_margin_start,
         use_counter_css_page_css_moz_math_variant,
@@ -8461,6 +9000,8 @@ pivoted_raw AS (
         use_counter_css_page_css_moz_padding_start,
         use_counter_css_page_css_moz_perspective,
         use_counter_css_page_css_moz_perspective_origin,
+        use_counter_css_page_css_moz_scrollbar_inset_block,
+        use_counter_css_page_css_moz_scrollbar_inset_inline,
         use_counter_css_page_css_moz_subtree_hidden_only_visually,
         use_counter_css_page_css_moz_tab_size,
         use_counter_css_page_css_moz_text_size_adjust,
@@ -8877,7 +9418,10 @@ pivoted_raw AS (
         use_counter_deprecated_ops_doc_form_submission_untrusted_event,
         use_counter_deprecated_ops_doc_fullscreen_attribute,
         use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+        use_counter_deprecated_ops_doc_idbindex_moz_get_all,
+        use_counter_deprecated_ops_doc_idbindex_moz_get_all_keys,
         use_counter_deprecated_ops_doc_idbobject_store_create_index_locale,
+        use_counter_deprecated_ops_doc_idbobject_store_moz_get_all,
         use_counter_deprecated_ops_doc_idbopen_dboptions_storage_type,
         use_counter_deprecated_ops_doc_image_bitmap_rendering_context_transfer_image_bitmap,
         use_counter_deprecated_ops_doc_import_xulinto_content,
@@ -8917,6 +9461,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_doc_svgdeselect_all,
         use_counter_deprecated_ops_doc_svgfarthest_viewport_element,
         use_counter_deprecated_ops_doc_svgnearest_viewport_element,
+        use_counter_deprecated_ops_doc_svguse_inline_event_handler,
         use_counter_deprecated_ops_doc_sync_xmlhttp_request_deprecated,
         use_counter_deprecated_ops_doc_use_of_capture_events,
         use_counter_deprecated_ops_doc_use_of_release_events,
@@ -8951,7 +9496,10 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_form_submission_untrusted_event,
         use_counter_deprecated_ops_page_fullscreen_attribute,
         use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack,
+        use_counter_deprecated_ops_page_idbindex_moz_get_all,
+        use_counter_deprecated_ops_page_idbindex_moz_get_all_keys,
         use_counter_deprecated_ops_page_idbobject_store_create_index_locale,
+        use_counter_deprecated_ops_page_idbobject_store_moz_get_all,
         use_counter_deprecated_ops_page_idbopen_dboptions_storage_type,
         use_counter_deprecated_ops_page_image_bitmap_rendering_context_transfer_image_bitmap,
         use_counter_deprecated_ops_page_import_xulinto_content,
@@ -8991,6 +9539,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_svgdeselect_all,
         use_counter_deprecated_ops_page_svgfarthest_viewport_element,
         use_counter_deprecated_ops_page_svgnearest_viewport_element,
+        use_counter_deprecated_ops_page_svguse_inline_event_handler,
         use_counter_deprecated_ops_page_sync_xmlhttp_request_deprecated,
         use_counter_deprecated_ops_page_use_of_capture_events,
         use_counter_deprecated_ops_page_use_of_release_events,
@@ -8998,6 +9547,9 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_window_cc_ontrollers,
         use_counter_deprecated_ops_page_window_content_untrusted,
         use_counter_deprecated_ops_page_xsltdeprecated,
+        use_counter_doc_akamai_forbidden,
+        use_counter_doc_akamai_used,
+        use_counter_doc_akamai_waf_blocked,
         use_counter_doc_animation_commitstyles,
         use_counter_doc_clipboard_read,
         use_counter_doc_clipboard_readtext,
@@ -9063,6 +9615,8 @@ pivoted_raw AS (
         use_counter_doc_document_onwebkitfullscreenchange,
         use_counter_doc_document_onwebkitfullscreenerror,
         use_counter_doc_document_open,
+        use_counter_doc_document_parsehtml,
+        use_counter_doc_document_parsehtmlunsafe,
         use_counter_doc_document_pictureinpictureelement,
         use_counter_doc_document_pictureinpictureenabled,
         use_counter_doc_document_query_command_state_or_value_content_read_only,
@@ -9083,14 +9637,19 @@ pivoted_raw AS (
         use_counter_doc_document_xmlstandalone,
         use_counter_doc_document_xmlversion,
         use_counter_doc_domparser_parsefromstring,
+        use_counter_doc_edit_context_canvas,
+        use_counter_doc_editcontext_constructor,
         use_counter_doc_element_attachshadow,
         use_counter_doc_element_computedstylemap,
         use_counter_doc_element_onmousewheel,
         use_counter_doc_element_releasecapture,
         use_counter_doc_element_releasepointercapture,
+        use_counter_doc_element_requestfullscreen,
+        use_counter_doc_element_requestpointerlock,
         use_counter_doc_element_scrollintoviewifneeded,
         use_counter_doc_element_setcapture,
         use_counter_doc_element_sethtml,
+        use_counter_doc_element_sethtmlunsafe,
         use_counter_doc_element_setpointercapture,
         use_counter_doc_enumerate_devices_insec,
         use_counter_doc_enumerate_devices_unfocused,
@@ -9110,6 +9669,11 @@ pivoted_raw AS (
         use_counter_doc_fe_specular_lighting,
         use_counter_doc_fe_tile,
         use_counter_doc_fe_turbulence,
+        use_counter_doc_file_system_file_handle_move,
+        use_counter_doc_file_system_handle_move_stringified_object,
+        use_counter_doc_filesystemhandle_move_filesystemdirectoryhandle,
+        use_counter_doc_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+        use_counter_doc_filesystemhandle_move_usvstring,
         use_counter_doc_filtered_cross_origin_iframe,
         use_counter_doc_get_user_media_insec,
         use_counter_doc_get_user_media_unfocused,
@@ -9324,7 +9888,25 @@ pivoted_raw AS (
         use_counter_doc_pushsubscription_unsubscribe,
         use_counter_doc_range_createcontextualfragment,
         use_counter_doc_reportingobserver_constructor,
+        use_counter_doc_requested_keyboard_lock,
+        use_counter_doc_requested_pointer_lock_unadjusted_movement,
+        use_counter_doc_sanitizer_config_attributes,
+        use_counter_doc_sanitizer_config_comments,
+        use_counter_doc_sanitizer_config_data_attributes,
+        use_counter_doc_sanitizer_config_element_attributes,
+        use_counter_doc_sanitizer_config_element_remove_attributes,
+        use_counter_doc_sanitizer_config_elements,
+        use_counter_doc_sanitizer_config_javascript_urls,
+        use_counter_doc_sanitizer_config_processing_instructions,
+        use_counter_doc_sanitizer_config_remove_attributes,
+        use_counter_doc_sanitizer_config_remove_elements,
+        use_counter_doc_sanitizer_config_remove_processing_instructions,
+        use_counter_doc_sanitizer_config_replace_with_children_elements,
         use_counter_doc_sanitizer_constructor,
+        use_counter_doc_sanitizer_default_config,
+        use_counter_doc_sanitizer_empty_config,
+        use_counter_doc_sanitizer_invalid_config,
+        use_counter_doc_sanitizer_removeunsafe,
         use_counter_doc_sanitizer_sanitize,
         use_counter_doc_scheduler_posttask,
         use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
@@ -9332,6 +9914,21 @@ pivoted_raw AS (
         use_counter_doc_serial_requestport,
         use_counter_doc_serialport_open,
         use_counter_doc_shadowroot_pictureinpictureelement,
+        use_counter_doc_shadowroot_sethtml,
+        use_counter_doc_shadowroot_sethtmlunsafe,
+        use_counter_doc_speculation_rules_document_source,
+        use_counter_doc_speculation_rules_eagerness_conservative,
+        use_counter_doc_speculation_rules_eagerness_eager,
+        use_counter_doc_speculation_rules_eagerness_immediate,
+        use_counter_doc_speculation_rules_eagerness_moderate,
+        use_counter_doc_speculation_rules_header,
+        use_counter_doc_speculation_rules_list_source,
+        use_counter_doc_speculation_rules_prefetch,
+        use_counter_doc_speculation_rules_script_tag,
+        use_counter_doc_speculation_rules_tag,
+        use_counter_doc_speechrecognition_available,
+        use_counter_doc_speechrecognition_install,
+        use_counter_doc_speechrecognition_start,
         use_counter_doc_svgsvgelement_currentscale_getter,
         use_counter_doc_svgsvgelement_currentscale_setter,
         use_counter_doc_svgsvgelement_getelementbyid,
@@ -9512,6 +10109,9 @@ pivoted_raw AS (
         use_counter_doc_xslstylesheet,
         use_counter_doc_xsltprocessor_constructor,
         use_counter_doc_you_tube_flash_embed,
+        use_counter_page_akamai_forbidden,
+        use_counter_page_akamai_used,
+        use_counter_page_akamai_waf_blocked,
         use_counter_page_animation_commitstyles,
         use_counter_page_clipboard_read,
         use_counter_page_clipboard_readtext,
@@ -9577,6 +10177,8 @@ pivoted_raw AS (
         use_counter_page_document_onwebkitfullscreenchange,
         use_counter_page_document_onwebkitfullscreenerror,
         use_counter_page_document_open,
+        use_counter_page_document_parsehtml,
+        use_counter_page_document_parsehtmlunsafe,
         use_counter_page_document_pictureinpictureelement,
         use_counter_page_document_pictureinpictureenabled,
         use_counter_page_document_query_command_state_or_value_content_read_only,
@@ -9597,14 +10199,19 @@ pivoted_raw AS (
         use_counter_page_document_xmlstandalone,
         use_counter_page_document_xmlversion,
         use_counter_page_domparser_parsefromstring,
+        use_counter_page_edit_context_canvas,
+        use_counter_page_editcontext_constructor,
         use_counter_page_element_attachshadow,
         use_counter_page_element_computedstylemap,
         use_counter_page_element_onmousewheel,
         use_counter_page_element_releasecapture,
         use_counter_page_element_releasepointercapture,
+        use_counter_page_element_requestfullscreen,
+        use_counter_page_element_requestpointerlock,
         use_counter_page_element_scrollintoviewifneeded,
         use_counter_page_element_setcapture,
         use_counter_page_element_sethtml,
+        use_counter_page_element_sethtmlunsafe,
         use_counter_page_element_setpointercapture,
         use_counter_page_enumerate_devices_insec,
         use_counter_page_enumerate_devices_unfocused,
@@ -9624,6 +10231,11 @@ pivoted_raw AS (
         use_counter_page_fe_specular_lighting,
         use_counter_page_fe_tile,
         use_counter_page_fe_turbulence,
+        use_counter_page_file_system_file_handle_move,
+        use_counter_page_file_system_handle_move_stringified_object,
+        use_counter_page_filesystemhandle_move_filesystemdirectoryhandle,
+        use_counter_page_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+        use_counter_page_filesystemhandle_move_usvstring,
         use_counter_page_filtered_cross_origin_iframe,
         use_counter_page_get_user_media_insec,
         use_counter_page_get_user_media_unfocused,
@@ -9838,7 +10450,25 @@ pivoted_raw AS (
         use_counter_page_pushsubscription_unsubscribe,
         use_counter_page_range_createcontextualfragment,
         use_counter_page_reportingobserver_constructor,
+        use_counter_page_requested_keyboard_lock,
+        use_counter_page_requested_pointer_lock_unadjusted_movement,
+        use_counter_page_sanitizer_config_attributes,
+        use_counter_page_sanitizer_config_comments,
+        use_counter_page_sanitizer_config_data_attributes,
+        use_counter_page_sanitizer_config_element_attributes,
+        use_counter_page_sanitizer_config_element_remove_attributes,
+        use_counter_page_sanitizer_config_elements,
+        use_counter_page_sanitizer_config_javascript_urls,
+        use_counter_page_sanitizer_config_processing_instructions,
+        use_counter_page_sanitizer_config_remove_attributes,
+        use_counter_page_sanitizer_config_remove_elements,
+        use_counter_page_sanitizer_config_remove_processing_instructions,
+        use_counter_page_sanitizer_config_replace_with_children_elements,
         use_counter_page_sanitizer_constructor,
+        use_counter_page_sanitizer_default_config,
+        use_counter_page_sanitizer_empty_config,
+        use_counter_page_sanitizer_invalid_config,
+        use_counter_page_sanitizer_removeunsafe,
         use_counter_page_sanitizer_sanitize,
         use_counter_page_scheduler_posttask,
         use_counter_page_sectioning_h1_with_no_font_size_or_margins,
@@ -9846,6 +10476,21 @@ pivoted_raw AS (
         use_counter_page_serial_requestport,
         use_counter_page_serialport_open,
         use_counter_page_shadowroot_pictureinpictureelement,
+        use_counter_page_shadowroot_sethtml,
+        use_counter_page_shadowroot_sethtmlunsafe,
+        use_counter_page_speculation_rules_document_source,
+        use_counter_page_speculation_rules_eagerness_conservative,
+        use_counter_page_speculation_rules_eagerness_eager,
+        use_counter_page_speculation_rules_eagerness_immediate,
+        use_counter_page_speculation_rules_eagerness_moderate,
+        use_counter_page_speculation_rules_header,
+        use_counter_page_speculation_rules_list_source,
+        use_counter_page_speculation_rules_prefetch,
+        use_counter_page_speculation_rules_script_tag,
+        use_counter_page_speculation_rules_tag,
+        use_counter_page_speechrecognition_available,
+        use_counter_page_speechrecognition_install,
+        use_counter_page_speechrecognition_start,
         use_counter_page_svgsvgelement_currentscale_getter,
         use_counter_page_svgsvgelement_currentscale_setter,
         use_counter_page_svgsvgelement_getelementbyid,
@@ -10053,6 +10698,11 @@ pivoted_raw AS (
         use_counter_worker_dedicated_cookiestore_get,
         use_counter_worker_dedicated_cookiestore_getall,
         use_counter_worker_dedicated_cookiestore_set,
+        use_counter_worker_dedicated_file_system_file_handle_move,
+        use_counter_worker_dedicated_file_system_handle_move_stringified_object,
+        use_counter_worker_dedicated_filesystemhandle_move_filesystemdirectoryhandle,
+        use_counter_worker_dedicated_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+        use_counter_worker_dedicated_filesystemhandle_move_usvstring,
         use_counter_worker_dedicated_mls_deriveexporter,
         use_counter_worker_dedicated_mls_generatecredentialbasic,
         use_counter_worker_dedicated_mls_generatekeypackage,
@@ -10120,6 +10770,11 @@ pivoted_raw AS (
         use_counter_worker_service_cookiestore_get,
         use_counter_worker_service_cookiestore_getall,
         use_counter_worker_service_cookiestore_set,
+        use_counter_worker_service_file_system_file_handle_move,
+        use_counter_worker_service_file_system_handle_move_stringified_object,
+        use_counter_worker_service_filesystemhandle_move_filesystemdirectoryhandle,
+        use_counter_worker_service_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+        use_counter_worker_service_filesystemhandle_move_usvstring,
         use_counter_worker_service_mls_deriveexporter,
         use_counter_worker_service_mls_generatecredentialbasic,
         use_counter_worker_service_mls_generatekeypackage,
@@ -10187,6 +10842,11 @@ pivoted_raw AS (
         use_counter_worker_shared_cookiestore_get,
         use_counter_worker_shared_cookiestore_getall,
         use_counter_worker_shared_cookiestore_set,
+        use_counter_worker_shared_file_system_file_handle_move,
+        use_counter_worker_shared_file_system_handle_move_stringified_object,
+        use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle,
+        use_counter_worker_shared_filesystemhandle_move_filesystemdirectoryhandle_usvstring,
+        use_counter_worker_shared_filesystemhandle_move_usvstring,
         use_counter_worker_shared_mls_deriveexporter,
         use_counter_worker_shared_mls_generatecredentialbasic,
         use_counter_worker_shared_mls_generatekeypackage,

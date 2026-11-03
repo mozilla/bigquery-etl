@@ -7,7 +7,7 @@
     (https://github.com/mozilla/bigquery-etl/pull/10055) is Complete.'
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

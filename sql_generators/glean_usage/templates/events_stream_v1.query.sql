@@ -167,7 +167,7 @@ CROSS JOIN
           app_version_major <= 144
           OR event.name = 'uptake_normandy'
           -- sampling lowered from 1% to 0.03% on 2026-10-20. Earlier dates stay filtered so backfills match.
-          OR DATE(submission_timestamp) <= '2026-10-21'
+          OR (normalized_channel = 'release' AND DATE(submission_timestamp) <= '2026-10-21')
         )
       ) IS NOT TRUE
       -- See https://mozilla-hub.atlassian.net/browse/DENG-10910

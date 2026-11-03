@@ -1,21 +1,25 @@
 friendly_name: GCP Monitoring Metrics Hourly
 description: |-
   Hourly values of selected Cloud Monitoring metrics from data ingestion
-  projects, such as Pub/Sub topic and subscription byte cost and Dataflow
-  user counters. Each row is the increase of a metric over one hour for one
+  projects, such as Pub/Sub topic and subscription byte cost, Dataflow user counters, and ingestion
+  edge load balancer bytes. Each row is the increase of a metric over one hour for one
   combination of labels. The metric definitions are in query.py.
 
   Cloud Monitoring only keeps a few weeks to months of data, so partitions
   older than that cannot be rebuilt.
 owners:
-- bewu@mozilla.com
+- benwu@mozilla.com
 labels:
   incremental: true
-  schedule: daily
+  schedule: hourly
   owner1: bewu
 scheduling:
-  dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  dag_name: bqetl_monitoring_hourly
+  # Each run rewrites a whole day partition up to the last complete hour.
+  # Target the day containing (run time - 2 hours) instead of the default
+  # (run time - 1 hour) so each day partition gets a final rewrite at 01:00
+  # the next day, after the last hour of the day has been ingested.
+  arguments: ["--date", "{{ (logical_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"]
 bigquery:
   time_partitioning:
     type: day

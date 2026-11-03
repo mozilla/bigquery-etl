@@ -10,6 +10,10 @@ Values are the increase of the metric over each hour, which fits DELTA metrics
 and cumulative counters reported as GAUGE (e.g. Dataflow user counters).
 Cloud Monitoring keeps roughly 6 weeks to 3 months of data depending on the
 metric, so older partitions cannot be rebuilt.
+
+PromQL was chosen over the monitoring SDK because the code is simpler. The caveat is that PromQL's
+increase() function (used for Dataflow counters) estimates time window edges, so the Dataflow
+metrics aren't exact and are ~1-2% lower than the monitoring SDK result.
 """
 
 import datetime
@@ -28,13 +32,12 @@ from urllib3.util.retry import Retry
 DEFAULT_PROJECTS = (
     "moz-fx-data-beam-nonprod-b5f4",
     "moz-fx-data-beam-prod-11f7",
-    "moz-fx-data-inge-nonprod-e7b1",
-    "moz-fx-data-ingesti-prod-71dc",
-    "moz-fx-ingestion-edge-nonprod",
-    "moz-fx-ingestion-edge-prod",
     "moz-fx-ingestion-sink-nonprod",
     "moz-fx-ingestion-sink-prod",
     "moz-fx-data-shar-nonprod-efed",
+    # The edge load balancers live in these shared GCPv2 projects.
+    "moz-fx-dataservices-high-prod",
+    "moz-fx-dataservices-high-nonpr",
 )
 
 
@@ -82,6 +85,20 @@ METRICS = (
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/valid_submission"},
     ),
+    # Other services share the edge load balancer projects, so only keep the
+    # ingestion edge forwarding rules.
+    MetricDefinition(
+        name="edge_load_balancer_request_bytes",
+        metric_type="loadbalancing.googleapis.com/https/request_bytes_count",
+        group_by=("forwarding_rule_name", "response_code_class"),
+        label_filters={"forwarding_rule_name": ".*ingestion-edge.*"},
+    ),
+    MetricDefinition(
+        name="edge_load_balancer_response_bytes",
+        metric_type="loadbalancing.googleapis.com/https/response_bytes_count",
+        group_by=("forwarding_rule_name", "response_code_class"),
+        label_filters={"forwarding_rule_name": ".*ingestion-edge.*"},
+    ),
 )
 
 SCHEMA = [
@@ -105,6 +122,8 @@ SCHEMA = [
 
 STEP = datetime.timedelta(hours=1)
 WARNING_ATTEMPTS = 3
+# Pub/Sub and Dataflow points are ingested up to 7 minutes after they're sampled.
+INGEST_DELAY = datetime.timedelta(minutes=10)
 
 
 def _promql_string(value: str) -> str:
@@ -227,11 +246,20 @@ def fetch_day(
     date: datetime.date,
     projects: Iterable[str],
     metrics: Iterable[MetricDefinition],
+    now: Optional[datetime.datetime] = None,
 ) -> List[Dict[str, Any]]:
     """Fetch hourly rows for every metric and project on the given date."""
     day_start = datetime.datetime.combine(date, datetime.time(), datetime.timezone.utc)
     # Points are evaluated at the end of each hour, from 01:00 to 24:00.
     start, end = day_start + STEP, day_start + datetime.timedelta(days=1)
+    # When loading the current day, stop at the last hour that has ended and
+    # has had time to be ingested. Later hourly runs rewrite the partition.
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    latest = (now - INGEST_DELAY).replace(minute=0, second=0, microsecond=0)
+    end = min(end, latest)
+    if end < start:
+        print(f"No complete hours yet for {date}")
+        return []
 
     rows = []
     for metric in metrics:

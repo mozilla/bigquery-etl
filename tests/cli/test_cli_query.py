@@ -570,7 +570,9 @@ class TestQuery:
             runner.isolated_filesystem(),
             # Mock client to avoid NotFound
             patch("google.cloud.bigquery.Client", autospec=True),
-            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query._execute_query", autospec=True
+            ) as execute_query,
         ):
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
 
@@ -616,10 +618,10 @@ class TestQuery:
                 for day in (3, 5, 6, 7)
             ]
 
-            assert check_call.call_count == 4
-            for call in check_call.call_args_list:
+            assert execute_query.call_count == 4
+            for call in execute_query.call_args_list:
                 submission_date_params = [
-                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                    arg for arg in call.args[1] if "--parameter=submission_date" in arg
                 ]
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
@@ -629,7 +631,9 @@ class TestQuery:
         with (
             runner.isolated_filesystem(),
             patch("google.cloud.bigquery.Client", autospec=True),
-            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query._execute_query", autospec=True
+            ) as execute_query,
             patch(
                 "bigquery_etl.cli.query.prepare_target_files", autospec=True
             ) as prepare_target_files,
@@ -681,8 +685,8 @@ class TestQuery:
             assert result.exit_code == 0
             # target files were prepared and the query ran in the target project
             assert prepare_target_files.call_count == 1
-            assert check_call.call_count == 1
-            args = check_call.call_args.args[0]
+            assert execute_query.call_count == 1
+            args = execute_query.call_args.args[1]
             assert "--project_id=sandbox" in args
             destination = [a for a in args if a.startswith("--destination_table=")]
             assert destination and "sandbox" in destination[0]
@@ -693,7 +697,9 @@ class TestQuery:
         with (
             runner.isolated_filesystem(),
             patch("google.cloud.bigquery.Client", autospec=True),
-            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query._execute_query", autospec=True
+            ) as execute_query,
             patch(
                 "bigquery_etl.cli.query.prepare_target_files", autospec=True
             ) as prepare_target_files,
@@ -737,8 +743,8 @@ class TestQuery:
             # no mutual-exclusivity error, no target file prep, writes to the given staging table
             assert result.exit_code == 0, result.output
             assert prepare_target_files.call_count == 0
-            assert check_call.call_count == 1
-            args = check_call.call_args.args[0]
+            assert execute_query.call_count == 1
+            args = execute_query.call_args.args[1]
             # project is not redirected to the target; destination is the given staging
             # table (bq uses the project:dataset.table form, with a partition suffix)
             assert "--project_id=moz-fx-data-shared-prod" in args
@@ -752,7 +758,9 @@ class TestQuery:
             runner.isolated_filesystem(),
             # Mock client to avoid NotFound
             patch("google.cloud.bigquery.Client", autospec=True),
-            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query._execute_query", autospec=True
+            ) as execute_query,
         ):
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
 
@@ -799,16 +807,16 @@ class TestQuery:
             expected_submission_date_params = [
                 f"--parameter=submission_date:DATE:2021-01-0{day}" for day in (5, 6)
             ]
-            assert check_call.call_count == 2
+            assert execute_query.call_count == 2
 
-            for call in check_call.call_args_list:
+            for call in execute_query.call_args_list:
                 submission_date_params = [
-                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                    arg for arg in call.args[1] if "--parameter=submission_date" in arg
                 ]
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
 
-                test_params = [arg for arg in call.args[0] if "--parameter=test" in arg]
+                test_params = [arg for arg in call.args[1] if "--parameter=test" in arg]
                 assert len(test_params) == 1
                 assert test_params[0] == "--parameter=test:INT64:30"
 
@@ -869,7 +877,9 @@ class TestQuery:
             runner.isolated_filesystem(),
             # Mock client to avoid NotFound
             patch("google.cloud.bigquery.Client", autospec=True),
-            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query._execute_query", autospec=True
+            ) as execute_query,
         ):
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
 
@@ -922,23 +932,23 @@ class TestQuery:
 
             assert result.exit_code == 0
 
-            assert check_call.call_count == 5
-            for call in check_call.call_args_list:
+            assert execute_query.call_count == 5
+            for call in execute_query.call_args_list:
                 destination_table_params = [
-                    arg for arg in call.args[0] if "--destination_table" in arg
+                    arg for arg in call.args[1] if "--destination_table" in arg
                 ]
                 assert len(destination_table_params) == 1
                 assert destination_table_params[0] == expected_destination_arg
 
                 submission_date_params = [
-                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                    arg for arg in call.args[1] if "--parameter=submission_date" in arg
                 ]
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
 
                 conversion_params = [
                     arg
-                    for arg in call.args[0]
+                    for arg in call.args[1]
                     if "--parameter=conversion_window" in arg
                 ]
                 assert len(conversion_params) == 1
@@ -953,7 +963,9 @@ class TestQuery:
             runner.isolated_filesystem(),
             # Mock client to avoid NotFound
             patch("google.cloud.bigquery.Client", autospec=True),
-            patch("subprocess.check_call", autospec=True) as check_call,
+            patch(
+                "bigquery_etl.cli.query._execute_query", autospec=True
+            ) as execute_query,
         ):
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
 
@@ -1003,10 +1015,10 @@ class TestQuery:
             )
 
             assert result.exit_code == 0, result.output
-            assert check_call.call_count == 2
+            assert execute_query.call_count == 2
 
-            for call, day in zip(check_call.call_args_list, (5, 6)):
-                args = call.args[0]
+            for call, day in zip(execute_query.call_args_list, (5, 6)):
+                args = call.args[1]
                 assert [a for a in args if a.startswith("--destination_table")] == [
                     "--destination_table=moz-fx-data-shared-prod:telemetry_derived."
                     f"query_v1$2021010{day}"

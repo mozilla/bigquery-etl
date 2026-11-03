@@ -1,0 +1,81 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the activity, in the Google Ads account time zone.
+- name: customer_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads customer (account) ID.
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads campaign ID.
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Campaign name as set in Google Ads.
+- name: market
+  type: STRING
+  mode: NULLABLE
+  description: Upper-case country code from the campaign name. UK is mapped to GB. UNKNOWN when the campaign name has no country code.
+- name: region
+  type: STRING
+  mode: NULLABLE
+  description: Region from the campaign name, for example na, eu, apac, latam, afr, expansion.
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language code from the campaign name, for example en, de, fr, jp.
+- name: ad_group_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads ad group ID.
+- name: ad_group_name
+  type: STRING
+  mode: NULLABLE
+  description: Ad group name (the creative theme), from the latest ad group snapshot.
+- name: ad_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads ad ID.
+- name: asset_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads asset ID. Joins to `google_ads_derived.ad_assets_v1.asset_id`.
+- name: asset_name
+  type: STRING
+  mode: NULLABLE
+  description: Asset name as set in Google Ads.
+- name: field_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    How the asset is used in the ad, for example MARKETING_IMAGE, YOUTUBE_VIDEO, HEADLINE, DESCRIPTION.
+    Never sum cost or conversions across field types.
+- name: performance_label
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Google rating of the asset (Best, Good, Low, Learning, Pending or Unrated).
+    NOT_APPLICABLE, UNSPECIFIED and UNKNOWN are Unrated. This is the current Google value, also on older dates.
+- name: asset_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the asset is enabled in the ad. This is the current Google value, also on older dates.
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: Impressions attributed to the asset for this field type.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks attributed to the asset for this field type.
+- name: cost
+  type: FLOAT
+  mode: NULLABLE
+  description: Cost attributed to the asset for this field type, in the account currency (USD). Never sum across field types.
+- name: conversions
+  type: FLOAT
+  mode: NULLABLE
+  description: Google-reported conversions attributed to the asset for this field type. These are not installs. Never sum across field types.

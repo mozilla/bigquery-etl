@@ -1,0 +1,11 @@
+2026-11-02:
+  start_date: 2024-09-26
+  end_date: 2026-10-31
+  reason: initial backfill of search_aggregates_glean_v1 (https://mozilla-hub.atlassian.net/browse/DENG-11740)
+  watchers:
+  - lmcfall@mozilla.com
+  - loines@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

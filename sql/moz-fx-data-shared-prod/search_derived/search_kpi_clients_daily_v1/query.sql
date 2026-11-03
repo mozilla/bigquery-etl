@@ -14,6 +14,27 @@ WITH component_map AS (
     AND effective_from <= @submission_date
     AND (effective_to IS NULL OR effective_to > @submission_date)
 ),
+-- Two rows in effect for one type would count its clicks twice.
+component_map_check AS (
+  SELECT
+    IF(
+      COUNT(*) > COUNT(DISTINCT result_type),
+      ERROR('kpi_component_map_v1 has overlapping rows for a result type'),
+      TRUE
+    ) AS ok
+  FROM
+    component_map
+),
+-- Over every row started by this date, so closing a row can't lower the version.
+definition AS (
+  SELECT
+    MAX(definition_version) AS definition_version
+  FROM
+    `moz-fx-data-shared-prod.search_derived.kpi_component_map_v1`
+  WHERE
+    platform = 'desktop'
+    AND effective_from <= @submission_date
+),
 urlbar AS (
   SELECT
     client_id,
@@ -105,10 +126,10 @@ sap AS (
   SELECT
     client_id,
     ANY_VALUE(sample_id) AS sample_id,
-    -- Rows of 10,000+ are runaway counts from a held-down Enter key; legacy drops them too.
-    SUM(IF(sap_counts_total < 10000, sap_counts_total, 0)) AS sap
+    SUM(IF(sap_exclusion_reason IS NULL, sap_counts_total, 0)) AS sap,
+    SUM(IF(sap_exclusion_reason IS NOT NULL, sap_counts_total, 0)) AS sap_excluded
   FROM
-    `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
+    `moz-fx-data-shared-prod.search.search_clients_daily_glean`
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -143,6 +164,7 @@ desktop AS (
     d.normalized_default_search_engine,
     d.is_default_browser,
     COALESCE(s.sap, 0) AS sap,
+    COALESCE(s.sap_excluded, 0) AS sap_excluded,
     COALESCE(u.suggest_sponsored, 0) AS suggest_sponsored,
     COALESCE(u.suggest_nonsponsored, 0) AS suggest_nonsponsored,
     COALESCE(u.ai_chat, 0) AS ai_chat,
@@ -170,6 +192,7 @@ SELECT
   normalized_default_search_engine,
   is_default_browser,
   sap,
+  sap_excluded,
   suggest_sponsored,
   suggest_nonsponsored,
   ai_chat,
@@ -178,16 +201,21 @@ SELECT
   in_urlbar,
   -- Firefox 138 is the SAP probe floor; it applies to Suggest too so both halves match.
   COALESCE(app_version_major >= 138, FALSE) AS meets_population_rules,
-  (SELECT MAX(definition_version) FROM component_map) AS definition_version
+  definition.definition_version
 FROM
   desktop
+CROSS JOIN
+  definition
 CROSS JOIN
   unmapped_check
 CROSS JOIN
   urlbar_partition_check
+CROSS JOIN
+  component_map_check
 WHERE
   unmapped_check.ok
   AND urlbar_partition_check.ok
+  AND component_map_check.ok
   -- Every urlbar user stays, even with nothing counted. A client seen only in
-  -- search_clients_daily stays only if it started a search.
-  AND (in_urlbar OR sap > 0)
+  -- search_clients_daily stays only if it started a search, counted or excluded.
+  AND (in_urlbar OR sap > 0 OR sap_excluded > 0)

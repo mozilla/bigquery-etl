@@ -12,7 +12,7 @@
   - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 2, sessions_shown: 2}
   - {window_mode: smart, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 1, sessions_shown: 1}
   - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_wikipedia, clicks: 1, sessions_shown: 1}
-  - {window_mode: smart, sap: urlbar, interaction: typed, result_type: smartwindow_assistant, clicks: 1, sessions_shown: 1}
+  - {window_mode: smart, sap: urlbar, interaction: typed, result_type: ai_chat, clicks: 1, sessions_shown: 1}
   - {window_mode: classic, sap: urlbar, interaction: typed, result_type: history, clicks: 1, sessions_shown: 3}
   - {window_mode: classic, sap: urlbar, interaction: typed, result_type: action_new_thing, clicks: 1, sessions_shown: 1}
   - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_yelp, clicks: 1, sessions_shown: 1}

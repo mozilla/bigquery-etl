@@ -14,6 +14,7 @@
   normalized_default_search_engine: Google
   is_default_browser: true
   sap: 5
+  sap_excluded: 10000
   suggest_sponsored: 3
   suggest_nonsponsored: 1
   ai_chat: 1
@@ -33,6 +34,7 @@
   normalized_default_search_engine: Bing
   is_default_browser: false
   sap: 0
+  sap_excluded: 0
   suggest_sponsored: 0
   suggest_nonsponsored: 0
   ai_chat: 0
@@ -52,6 +54,7 @@
   app_version_major: "130"
   is_default_browser: false
   sap: 0
+  sap_excluded: 0
   suggest_sponsored: 0
   suggest_nonsponsored: 0
   ai_chat: 0
@@ -65,10 +68,25 @@
   client_id: client-d
   sample_id: 4
   sap: 4
+  sap_excluded: 0
   suggest_sponsored: 0
   suggest_nonsponsored: 0
   ai_chat: 0
   search_queries: 4
+  in_urlbar: false
+  meets_population_rules: false
+  definition_version: 2
+# Only an excluded row: nothing counted, kept so the exclusion can be audited.
+- submission_date: "2026-10-28"
+  platform: desktop
+  client_id: client-f
+  sample_id: 6
+  sap: 0
+  sap_excluded: 638260
+  suggest_sponsored: 0
+  suggest_nonsponsored: 0
+  ai_chat: 0
+  search_queries: 0
   in_urlbar: false
   meets_population_rules: false
   definition_version: 2

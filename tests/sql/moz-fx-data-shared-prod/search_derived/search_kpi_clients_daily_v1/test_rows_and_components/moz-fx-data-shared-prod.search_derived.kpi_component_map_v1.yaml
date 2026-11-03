@@ -22,9 +22,9 @@
   effective_from: "1970-01-01"
   reason: unpaid
   definition_version: 1
-- result_type: smartwindow_assistant
+- result_type: ai_chat
   platform: desktop
-  product_result_type: smartwindow_assistant
+  product_result_type: ai_chat
   component: ai_chat
   effective_from: "1970-01-01"
   reason: ask

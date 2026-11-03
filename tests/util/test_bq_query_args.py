@@ -182,7 +182,16 @@ class TestParseBqQueryArgs:
             ),
             (
                 ["query", "--project_id=p", "--format=none", "--dry_run=maybe"],
-                "Unexpected boolean value",
+                "Unexpected value `maybe` for boolean flag `--dry_run=maybe`",
+            ),
+            (
+                [
+                    "query",
+                    "--project_id=p",
+                    "--destination_table=d.t",
+                    "--noreplace=true",
+                ],
+                "Unexpected value `true` for flag `--noreplace=true`",
             ),
             (
                 ["query", "--project_id=p", "--format=none", "--parameter=:INT64:1"],

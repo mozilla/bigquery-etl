@@ -77,9 +77,13 @@ def _parse_flags(args: List[str]) -> dict:
                 flags[name] = value.lower() == "true"
             else:
                 raise UnsupportedQueryArgumentsError(
-                    f"Unexpected boolean value in `{arg}`"
+                    f"Unexpected value `{value}` for boolean flag `{arg}`"
                 )
-        elif name.startswith("no") and name[2:] in BOOLEAN_FLAGS and not has_value:
+        elif name.startswith("no") and name[2:] in BOOLEAN_FLAGS:
+            if has_value:
+                raise UnsupportedQueryArgumentsError(
+                    f"Unexpected value `{value}` for flag `{arg}`"
+                )
             flags[name[2:]] = False
         elif name in REPEATED_FLAGS:
             flags[name].append(value)

@@ -26,6 +26,19 @@ urlbar AS (
   WHERE
     submission_date = @submission_date
 ),
+-- urlbar_clients_daily_v1 has no date_partition_offset, so the urlbar task this run waits on
+-- writes the next day. The partition read here comes from the previous run. If that run
+-- didn't land, fail rather than write a day with no Suggest clicks and no urlbar-only clients.
+urlbar_partition_check AS (
+  SELECT
+    IF(
+      COUNT(*) = 0,
+      ERROR(FORMAT('urlbar_clients_daily_v1 has no rows for %t', @submission_date)),
+      TRUE
+    ) AS ok
+  FROM
+    urlbar
+),
 clicked_results AS (
   SELECT
     u.client_id,
@@ -169,8 +182,11 @@ FROM
   desktop
 CROSS JOIN
   unmapped_check
+CROSS JOIN
+  urlbar_partition_check
 WHERE
   unmapped_check.ok
+  AND urlbar_partition_check.ok
   -- Every urlbar user stays, even with nothing counted. A client seen only in
   -- search_clients_daily stays only if it started a search.
   AND (in_urlbar OR sap > 0)

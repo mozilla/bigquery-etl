@@ -227,6 +227,41 @@ class TestQuerySchema:
         assert schema_1.equal(schema_2) is True
         assert schema_2.equal(schema_1) is True
 
+    def test_schemas_omitted_mode(self):
+        """An omitted `mode` is equivalent to an explicit NULLABLE one."""
+        schema_1_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+            - name: client_info
+              type: RECORD
+              fields:
+              - name: app_build
+                type: STRING
+            """)
+
+        schema_2_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+            - name: client_info
+              type: RECORD
+              mode: NULLABLE
+              fields:
+              - name: app_build
+                type: STRING
+                mode: NULLABLE
+            """)
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+
+        assert schema_1.equal(schema_2)
+        assert schema_2.equal(schema_1)
+        assert schema_1.compatible(schema_2)
+        assert schema_2.compatible(schema_1)
+
     def test_schemas_compatible(self):
         schema_1_yaml = dedent("""
             fields:
@@ -374,6 +409,126 @@ class TestQuerySchema:
         schema_1.merge(schema_2)
 
         assert schema_1.schema["fields"][0]["description"] == "Date of the submission"
+
+    def test_merge_descriptions_for_fields_without_mode(self):
+        """BigQuery omits `mode` for nullable fields in some responses (e.g. nested fields of a deployed view).
+        Descriptions must still get merged into those fields, which is how view schemas are deployed.
+        """
+        schema_1_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+            - name: client_info
+              type: RECORD
+              fields:
+              - name: app_build
+                type: STRING
+            """)
+
+        schema_2_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+              description: "The submission_date"
+            - name: client_info
+              type: RECORD
+              mode: NULLABLE
+              description: "The client_info"
+              fields:
+              - name: app_build
+                type: STRING
+                mode: NULLABLE
+                description: "The build identifier"
+            """)
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+        schema_1.merge(
+            schema_2,
+            attributes=["description"],
+            add_missing_fields=False,
+            ignore_missing_fields=True,
+        )
+
+        fields = schema_1.schema["fields"]
+        assert fields[0]["description"] == "The submission_date"
+        assert fields[1]["description"] == "The client_info"
+        assert fields[1]["fields"][0]["description"] == "The build identifier"
+
+    def test_compare_descriptions(self):
+        schema_1_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+              description: "The submission_date"
+            """)
+
+        # A differing description.
+        schema_2_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+              description: "Date of the submission"
+            """)
+
+        # No description at all, like a dry run schema.
+        schema_3_yaml = dedent("""
+            fields:
+            - name: submission_date
+              type: DATE
+              mode: NULLABLE
+            """)
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+        schema_3 = Schema.from_json(yaml.safe_load(schema_3_yaml))
+
+        # Descriptions are ignored by default, including by `compatible()`.
+        assert schema_1.equal(schema_2)
+        assert schema_1.equal(schema_3)
+        assert schema_3.equal(schema_1)
+        assert schema_1.compatible(schema_3)
+        assert schema_3.compatible(schema_1)
+
+        # Descriptions are compared when `compare_descriptions` is true.
+        assert schema_1.equal(schema_1, compare_descriptions=True)
+        assert not schema_1.equal(schema_2, compare_descriptions=True)
+        assert not schema_1.equal(schema_3, compare_descriptions=True)
+        assert not schema_3.equal(schema_1, compare_descriptions=True)
+
+    def test_compare_nested_descriptions(self):
+        schema_1_yaml = dedent("""
+            fields:
+            - name: client_info
+              type: RECORD
+              mode: NULLABLE
+              fields:
+              - name: app_build
+                type: STRING
+                mode: NULLABLE
+                description: "The build identifier"
+            """)
+
+        schema_2_yaml = dedent("""
+            fields:
+            - name: client_info
+              type: RECORD
+              mode: NULLABLE
+              fields:
+              - name: app_build
+                type: STRING
+                mode: NULLABLE
+            """)
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+
+        assert schema_1.equal(schema_2)
+        assert not schema_1.equal(schema_2, compare_descriptions=True)
+        assert not schema_2.equal(schema_1, compare_descriptions=True)
 
     def test_bigquery_conversion(self):
         bq_schema = [

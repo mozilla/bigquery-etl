@@ -104,8 +104,6 @@ WHERE
   -- Keep only the 1% sample where the client does not sample itself.
   (
     sample_id != 0
-    AND normalized_channel = 'release'
-    AND major_version >= 143
     AND (
       -- No server knobs on iOS
       platform = 'ios'

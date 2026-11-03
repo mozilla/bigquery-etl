@@ -4,7 +4,7 @@
   reason: "Backfilling data for the newly created table. https://bugzilla.mozilla.org/show_bug.cgi?id=2088378"
   watchers:
   - jrediger@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   ignore_date_partition_offset: false

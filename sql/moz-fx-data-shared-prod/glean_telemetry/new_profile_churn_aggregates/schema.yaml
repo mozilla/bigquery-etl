@@ -1,0 +1,133 @@
+fields:
+- name: cohort_date
+  type: DATE
+  mode: NULLABLE
+  description: Cohort Date - First Seen Date
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: The operating system version normalized to a consistent format at ingestion
+    (e.g. "10.0" for Windows, "16" for Android, "26.3.1" for iOS, "25.3.0" for macOS,
+    "6.8" for Linux). Windows 10 and Windows 11 both show "10.0". Use `windows_build_number
+    >= 22000` to identify Windows 11.
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the browser.
+- name: first_seen_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: The attribution campaign at first seen (e.g. 'mozilla-org').
+- name: first_seen_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: The attribution content at first seen (e.g. 'firefoxview').
+- name: first_seen_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The attribution medium at first seen (e.g. 'organic' for a search engine).
+- name: first_seen_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The attribution source at first seen (e.g. 'google-play').
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether Firefox was the default browser on the client's first-seen
+    day, the most common value across that day's baseline pings. NULL when none of
+    that day's pings reported it, or when baseline_clients_daily_v1 has no row for
+    the client that day, as for a client it drops for sending over 150,000 pings.
+- name: days_data_available
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Number of days of data for the cohort, from first_seen_date through
+    the latest date the query read, counting both ends.
+
+    Taken from the client tables; a complete cohort reads 31.'
+- name: cohort_clients_size
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group, excluding bot-flagged
+    profiles.
+- name: clients_churned_immediately
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive
+    on days 0 to 27 after their first seen date (day 0), 28 consecutive days without
+    activity. NULL until the cohort has 28 days of data.
+- name: clients_churned_after_1_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were active
+    on day 0, then inactive on days 1 to 28, 28 consecutive days without activity.
+    NULL until the cohort has 29 days of data.
+- name: clients_churned_after_2_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were active
+    on day 1, then inactive on days 2 to 29, 28 consecutive days without activity.
+    NULL until the cohort has 30 days of data.
+- name: clients_churn_risk_after_5_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive
+    on days 1 to 4 after their first seen date (day 0), marking them at risk of churning
+    by day 5. NULL until the cohort has 5 days of data.
+- name: clients_churn_risk_after_7_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive
+    on days 2 to 6 after their first seen date (day 0), marking them at risk of churning
+    by day 7. NULL until the cohort has 7 days of data.
+- name: clients_inactive_first_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive
+    on their first seen date (day 0).
+- name: cumulative_clients_churned_after_1_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group whose 28 consecutive
+    days without activity start on day 0 or 1, clients_churned_immediately plus clients_churned_after_1_day.
+    NULL until the cohort has 29 days of data.
+- name: cumulative_clients_churned_after_2_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group whose 28 consecutive
+    days without activity start on day 0, 1 or 2, cumulative_clients_churned_after_1_day
+    plus clients_churned_after_2_days. NULL until the cohort has 30 days of data.

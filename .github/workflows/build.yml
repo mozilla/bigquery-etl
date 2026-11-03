@@ -550,8 +550,7 @@ jobs:
                 cmp -s "sql/$1" ~/remote-bigquery-etl-main/sql/"$1"
               fi
             }
-            # Fail loudly if yq isn't available. grep -qE '^[[:space:]]+sql_generator:' is a close
-            # substitute, though it matches the key at any nesting level rather than only under labels.
+            # Fail loudly if yq isn't available.
             if ! command -v yq > /dev/null; then
               echo "yq is required to restore generated metadata.yaml files"
               exit 1

@@ -18,28 +18,33 @@ WITH decoder_jobs AS (
           'structured-raw' AS raw_topic,
           'structured-raw.decoder' AS raw_subscription,
           'structured-decoded' AS decoded_topic,
-          'structured-decoded.republisher' AS decoded_subscription
+          'structured-decoded.republisher' AS decoded_subscription,
+          'moz-fx-data-beam-prod-11f7' AS decoded_subscription_project
         ),
         (
           'structured-logging-decoder',
           'structured-logging',
           'structured-logging.decoder',
           'structured-decoded',
-          'structured-decoded.republisher'
+          'structured-decoded.republisher',
+          'moz-fx-data-beam-prod-11f7'
         ),
         (
           'structured-direct-decoder',
           'structured-direct',
           'structured-direct.decoder',
           'structured-decoded',
-          'structured-decoded.republisher'
+          'structured-decoded.republisher',
+          'moz-fx-data-beam-prod-11f7'
         ),
         (
           'telemetry-raw-decoder',
           'telemetry-raw',
           'telemetry-raw.decoder',
           'telemetry-decoded',
-          'telemetry-decoded.bq-sink-payload'
+          -- telemetry has no republisher; the sink subscription is less consistent, possibly because of batching
+          'telemetry-decoded.bq-sink-payload',
+          'moz-fx-ingestion-sink-prod'
         )
       ]
     )
@@ -127,14 +132,16 @@ pings_imputed AS (
 resource_bytes AS (
   -- Bytes published to each topic and delivered on each subscription. Only
   -- delivered message bytes are billed for subscriptions, not ack or modack
-  -- bytes.
+  -- bytes. Keyed by project so same-named resources in different projects
+  -- are kept apart.
   SELECT
     IF(metric = 'pubsub_topic_byte_cost', 'topic', 'subscription') AS resource_type,
+    project_id,
     COALESCE(
       mozfun.map.get_key(labels, 'topic_id'),
       mozfun.map.get_key(labels, 'subscription_id')
     ) AS resource,
-    SUM(value) AS bytes
+    SUM(value) AS total_bytes
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.gcp_monitoring_metrics_hourly_v1`
   WHERE
@@ -163,6 +170,7 @@ stages AS (
     pings_imputed.*,
     stage.name AS stage,
     stage.resource_type,
+    stage.project_id,
     stage.resource,
     stage.payload_bytes
   FROM
@@ -176,12 +184,16 @@ stages AS (
         STRUCT(
           'raw_topic' AS name,
           'topic' AS resource_type,
+          -- All ingestion topics are in shared-prod and all raw
+          -- subscriptions are in beam-prod.
+          'moz-fx-data-shared-prod' AS project_id,
           decoder_jobs.raw_topic AS resource,
           pings_imputed.compressed_bytes AS payload_bytes
         ),
         (
           'raw_subscription',
           'subscription',
+          'moz-fx-data-beam-prod-11f7',
           decoder_jobs.raw_subscription,
           pings_imputed.compressed_bytes
         ),
@@ -192,12 +204,14 @@ stages AS (
         (
           'decoded_topic',
           'topic',
+          'moz-fx-data-shared-prod',
           decoder_jobs.decoded_topic,
           IF(pings_imputed.message_count > 0, pings_imputed.compressed_bytes, 0)
         ),
         (
           'decoded_subscription',
           'subscription',
+          decoder_jobs.decoded_subscription_project,
           decoder_jobs.decoded_subscription,
           IF(pings_imputed.message_count > 0, pings_imputed.compressed_bytes, 0)
         )
@@ -207,12 +221,12 @@ stages AS (
 with_overhead AS (
   SELECT
     stages.*,
-    resource_bytes.bytes AS stage_bytes,
+    resource_bytes.total_bytes AS stage_bytes,
     -- Invalid messages also carry overhead on the raw stages, but they have
     -- no message count, so their overhead (about 4 million messages and 0.01%
     -- of raw bytes a day) is spread over valid messages.
     GREATEST(
-      (resource_bytes.bytes - SUM(stages.payload_bytes) OVER stage_window) / NULLIF(
+      (resource_bytes.total_bytes - SUM(stages.payload_bytes) OVER stage_window) / NULLIF(
         SUM(stages.message_count) OVER stage_window,
         0
       ),
@@ -222,11 +236,12 @@ with_overhead AS (
     stages
   LEFT JOIN
     resource_bytes
-    USING (resource_type, resource)
+    USING (resource_type, project_id, resource)
   WINDOW
     stage_window AS (
       PARTITION BY
         stages.stage,
+        stages.project_id,
         stages.resource
     )
 ),
@@ -238,9 +253,10 @@ allocated AS (
       SUM(payload_bytes + overhead_bytes_per_message * message_count) OVER (
         PARTITION BY
           stage,
+          project_id,
           resource
       )
-    ) AS bytes
+    ) AS allocated_bytes
   FROM
     with_overhead
 ),
@@ -254,25 +270,27 @@ per_ping AS (
     ANY_VALUE(compressed_bytes_imputed) AS compressed_bytes_imputed,
     ANY_VALUE(decompressed_bytes) AS decompressed_bytes,
     ANY_VALUE(IF(stage = 'raw_topic', resource, NULL)) AS raw_topic,
-    ANY_VALUE(IF(stage = 'raw_topic', BYTES, NULL)) AS raw_topic_bytes,
+    ANY_VALUE(IF(stage = 'raw_topic', allocated_bytes, NULL)) AS raw_topic_bytes,
     ANY_VALUE(
       IF(stage = 'raw_topic', overhead_bytes_per_message, NULL)
     ) AS raw_topic_overhead_bytes_per_message,
     ANY_VALUE(IF(stage = 'raw_subscription', resource, NULL)) AS raw_subscription,
-    ANY_VALUE(IF(stage = 'raw_subscription', BYTES, NULL)) AS raw_pubsub_bytes,
+    ANY_VALUE(IF(stage = 'raw_subscription', allocated_bytes, NULL)) AS raw_subscription_bytes,
     ANY_VALUE(
       IF(stage = 'raw_subscription', overhead_bytes_per_message, NULL)
-    ) AS raw_overhead_bytes_per_message,
+    ) AS raw_subscription_overhead_bytes_per_message,
     ANY_VALUE(IF(stage = 'decoded_topic', resource, NULL)) AS decoded_topic,
-    ANY_VALUE(IF(stage = 'decoded_topic', BYTES, NULL)) AS decoded_topic_bytes,
+    ANY_VALUE(IF(stage = 'decoded_topic', allocated_bytes, NULL)) AS decoded_topic_bytes,
     ANY_VALUE(
       IF(stage = 'decoded_topic', overhead_bytes_per_message, NULL)
     ) AS decoded_topic_overhead_bytes_per_message,
     ANY_VALUE(IF(stage = 'decoded_subscription', resource, NULL)) AS decoded_subscription,
-    ANY_VALUE(IF(stage = 'decoded_subscription', BYTES, NULL)) AS decoded_pubsub_bytes,
+    ANY_VALUE(
+      IF(stage = 'decoded_subscription', allocated_bytes, NULL)
+    ) AS decoded_subscription_bytes,
     ANY_VALUE(
       IF(stage = 'decoded_subscription', overhead_bytes_per_message, NULL)
-    ) AS decoded_overhead_bytes_per_message
+    ) AS decoded_subscription_overhead_bytes_per_message
   FROM
     allocated
   GROUP BY
@@ -343,26 +361,30 @@ SELECT
   decoder_job,
   document_namespace,
   document_type,
-  CAST(ROUND(message_count) AS INT64) AS message_count,
-  CAST(ROUND(compressed_bytes) AS INT64) AS compressed_bytes,
-  compressed_bytes_imputed,
-  CAST(ROUND(decompressed_bytes) AS INT64) AS decompressed_bytes,
+  CAST(ROUND(message_count) AS INT64) AS dataflow_message_count,
+  CAST(ROUND(compressed_bytes) AS INT64) AS dataflow_compressed_bytes,
+  compressed_bytes_imputed AS dataflow_compressed_bytes_imputed,
+  CAST(ROUND(decompressed_bytes) AS INT64) AS dataflow_decompressed_bytes,
   raw_topic,
   CAST(ROUND(raw_topic_bytes) AS INT64) AS raw_topic_bytes,
   CAST(
     ROUND(raw_topic_overhead_bytes_per_message) AS INT64
   ) AS raw_topic_overhead_bytes_per_message,
   raw_subscription,
-  CAST(ROUND(raw_pubsub_bytes) AS INT64) AS raw_pubsub_bytes,
-  CAST(ROUND(raw_overhead_bytes_per_message) AS INT64) AS raw_overhead_bytes_per_message,
+  CAST(ROUND(raw_subscription_bytes) AS INT64) AS raw_subscription_bytes,
+  CAST(
+    ROUND(raw_subscription_overhead_bytes_per_message) AS INT64
+  ) AS raw_subscription_overhead_bytes_per_message,
   decoded_topic,
   CAST(ROUND(decoded_topic_bytes) AS INT64) AS decoded_topic_bytes,
   CAST(
     ROUND(decoded_topic_overhead_bytes_per_message) AS INT64
   ) AS decoded_topic_overhead_bytes_per_message,
   decoded_subscription,
-  CAST(ROUND(decoded_pubsub_bytes) AS INT64) AS decoded_pubsub_bytes,
-  CAST(ROUND(decoded_overhead_bytes_per_message) AS INT64) AS decoded_overhead_bytes_per_message,
+  CAST(ROUND(decoded_subscription_bytes) AS INT64) AS decoded_subscription_bytes,
+  CAST(
+    ROUND(decoded_subscription_overhead_bytes_per_message) AS INT64
+  ) AS decoded_subscription_overhead_bytes_per_message,
   CAST(ROUND(stable_logical_bytes) AS INT64) AS stable_logical_bytes,
   CAST(ROUND(stable_row_count) AS INT64) AS stable_row_count
 FROM

@@ -28,9 +28,9 @@ scheduling:
   depends_on:
   - dag_name: bqetl_monitoring_hourly
     task_id: monitoring_derived__gcp_monitoring_metrics_hourly__v1
-    # Wait for the next day's run at logical_date 00:00 (wall clock 01:00),
+    # Wait for the next day's run at logical_date 01:00 (wall clock 02:00),
     # which does the final rewrite of the day's partition.
-    execution_delta: -22h
+    execution_delta: -23h
 bigquery:
   time_partitioning:
     type: day

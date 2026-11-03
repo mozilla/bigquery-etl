@@ -15,19 +15,21 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Document type without the version suffix. Null for the rolled up invalid row.
-- name: message_count
+- name: dataflow_message_count
   type: INTEGER
   mode: NULLABLE
   description: Number of valid messages (Dataflow valid_submission counter).
-- name: compressed_bytes
+- name: dataflow_compressed_bytes
   type: INTEGER
   mode: NULLABLE
   description: Payload bytes before decompression (Dataflow predecompress_submission_bytes counter). Includes messages that failed validation.
-- name: compressed_bytes_imputed
+- name: dataflow_compressed_bytes_imputed
   type: BOOLEAN
   mode: NULLABLE
-  description: True when compressed_bytes is estimated from decompressed_bytes because the decoder does not report it per ping (structured-logging-decoder).
-- name: decompressed_bytes
+  description: >-
+    True when dataflow_compressed_bytes is estimated from dataflow_decompressed_bytes
+    because the decoder does not report it per ping (structured-logging-decoder).
+- name: dataflow_decompressed_bytes
   type: INTEGER
   mode: NULLABLE
   description: Payload bytes of valid messages after decompression (Dataflow valid_submission_bytes counter).
@@ -47,11 +49,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Raw Pub/Sub subscription the decoder reads from.
-- name: raw_pubsub_bytes
+- name: raw_subscription_bytes
   type: INTEGER
   mode: NULLABLE
   description: Estimated delivered bytes on raw_subscription for this ping.
-- name: raw_overhead_bytes_per_message
+- name: raw_subscription_overhead_bytes_per_message
   type: INTEGER
   mode: NULLABLE
   description: Per-message overhead used to split raw_subscription bytes, derived from the day's totals.
@@ -71,11 +73,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Decoded Pub/Sub subscription used to measure the decoded stage.
-- name: decoded_pubsub_bytes
+- name: decoded_subscription_bytes
   type: INTEGER
   mode: NULLABLE
   description: Estimated delivered bytes on decoded_subscription for this ping. Zero for the rolled up invalid row.
-- name: decoded_overhead_bytes_per_message
+- name: decoded_subscription_overhead_bytes_per_message
   type: INTEGER
   mode: NULLABLE
   description: Per-message overhead used to split decoded_subscription bytes, derived from the day's totals.

@@ -235,12 +235,15 @@ def test_subset_requires_dry_run(subset):
 
 
 def test_main_replaces_the_date_partition():
-    rows = [{"submission_date": "2026-10-31"}]
+    rows = [{"submission_date": "2026-10-31", "metric": "pubsub_topic_byte_cost"}]
     with (
         patch.object(query_mod, "create_session"),
         patch.object(query_mod, "fetch_day", return_value=rows),
         patch.object(query_mod.bigquery, "Client") as bq_client,
     ):
+        bq_client.return_value.query_and_wait.return_value = [
+            SimpleNamespace(metric="pubsub_topic_byte_cost")
+        ]
         result = CliRunner().invoke(
             query_mod.main,
             ["--date", "2026-10-31", "--destination-table", "proj.dataset.table"],
@@ -367,3 +370,50 @@ def test_create_session_fetches_token_up_front():
 
     assert default.call_args.kwargs["quota_project_id"] == "billing-project"
     credentials.refresh.assert_called_once()
+
+
+def run_main_with_stored_metrics(stored):
+    """Run main with one fetched metric and the given stored metrics."""
+    rows = [{"submission_date": "2026-10-31", "metric": "pubsub_topic_byte_cost"}]
+    with (
+        patch.object(query_mod, "create_session"),
+        patch.object(query_mod, "fetch_day", return_value=rows),
+        patch.object(query_mod.bigquery, "Client") as bq_client,
+    ):
+        query_and_wait = bq_client.return_value.query_and_wait
+        if isinstance(stored, Exception):
+            query_and_wait.side_effect = stored
+        else:
+            query_and_wait.return_value = [
+                SimpleNamespace(metric=metric) for metric in stored
+            ]
+        result = CliRunner().invoke(query_mod.main, ["--date", "2026-10-31"])
+    return result, bq_client.return_value.load_table_from_json
+
+
+def test_main_keeps_partition_when_a_stored_metric_is_missing():
+    # e.g. rerunning an old date after Pub/Sub data aged out but load
+    # balancer data didn't.
+    result, load = run_main_with_stored_metrics(
+        ["pubsub_topic_byte_cost", "dataflow_valid_submission"]
+    )
+
+    assert result.exit_code != 0
+    assert "dataflow_valid_submission" in result.output
+    load.assert_not_called()
+
+
+def test_main_writes_new_partition():
+    result, load = run_main_with_stored_metrics(query_mod.NotFound("table not found"))
+
+    assert result.exit_code == 0, result.output
+    load.assert_called_once()
+
+
+def test_main_ignores_stored_metrics_that_were_removed():
+    result, load = run_main_with_stored_metrics(
+        ["pubsub_topic_byte_cost", "metric_no_longer_defined"]
+    )
+
+    assert result.exit_code == 0, result.output
+    load.assert_called_once()

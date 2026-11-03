@@ -22,10 +22,11 @@ import time
 from dataclasses import dataclass, field, replace
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import click
 import google.auth
+from google.api_core.exceptions import NotFound
 from google.auth.transport.requests import AuthorizedSession, Request
 from google.cloud import bigquery
 from requests.adapters import HTTPAdapter
@@ -293,6 +294,23 @@ def fetch_day(
     return rows
 
 
+def stored_metrics(
+    client: bigquery.Client, destination_table: str, date: datetime.date
+) -> Set[str]:
+    """Return the metrics already stored in the date's partition."""
+    try:
+        rows = client.query_and_wait(
+            f"SELECT DISTINCT metric FROM `{destination_table}` "
+            "WHERE submission_date = @date",
+            job_config=bigquery.QueryJobConfig(
+                query_parameters=[bigquery.ScalarQueryParameter("date", "DATE", date)]
+            ),
+        )
+    except NotFound:
+        return set()
+    return {row.metric for row in rows}
+
+
 @click.command()
 @click.option(
     "--date",
@@ -351,13 +369,24 @@ def main(date, projects, metric_names, destination_table, quota_project, dry_run
         return
 
     partition = f"{destination_table}${date.strftime('%Y%m%d')}"
+    client = bigquery.Client(project=destination_table.split(".")[0])
+    # Metrics have different retention (6 weeks for Pub/Sub and Dataflow, 24
+    # months for load balancers), so rerunning an old date can return only
+    # some of them. Don't replace stored rows that can't be fetched again.
+    missing = (
+        stored_metrics(client, destination_table, date) & {m.name for m in METRICS}
+    ) - {row["metric"] for row in rows}
+    if missing:
+        raise click.ClickException(
+            f"Not replacing {partition}: no data returned for "
+            f"{', '.join(sorted(missing))}, which it already has"
+        )
     job_config = bigquery.LoadJobConfig(
         schema=SCHEMA,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         time_partitioning=bigquery.TimePartitioning(field="submission_date"),
         clustering_fields=["metric", "project_id"],
     )
-    client = bigquery.Client(project=destination_table.split(".")[0])
     client.load_table_from_json(rows, partition, job_config=job_config).result()
     print(f"Wrote {len(rows)} rows to {partition}")
 

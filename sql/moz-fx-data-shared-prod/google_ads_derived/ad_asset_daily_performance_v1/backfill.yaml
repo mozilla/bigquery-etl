@@ -4,7 +4,7 @@
   reason: https://mozilla-hub.atlassian.net/browse/DENG-11785
   watchers:
   - phlee@mozilla.com
-  status: Initiate
+  status: Cancelled
   custom_query_path: sql/moz-fx-data-shared-prod/google_ads_derived/ad_asset_daily_performance_v1/backfill_deng11785.sql
   shredder_mitigation: false
   override_retention_limit: false

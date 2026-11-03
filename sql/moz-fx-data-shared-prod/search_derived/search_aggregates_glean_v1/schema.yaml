@@ -1,0 +1,322 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: normalized_engine
+  type: STRING
+  mode: NULLABLE
+  description: "A standardized, human-readable label for a search engine, such as\
+    \ 'Google', 'DuckDuckGo', or 'Bing'. This collapses engine identifier variants\
+    \ into their canonical partner name for reporting purposes.\n Part of the grain\
+    \ of this table. The SAP and SERP sides normalize their own engine values the\
+    \ same way, so the two join on it."
+- name: partner_code
+  type: STRING
+  mode: NULLABLE
+  description: The partner code reported by the search event, and part of this table's
+    grain. Never null - searches whose partner code is absent or an empty string are
+    reported as the literal "no_code".
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: The source for the searches. Note that sources differ between SAP and
+    SERP. See the Glean dictionary for details.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: 'The country of the client on this day, one value per client-day: the
+    country on the most rows of that client-day in search_clients_daily_glean, ties
+    to the country whose latest row has the latest ping_end_time, then to the country
+    code. Mirrors the one country per client-day in search_clients_daily_v8. See row_country
+    for the value on the row itself.'
+- name: row_country
+  type: STRING
+  mode: NULLABLE
+  description: The country the client table carried on the row itself, which is the
+    country of the last report behind that row. Differs from country for client-days
+    where the client's location changed during the day, typically a VPN toggling.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: "The distribution id associated with the install of Firefox.\n Resolved\
+    \ to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: is_acer_distribution
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when distribution_id contains 'acer', meaning an Acer distribution,
+    and FALSE otherwise, including when distribution_id is null. Replaces is_acer_cohort
+    in search_aggregates_v8, which was TRUE for clients that are NOT Acer and also
+    checked the search.acer_cohort list of legacy client ids. That list is not carried,
+    so clients that were once on an Acer distribution and no longer are show FALSE
+    here.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: "Set of language- and/or country-based preferences for a user interface.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time."
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: "User visible version string (e.g. \"1.0.3\") for the browser.\n Resolved\
+    \ to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time."
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day like os, but separately, so the two can\
+    \ differ in a rare client-day."
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: "Version of the operating system version running at the client. E.g.\
+    \ \"100.9.11\".\n Resolved to one value per client-day: the event-backed side\
+    \ first, then the latest ping_end_time."
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time."
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time."
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "A flag indicating whether the browser is set as the default browser\
+    \ on the client side.\n Resolved to one value per client-day: firefox_desktop.baseline_clients_daily\
+    \ when it has one, then the event-backed side, then the latest ping_end_time."
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "Whether the client was under enterprise policy on this day, taken\
+    \ as the most common value across the day's events with ties broken toward the\
+    \ latest event.\n Resolved to one value per client-day: the event-backed side\
+    \ first, then the latest ping_end_time."
+- name: default_search_engine_display_name
+  type: STRING
+  mode: NULLABLE
+  description: "The display name of the default search engine. This should not be\
+    \ relied upon to identify users with application provided engines - use the provider\
+    \ id.\n Resolved to one value per client-day: the event-backed side first, then\
+    \ the latest ping_end_time."
+- name: default_private_search_engine_display_name
+  type: STRING
+  mode: NULLABLE
+  description: "The display name of the default private search engine. This should\
+    \ not be relied upon to identify users with application provided engines - use\
+    \ the provider id.\n Resolved to one value per client-day: the event-backed side\
+    \ first, then the latest ping_end_time."
+- name: home_region
+  type: STRING
+  mode: NULLABLE
+  description: "The region code of the user as identified by the client.\n Resolved\
+    \ to one value per client-day: the event-backed side first, then the latest ping_end_time."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: The default search engine grouped as Google, Bing or DuckDuckGo, and
+    null for any other. Matches substrings of the client-day's resolved default_search_engine_provider_id,
+    the way search_aggregates_v8 does on default_search_engine. Null where the provider
+    id is null or names another engine.
+- name: client_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct clients in this row's dimensions. A client appears
+    in several rows of this table, so this cannot be summed across rows to give a
+    number of clients.
+- name: clients_with_adblocker_addon
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct clients in this row's dimensions with at least
+    one enabled ad-blocking add-on installed. Not summable across rows. Unreliable
+    in older data, because the add-on probe rolled out gradually.
+- name: sap_counts_total
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of search access point events for this key. This is a count
+    of events, not a sum of a counter, so it does not reproduce the sap column of
+    search_aggregates_v8. Zero, not null, on a row with no SAP activity. Summed over
+    the client table rows in this row's dimensions. Only clients on Firefox 138 or
+    later send the event this counts, so compare with legacy on that basis.
+- name: sap_kpi
+  type: INTEGER
+  mode: NULLABLE
+  description: 'sap_counts_total without the client table rows that carry 10,000 or
+    more SAP events for one client, day, engine, partner_code and source. Applies
+    the same 10,000 threshold as search_clients_daily_v8, on the equivalent client-day
+    row. sap_counts_total keeps those rows. Zero, not null, on a row with no SAP activity.
+    Summed over the client table rows in this row''s dimensions. Only SAP is filtered:
+    every other measure on the same row, such as the serp_ and counter_ columns, still
+    includes the rows that sap_kpi leaves out.'
+- name: serp_counts_total
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of SERP impressions for this key, tagged and organic together.\
+    \ Zero, not null, on a row with no SERP activity.\n Summed over the client table\
+    \ rows in this row's dimensions."
+- name: serp_searches_tagged_count
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of tagged SERP impressions for this key, meaning those\
+    \ carrying a partner code. Zero, not null, on a row with no SERP activity.\n Summed\
+    \ over the client table rows in this row's dimensions."
+- name: serp_follow_on_searches_tagged_count
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of tagged SERP impressions reached by refining a search\
+    \ from the results page rather than from a browser search access point. Because\
+    \ the access point is part of this table's grain, this equals serp_searches_tagged_count\
+    \ on a row whose source is a follow-on access point and is zero on every other\
+    \ row.\n Summed over the client table rows in this row's dimensions."
+- name: serp_searches_organic_count
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of organic SERP impressions for this key, meaning those\
+    \ carrying no partner code. Zero, not null, on a row with no SERP activity.\n\
+    \ Summed over the client table rows in this row's dimensions."
+- name: serp_searches_with_ads_tagged_count
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of this key's tagged SERP impressions that had at least\
+    \ one ad visible. Counts impressions rather than ads. Zero, not null, on a row\
+    \ with no SERP activity.\n Summed over the client table rows in this row's dimensions."
+- name: serp_searches_with_ads_organic_count
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of this key's organic SERP impressions that had at least\
+    \ one ad visible. Counts impressions rather than ads. Zero, not null, on a row\
+    \ with no SERP activity.\n Summed over the client table rows in this row's dimensions."
+- name: serp_ad_clicks_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ad clicks on this key's SERP impressions, tagged and\
+    \ organic together. Not guaranteed to equal serp_ad_clicks_tagged_sum plus serp_ad_clicks_organic_sum,\
+    \ because those two split on a flag that can be null while this counts every impression.\
+    \ Zero, not null, on a row with no SERP activity.\n Summed over the client table\
+    \ rows in this row's dimensions. Steps up from Firefox 157, when the fix for bug\
+    \ 2069054 landed; the counter_ad_clicks_ columns do not."
+- name: serp_ad_clicks_tagged_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ad clicks on this key's tagged SERP impressions. Zero,\
+    \ not null, on a row with no SERP activity.\n Summed over the client table rows\
+    \ in this row's dimensions. Steps up from Firefox 157, when the fix for bug 2069054\
+    \ landed; the counter_ad_clicks_ columns do not."
+- name: serp_ad_clicks_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ad clicks on this key's organic SERP impressions. Zero,\
+    \ not null, on a row with no SERP activity.\n Summed over the client table rows\
+    \ in this row's dimensions. Steps up from Firefox 157, when the fix for bug 2069054\
+    \ landed; the counter_ad_clicks_ columns do not."
+- name: serp_ads_loaded_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ads loaded across this key's SERP impressions, whether\
+    \ or not they were shown. Zero, not null, on a row with no SERP activity.\n Summed\
+    \ over the client table rows in this row's dimensions."
+- name: serp_ads_visible_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ads visible to the client across this key's SERP impressions.\
+    \ Zero, not null, on a row with no SERP activity.\n Summed over the client table\
+    \ rows in this row's dimensions."
+- name: serp_ads_blocked_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ads blocked across this key's SERP impressions. Zero,\
+    \ not null, on a row with no SERP activity.\n Summed over the client table rows\
+    \ in this row's dimensions."
+- name: serp_ads_notshowing_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "The number of ads that loaded but were not shown across this key's\
+    \ SERP impressions, for reasons other than blocking. Zero, not null, on a row\
+    \ with no SERP activity.\n Summed over the client table rows in this row's dimensions."
+- name: counter_searches_tagged_non_follow_on_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_searches_tagged_non_follow_on_sum in search_clients_daily_glean_v1.\
+    \ \nTagged searches from the browser.search.content Glean labeled counter, excluding\
+    \ follow-on searches, which the counter labels as a separate tag type and counter_searches_tagged_follow_on_sum\
+    \ carries. The two ads families do not make that split and include follow-on.\
+    \ Zero, not null, where the metrics ping carried nothing for this key. It is the\
+    \ counterpart of tagged_sap in search_aggregates_v8; serp_searches_tagged_count\
+    \ measures the same searches from SERP impressions and includes follow-on. Summed\
+    \ over the client table rows in this row's dimensions."
+- name: counter_searches_tagged_follow_on_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_searches_tagged_follow_on_sum in search_clients_daily_glean_v1.\
+    \ \nTagged follow-on searches from the browser.search.content Glean labeled counter.\
+    \ Zero, not null, where the metrics ping carried nothing for this key.\n Summed\
+    \ over the client table rows in this row's dimensions."
+- name: counter_searches_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_searches_organic_sum in search_clients_daily_glean_v1.\
+    \ \nOrganic, meaning non-partner, in-content searches from the browser.search.content\
+    \ Glean labeled counter. Does not reconcile exactly with the organic column of\
+    \ search_aggregates_v8. Zero, not null, where the metrics ping carried nothing\
+    \ for this key. Summed over the client table rows in this row's dimensions."
+- name: counter_searches_with_ads_tagged_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_searches_with_ads_tagged_sum in search_clients_daily_glean_v1.\
+    \ \nTagged SERPs with ads from the browser.search.withads Glean labeled counter,\
+    \ counted when the ad was served rather than when it rendered. Includes follow-on.\
+    \ The withads labels carry no partner code, so the value is attributed to the\
+    \ key's highest-volume partner code and is zero on the others - a plain SUM is\
+    \ correct, a per-partner_code slice is not. Zero, not null, where the metrics\
+    \ ping carried nothing for this key.\n Summed over the client table rows in this\
+    \ row's dimensions. The client table puts this counter on one partner_code per\
+    \ client, engine and source, so sum it across partner_code. A per-partner_code\
+    \ slice of this column is not meaningful."
+- name: counter_searches_with_ads_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_searches_with_ads_organic_sum in search_clients_daily_glean_v1.\
+    \ \nOrganic SERPs with ads from the browser.search.withads Glean labeled counter,\
+    \ counted when the ad was served rather than when it rendered. Attributed to the\
+    \ key's highest-volume partner code and zero on the others, as the withads labels\
+    \ carry no partner code - a plain SUM is correct, a per-partner_code slice is\
+    \ not. Zero, not null, where the metrics ping carried nothing for this key.\n\
+    \ Summed over the client table rows in this row's dimensions. The client table\
+    \ puts this counter on one partner_code per client, engine and source, so sum\
+    \ it across partner_code. A per-partner_code slice of this column is not meaningful."
+- name: counter_ad_clicks_tagged_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_ad_clicks_tagged_sum in search_clients_daily_glean_v1.\
+    \ \nTagged ad clicks from the browser.search.adclicks Glean labeled counter, counted\
+    \ by matching the outgoing request URL against ad-server patterns. Includes follow-on.\
+    \ Attributed to the key's highest-volume partner code and zero on the others -\
+    \ a plain SUM is correct, a per-partner_code slice is not. Zero, not null, where\
+    \ the metrics ping carried nothing for this key.\n Summed over the client table\
+    \ rows in this row's dimensions. The client table puts this counter on one partner_code\
+    \ per client, engine and source, so sum it across partner_code. A per-partner_code\
+    \ slice of this column is not meaningful."
+- name: counter_ad_clicks_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: "Renames legacy_ad_clicks_organic_sum in search_clients_daily_glean_v1.\
+    \ \nOrganic ad clicks from the browser.search.adclicks Glean labeled counter,\
+    \ counted by matching the outgoing request URL against ad-server patterns. Attributed\
+    \ to the key's highest-volume partner code and zero on the others, as the adclicks\
+    \ labels carry no partner code - a plain SUM is correct, a per-partner_code slice\
+    \ is not. Zero, not null, where the metrics ping carried nothing for this key.\n\
+    \ Summed over the client table rows in this row's dimensions. The client table\
+    \ puts this counter on one partner_code per client, engine and source, so sum\
+    \ it across partner_code. A per-partner_code slice of this column is not meaningful."

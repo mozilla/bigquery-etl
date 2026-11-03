@@ -5706,11 +5706,11 @@ fields:
 
         * Major version of the chat prompt used for this request.
 
+        * Remote Settings prompt configuration version, or empty if unavailable
+
         * Version of the generation prompt config.
 
         * Version of the relevant tabs prompt config.
-
-        * Remote Settings prompt configuration version, or empty if unavailable
 
         * Version of the classification prompt config.'
     - name: property
@@ -6693,8 +6693,13 @@ fields:
     - name: tool_name
       type: STRING
       mode: NULLABLE
-      description: Name of the invoked tool, e.g. "run_search", "get_open_tabs", "search_browsing_history",
+      description: 'Depending on the type of event:
+
+        * Name of the invoked tool, e.g. "run_search", "get_open_tabs", "search_browsing_history",
         "get_user_memories"
+
+        * Name of the requested tool, e.g. "run_search", "get_open_tabs", "search_browsing_history",
+        "get_user_memories"'
     - name: top_preferred_language
       type: STRING
       mode: NULLABLE

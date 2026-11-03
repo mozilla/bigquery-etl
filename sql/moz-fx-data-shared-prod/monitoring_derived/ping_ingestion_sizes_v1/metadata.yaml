@@ -1,18 +1,19 @@
 friendly_name: Ping Ingestion Sizes
 description: |-
   Daily size of each ping (document namespace and type) at every stage of the
-  ingestion pipeline: raw Pub/Sub messages, compressed and decompressed
-  payloads in the Dataflow decoders, decoded Pub/Sub messages, and stable
-  table logical bytes.
+  ingestion pipeline: bytes published to and delivered from the raw Pub/Sub
+  topic, compressed and decompressed payloads in the Dataflow decoders, bytes
+  published to and delivered from the decoded topic, and stable table logical
+  bytes. All numeric columns are rounded to integers.
 
   Dataflow counters and stable table sizes are reported per ping. Pub/Sub
-  bytes are only reported per subscription, so they are split between pings
-  in proportion to compressed bytes plus a per-message overhead. The overhead
-  is derived from each day's totals and is stored in the
-  *_overhead_bytes_per_message columns. Pub/Sub byte columns cover one
-  subscription per stage. Each topic has two subscriptions (the decoder and
-  the raw sink, or the republisher and the BigQuery sink), and billing is per
-  subscription.
+  bytes are only reported per topic and subscription, so they are split
+  between pings in proportion to compressed bytes plus a per-message
+  overhead. The overhead is derived from each day's totals and is stored in
+  the *_overhead_bytes_per_message columns. Subscription byte columns cover
+  one subscription per topic. Each topic has two subscriptions (the decoder
+  and the raw sink, or the republisher and the BigQuery sink), and billing is
+  per subscription.
 
   Built from monitoring_derived.gcp_monitoring_metrics_hourly_v1 and
   monitoring_derived.stable_and_derived_table_sizes_v1.
@@ -27,8 +28,8 @@ scheduling:
   depends_on:
   - dag_name: bqetl_monitoring_hourly
     task_id: monitoring_derived__gcp_monitoring_metrics_hourly__v1
-    # Wait for the 00:00 run of the next day, which does the final rewrite of
-    # the day's partition.
+    # Wait for the next day's run at logical_date 00:00 (wall clock 01:00),
+    # which does the final rewrite of the day's partition.
     execution_delta: -22h
 bigquery:
   time_partitioning:

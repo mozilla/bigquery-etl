@@ -13,45 +13,55 @@ metric, so older partitions cannot be rebuilt.
 
 PromQL was chosen over the monitoring SDK because the code is simpler. The caveat is that PromQL's
 increase() function (used for Dataflow counters) estimates time window edges, so the Dataflow
-metrics aren't exact and are ~1-2% lower than the monitoring SDK result.
+metrics aren't exact and are ~0.4-1% lower than the monitoring SDK result.
 """
 
 import datetime
 import json
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
+from multiprocessing.pool import ThreadPool
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import click
 import google.auth
-from google.auth.transport.requests import AuthorizedSession
+from google.auth.transport.requests import AuthorizedSession, Request
 from google.cloud import bigquery
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-DEFAULT_PROJECTS = (
+from bigquery_etl.schema import SCHEMA_FILE, Schema
+
+BEAM_PROJECTS = (
     "moz-fx-data-beam-nonprod-b5f4",
     "moz-fx-data-beam-prod-11f7",
+)
+PUBSUB_PROJECTS = BEAM_PROJECTS + (
+    # The raw and decoded ingestion topics live here.
+    "moz-fx-data-shared-prod",
     "moz-fx-ingestion-sink-nonprod",
     "moz-fx-ingestion-sink-prod",
     "moz-fx-data-shar-nonprod-efed",
-    # The edge load balancers live in these shared GCPv2 projects.
-    "moz-fx-dataservices-high-prod",
-    "moz-fx-dataservices-high-nonpr",
 )
+# The edge load balancers live in shared GCPv2 projects. Airflow can't read
+# monitoring in the nonprod one (moz-fx-dataservices-high-nonpr).
+LOAD_BALANCER_PROJECTS = ("moz-fx-dataservices-high-prod",)
 
 
 @dataclass(frozen=True)
 class MetricDefinition:
     """A Cloud Monitoring metric to aggregate by hour.
 
-    name is written to the metric column. group_by lists the resource or metric
-    labels to keep (project_id is always kept). label_filters maps label names
-    to RE2 regular expressions that must fully match.
+    name is written to the metric column. projects lists the projects to query.
+    group_by lists the resource or metric labels to keep (project_id is always
+    kept). label_filters maps label names to RE2 regular expressions that must
+    fully match.
     """
 
     name: str
     metric_type: str
+    projects: Tuple[str, ...]
     group_by: Tuple[str, ...]
     label_filters: Dict[str, str] = field(default_factory=dict)
 
@@ -60,28 +70,33 @@ METRICS = (
     MetricDefinition(
         name="pubsub_topic_byte_cost",
         metric_type="pubsub.googleapis.com/topic/byte_cost",
+        projects=PUBSUB_PROJECTS,
         group_by=("topic_id", "operation_type"),
     ),
     MetricDefinition(
         name="pubsub_subscription_byte_cost",
         metric_type="pubsub.googleapis.com/subscription/byte_cost",
+        projects=PUBSUB_PROJECTS,
         group_by=("subscription_id", "operation_type"),
     ),
     MetricDefinition(
         name="dataflow_predecompress_submission_bytes",
         metric_type="dataflow.googleapis.com/job/user_counter",
+        projects=BEAM_PROJECTS,
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/predecompress_submission_bytes"},
     ),
     MetricDefinition(
         name="dataflow_valid_submission_bytes",
         metric_type="dataflow.googleapis.com/job/user_counter",
+        projects=BEAM_PROJECTS,
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/valid_submission_bytes"},
     ),
     MetricDefinition(
         name="dataflow_valid_submission",
         metric_type="dataflow.googleapis.com/job/user_counter",
+        projects=BEAM_PROJECTS,
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/valid_submission"},
     ),
@@ -90,38 +105,27 @@ METRICS = (
     MetricDefinition(
         name="edge_load_balancer_request_bytes",
         metric_type="loadbalancing.googleapis.com/https/request_bytes_count",
+        projects=LOAD_BALANCER_PROJECTS,
         group_by=("forwarding_rule_name", "response_code_class"),
         label_filters={"forwarding_rule_name": ".*ingestion-edge.*"},
     ),
     MetricDefinition(
         name="edge_load_balancer_response_bytes",
         metric_type="loadbalancing.googleapis.com/https/response_bytes_count",
+        projects=LOAD_BALANCER_PROJECTS,
         group_by=("forwarding_rule_name", "response_code_class"),
         label_filters={"forwarding_rule_name": ".*ingestion-edge.*"},
     ),
 )
 
-SCHEMA = [
-    bigquery.SchemaField("submission_date", "DATE"),
-    bigquery.SchemaField("interval_start_time", "TIMESTAMP"),
-    bigquery.SchemaField("interval_end_time", "TIMESTAMP"),
-    bigquery.SchemaField("metric", "STRING"),
-    bigquery.SchemaField("metric_type", "STRING"),
-    bigquery.SchemaField("project_id", "STRING"),
-    bigquery.SchemaField(
-        "labels",
-        "RECORD",
-        mode="REPEATED",
-        fields=[
-            bigquery.SchemaField("key", "STRING"),
-            bigquery.SchemaField("value", "STRING"),
-        ],
-    ),
-    bigquery.SchemaField("value", "FLOAT64"),
-]
+SCHEMA = Schema.from_schema_file(
+    Path(__file__).parent / SCHEMA_FILE
+).to_bigquery_schema()
 
 STEP = datetime.timedelta(hours=1)
 WARNING_ATTEMPTS = 3
+# Number of metric and project queries to run at once.
+PARALLELISM = 8
 # Pub/Sub and Dataflow points are ingested up to 7 minutes after they're sampled.
 INGEST_DELAY = datetime.timedelta(minutes=10)
 
@@ -141,6 +145,8 @@ def build_promql(metric: MetricDefinition, project: str) -> str:
         for label, regex in sorted(metric.label_filters.items())
     ]
     group_by = ", ".join(("project_id",) + metric.group_by)
+    # With the window equal to the step, adjacent hours don't share samples.
+    # Hourly Pub/Sub values matched the API's ALIGN_DELTA sums exactly.
     window = f"{int(STEP.total_seconds())}s"
     return f"sum by ({group_by}) (increase({{{', '.join(matchers)}}}[{window}]))"
 
@@ -151,6 +157,10 @@ def create_session(quota_project: Optional[str]) -> AuthorizedSession:
         scopes=["https://www.googleapis.com/auth/monitoring.read"],
         quota_project_id=quota_project,
     )
+    # Credential refresh isn't locked, so get a token now rather than letting
+    # every worker thread refresh at once on its first request. A run is much
+    # shorter than the token lifetime.
+    credentials.refresh(Request())
     session = AuthorizedSession(credentials)
     retry = Retry(
         total=5,
@@ -158,7 +168,7 @@ def create_session(quota_project: Optional[str]) -> AuthorizedSession:
         status_forcelist=(429, 500, 502, 503, 504),
         allowed_methods=("GET",),
     )
-    session.mount("https://", HTTPAdapter(max_retries=retry))
+    session.mount("https://", HTTPAdapter(max_retries=retry, pool_maxsize=PARALLELISM))
     return session
 
 
@@ -200,7 +210,8 @@ def query_range(
             # result is null rather than an empty list when nothing matches.
             return body["data"]["result"] or []
         print(f"Warning from {project} (attempt {attempt}): {warnings}")
-        time.sleep(10 * attempt)
+        if attempt < WARNING_ATTEMPTS:
+            time.sleep(10 * attempt)
     raise RuntimeError(f"PromQL query for {project} kept returning warnings")
 
 
@@ -244,11 +255,10 @@ def to_rows(
 def fetch_day(
     session: AuthorizedSession,
     date: datetime.date,
-    projects: Iterable[str],
     metrics: Iterable[MetricDefinition],
     now: Optional[datetime.datetime] = None,
 ) -> List[Dict[str, Any]]:
-    """Fetch hourly rows for every metric and project on the given date."""
+    """Fetch hourly rows for every metric in each of its projects on a date."""
     day_start = datetime.datetime.combine(date, datetime.time(), datetime.timezone.utc)
     # Points are evaluated at the end of each hour, from 01:00 to 24:00.
     start, end = day_start + STEP, day_start + datetime.timedelta(days=1)
@@ -261,15 +271,25 @@ def fetch_day(
         print(f"No complete hours yet for {date}")
         return []
 
+    tasks = [(metric, project) for metric in metrics for project in metric.projects]
+
+    def fetch(task: Tuple[MetricDefinition, str]) -> List[Dict[str, Any]]:
+        metric, project = task
+        result = query_range(
+            session, project, build_promql(metric, project), start, end
+        )
+        return to_rows(metric, project, result)
+
+    # The Dataflow queries take the longest, so run queries in parallel. The
+    # session is shared between threads. It only makes GET requests and its
+    # connection pool is sized for PARALLELISM.
+    with ThreadPool(PARALLELISM) as pool:
+        results = pool.map(fetch, tasks, chunksize=1)
+
     rows = []
-    for metric in metrics:
-        for project in projects:
-            result = query_range(
-                session, project, build_promql(metric, project), start, end
-            )
-            metric_rows = to_rows(metric, project, result)
-            print(f"{metric.name} in {project}: {len(metric_rows)} rows")
-            rows.extend(metric_rows)
+    for (metric, project), metric_rows in zip(tasks, results):
+        print(f"{metric.name} in {project}: {len(metric_rows)} rows")
+        rows.extend(metric_rows)
     return rows
 
 
@@ -284,9 +304,7 @@ def fetch_day(
     "--project",
     "projects",
     multiple=True,
-    default=DEFAULT_PROJECTS,
-    show_default=True,
-    help="Project to read metrics from. Can be repeated.",
+    help="Only query these projects. Defaults to each metric's projects.",
 )
 @click.option(
     "--metric",
@@ -310,16 +328,18 @@ def fetch_day(
 @click.option("--dry_run", "--dry-run", is_flag=True, default=False)
 def main(date, projects, metric_names, destination_table, quota_project, dry_run):
     """Load one day of hourly metric values into a date partition."""
-    if metric_names:
-        if not dry_run:
-            # Writing a subset would drop the other metrics from the partition.
-            raise click.UsageError("--metric can only be used with --dry-run")
-        metrics = [m for m in METRICS if m.name in metric_names]
-    else:
-        metrics = list(METRICS)
+    if (metric_names or projects) and not dry_run:
+        # Writing a subset would drop the other rows from the partition.
+        raise click.UsageError("--metric and --project can only be used with --dry-run")
+    metrics = [m for m in METRICS if not metric_names or m.name in metric_names]
+    if projects:
+        metrics = [
+            replace(m, projects=tuple(p for p in m.projects if p in projects))
+            for m in metrics
+        ]
 
     session = create_session(quota_project)
-    rows = fetch_day(session, date, projects, metrics)
+    rows = fetch_day(session, date, metrics)
 
     if not rows:
         # Data past the retention window comes back empty. Refuse to replace

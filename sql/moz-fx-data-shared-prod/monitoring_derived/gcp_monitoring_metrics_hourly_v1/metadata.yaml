@@ -17,8 +17,9 @@ scheduling:
   dag_name: bqetl_monitoring_hourly
   # Each run rewrites a whole day partition up to the last complete hour.
   # Target the day containing (run time - 2 hours) instead of the default
-  # (run time - 1 hour) so each day partition gets a final rewrite at 01:00
-  # the next day, after the last hour of the day has been ingested.
+  # (run time - 1 hour) so each day partition gets a final rewrite by the
+  # next day's run at logical_date 00:00 (wall clock 01:00), after the last
+  # hour of the day has been ingested.
   arguments: ["--date", "{{ (logical_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"]
 bigquery:
   time_partitioning:

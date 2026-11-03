@@ -34,6 +34,7 @@ DAY_START = datetime.datetime(2026, 10, 31, tzinfo=UTC)
 DATAFLOW = query_mod.MetricDefinition(
     name="dataflow_bytes",
     metric_type="dataflow.googleapis.com/job/user_counter",
+    projects=("my-project",),
     group_by=("job_name", "metric_name"),
     label_filters={"metric_name": r".+/bytes\.v1"},
 )
@@ -41,6 +42,7 @@ DATAFLOW = query_mod.MetricDefinition(
 PUBSUB = query_mod.MetricDefinition(
     name="subscription_bytes",
     metric_type="pubsub.googleapis.com/subscription/byte_cost",
+    projects=("my-project",),
     group_by=("subscription_id", "operation_type"),
 )
 
@@ -126,7 +128,7 @@ def test_to_rows_with_missing_labels():
 
 def test_fetch_day_queries_each_hour_of_the_day():
     with patch.object(query_mod, "query_range", return_value=[]) as query_range:
-        query_mod.fetch_day(MagicMock(), DAY_START.date(), ["my-project"], [DATAFLOW])
+        query_mod.fetch_day(MagicMock(), DAY_START.date(), [DATAFLOW])
 
     _, project, query, start, end = query_range.call_args.args
     assert project == "my-project"
@@ -182,10 +184,15 @@ def test_query_range_gives_up_after_repeated_warnings():
     session = MagicMock()
     session.get.return_value = success([], warnings=["execution_errors"])
 
-    with patch.object(query_mod.time, "sleep"), pytest.raises(RuntimeError):
+    with (
+        patch.object(query_mod.time, "sleep") as sleep,
+        pytest.raises(RuntimeError),
+    ):
         query_mod.query_range(session, "my-project", "up", hour(1), hour(24))
 
     assert session.get.call_count == query_mod.WARNING_ATTEMPTS
+    # No sleep after the last attempt.
+    assert sleep.call_count == query_mod.WARNING_ATTEMPTS - 1
 
 
 @pytest.mark.parametrize(
@@ -216,11 +223,12 @@ def test_empty_result_does_not_write():
     client.assert_not_called()
 
 
-def test_metric_subset_requires_dry_run():
-    result = CliRunner().invoke(
-        query_mod.main,
-        ["--date", "2026-10-31", "--metric", "pubsub_topic_byte_cost"],
-    )
+@pytest.mark.parametrize(
+    "subset",
+    [["--metric", "pubsub_topic_byte_cost"], ["--project", "my-project"]],
+)
+def test_subset_requires_dry_run(subset):
+    result = CliRunner().invoke(query_mod.main, ["--date", "2026-10-31", *subset])
 
     assert result.exit_code != 0
     assert "--dry-run" in result.output
@@ -250,7 +258,7 @@ def test_main_replaces_the_date_partition():
     assert job_config.clustering_fields == ["metric", "project_id"]
 
 
-def test_dry_run_with_metric_subset():
+def test_dry_run_with_subset():
     with (
         patch.object(query_mod, "create_session") as create_session,
         patch.object(query_mod, "fetch_day", return_value=[{}]) as fetch_day,
@@ -262,7 +270,9 @@ def test_dry_run_with_metric_subset():
                 "--date",
                 "2026-10-31",
                 "--project",
-                "my-project",
+                "moz-fx-ingestion-sink-prod",
+                "--project",
+                "moz-fx-dataservices-high-prod",
                 "--metric",
                 "pubsub_topic_byte_cost",
                 "--quota-project",
@@ -273,11 +283,13 @@ def test_dry_run_with_metric_subset():
 
     assert result.exit_code == 0, result.output
     create_session.assert_called_once_with("billing-project")
-    session, date, projects, metrics = fetch_day.call_args.args
+    session, date, metrics = fetch_day.call_args.args
     assert session is create_session.return_value
     assert date == DAY_START.date()
-    assert list(projects) == ["my-project"]
-    assert [metric.name for metric in metrics] == ["pubsub_topic_byte_cost"]
+    # --project narrows each metric's own projects rather than replacing them.
+    assert [(metric.name, metric.projects) for metric in metrics] == [
+        ("pubsub_topic_byte_cost", ("moz-fx-ingestion-sink-prod",))
+    ]
     bq_client.assert_not_called()
 
 
@@ -285,9 +297,7 @@ def test_fetch_day_stops_at_last_ingested_hour():
     now = hour(5) + datetime.timedelta(minutes=8)
 
     with patch.object(query_mod, "query_range", return_value=[]) as query_range:
-        query_mod.fetch_day(
-            MagicMock(), DAY_START.date(), ["my-project"], [DATAFLOW], now=now
-        )
+        query_mod.fetch_day(MagicMock(), DAY_START.date(), [DATAFLOW], now=now)
 
     # 05:00 ended only 8 minutes ago, so the last hour loaded is 03:00 to 04:00.
     *_, start, end = query_range.call_args.args
@@ -299,9 +309,61 @@ def test_fetch_day_with_no_complete_hours():
     now = hour(1) + datetime.timedelta(minutes=5)
 
     with patch.object(query_mod, "query_range") as query_range:
-        rows = query_mod.fetch_day(
-            MagicMock(), DAY_START.date(), ["my-project"], [DATAFLOW], now=now
-        )
+        rows = query_mod.fetch_day(MagicMock(), DAY_START.date(), [DATAFLOW], now=now)
 
     assert rows == []
     query_range.assert_not_called()
+
+
+def test_fetch_day_queries_each_metric_in_its_projects():
+    def fake_query_range(session, project, query, start, end):
+        return [{"metric": {}, "values": [[hour(1).timestamp(), "1"]]}]
+
+    dataflow = query_mod.replace(DATAFLOW, projects=("project-a", "project-b"))
+    pubsub = query_mod.replace(PUBSUB, projects=("project-c",))
+    with patch.object(
+        query_mod, "query_range", side_effect=fake_query_range
+    ) as query_range:
+        rows = query_mod.fetch_day(MagicMock(), DAY_START.date(), [dataflow, pubsub])
+
+    assert query_range.call_count == 3
+    # Queries run in parallel, but rows come back in metric then project order.
+    assert [(row["metric"], row["project_id"]) for row in rows] == [
+        ("dataflow_bytes", "project-a"),
+        ("dataflow_bytes", "project-b"),
+        ("subscription_bytes", "project-c"),
+    ]
+
+
+def test_every_metric_has_projects():
+    assert all(metric.projects for metric in query_mod.METRICS)
+
+
+def test_rows_match_schema():
+    result = [
+        {
+            "metric": {"subscription_id": "sub", "operation_type": "ack"},
+            "values": [[hour(1).timestamp(), "3"]],
+        }
+    ]
+
+    (row,) = query_mod.to_rows(PUBSUB, "my-project", result)
+
+    # The load job uses SCHEMA from schema.yaml, so a renamed column would
+    # otherwise only fail in production.
+    fields = {field.name: field for field in query_mod.SCHEMA}
+    assert set(row) == set(fields)
+    label_fields = {field.name for field in fields["labels"].fields}
+    assert all(set(label) == label_fields for label in row["labels"])
+
+
+def test_create_session_fetches_token_up_front():
+    credentials = MagicMock()
+
+    with patch.object(
+        query_mod.google.auth, "default", return_value=(credentials, "project")
+    ) as default:
+        query_mod.create_session("billing-project")
+
+    assert default.call_args.kwargs["quota_project_id"] == "billing-project"
+    credentials.refresh.assert_called_once()

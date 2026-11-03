@@ -44,10 +44,7 @@ WITH base_events_v1 AS (
       event.category IN ('uptake.remotecontent.result', 'remote_settings')
       AND event.name = 'uptake_remotesettings'
               -- udfs like mozfun.norm.extract_version can't be used in materialized views
-      AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC) IN (
-        143,
-        144
-      )
+      AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+)") AS NUMERIC) <= 144
       AND sample_id != 0
     ) IS NOT TRUE
 ),

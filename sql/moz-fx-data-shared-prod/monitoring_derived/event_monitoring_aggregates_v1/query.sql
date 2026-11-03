@@ -207,7 +207,7 @@ base_org_mozilla_firefox_events_v1 AS (
     AND (
       event.category IN ("uptake.remotecontent.result", "remote_settings")
       AND event.name = "uptake_remotesettings"
-      AND mozfun.norm.extract_version(client_info.app_display_version, 'major') IN (143, 144)
+      AND mozfun.norm.extract_version(client_info.app_display_version, 'major') <= 144
       AND sample_id != 0
     ) IS NOT TRUE
   GROUP BY

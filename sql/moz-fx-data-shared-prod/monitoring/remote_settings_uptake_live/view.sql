@@ -106,7 +106,7 @@ WHERE
     sample_id != 0
     AND (
       -- No server knobs on iOS
-      platform = 'ios'
+      (platform = 'ios' AND normalized_app_id = 'org_mozilla_ios_firefox')
       -- Server knobs introduced in 145
       OR major_version <= 144
     )

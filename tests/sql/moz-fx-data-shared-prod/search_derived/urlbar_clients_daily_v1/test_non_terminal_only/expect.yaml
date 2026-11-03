@@ -1,0 +1,20 @@
+# NULL columns are omitted: the harness drops null keys from the result row.
+
+# No completed session, but the row and the element are kept.
+- submission_date: "2026-10-14"
+  client_id: client-b
+  sample_id: 2
+  sessions_total: 0
+  sessions_engaged: 0
+  sessions_abandoned: 0
+  results:
+  - window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: history
+    product_result_type: history
+    result_group: general
+    clicks: 0
+    sessions_shown: 0
+    sessions_shown_abandoned: 0
+    annoyances: 0

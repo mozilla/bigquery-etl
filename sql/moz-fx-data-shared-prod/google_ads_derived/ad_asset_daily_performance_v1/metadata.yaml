@@ -1,0 +1,53 @@
+friendly_name: Google Ads App Campaign Asset Daily Performance
+description: |-
+  Daily performance of each asset in Google Ads App campaigns (UAC), from the
+  Google Ads BigQuery Data Transfer
+  (`moz-fx-data-marketing-prod.google_ads_dts_mmc.p_ads_ad_group_ad_asset_performance_*`).
+
+  Grain: one row per date, campaign, ad group, ad, asset and field type.
+  Only rows with activity are included. Data starts on 2026-07-19.
+
+  Only App campaigns (`advertising_channel_type = 'MULTI_CHANNEL'`) are
+  included. Standalone YouTube app-install campaigns (DEMAND_GEN) are not
+  included.
+
+  `market` is the country code from the campaign name (UK is mapped to GB,
+  UNKNOWN when the name has no country code). `region` and `language` are
+  also from the campaign name. Join to `google_ads_derived.ad_assets_v1` on
+  `asset_id` for the asset content (image URL, YouTube ID, text).
+
+  Rules for use:
+  - Google attributes cost and conversions to each field type separately.
+    Never sum cost or conversions across field types.
+  - Conversions are reported by Google. They are not installs. Conversions
+    are about 1.5 times installs in the US and about 1.9 times installs in
+    Japan.
+  - `performance_label` and `asset_enabled` show the current Google values on
+    all rows, also on older dates. Only the metrics (impressions, clicks,
+    cost, conversions) are historical.
+
+  Google restates recent data. Each run replaces the last 14 days up to the
+  submission date.
+owners:
+- phlee@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+  - lookback_days:INT64:13
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - market
+    - field_type
+references: {}

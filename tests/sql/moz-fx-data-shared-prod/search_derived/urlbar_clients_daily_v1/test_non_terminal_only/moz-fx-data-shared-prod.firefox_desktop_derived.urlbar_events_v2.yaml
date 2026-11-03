@@ -1,0 +1,16 @@
+# A bounce is engaged but non-terminal: no completed session and no click.
+- submission_date: "2026-10-14"
+  glean_client_id: client-b
+  sample_id: 2
+  event_name: bounce
+  event_timestamp: 50
+  event_id: e1
+  interaction: typed
+  selected_result: history
+  product_selected_result: history
+  event_action: engaged
+  is_terminal: false
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: history, product_result_type: history, result_group: general}

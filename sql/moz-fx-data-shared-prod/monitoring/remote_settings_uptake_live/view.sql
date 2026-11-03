@@ -104,11 +104,9 @@ WHERE
   -- Keep only the 1% sample where the client does not sample itself.
   (
     sample_id != 0
-    AND normalized_channel = 'release'
-    AND major_version >= 143
     AND (
       -- No server knobs on iOS
-      platform = 'ios'
+      (platform = 'ios' AND normalized_app_id = 'org_mozilla_ios_firefox')
       -- Server knobs introduced in 145
       OR major_version <= 144
     )

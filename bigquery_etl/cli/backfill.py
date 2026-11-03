@@ -13,6 +13,7 @@ from typing import Optional, Tuple
 import rich_click as click
 import yaml
 from dateutil.relativedelta import relativedelta
+from google.api_core.exceptions import GoogleAPICallError
 from google.cloud import bigquery
 from google.cloud.exceptions import Conflict, NotFound
 
@@ -1182,7 +1183,8 @@ def _initiate_backfill(
             # don't let query backfill re-apply target redirection.
             skip_target_resolution=True,
         )
-    except subprocess.CalledProcessError as e:
+    # queries run with either bq or the BigQuery client
+    except (subprocess.CalledProcessError, GoogleAPICallError) as e:
         raise ValueError(
             f"Backfill initiate resulted in error for {qualified_table_name}"
         ) from e

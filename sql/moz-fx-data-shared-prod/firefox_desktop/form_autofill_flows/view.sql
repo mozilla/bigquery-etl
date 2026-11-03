@@ -68,8 +68,7 @@ event_signals AS (
       -- from one variant comes back NULL. 'false' means the field is not on
       -- the form.
       WHEN event_name LIKE 'detected_%'
-        OR event_name LIKE 'filled_%'
-        AND event_name NOT LIKE 'filled_modified_%'
+        OR (event_name LIKE 'filled_%' AND event_name NOT LIKE 'filled_modified_%')
         THEN ARRAY(
             SELECT AS STRUCT
               f.field,

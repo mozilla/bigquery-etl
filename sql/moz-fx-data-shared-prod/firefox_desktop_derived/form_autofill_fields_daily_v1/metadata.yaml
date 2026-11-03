@@ -6,8 +6,11 @@ description: |-
   field, country and version (DENG-11568).
 
   Field counts (`detected_fields`, `autofilled_fields`, `modified_fields`,
-  `net_kept_fields`) are per (flow, field). Modify rate = modified_fields /
-  autofilled_fields. Popup counts are per flow and use the detection method of
+  `net_kept_fields`) are per (flow, field) and include all detection methods,
+  including autocomplete and fields with no detected event. The forms table and
+  metric-hub count only inferred fields, so to match their totals, filter
+  `detection_method IN ('ml', 'fathom', 'regex')`. Modify rate =
+  modified_fields / autofilled_fields. Popup counts are per flow and use the detection method of
   the field that showed the popup. Do not sum popup counts across fields for an
   overall rate, because one flow can show popups on more than one field; use
   `form_autofill_forms_daily` for that.

@@ -47,23 +47,33 @@ fields:
 - name: detected_fields
   type: INTEGER
   mode: NULLABLE
-  description: Number of (flow, field) pairs where the field was detected.
+  description: >-
+    Number of (flow, field) pairs where the field was detected.
+    Includes all detection methods. To match `form_autofill_forms_daily` and
+    metric-hub, filter `detection_method IN ('ml', 'fathom', 'regex')`.
 - name: autofilled_fields
   type: INTEGER
   mode: NULLABLE
-  description: Number of (flow, field) pairs where autofill filled the field.
+  description: >-
+    Number of (flow, field) pairs where autofill filled the field.
+    Includes all detection methods. To match `form_autofill_forms_daily` and
+    metric-hub, filter `detection_method IN ('ml', 'fathom', 'regex')`.
 - name: modified_fields
   type: INTEGER
   mode: NULLABLE
   description: >-
     Number of (flow, field) pairs where autofill filled the field and the user
     then edited it. Modify rate = modified_fields / autofilled_fields.
+    Includes all detection methods. To match `form_autofill_forms_daily` and
+    metric-hub, filter `detection_method IN ('ml', 'fathom', 'regex')`.
 - name: net_kept_fields
   type: INTEGER
   mode: NULLABLE
   description: >-
     Number of (flow, field) pairs where autofill filled the field and the user did
     not edit it.
+    Includes all detection methods. To match `form_autofill_forms_daily` and
+    metric-hub, filter `detection_method IN ('ml', 'fathom', 'regex')`.
 - name: popup_flows
   type: INTEGER
   mode: NULLABLE

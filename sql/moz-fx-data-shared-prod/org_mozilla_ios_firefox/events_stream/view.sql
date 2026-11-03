@@ -22,6 +22,7 @@ SELECT
       LAX_BOOL(event_extra.is_at_bottom) AS `is_at_bottom`,
       LAX_BOOL(event_extra.is_enabled) AS `is_enabled`,
       LAX_BOOL(event_extra.is_enrolled_in_sent_from_firefox) AS `is_enrolled_in_sent_from_firefox`,
+      LAX_BOOL(event_extra.is_follow_up) AS `is_follow_up`,
       LAX_BOOL(event_extra.is_homepage) AS `is_homepage`,
       LAX_BOOL(event_extra.is_impression) AS `is_impression`,
       LAX_BOOL(event_extra.is_new_email_mask) AS `is_new_email_mask`,

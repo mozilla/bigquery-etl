@@ -459,6 +459,11 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the user is enrolled in the Sent from Firefox experiment.
+    - name: is_follow_up
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True when the event belongs to a question asked after a previous
+        answer in the same Quick Answers session, false for the first question.
     - name: is_homepage
       type: BOOLEAN
       mode: NULLABLE

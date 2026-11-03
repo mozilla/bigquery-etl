@@ -52,7 +52,8 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Searches started from a Firefox search access point that day, the sum of
-    search_clients_daily_glean_v1.sap_counts_total over the client's rows. 0 if none.
+    search_clients_daily_glean_v1.sap_counts_total over the client's rows, leaving out rows
+    of 10,000 or more (runaway counts from a held-down Enter key). 0 if none.
 - name: suggest_sponsored
   type: INTEGER
   mode: NULLABLE

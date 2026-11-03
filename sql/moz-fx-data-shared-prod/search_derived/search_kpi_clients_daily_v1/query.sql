@@ -105,7 +105,8 @@ sap AS (
   SELECT
     client_id,
     ANY_VALUE(sample_id) AS sample_id,
-    SUM(sap_counts_total) AS sap
+    -- Rows of 10,000+ are runaway counts from a held-down Enter key; legacy drops them too.
+    SUM(IF(sap_counts_total < 10000, sap_counts_total, 0)) AS sap
   FROM
     `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
   WHERE

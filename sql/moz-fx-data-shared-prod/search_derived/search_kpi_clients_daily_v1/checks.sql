@@ -2,7 +2,8 @@
 {{ is_unique(["platform", "client_id"], "submission_date = @submission_date") }}
 
 #fail
--- Every SAP search in the source must land here: the only clients left out have sap = 0.
+-- Every SAP search in the source must land here, apart from rows of 10,000+ (runaway counts).
+-- The only clients left out have sap = 0.
 WITH kpi AS (
   SELECT
     SUM(sap) AS sap
@@ -19,6 +20,7 @@ source AS (
     `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
   WHERE
     submission_date = @submission_date
+    AND sap_counts_total < 10000
 )
 SELECT
   IF(

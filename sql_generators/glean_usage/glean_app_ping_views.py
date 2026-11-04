@@ -122,7 +122,7 @@ class GleanAppPingViews(GleanTable):
                 # Probeinfo can list pings that are not deployed yet
                 if not ping_has_stable_table(channel_dataset, view_name):
                     print(
-                        f"Skipping `{channel_dataset_view}`: stable table not deployed yet"
+                        f"Skipping `{channel_dataset_view}`: mozilla-pipeline-schemas entry not found"
                     )
                     continue
 

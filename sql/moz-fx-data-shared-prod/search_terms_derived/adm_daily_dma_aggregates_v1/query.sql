@@ -10,7 +10,7 @@ WITH mls AS (
   -- Keep one row per request so the join to impressions on request_id cannot fan
   -- out; Merino logs can be redelivered with the same request_id
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp` DESC) = 1
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp` DESC, dma) = 1
 )
 SELECT
   DATE(@submission_date) AS submission_date,

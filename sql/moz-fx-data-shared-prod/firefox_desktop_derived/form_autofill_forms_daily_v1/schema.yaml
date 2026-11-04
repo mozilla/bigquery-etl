@@ -2,11 +2,15 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Date the events were received (UTC).
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: submission_date
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Release channel, for example release, beta or nightly.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_channel
 - name: app_version_major
   type: INTEGER
   mode: NULLABLE
@@ -18,7 +22,9 @@ fields:
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Country of the client, from geo IP.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_country_code
 - name: form_type
   type: STRING
   mode: NULLABLE

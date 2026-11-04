@@ -1,5 +1,3 @@
--- Daily form autofill counts per flow (one form interaction), for overall rates
--- that must count each form once.
 SELECT
   submission_date,
   normalized_channel,
@@ -27,13 +25,4 @@ FROM
 WHERE
   submission_date = @submission_date
 GROUP BY
-  submission_date,
-  normalized_channel,
-  app_version_major,
-  app_build_date,
-  normalized_country_code,
-  form_type,
-  ml_version,
-  is_high_volume_client,
-  has_inferred_field,
-  has_autocomplete_field
+  ALL

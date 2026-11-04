@@ -22,7 +22,7 @@ labels:
   schedule: daily
   table_type: aggregate
 scheduling:
-  dag_name: bqetl_form_autofill
+  dag_name: bqetl_firefox_desktop_features
 bigquery:
   time_partitioning:
     type: day

@@ -2,13 +2,16 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: >-
-    Date the events were received (UTC). A flow that continues after midnight is
-    split across two days.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: submission_date
+    append: A flow that continues after midnight is split across two days.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: Glean client ID.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: client_id
 - name: form_type
   type: STRING
   mode: NULLABLE
@@ -20,19 +23,27 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-  description: Legacy telemetry client ID of the same profile.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: legacy_telemetry_client_id
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: Profile group ID. Nimbus experiments randomize on this ID.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: profile_group_id
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID (0-99) derived from the client ID.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: sample_id
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Release channel, for example release, beta or nightly.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_channel
 - name: app_version_major
   type: INTEGER
   mode: NULLABLE
@@ -44,7 +55,9 @@ fields:
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Country of the client, from geo IP.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_country_code
 - name: ml_version
   type: STRING
   mode: NULLABLE

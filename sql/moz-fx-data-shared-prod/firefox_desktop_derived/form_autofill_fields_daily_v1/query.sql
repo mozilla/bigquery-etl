@@ -1,7 +1,3 @@
--- Daily form autofill field performance, by field and detection method.
--- Field-level counts are per (flow, field). Popup counts are per flow, keyed on
--- the field that showed the popup and classified by that field's own detection
--- method.
 SELECT
   submission_date,
   normalized_channel,
@@ -28,13 +24,4 @@ FROM
 WHERE
   submission_date = @submission_date
 GROUP BY
-  submission_date,
-  normalized_channel,
-  app_version_major,
-  app_build_date,
-  normalized_country_code,
-  form_type,
-  ml_version,
-  is_high_volume_client,
-  field,
-  detection_method
+  ALL

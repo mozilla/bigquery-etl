@@ -6,9 +6,8 @@
 -- autofilled_fields, modified_fields and net_kept_fields match the Jetstream
 -- metrics.
 --
--- This is a view and not a table because it has about 300M rows per day. It
--- has no joins, so that a submission_date filter prunes the events_stream
--- partitions.
+-- Do not add joins: a join stops a submission_date filter on this view from
+-- pruning the events_stream partitions.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows`
 AS
@@ -189,10 +188,7 @@ per_flow AS (
   FROM
     event_signals
   GROUP BY
-    submission_date,
-    client_id,
-    form_type,
-    flow
+    ALL
 ),
 -- One entry per (flow, field). A field named by several events in one flow
 -- counts once. If the detected_* events of one flow disagree on the method,

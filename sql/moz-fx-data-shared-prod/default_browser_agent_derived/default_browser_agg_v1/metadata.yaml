@@ -2,10 +2,10 @@ friendly_name: Default Browser Aggregates Derived
 description: |-
   Aggregate table for default browser setting
 owners:
-- wichan@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: wichan@mozilla.com
+  owner1: kik@mozilla.com
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

@@ -353,7 +353,8 @@ country_aggregates AS (
       'PL',
       'FR',
       'ES',
-      'IT'
+      'IT',
+      'IN'
     )
   GROUP BY
     corpus_item_id,

@@ -203,7 +203,7 @@ class TestDeploy:
         # Skip-listed query under --isolated: deploy proceeds from the
         # checked-in schema.yaml instead of bailing, so downstream views
         # have a target to reference.
-        mock_dryrun.skipped_files.return_value = {str(query_path / "query.sql")}
+        mock_dryrun.is_skipped.return_value = True
         client = mock_client.return_value
         client.get_table.side_effect = NotFound("table not found")
 
@@ -222,10 +222,38 @@ class TestDeploy:
         self, mock_dryrun, query_path
     ):
         # Non-isolated behavior is unchanged: skip-listed queries bail.
-        mock_dryrun.skipped_files.return_value = {str(query_path / "query.sql")}
+        mock_dryrun.is_skipped.return_value = True
 
         with pytest.raises(deploy.SkippedDeployException, match="Dry run skipped"):
             deploy.deploy_table(artifact_file=query_path / "query.sql")
+
+    def test_dryrun_skip_applies_to_target_copy(self, tmp_path):
+        # A copy made for a --target is skipped based on its source path.
+        target_path = tmp_path / "sql" / "moz-fx-data-proto" / "dev_test" / "query_v1"
+        target_path.mkdir(parents=True)
+        (target_path / "query.sql").write_text("SELECT 1")
+        (target_path / "bqetl_target_info.yaml").write_text(
+            yaml.dump(
+                {
+                    "source_project": "moz-fx-data-shared-prod",
+                    "source_dataset": "test",
+                    "source_table": "query_v1",
+                }
+            )
+        )
+
+        def _config_get(*args, **kwargs):
+            if args[:2] == ("dry_run", "skip"):
+                return ["sql/moz-fx-data-shared-prod/test/query_v1/query.sql"]
+            if args[:2] == ("default", "sql_dir"):
+                return str(tmp_path / "sql")
+            return kwargs.get("fallback", None)
+
+        with (
+            patch("bigquery_etl.dryrun.ConfigLoader.get", side_effect=_config_get),
+            pytest.raises(deploy.SkippedDeployException, match="Dry run skipped"),
+        ):
+            deploy.deploy_table(artifact_file=target_path / "query.sql")
 
     @patch("google.cloud.bigquery.Client")
     def test_deploy_metadata(self, mock_client, tmp_path):

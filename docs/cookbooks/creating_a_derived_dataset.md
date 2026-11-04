@@ -258,6 +258,8 @@ For our example:
 ./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
 
+If a target is configured (`--target`, `BQETL_TARGET` or `default_target` in `bqetl_targets.yaml`), the schema is deployed to the target project instead. Pass `--no-target` to deploy to production.
+
 ## Backfilling a table
 
 This section has moved to its own page: [Backfilling a table](backfilling_a_table.md).

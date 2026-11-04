@@ -2353,8 +2353,6 @@ bqetl_materialized_view_refresh:
 
 bqetl_monitoring_hourly:
   catchup: false
-  # Prevent slow/delayed runs from overlapping
-  max_active_runs: 1
   default_args:
     depends_on_past: false
     email:

@@ -39,7 +39,6 @@ BEAM_PROJECTS = (
     "moz-fx-data-beam-prod-11f7",
 )
 PUBSUB_PROJECTS = BEAM_PROJECTS + (
-    # The raw and decoded ingestion topics live here.
     "moz-fx-data-shared-prod",
     "moz-fx-ingestion-sink-nonprod",
     "moz-fx-ingestion-sink-prod",
@@ -205,10 +204,10 @@ def query_range(
         if body.get("status") != "success":
             raise RuntimeError(f"PromQL query failed for {project}: {body}")
         # Warnings such as execution_errors can mean the result is partial.
-        # They have been transient so far, so retry before giving up.
+        # They have been transient so far, so retry before giving up
         warnings = body.get("warnings")
         if not warnings:
-            # result is null rather than an empty list when nothing matches.
+            # result is null rather than an empty list when nothing matches
             return body["data"]["result"] or []
         print(f"Warning from {project} (attempt {attempt}): {warnings}")
         if attempt < WARNING_ATTEMPTS:
@@ -229,11 +228,10 @@ def to_rows(
             if key in labels
         ]
         for timestamp, value in series["values"]:
-            # Most Dataflow counters are idle in most hours. A missing row
-            # means zero.
+            # Most Dataflow counters are idle in most hours. A missing row means zero
             if float(value) == 0:
                 continue
-            # Each point is the increase over the step ending at its timestamp.
+            # Each point is the increase over the step ending at its timestamp
             end = datetime.datetime.fromtimestamp(
                 float(timestamp), tz=datetime.timezone.utc
             )
@@ -261,10 +259,10 @@ def fetch_day(
 ) -> List[Dict[str, Any]]:
     """Fetch hourly rows for every metric in each of its projects on a date."""
     day_start = datetime.datetime.combine(date, datetime.time(), datetime.timezone.utc)
-    # Points are evaluated at the end of each hour, from 01:00 to 24:00.
+    # Points are evaluated at the end of each hour, from 01:00 to 24:00
     start, end = day_start + STEP, day_start + datetime.timedelta(days=1)
     # When loading the current day, stop at the last hour that has ended and
-    # has had time to be ingested. Later hourly runs rewrite the partition.
+    # has had time to be ingested. Later hourly runs rewrite the partition
     now = now or datetime.datetime.now(datetime.timezone.utc)
     latest = (now - INGEST_DELAY).replace(minute=0, second=0, microsecond=0)
     end = min(end, latest)
@@ -360,8 +358,7 @@ def main(date, projects, metric_names, destination_table, quota_project, dry_run
     rows = fetch_day(session, date, metrics)
 
     if not rows:
-        # Data past the retention window comes back empty. Refuse to replace
-        # an existing partition with nothing.
+        # Data past the retention window comes back empty
         raise click.ClickException(f"No metric data returned for {date}")
 
     if dry_run:
@@ -379,7 +376,7 @@ def main(date, projects, metric_names, destination_table, quota_project, dry_run
     if missing:
         raise click.ClickException(
             f"Not replacing {partition}: no data returned for "
-            f"{', '.join(sorted(missing))}, which it already has"
+            f"{', '.join(sorted(missing))}, which is already in the table"
         )
     job_config = bigquery.LoadJobConfig(
         schema=SCHEMA,

@@ -22,7 +22,7 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  owner1: bewu
+  owner1: benwu
 scheduling:
   dag_name: bqetl_monitoring
   depends_on:

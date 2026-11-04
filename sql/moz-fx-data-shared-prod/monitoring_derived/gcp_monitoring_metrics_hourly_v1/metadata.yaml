@@ -12,16 +12,14 @@ owners:
 labels:
   incremental: true
   schedule: hourly
-  owner1: bewu
+  owner1: benwu
 scheduling:
   dag_name: bqetl_monitoring_hourly
   # Each run rewrites a whole day partition up to the last complete hour.
   # Target the day containing (run time - 3 hours) instead of the default
   # (run time - 1 hour) so each day partition gets a final rewrite by the
-  # next day's run at logical_date 01:00 (wall clock 02:00), well after the
-  # last hour of the day has been ingested.
+  # next day's run at logical_date 01:00 (wall clock 02:00).
   arguments: ["--date", "{{ (logical_date - macros.timedelta(hours=2)).strftime('%Y-%m-%d') }}"]
-  # Runs must not overlap, which max_active_runs: 1 on the DAG ensures.
 bigquery:
   time_partitioning:
     type: day

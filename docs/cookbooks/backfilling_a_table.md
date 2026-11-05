@@ -154,6 +154,7 @@ default values, likely writing to the production table.
 
 In order to use the backfill complete step, the script must write to the exact staging table that `initiate` and
 `complete` use: `moz-fx-data-shared-prod.backfills_staging_derived.{prefix}{dataset}__{table_name}_{entry_date}`, where:
+
 - `{entry_date}` is the backfill entry's date (its key in `backfill.yaml`) with `-` replaced by `_`, e.g. `2026_03_02`.
   If you change the entry date, change the table name to match.
 - `{prefix}` is empty for tables in `moz-fx-data-shared-prod`. For tables in any other project it's the project with
@@ -174,8 +175,12 @@ python -c "from datetime import date; from bigquery_etl.backfill.utils import ge
 If the table has a `schema.yaml`, `initiate` creates the staging table from it before running the script.
 The staging table then stays empty while the script's output goes elsewhere, and it also stops later hourly runs
 from re-initiating the entry. Setting the entry to `Complete` would then copy the empty staging partitions over production
-(a backup of production is cloned first). To recover, fix `query_script_args`, wait for the fix to reach the Airflow
-image, then delete the staging table so the next hourly run re-initiates the backfill.
+(a backup of production is cloned first). To recover, set the entry's status to `Cancelled` and add a new `Initiate`
+entry with a new entry date and `query_script_args` pointing at that date's staging table. The new staging table doesn't
+exist yet, so the next hourly run initiates it once the change reaches the Airflow image, and the cancelled entry's
+staging tables expire on their own. Alternatively, fix the existing entry's `query_script_args`, wait for the fix to reach
+the Airflow image, then delete its staging table so the next hourly run re-initiates it; deleting the table before the
+fix is deployed re-runs the old arguments.
 
 Required parameters:
 - `query_script_entrypoint`: The name of the main function inside the python script.
@@ -207,8 +212,12 @@ bqetl backfill create moz-fx-data-shared-prod.monitoring_derived.stable_and_deri
     --query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"
 ```
 
-**If a Python-script backfill fails:** the script may create its own staging table (if the table has no
-`schema.yaml`), so copying the production table permissions happens after the backfill rather than at deploy time. The copy is attempted even when the backfill itself
+This example was run on 2026-03-02, which `bqetl backfill create` uses as the entry date, so the staging table name
+ends in `2026_03_02`. Use the date you run `create` on.
+
+**If a Python-script backfill fails:** for Python-script backfills, production table permissions (copied when `--copy-table-permissions`
+is set, as the backfill DAG does) are copied to the staging table after the script runs rather than at deploy time, since the script may create the staging table itself
+(when the table has no `schema.yaml`). The copy is attempted even when the backfill itself
 fails, so a partially written staging table is still manageable. If the permissions copy fails, the staging table
 is deleted so we aren't left with an undeletable table. It should be recoverable via time-travel if needed.
 Check the logs to see which failure case occurred.

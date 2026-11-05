@@ -1,0 +1,69 @@
+name: Set up bqetl
+description: >-
+  Set up Python and the bigquery-etl virtualenv for a CI job. Works in bigquery-etl
+  itself (path: .) and in repos that clone bigquery-etl into a subdirectory, like
+  private-bigquery-etl (path: bigquery-etl). Restores the venv the caller's build job
+  cached and builds it on a cache miss. The venv ends up in .venv for path "." and in
+  <path>/venv otherwise; run bqetl as PATH="<venv>/bin:$PATH" <path>/script/bqetl.
+
+inputs:
+  path:
+    description: Path of the bigquery-etl checkout, relative to the workspace
+    required: false
+    default: '.'
+  python-version:
+    description: >-
+      Python version to set up. Pass the exact patch version the build job resolved,
+      because the venv cache key includes it.
+    required: false
+    default: '3.11'
+
+runs:
+  using: composite
+  steps:
+    # The cache keys and venv locations match the build jobs in both repos
+    # (.venv here, bigquery-etl/venv in private-bigquery-etl), so the venv
+    # they save is the one restored here.
+    - name: Resolve bqetl paths
+      id: paths
+      shell: bash
+      env:
+        BQETL_PATH: ${{ inputs.path }}
+      run: |
+        if [ "$BQETL_PATH" = "." ]; then
+          echo "requirements=requirements.txt" >> "$GITHUB_OUTPUT"
+          echo "venv=.venv" >> "$GITHUB_OUTPUT"
+        else
+          echo "requirements=$BQETL_PATH/requirements.txt" >> "$GITHUB_OUTPUT"
+          echo "venv=$BQETL_PATH/venv" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Set up Python
+      id: setup_python
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: 'pip'
+        cache-dependency-path: ${{ steps.paths.outputs.requirements }}
+    - name: Restore cached virtualenv
+      id: restore-venv
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles(steps.paths.outputs.requirements) }}
+        path: ${{ steps.paths.outputs.venv }}
+    - name: Build virtualenv
+      if: steps.restore-venv.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        BQETL_PATH: ${{ inputs.path }}
+      run: |
+        cd "$BQETL_PATH"
+        if [ "$BQETL_PATH" = "." ]; then
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --no-deps -r requirements.txt
+          pip-sync --pip-args=--no-deps
+        else
+          python3 -m venv venv
+          venv/bin/pip install --no-deps -r requirements.txt
+          venv/bin/pip install -e .
+        fi

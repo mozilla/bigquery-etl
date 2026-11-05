@@ -1,0 +1,217 @@
+# Reusable workflow, called from build.yml here and from mozilla/private-bigquery-etl.
+#
+# Jobs run in the caller's context: the checkout is the caller's repo, and secrets,
+# vars and the dev environment come from it too. A caller other than bigquery-etl sets
+# clone-bigquery-etl so the bqetl tooling is cloned into bigquery-etl/.
+name: Flag sensitive data flows
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: Python version the caller's build job resolved (the venv cache key includes it)
+        type: string
+        default: '3.11'
+      clone-bigquery-etl:
+        description: >-
+          Clone mozilla/bigquery-etl for the bqetl tooling (set by callers other than bigquery-etl).
+          Its bqetl_project.yaml and sql/ are folded into the caller's so sources defined in
+          bigquery-etl resolve.
+        type: boolean
+        default: false
+      bigquery-etl-ref:
+        description: Branch or tag of mozilla/bigquery-etl to clone when clone-bigquery-etl is set
+        type: string
+        default: main
+      defer-on-draft:
+        description: >-
+          Hold off on requesting review and commenting while the PR is a draft. Only set this
+          if the caller also triggers on pull_request ready_for_review, which re-runs the check.
+        type: boolean
+        default: true
+
+permissions: {}
+
+jobs:
+  flag-sensitive-flows:
+    name: Flag sensitive data flows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # to request @mozilla/dataplatform-wg review + comment
+    environment:
+      name: dev
+      deployment: false
+    env:
+      # Where the setup-bqetl action put the bigquery-etl checkout and its venv
+      BQETL_ROOT: ${{ inputs.clone-bigquery-etl && 'bigquery-etl' || '.' }}
+      BQETL_VENV: ${{ inputs.clone-bigquery-etl && 'bigquery-etl/venv' || '.venv' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Clone bigquery-etl
+        if: inputs.clone-bigquery-etl
+        env:
+          BQETL_REF: ${{ inputs.bigquery-etl-ref }}
+        run: |
+          git clone --filter=blob:none --depth 1 --branch "$BQETL_REF" \
+            https://github.com/mozilla/bigquery-etl.git
+      - name: Set up bqetl
+        if: inputs.clone-bigquery-etl
+        uses: ./bigquery-etl/.github/actions/setup-bqetl
+        with:
+          path: bigquery-etl
+          python-version: ${{ inputs.python-version }}
+      - name: Set up bqetl
+        if: ${{ !inputs.clone-bigquery-etl }}
+        uses: ./.github/actions/setup-bqetl
+        with:
+          python-version: ${{ inputs.python-version }}
+      - id: changed-queries
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
+        with:
+          files: sql/**/query.sql
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+      - name: Merge bqetl_project.yaml and bigquery-etl SQL
+        if: inputs.clone-bigquery-etl && steps.changed-queries.outputs.any_changed == 'true'
+        run: |
+          yq -n 'load("bigquery-etl/bqetl_project.yaml") *+ load("bqetl_project.yaml")' \
+            > /tmp/merged_bqetl_project.yaml
+          mv /tmp/merged_bqetl_project.yaml bqetl_project.yaml
+          cp -rn bigquery-etl/sql/. sql/
+      # A changed query reads sensitive (restricted/workgroup-gated) data and
+      # writes to a more broadly readable destination that no team owns. This is
+      # advisory: rather than block or make the author edit CODEOWNERS, it just
+      # requests Data Platform review and posts a comment. Flows on paths already
+      # owned by a team are left to that team's normal review.
+      - name: Flag sensitive-data flows widening read access
+        env:
+          ANY_CHANGED: ${{ steps.changed-queries.outputs.any_changed }}
+          CHANGED_QUERIES: ${{ steps.changed-queries.outputs.all_changed_files }}
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          DRAFT: ${{ github.event.pull_request.draft }}
+          DEFER_ON_DRAFT: ${{ inputs.defer-on-draft }}
+          MERGED_BQETL_SQL: ${{ inputs.clone-bigquery-etl }}
+        run: |
+          # errexit off throughout: every API call here is best-effort, and the
+          # step reports through annotations, the summary and comments, not its
+          # exit status.
+          set +e
+          marker='<!-- sensitive-data-flow -->'
+
+          advisory=""
+          code=0
+          if [ "$ANY_CHANGED" = "true" ]; then
+            advisory=$(PATH="$BQETL_VENV/bin:$PATH" "$BQETL_ROOT/script/bqetl" data_governance sensitivity $CHANGED_QUERIES)
+            code=$?
+            echo "$advisory"
+          fi
+
+          # Only detection (code 2) is advisory. A crash means the guardrail
+          # stopped running, which nothing else would surface now that the step
+          # otherwise stays green, so fail the job.
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            echo "::error::sensitivity check errored (exit $code)"
+            exit "$code"
+          fi
+          # A bare exit 2 with no output isn't a finding either: Click exits 2 on
+          # a usage error, which is what a missing command in an older bqetl
+          # would look like. Fail rather than post an empty advisory.
+          if [ "$code" -eq 2 ] && [ -z "$advisory" ]; then
+            echo "::error::sensitivity check exited 2 with no output; treating it as a command failure"
+            exit 1
+          fi
+
+          # This check's own comment from an earlier push, if any. Paginated: on
+          # a long PR the advisory falls off the first page, and missing it posts
+          # a duplicate instead of updating in place. `select(...) | .id` rather
+          # than `[...][0].id` so a page with no match emits nothing instead of
+          # `null`, which `head -n1` would otherwise take as the answer.
+          existing=""
+          if [ -n "$PR" ]; then
+            existing=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+              --jq ".[] | select(.body | contains(\"$marker\")) | .id" \
+              2>/dev/null | head -n1)
+          fi
+
+          if [ "$code" -eq 2 ]; then
+            # the job stays green, so the summary is what carries the finding
+            # where no comment gets posted (draft, merge queue, main push)
+            {
+              echo "### ⚠️ Sensitive-data flow detected"
+              echo
+              echo '```'
+              echo "$advisory"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          deferred=false
+          if [ "$DEFER_ON_DRAFT" = "true" ] && [ "$DRAFT" = "true" ]; then
+            deferred=true
+          fi
+
+          # Detection always runs (visible above), but with defer-on-draft hold off
+          # on requesting review / commenting while the PR is a draft. The caller's
+          # ready_for_review trigger re-runs this and posts once it's marked ready.
+          if [ "$code" -eq 2 ] && [ -n "$PR" ] && [ "$deferred" != "true" ]; then
+            # The @mozilla/dataplatform-wg mention in the comment below is the
+            # reliable notification. Also try to add the team to the Reviewers
+            # box, but this is best-effort: the repo-scoped Actions GITHUB_TOKEN
+            # can't resolve an org team as a reviewer (needs read:org, which the
+            # permissions: block can't grant), so it 422s — a PAT/App token
+            # secret with read:org would make it work.
+            gh api --method POST \
+              "repos/$REPO/pulls/$PR/requested_reviewers" \
+              -f "team_reviewers[]=dataplatform-wg" \
+              || echo "Note: could not add the team to the Reviewers box with the" \
+                      "Actions token; the @mention in the comment notifies them."
+            # Upsert a single advisory comment (marker-keyed) so re-runs on each
+            # push update it in place instead of piling up duplicates.
+            body="$(mktemp)"
+            {
+              echo "$marker"
+              echo "⚠️ **Sensitive-data flow detected** — cc @mozilla/dataplatform-wg, please review."
+              echo
+              echo "A changed query reads restricted / workgroup-gated data and writes it to a more broadly readable destination that no team owns:"
+              echo
+              echo '```'
+              echo "$advisory"
+              echo '```'
+              echo
+              if [ "$MERGED_BQETL_SQL" = "true" ]; then
+                echo "A source shown as \`unresolved\` has no \`dataset_metadata.yaml\` in either this repo or"
+                echo "bigquery-etl (whose \`sql/\` is folded in above), so its access could not be read and it"
+                echo "is flagged conservatively."
+              else
+                echo "A source shown as \`unresolved\` has no \`dataset_metadata.yaml\` in this repo. It may be"
+                echo "defined outside bigquery-etl — in private-bigquery-etl, or in a project this repo does"
+                echo "not manage — in which case its access could not be read and it is flagged conservatively."
+              fi
+              echo
+              echo "This is advisory and does not block merge."
+              echo "A Data Platform reviewer should confirm the widened access is intended, or narrow the destination's \`workgroup_access\`."
+            } > "$body"
+            if [ -n "$existing" ]; then
+              gh api --method PATCH "repos/$REPO/issues/comments/$existing" \
+                -F "body=@$body" >/dev/null || echo "Could not update existing comment"
+            else
+              gh pr comment "$PR" -R "$REPO" --body-file "$body" \
+                || echo "Could not post comment"
+            fi
+          elif [ "$code" -eq 2 ]; then
+            echo "::notice::Sensitive-data flow(s) detected; deferring @mozilla/dataplatform-wg review (draft PR, or no PR to comment on)."
+          elif [ -n "$existing" ]; then
+            # An earlier push flagged a flow this one no longer has, so drop the
+            # stale advisory.
+            gh api --method DELETE "repos/$REPO/issues/comments/$existing" \
+              >/dev/null || echo "Could not delete the stale advisory comment"
+          fi
+          # advisory only — never block the merge
+          exit 0

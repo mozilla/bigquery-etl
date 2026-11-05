@@ -1,0 +1,82 @@
+# Reusable workflow, called from build.yml here and from mozilla/private-bigquery-etl.
+#
+# Jobs run in the caller's context: the checkout is the caller's repo, and secrets,
+# vars and the dev environment come from it too. A caller other than bigquery-etl sets
+# clone-bigquery-etl so the bqetl tooling is cloned into bigquery-etl/.
+#
+# Expects the caller's generate-sql job to have uploaded the generated SQL artifact
+# earlier in the same run.
+name: Validate Monitoring
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: Python version the caller's build job resolved (the venv cache key includes it)
+        type: string
+        default: '3.11'
+      clone-bigquery-etl:
+        description: Clone mozilla/bigquery-etl for the bqetl tooling (set by callers other than bigquery-etl)
+        type: boolean
+        default: false
+      bigquery-etl-ref:
+        description: Branch or tag of mozilla/bigquery-etl to clone when clone-bigquery-etl is set
+        type: string
+        default: main
+      generated-sql-artifact:
+        description: Name of the artifact holding the generated sql/ directory
+        type: string
+        default: generated-sql
+
+permissions: {}
+
+jobs:
+  validate-monitoring:
+    name: Validate Monitoring
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment:
+      name: dev
+      deployment: false
+    env:
+      # Where the setup-bqetl action put the bigquery-etl checkout and its venv
+      BQETL_ROOT: ${{ inputs.clone-bigquery-etl && 'bigquery-etl' || '.' }}
+      BQETL_VENV: ${{ inputs.clone-bigquery-etl && 'bigquery-etl/venv' || '.venv' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Clone bigquery-etl
+        if: inputs.clone-bigquery-etl
+        env:
+          BQETL_REF: ${{ inputs.bigquery-etl-ref }}
+        run: |
+          git clone --filter=blob:none --depth 1 --branch "$BQETL_REF" \
+            https://github.com/mozilla/bigquery-etl.git
+      - name: Set up bqetl
+        if: inputs.clone-bigquery-etl
+        uses: ./bigquery-etl/.github/actions/setup-bqetl
+        with:
+          path: bigquery-etl
+          python-version: ${{ inputs.python-version }}
+      - name: Set up bqetl
+        if: ${{ !inputs.clone-bigquery-etl }}
+        uses: ./.github/actions/setup-bqetl
+        with:
+          python-version: ${{ inputs.python-version }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: ${{ inputs.generated-sql-artifact }}
+          path: /tmp/workspace/${{ inputs.generated-sql-artifact }}
+      - name: Move generated SQL into place
+        env:
+          GENERATED_SQL_ARTIFACT: ${{ inputs.generated-sql-artifact }}
+        run: |
+          rm -rf sql/
+          cp -r "/tmp/workspace/$GENERATED_SQL_ARTIFACT/sql" sql
+      - name: Verify that monitoring configs are valid
+        run: |
+          PATH="$BQETL_VENV/bin:$PATH" "$BQETL_ROOT/script/bqetl" monitoring validate sql/

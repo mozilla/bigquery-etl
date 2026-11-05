@@ -4836,6 +4836,16 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The type of view shown in the panel.
+    - name: widget_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The search widget variant the user tapped. Possible values are: `search_bar`,
+        `search_bar_actions`, `bar_compact` or `legacy`.
+
+        * The search widget variant the user added. Possible values are: `search_bar`,
+        `search_bar_actions`, `bar_compact` or `legacy`.'
     - name: width
       type: STRING
       mode: NULLABLE

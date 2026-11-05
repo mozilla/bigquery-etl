@@ -1,0 +1,123 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: desktop, android or ios. Part of the row key, because each platform
+    has its own client ID space. Only desktop for now.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: The Glean client identifier (client_info.client_id) for the platform.
+    One row per platform, client_id and submission_date.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: The profile group identifier, the ID experiment analyses join on. urlbar_clients_daily_v1's
+    value when the client has one, otherwise desktop_client_day_dims_v1's.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number from 0 to 99 derived from client_id, for sampling. The clustering
+    field after platform.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: "The country of the client on this day, one value per client-day. For\
+    \ search_clients_daily rows, the country on the most rows of that client-day in\
+    \ search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the\
+    \ country code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's\
+    \ country.\n From desktop_client_day_dims_v1; null if the client has no row there."
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value.\n From desktop_client_day_dims_v1."
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's normalized_os, with\
+    \ Mac written as Darwin to match.\n From desktop_client_day_dims_v1."
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: "The major version of app_version, from mozfun.norm.browser_version_info.\n\
+    \ From desktop_client_day_dims_v1."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and\
+    \ null for any other. Matches substrings of default_search_engine_provider_id,\
+    \ as search_aggregates_glean_v1 does. Null where the provider id is null or names\
+    \ another engine.\n From desktop_client_day_dims_v1."
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "A flag indicating whether the browser is set as the default browser\
+    \ on the client side.\n Resolved to one value per client-day: firefox_desktop.baseline_clients_daily\
+    \ when it has one, then the event-backed side, then the latest ping_end_time.\n\
+    \ From desktop_client_day_dims_v1."
+- name: sap
+  type: INTEGER
+  mode: NULLABLE
+  description: The KPI's SAP searches that day, the sum of sap_counts_total over the
+    client's rows in search.search_clients_daily_glean with no sap_exclusion_reason,
+    so rows of 10,000 or more are left out. 0 if none.
+- name: sap_excluded
+  type: INTEGER
+  mode: NULLABLE
+  description: SAP searches left out of sap and search_queries that day, the sum of
+    sap_counts_total over rows with a sap_exclusion_reason, mostly runaway counts
+    from a held-down Enter key. Kept so the exclusion can be audited here. 0 if none.
+- name: suggest_sponsored
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on result types kpi_component_map_v1 maps to suggest_sponsored
+    that day (AMP, weather, Yelp). 0 if none.
+- name: suggest_nonsponsored
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on result types kpi_component_map_v1 maps to suggest_nonsponsored
+    that day (Wikipedia, MDN, add-ons, market, sports and others). 0 if none.
+- name: ai_chat
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on result types kpi_component_map_v1 maps to ai_chat that day
+    (Smart Window "Ask"). 0 if none.
+- name: search_queries
+  type: INTEGER
+  mode: NULLABLE
+  description: The KPI for this client-day, sap + suggest_sponsored + suggest_nonsponsored
+    + ai_chat.
+- name: is_bot
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "Whether the client is on the shared bot list. The flag is kept on\
+    \ the row rather than dropping the client, so the exclusion can be audited. NULL\
+    \ (unknown) on every row until a bot list exists, so filter with `is_bot IS NOT\
+    \ TRUE`, because `NOT is_bot` drops NULL rows.\n NULL too for clients not in urlbar_clients_daily_v1.\
+    \ NULL = unknown; filter with `IS NOT TRUE`, never `NOT is_bot`."
+- name: in_urlbar
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when the client has a urlbar_clients_daily_v1 row that day. Every
+    such client is kept, so a row with search_queries = 0 is an urlbar user whose
+    picks didn't count. FALSE rows always have sap > 0 or sap_excluded > 0.
+- name: meets_population_rules
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when the row meets the KPI's population rules, currently Firefox
+    138 or later (the SAP probe floor), applied to SAP and Suggest alike. FALSE when
+    app_version_major is below 138 or unknown. Daily totals and experiment metrics
+    filter on it.
+- name: definition_version
+  type: INTEGER
+  mode: NULLABLE
+  description: The kpi_component_map_v1 definition_version this row was built with,
+    the highest among map rows started on or before that day.

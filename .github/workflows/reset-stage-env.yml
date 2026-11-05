@@ -4,8 +4,9 @@
 # vars and the dev environment come from it too. A caller other than bigquery-etl sets
 # clone-bigquery-etl so the bqetl tooling is cloned into bigquery-etl/.
 #
-# Deletes the stage datasets this run's deploy-changes-to-stage job created. The
-# bqetl_targets.yaml stage target must match the one that job deploys with.
+# Deletes the stage datasets this run's deploy-changes-to-stage job created. Both
+# use the stage target in .github/bqetl_targets.ci.yaml (from the bigquery-etl
+# checkout), so the dataset names match.
 name: Reset Stage Environment
 
 on:
@@ -83,16 +84,7 @@ jobs:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
       - name: Write bqetl_targets.yaml
-        run: |
-          cat > bqetl_targets.yaml <<'EOF'
-          stage:
-            project_id: moz-fx-data-integration-tests
-            dataset: "{{ git.branch }}_{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}"
-            artifact_prefix: "{{ artifact.project_id }}__{{ artifact.dataset_id }}__"
-            grant_dryrun_access: true
-            expire_after_hours: 12
-            rewrite_tests: true
-          EOF
+        run: cp "$BQETL_ROOT/.github/bqetl_targets.ci.yaml" bqetl_targets.yaml
       - name: Delete stage datasets
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}

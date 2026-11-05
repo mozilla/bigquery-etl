@@ -190,7 +190,7 @@ Required parameters:
 Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to point the script at the staging table above, in whatever form its arguments expect, e.g.
-`--destination_dataset=backfills_staging_derived` and `--destination_table=dataset__table_v1_YYYY_MM_DD`.
+`--destination_dataset=backfills_staging_derived` and `--destination_table={prefix}dataset__table_v1_YYYY_MM_DD`.
 If no `--query-script-arg` is passed, `bqetl backfill create` defaults to a single
 `--destination-table=<fully qualified staging table>` argument. That only works for scripts that accept exactly that
 option; argparse treats `--destination-table` and `--destination_table` as different options.

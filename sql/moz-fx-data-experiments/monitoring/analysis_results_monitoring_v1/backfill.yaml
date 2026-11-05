@@ -18,7 +18,7 @@
   - --project=moz-fx-data-backfill-slots
   - --destination_project=moz-fx-data-shared-prod
   - --destination_dataset=backfills_staging_derived
-  - --destination_table=monitoring__analysis_results_monitoring_v1_2026_11_03
+  - --destination_table=moz_fx_data_experiments__monitoring__analysis_results_monitoring_v1_2026_11_04
 
 2026-08-19:
   start_date: 2026-02-22

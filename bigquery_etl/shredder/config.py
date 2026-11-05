@@ -264,6 +264,10 @@ DELETE_TARGETS: DeleteIndex = {
         table="search_derived.desktop_client_day_dims_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
+    # Desktop rows only for now; mobile rows will need their apps' deletion sources too.
+    client_id_target(
+        table="search_derived.search_kpi_clients_daily_v1"
+    ): DESKTOP_GLEAN_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,

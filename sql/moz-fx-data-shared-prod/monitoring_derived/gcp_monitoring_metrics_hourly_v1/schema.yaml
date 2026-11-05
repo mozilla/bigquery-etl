@@ -1,0 +1,40 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: UTC date of interval_start_time. Partitioning column.
+- name: interval_start_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Start of the hour the value covers (inclusive).
+- name: interval_end_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: End of the hour the value covers (exclusive).
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: Name of the metric definition in query.py, e.g. pubsub_topic_byte_cost.
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+  description: Cloud Monitoring metric type, e.g. pubsub.googleapis.com/topic/byte_cost.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: GCP project the metric was reported in.
+- name: labels
+  type: RECORD
+  mode: REPEATED
+  description: Resource and metric labels the value is grouped by. Which labels are present depends on the metric.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE
+- name: value
+  type: FLOAT64
+  mode: NULLABLE
+  description: Increase of the metric over the hour, in the metric's unit (bytes for byte_cost and byte counters). Hours with no increase have no row.

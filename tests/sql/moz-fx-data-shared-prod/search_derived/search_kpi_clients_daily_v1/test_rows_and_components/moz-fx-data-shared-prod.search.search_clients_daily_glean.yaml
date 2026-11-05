@@ -1,0 +1,21 @@
+# client-a has two rows (engines or sources); SAP is summed. client-d searched but never
+# used the urlbar: kept. client-e only has a row with no searches: dropped. Rows with an
+# exclusion reason go to sap_excluded: client-a's alongside its SAP, and client-f, with only
+# that, stays so the exclusion can be audited.
+- {submission_date: "2026-10-28", client_id: client-a, sample_id: 1, normalized_engine: Google, sap_counts_total: 3}
+- {submission_date: "2026-10-28", client_id: client-a, sample_id: 1, normalized_engine: Bing, sap_counts_total: 2}
+- submission_date: "2026-10-28"
+  client_id: client-a
+  sample_id: 1
+  normalized_engine: DuckDuckGo
+  sap_counts_total: 10000
+  sap_exclusion_reason: sap_row_ge_10000
+- submission_date: "2026-10-28"
+  client_id: client-f
+  sample_id: 6
+  normalized_engine: Google
+  sap_counts_total: 638260
+  sap_exclusion_reason: sap_row_ge_10000
+- {submission_date: "2026-10-28", client_id: client-d, sample_id: 4, normalized_engine: Google, sap_counts_total: 4}
+- {submission_date: "2026-10-28", client_id: client-e, sample_id: 5, normalized_engine: Google, sap_counts_total: 0}
+- {submission_date: "2026-10-27", client_id: client-a, sample_id: 1, normalized_engine: Google, sap_counts_total: 100}

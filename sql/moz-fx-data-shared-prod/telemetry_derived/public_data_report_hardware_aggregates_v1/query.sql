@@ -1,4 +1,24 @@
-WITH rank_per_client AS (
+-- each client's CPU speed from its latest Glean metrics ping of the week that has one
+WITH glean_cpu AS (
+  SELECT
+    metrics.uuid.legacy_telemetry_client_id,
+    metrics.quantity.system_cpu_speed AS glean_cpu_speed
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
+  WHERE
+    DATE(submission_timestamp) >= @submission_date
+    AND DATE(submission_timestamp) < DATE_ADD(@submission_date, INTERVAL 7 DAY)
+    AND metrics.uuid.legacy_telemetry_client_id IS NOT NULL
+    AND metrics.quantity.system_cpu_speed IS NOT NULL
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        metrics.uuid.legacy_telemetry_client_id
+      ORDER BY
+        submission_timestamp DESC
+    ) = 1
+),
+rank_per_client AS (
   SELECT
     *,
     ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_timestamp DESC) AS rn,
@@ -66,10 +86,13 @@ latest_per_client AS (
       'Apple',
       environment.system.cpu.vendor
     ) AS cpu_vendor,
-    environment.system.cpu.speed_m_hz AS cpu_speed,
+    COALESCE(environment.system.cpu.speed_m_hz, glean_cpu.glean_cpu_speed) AS cpu_speed,
     'Shockwave Flash' IN (SELECT name FROM UNNEST(environment.addons.active_plugins)) AS has_flash
   FROM
     latest_per_client_all
+  LEFT JOIN
+    glean_cpu
+    ON glean_cpu.legacy_telemetry_client_id = client_id
 ),
 transformed AS (
   SELECT
@@ -83,7 +106,7 @@ transformed AS (
     cpu_cores,
     cpu_vendor,
     -- FORMAT with %t instead of cast to retain .0
-    COALESCE(FORMAT('%t', ROUND(cpu_speed / 1000, 1)), "Other") AS cpu_speed,
+    IF(cpu_speed IS NULL, 'Other', FORMAT('%t', ROUND(cpu_speed / 1000, 1))) AS cpu_speed,
     has_flash
   FROM
     latest_per_client

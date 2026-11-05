@@ -11,13 +11,11 @@ on:
   workflow_call:
     inputs:
       clone-bigquery-etl:
-        description: Clone mozilla/bigquery-etl as ../bigquery-etl and review against its conventions
+        description: >-
+          Clone bigquery-etl as ../bigquery-etl, at the commit this workflow was called at, and
+          review against its conventions
         type: boolean
         default: false
-      bigquery-etl-ref:
-        description: Branch or tag of mozilla/bigquery-etl to clone when clone-bigquery-etl is set
-        type: string
-        default: main
     secrets:
       ANTHROPIC_API_KEY:
         required: true
@@ -68,14 +66,18 @@ jobs:
       - name: Clone bigquery-etl (review conventions live there)
         if: inputs.clone-bigquery-etl && (github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false')
         env:
-          BQETL_REF: ${{ inputs.bigquery-etl-ref }}
+          BQETL_REPO: ${{ job.workflow_repository }}
+          BQETL_SHA: ${{ job.workflow_sha }}
         run: |
           set -euo pipefail
           # bigquery-etl is public, so no auth is needed. Clone it as a sibling
-          # at ../bigquery-etl to match the local dev layout (./bqetl bootstrap).
+          # at ../bigquery-etl to match the local dev layout (./bqetl bootstrap),
+          # at the commit this workflow was called at.
           # Lets Claude read AGENTS.md, the reviewer checklist, and any docs they cross-reference.
-          git clone --depth 1 --filter=blob:none --branch "$BQETL_REF" \
-            https://github.com/mozilla/bigquery-etl.git ../bigquery-etl
+          git init -q ../bigquery-etl
+          git -C ../bigquery-etl fetch -q --depth 1 --filter=blob:none \
+            "https://github.com/$BQETL_REPO.git" "$BQETL_SHA"
+          git -C ../bigquery-etl checkout -q FETCH_HEAD
 
       - name: Minimize previous Claude reviews
         if: github.event_name == 'pull_request' || steps.fork-check.outputs.is_fork == 'false'

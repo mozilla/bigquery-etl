@@ -6,8 +6,8 @@ description: |-
 
   CPU speed comes from each client's latest legacy main ping of the week
   (telemetry_stable.main_v5), and from its latest Glean metrics ping of the week
-  that has one (firefox_desktop.metrics) when the legacy ping has none. Clients
-  with no speed in either are counted as "Other".
+  that has one (firefox_desktop_stable.metrics_v1) when the legacy ping has none.
+  Clients with no speed in either are counted as "Other".
 
   The code that uses this table is in
   [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl).

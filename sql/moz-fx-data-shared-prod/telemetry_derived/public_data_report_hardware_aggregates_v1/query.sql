@@ -4,7 +4,7 @@ WITH glean_cpu AS (
     metrics.uuid.legacy_telemetry_client_id,
     metrics.quantity.system_cpu_speed AS glean_cpu_speed
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.metrics`
+    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
   WHERE
     DATE(submission_timestamp) >= @submission_date
     AND DATE(submission_timestamp) < DATE_ADD(@submission_date, INTERVAL 7 DAY)

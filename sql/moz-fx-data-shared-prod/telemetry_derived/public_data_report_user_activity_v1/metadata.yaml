@@ -4,6 +4,12 @@ description: |-
   A row for every country in static.country_names_v1 is created, including duplicates if
   a country code has multiple associated names.
 
+  Add-ons for Firefox before 156 come from each client's legacy add-on list
+  (telemetry.clients_last_seen). Legacy add-ons are empty from Firefox 156, so
+  add-ons for 156 and later come from the latest Glean metrics ping of the week of
+  each Glean client in the same 1% sample (firefox_desktop_stable.metrics_v1).
+  Add-on ratios divide by the combined count of both groups.
+
   Code to parse and format this data as well as the country allowlist is in the
   [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl/tree/main/public_data_report/user_activity).
 owners:
@@ -22,6 +28,7 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
   - moz-fx-data-shared-prod.static.country_names_v1
   - moz-fx-data-shared-prod.telemetry.active_users_aggregates
   - moz-fx-data-shared-prod.telemetry.buildhub2

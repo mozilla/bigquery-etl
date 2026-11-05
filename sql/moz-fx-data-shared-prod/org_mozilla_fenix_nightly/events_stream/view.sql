@@ -719,7 +719,6 @@ SELECT
       JSON_VALUE(event_extra.video_codec) AS `video_codec`,
       JSON_VALUE(event_extra.view) AS `view`,
       JSON_VALUE(event_extra.view_name) AS `view_name`,
-      JSON_VALUE(event_extra.widget_type) AS `widget_type`,
       JSON_VALUE(event_extra.width) AS `width`
     ) AS `string`
   ) AS extras

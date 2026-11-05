@@ -148,7 +148,8 @@ def test_query_range_request():
     assert result == [{"metric": {}, "values": []}]
     url = session.get.call_args.args[0]
     assert url == (
-        "https://monitoring.googleapis.com/v1/projects/my-project"
+        # Every query goes through the scoping project
+        "https://monitoring.googleapis.com/v1/projects/moz-fx-data-shared-prod"
         "/location/global/prometheus/api/v1/query_range"
     )
     assert session.get.call_args.kwargs["params"] == {

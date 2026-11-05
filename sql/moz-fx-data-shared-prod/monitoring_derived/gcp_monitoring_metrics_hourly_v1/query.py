@@ -34,6 +34,13 @@ from urllib3.util.retry import Retry
 
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
+# Queries go through the metrics scope of this project, which covers all the
+# projects below. The Airflow service account has monitoring.viewer on it, but
+# not on the other projects. See
+# cloudops-infra/projects/data-shared/tf/prod/project/monitoring.tf.
+SCOPING_PROJECT = "moz-fx-data-shared-prod"
+
+# Every project listed here must be in the scoping project's metrics scope.
 BEAM_PROJECTS = (
     "moz-fx-data-beam-nonprod-b5f4",
     "moz-fx-data-beam-prod-11f7",
@@ -179,10 +186,14 @@ def query_range(
     start: datetime.datetime,
     end: datetime.datetime,
 ) -> List[Dict[str, Any]]:
-    """Run a PromQL range query against the project's metrics scope."""
+    """Run a PromQL range query for one project through the scoping project.
+
+    The query itself must filter on the project's project_id label. project is
+    only used in error messages.
+    """
     url = (
         "https://monitoring.googleapis.com/v1/projects/"
-        f"{project}/location/global/prometheus/api/v1/query_range"
+        f"{SCOPING_PROJECT}/location/global/prometheus/api/v1/query_range"
     )
     for attempt in range(1, WARNING_ATTEMPTS + 1):
         response = session.get(

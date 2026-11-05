@@ -200,7 +200,7 @@ jobs:
     needs: [build]
     permissions:
       contents: read
-    uses: ./.github/workflows/reusable-verify-format-yaml.yml
+    uses: ./.github/workflows/verify-format-yaml.yml
     with:
       python-version: ${{ needs.build.outputs.python-version }}
 
@@ -210,7 +210,7 @@ jobs:
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       contents: read
-    uses: ./.github/workflows/reusable-verify-format-sql.yml
+    uses: ./.github/workflows/verify-format-sql.yml
     with:
       python-version: ${{ needs.build.outputs.python-version }}
 
@@ -221,7 +221,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write  # to request @mozilla/dataplatform-wg review
-    uses: ./.github/workflows/reusable-flag-sensitive-flows.yml
+    uses: ./.github/workflows/flag-sensitive-flows.yml
     with:
       python-version: ${{ needs.build.outputs.python-version }}
 
@@ -779,7 +779,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/reusable-dry-run-sql.yml
+    uses: ./.github/workflows/dry-run-sql.yml
     secrets:
       GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
     with:
@@ -793,7 +793,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/reusable-test-sql.yml
+    uses: ./.github/workflows/test-sql.yml
     secrets:
       GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
       GCP_STAGE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
@@ -846,7 +846,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/reusable-validate-views.yml
+    uses: ./.github/workflows/validate-views.yml
     secrets:
       GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
     with:
@@ -857,7 +857,7 @@ jobs:
     needs: [build, generate-sql]
     permissions:
       contents: read
-    uses: ./.github/workflows/reusable-validate-metadata.yml
+    uses: ./.github/workflows/validate-metadata.yml
     with:
       python-version: ${{ needs.build.outputs.python-version }}
       generated-unittests-artifact: generated-unittests
@@ -867,7 +867,7 @@ jobs:
     needs: [build, generate-sql]
     permissions:
       contents: read
-    uses: ./.github/workflows/reusable-validate-monitoring.yml
+    uses: ./.github/workflows/validate-monitoring.yml
     with:
       python-version: ${{ needs.build.outputs.python-version }}
 
@@ -943,7 +943,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/reusable-reset-stage-env.yml
+    uses: ./.github/workflows/reset-stage-env.yml
     secrets:
       GCP_STAGE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
     with:

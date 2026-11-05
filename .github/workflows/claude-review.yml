@@ -32,6 +32,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: ./.github/workflows/reusable-claude-review.yml
+    uses: ./.github/workflows/claude-review-job.yml
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

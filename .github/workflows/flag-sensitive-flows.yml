@@ -89,7 +89,9 @@ jobs:
           yq -n 'load("bigquery-etl/bqetl_project.yaml") *+ load("bqetl_project.yaml")' \
             > /tmp/merged_bqetl_project.yaml
           mv /tmp/merged_bqetl_project.yaml bqetl_project.yaml
-          cp -rn bigquery-etl/sql/. sql/
+          # --update=none rather than -n: skips files the caller already has, with
+          # an explicit exit 0 that doesn't depend on the coreutils version
+          cp -r --update=none bigquery-etl/sql/. sql/
       # A changed query reads sensitive (restricted/workgroup-gated) data and
       # writes to a more broadly readable destination that no team owns. This is
       # advisory: rather than block or make the author edit CODEOWNERS, it just

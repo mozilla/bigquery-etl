@@ -5,8 +5,11 @@ This should eventually be refactored to a more general library for
 parsing UDF dependencies in queries as well.
 """
 
+import functools
 import os
 import re
+from contextlib import contextmanager
+from contextvars import ContextVar
 from pathlib import Path
 from typing import List
 
@@ -36,6 +39,8 @@ UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
 
 raw_routines = {}
+# set by `cached_routine_listing` to memoize `get_routines` inside a block
+_routine_listing_cache: ContextVar = ContextVar("_routine_listing_cache", default=None)
 
 
 def get_routines_from_dir(project_dir):
@@ -52,9 +57,42 @@ def get_routines_from_dir(project_dir):
     ]
 
 
+def _cwd():
+    """Return the cwd, or None if it has been deleted."""
+    try:
+        return os.getcwd()
+    except FileNotFoundError:
+        return None
+
+
+@contextmanager
+def cached_routine_listing(cache=None):
+    """
+    Memoize `get_routines` for the duration of the block.
+
+    `get_routines` walks the routine dirs, and parsing many routines calls it for
+    every file and test. Only use this where routine files aren't created or removed
+    inside the block. Pass a dict as `cache` to reuse listings across several blocks.
+    If a block is already active, it stays in charge and `cache` is ignored.
+    """
+    if _routine_listing_cache.get() is not None:
+        yield
+        return
+    token = _routine_listing_cache.set({} if cache is None else cache)
+    try:
+        yield
+    finally:
+        _routine_listing_cache.reset(token)
+
+
 def get_routines(project):
     """Return all routines that could be referenced by the project."""
     sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+    cache = _routine_listing_cache.get()
+    if cache is not None:
+        key = (_cwd(), str(sql_dir), str(project))
+        if key in cache:
+            return cache[key]
     # Routines may reference UDFs in their own project, in the shared `mozfun`
     # library, and in `moz-fx-data-shared-prod` (e.g. a public `mozfun` UDF that
     # delegates to a shared-prod implementation). All three are included so the
@@ -64,11 +102,14 @@ def get_routines(project):
         sql_dir / "mozfun",
         sql_dir / "moz-fx-data-shared-prod",
     }
-    return [
+    routines = [
         routine
         for routine_dir in routine_dirs
         for routine in get_routines_from_dir(routine_dir)
     ]
+    if cache is not None:
+        cache[key] = routines
+    return routines
 
 
 @attr.s(auto_attribs=True)
@@ -206,20 +247,20 @@ class RawRoutine:
         # get routines that could be referenced by the UDF or its tests
         routines = get_routines(project)
         dependencies = []
+        definitions_sql = "\n".join(definitions)
         tests_sql = "\n".join(tests)
         test_dependencies = set()
         for udf in routines:
-            udf_re = routine_usage_pattern(udf["name"], udf["project"])
-            if udf_re.search("\n".join(definitions)):
+            if _routine_used_in(udf, definitions_sql):
                 dependencies.append(udf["name"])
             if (
                 udf["name"] != internal_name
                 and udf["name"] not in test_dependencies
-                and udf_re.search(tests_sql)
+                and _routine_used_in(udf, tests_sql)
             ):
                 test_dependencies.add(udf["name"])
 
-        dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
+        dependencies.extend(re.findall(TEMP_UDF_RE, definitions_sql))
         dependencies = list(set(dependencies))
 
         if internal_name in dependencies:
@@ -255,39 +296,61 @@ def read_routine_dir(*project_dirs):
     if not project_dirs:
         project_dirs = (ConfigLoader.get("default", "sql_dir"),)
 
-    if project_dirs not in raw_routines:
-        raw_routines[project_dirs] = {
-            raw_routine.name: raw_routine
-            for project_dir in project_dirs
-            for root, dirs, files in os.walk(project_dir, followlinks=True)
-            if os.path.basename(root) != ConfigLoader.get("routine", "example_dir")
-            for filename in files
-            if filename in ROUTINE_FILES
-            for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
-        }
+    example_dir = ConfigLoader.get("routine", "example_dir")
+    # dirs are usually relative, so include the cwd in the key
+    key = (_cwd(), example_dir, project_dirs)
+    if key not in raw_routines:
+        merged = {}
+        with cached_routine_listing():
+            for project_dir in project_dirs:
+                merged.update(read_routine_files(project_dir))
+        raw_routines[key] = merged
 
-    return raw_routines[project_dirs]
+    # a copy, so callers that modify the result don't change the cache
+    return dict(raw_routines[key])
+
+
+def read_routine_files(project_dir):
+    """
+    Read the routine files in one dir into RawRoutine instances, without caching.
+
+    Parsing each file lists the routine dirs, so callers parsing more than a few
+    files should wrap this in `cached_routine_listing`.
+    """
+    example_dir = ConfigLoader.get("routine", "example_dir")
+    return {
+        raw_routine.name: raw_routine
+        for root, dirs, files in os.walk(project_dir, followlinks=True)
+        if os.path.basename(root) != example_dir
+        for filename in files
+        if filename in ROUTINE_FILES
+        for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
+    }
+
+
+def project_routine_dirs(project_dir):
+    """Return the dirs of routines that tests of routines in the project can use."""
+    # `mozfun` and `moz-fx-data-shared-prod` are always included so that a routine
+    # depending on them (e.g. a public `mozfun` UDF that delegates to a
+    # `moz-fx-data-shared-prod` UDF) has that dependency's definition available to
+    # inline as a temp function in its test SQL. Without this the test would invoke
+    # the real persistent routine instead of the local (possibly stubbed) definition.
+    sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+    return (project_dir, sql_dir / "mozfun", sql_dir / "moz-fx-data-shared-prod")
 
 
 def parse_routines(project_dir):
     """Read routine contents of the project dir into ParsedRoutine instances."""
-    # collect udfs to parse. `mozfun` and `moz-fx-data-shared-prod` are always
-    # included so that a routine depending on them (e.g. a public `mozfun` UDF
-    # that delegates to a `moz-fx-data-shared-prod` UDF) has that dependency's
-    # definition available to inline as a temp function in its test SQL. Without
-    # this the test would invoke the real persistent routine instead of the
-    # local (possibly stubbed) definition.
-    sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
-    raw_routines = read_routine_dir(
-        project_dir,
-        sql_dir / "mozfun",
-        sql_dir / "moz-fx-data-shared-prod",
-    )
+    raw_routines = read_routine_dir(*project_routine_dirs(project_dir))
 
     # prepend udf definitions to tests
-    for raw_routine in raw_routines.values():
-        tests_full_sql = routine_tests_sql(raw_routine, raw_routines, project_dir)
-        yield ParsedRoutine.from_raw(raw_routine, tests_full_sql)
+    with cached_routine_listing():
+        return [
+            ParsedRoutine.from_raw(
+                raw_routine, routine_tests_sql(raw_routine, raw_routines, project_dir)
+            )
+            for raw_routine in raw_routines.values()
+        ]
 
 
 def accumulate_dependencies(deps, raw_routines, udf_name):
@@ -309,10 +372,19 @@ def accumulate_dependencies(deps, raw_routines, udf_name):
         return deps + [udf_name]
 
 
+@functools.lru_cache(maxsize=None)
 def routine_usage_pattern(routine_name: str, project: str) -> re.Pattern:
     """Return a regular expression pattern to match usages of the specified routine."""
     dataset, name = routine_name.split(".")
     return re.compile(rf"(?<![\w\.`])(`?{project}`?\.)?`?{dataset}`?\.`?{name}`?(?=\()")
+
+
+def _routine_used_in(routine, sql):
+    """Return whether a routine from `get_routines` is called in the SQL text."""
+    # the pattern always contains the bare name, so check that before the regex
+    if routine["name"].split(".")[-1] not in sql:
+        return False
+    return bool(routine_usage_pattern(routine["name"], routine["project"]).search(sql))
 
 
 def routine_usages_in_text(text, project):
@@ -323,7 +395,7 @@ def routine_usages_in_text(text, project):
     udf_usages = []
 
     for routine in routines:
-        if re.search(routine_usage_pattern(routine["name"], routine["project"]), sql):
+        if _routine_used_in(routine, sql):
             udf_usages.append(routine["name"])
 
     # the TEMP_UDF_RE matches udf_js, remove since it's not a valid UDF

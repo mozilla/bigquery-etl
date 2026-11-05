@@ -369,6 +369,12 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: The state of the "Block AI Enhancements" toggle.
+    - name: com_fallback
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether pinning fell back to the undocumented COM API after the
+        WinRT attempt failed. False when WinRT succeeded or when the caller requested
+        prompt-only pinning.
     - name: enabled
       type: BOOLEAN
       mode: NULLABLE
@@ -431,6 +437,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The AI Control feature identifier.
+    - name: hresult
+      type: STRING
+      mode: NULLABLE
+      description: The HRESULT of the Windows error as a hex string (e.g. `0x80070490`).
+        Only recorded when `result` is an `error_*` value.
     - name: id
       type: STRING
       mode: NULLABLE

@@ -15494,11 +15494,13 @@ fields:
         `custom`.
 
 
-        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
+        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`,
 
-        (depending on the source from which the search started). Also added the
+        `context` (depending on the source from which the search started). Also
 
-        `other` option for the source but it should never enter on this case.
+        added the `other` option for the source but it should never enter on this
+
+        case.
 
         '
     - name: mixed_content_audio

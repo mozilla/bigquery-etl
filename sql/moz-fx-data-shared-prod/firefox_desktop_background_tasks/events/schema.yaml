@@ -365,6 +365,52 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+    - name: os_environment_invoked_to_handle
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for when Firefox was invoked (i.e., was already
+        running and was not launched) to handle a file type or protocol with `-osint
+        -url ...`.  The result is split into keys which represent the file extension:
+        currently, the set of file types Firefox registers to handle, namely ".avif",
+        ".htm", ".html", ".pdf", ".shtml", ".xht", ".xhtml", ".svg", ".webp", and
+        the set of protocol schemes that Firefox registers to handle, namely "about",
+        "http", "https", "mailto".  If Firefox was invoked to handle a file type or
+        protocol it does not register to handle by default, the count is recorded
+        as ".<other extension>" or "<other protocol>", respectively (neither of which
+        are valid extension or protocol identifiers). This metric was generated to
+        correspond to the Legacy Telemetry scalar os.environment.invoked_to_handle.
+
+        '
+    - name: os_environment_launched_to_handle
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for when Firefox was launched afresh (i.e., was
+        not already running) to handle a file type or protocol with `-osint -url ...`.  The
+        result is split into keys which represent the file extension: currently, the
+        set of file types Firefox registers to handle, namely ".avif", ".htm", ".html",
+        ".pdf", ".shtml", ".xht", ".xhtml", ".svg", ".webp", and the set of protocol
+        schemes that Firefox registers to handle, namely "about", "http", "https",
+        "mailto".  If Firefox was launched to handle a file type or protocol it does
+        not register to handle by default, the count is recorded as ".<other extension>"
+        or "<other protocol>", respectively (neither of which are valid extension
+        or protocol identifiers). This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.launched_to_handle.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -375,6 +421,24 @@ fields:
       description: 'An experimentation identifier derived and provided by the application
 
         for the purpose of experimentation enrollment.
+
+        '
+    - name: os_environment_launch_method
+      type: STRING
+      mode: NULLABLE
+      description: 'Records how Firefox was started on Windows. Currently will be
+        one of "Desktop", "DesktopPrivate", "StartMenu" (including pins), "StartMenuPrivate",
+        "Taskbar", "TaskbarPrivate", "OtherShortcut", or "Other" This metric was generated
+        to correspond to the Legacy Telemetry scalar os.environment.launch_method.
+
+        '
+    - name: os_environment_launch_on_login_state
+      type: STRING
+      mode: NULLABLE
+      description: 'The state of the launch-on-login setting at startup. One of: "enabled"
+        (launch on login is active), "disabled" (not enabled by the user), "disabled_by_settings"
+        (blocked by Windows Settings or policy), "not_supported" (feature unavailable
+        on this platform), or "error" (failed to determine state).
 
         '
   - name: string_list
@@ -391,6 +455,47 @@ fields:
 
 
         This metric is only attached to a ping if it already contains other data.
+
+        '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: os_environment_is_kept_in_dock
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this app was kept in macOS Dock on startup This metric
+        was generated to correspond to the Legacy Telemetry scalar os.environment.is_kept_in_dock.
+
+        '
+    - name: os_environment_is_taskbar_pinned
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the non-Private Browsing version of this app was pinned
+        to taskbar on startup This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.is_taskbar_pinned.
+
+        '
+  - name: labeled_boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: os_environment_is_default_handler
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Records whether Firefox was the default handler for particular
+        file types or protocols.  The result is split into keys which represent the
+        file extension or scheme: currently, a subset of the file types Firefox registers
+        to handle, namely ".pdf" and "mailto" as protocol. In the future, more file
+        types may be recorded. This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.is_default_handler.
 
         '
 - name: normalized_app_name

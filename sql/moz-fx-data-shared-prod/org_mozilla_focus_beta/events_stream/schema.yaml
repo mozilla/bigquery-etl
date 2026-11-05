@@ -515,6 +515,12 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: There is a matching cookie rule for the reloading domain.
+    - name: has_cvv
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether a security code was involved: the card being written carried
+        one, the code being cleared, or a card being read has one. Absent when a failed
+        read could not tell.'
     - name: has_description
       type: BOOLEAN
       mode: NULLABLE
@@ -2062,6 +2068,11 @@ fields:
         for send_tab)
 
         * Number of connected devices available to send tabs to'
+    - name: device_kind
+      type: STRING
+      mode: NULLABLE
+      description: 'Kind of the device that loaded the model: cpu, gpu or npu. Only
+        llama.cpp in the HWInference process reports it; null for every other engine.'
     - name: device_name
       type: STRING
       mode: NULLABLE
@@ -2188,9 +2199,9 @@ fields:
 
         * engine id
 
-        * model id
+        * The Engine Id of the created inference engine
 
-        * The Engine Id of the created inference engine'
+        * model id'
     - name: enrollmentId
       type: STRING
       mode: NULLABLE
@@ -2301,12 +2312,18 @@ fields:
     - name: error_type
       type: STRING
       mode: NULLABLE
-      description: 'A string set to determine which kind of errors originated from
-        IOUtils.writeJSON was hit by JSONFile.save. The expected values are: - "TooMuchRecursion"
-        (if the error hit was an "too much recursion" InternalError - the value set
-        on `name` property of the error object instance - "Unknown" as a fallback
-        if the error object did not have a `name` property and it wasn''t detected
-        as a "too much recursion" error.'
+      description: 'Depending on the type of event:
+
+        * A string set to determine which kind of errors originated from IOUtils.writeJSON
+        was hit by JSONFile.save. The expected values are: - "TooMuchRecursion" (if
+        the error hit was an "too much recursion" InternalError - the value set on
+        `name` property of the error object instance - "Unknown" as a fallback if
+        the error object did not have a `name` property and it wasn''t detected as
+        a "too much recursion" error.
+
+        * The UniFFI error variant the store threw, e.g. "CryptoError" or "SqlError".
+        "PrimaryPasswordLocked" when the user declined or has not entered the primary
+        password; filter it out to count real failures. "Unknown" for any other error.'
     - name: errorName
       type: STRING
       mode: NULLABLE
@@ -3109,6 +3126,10 @@ fields:
 
         * "search", "list", "count" or "record_password_use".
 
+        * "add": a new card was being saved. "update": a stored card was being changed.
+        "clear": a stored card''s security code was being removed. "read": one or
+        all stored cards were being read.
+
         * The operation being performed when the incompatible format was found (e.g.
         addLogin, modifyLogin, removeLogin).'
     - name: option_clicked
@@ -3871,15 +3892,15 @@ fields:
         * A label to distinguish what triggered the polling/fetching of remote content
         (eg. "broadcast", "timer", "forced", "manual")
 
+        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
+        ``"timer"``, ``"forced"``, ``"manual"``).
+
         * What triggered the OS Keystore Popup. "edit" - when editing credit cards
         "autofill" - when autofilling credit cards
 
         * The cause of the filter change: error, warn, log, info, debug, css, netxhr,
         net, chrome, content, text or reset and all, html, css, js, xhr, fonts, images,
         media, ws or other for netmonitor
-
-        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
-        ``"timer"``, ``"forced"``, ``"manual"``).
 
         * What triggered the OS Keystore Popup. "edit" - when editing credit cards...'
     - name: trr

@@ -106,6 +106,7 @@ SELECT
       LAX_BOOL(event_extra.has_been_saved) AS `has_been_saved`,
       LAX_BOOL(event_extra.has_click_rule) AS `has_click_rule`,
       LAX_BOOL(event_extra.has_cookie_rule) AS `has_cookie_rule`,
+      LAX_BOOL(event_extra.has_cvv) AS `has_cvv`,
       LAX_BOOL(event_extra.has_description) AS `has_description`,
       LAX_BOOL(event_extra.has_empty_password) AS `has_empty_password`,
       LAX_BOOL(event_extra.has_form_action_origin) AS `has_form_action_origin`,
@@ -421,6 +422,7 @@ SELECT
       JSON_VALUE(event_extra.detail) AS `detail`,
       JSON_VALUE(event_extra.detected_language) AS `detected_language`,
       JSON_VALUE(event_extra.device_count) AS `device_count`,
+      JSON_VALUE(event_extra.device_kind) AS `device_kind`,
       JSON_VALUE(event_extra.device_name) AS `device_name`,
       JSON_VALUE(event_extra.device_type) AS `device_type`,
       JSON_VALUE(event_extra.didResetValue) AS `didResetValue`,
@@ -773,6 +775,7 @@ SELECT
       JSON_VALUE(event_extra.video_codec) AS `video_codec`,
       JSON_VALUE(event_extra.view) AS `view`,
       JSON_VALUE(event_extra.view_name) AS `view_name`,
+      JSON_VALUE(event_extra.widget_type) AS `widget_type`,
       JSON_VALUE(event_extra.width) AS `width`
     ) AS `string`
   ) AS extras

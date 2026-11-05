@@ -17383,6 +17383,20 @@ fields:
         and switched back.
 
         '
+    - name: smart_window_auth_impl
+      type: STRING
+      mode: NULLABLE
+      description: 'The Smart Window auth provider currently in use. One of: fxa (Mozilla
+
+        account) or guest (guest token, no account). Set when a provider is
+
+        chosen, which happens the first time Smart Window needs one, and again
+
+        whenever it switches. Lets other Smart Window metrics be split by guest
+
+        vs fxa.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

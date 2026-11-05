@@ -8,6 +8,7 @@ SELECT
   STRUCT(
     STRUCT(
       LAX_BOOL(event_extra.blocked) AS `blocked`,
+      LAX_BOOL(event_extra.com_fallback) AS `com_fallback`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.result_is_default) AS `result_is_default`,
       LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,
@@ -17,6 +18,7 @@ SELECT
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.feature) AS `feature`,
+      JSON_VALUE(event_extra.hresult) AS `hresult`,
       JSON_VALUE(event_extra.id) AS `id`,
       JSON_VALUE(event_extra.method) AS `method`,
       JSON_VALUE(event_extra.name) AS `name`,

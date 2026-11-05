@@ -590,6 +590,12 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: There is a matching cookie rule for the reloading domain.
+    - name: has_cvv
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether a security code was involved: the card being written carried
+        one, the code being cleared, or a card being read has one. Absent when a failed
+        read could not tell.'
     - name: has_description
       type: BOOLEAN
       mode: NULLABLE
@@ -2398,6 +2404,11 @@ fields:
         for send_tab)
 
         * Number of connected devices available to send tabs to'
+    - name: device_kind
+      type: STRING
+      mode: NULLABLE
+      description: 'Kind of the device that loaded the model: cpu, gpu or npu. Only
+        llama.cpp in the HWInference process reports it; null for every other engine.'
     - name: device_name
       type: STRING
       mode: NULLABLE
@@ -2544,9 +2555,9 @@ fields:
 
         * engine id
 
-        * model id
+        * The Engine Id of the created inference engine
 
-        * The Engine Id of the created inference engine'
+        * model id'
     - name: enrollmentId
       type: STRING
       mode: NULLABLE
@@ -2705,7 +2716,11 @@ fields:
         content was too large to summarize) 1007 (meaning LLM service has rate-limited
         the user)
 
-        * The error type of the error page encountered'
+        * The error type of the error page encountered
+
+        * The UniFFI error variant the store threw, e.g. "CryptoError" or "SqlError".
+        "PrimaryPasswordLocked" when the user declined or has not entered the primary
+        password; filter it out to count real failures. "Unknown" for an...'
     - name: errorName
       type: STRING
       mode: NULLABLE
@@ -3666,6 +3681,10 @@ fields:
         * "user_action" when the user tapped a location in the location list, "restore"
         when a saved location was applied at startup, "reset" when the previous location
         was put back after a failed switch.
+
+        * "add": a new card was being saved. "update": a stored card was being changed.
+        "clear": a stored card''s security code was being removed. "read": one or
+        all stored cards were being read.
 
         * The operation being performed when the incompatible format was found (e.g.
         addLogin, modifyLogin, removeLogin).'
@@ -4675,6 +4694,9 @@ fields:
         * A label to distinguish what triggered the polling/fetching of remote content
         (eg. "broadcast", "timer", "forced", "manual")
 
+        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
+        ``"timer"``, ``"forced"``, ``"manual"``).
+
         * How the user initiated summarization. Possible values: "shake", "menu".
 
         * How the user initiated summarization. Possible values: "shake", "menu",
@@ -4684,10 +4706,7 @@ fields:
         "autofill" - when autofilling credit cards
 
         * The cause of the filter change: error, warn, log, info, debug, css, netxhr,
-        net, chrome, content, text or reset and all, html, css, js, xhr, fonts, images,
-        media, ws or other for netmonitor
-
-        * The element that triggered the polling...'
+        net, chrome, content, ...'
     - name: trr
       type: STRING
       mode: NULLABLE
@@ -4701,6 +4720,9 @@ fields:
 
         * A string containing the name of the tab view the user tapped. These items
         include: list or grid.
+
+        * The type of top site. Options are: "FRECENT", "DEFAULT", "DEFAULT_PINNED",
+        "PINNED", or "PROVIDED"
 
         * type, draw, text.'
     - name: typeWasPassword
@@ -4818,6 +4840,16 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The type of view shown in the panel.
+    - name: widget_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The search widget variant the user tapped. Possible values are: `search_bar`,
+        `search_bar_actions`, `bar_compact` or `legacy`.
+
+        * The search widget variant the user added. Possible values are: `search_bar`,
+        `search_bar_actions`, `bar_compact` or `legacy`.'
     - name: width
       type: STRING
       mode: NULLABLE

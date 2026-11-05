@@ -448,6 +448,12 @@ fields:
         * Whether the checkbox was toggled on or off.
 
         * The checked state of the fingerprinting protection checkbox'
+    - name: com_fallback
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether pinning fell back to the undocumented COM API after the
+        WinRT attempt failed. False when WinRT succeeded or when the caller requested
+        prompt-only pinning.
     - name: confident
       type: BOOLEAN
       mode: NULLABLE
@@ -619,7 +625,14 @@ fields:
 
         * Whether the user is signed in to their Firefox Account when the launch is
         requested. False means the launch sends the user through the sign-in flow
-        first'
+        first
+
+        * Whether a verified Mozilla account is signed in when the launch is requested.
+        Reflects the Mozilla account only, so it is false by default for guest users;
+        see auth_provider
+
+        * Whether a verified Mozilla account is signed in. Reflects the Mozilla account
+        only, so it is false by default for guest users; see auth_provider'
     - name: had_errors
       type: BOOLEAN
       mode: NULLABLE
@@ -643,6 +656,12 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Indicates if the signature was saved.
+    - name: has_cvv
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether a security code was involved: the card being written carried
+        one, the code being cleared, or a card being read has one. Absent when a failed
+        read could not tell.'
     - name: has_description
       type: BOOLEAN
       mode: NULLABLE
@@ -1528,12 +1547,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Engine creation time in milliseconds
+
         * Total time of the run from start to its terminal event, including page extraction
         and the model call.
 
-        * Engine creation time in milliseconds
-
         * Milliseconds the card stayed open
+
+        * Time in ms to process the request
 
         * how long it took to reach the step from start
 
@@ -1542,8 +1563,6 @@ fields:
         * How long the migration took (in milliseconds).
 
         * Milliseconds the menu was shown.
-
-        * Time in ms to process the request
 
         * Total time of the run from start to completion, including page extraction
         and the model call.
@@ -1886,9 +1905,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Number of memories included as context.
-
         * Number of memories included in the response
+
+        * Number of memories included as context.
 
         * Number of memories available
 
@@ -3141,6 +3160,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The audio codec was being used when the error or crash happened
+    - name: auth_provider
+      type: STRING
+      mode: NULLABLE
+      description: 'The Smart Window auth provider active when the event is recorded.
+        One of: fxa (Mozilla account) or guest (guest token, no account)'
     - name: auto_admin
       type: STRING
       mode: NULLABLE
@@ -3788,6 +3812,11 @@ fields:
         for send_tab)
 
         * Number of connected devices available to send tabs to'
+    - name: device_kind
+      type: STRING
+      mode: NULLABLE
+      description: 'Kind of the device that loaded the model: cpu, gpu or npu. Only
+        llama.cpp in the HWInference process reports it; null for every other engine.'
     - name: device_name
       type: STRING
       mode: NULLABLE
@@ -4036,13 +4065,13 @@ fields:
 
         * Error code if Undo was not successful
 
+        * Canonical chat error name, or empty on success
+
         * If the event value is "decryptionError" or "encryptionError", this contains
         the thrown error name (for example "NS_ERROR_ILLEGAL_VALUE").
 
         * A description of the error; one of: - DOMException:{name} (e.g., DOMException:AbortError)
-        - NS_ERROR_* - the error constructor''s name - the string "(unknown)"
-
-        * Error code if the action was u...'
+        - NS_ERROR_* - the error constructor''s name - the st...'
     - name: error_code
       type: STRING
       mode: NULLABLE
@@ -4144,7 +4173,9 @@ fields:
         a "too much recursion" error.
 
         * Type of non-HTTP error. One of "invalid-schema-error", "generic-error",
-        or "max-retry-attempts-error".'
+        or "max-retry-attempts-error".
+
+        * The UniFFI error variant the store threw...'
     - name: errorName
       type: STRING
       mode: NULLABLE
@@ -4432,8 +4463,12 @@ fields:
     - name: from
       type: STRING
       mode: NULLABLE
-      description: The original domain (eTLD+1) of the request that matched a search
-        endpoint.
+      description: 'Depending on the type of event:
+
+        * The original domain (eTLD+1) of the request that matched a search endpoint.
+
+        * The auth provider in use before the switch. One of: fxa (Mozilla account)
+        or guest (guest token, no account)'
     - name: from_container_id
       type: STRING
       mode: NULLABLE
@@ -4581,7 +4616,14 @@ fields:
 
         * How the generation was requested: tab_list, tab_group, chat, or chat_followup
 
+        * How the generation was requested: tab_list, tab_group, fxms, chat, or chat_followup
+
         * How the modification was requested: chat, refresh, or chat_followup'
+    - name: hresult
+      type: STRING
+      mode: NULLABLE
+      description: The HRESULT of the Windows error as a hex string (e.g. `0x80070490`).
+        Only recorded when `result` is an `error_*` value.
     - name: html_lang_attribute
       type: STRING
       mode: NULLABLE
@@ -4741,6 +4783,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Which entry was clicked, e.g., settings.
+    - name: judge_model
+      type: STRING
+      mode: NULLABLE
+      description: Model used as the judge to evaluate the conversation
     - name: key_system
       type: STRING
       mode: NULLABLE
@@ -5305,6 +5351,10 @@ fields:
 
         * "search", "list", "count" or "record_password_use".
 
+        * "add": a new card was being saved. "update": a stored card was being changed.
+        "clear": a stored card''s security code was being removed. "read": one or
+        all stored cards were being read.
+
         * The operation being performed when the incompatible format was found (e.g.
         addLogin, modifyLogin, removeLogin).'
     - name: option
@@ -5380,6 +5430,11 @@ fields:
 
         * Whether the user kept the value. One of: kept, edited, or cleared.
 
+        * How the flow ended. One of: completed (the user signed in), abandoned (the
+        user closed the sign-in tab or window without finishing), blocked (an account
+        cannot be connected, so the sign-in page was never shown), or error (the flow
+        threw)
+
         * "deleted" if the user confirmed deleting, recorded when the deletion starts;
         "cancelled" if the user backed out with Cancel, the dialog''s close button
         or Escape; "dismissed" if the dialog closed without a choice, for example
@@ -5388,11 +5443,7 @@ fields:
         * "deleted" if data was cleared, "cancelled" if the user explicitly backed
         out with Cancel, "dismissed" if the confirmation panel was closed without
         a choice, for example with Escape or a click outside it, "aborted" if the
-        user confirmed but nothing was deleted because the windows could not be closed,
-        for example when the user chose to stay on a page that asked before leaving.
-
-        * What became of the page, one of: - "restore_all": the session was restored
-        with every window and tab selected - "restore_subset": the session was restore...'
+        user confirmed but nothing was deleted because the windows could not be ...'
     - name: output_hash
       type: STRING
       mode: NULLABLE
@@ -5750,9 +5801,9 @@ fields:
 
         * Current provider id.
 
-        * Which provider was last selected.
+        * Search provider used in the request
 
-        * Search pr...'
+        * Which p...'
     - name: provider_id
       type: STRING
       mode: NULLABLE
@@ -5839,12 +5890,12 @@ fields:
         * The type of saved record shown in the dropdown: "formhistory", "address",
         "payment" or "password".
 
+        * Type of telemetry record: state or terminal.
+
         * The type of saved record the dialog is about: "address", "payment" or "password".
 
         * The type of saved record the action applies to: "formhistory", "address",
-        "payment" or "password".
-
-        * Type of telemetry record: state or terminal.'
+        "payment" or "password".'
     - name: recovery
       type: STRING
       mode: NULLABLE
@@ -5941,22 +5992,18 @@ fields:
 
         * Undo result: success, partial_success, or error
 
+        * The outcome of the attempt to pin, values include: - `success_pinned`: The
+        pin request was affirmed by the user. - `success_rejected`: The pin request
+        was rejected by the user or system. - `success_fire_and_forget`: The pin request
+        was submitted, but its result is unknown. - `error_get_aumid`: Failed to get
+        the Application User Model ID. - `error_set_aumid`: Failed to set the Application
+        User Model ID. - `error_get_taskbar_manager`: Failed to get the TaskbarManager.
+        - `error_schedule_request_pin`: Failed to schedule the pin request. - `error_request_pin`:
+        The pin request failed.
+
         * Optionally, the name of the error that occurred.
 
-        * "ok" when the store copied into ended up holding exactly what the source
-        holds -- every record arrived and nothing the source lacks survived, compared
-        by guid rather than by count -- so the profile could be handed to it; otherwise
-        "error". A "to_json" copy hands the profile back to the JSON store either
-        way, so an "error" there means some records did not make it back.
-
-        * The error code, converted to a string.
-
-        * The outcome of the prompt.
-
-        * "ok", or "error" when initialization aborted with a fatal error.
-
-        * "switch" when an existing tab was focused, "new" when a tab was opened,
-        "error" when that attem...'
+        * "ok" when the sto...'
     - name: results
       type: STRING
       mode: NULLABLE
@@ -6497,7 +6544,11 @@ fields:
         shortcuts, starter, or suggestion
 
         * How the request was submitted: button, enter, follow-up, menu, resume, retry,
-        shortcuts, starter, or suggestion'
+        shortcuts, starter, or suggestion
+
+        * How the request was submitted: button, enter, follow-up, fxms, menu, resume,
+        retry, shortcuts, starter, or suggestion. Messaging surfaces may supply their
+        own value instead of fxms'
     - name: surface
       type: STRING
       mode: NULLABLE
@@ -6672,7 +6723,11 @@ fields:
     - name: to
       type: STRING
       mode: NULLABLE
-      description: The domain (eTLD+1) of the final redirect target.
+      description: 'Depending on the type of event:
+
+        * The domain (eTLD+1) of the final redirect target.
+
+        * The auth provider in use after the switch. One of: fxa or guest'
     - name: to_container_id
       type: STRING
       mode: NULLABLE
@@ -6734,18 +6789,15 @@ fields:
         * A label to distinguish what triggered the polling/fetching of remote content
         (eg. "broadcast", "timer", "forced", "manual")
 
-        * The cause of the filter change: error, warn, log, info, debug, css, netxhr,
-        net, chrome, content, text or reset and all, html, css, js, xhr, fonts, images,
-        media, ws or other for netmonitor
-
         * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
         ``"timer"``, ``"forced"``, ``"manual"``).
 
-        * Which UI surface triggered the action
+        * The entry point that requested the launch. One of: switch, menu, keyboard_shortcut,
+        startup, settings, bedrock, asrouter, or other. Messaging surfaces may supply
+        their own value instead of asrouter
 
-        * What triggered the sync.
-
-        * What triggered the database consistency check. Th...'
+        * The reason the Smart Window was opened. One of: switch, menu, new_window,
+        open_browser, undo_close, keyboard...'
     - name: triggers
       type: STRING
       mode: NULLABLE

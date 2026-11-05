@@ -19,7 +19,13 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.wallpapers_new_wallpaper_applied
+      metrics.labeled_counter.wallpapers_new_wallpaper_applied,
+      metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.pdfjs_stamp
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
@@ -27,7 +33,14 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`,
-    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`
+    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.counter.pdfjs_used,
+      metrics.counter.power_total_cpu_time_ms,
+      metrics.counter.power_total_gpu_time_ms,
+      metrics.counter.power_total_thread_wakeups
+    ) AS `counter`,
+    STRUCT(metrics.object.addons_theme) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -60,7 +73,13 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.wallpapers_new_wallpaper_applied
+      metrics.labeled_counter.wallpapers_new_wallpaper_applied,
+      metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.pdfjs_stamp
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
@@ -68,7 +87,14 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`,
-    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`
+    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.counter.pdfjs_used,
+      metrics.counter.power_total_cpu_time_ms,
+      metrics.counter.power_total_gpu_time_ms,
+      metrics.counter.power_total_thread_wakeups
+    ) AS `counter`,
+    STRUCT(metrics.object.addons_theme) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -121,7 +147,13 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.wallpapers_new_wallpaper_applied
+      metrics.labeled_counter.wallpapers_new_wallpaper_applied,
+      metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.pdfjs_stamp
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
@@ -129,7 +161,14 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`,
-    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`
+    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.counter.pdfjs_used,
+      metrics.counter.power_total_cpu_time_ms,
+      metrics.counter.power_total_gpu_time_ms,
+      metrics.counter.power_total_thread_wakeups
+    ) AS `counter`,
+    STRUCT(metrics.object.addons_theme) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -192,7 +231,13 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.wallpapers_new_wallpaper_applied
+      metrics.labeled_counter.wallpapers_new_wallpaper_applied,
+      metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.pdfjs_stamp
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
@@ -200,7 +245,14 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`,
-    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`
+    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.counter.pdfjs_used,
+      metrics.counter.power_total_cpu_time_ms,
+      metrics.counter.power_total_gpu_time_ms,
+      metrics.counter.power_total_thread_wakeups
+    ) AS `counter`,
+    STRUCT(metrics.object.addons_theme) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -243,7 +295,13 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.wallpapers_new_wallpaper_applied
+      metrics.labeled_counter.wallpapers_new_wallpaper_applied,
+      metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.pdfjs_stamp
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
@@ -251,7 +309,14 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`,
-    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`
+    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.counter.pdfjs_used,
+      metrics.counter.power_total_cpu_time_ms,
+      metrics.counter.power_total_gpu_time_ms,
+      metrics.counter.power_total_thread_wakeups
+    ) AS `counter`,
+    STRUCT(metrics.object.addons_theme) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

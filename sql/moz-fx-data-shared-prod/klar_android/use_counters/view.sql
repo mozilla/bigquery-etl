@@ -3041,7 +3041,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.use_counter_error_unknown_counter
+      metrics.labeled_counter.use_counter_error_unknown_counter,
+      metrics.labeled_counter.security_trusted_types_readiness
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`

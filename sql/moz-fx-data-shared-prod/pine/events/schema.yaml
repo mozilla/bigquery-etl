@@ -365,6 +365,151 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+    - name: cert_verifier_cert_revocation_mechanisms
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which revocation checking mechanisms were used in a TLS handshake?
+
+        '
+    - name: cert_verifier_crlite_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times different CRLite statuses were returned.
+
+        '
+    - name: os_environment_invoked_to_handle
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for when Firefox was invoked (i.e., was already
+        running and was not launched) to handle a file type or protocol with `-osint
+        -url ...`.  The result is split into keys which represent the file extension:
+        currently, the set of file types Firefox registers to handle, namely ".avif",
+        ".htm", ".html", ".pdf", ".shtml", ".xht", ".xhtml", ".svg", ".webp", and
+        the set of protocol schemes that Firefox registers to handle, namely "about",
+        "http", "https", "mailto".  If Firefox was invoked to handle a file type or
+        protocol it does not register to handle by default, the count is recorded
+        as ".<other extension>" or "<other protocol>", respectively (neither of which
+        are valid extension or protocol identifiers). This metric was generated to
+        correspond to the Legacy Telemetry scalar os.environment.invoked_to_handle.
+
+        '
+    - name: os_environment_launched_to_handle
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for when Firefox was launched afresh (i.e., was
+        not already running) to handle a file type or protocol with `-osint -url ...`.  The
+        result is split into keys which represent the file extension: currently, the
+        set of file types Firefox registers to handle, namely ".avif", ".htm", ".html",
+        ".pdf", ".shtml", ".xht", ".xhtml", ".svg", ".webp", and the set of protocol
+        schemes that Firefox registers to handle, namely "about", "http", "https",
+        "mailto".  If Firefox was launched to handle a file type or protocol it does
+        not register to handle by default, the count is recorded as ".<other extension>"
+        or "<other protocol>", respectively (neither of which are valid extension
+        or protocol identifiers). This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.launched_to_handle.
+
+        '
+    - name: pdfjs_editing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times some PDF editing features are used.
+
+        '
+    - name: pdfjs_editing_highlight_kind
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a given kind is used to highlight.
+
+        '
+    - name: pdfjs_organize_action
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user performs a page organization
+        action (copy, cut, delete, merge, move, paste), exports selected pages, or
+        saves a PDF modified through page organization.
+
+        '
+    - name: pdfjs_stamp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times some PDF editing features are used.
+
+        '
+    - name: urlbar_searchmode_searchbutton
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user entered a particular
+
+        search mode by unified search button.
+
+        This metric was generated to correspond to the Legacy Telemetry
+
+        scalar urlbar.searchmode.searchbutton.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -399,6 +544,14 @@ fields:
         loaded.
 
         Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+    - name: legacy_telemetry_session_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Legacy Telemetry''s session identifier.
+
+        Set near startup and stable until shutdown.
 
         '
   - name: string
@@ -562,6 +715,24 @@ fields:
         be `other`.
 
         '
+    - name: os_environment_launch_method
+      type: STRING
+      mode: NULLABLE
+      description: 'Records how Firefox was started on Windows. Currently will be
+        one of "Desktop", "DesktopPrivate", "StartMenu" (including pins), "StartMenuPrivate",
+        "Taskbar", "TaskbarPrivate", "OtherShortcut", or "Other" This metric was generated
+        to correspond to the Legacy Telemetry scalar os.environment.launch_method.
+
+        '
+    - name: os_environment_launch_on_login_state
+      type: STRING
+      mode: NULLABLE
+      description: 'The state of the launch-on-login setting at startup. One of: "enabled"
+        (launch on login is active), "disabled" (not enabled by the user), "disabled_by_settings"
+        (blocked by Windows Settings or policy), "not_supported" (feature unavailable
+        on this platform), or "error" (failed to determine state).
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -612,6 +783,21 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Whether Firefox is set as the default browser.
+
+        '
+    - name: os_environment_is_kept_in_dock
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this app was kept in macOS Dock on startup This metric
+        was generated to correspond to the Legacy Telemetry scalar os.environment.is_kept_in_dock.
+
+        '
+    - name: os_environment_is_taskbar_pinned
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the non-Private Browsing version of this app was pinned
+        to taskbar on startup This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.is_taskbar_pinned.
 
         '
   - name: counter
@@ -681,6 +867,30 @@ fields:
         `active_ticks` starting in Firefox 140. Recorded side-by-side with
 
         `active_ticks` for data continuity while the correction is evaluated.
+
+        '
+    - name: pdfjs_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times PDF Viewer was used.
+
+        '
+    - name: power_total_cpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Total CPU time used by all processes in ms.
+
+        '
+    - name: power_total_gpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Total GPU time used by all processes in ms.
+
+        '
+    - name: power_total_thread_wakeups
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times threads woke up and could have woken up a CPU core.
 
         '
   - name: quantity
@@ -868,6 +1078,65 @@ fields:
         recorded in that ping; it is recorded in a later ping once activity
 
         resumes.
+
+        '
+  - name: labeled_boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: os_environment_is_default_handler
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Records whether Firefox was the default handler for particular
+        file types or protocols.  The result is split into keys which represent the
+        file extension or scheme: currently, a subset of the file types Firefox registers
+        to handle, namely ".pdf" and "mailto" as protocol. In the future, more file
+        types may be recorded. This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.is_default_handler.
+
+        '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: addons_theme
+      type: JSON
+      mode: NULLABLE
+      description: 'The currently active theme.
+
+
+        Some of the addon fields are not available during startup. The fields
+
+        that will always be present are id, version, updateDay, and scope. All
+
+        the other fields become present shortly after the
+
+        `sessionstore-windows-restored` observer topic is notified.
+
+
+        This metric is an echo of the Legacy Telemetry Environment field
+
+        addons.theme. Like its counterpart, it will only have data in Firefox
+
+        Desktop and at times and on platforms where the environment would have
+
+        values.
+
+
+        NOTE: this metric is available in both `metrics` and `addons` pings. However
+
+        the `addons` ping is the preferred source of data for add-ons related analyses,
+
+        whereas the `metrics` ping is better suited for analyses that correlates other
+
+        metrics with the add-ons listed in the `theme` metric.
 
         '
   - name: url

@@ -499,6 +499,86 @@ fields:
       description: 'How many and which type of wallpapers were applied.
 
         '
+    - name: cert_verifier_cert_revocation_mechanisms
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which revocation checking mechanisms were used in a TLS handshake?
+
+        '
+    - name: cert_verifier_crlite_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times different CRLite statuses were returned.
+
+        '
+    - name: pdfjs_editing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times some PDF editing features are used.
+
+        '
+    - name: pdfjs_editing_highlight_kind
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a given kind is used to highlight.
+
+        '
+    - name: pdfjs_organize_action
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user performs a page organization
+        action (copy, cut, delete, merge, move, paste), exports selected pages, or
+        saves a PDF modified through page organization.
+
+        '
+    - name: pdfjs_stamp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times some PDF editing features are used.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -576,6 +656,71 @@ fields:
       description: 'Count of errors surfaced on a media element, keyed by error type
         and whether the playback is encrypted. Serves as a high-level signal for all
         media error categories.
+
+        '
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pdfjs_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times PDF Viewer was used.
+
+        '
+    - name: power_total_cpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Total CPU time used by all processes in ms.
+
+        '
+    - name: power_total_gpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Total GPU time used by all processes in ms.
+
+        '
+    - name: power_total_thread_wakeups
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times threads woke up and could have woken up a CPU core.
+
+        '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: addons_theme
+      type: JSON
+      mode: NULLABLE
+      description: 'The currently active theme.
+
+
+        Some of the addon fields are not available during startup. The fields
+
+        that will always be present are id, version, updateDay, and scope. All
+
+        the other fields become present shortly after the
+
+        `sessionstore-windows-restored` observer topic is notified.
+
+
+        This metric is an echo of the Legacy Telemetry Environment field
+
+        addons.theme. Like its counterpart, it will only have data in Firefox
+
+        Desktop and at times and on platforms where the environment would have
+
+        values.
+
+
+        NOTE: this metric is available in both `metrics` and `addons` pings. However
+
+        the `addons` ping is the preferred source of data for add-ons related analyses,
+
+        whereas the `metrics` ping is better suited for analyses that correlates other
+
+        metrics with the add-ons listed in the `theme` metric.
 
         '
 - name: app_version_major

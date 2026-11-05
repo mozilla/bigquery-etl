@@ -2,9 +2,10 @@ name: Set up bqetl
 description: >-
   Set up Python and the bigquery-etl virtualenv for a CI job. Works in bigquery-etl
   itself (path: .) and in repos that clone bigquery-etl into a subdirectory, like
-  private-bigquery-etl (path: bigquery-etl). Restores the venv the caller's build job
-  cached and builds it on a cache miss. The venv ends up in .venv for path "." and in
-  <path>/venv otherwise; run bqetl as PATH="<venv>/bin:$PATH" <path>/script/bqetl.
+  private-bigquery-etl (path: bigquery-etl). Restores the cached venv and builds it on
+  a cache miss; a workflow's build job sets save-cache so later jobs get a cache hit.
+  The venv ends up in .venv for path "." and in <path>/venv otherwise; run bqetl as
+  PATH="<venv>/bin:$PATH" <path>/script/bqetl.
 
 inputs:
   path:
@@ -13,17 +14,27 @@ inputs:
     default: '.'
   python-version:
     description: >-
-      Python version to set up. Pass the exact patch version the build job resolved,
-      because the venv cache key includes it.
+      Python version to set up. Jobs after the build job should pass the exact patch
+      version it resolved (the python-version output), because the venv cache key
+      includes it.
     required: false
     default: '3.11'
+  save-cache:
+    description: Save the venv to the cache after building it on a cache miss
+    required: false
+    default: 'false'
+
+outputs:
+  python-version:
+    description: The exact Python version that was set up
+    value: ${{ steps.setup_python.outputs.python-version }}
 
 runs:
   using: composite
   steps:
-    # The cache keys and venv locations match the build jobs in both repos
-    # (.venv here, bigquery-etl/venv in private-bigquery-etl), so the venv
-    # they save is the one restored here.
+    # The cache keys and venv locations match what both repos used before this
+    # action existed (.venv here, bigquery-etl/venv in private-bigquery-etl), so
+    # existing cache entries stay valid.
     - name: Resolve bqetl paths
       id: paths
       shell: bash
@@ -67,3 +78,9 @@ runs:
           venv/bin/pip install --no-deps -r requirements.txt
           venv/bin/pip install -e .
         fi
+    - name: Save cached virtualenv
+      if: inputs.save-cache == 'true' && steps.restore-venv.outputs.cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        key: ${{ steps.restore-venv.outputs.cache-primary-key }}
+        path: ${{ steps.paths.outputs.venv }}

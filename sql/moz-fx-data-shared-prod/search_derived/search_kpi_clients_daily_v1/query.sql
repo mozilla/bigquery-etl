@@ -1,24 +1,24 @@
--- One row per desktop client per day: SAP searches and Suggest clicks, the search KPI's
--- components. SAP comes from search_clients_daily_glean_v1; Suggest clicks come from
--- urlbar_clients_daily_v1, mapped to components by kpi_component_map_v1 as of that day.
--- Mobile rows are added once the mobile dimensions table exists.
+-- One row per client per day on desktop, Firefox Android and Firefox iOS: SAP searches and
+-- Suggest clicks, the search KPI's components, mapped by kpi_component_map_v1 as of that day.
+-- Desktop SAP comes from search_clients_daily_glean and clicks from urlbar_clients_daily_v1.
+-- Mobile SAP and dimensions come from mobile_search_clients_daily_v2, clicks from events_stream.
 WITH component_map AS (
   SELECT
+    platform,
     result_type,
     component,
     definition_version
   FROM
     `moz-fx-data-shared-prod.search_derived.kpi_component_map_v1`
   WHERE
-    platform = 'desktop'
-    AND effective_from <= @submission_date
+    effective_from <= @submission_date
     AND (effective_to IS NULL OR effective_to > @submission_date)
 ),
 -- Two rows in effect for one type would count its clicks twice.
 component_map_check AS (
   SELECT
     IF(
-      COUNT(*) > COUNT(DISTINCT result_type),
+      COUNT(*) > COUNT(DISTINCT CONCAT(platform, ':', result_type)),
       ERROR('kpi_component_map_v1 has overlapping rows for a result type'),
       TRUE
     ) AS ok
@@ -32,8 +32,7 @@ definition AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.kpi_component_map_v1`
   WHERE
-    platform = 'desktop'
-    AND effective_from <= @submission_date
+    effective_from <= @submission_date
 ),
 urlbar AS (
   SELECT
@@ -73,9 +72,72 @@ clicked_results AS (
     UNNEST(u.results) AS r
   LEFT JOIN
     component_map AS m
-    USING (result_type)
+    ON m.platform = 'desktop'
+    AND m.result_type = r.result_type
   WHERE
     r.clicks > 0
+),
+-- Fenix records one event per kind of click; a click on any other awesomebar result has its
+-- own event and isn't Suggest. iOS records every tap as one event, so the map excludes the
+-- rest by type.
+mobile_events AS (
+  SELECT
+    'android' AS platform,
+    client_id,
+    sample_id,
+    COALESCE(
+      JSON_VALUE(event_extra, '$.provider'),
+      JSON_VALUE(event_extra, '$.card_type')
+    ) AS result_type
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_stream`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'awesomebar'
+    AND event_name IN (
+      'sponsored_suggestion_clicked',
+      'non_sponsored_suggestion_clicked',
+      'optimized_suggestion_card_clicked'
+    )
+  UNION ALL
+  SELECT
+    'ios' AS platform,
+    client_id,
+    sample_id,
+    JSON_VALUE(event_extra, '$.type') AS result_type
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.events_stream`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'awesomebar'
+    AND event_name = 'search_result_tap'
+),
+-- Like urlbar_clients_daily_v1, the mobile sources have no date_partition_offset, so the
+-- partitions read here come from the previous run. Fail rather than write a day without them.
+mobile_events_check AS (
+  SELECT
+    IF(
+      COUNTIF(platform = 'android') = 0
+      OR COUNTIF(platform = 'ios') = 0,
+      ERROR(FORMAT('events_stream has no awesomebar clicks for an app on %t', @submission_date)),
+      TRUE
+    ) AS ok
+  FROM
+    mobile_events
+),
+mobile_clicked_results AS (
+  SELECT
+    e.platform,
+    e.client_id,
+    e.sample_id,
+    e.result_type,
+    m.component
+  FROM
+    mobile_events AS e
+  LEFT JOIN
+    component_map AS m
+    ON m.platform = e.platform
+    AND m.result_type = e.result_type
 ),
 -- A clicked result type with no map row must fail the run, not fall out of the KPI.
 unmapped_check AS (
@@ -91,7 +153,19 @@ unmapped_check AS (
       TRUE
     ) AS ok
   FROM
-    clicked_results
+    (
+      SELECT
+        result_type,
+        component
+      FROM
+        clicked_results
+      UNION ALL
+      SELECT
+        CONCAT(platform, ':', COALESCE(result_type, 'NULL')) AS result_type,
+        component
+      FROM
+        mobile_clicked_results
+    )
   WHERE
     component IS NULL
 ),
@@ -178,10 +252,154 @@ desktop AS (
   LEFT JOIN
     dims AS d
     USING (client_id)
+),
+-- A client can have several rows a day, one per engine and source. Each dimension takes the
+-- value on the most rows, with ties going to the last by value. 'unavailable' and '' lose to
+-- any real engine.
+mobile_search AS (
+  SELECT
+    IF(os = 'iOS', 'ios', 'android') AS platform,
+    client_id,
+    ANY_VALUE(sample_id) AS sample_id,
+    mozfun.stats.mode_last(ARRAY_AGG(country IGNORE NULLS ORDER BY country)) AS country,
+    mozfun.stats.mode_last(ARRAY_AGG(channel IGNORE NULLS ORDER BY channel)) AS normalized_channel,
+    MAX(os) AS os,
+    MAX(SAFE_CAST(SPLIT(app_version, '.')[SAFE_OFFSET(0)] AS NUMERIC)) AS app_version_major,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        NULLIF(NULLIF(default_search_engine, 'unavailable'), '') IGNORE NULLS
+        ORDER BY
+          default_search_engine
+      )
+    ) AS default_search_engine,
+    SUM(search_count) AS sap
+  FROM
+    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2`
+  WHERE
+    submission_date = @submission_date
+    AND (
+      (normalized_app_name = 'Fenix' AND os = 'Android')
+      -- Firefox iOS is labeled Fennec in this table.
+      OR (normalized_app_name = 'Fennec' AND os = 'iOS')
+    )
+  GROUP BY
+    platform,
+    client_id
+),
+mobile_search_check AS (
+  SELECT
+    IF(
+      COUNTIF(platform = 'android') = 0
+      OR COUNTIF(platform = 'ios') = 0,
+      ERROR(FORMAT('mobile_search_clients_daily_v2 is missing an app on %t', @submission_date)),
+      TRUE
+    ) AS ok
+  FROM
+    mobile_search
+),
+mobile_suggest AS (
+  SELECT
+    platform,
+    client_id,
+    ANY_VALUE(sample_id) AS sample_id,
+    COUNTIF(component = 'suggest_sponsored') AS suggest_sponsored,
+    COUNTIF(component = 'suggest_nonsponsored') AS suggest_nonsponsored
+  FROM
+    mobile_clicked_results
+  GROUP BY
+    platform,
+    client_id
+),
+mobile AS (
+  SELECT
+    platform,
+    client_id,
+    COALESCE(s.sample_id, c.sample_id) AS sample_id,
+    s.country,
+    s.normalized_channel,
+    s.os,
+    s.app_version_major,
+    -- Same substring match as desktop_client_day_dims_v1.
+    CASE
+      WHEN LOWER(s.default_search_engine) LIKE '%google%'
+        THEN 'Google'
+      WHEN LOWER(s.default_search_engine) LIKE '%bing%'
+        THEN 'Bing'
+      WHEN LOWER(s.default_search_engine) LIKE '%ddg%'
+        OR LOWER(s.default_search_engine) LIKE '%duckduckgo%'
+        THEN 'DuckDuckGo'
+      ELSE NULL
+    END AS normalized_default_search_engine,
+    COALESCE(s.sap, 0) AS sap,
+    COALESCE(c.suggest_sponsored, 0) AS suggest_sponsored,
+    COALESCE(c.suggest_nonsponsored, 0) AS suggest_nonsponsored
+  FROM
+    mobile_search AS s
+  FULL OUTER JOIN
+    mobile_suggest AS c
+    USING (platform, client_id)
+),
+all_platforms AS (
+  SELECT
+    'desktop' AS platform,
+    client_id,
+    profile_group_id,
+    sample_id,
+    country,
+    normalized_channel,
+    os,
+    app_version_major,
+    normalized_default_search_engine,
+    is_default_browser,
+    sap,
+    sap_excluded,
+    suggest_sponsored,
+    suggest_nonsponsored,
+    ai_chat,
+    is_bot,
+    in_urlbar,
+    -- Firefox 138 is the SAP probe floor; it applies to Suggest too so both halves match.
+    COALESCE(app_version_major >= 138, FALSE) AS meets_population_rules
+  FROM
+    desktop
+  WHERE
+    -- Every urlbar user stays, even with nothing counted. A client seen only in
+    -- search_clients_daily stays only if it started a search, counted or excluded.
+    in_urlbar
+    OR sap > 0
+    OR sap_excluded > 0
+  UNION ALL
+  SELECT
+    platform,
+    client_id,
+    CAST(NULL AS STRING) AS profile_group_id,
+    sample_id,
+    country,
+    normalized_channel,
+    os,
+    app_version_major,
+    normalized_default_search_engine,
+    CAST(NULL AS BOOLEAN) AS is_default_browser,
+    sap,
+    -- The 10,000-search rule is desktop only: it's for a held-down Enter key.
+    0 AS sap_excluded,
+    suggest_sponsored,
+    suggest_nonsponsored,
+    0 AS ai_chat,
+    CAST(NULL AS BOOLEAN) AS is_bot,
+    FALSE AS in_urlbar,
+    -- The KPI has no version floor on mobile.
+    TRUE AS meets_population_rules
+  FROM
+    mobile
+  WHERE
+    sap > 0
+    OR suggest_sponsored > 0
+    OR suggest_nonsponsored > 0
 )
 SELECT
   @submission_date AS submission_date,
-  'desktop' AS platform,
+  platform,
   client_id,
   profile_group_id,
   sample_id,
@@ -199,11 +417,10 @@ SELECT
   sap + suggest_sponsored + suggest_nonsponsored + ai_chat AS search_queries,
   is_bot,
   in_urlbar,
-  -- Firefox 138 is the SAP probe floor; it applies to Suggest too so both halves match.
-  COALESCE(app_version_major >= 138, FALSE) AS meets_population_rules,
+  meets_population_rules,
   definition.definition_version
 FROM
-  desktop
+  all_platforms
 CROSS JOIN
   definition
 CROSS JOIN
@@ -212,10 +429,13 @@ CROSS JOIN
   urlbar_partition_check
 CROSS JOIN
   component_map_check
+CROSS JOIN
+  mobile_events_check
+CROSS JOIN
+  mobile_search_check
 WHERE
   unmapped_check.ok
   AND urlbar_partition_check.ok
   AND component_map_check.ok
-  -- Every urlbar user stays, even with nothing counted. A client seen only in
-  -- search_clients_daily stays only if it started a search, counted or excluded.
-  AND (in_urlbar OR sap > 0 OR sap_excluded > 0)
+  AND mobile_events_check.ok
+  AND mobile_search_check.ok

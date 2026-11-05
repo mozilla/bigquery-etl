@@ -1,0 +1,50 @@
+# android-a: two sponsored clicks count, a stocks card doesn't, another day doesn't, and a
+# search suggestion isn't read at all. android-c has clicks but no search row: kept, no dims.
+- submission_timestamp: "2026-10-28 10:00:00"
+  client_id: android-a
+  sample_id: 11
+  event_category: awesomebar
+  event_name: sponsored_suggestion_clicked
+  event_extra: {provider: amp}
+- submission_timestamp: "2026-10-28 11:00:00"
+  client_id: android-a
+  sample_id: 11
+  event_category: awesomebar
+  event_name: sponsored_suggestion_clicked
+  event_extra: {provider: amp}
+- submission_timestamp: "2026-10-28 12:00:00"
+  client_id: android-a
+  sample_id: 11
+  event_category: awesomebar
+  event_name: optimized_suggestion_card_clicked
+  event_extra: {card_type: stocks}
+- submission_timestamp: "2026-10-28 13:00:00"
+  client_id: android-a
+  sample_id: 11
+  event_category: awesomebar
+  event_name: search_suggestion_clicked
+- submission_timestamp: "2026-10-27 10:00:00"
+  client_id: android-a
+  sample_id: 11
+  event_category: awesomebar
+  event_name: sponsored_suggestion_clicked
+  event_extra: {provider: amp}
+- submission_timestamp: "2026-10-28 10:00:00"
+  client_id: android-c
+  sample_id: 15
+  event_category: awesomebar
+  event_name: non_sponsored_suggestion_clicked
+  event_extra: {provider: wikipedia}
+- submission_timestamp: "2026-10-28 11:00:00"
+  client_id: android-c
+  sample_id: 15
+  event_category: awesomebar
+  event_name: optimized_suggestion_card_clicked
+  event_extra: {card_type: flights}
+# android-d only clicked a card that doesn't count and has no searches: dropped.
+- submission_timestamp: "2026-10-28 10:00:00"
+  client_id: android-d
+  sample_id: 16
+  event_category: awesomebar
+  event_name: optimized_suggestion_card_clicked
+  event_extra: {card_type: stocks}

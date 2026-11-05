@@ -90,3 +90,54 @@
   in_urlbar: false
   meets_population_rules: false
   definition_version: 2
+# Mobile: two sponsored clicks and SAP summed over three rows; the US and google-b-m rows win.
+- submission_date: "2026-10-28"
+  platform: android
+  client_id: android-a
+  sample_id: 11
+  country: US
+  normalized_channel: release
+  os: Android
+  app_version_major: "144"
+  normalized_default_search_engine: Google
+  sap: 6
+  sap_excluded: 0
+  suggest_sponsored: 2
+  suggest_nonsponsored: 0
+  ai_chat: 0
+  search_queries: 8
+  in_urlbar: false
+  meets_population_rules: true
+  definition_version: 2
+# Clicks with no search row: kept, with no dimensions.
+- submission_date: "2026-10-28"
+  platform: android
+  client_id: android-c
+  sample_id: 15
+  sap: 0
+  sap_excluded: 0
+  suggest_sponsored: 0
+  suggest_nonsponsored: 2
+  ai_chat: 0
+  search_queries: 2
+  in_urlbar: false
+  meets_population_rules: true
+  definition_version: 2
+- submission_date: "2026-10-28"
+  platform: ios
+  client_id: ios-a
+  sample_id: 14
+  country: CA
+  normalized_channel: beta
+  os: iOS
+  app_version_major: "145"
+  normalized_default_search_engine: DuckDuckGo
+  sap: 4
+  sap_excluded: 0
+  suggest_sponsored: 1
+  suggest_nonsponsored: 0
+  ai_chat: 0
+  search_queries: 5
+  in_urlbar: false
+  meets_population_rules: true
+  definition_version: 2

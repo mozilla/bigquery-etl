@@ -45,3 +45,16 @@
   os_family: "macOS"
   session_id: "sess_can321"
   sequence_no: 1
+
+# Redelivered Merino log for req_1001; must not double-count impressions/clicks
+- timestamp: "2025-06-16T09:00:05Z"
+  request_id: "req_1001"
+  query: "buy running shoes"
+  country: "US"
+  region: "NY"
+  dma: "501a"
+  form_factor: "mobile"
+  browser: "Safari"
+  os_family: "iOS"
+  session_id: "sess_xyz001"
+  sequence_no: 1

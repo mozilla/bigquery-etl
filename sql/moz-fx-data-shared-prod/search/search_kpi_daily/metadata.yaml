@@ -1,0 +1,11 @@
+---
+friendly_name: Search KPI Daily
+description: |-
+  The search KPI per day, with client_id removed. Every row counts toward the KPI, so
+  SUM(value) is the KPI for any slice. Rows that fail the population rules, bots, and
+  sap_excluded are filtered out; search_derived.search_kpi_daily_v1 keeps them.
+
+  client_count adds up across dimensions within one day and component. It doesn't add up
+  across days or components.
+owners:
+- data-search-wg@mozilla.com

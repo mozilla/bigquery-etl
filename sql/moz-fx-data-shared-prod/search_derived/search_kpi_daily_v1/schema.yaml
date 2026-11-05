@@ -1,0 +1,60 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: desktop, android or ios.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The client's country that day, as in search_kpi_clients_daily_v1.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The client's release channel that day, as in search_kpi_clients_daily_v1.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The client's operating system that day, as in search_kpi_clients_daily_v1.
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: The client's major Firefox version that day, as in
+    search_kpi_clients_daily_v1.
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: The client's default search engine that day, as in
+    search_kpi_clients_daily_v1.
+- name: meets_population_rules
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether these rows meet the KPI's population rules. FALSE rows are kept so
+    the rules can be audited or changed after client rows are gone. The KPI counts TRUE
+    rows only.
+- name: is_bot
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether these clients are on the shared bot list. NULL means unknown, so
+    filter with `IS NOT TRUE`, never `NOT is_bot`.
+- name: definition_version
+  type: INTEGER
+  mode: NULLABLE
+  description: The kpi_component_map_v1 definition_version these rows were built with.
+- name: component
+  type: STRING
+  mode: NULLABLE
+  description: One of sap, suggest_sponsored, suggest_nonsponsored, ai_chat or sap_excluded.
+    sap_excluded isn't part of the KPI, so leave it out when summing value.
+- name: value
+  type: INTEGER
+  mode: NULLABLE
+  description: The component's count for these clients that day, always above 0.
+- name: client_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Clients with value above 0 for this component. Adds up across dimensions
+    within one day and component, but not across days or components.

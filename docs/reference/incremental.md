@@ -15,7 +15,7 @@
   only calculates the most recent partition
 
 [script/generate_incremental_table]: https://github.com/mozilla/bigquery-etl/blob/main/script/generate_incremental_table
-[dags.utils.gcp.bigquery_etl_query]: https://github.com/mozilla/telemetry-airflow/blob/89a6dc3/dags/utils/gcp.py#L364
+[dags.utils.gcp.bigquery_etl_query]: https://github.com/mozilla/telemetry-airflow/blob/36c836f758029b2145b796182ffe508c83bcf63b/utils/gcp.py
 
 ## Properties
 

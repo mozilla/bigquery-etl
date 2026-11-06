@@ -1,0 +1,54 @@
+- submission_date: '2026-09-21'
+  country: US
+  os: Windows
+  client_id: u1
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: US
+  os: Windows
+  client_id: u2
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: US
+  os: Windows
+  client_id: u3
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: DE
+  os: Mac
+  client_id: d1
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: DE
+  os: Mac
+  client_id: d2
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: RU
+  os: Windows
+  client_id: r1
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: FR
+  os: Linux
+  client_id: f1
+  is_dau: true
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: FR
+  os: Linux
+  client_id: f2
+  is_dau: false
+  app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  country: FR
+  os: Linux
+  client_id: f3
+  is_dau: true
+  app_name: MozillaOnline

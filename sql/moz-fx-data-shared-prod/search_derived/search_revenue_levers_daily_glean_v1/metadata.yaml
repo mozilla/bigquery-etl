@@ -1,0 +1,51 @@
+---
+friendly_name: Search Revenue Levers Daily Glean
+description: |-
+  Daily search revenue levers per partner, device, operating system and country: eligible DAU,
+  DAU with the partner as default engine, DAU engaged with SAP, SAP, tagged and follow-on
+  searches, searches with ads, ad clicks and their organic equivalents.
+
+  The Glean counterpart of `search_revenue_levers_daily_v1`, and it runs alongside it. Desktop
+  search comes from `search_aggregates_glean`, desktop DAU from `search_dau_aggregates_glean` and
+  `firefox_desktop.baseline_active_users`. Mobile already reads Glean in the legacy table, so the
+  mobile rows are built the same way as there.
+
+  Things to know when reading it:
+  * Desktop `sap` is `sap_kpi`, which leaves out runaway-SAP rows, the cap the legacy table applies.
+    It only covers Firefox 138 and later, so filter both sides to 138+ when comparing.
+  * Desktop `tagged_sap`, `tagged_follow_on`, `search_with_ads`, `ad_click` and the organic columns
+    are the Glean counter series that reconcile to the legacy table. `search_with_ads_serp` and
+    `ad_click_serp` are the SERP-derived equivalents and are lower. `ad_click_serp` steps up at
+    Firefox 157.
+  * Glean-keyed desktop DAU runs higher than the legacy table's, as copied profiles give several
+    Glean ids for one legacy id.
+  * Desktop `monetizable_sap` is rewritten on the row's `partner_code`, because the legacy
+    definition reads raw engine codes that Glean does not carry. It is awaiting sign-off from the
+    revenue reviewers. The new Google codes count as not monetized until their rule is settled, and
+    so does any code the rule does not list. Data checks warn when the new codes carry more than 1%
+    of Google desktop SAP, and when the monetizable share of Google desktop SAP falls below 90%.
+    Mobile is always 0.
+  * Bing desktop leaves out Acer distributions using the `distribution_id` only. The legacy
+    `search.acer_cohort` list is keyed on the legacy `client_id` and is not carried.
+  * Mobile rows are not split by operating system, so `normalized_os` is NULL on them.
+owners:
+- mozilla/revenue_forecasting_data_reviewers
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  change_controlled: true
+  dag: bqetl_search_dashboard
+scheduling:
+  dag_name: bqetl_search_dashboard
+  # search_aggregates_glean_v1 and search_dau_aggregates_glean_v1 fill the previous day's
+  # partition on each run, so this table does too.
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null

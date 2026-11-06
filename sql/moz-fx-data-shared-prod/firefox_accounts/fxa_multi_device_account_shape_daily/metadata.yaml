@@ -8,9 +8,4 @@ description: |-
 owners:
 - lmcfall@mozilla.com
 labels:
-  authorized: true
   owner: lmcfall
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:fxa/alert-bot-prod

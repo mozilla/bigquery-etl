@@ -12,9 +12,3 @@ description: 'A subset of FxA auth server logs related to "send tab" activity.
   to a conclusion.'
 owners:
 - kik@mozilla.com
-labels:
-  authorized: true
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:fxa/alert-bot-prod

@@ -24,9 +24,3 @@ description: 'Derived from fxa_users_services (user/service level) and aggregate
   '
 owners:
 - kik@mozilla.com
-labels:
-  authorized: true
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:fxa/alert-bot-prod

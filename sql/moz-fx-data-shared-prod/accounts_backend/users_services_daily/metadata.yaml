@@ -2,9 +2,3 @@ friendly_name: Users Services Daily
 description: Activity aggregates per Mozilla Account per service per day
 owners:
 - ksiegler@mozilla.com
-labels:
-  authorized: true
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:fxa/alert-bot-prod

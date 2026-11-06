@@ -9,9 +9,3 @@ description: 'Contains the first entry seen inside fxa_users_daily_v2
   clustered by seen_in_tier1_country, country, os_name'
 owners:
 - kik@mozilla.com
-labels:
-  authorized: true
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:fxa/alert-bot-prod

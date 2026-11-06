@@ -96,7 +96,6 @@ SELECT
       JSON_VALUE(event_extra.experiment) AS `experiment`,
       JSON_VALUE(event_extra.experiment_type) AS `experiment_type`,
       JSON_VALUE(event_extra.extension_source) AS `extension_source`,
-      JSON_VALUE(event_extra.failure_reason) AS `failure_reason`,
       JSON_VALUE(event_extra.feature_id) AS `feature_id`,
       JSON_VALUE(event_extra.fifa_code) AS `fifa_code`,
       JSON_VALUE(event_extra.flow_type) AS `flow_type`,

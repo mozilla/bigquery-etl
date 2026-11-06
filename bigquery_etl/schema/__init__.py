@@ -172,14 +172,26 @@ class Schema:
                 ignore_missing_fields=ignore_missing_fields,
             )
 
-    def equal(self, other: "Schema") -> bool:
-        """Compare to another schema."""
+    def equal(self, other: "Schema", compare_descriptions: bool = False) -> bool:
+        """Compare to another schema.
+
+        Field descriptions aren't compared by default because schemas are often
+        compared against dry run schemas, which never have descriptions.
+        """
         try:
             self._traverse(
-                "root", self.schema["fields"], other.schema["fields"], update=False
+                "root",
+                self.schema["fields"],
+                other.schema["fields"],
+                update=False,
+                compare_descriptions=compare_descriptions,
             )
             self._traverse(
-                "root", other.schema["fields"], self.schema["fields"], update=False
+                "root",
+                other.schema["fields"],
+                self.schema["fields"],
+                update=False,
+                compare_descriptions=compare_descriptions,
             )
         except Exception as e:
             print(e)
@@ -217,13 +229,6 @@ class Schema:
 
         return True
 
-    @staticmethod
-    def _node_with_mode(node):
-        """Add default value for mode to node."""
-        if "mode" in node:
-            return node
-        return {"mode": "NULLABLE", **node}
-
     def _traverse(
         self,
         prefix,
@@ -235,40 +240,55 @@ class Schema:
         exclude=None,
         attributes=None,
         ignore_incompatible_fields=False,
+        compare_descriptions=False,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
-        nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
+        nodes = {n["name"]: n for n in columns}
+        # In some cases the `mode` attribute is omitted for nullable fields, but since this method relies on
+        # looping over the attributes of `other_nodes` we fill in `mode` for those to ensure it's processed.
         other_nodes = {
-            n["name"]: Schema._node_with_mode(n)
+            n["name"]: n if "mode" in n else {"mode": "NULLABLE", **n}
             for n in other_columns
             if exclude is None or n["name"] not in exclude
         }
 
-        for node_name, node in other_nodes.items():
-            field_path = node["name"] + (".[]" if node["mode"] == "REPEATED" else "")
-            dtype = node["type"]
+        for node_name, other_node in other_nodes.items():
+            field_path = other_node["name"] + (
+                ".[]" if other_node["mode"] == "REPEATED" else ""
+            )
+            dtype = other_node["type"]
 
             if node_name in nodes:
                 # node exists in schema, update attributes where necessary
-                for node_attr_key, node_attr_value in node.items():
+                node = nodes[node_name]
+                for node_attr_key, other_node_attr_value in other_node.items():
                     if attributes and node_attr_key not in attributes:
                         continue
+
+                    node_has_attr = node_attr_key in node
+                    node_attr_value = node.get(node_attr_key)
 
                     if node_attr_key == "type":
                         # sometimes types have multiple names (e.g. INT64 and INTEGER)
                         # make it consistent here
+                        other_node_attr_value = self._type_mapping.get(
+                            other_node_attr_value, other_node_attr_value
+                        )
                         node_attr_value = self._type_mapping.get(
                             node_attr_value, node_attr_value
                         )
-                        nodes[node_name][node_attr_key] = self._type_mapping.get(
-                            nodes[node_name][node_attr_key],
-                            nodes[node_name][node_attr_key],
-                        )
+                        if update and node_attr_value is not None:
+                            node[node_attr_key] = node_attr_value
+                    elif node_attr_key == "mode":
+                        # In some cases the `mode` attribute is omitted for nullable fields.
+                        if not node_has_attr:
+                            node_attr_value = "NULLABLE"
+                            node_has_attr = True
 
-                    if node_attr_key not in nodes[node_name]:
+                    if not node_has_attr:
                         if update:
                             # add field attributes if not exists in schema
-                            nodes[node_name][node_attr_key] = node_attr_value
+                            node[node_attr_key] = other_node_attr_value
                             # Netlify has a problem starting 2022-03-07 where lots of
                             # logging slows down builds to the point where our builds hit
                             # the time limit and fail (bug 1761292), and this print
@@ -279,22 +299,27 @@ class Schema:
                             # )
                         else:
                             if node_attr_key == "description":
-                                print(
-                                    "Warning: descriptions for "
-                                    f"{prefix}.{field_path} differ"
-                                )
+                                if compare_descriptions:
+                                    raise Exception(
+                                        f"description missing in {prefix}.{field_path}"
+                                    )
                             else:
                                 if not ignore_incompatible_fields:
                                     raise Exception(
                                         f"{node_attr_key} missing in {prefix}.{field_path}"
                                     )
-                    elif nodes[node_name][node_attr_key] != node_attr_value:
+                    elif node_attr_value != other_node_attr_value:
                         # check field attribute diffs
                         if node_attr_key == "description":
-                            # overwrite descripton for the "other" schema
-                            print(
-                                f"Warning: descriptions for {prefix}.{field_path} differ."
-                            )
+                            if update:
+                                # When updating, the existing schema's description takes precedence.
+                                print(
+                                    f"Warning: descriptions for {prefix}.{field_path} differ."
+                                )
+                            elif compare_descriptions:
+                                raise Exception(
+                                    f"descriptions for {prefix}.{field_path} differ"
+                                )
                         elif node_attr_key != "fields":
                             if not ignore_incompatible_fields:
                                 raise Exception(
@@ -302,25 +327,26 @@ class Schema:
                                     f"for {prefix}.{field_path} are incompatible"
                                 )
 
-                if dtype == "RECORD" and nodes[node_name]["type"] == "RECORD":
+                if dtype == "RECORD" and node["type"] == "RECORD":
                     # keep traversing nested fields
                     self._traverse(
                         f"{prefix}.{field_path}",
-                        nodes[node_name]["fields"],
                         node["fields"],
+                        other_node["fields"],
                         update=update,
                         add_missing_fields=add_missing_fields,
                         ignore_missing_fields=ignore_missing_fields,
                         attributes=attributes,
                         ignore_incompatible_fields=ignore_incompatible_fields,
+                        compare_descriptions=compare_descriptions,
                     )
             else:
                 if update and add_missing_fields:
                     # node does not exist in schema, add to schema
-                    if node["type"] == "RECORD":  # deep copy record fields
-                        columns.append(ujson.loads(ujson.dumps(node)))
+                    if other_node["type"] == "RECORD":  # deep copy record fields
+                        columns.append(ujson.loads(ujson.dumps(other_node)))
                     else:
-                        columns.append(node.copy())
+                        columns.append(other_node.copy())
                     print(f"Field {node_name} added to {prefix}")
                 else:
                     if not ignore_missing_fields:

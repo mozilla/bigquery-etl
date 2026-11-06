@@ -59,6 +59,7 @@ WITH unexpected_keys AS (
       'term',
       'content',
       'gclid',
+      'dclid',
       'gclsrc',
       'gad_source',
       'gad_campaignid',
@@ -66,12 +67,13 @@ WITH unexpected_keys AS (
       'fbclid',
       'twclid',
       'rdt_cid',
-      'id'
+      'id',
+      'variant'
     )
   GROUP BY
     clean_key
   HAVING
-    record_count >= 100
+    record_count >= 500
 )
 SELECT
   IF(
@@ -122,7 +124,8 @@ WITH unexpected_events AS (
       'newsletter_subscribe',
       'dimension_set',
       'send_to_device',
-      'default_browser_set'
+      'default_browser_set',
+      'experiment_view'
     )
   GROUP BY
     event_name

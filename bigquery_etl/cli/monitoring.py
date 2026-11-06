@@ -938,8 +938,7 @@ def delete(
                         )
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Runs Bigeye monitors.
 
     Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
@@ -947,12 +946,7 @@ def delete(
     Example:
 
     \t./bqetl monitoring run ga_derived.downloads_with_attribution_v2
-    """,
-    context_settings=dict(
-        ignore_unknown_options=True,
-        allow_extra_args=True,
-    ),
-)
+    """)
 @block_coding_agents
 @click.argument("name")
 @project_id_option()

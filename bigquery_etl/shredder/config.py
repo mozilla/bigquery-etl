@@ -259,6 +259,15 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="search_derived.search_clients_daily_glean_v1"
     ): DESKTOP_GLEAN_SRC,
+    # Keyed on the Glean id, like search_clients_daily_glean_v1 above.
+    client_id_target(
+        table="search_derived.desktop_client_day_dims_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
+    # Desktop rows only for now; mobile rows will need their apps' deletion sources too.
+    client_id_target(
+        table="search_derived.search_kpi_clients_daily_v1"
+    ): DESKTOP_GLEAN_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
@@ -347,6 +356,19 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
     ),
+    # Firefox Desktop Glean clients only, so only the Desktop Glean stream applies.
+    client_id_target(
+        table="glean_telemetry_derived.new_profile_churn_clients_v2"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.recent_new_profile_churn_clients_v2"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.new_profile_churn_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.recent_new_profile_churn_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_cfs_staging_v1",
         field=(CLIENT_ID,) * 15,

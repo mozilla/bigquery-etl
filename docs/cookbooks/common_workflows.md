@@ -27,9 +27,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Merge pull-request
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
    * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to create new datasets earlier
-1. Backfill data
-   * Option 1: via Airflow interface
-   * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
+1. Backfill data by following the [Backfilling a table](https://mozilla.github.io/bigquery-etl/cookbooks/backfilling_a_table/) cookbook, which uses a `backfill.yaml` file and `./bqetl backfill create`
 
 ## Update an existing query
 

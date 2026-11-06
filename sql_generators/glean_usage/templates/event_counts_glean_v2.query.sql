@@ -1,11 +1,13 @@
 -- Generated via ./bqetl generate glean_usage
 WITH
+{% set cte = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"]
    and dataset['bq_dataset_family'] in event_tables_per_dataset %}
   {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}
+    {% if not cte.first %},{% endif %}
+    {% set cte.first = false %}
     {{ dataset['bq_dataset_family'] }}_{{ events_table }} AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
@@ -37,27 +39,23 @@ WITH
         normalized_country_code,
         app_version
     )
-  {% if not (outer_loop.last and loop.last) %}
-    ,
-  {% endif -%}
   {% endfor %}
 {% endif %}
 {% endfor %}
 {% endfor %}
 
+{% set union = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"]
    and dataset['bq_dataset_family'] in event_tables_per_dataset %}
   {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}
+    {% if not union.first %}UNION ALL{% endif %}
+    {% set union.first = false %}
     SELECT
       *
     FROM
       {{ dataset['bq_dataset_family'] }}_{{ events_table }}
-    {% if not (outer_loop.last and loop.last) -%}
-      UNION ALL
-    {% endif -%}
   {% endfor %}
 {% endif %}
 {% endfor %}

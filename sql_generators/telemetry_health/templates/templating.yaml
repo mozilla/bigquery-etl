@@ -30,3 +30,5 @@ queries:
     description: "80th percentile of baseline ping count per client per day"
   telemetry_health_sequence_holes_v1:
     description: "Percentage of sampled clients with sequence gaps in baseline pings (within single day)"
+  telemetry_health_glean_metric_errors_v1:
+    description: "Counts of metrics with recorded errors and the fraction of clients affected, per day."

@@ -610,6 +610,10 @@ def _backfill_query(
     return True
 
 
+# Directory containing the bigquery_etl package, for script subprocesses.
+_PACKAGE_ROOT = str(Path(__file__).resolve().parents[2])
+
+
 def _backfill_script(
     backfill_date: date,
     entrypoint_command: Callable,
@@ -645,7 +649,15 @@ def _backfill_script(
         ],
         stderr=subprocess.PIPE,
         text=True,
-        env={**os.environ, "PYTHONUNBUFFERED": "1"},
+        env={
+            **os.environ,
+            "PYTHONUNBUFFERED": "1",
+            # Make this bigquery_etl importable even when it isn't installed
+            # (e.g. run from a checkout, as in CI).
+            "PYTHONPATH": os.pathsep.join(
+                filter(None, [_PACKAGE_ROOT, os.environ.get("PYTHONPATH")])
+            ),
+        },
     ) as process:
         last_error_line = ""
         assert process.stderr is not None

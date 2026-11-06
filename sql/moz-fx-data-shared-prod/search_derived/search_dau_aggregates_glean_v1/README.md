@@ -54,6 +54,10 @@ Daily desktop DAU by search behavior, per partner: `dau_w_engine_as_default` and
 
 **SERP ad clicks step up at Firefox 157.** `ad_click_category_serp` is based on SERP ad clicks, which step up from Firefox 157, when the fix for bug 2069054 landed. The counters behind `ad_click_category` do not step. The step stays in the historical data, so a trend across the Firefox 157 rollout shows a level change that is not user behavior.
 
+## History and deletion
+
+Partitions are as complete as when they were written. Dates filled by the initial backfill were computed after Shredder had already removed deleted clients from the sources, so DAU counts in older backfilled partitions read low, by a share of clients that grows with the age of the partition. Year-over-year comparisons of counts across the backfill boundary must correct for this. History starts at the sources' 775-day retention. Any later re-backfill must go through a new version with shredder mitigation, and the `shredder_mitigation` label is added after the initial backfill.
+
 ## Runs
 
 One scheduled run per day in the `bqetl_search_dashboard` DAG, with `date_partition_offset: -1`, so the run for logical date D writes the partition for D-1. The metrics-ping lookback reads one day past the date, which the offset leaves time to land. A rerun before that day has landed can leave more clients without an engine.

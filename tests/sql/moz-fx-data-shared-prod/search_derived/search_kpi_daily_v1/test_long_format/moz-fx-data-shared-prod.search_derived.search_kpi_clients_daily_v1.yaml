@@ -1,0 +1,52 @@
+---
+# desktop-a and desktop-b share dimensions, so their values add.
+- &base
+  submission_date: "2026-10-28"
+  platform: desktop
+  client_id: desktop-a
+  country: US
+  normalized_channel: release
+  os: Windows
+  app_version_major: 150
+  normalized_default_search_engine: Google
+  sap: 10
+  sap_excluded: 0
+  suggest_sponsored: 1
+  suggest_nonsponsored: 0
+  ai_chat: 0
+  search_queries: 11
+  meets_population_rules: true
+  definition_version: 1
+- <<: *base
+  client_id: desktop-b
+  sap: 5
+  sap_excluded: 12000
+  suggest_sponsored: 2
+  suggest_nonsponsored: 3
+  ai_chat: 1
+  search_queries: 11
+# Fails the version floor: kept, flagged.
+- <<: *base
+  client_id: desktop-old
+  app_version_major: 130
+  sap: 4
+  suggest_sponsored: 0
+  search_queries: 4
+  meets_population_rules: false
+# Nothing counted: makes no rows.
+- <<: *base
+  client_id: desktop-zero
+  sap: 0
+  suggest_sponsored: 0
+  search_queries: 0
+- <<: *base
+  platform: android
+  client_id: android-a
+  os: Android
+  sap: 7
+  suggest_sponsored: 0
+  search_queries: 7
+# Another day: left out.
+- <<: *base
+  submission_date: "2026-10-27"
+  client_id: desktop-a

@@ -1,0 +1,39 @@
+friendly_name: Search KPI Daily
+description: |-
+  The search KPI's inputs per day, with client_id removed, one row per dimension set and
+  component. Built from search_derived.search_kpi_clients_daily_v1. It never expires and
+  has no Shredder entry, so it keeps each day's totals after client rows are deleted and
+  after the client table expires.
+
+  Most readers want the view search.search_kpi_daily. This table also holds rows the KPI
+  doesn't count: the sap_excluded component, and rows with meets_population_rules FALSE.
+  Summing value here without filtering them gives too high a number.
+
+  client_count adds up across dimensions within one day and component. It doesn't add up
+  across days or components.
+
+  Don't rerun old partitions. The client table loses rows as Shredder runs, so a rerun
+  overwrites a day's totals with lower ones.
+owners:
+- data-search-wg@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_search
+  # search_kpi_clients_daily_v1 fills the previous day's partition on each run, so this
+  # table does too.
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - platform
+    - component
+require_column_descriptions: true

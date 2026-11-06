@@ -10,9 +10,3 @@ labels:
   sql_generator: fxa_fastly_logs
   owner1: benwu
   owner2: atoufali
-{% if env == "prod" -%}
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:fxa/alert-bot-prod
-{% endif -%}

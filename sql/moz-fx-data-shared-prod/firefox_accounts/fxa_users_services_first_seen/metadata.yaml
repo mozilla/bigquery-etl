@@ -6,6 +6,8 @@ description: 'Usage aggregations describing when an FxA user
   '
 owners:
 - kik@mozilla.com
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

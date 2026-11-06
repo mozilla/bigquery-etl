@@ -2,6 +2,8 @@ friendly_name: FxA Users Services Daily
 description: Usage aggregations per FxA user per FxA service per day
 owners:
 - kik@mozilla.com
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

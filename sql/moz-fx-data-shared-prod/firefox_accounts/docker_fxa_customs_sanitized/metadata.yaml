@@ -10,6 +10,8 @@ description: 'Sanitized version of customs events from GCP based FxA service std
   in the v1 of this table.'
 owners:
 - kik@mozilla.com
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

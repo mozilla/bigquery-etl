@@ -11,6 +11,8 @@ description: "Usage aggregations describing when each FxA user, service,\ndevice
   \ fxa data can be found here:\nhttps://docs.telemetry.mozilla.org/datasets/fxa.html\n"
 owners:
 - kik@mozilla.com
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

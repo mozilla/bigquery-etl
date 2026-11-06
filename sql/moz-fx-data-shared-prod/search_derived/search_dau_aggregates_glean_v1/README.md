@@ -21,7 +21,7 @@ Daily desktop DAU by search behavior, per partner: `dau_w_engine_as_default` and
 
 **Engine fan-out.** A DAU client who searched on more than one engine in a day has a row for each engine, and their default engine counts in each of those rows. Summing `dau_w_engine_as_default` across `normalized_engine` therefore counts them once for each engine. `search_dau_aggregates_v1` behaves the same way, so this matches the legacy table.
 
-**`sap_category`, `ad_click_category` and `ad_click_category_serp` are grain keys.** `sap_category` is 1 when the client had a search access point event. `ad_click_category` is 1 when the client had a tagged ad click in the `browser.search.adclicks` counters, the series comparable to `search_clients_daily_v8`. `ad_click_category_serp` is 1 for a tagged ad click in SERP events. A client can land on a different row depending on which flag is used.
+**`sap_category`, `ad_click_category` and `ad_click_category_serp` are grain keys.** `sap_category` is 1 when the client had a search access point event, leaving out runaway SAP rows (see below). `ad_click_category` is 1 when the client had a tagged ad click in the `browser.search.adclicks` counters, the series comparable to `search_clients_daily_v8`. `ad_click_category_serp` is 1 for a tagged ad click in SERP events. A client can land on a different row depending on which flag is used.
 
 ## How the DAU population and attributes are built
 

@@ -106,6 +106,142 @@ FROM
   kpi,
   source;
 
+#fail
+-- Every mobile SAP search in the source must land here: a client with SAP is always kept.
+WITH kpi AS (
+  SELECT
+    platform,
+    SUM(sap) AS sap
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    submission_date = @submission_date
+    AND platform IN ('android', 'ios')
+  GROUP BY
+    platform
+),
+source AS (
+  SELECT
+    IF(os = 'iOS', 'ios', 'android') AS platform,
+    SUM(search_count) AS sap
+  FROM
+    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2`
+  WHERE
+    submission_date = @submission_date
+    AND (
+      (normalized_app_name = 'Fenix' AND os = 'Android')
+      OR (normalized_app_name = 'Fennec' AND os = 'iOS')
+    )
+  GROUP BY
+    platform
+)
+SELECT
+  IF(
+    COUNT(*) > 0,
+    ERROR(
+      CONCAT(
+        'Mobile sap differs from mobile_search_clients_daily_v2 for: ',
+        STRING_AGG(platform, ', ' ORDER BY platform)
+      )
+    ),
+    NULL
+  )
+FROM
+  kpi
+FULL OUTER JOIN
+  source
+  USING (platform)
+WHERE
+  kpi.sap IS DISTINCT FROM source.sap;
+
+#fail
+-- Every counted mobile Suggest click in events_stream must land here.
+WITH kpi AS (
+  SELECT
+    platform,
+    SUM(suggest_sponsored) AS suggest_sponsored,
+    SUM(suggest_nonsponsored) AS suggest_nonsponsored
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    submission_date = @submission_date
+    AND platform IN ('android', 'ios')
+  GROUP BY
+    platform
+),
+component_map AS (
+  SELECT
+    platform,
+    result_type,
+    component
+  FROM
+    `moz-fx-data-shared-prod.search_derived.kpi_component_map_v1`
+  WHERE
+    platform IN ('android', 'ios')
+    AND effective_from <= @submission_date
+    AND (effective_to IS NULL OR effective_to > @submission_date)
+),
+events AS (
+  SELECT
+    'android' AS platform,
+    COALESCE(
+      JSON_VALUE(event_extra, '$.provider'),
+      JSON_VALUE(event_extra, '$.card_type')
+    ) AS result_type
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_stream`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'awesomebar'
+    AND event_name IN (
+      'sponsored_suggestion_clicked',
+      'non_sponsored_suggestion_clicked',
+      'optimized_suggestion_card_clicked'
+    )
+  UNION ALL
+  SELECT
+    'ios' AS platform,
+    JSON_VALUE(event_extra, '$.type') AS result_type
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.events_stream`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'awesomebar'
+    AND event_name = 'search_result_tap'
+),
+source AS (
+  SELECT
+    platform,
+    COUNTIF(m.component = 'suggest_sponsored') AS suggest_sponsored,
+    COUNTIF(m.component = 'suggest_nonsponsored') AS suggest_nonsponsored
+  FROM
+    events
+  JOIN
+    component_map AS m
+    USING (platform, result_type)
+  GROUP BY
+    platform
+)
+SELECT
+  IF(
+    COUNT(*) > 0,
+    ERROR(
+      CONCAT(
+        'Mobile Suggest clicks differ from events_stream for: ',
+        STRING_AGG(platform, ', ' ORDER BY platform)
+      )
+    ),
+    NULL
+  )
+FROM
+  kpi
+FULL OUTER JOIN
+  source
+  USING (platform)
+WHERE
+  kpi.suggest_sponsored IS DISTINCT FROM source.suggest_sponsored
+  OR kpi.suggest_nonsponsored IS DISTINCT FROM source.suggest_nonsponsored;
+
 #warn
 -- Early warning: a result type shown but not yet clicked with no map row fails the run on its
 -- first click. action_* types are excluded by the query. A name cut short by the 500-byte limit

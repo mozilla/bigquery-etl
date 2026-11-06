@@ -1257,7 +1257,8 @@ SELECT
       metrics.labeled_counter.geolocation_request_activation,
       metrics.labeled_counter.listen_to_page_session_max_thermal_status,
       metrics.labeled_counter.network_akamai_document_loads,
-      metrics.labeled_counter.network_apple_fast_datapath_probe
+      metrics.labeled_counter.network_apple_fast_datapath_probe,
+      metrics.labeled_counter.geolocation_persisted_cache
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2214,7 +2215,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
       metrics.labeled_timing_distribution.dom_gc_in_progress,
-      metrics.labeled_timing_distribution.dns_https_rr_lookup_time
+      metrics.labeled_timing_distribution.dns_https_rr_lookup_time,
+      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -2292,7 +2294,8 @@ SELECT
       metrics.labeled_memory_distribution.memory_unique,
       metrics.labeled_memory_distribution.javascript_gc_nursery_bytes,
       metrics.labeled_memory_distribution.javascript_gc_buffer_alloc_heap_bytes,
-      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity
+      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity,
+      metrics.labeled_memory_distribution.speculation_rules_prefetch_transfer_size
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -3618,7 +3621,8 @@ SELECT
       metrics.labeled_counter.geolocation_request_activation,
       metrics.labeled_counter.listen_to_page_session_max_thermal_status,
       metrics.labeled_counter.network_akamai_document_loads,
-      metrics.labeled_counter.network_apple_fast_datapath_probe
+      metrics.labeled_counter.network_apple_fast_datapath_probe,
+      metrics.labeled_counter.geolocation_persisted_cache
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4575,7 +4579,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
       metrics.labeled_timing_distribution.dom_gc_in_progress,
-      metrics.labeled_timing_distribution.dns_https_rr_lookup_time
+      metrics.labeled_timing_distribution.dns_https_rr_lookup_time,
+      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4653,7 +4658,8 @@ SELECT
       metrics.labeled_memory_distribution.memory_unique,
       metrics.labeled_memory_distribution.javascript_gc_nursery_bytes,
       metrics.labeled_memory_distribution.javascript_gc_buffer_alloc_heap_bytes,
-      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity
+      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity,
+      metrics.labeled_memory_distribution.speculation_rules_prefetch_transfer_size
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -5999,7 +6005,8 @@ SELECT
       metrics.labeled_counter.geolocation_request_activation,
       metrics.labeled_counter.listen_to_page_session_max_thermal_status,
       metrics.labeled_counter.network_akamai_document_loads,
-      metrics.labeled_counter.network_apple_fast_datapath_probe
+      metrics.labeled_counter.network_apple_fast_datapath_probe,
+      metrics.labeled_counter.geolocation_persisted_cache
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6956,7 +6963,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
       metrics.labeled_timing_distribution.dom_gc_in_progress,
-      metrics.labeled_timing_distribution.dns_https_rr_lookup_time
+      metrics.labeled_timing_distribution.dns_https_rr_lookup_time,
+      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -7034,7 +7042,8 @@ SELECT
       metrics.labeled_memory_distribution.memory_unique,
       metrics.labeled_memory_distribution.javascript_gc_nursery_bytes,
       metrics.labeled_memory_distribution.javascript_gc_buffer_alloc_heap_bytes,
-      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity
+      metrics.labeled_memory_distribution.javascript_gc_mark_stack_max_capacity,
+      metrics.labeled_memory_distribution.speculation_rules_prefetch_transfer_size
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,

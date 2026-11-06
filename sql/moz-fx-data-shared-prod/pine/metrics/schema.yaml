@@ -22724,6 +22724,23 @@ fields:
         at startup. Only recorded on Apple platforms.
 
         '
+    - name: geolocation_persisted_cache
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'What became of the NetworkGeolocationProvider request cache entry
+        that an earlier session persisted, recorded when a session first consults
+        the cache: absent if there was none, adopted if it was for the current network,
+        rejected if it was for another network, or superseded if a network request
+        completed before the network ID was known.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -50837,6 +50854,63 @@ fields:
         visit.
 
         '
+    - name: netwerk_happy_eyeballs_dns_answer_spread_v2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: "Happy Eyeballs: time between the first and the last positive DNS\
+        \ answer of a single algorithm run, across the A, AAAA and HTTPS queries (a\
+        \ positive answer is one that carried at least one address or service info).\
+        \ Used to tune the resolution delay (network.http.happy_eyeballs_resolution_delay).\
+        \ A run with a single positive answer records 0, which Glean stores in the\
+        \ lowest (1 ns) bucket; any real spread, even below 1 ms, lands in a higher\
+        \ bucket. Every run with a positive answer records one sample per label.\n\
+        Labels: - until_first_attempt: Only answers received before the first\n  connection\
+        \ attempt, i.e. while the resolution delay applies.\n- until_end: All answers\
+        \ received during the run.\n"
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -53422,6 +53496,53 @@ fields:
         during the marking phase of a major GC.
 
         '
+    - name: speculation_rules_prefetch_transfer_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Bytes a Speculation Rules prefetch read from the network, summed
+        over its redirect chain. Recorded once per prefetch record when the record
+        is discarded, which is the first point that knows whether a navigation ever
+        came for it, so each label''s sample count is also the number of records that
+        ended with that outcome.
+
+        used: a navigation activated the record. unused: the prefetch completed, but
+        no navigation activated it. Includes a record that a later prefetch of the
+        same URL superseded. incomplete: the fetch started but never completed, because
+        the document cancelled it, it exceeded the body cap, or it failed.
+
+        The value is nsIHttpChannel.transferSize: response header fields plus the
+        encoded response body. It excludes the request, and it is zero when the prefetch
+        was itself served from the HTTP cache. A navigation that reuses a prefetched
+        cache entry transfers nothing of its own, so prefetched bytes are counted
+        here and only here.
+
+        A candidate rejected before its request was sent, a cross-origin one for instance'
   - name: dual_labeled_counter
     type: RECORD
     mode: NULLABLE

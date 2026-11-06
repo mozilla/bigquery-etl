@@ -885,6 +885,11 @@ fields:
       mode: NULLABLE
       description: The source of the extension event. Always "share-extension" for
         the legacy Share Extension.
+    - name: failure_reason
+      type: STRING
+      mode: NULLABLE
+      description: Why the attestation failed. One of `unsupported`, `key_unusable`,
+        `network`, `session_not_persisted`, `not_available` or `unknown` (see `VPNAttestationFailureReason`).
     - name: feature_id
       type: STRING
       mode: NULLABLE

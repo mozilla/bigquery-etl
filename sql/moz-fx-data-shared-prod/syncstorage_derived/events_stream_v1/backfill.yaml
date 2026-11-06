@@ -8,4 +8,4 @@
   custom_query_path: sql/moz-fx-data-shared-prod/syncstorage_derived/events_stream_v1/backfill_deng10432.sql
   shredder_mitigation: false
   override_retention_limit: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false

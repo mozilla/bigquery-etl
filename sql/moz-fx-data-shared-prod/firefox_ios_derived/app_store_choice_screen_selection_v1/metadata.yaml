@@ -33,7 +33,7 @@ scheduling:
   - deploy_target: CONNECT_KEY
     key: bqetl_firefox_ios__app_store_connect_key
 
-  date_partition_offset: -10
+  partition_offset: -10d
   retry_delay: 30m
   retries: 2
   email_on_retry: false

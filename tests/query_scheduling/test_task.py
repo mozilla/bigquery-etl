@@ -1,10 +1,16 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from typing import NewType
 
 import pytest
 
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import (
+    BigQueryMetadata,
+    Metadata,
+    PartitionMetadata,
+    PartitionType,
+)
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import (
     MAX_TASK_NAME_LENGTH,
@@ -482,7 +488,7 @@ class TestTask:
             start_date="2020-01-01",
         )
 
-    def test_date_partition_parameter(self):
+    def test_partition_parameter(self):
         query_file = (
             TEST_DIR
             / "data"
@@ -497,25 +503,63 @@ class TestTask:
             dag_name="bqetl_test_dag",
             query_file=str(query_file),
             owner="test@example.com",
-            date_partition_parameter=NewType("Ignore", None),
+            partition_parameter=NewType("Ignore", None),
         )
 
         assert Task(
             dag_name="bqetl_test_dag",
             query_file=str(query_file),
             owner="test@example.com",
-            date_partition_parameter=None,
+            partition_parameter=None,
         )
 
         assert Task(
             dag_name="bqetl_test_dag",
             query_file=str(query_file),
             owner="test@example.com",
-            date_partition_parameter="import_date",
+            partition_parameter="import_date",
         )
 
-    def test_of_query_backfill_date_partition_parameter(self):
-        """backfill_date_partition_parameter is only read by backfills, but DAG
+    def test_partition_parameter_conflicts_with_parameters(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        # TODO srose to restore expecting an error after the migration to `partition_parameter`
+        # with pytest.raises(TaskParseException):
+        #     Task(
+        #         dag_name="bqetl_test_dag",
+        #         query_file=str(query_file),
+        #         owner="test@example.com",
+        #         partition_parameter="submission_date",
+        #         parameters=["submission_date:DATE:{{ds}}"],
+        #     )
+        task = Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            partition_parameter="submission_date",
+            parameters=["submission_date:DATE:{{ds}}"],
+        )
+        assert task.parameters == []
+
+        # No conflict when the partition parameter is null.
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            partition_parameter=None,
+            parameters=["submission_date:DATE:{{ds}}"],
+        )
+
+    def test_of_query_backfill_partition_parameter(self):
+        """backfill_partition_parameter is only read by backfills, but DAG
         generation must accept it in the scheduling config."""
         query_file = (
             TEST_DIR
@@ -534,15 +578,15 @@ class TestTask:
             {},
             {
                 "dag_name": "bqetl_test_dag",
-                "date_partition_parameter": None,
-                "backfill_date_partition_parameter": "submission_date",
+                "partition_parameter": None,
+                "backfill_partition_parameter": "submission_date",
             },
         )
 
         task = Task.of_query(query_file, metadata)
 
-        assert task.date_partition_parameter is None
-        assert task.backfill_date_partition_parameter == "submission_date"
+        assert task.partition_parameter is None
+        assert task.backfill_partition_parameter == "submission_date"
 
     def test_task_get_dependencies_none(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
@@ -603,7 +647,7 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    def test_task_date_partition_offset(self, tmp_path):
+    def test_task_partition_offset(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
         query_file.write_text(
@@ -620,7 +664,7 @@ class TestTask:
             "test",
             ["test@example.org"],
             {},
-            {**self.default_scheduling, **{"date_partition_offset": -2}},
+            {**self.default_scheduling, **{"partition_offset": "-2d"}},
         )
 
         metadata_task2 = Metadata(
@@ -628,7 +672,7 @@ class TestTask:
             "test",
             ["test@example.org"],
             {},
-            {**self.default_scheduling, **{"date_partition_offset": -1}},
+            {**self.default_scheduling, **{"partition_offset": "-1d"}},
         )
 
         task = Task.of_query(query_file, metadata)
@@ -658,16 +702,93 @@ class TestTask:
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies
 
-        assert task.date_partition_offset == -2
+        assert task.partition_offset == timedelta(days=-2)
         assert [
-            t.date_partition_offset for t in result if t.task_id == "test__table1__v1"
-        ] == [-2]
+            t.partition_offset for t in result if t.task_id == "test__table1__v1"
+        ] == [timedelta(days=-2)]
         assert [
-            t.date_partition_offset for t in result if t.task_id == "test__table2__v1"
-        ] == [-1]
-        assert task.date_partition_parameter == "submission_date"
+            t.partition_offset for t in result if t.task_id == "test__table2__v1"
+        ] == [timedelta(days=-1)]
+        assert task.partition_parameter == "submission_date"
 
-    def test_task_date_partition_offset_recursive(self, tmp_path):
+    def test_of_query_partition_parameter_default(self, tmp_path):
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
+        query_file.write_text("SELECT 1")
+        script_file = query_file.parent / "script.sql"
+        script_file.write_text("SELECT 1")
+        python_script_file = query_file.parent / "query.py"
+        python_script_file.write_text("# Test")
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            self.default_scheduling,
+            bigquery=BigQueryMetadata(
+                time_partitioning=PartitionMetadata(type=PartitionType.MONTH)
+            ),
+        )
+
+        task = Task.of_query(query_file, metadata)
+        assert task.partition_type == PartitionType.MONTH
+        assert task.partition_parameter == "submission_month"
+
+        # Scripts don't get a default partition parameter.
+        assert Task.of_script(script_file, metadata).partition_parameter is None
+        assert (
+            Task.of_python_script(python_script_file, metadata).partition_parameter
+            is None
+        )
+
+    def test_task_null_partition_parameter_ignores_upstream_partition_offset(
+        self, tmp_path
+    ):
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
+        query_file.write_text("SELECT * FROM `test-project.test.upstream_v1`")
+
+        metadata = Metadata(
+            "query",
+            "query",
+            ["test@example.org"],
+            {},
+            {**self.default_scheduling, **{"partition_parameter": None}},
+        )
+        upstream_metadata = Metadata(
+            "upstream",
+            "upstream",
+            ["test@example.org"],
+            {},
+            {**self.default_scheduling, **{"partition_offset": "-2d"}},
+        )
+
+        task = Task.of_query(query_file, metadata)
+
+        upstream_file = tmp_path / "test-project" / "test" / "upstream_v1" / "query.sql"
+        os.makedirs(upstream_file.parent)
+        upstream_file.write_text("SELECT 1")
+        upstream_task = Task.of_query(upstream_file, upstream_metadata)
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([task, upstream_task])
+
+        task.with_upstream_dependencies(dags)
+
+        # The task targets the whole table, so the upstream partition offset doesn't apply.
+        assert task.partition_offset is None
+
+    def test_task_partition_offset_recursive(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
         query_file.write_text("SELECT * FROM `test-project`.test.table1_v1")
@@ -681,7 +802,7 @@ class TestTask:
             "test",
             ["test@example.org"],
             {},
-            {**self.default_scheduling, **{"date_partition_offset": -2}},
+            {**self.default_scheduling, **{"partition_offset": "-2d"}},
         )
 
         task = Task.of_query(query_file, metadata)
@@ -711,11 +832,11 @@ class TestTask:
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies
 
-        assert task.date_partition_offset == -2
+        assert task.partition_offset == timedelta(days=-2)
         assert [
-            t.date_partition_offset for t in result if t.task_id == "test__table1__v1"
-        ] == [-2]
-        assert task.date_partition_parameter == "submission_date"
+            t.partition_offset for t in result if t.task_id == "test__table1__v1"
+        ] == [timedelta(days=-2)]
+        assert task.partition_parameter == "submission_date"
 
     def test_multipart_task_get_dependencies(self, tmp_path):
         query_dir = tmp_path / "test-project" / "test" / "query_v1"

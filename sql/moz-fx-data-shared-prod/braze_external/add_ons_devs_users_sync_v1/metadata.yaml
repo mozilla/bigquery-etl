@@ -13,3 +13,4 @@ labels:
   owner: cbeck
 scheduling:
   dag_name: bqetl_braze_add_ons_sync
+  partition_parameter: null

@@ -12,7 +12,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_mobile_activation
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day

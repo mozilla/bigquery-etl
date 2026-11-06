@@ -8,4 +8,4 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false

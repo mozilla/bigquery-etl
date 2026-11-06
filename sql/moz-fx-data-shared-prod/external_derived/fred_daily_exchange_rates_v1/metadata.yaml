@@ -9,7 +9,7 @@ labels:
   owner1: kbammarito
 scheduling:
   dag_name: bqetl_fred_daily_exchange_rate
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
   arguments: ["--date", "{{ds}}"]
   secrets:
   - deploy_target: FRED_API_KEY

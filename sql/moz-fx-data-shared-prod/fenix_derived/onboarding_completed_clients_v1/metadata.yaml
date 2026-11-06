@@ -22,7 +22,7 @@ labels:
 scheduling:
   dag_name: bqetl_mobile_kpi_metrics
   task_group: fenix
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day

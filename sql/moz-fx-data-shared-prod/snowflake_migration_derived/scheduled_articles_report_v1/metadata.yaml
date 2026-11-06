@@ -10,7 +10,7 @@ labels:
   owner2: rrando
 scheduling:
   dag_name: bqetl_content_ml_hourly
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   clustering:
     # the fields below are guesses and will likely need to be updated based on ML

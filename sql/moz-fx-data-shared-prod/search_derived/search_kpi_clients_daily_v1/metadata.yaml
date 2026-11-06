@@ -21,7 +21,7 @@ description: |-
   excluded in the query and need no row. It also fails if that day's
   urlbar_clients_daily_v1 partition is empty, or if the map has overlapping rows.
 
-  urlbar_clients_daily_v1 has no date_partition_offset, so its task in this DAG run writes
+  urlbar_clients_daily_v1 has no partition_offset, so its task in this DAG run writes
   the next day. If its partition for day D is rerun, rerun this table for day D too.
 owners:
 - data-search-wg@mozilla.com
@@ -33,7 +33,7 @@ scheduling:
   dag_name: bqetl_search
   # search_clients_daily_glean_v1 and desktop_client_day_dims_v1 fill the previous day's
   # partition on each run, so this table does too.
-  date_partition_offset: -1
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

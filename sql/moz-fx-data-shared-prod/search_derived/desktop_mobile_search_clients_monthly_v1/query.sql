@@ -18,9 +18,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 WHERE
-  submission_date
-  BETWEEN DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
-  AND LAST_DAY(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+  DATE_TRUNC(submission_date, MONTH) = @submission_month
 GROUP BY
   client_id,
   submission_month,
@@ -47,9 +45,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
 WHERE
-  submission_date
-  BETWEEN DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
-  AND LAST_DAY(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+  DATE_TRUNC(submission_date, MONTH) = @submission_month
 GROUP BY
   client_id,
   submission_month,

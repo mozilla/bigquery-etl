@@ -12,7 +12,7 @@ labels:
   owner1: lmcfall
 #   dag: bqetl_braze_currents
 scheduling:
-  date_partition_parameter: click_time
+  partition_parameter: click_time
 bigquery:
   time_partitioning:
     type: day

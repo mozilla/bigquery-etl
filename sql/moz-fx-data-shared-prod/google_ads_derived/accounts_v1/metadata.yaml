@@ -9,5 +9,5 @@ scheduling:
   scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery: null

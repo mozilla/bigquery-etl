@@ -9,6 +9,6 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_experiments_daily
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   time_partitioning: null

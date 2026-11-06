@@ -46,7 +46,7 @@ labels:
 scheduling:
   dag_name: bqetl_customer_experience
   depends_on_past: false
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   clustering:
     fields:

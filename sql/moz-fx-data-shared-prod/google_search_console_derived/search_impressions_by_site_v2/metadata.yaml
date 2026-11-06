@@ -26,10 +26,10 @@ labels:
   owner1: srose
 scheduling:
   dag_name: bqetl_google_search_console
-  date_partition_parameter: date
+  partition_parameter: date
   # Google Search Console exports typically happen two days after the data date in UTC, but we wait
   # an extra day beyond that because Google Search Console exports have often been further delayed.
-  date_partition_offset: -2
+  partition_offset: -2d
   depends_on_table_partitions_existing:
   - task_id: wait_for_google_search_console_addons_site_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_addons.searchdata_site_impression

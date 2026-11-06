@@ -25,11 +25,9 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_search
-  # serp_events_v2 populates the previous day's partition on each run and declares that lag
-  # through its destination_table rather than through a date_partition_offset, so this table
-  # has no upstream date_partition_offset to inherit. Processing the previous day here reads a
-  # SERP partition that exists.
-  date_partition_offset: -1
+  # serp_events_v2 populates the previous day's partition on each run, so this ETL does too.
+  # That upstream partition offset would be auto-inherited, but it's set here to make it visible.
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

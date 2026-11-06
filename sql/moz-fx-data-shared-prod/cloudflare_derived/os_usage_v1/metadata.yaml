@@ -10,7 +10,7 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_cloudflare_os_market_share
-  date_partition_parameter: dte
+  partition_parameter: dte
   arguments: ["--date", "{{ds}}"]
   secrets:
   - deploy_target: CLOUDFLARE_AUTH_TOKEN

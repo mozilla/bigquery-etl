@@ -13,8 +13,8 @@ labels:
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
-  date_partition_parameter: date
-  date_partition_offset: -13
+  partition_parameter: date
+  partition_offset: -13d
   parameters:
   - ltv_recorded_date:DATE:{{ds}}
 bigquery:

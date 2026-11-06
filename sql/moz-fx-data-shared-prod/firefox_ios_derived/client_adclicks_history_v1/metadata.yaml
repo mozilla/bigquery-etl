@@ -19,7 +19,7 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_firefox_ios
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   clustering:

@@ -11,7 +11,7 @@ labels:
   table_type: source
 scheduling:
   dag_name: bqetl_statcounter_browser_market_share
-  date_partition_parameter: date
+  partition_parameter: date
   arguments: ["--date-from", "{{ds}}"]
 bigquery:
   time_partitioning:

@@ -10,7 +10,7 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   # The whole table is overwritten every time, not a specific date partition.
-  date_partition_parameter: null
+  partition_parameter: null
   depends_on_fivetran:
   - task_id: fivetran_stripe_nonprod
 bigquery:

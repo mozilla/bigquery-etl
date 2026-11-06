@@ -2490,7 +2490,21 @@ fields:
     - name: tab_count
       type: INTEGER
       mode: NULLABLE
-      description: The number of tabs involved in the action.
+      description: 'Depending on the type of event:
+
+        * The number of tabs involved in the action.
+
+        * Number of tabs the user chose for this action.'
+    - name: tab_cpu_hundredths
+      type: INTEGER
+      mode: NULLABLE
+      description: CPU usage (in hundredths of a percent of total capacity) attributed
+        to the tab(s) chosen for this action. Omitted until CPU has been measured,
+        so a missing value is not zero.
+    - name: tab_ram_mb
+      type: INTEGER
+      mode: NULLABLE
+      description: RAM (in MB) attributed to the tab(s) chosen for this action.
     - name: tabs
       type: INTEGER
       mode: NULLABLE
@@ -2720,6 +2734,17 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The count of translation requests that were completed by this engine.
+    - name: total_cpu_hundredths
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Total CPU usage (in hundredths of a percent of total capacity) across all
+        tabs shown in the view.
+
+        * Total CPU usage (in hundredths of a percent of total capacity) across all
+        tabs at action time. Omitted until CPU has been measured, so a missing value
+        is not zero.'
     - name: total_db_count
       type: INTEGER
       mode: NULLABLE
@@ -2756,6 +2781,14 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Duration of the complete initialization.
+    - name: total_ram_mb
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Total RAM (in MB) across all tabs shown in the view.
+
+        * Total RAM (in MB) across all tabs at action time.'
     - name: total_retries
       type: INTEGER
       mode: NULLABLE
@@ -2768,6 +2801,14 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The total number of enrollments in the ExperimentStore JSON file.
+    - name: total_tab_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Total number of tabs shown in the view.
+
+        * Total number of tabs at action time.'
     - name: total_time
       type: INTEGER
       mode: NULLABLE
@@ -2952,6 +2993,13 @@ fields:
       description: Random UUID of the monitor the event belongs to, generated on the
         client when the monitor is created. Lets create, run, notification and click
         events be joined per monitor.
+    - name: action_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Which UI surface the action originated from. "tab_row": The action
+        originated from a single tab''s own row. "bulk_bar": The action originated
+        from the bulk-action bar acting on the current multi-select. "site_header":
+        The action originated from a site header row, acting on that site''s tabs.'
     - name: action_type
       type: STRING
       mode: NULLABLE
@@ -2963,7 +3011,11 @@ fields:
 
         * The type of action that the client interactd with
 
-        * Type of browser action that was undone'
+        * Type of browser action that was undone
+
+        * Which action the user chose. "unload": The user chose to unload the tab(s).
+        "navigate": The user chose to switch to the tab from this view. "close": The
+        user chose to close the tab(s). "reload": The user chose to reload the tab(s).'
     - name: actions
       type: STRING
       mode: NULLABLE
@@ -4407,6 +4459,10 @@ fields:
 
         * Unique id for this fill invocation; correlates all of its events.
 
+        * An id generated when the dropdown opened, shared with the matching dropdown_shown
+        event so the two can be correlated. It is reused when the dropdown reopens
+        after a record removal prompt.
+
         * Flow id of the interaction session with the credit card form, shared with
         the credit card form events.
 
@@ -4417,10 +4473,6 @@ fields:
 
         * An id generated when the dropdown opened, shared with the matching dropdown_shown
         event so the two can be correlated.
-
-        * An id generated when the dropdown opened, shared with the matching dropdown_shown
-        event so the two can be correlated. It is reused when the dropdown reopens
-        after a record removal prompt.
 
         * An id generated when the dropdown opened, letting this event be correlated
         with the matching dropdown_closed event (and any interactions in betwee...'
@@ -5317,6 +5369,15 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Where the page opens: "current" or "new".'
+    - name: open_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Why this view was shown. "sidebar_launch": Opened by the user
+        through the sidebar, e.g. its Resource Monitor icon or the View > Sidebar
+        menu. "restored": Shown automatically, carried over from another window''s
+        sidebar or a previous session. "direct_nav": Reached without going through
+        the sidebar (typed, bookmarked, or linked). "other": Any firing that matches
+        none of the above.'
     - name: opened_from
       type: STRING
       mode: NULLABLE

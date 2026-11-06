@@ -3,12 +3,12 @@
 import concurrent.futures
 import copy
 import datetime
-import importlib.util
 import json
 import logging
 import multiprocessing
 import os
 import re
+import runpy
 import string
 import subprocess
 import sys
@@ -938,12 +938,15 @@ def backfill(
                 "e.g. --query-script-arg '--dry-run'"
             )
 
-        # attempt to import the query script using the file path
-        query_spec = importlib.util.spec_from_file_location("query", str(query_file))
-        query_module = importlib.util.module_from_spec(query_spec)
-        query_spec.loader.exec_module(query_module)
-        entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
+        # load the query script without running its __main__ block
+        entrypoint_command = runpy.run_path(str(query_file)).get(
+            query_script_entrypoint
+        )
 
+        if entrypoint_command is None:
+            raise click.ClickException(
+                f"Script entrypoint `{query_script_entrypoint}` not found in {query_file}."
+            )
         if not isinstance(entrypoint_command, Callable):
             raise click.ClickException(
                 f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."

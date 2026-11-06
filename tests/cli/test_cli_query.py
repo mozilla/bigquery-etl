@@ -1388,19 +1388,75 @@ def main(submission_date):
             ) as f:
                 f.write(yaml.dump({}))
 
-            with pytest.raises(AttributeError):
-                runner.invoke(
-                    backfill,
-                    [
-                        "telemetry_derived.query_v1",
-                        "--start_date=2026-01-01",
-                        "--end_date=2026-01-02",
-                        "--parallelism=1",
-                        "--query-script-date-arg=submission-date",
-                        "--query-script-entrypoint=execute",
-                    ],
-                    catch_exceptions=False,
-                )
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=execute",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 1
+            assert "Script entrypoint `execute` not found" in result.stderr
+
+    def test_query_backfill_python_script_dataclass(self, runner, capfd):
+        """Scripts whose dataclasses look up their module in sys.modules should load."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+from __future__ import annotations
+
+from argparse import ArgumentParser
+from dataclasses import dataclass
+from typing import ClassVar
+
+
+@dataclass
+class Run:
+    submission_date: str
+    kind: ClassVar[str] = "daily"
+
+
+def main():
+    parser = ArgumentParser()
+    parser.add_argument("--submission-date")
+    print(Run(parser.parse_args().submission_date))
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-01",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            assert "Run(submission_date='2026-01-01')" in capfd.readouterr().out
 
     @patch("bigquery_etl.cli.query.get_credentials")
     @patch("bigquery_etl.cli.query.get_id_token")

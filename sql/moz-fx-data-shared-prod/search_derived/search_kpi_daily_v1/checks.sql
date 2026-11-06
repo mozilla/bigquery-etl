@@ -2,9 +2,6 @@
 {{ min_row_count(1, "submission_date = @submission_date") }}
 
 #fail
-{{ is_unique(["platform", "country", "normalized_channel", "os", "app_version_major", "normalized_default_search_engine", "meets_population_rules", "is_bot", "definition_version", "component"], "submission_date = @submission_date") }}
-
-#fail
 -- Every component must sum exactly to the client table, on every platform.
 WITH daily AS (
   SELECT

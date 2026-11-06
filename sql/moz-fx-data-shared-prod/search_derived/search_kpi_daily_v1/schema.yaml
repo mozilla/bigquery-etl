@@ -1,34 +1,26 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: submission_date
 - name: platform
   type: STRING
   mode: NULLABLE
   description: desktop, android or ios.
-- name: country
-  type: STRING
-  mode: NULLABLE
-  description: The client's country that day, as in search_kpi_clients_daily_v1.
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-  description: The client's release channel that day, as in search_kpi_clients_daily_v1.
-- name: os
-  type: STRING
-  mode: NULLABLE
-  description: The client's operating system that day, as in search_kpi_clients_daily_v1.
-- name: app_version_major
-  type: NUMERIC
-  mode: NULLABLE
-  description: The client's major Firefox version that day, as in
-    search_kpi_clients_daily_v1.
-- name: normalized_default_search_engine
-  type: STRING
-  mode: NULLABLE
-  description: The client's default search engine that day, as in
-    search_kpi_clients_daily_v1.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: country
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: normalized_channel
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: os
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: app_version_major
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: normalized_default_search_engine
 - name: meets_population_rules
   type: BOOLEAN
   mode: NULLABLE

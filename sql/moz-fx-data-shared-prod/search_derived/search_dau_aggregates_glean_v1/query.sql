@@ -5,6 +5,10 @@
 --
 -- The eligible-country lists encode contract terms and are ported verbatim from
 -- search_dau_aggregates_v1. The date on which the list changes is part of that term.
+--
+-- Search activity is read from the view search.search_clients_daily_glean, so a client-day's SAP
+-- leaves out the rows its sap_exclusion_reason marks, the same rule search_aggregates_glean_v1
+-- applies.
 CREATE TEMP FUNCTION google_eligible_country(submission_date DATE, country STRING) AS (
   (submission_date < '2023-12-01' AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
   OR (submission_date >= '2023-12-01' AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
@@ -19,7 +23,8 @@ WITH desktop_dau_data AS (
     submission_date,
     country,
     client_id,
-    channel AS normalized_channel
+    channel AS normalized_channel,
+    os AS normalized_os
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
   WHERE
@@ -28,7 +33,7 @@ WITH desktop_dau_data AS (
     AND app_name = 'Firefox Desktop'
 ),
 -- Default engine and distribution for every DAU client, searching or not.
--- search_clients_daily_glean_v1 only has rows for clients with search activity, so they come from
+-- search.search_clients_daily_glean only has rows for clients with search activity, so they come from
 -- the metrics ping. About 8% of DAU send no metrics ping on a given day, and both values rarely
 -- change, so the nearest ping from 7 days before to 1 day after is used (the job runs after the
 -- next day has landed). provider_id is preferred; engine_id covers builds without it, and the
@@ -83,7 +88,7 @@ client_table_attributes AS (
       SAFE_OFFSET(0)
     ] AS distribution_id
   FROM
-    `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
+    `moz-fx-data-shared-prod.search.search_clients_daily_glean`
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -133,12 +138,12 @@ desktop_search_data AS (
   SELECT
     client_id,
     normalized_engine,
-    SUM(sap_counts_total) AS search_count,
+    SUM(IF(sap_exclusion_reason IS NULL, sap_counts_total, 0)) AS search_count,
     -- Tagged ad clicks only, like ad_click in search_clients_daily_v8.
     SUM(legacy_ad_clicks_tagged_sum) AS ad_click,
     SUM(serp_ad_clicks_tagged_sum) AS ad_click_serp
   FROM
-    `moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1`
+    `moz-fx-data-shared-prod.search.search_clients_daily_glean`
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -150,6 +155,7 @@ desktop_by_client_id AS (
     dau.submission_date,
     dau.device,
     dau.normalized_channel,
+    dau.normalized_os,
     dau.country,
     attr.distribution_id,
     attr.normalized_default_search_engine,
@@ -172,6 +178,7 @@ SELECT
   submission_date,
   device,
   normalized_channel,
+  normalized_os,
   country,
   distribution_id,
   normalized_default_search_engine,
@@ -203,6 +210,7 @@ GROUP BY
   submission_date,
   device,
   normalized_channel,
+  normalized_os,
   country,
   distribution_id,
   normalized_default_search_engine,
@@ -216,6 +224,7 @@ SELECT
   submission_date,
   device,
   normalized_channel,
+  normalized_os,
   country,
   distribution_id,
   normalized_default_search_engine,
@@ -244,6 +253,7 @@ GROUP BY
   submission_date,
   device,
   normalized_channel,
+  normalized_os,
   country,
   distribution_id,
   normalized_default_search_engine,
@@ -257,6 +267,7 @@ SELECT
   submission_date,
   device,
   normalized_channel,
+  normalized_os,
   country,
   distribution_id,
   normalized_default_search_engine,
@@ -277,6 +288,7 @@ GROUP BY
   submission_date,
   device,
   normalized_channel,
+  normalized_os,
   country,
   distribution_id,
   normalized_default_search_engine,

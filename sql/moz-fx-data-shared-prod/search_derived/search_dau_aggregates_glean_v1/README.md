@@ -4,10 +4,10 @@
 
 Daily desktop DAU by search behavior, per partner: `dau_w_engine_as_default` and `dau_engaged_w_sap`. The Glean desktop counterpart of the desktop arm of `search_dau_aggregates_v1`, and it runs alongside it.
 
-* **Grain:** `submission_date`, `device`, `partner`, `country`, `normalized_channel`, `distribution_id`, `normalized_default_search_engine`, `normalized_engine`, `sap_category`, `ad_click_category` and `ad_click_category_serp`
+* **Grain:** `submission_date`, `device`, `partner`, `country`, `normalized_channel`, `normalized_os`, `distribution_id`, `normalized_default_search_engine`, `normalized_engine`, `sap_category`, `ad_click_category` and `ad_click_category_serp`
 * **Sources:**
   * `firefox_desktop.baseline_active_users` — the DAU population, keyed on the Glean `client_id`
-  * `search_derived.search_clients_daily_glean_v1` — search activity, and a last fallback for the default engine and distribution
+  * `search.search_clients_daily_glean`, the view over `search_derived.search_clients_daily_glean_v1` — search activity, and a last fallback for the default engine and distribution
   * `firefox_desktop_stable.metrics_v1` — the default engine and distribution of every DAU client
 * **Downstream:** the view `search.search_dau_aggregates_glean`, which exposes this table unchanged
 
@@ -29,7 +29,13 @@ Daily desktop DAU by search behavior, per partner: `dau_w_engine_as_default` and
 
 **Search activity joins on `client_id` only,** not on country as `search_dau_aggregates_v1` did. The DAU side and the search side no longer share a geo source, so a country join would count a searcher as a non-searcher wherever their countries differ.
 
-**Default engine and distribution for every DAU client.** `search_clients_daily_glean_v1` only has rows for clients with search activity, so the default engine and `distribution_id` of a client who did not search come from the metrics ping:
+**Runaway SAP is left out of `sap_category` and `dau_engaged_w_sap`.** Search activity is read from the view, and client table rows with a `sap_exclusion_reason` do not count. That is a row with 10,000 or more SAP for one client, day, engine, `partner_code` and `source`, the cap `search_dau_aggregates_v1` gets from reading the legacy table. A client whose only SAP is on such rows counts as a non-searcher. `search_aggregates_glean_v1` applies the same rule in `sap_kpi`, so the two use the same numbers. Only SAP is filtered: `ad_click_category` and `ad_click_category_serp` still include those rows.
+
+**`country` comes from the DAU side, not the search side.** It is the country in `firefox_desktop.baseline_active_users`. `search_aggregates_glean_v1` and `desktop_client_day_dims_v1` resolve it from the client table's rows instead, so a client's country can differ between this table and those for a small share of client-days. That is accepted for now, and this table should move to the shared client-day dimensions once they are settled.
+
+**`normalized_os`** is the `os` of `firefox_desktop.baseline_active_users`, which already holds Windows, Mac, Linux or Other, the same values as `normalized_os` in `search_aggregates_glean_v1`.
+
+**Default engine and distribution for every DAU client.** `search.search_clients_daily_glean` only has rows for clients with search activity, so the default engine and `distribution_id` of a client who did not search come from the metrics ping:
 
 * The nearest ping from 7 days before to 1 day after the date is used, nearest day first and the latest ping within a day. Some DAU clients send no metrics ping on a given day, and both values change rarely.
 * The default engine is `provider_id`, then `engine_id` for builds that lack it, with an `engine_id` starting with `other` read as a user-installed engine, then the client table.

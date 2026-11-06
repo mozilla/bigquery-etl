@@ -18,6 +18,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The normalized channel of the Firefox Desktop client, from firefox_desktop.baseline_active_users.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized operating system of the Firefox Desktop client (Windows, Mac, Linux
+    or Other), from firefox_desktop.baseline_active_users.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -29,7 +34,7 @@ fields:
   description: >-
     The distribution id of the client's install, for every DAU client whether or not they searched.
     From the nearest metrics ping from 7 days before to 1 day after the date
-    (client_info.distribution.name), then search_clients_daily_glean_v1 for clients with no ping in
+    (client_info.distribution.name), then search.search_clients_daily_glean for clients with no ping in
     that window. Null for default installs.
 - name: normalized_default_search_engine
   type: STRING
@@ -38,18 +43,19 @@ fields:
     The client's default search engine grouped as Google, Bing or DuckDuckGo, and null for any other
     engine or when no engine is known. From the nearest metrics ping from 7 days before to 1 day
     after the date: provider_id, then engine_id for builds without it, then
-    search_clients_daily_glean_v1. A user-installed engine is never grouped as one of the three. Set
+    search.search_clients_daily_glean. A user-installed engine is never grouped as one of the three. Set
     for DAU clients whether or not they searched.
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
-  description: The search engine the client's searches went to, normalized, from search_clients_daily_glean_v1.
+  description: The search engine the client's searches went to, normalized, from search.search_clients_daily_glean.
     Null for DAU clients with no search rows that day.
 - name: sap_category
   type: INTEGER
   mode: NULLABLE
   description: 1 if the client had at least one search access point event (sap_counts_total)
-    on this day, otherwise 0. Only Firefox 138 and later send the event.
+    on this day, otherwise 0. Client table rows with a sap_exclusion_reason do not count, so a
+    client whose only SAP is on such rows is 0. Only Firefox 138 and later send the event.
 - name: ad_click_category
   type: INTEGER
   mode: NULLABLE
@@ -74,5 +80,6 @@ fields:
   mode: NULLABLE
   description: The number of distinct DAU clients with at least one search access
     point event on this row's partner's engine, counted only where the country is
-    eligible for Google when the partner is Google. Not summable across rows. Only
-    Firefox 138 and later send the event.
+    eligible for Google when the partner is Google. Client table rows with a
+    sap_exclusion_reason do not count. Not summable across rows. Only Firefox 138 and
+    later send the event.

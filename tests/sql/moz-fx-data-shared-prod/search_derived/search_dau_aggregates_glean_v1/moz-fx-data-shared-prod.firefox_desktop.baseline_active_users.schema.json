@@ -33,5 +33,10 @@
     "name": "app_name",
     "type": "STRING",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "os",
+    "type": "STRING",
+    "mode": "NULLABLE"
   }
 ]

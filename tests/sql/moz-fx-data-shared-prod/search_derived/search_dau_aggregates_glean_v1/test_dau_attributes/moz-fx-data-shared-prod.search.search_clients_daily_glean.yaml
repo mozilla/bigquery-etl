@@ -16,3 +16,13 @@
   serp_ad_clicks_tagged_sum: 0
   default_search_engine_provider_id: ddg
   distribution_id: null
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c12
+  normalized_engine: Google
+  sap_counts_total: 10000
+  legacy_ad_clicks_tagged_sum: 1
+  serp_ad_clicks_tagged_sum: 0
+  default_search_engine_provider_id: bing
+  distribution_id: null
+  sap_exclusion_reason: sap_row_ge_10000

@@ -9,10 +9,14 @@
 # c12 ping 3 days back; c13 pings 2 days back and 1 day ahead (the nearer wins); c14 ping 2 days ahead
 # (outside the window); c15 ping exactly 7 days back (the edge, used)
 # c7 not DAU, c8 MozillaOnline, c11 another day: each has a distinct country, so a row would appear if included
+# c12 has a runaway-SAP row (10,000 SAP, sap_exclusion_reason set): it still shows the engine and a tagged
+# ad click, but sap_category and dau_engaged_w_sap are 0 because that row's SAP is left out
+# c13 is on Mac; every other DAU client is on Windows
 - partner: Google
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   normalized_default_search_engine: Google
   normalized_engine: Google
@@ -25,6 +29,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   normalized_default_search_engine: Google
   sap_category: 0
@@ -36,6 +41,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: DE
   normalized_default_search_engine: Bing
   sap_category: 0
@@ -47,6 +53,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   sap_category: 0
   ad_click_category: 0
@@ -57,6 +64,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: FR
   normalized_default_search_engine: DuckDuckGo
   normalized_engine: DuckDuckGo
@@ -69,6 +77,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: GB
   distribution_id: acer-001
   normalized_default_search_engine: Bing
@@ -81,6 +90,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: RU
   normalized_default_search_engine: Google
   sap_category: 0
@@ -92,10 +102,12 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: JP
   normalized_default_search_engine: Bing
+  normalized_engine: Google
   sap_category: 0
-  ad_click_category: 0
+  ad_click_category: 1
   ad_click_category_serp: 0
   dau_w_engine_as_default: 0
   dau_engaged_w_sap: 0
@@ -103,6 +115,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Mac
   country: IT
   normalized_default_search_engine: Google
   sap_category: 0
@@ -114,6 +127,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: BR
   sap_category: 0
   ad_click_category: 0
@@ -124,6 +138,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: AR
   normalized_default_search_engine: Google
   sap_category: 0
@@ -135,6 +150,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   normalized_default_search_engine: Google
   normalized_engine: Google
@@ -147,6 +163,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   normalized_default_search_engine: Google
   sap_category: 0
@@ -158,6 +175,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: DE
   normalized_default_search_engine: Bing
   sap_category: 0
@@ -169,6 +187,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   sap_category: 0
   ad_click_category: 0
@@ -179,6 +198,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: FR
   normalized_default_search_engine: DuckDuckGo
   normalized_engine: DuckDuckGo
@@ -191,6 +211,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: RU
   normalized_default_search_engine: Google
   sap_category: 0
@@ -202,10 +223,12 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: JP
   normalized_default_search_engine: Bing
+  normalized_engine: Google
   sap_category: 0
-  ad_click_category: 0
+  ad_click_category: 1
   ad_click_category_serp: 0
   dau_w_engine_as_default: 1
   dau_engaged_w_sap: 0
@@ -213,6 +236,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Mac
   country: IT
   normalized_default_search_engine: Google
   sap_category: 0
@@ -224,6 +248,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: BR
   sap_category: 0
   ad_click_category: 0
@@ -234,6 +259,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: AR
   normalized_default_search_engine: Google
   sap_category: 0
@@ -245,6 +271,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   normalized_default_search_engine: Google
   normalized_engine: Google
@@ -257,6 +284,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   normalized_default_search_engine: Google
   sap_category: 0
@@ -268,6 +296,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: DE
   normalized_default_search_engine: Bing
   sap_category: 0
@@ -279,6 +308,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: US
   sap_category: 0
   ad_click_category: 0
@@ -289,6 +319,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: FR
   normalized_default_search_engine: DuckDuckGo
   normalized_engine: DuckDuckGo
@@ -301,6 +332,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: GB
   distribution_id: acer-001
   normalized_default_search_engine: Bing
@@ -313,6 +345,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: RU
   normalized_default_search_engine: Google
   sap_category: 0
@@ -324,10 +357,12 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: JP
   normalized_default_search_engine: Bing
+  normalized_engine: Google
   sap_category: 0
-  ad_click_category: 0
+  ad_click_category: 1
   ad_click_category_serp: 0
   dau_w_engine_as_default: 0
   dau_engaged_w_sap: 0
@@ -335,6 +370,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Mac
   country: IT
   normalized_default_search_engine: Google
   sap_category: 0
@@ -346,6 +382,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: BR
   sap_category: 0
   ad_click_category: 0
@@ -356,6 +393,7 @@
   submission_date: '2026-09-21'
   device: desktop
   normalized_channel: release
+  normalized_os: Windows
   country: AR
   normalized_default_search_engine: Google
   sap_category: 0

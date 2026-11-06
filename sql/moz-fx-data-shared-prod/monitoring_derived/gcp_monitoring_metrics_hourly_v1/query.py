@@ -10,8 +10,8 @@ Values are the increase of the metric over each hour. DELTA metrics use
 PromQL's increase(). Dataflow user counters are GAUGE metrics holding a running
 total, which occasionally reads double for a minute. increase() takes the drop
 back to the real total as a counter reset and adds the whole running total to
-that hour, so for these the value is the last sample in the hour minus the
-last sample before it.
+that hour, so for these the value is the change in the running total between
+the ends of the hour.
 
 Cloud Monitoring keeps roughly 6 weeks to 3 months of data depending on the
 metric, so older partitions cannot be rebuilt.
@@ -164,12 +164,21 @@ def build_promql(metric: MetricDefinition, project: str) -> str:
     # With the window equal to the step, adjacent hours don't share samples.
     window = f"{int(STEP.total_seconds())}s"
     if metric.running_total:
+        # The total at the end of an hour is the median of the samples in its
+        # last 5 minutes, so a glitch on the last sample isn't counted. Series
+        # without recent samples (a job that stopped, or a counter that wasn't
+        # updated) use their last sample instead.
+        def total(offset: str, lookback: str) -> str:
+            median = f"quantile_over_time(0.5, {selector}[5m]{offset})"
+            last = f"last_over_time({selector}[{lookback}]{offset})"
+            return f"({median} or {last})"
+
+        end = total("", window)
+        start = total(f" offset {window}", "6h")
         # Series are per job (job_id is a label), so a series with no sample in
         # the previous 6 hours belongs to a job that started within the hour,
         # and its whole total is that hour's increase.
-        last = f"last_over_time({selector}[{window}])"
-        previous = f"last_over_time({selector}[6h] offset {window})"
-        return f"sum by ({group_by}) (({last} - {previous}) or {last})"
+        return f"sum by ({group_by}) (({end} - {start}) or {end})"
     # Hourly Pub/Sub values matched the API's ALIGN_DELTA sums exactly.
     return f"sum by ({group_by}) (increase({selector}[{window}]))"
 

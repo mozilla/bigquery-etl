@@ -69,11 +69,16 @@ def test_build_promql_running_total():
         'project_id="my-project", '
         'metric_name=~".+/bytes\\\\.v1"}'
     )
-    assert query_mod.build_promql(DATAFLOW, "my-project") == (
-        "sum by (project_id, job_name, metric_name) ("
-        f"(last_over_time({selector}[3600s])"
-        f" - last_over_time({selector}[6h] offset 3600s))"
+    end = (
+        f"(quantile_over_time(0.5, {selector}[5m])"
         f" or last_over_time({selector}[3600s]))"
+    )
+    start = (
+        f"(quantile_over_time(0.5, {selector}[5m] offset 3600s)"
+        f" or last_over_time({selector}[6h] offset 3600s))"
+    )
+    assert query_mod.build_promql(DATAFLOW, "my-project") == (
+        f"sum by (project_id, job_name, metric_name) (({end} - {start}) or {end})"
     )
 
 

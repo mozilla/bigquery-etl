@@ -46,3 +46,7 @@ description: 'IMPORTANT: This table only contains data since 2022-11-29.
   '
 owners:
 - kik@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

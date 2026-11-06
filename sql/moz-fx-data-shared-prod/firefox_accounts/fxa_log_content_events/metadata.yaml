@@ -7,3 +7,7 @@ description: 'A subset of FxA content server logs that is sometimes useful
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1628708'
 owners:
 - kik@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

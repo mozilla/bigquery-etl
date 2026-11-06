@@ -6,3 +6,7 @@ description: 'Usage aggregations describing FxA user, service, device_id combina
   '
 owners:
 - kik@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

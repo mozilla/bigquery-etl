@@ -9,3 +9,7 @@ owners:
 - lmcfall@mozilla.com
 labels:
   owner: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

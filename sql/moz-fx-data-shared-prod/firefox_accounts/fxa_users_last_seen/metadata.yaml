@@ -15,3 +15,7 @@ description: 'Usage aggregations per FxA user per day over a 28-day window.
   '
 owners:
 - kik@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

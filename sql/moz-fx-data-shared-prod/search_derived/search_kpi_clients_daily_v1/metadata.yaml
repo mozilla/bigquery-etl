@@ -30,7 +30,8 @@ description: |-
   sources, or if the map has overlapping rows.
 
   urlbar_clients_daily_v1, mobile_search_clients_daily_v2 and events_stream have no
-  date_partition_offset, so their tasks in this DAG run write the next day. If one of them
+  date_partition_offset, so their tasks for the same logical date (in bqetl_search,
+  bqetl_mobile_search and bqetl_glean_usage) write the next day. If one of them
   is rerun for day D, rerun this table for day D too.
 owners:
 - data-search-wg@mozilla.com

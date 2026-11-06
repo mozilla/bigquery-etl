@@ -1,0 +1,8 @@
+---
+friendly_name: Search Revenue Levers Daily Glean
+description: |
+  Daily search revenue levers per partner, device, operating system and country. Built on Glean,
+  and runs alongside `search_revenue_levers_daily_v1` rather than replacing it.
+owners:
+  - mozilla/revenue_forecasting_data_reviewers
+  - lmcfall@mozilla.com

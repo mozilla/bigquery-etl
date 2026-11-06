@@ -6,14 +6,17 @@ Metric definitions are kept free of query-language details so the fetch can be
 switched from the Cloud Monitoring PromQL endpoint to the Monitoring SDK
 without changing the definitions or the output table.
 
-Values are the increase of the metric over each hour, which fits DELTA metrics
-and cumulative counters reported as GAUGE (e.g. Dataflow user counters).
+Values are the increase of the metric over each hour. DELTA metrics use
+PromQL's increase(). Dataflow user counters are GAUGE metrics holding a running
+total, which occasionally reads double for a minute. increase() takes the drop
+back to the real total as a counter reset and adds the whole running total to
+that hour, so for these the value is the change in the running total between
+the ends of the hour.
+
 Cloud Monitoring keeps roughly 6 weeks to 3 months of data depending on the
 metric, so older partitions cannot be rebuilt.
 
-PromQL was chosen over the monitoring SDK because the code is simpler. The caveat is that PromQL's
-increase() function (used for Dataflow counters) estimates time window edges, so the Dataflow
-metrics aren't exact and are ~0.4-1% lower than the monitoring SDK result.
+PromQL was chosen over the monitoring SDK because the code is simpler.
 """
 
 import datetime
@@ -63,7 +66,8 @@ class MetricDefinition:
     name is written to the metric column. projects lists the projects to query.
     group_by lists the resource or metric labels to keep (project_id is always
     kept). label_filters maps label names to RE2 regular expressions that must
-    fully match.
+    fully match. running_total marks GAUGE metrics that hold a running total
+    instead of a per-interval value.
     """
 
     name: str
@@ -71,6 +75,7 @@ class MetricDefinition:
     projects: Tuple[str, ...]
     group_by: Tuple[str, ...]
     label_filters: Dict[str, str] = field(default_factory=dict)
+    running_total: bool = False
 
 
 METRICS = (
@@ -92,6 +97,7 @@ METRICS = (
         projects=BEAM_PROJECTS,
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/predecompress_submission_bytes"},
+        running_total=True,
     ),
     MetricDefinition(
         name="dataflow_valid_submission_bytes",
@@ -99,6 +105,7 @@ METRICS = (
         projects=BEAM_PROJECTS,
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/valid_submission_bytes"},
+        running_total=True,
     ),
     MetricDefinition(
         name="dataflow_valid_submission",
@@ -106,6 +113,7 @@ METRICS = (
         projects=BEAM_PROJECTS,
         group_by=("job_name", "metric_name"),
         label_filters={"metric_name": ".+/valid_submission"},
+        running_total=True,
     ),
     # Other services share the edge load balancer projects, so only keep the
     # ingestion edge forwarding rules.
@@ -151,11 +159,28 @@ def build_promql(metric: MetricDefinition, project: str) -> str:
         f"{label}=~{_promql_string(regex)}"
         for label, regex in sorted(metric.label_filters.items())
     ]
+    selector = "{" + ", ".join(matchers) + "}"
     group_by = ", ".join(("project_id",) + metric.group_by)
     # With the window equal to the step, adjacent hours don't share samples.
-    # Hourly Pub/Sub values matched the API's ALIGN_DELTA sums exactly.
     window = f"{int(STEP.total_seconds())}s"
-    return f"sum by ({group_by}) (increase({{{', '.join(matchers)}}}[{window}]))"
+    if metric.running_total:
+        # The total at the end of an hour is the median of the samples in its
+        # last 5 minutes, so a glitch on the last sample isn't counted. Series
+        # without recent samples (a job that stopped, or a counter that wasn't
+        # updated) use their last sample instead.
+        def total(offset: str, lookback: str) -> str:
+            median = f"quantile_over_time(0.5, {selector}[5m]{offset})"
+            last = f"last_over_time({selector}[{lookback}]{offset})"
+            return f"({median} or {last})"
+
+        end = total("", window)
+        start = total(f" offset {window}", "6h")
+        # Series are per job (job_id is a label), so a series with no sample in
+        # the previous 6 hours belongs to a job that started within the hour,
+        # and its whole total is that hour's increase.
+        return f"sum by ({group_by}) (({end} - {start}) or {end})"
+    # Hourly Pub/Sub values matched the API's ALIGN_DELTA sums exactly.
+    return f"sum by ({group_by}) (increase({selector}[{window}]))"
 
 
 def create_session(quota_project: Optional[str]) -> AuthorizedSession:

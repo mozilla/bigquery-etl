@@ -37,6 +37,7 @@ DATAFLOW = query_mod.MetricDefinition(
     projects=("my-project",),
     group_by=("job_name", "metric_name"),
     label_filters={"metric_name": r".+/bytes\.v1"},
+    running_total=True,
 )
 
 PUBSUB = query_mod.MetricDefinition(
@@ -62,13 +63,17 @@ def success(result, **extra):
     return response({"status": "success", "data": {"result": result}, **extra})
 
 
-def test_build_promql():
-    assert query_mod.build_promql(DATAFLOW, "my-project") == (
-        "sum by (project_id, job_name, metric_name) (increase({"
-        '__name__="dataflow.googleapis.com/job/user_counter", '
+def test_build_promql_running_total():
+    selector = (
+        '{__name__="dataflow.googleapis.com/job/user_counter", '
         'project_id="my-project", '
-        'metric_name=~".+/bytes\\\\.v1"'
-        "}[3600s]))"
+        'metric_name=~".+/bytes\\\\.v1"}'
+    )
+    assert query_mod.build_promql(DATAFLOW, "my-project") == (
+        "sum by (project_id, job_name, metric_name) ("
+        f"(last_over_time({selector}[3600s])"
+        f" - last_over_time({selector}[6h] offset 3600s))"
+        f" or last_over_time({selector}[3600s]))"
     )
 
 
@@ -337,6 +342,16 @@ def test_fetch_day_queries_each_metric_in_its_projects():
         ("dataflow_bytes", "project-b"),
         ("subscription_bytes", "project-c"),
     ]
+
+
+def test_only_dataflow_counters_are_running_totals():
+    # increase() is wrong for running totals, and differencing is wrong for
+    # DELTA metrics.
+    assert {m.name for m in query_mod.METRICS if m.running_total} == {
+        m.name
+        for m in query_mod.METRICS
+        if m.metric_type == "dataflow.googleapis.com/job/user_counter"
+    }
 
 
 def test_every_metric_has_projects():

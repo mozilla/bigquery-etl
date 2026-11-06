@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import types
 from datetime import date, timedelta
@@ -28,6 +29,7 @@ from bigquery_etl.cli.query import (
 from bigquery_etl.metadata.parse_metadata import PartitionType
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
+from bigquery_etl.util.common import IMPERSONATE_ENV_VAR
 from bigquery_etl.util.target import Target
 
 DEFAULT_SAMPLING_BATCH_SIZE = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
@@ -1030,7 +1032,7 @@ class TestQuery:
                     "--parameter=conversion_window:INT64:30"
                 ]
 
-    def test_query_backfill_python_script(self, runner):
+    def test_query_backfill_python_script(self, runner, capfd):
         """Valid script backfill should execute script for each backfill date."""
         with (
             runner.isolated_filesystem(),
@@ -1081,6 +1083,7 @@ def main():
             )
 
             assert result.exit_code == 0
+            script_output = capfd.readouterr().out
 
             assert mock_backfill_script.call_count == 2
 
@@ -1089,9 +1092,11 @@ def main():
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
-                "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
+                "writing to telemetry_derived.query_v1 for 2026-01-01" in script_output
             )
 
             mock_backfill_script.assert_any_call(
@@ -1099,9 +1104,11 @@ def main():
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
-                "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
+                "writing to telemetry_derived.query_v1 for 2026-01-02" in script_output
             )
 
     def test_query_backfill_python_script_click(self, runner):
@@ -1159,6 +1166,8 @@ def main(submission_date, table_id):
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
                 "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
@@ -1169,10 +1178,151 @@ def main(submission_date, table_id):
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
                 "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
             )
+
+    def test_query_backfill_python_script_parallel(self, runner, capfd):
+        """Parallel script backfill should run every date exactly once."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("bigquery_etl.cli.query.subprocess.check_call"),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                # sleeping before parse_args reliably exposes a shared sys.argv
+                f.write("""
+import time
+from argparse import ArgumentParser
+
+def main():
+    time.sleep(0.5)
+    parser = ArgumentParser()
+    parser.add_argument("--submission-date")
+    args = parser.parse_args()
+    print(f"ran for {args.submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-04",
+                    "--parallelism=4",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            script_output = capfd.readouterr().out
+            for day in range(1, 5):
+                assert script_output.count(f"ran for 2026-01-0{day}") == 1
+
+    def test_query_backfill_python_script_failure(self, runner):
+        """A failing script should fail the backfill for that date."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+def main():
+    raise ValueError("boom")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-01",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+            )
+
+            assert result.exit_code != 0
+            assert "exited with code 1 for 2026-01-01: ValueError: boom" in str(
+                result.exception
+            )
+
+    def test_query_backfill_python_script_restores_worker_state(
+        self, runner, capfd, monkeypatch
+    ):
+        """The script process should impersonate like the CLI and keep its log level."""
+        monkeypatch.setenv(
+            IMPERSONATE_ENV_VAR, "sandbox@example.iam.gserviceaccount.com"
+        )
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("logging.root.level", logging.DEBUG),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+import logging
+import google.auth
+
+def main():
+    impersonated = hasattr(google.auth.default, "_bqetl_original_default")
+    print(f"impersonated={impersonated} level={logging.root.level}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-01",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            assert f"impersonated=True level={logging.DEBUG}" in capfd.readouterr().out
 
     def test_query_backfill_python_script_invalid_entrypoint(self, runner):
         """Script backfill should fail if entrypoint is not a function."""

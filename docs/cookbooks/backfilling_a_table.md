@@ -162,11 +162,11 @@ In order to use the backfill complete step, the script must write to the exact s
 
 For example, `moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1` with entry date
 `2026-03-02` stages to `monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02`, and
-`moz-fx-data-experiments.monitoring.analysis_results_monitoring_v1` with entry date `2026-11-04` stages to
-`moz_fx_data_experiments__monitoring__analysis_results_monitoring_v1_2026_11_04`. To print the name for a table:
+`moz-fx-data-experiments.monitoring.analysis_results_monitoring_v1` with entry date `2026-11-05` stages to
+`moz_fx_data_experiments__monitoring__analysis_results_monitoring_v1_2026_11_05`. To print the name for a table:
 
 ```bash
-python -c "from datetime import date; from bigquery_etl.backfill.utils import get_backfill_staging_qualified_table_name as g; print(g('<project>.<dataset>.<table>', date(2026, 11, 4)))"
+python -c "from datetime import date; from bigquery_etl.backfill.utils import get_backfill_staging_qualified_table_name as g; print(g('<project>.<dataset>.<table>', date(2026, 11, 5)))"
 ```
 
 `bqetl backfill validate` does not check that the script's arguments point at this table, so double-check them.
@@ -181,9 +181,12 @@ exist yet, so the next hourly run initiates it once the change reaches the Airfl
 staging tables expire on their own. Alternatively, fix the existing entry's `query_script_args`, wait for the fix to reach
 the Airflow image, then delete its staging table so the next hourly run re-initiates it; deleting the table before the
 fix is deployed re-runs the old arguments.
+If the table has no `schema.yaml`, `initiate` doesn't create the staging table, so it never exists and every hourly run
+re-initiates the entry, re-running the script against the wrong destination each time. Set the entry to `Cancelled`
+as soon as you notice, then recover as above.
 
 Required parameters:
-- `query_script_entrypoint`: The name of the main function inside the python script.
+- `query_script_entrypoint`: The name of the main function inside the python script. A Click command is called in-process with the arguments; any other function (e.g. one using `argparse`) runs in its own Python process per date and reads them from `sys.argv`.
 - `query_script_date_arg`: The name of the CLI argument that the entrypoint accepts for the backfill date, formatted as `YYYY-MM-DD`
 (e.g. `submission_date`). The backfill will pass each backfilled date to the script via this argument.
 
@@ -191,7 +194,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to point the script at the staging table above, in whatever form its arguments expect, e.g.
 `--destination_dataset=backfills_staging_derived` and `--destination_table={prefix}dataset__table_v1_YYYY_MM_DD`.
-If no `--query-script-arg` is passed, `bqetl backfill create` defaults to a single
+If `--query-script-entrypoint` is set and no `--query-script-arg` is passed, `bqetl backfill create` defaults to a single
 `--destination-table=<fully qualified staging table>` argument. That only works for scripts that accept exactly that
 option; argparse treats `--destination-table` and `--destination_table` as different options.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
@@ -209,11 +212,11 @@ bqetl backfill create moz-fx-data-shared-prod.monitoring_derived.stable_and_deri
     --query-script-date-arg date \
     --query-script-dry-run-arg "--dry-run" \
     --query-script-arg "--destination_dataset=backfills_staging_derived" \
-    --query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"
+    --query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_<entry_date>"
 ```
 
-This example was run on 2026-03-02, which `bqetl backfill create` uses as the entry date, so the staging table name
-ends in `2026_03_02`. Use the date you run `create` on.
+`bqetl backfill create` uses the day you run it as the entry date, so replace `<entry_date>` with that date in
+`YYYY_MM_DD` form, e.g. `2026_03_02` when run on 2026-03-02.
 
 **If a Python-script backfill fails:** for Python-script backfills, production table permissions (copied when `--copy-table-permissions`
 is set, as the backfill DAG does) are copied to the staging table after the script runs rather than at deploy time, since the script may create the staging table itself

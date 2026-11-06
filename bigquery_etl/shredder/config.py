@@ -294,6 +294,19 @@ DELETE_TARGETS: DeleteIndex = {
         table="telemetry_derived.desktop_retention_clients_v1"
     ): DESKTOP_SRC,
     client_id_target(
+        table="telemetry_derived.desktop_retention_clients_v2"
+    ): DESKTOP_SRC,
+    # Legacy first-seen tables, added in DENG-11876.
+    client_id_target(table="telemetry_derived.clients_first_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v2"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v3"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v3"
+    ): DESKTOP_SRC,
+    client_id_target(
         table="firefox_desktop_derived.desktop_retention_clients_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(

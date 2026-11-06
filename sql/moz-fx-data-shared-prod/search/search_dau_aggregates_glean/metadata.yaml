@@ -1,0 +1,15 @@
+friendly_name: Search DAU Aggregates Glean
+description: |
+  Daily desktop DAU by search behavior, per partner. Built on Glean, and runs alongside
+  `search_dau_aggregates_v1` rather than replacing it. Desktop only.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.search_dau_aggregates_glean_v1

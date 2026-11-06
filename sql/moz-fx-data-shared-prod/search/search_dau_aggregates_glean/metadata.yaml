@@ -1,0 +1,7 @@
+---
+friendly_name: Search DAU Aggregates Glean
+description: |
+  Daily desktop DAU by search behavior, per partner. Built on Glean, and runs alongside
+  `search_dau_aggregates_v1` rather than replacing it. Desktop only.
+owners:
+  - lmcfall@mozilla.com

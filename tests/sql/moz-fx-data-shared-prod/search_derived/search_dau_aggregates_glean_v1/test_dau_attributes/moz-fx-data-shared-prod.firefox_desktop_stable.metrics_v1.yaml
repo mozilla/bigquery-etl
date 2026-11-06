@@ -138,3 +138,23 @@
     string:
       search_engine_default_provider_id: google
       search_engine_default_engine_id: google-b-d
+- submission_timestamp: '2026-09-20 12:00:00'
+  sample_id: 0
+  client_info:
+    client_id: c16
+    distribution:
+      name: null
+  metrics:
+    string:
+      search_engine_default_provider_id: bing
+      search_engine_default_engine_id: bing
+- submission_timestamp: '2026-09-22 12:00:00'
+  sample_id: 0
+  client_info:
+    client_id: c16
+    distribution:
+      name: null
+  metrics:
+    string:
+      search_engine_default_provider_id: google
+      search_engine_default_engine_id: google-b-d

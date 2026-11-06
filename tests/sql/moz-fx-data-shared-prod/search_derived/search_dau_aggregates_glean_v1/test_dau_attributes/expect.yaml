@@ -1,5 +1,5 @@
-# Expected output of search_dau_aggregates_glean_v1 for 2026-09-21 (32 rows: 11 groups in the Google arm,
-# 10 in the Bing arm, 11 in the DuckDuckGo arm). A NULL column is omitted rather than written as null.
+# Expected output of search_dau_aggregates_glean_v1 for 2026-09-21 (35 rows: 12 groups in the Google arm,
+# 11 in the Bing arm, 12 in the DuckDuckGo arm). A NULL column is omitted rather than written as null.
 # The default engine and distribution come from the nearest metrics ping from 7 days before to 1 day after,
 # nearest day first and the latest ping within a day, then engine_id, then the client table.
 # c1  two pings on the day (latest wins), a next-day ping (farther) and a client-table engine that disagrees
@@ -12,6 +12,7 @@
 # c12 has a runaway-SAP row (10,000 SAP, sap_exclusion_reason set): it still shows the engine and a tagged
 # ad click, but sap_category and dau_engaged_w_sap are 0 because that row's SAP is left out
 # c13 is on Mac; every other DAU client is on Windows
+# c16 has no ping on the date, one a day before (bing) and one a day after (google): the earlier day wins, so Bing
 - partner: Google
   submission_date: '2026-09-21'
   device: desktop
@@ -396,6 +397,42 @@
   normalized_os: Windows
   country: AR
   normalized_default_search_engine: Google
+  sap_category: 0
+  ad_click_category: 0
+  ad_click_category_serp: 0
+  dau_w_engine_as_default: 0
+  dau_engaged_w_sap: 0
+- partner: Google
+  submission_date: '2026-09-21'
+  device: desktop
+  normalized_channel: release
+  normalized_os: Windows
+  country: ES
+  normalized_default_search_engine: Bing
+  sap_category: 0
+  ad_click_category: 0
+  ad_click_category_serp: 0
+  dau_w_engine_as_default: 0
+  dau_engaged_w_sap: 0
+- partner: Bing
+  submission_date: '2026-09-21'
+  device: desktop
+  normalized_channel: release
+  normalized_os: Windows
+  country: ES
+  normalized_default_search_engine: Bing
+  sap_category: 0
+  ad_click_category: 0
+  ad_click_category_serp: 0
+  dau_w_engine_as_default: 1
+  dau_engaged_w_sap: 0
+- partner: DuckDuckGo
+  submission_date: '2026-09-21'
+  device: desktop
+  normalized_channel: release
+  normalized_os: Windows
+  country: ES
+  normalized_default_search_engine: Bing
   sap_category: 0
   ad_click_category: 0
   ad_click_category_serp: 0

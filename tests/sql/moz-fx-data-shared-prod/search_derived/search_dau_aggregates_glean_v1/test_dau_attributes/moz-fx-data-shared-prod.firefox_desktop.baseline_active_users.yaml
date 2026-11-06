@@ -118,3 +118,11 @@
   os: Windows
   is_dau: true
   app_name: Firefox Desktop
+- submission_date: '2026-09-21'
+  sample_id: 0
+  client_id: c16
+  country: ES
+  channel: release
+  os: Windows
+  is_dau: true
+  app_name: Firefox Desktop

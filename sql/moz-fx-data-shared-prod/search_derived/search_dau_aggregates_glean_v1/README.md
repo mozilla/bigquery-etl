@@ -37,7 +37,7 @@ Daily desktop DAU by search behavior, per partner: `dau_w_engine_as_default` and
 
 **Default engine and distribution for every DAU client.** `search.search_clients_daily_glean` only has rows for clients with search activity, so the default engine and `distribution_id` of a client who did not search come from the metrics ping:
 
-* The nearest ping from 7 days before to 1 day after the date is used, nearest day first and the latest ping within a day. Some DAU clients send no metrics ping on a given day, and both values change rarely.
+* The nearest ping from 7 days before to 1 day after the date is used, nearest day first, the earlier day when two are equally near, and the latest ping within a day. Some DAU clients send no metrics ping on a given day, and both values change rarely.
 * The default engine is `provider_id`, then `engine_id` for builds that lack it, with an `engine_id` starting with `other` read as a user-installed engine, then the client table.
 * `distribution_id` is `client_info.distribution.name`, then the client table. It is NULL for default installs, as in the client table.
 * The engine is grouped into Google, Bing or DuckDuckGo by a substring match, and any other engine is NULL. A small share of DAU still has no engine from any source and is counted under no partner.

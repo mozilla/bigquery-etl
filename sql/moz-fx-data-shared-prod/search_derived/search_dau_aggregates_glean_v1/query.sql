@@ -36,8 +36,9 @@ WITH desktop_dau_data AS (
 -- search.search_clients_daily_glean only has rows for clients with search activity, so they come from
 -- the metrics ping. About 8% of DAU send no metrics ping on a given day, and both values rarely
 -- change, so the nearest ping from 7 days before to 1 day after is used (the job runs after the
--- next day has landed). provider_id is preferred; engine_id covers builds without it, and the
--- client table is the last fallback.
+-- next day has landed). When a ping before and a ping after the date are equally near, the earlier
+-- one is used. provider_id is preferred; engine_id covers builds without it, and the client table
+-- is the last fallback.
 metrics_ping_attributes AS (
   SELECT
     client_info.client_id AS client_id,
@@ -45,6 +46,7 @@ metrics_ping_attributes AS (
       metrics.string.search_engine_default_provider_id IGNORE NULLS
       ORDER BY
         ABS(DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY)),
+        DATE(submission_timestamp) > @submission_date,
         submission_timestamp DESC
       LIMIT
         1
@@ -53,6 +55,7 @@ metrics_ping_attributes AS (
       metrics.string.search_engine_default_engine_id IGNORE NULLS
       ORDER BY
         ABS(DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY)),
+        DATE(submission_timestamp) > @submission_date,
         submission_timestamp DESC
       LIMIT
         1
@@ -61,6 +64,7 @@ metrics_ping_attributes AS (
       client_info.distribution.name IGNORE NULLS
       ORDER BY
         ABS(DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY)),
+        DATE(submission_timestamp) > @submission_date,
         submission_timestamp DESC
       LIMIT
         1

@@ -7,10 +7,12 @@ description: |-
 owners:
 - kik@mozilla.com
 labels:
+  authorized: true
   owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:fxa/alert-bot-prod
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

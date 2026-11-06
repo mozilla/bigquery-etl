@@ -5,10 +5,12 @@ description: |-
 owners:
 - ksiegler@mozilla.com
 labels:
+  authorized: true
   owner1: ksiegler
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:fxa/alert-bot-prod
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

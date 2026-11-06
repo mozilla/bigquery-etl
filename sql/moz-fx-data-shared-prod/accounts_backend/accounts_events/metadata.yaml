@@ -12,9 +12,11 @@ description: |-
 owners: []
 labels:
   sql_generator: stable_views
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:fxa/alert-bot-prod
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

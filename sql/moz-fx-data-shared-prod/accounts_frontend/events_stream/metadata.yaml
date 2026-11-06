@@ -8,12 +8,14 @@ owners:
 - jrediger@mozilla.com
 - wstuckey@mozilla.com
 labels:
+  authorized: true
   sql_generator: glean_usage
   owner1: jrediger
   owner2: wstuckey
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:fxa/alert-bot-prod
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

@@ -2,9 +2,12 @@ friendly_name: Recent Fxa All Events
 description: |-
   Please provide a description for the query
 owners: []
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:fxa/alert-bot-prod
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:

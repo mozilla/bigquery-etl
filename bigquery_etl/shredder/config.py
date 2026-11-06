@@ -266,7 +266,7 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
     # The Glean id is named glean_client_id
     # Rows also carry legacy_telemetry_client_id
-    # Deletions should happen regardless of system request is received through
+    # Deletions should happen regardless of the telemetry system the request is received through
     DeleteTarget(
         table="firefox_desktop_derived.urlbar_events_v2",
         field=("glean_client_id", "legacy_telemetry_client_id"),

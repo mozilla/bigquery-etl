@@ -1,18 +1,6 @@
----
-# Overrides the glean_usage-generated file (see generate.glean_usage.skip_existing) to add workgroup_access
-friendly_name: Events Stream
-description: |-
-  An events stream table, with one row per event.
-
-  Clients that don't send events on a particular day
-  won't be included on that day.
-owners:
-  - jrediger@mozilla.com
-  - wstuckey@mozilla.com
 labels:
   authorized: true
-  sql_generator: glean_usage
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:fxa/alert-bot-prod
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

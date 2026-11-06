@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import List, Set
 
 import requests
+import yaml
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.config import ConfigLoader
@@ -97,6 +98,38 @@ def write_dataset_metadata(
 
         logging.info(f"Writing {target}")
         target.write_text(rendered)
+
+
+def merge_existing_view_metadata(metadata_file: Path, generated_metadata: str) -> str:
+    """Merge a partial checked-in view metadata.yaml into the generated metadata.
+
+    A checked-in metadata.yaml without `friendly_name` or `description` is treated as
+    a partial override (e.g. to add `workgroup_access`), like for the generated ping
+    views: its labels are merged into the generated labels and its other keys are
+    added to the generated metadata. Otherwise the generated metadata is used as-is.
+    """
+    if not metadata_file.exists():
+        return generated_metadata
+
+    existing_metadata = yaml.safe_load(metadata_file.read_text()) or {}
+    if "friendly_name" in existing_metadata or "description" in existing_metadata:
+        return generated_metadata
+
+    header = "".join(
+        line
+        for line in generated_metadata.splitlines(keepends=True)
+        if line.startswith(("---", "#"))
+    )
+    metadata = yaml.safe_load(generated_metadata) or {}
+    labels = {
+        **(metadata.get("labels") or {}),
+        **(existing_metadata.pop("labels", None) or {}),
+    }
+    metadata.update(existing_metadata)
+    if labels:
+        metadata["labels"] = labels
+
+    return header + yaml.dump(metadata, sort_keys=False)
 
 
 def monitoring_enabled(project_id, app_name, derived_dataset, dataset_families):
@@ -479,6 +512,11 @@ class GleanTable:
                 bigconfig_contents = None
         else:
             bigconfig_contents = None
+
+        if output_dir:
+            view_metadata = merge_existing_view_metadata(
+                get_table_dir(output_dir, view) / "metadata.yaml", view_metadata
+            )
 
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")

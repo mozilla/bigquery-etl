@@ -25,10 +25,10 @@ WITH activity AS (
     user_id IS NOT NULL
     AND event_type NOT IN ('api_key_created', 'api_key_deleted', 'api_key_viewed')
 ),
--- only dates within the range of an audit log export (exports may leave gaps between
--- them; days without events inside an export are covered, just quiet)
+-- the audit log is imported continuously from its first event on; days without
+-- events are covered, just quiet
 dates AS (
-  SELECT DISTINCT
+  SELECT
     submission_date
   FROM
     (
@@ -37,8 +37,6 @@ dates AS (
         MAX(DATE(created_at)) AS last_date,
       FROM
         `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1`
-      GROUP BY
-        source_file
     )
   CROSS JOIN
     UNNEST(GENERATE_DATE_ARRAY(first_date, last_date)) AS submission_date

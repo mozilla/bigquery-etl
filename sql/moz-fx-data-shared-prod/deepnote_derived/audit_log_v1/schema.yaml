@@ -1,8 +1,8 @@
 fields:
 - name: event_id
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
-  description: Hash of the event's content, used to deduplicate overlapping exports.
+  description: Audit log event ID assigned by Deepnote.
 - name: created_at
   type: TIMESTAMP
   mode: NULLABLE
@@ -39,10 +39,6 @@ fields:
   type: JSON
   mode: NULLABLE
   description: Event-specific metadata.
-- name: source_file
-  type: STRING
-  mode: NULLABLE
-  description: GCS URI of the export the row was first imported from.
 - name: loaded_at
   type: TIMESTAMP
   mode: NULLABLE

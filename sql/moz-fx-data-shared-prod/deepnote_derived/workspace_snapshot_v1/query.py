@@ -1,10 +1,4 @@
-"""Snapshot projects, notebooks, Streamlit apps and machines of the Deepnote workspace.
-
-The public REST API has no machine or file endpoints, so machine types and project
-files are read through the read-only `get_machine` and `get_project` tools of the
-Deepnote MCP server, which accepts the same API key
-(https://deepnote.com/docs/deepnote-mcp).
-"""
+"""Snapshot projects, notebooks, Streamlit apps and machines of the Deepnote workspace."""
 
 import logging
 import os
@@ -13,9 +7,10 @@ from datetime import date
 
 import requests
 from google.cloud import bigquery
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 
 API_URL = "https://api.deepnote.com"
-MCP_URL = "https://deepnote.com/mcp"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, type=date.fromisoformat)
@@ -75,32 +70,13 @@ def get_schedule(session, notebook_id):
     }
 
 
-def mcp_tool(session, name, arguments):
-    """Call a read-only Deepnote MCP tool and return its structured result (None on error)."""
-    response = session.post(
-        MCP_URL,
-        json={
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "tools/call",
-            "params": {"name": name, "arguments": arguments},
-        },
-        headers={"Accept": "application/json, text/event-stream"},
-        timeout=60,
-    )
-    response.raise_for_status()
-    result = response.json().get("result") or {}
-    if result.get("isError"):
-        logging.warning(f"MCP {name}({arguments}) failed: {result}")
-        return None
-    return result.get("structuredContent")
-
-
 def get_machine(session, project_id):
     """Return the machine of a project's editor/apps."""
-    machine = (mcp_tool(session, "get_machine", {"projectId": project_id}) or {}).get(
-        "machine"
-    )
+    try:
+        machine = api_get(session, f"/v2/projects/{project_id}/machine")["machine"]
+    except requests.HTTPError as e:
+        logging.warning(f"Failed to get machine of project {project_id}: {e}")
+        return None
     if not machine:
         return None
     machine_type = machine.get("type") or {}
@@ -117,8 +93,7 @@ def get_machine(session, project_id):
 
 def get_files(session, project_id):
     """Return a project's file paths and static site settings."""
-    project = mcp_tool(session, "get_project", {"projectId": project_id}) or {}
-    project = project.get("project", project)
+    project = api_get(session, f"/v2/projects/{project_id}")["project"]
     static = project.get("staticFiles") or {}
     files = [f["path"] for f in project.get("files") or [] if f.get("type") == "file"]
     static_site = (
@@ -174,6 +149,17 @@ def main():
     args = parser.parse_args()
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {os.environ['DEEPNOTE_API_KEY']}"
+    session.mount(
+        "https://",
+        HTTPAdapter(
+            max_retries=Retry(
+                total=5,
+                backoff_factor=2,
+                status_forcelist=[429, 500, 502, 503, 504],
+                respect_retry_after_header=True,
+            )
+        ),
+    )
 
     rows = [to_row(session, args.date, p) for p in list_projects(session)]
 

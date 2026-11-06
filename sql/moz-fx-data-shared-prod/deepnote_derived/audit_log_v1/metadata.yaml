@@ -3,14 +3,12 @@ description: |-
   Events from the audit log of Mozilla's default Deepnote workspace
   (see https://deepnote.com/docs/audit-log).
 
-  Imported from CSV exports placed in
-  gs://moz-fx-data-shared-prod-analysis/deepnote/audit_logs/ (currently uploaded
-  manually; replace with the audit log export endpoint once Deepnote provides it).
-  Exports overlap, so rows are deduplicated on a hash of their content; fully
-  identical events (same timestamp, user, resource and metadata) collapse into one.
+  Imported daily from the Deepnote API (GET /v2/audit-logs, requires a workspace
+  admin API key). Each run fetches the events of the last 3 days and merges new ones
+  on event_id.
 
-  The `ip` column of the export is not imported. Contains user emails, so access is
-  restricted to data engineering.
+  The `ip` field of the audit log is not imported. Contains user emails, so access
+  is restricted to data engineering.
 
   `resource_id` refers to different entities depending on `event_type`: the project
   for project_*/file_*/notebook_executed/notebook_viewed events, the notebook for
@@ -26,6 +24,9 @@ labels:
 scheduling:
   dag_name: bqetl_deepnote
   date_partition_parameter: null
+  secrets:
+  - deploy_target: DEEPNOTE_API_KEY
+    key: bqetl_deepnote_api_key
 bigquery:
   time_partitioning:
     type: day

@@ -146,7 +146,7 @@ fields:
 - name: files
   type: STRING
   mode: REPEATED
-  description: Paths of the project's files (from the MCP get_project tool), e.g. app.py, _deepnote_static/report.html.
+  description: Paths of the project's files (from GET /v2/projects/{id}), e.g. app.py, _deepnote_static/report.html.
 - name: static_site
   type: RECORD
   mode: NULLABLE

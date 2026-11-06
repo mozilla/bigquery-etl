@@ -4,8 +4,8 @@ description: |-
   snapshots from the Deepnote API, Deepnote-originated BigQuery jobs, and
   aggregates built on top of them.
 
-  The raw tables (audit_log_v1, workspace_snapshot_v1, notebook_runs_v1,
-  query_jobs_v1) contain user emails and are restricted to data engineering.
+  The raw tables (audit_log_v1, members_v1, workspace_snapshot_v1,
+  notebook_runs_v1, query_jobs_v1) contain user emails and are restricted to data engineering.
   The aggregate tables are readable by mozilla-confidential via table-level
   access, see each table's metadata.yaml.
 dataset_base_acl: restricted

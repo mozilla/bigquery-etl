@@ -42,11 +42,11 @@ fields:
 - name: covered_days_28d
   type: INTEGER
   mode: NULLABLE
-  description: Days of the trailing 28 covered by audit log exports.
+  description: Days of the trailing 28 covered by the audit log.
 - name: is_mau_complete
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the trailing 28 days are fully covered by audit log exports.
+  description: Whether the trailing 28 days are fully covered by the audit log.
 - name: total_users
   type: INTEGER
   mode: NULLABLE

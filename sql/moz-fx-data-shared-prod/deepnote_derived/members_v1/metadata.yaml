@@ -1,0 +1,26 @@
+friendly_name: Deepnote Members
+description: |-
+  Daily snapshot of the members and guests of Mozilla's default Deepnote workspace
+  and their access level, from the Deepnote API (GET /v2/members). Pending
+  invitations and deactivated users are excluded.
+
+  Contains user emails, so access is restricted to data engineering.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_deepnote
+  arguments: ["--date", "{{ ds }}"]
+  date_partition_parameter: null
+  secrets:
+  - deploy_target: DEEPNOTE_API_KEY
+    key: bqetl_deepnote_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: snapshot_date
+    require_partition_filter: false
+    expiration_days: null

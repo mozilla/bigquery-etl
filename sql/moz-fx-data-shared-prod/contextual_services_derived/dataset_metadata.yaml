@@ -9,3 +9,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services/data-viewers
+  - workgroup:ads/external-tapclicks

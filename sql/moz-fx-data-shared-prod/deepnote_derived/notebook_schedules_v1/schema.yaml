@@ -1,0 +1,71 @@
+fields:
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the workspace snapshot.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: project_name
+  type: STRING
+  mode: NULLABLE
+  description: Project name.
+- name: notebook_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote notebook ID.
+- name: notebook_name
+  type: STRING
+  mode: NULLABLE
+  description: Notebook name.
+- name: cron
+  type: STRING
+  mode: NULLABLE
+  description: Five-field cron expression, evaluated in timezone.
+- name: timezone
+  type: STRING
+  mode: NULLABLE
+  description: IANA timezone of the schedule.
+- name: next_run_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Next scheduled run.
+- name: is_paused
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the schedule is paused (e.g. auto-paused after repeated failures).
+- name: pause_reason
+  type: STRING
+  mode: NULLABLE
+  description: Why the schedule is paused.
+- name: is_weekly
+  type: BOOLEAN
+  mode: NULLABLE
+  description: False if the cron restricts day of month or month; fire_times then assume weekly repetition.
+- name: fire_times
+  type: RECORD
+  mode: REPEATED
+  description: Weekly fire times in the schedule timezone.
+  fields:
+  - name: day_of_week
+    type: INTEGER
+    mode: NULLABLE
+    description: Day of week (0 = Sunday) in fire_times; weekday name in runs_per_weekday.
+  - name: minute_of_day
+    type: INTEGER
+    mode: NULLABLE
+    description: Minute of the day (0-1439).
+- name: runs_per_weekday
+  type: RECORD
+  mode: REPEATED
+  description: Scheduled runs per weekday.
+  fields:
+  - name: day_of_week
+    type: STRING
+    mode: NULLABLE
+    description: Day of week (0 = Sunday) in fire_times; weekday name in runs_per_weekday.
+  - name: runs
+    type: INTEGER
+    mode: NULLABLE
+    description: Runs.

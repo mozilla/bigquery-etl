@@ -1,0 +1,69 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date (UTC).
+- name: day_of_week
+  type: STRING
+  mode: NULLABLE
+  description: Day of week of submission_date.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: project_name
+  type: STRING
+  mode: NULLABLE
+  description: Project name (latest snapshot it appeared in).
+- name: notebook_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote notebook ID; null for project-level events.
+- name: notebook_name
+  type: STRING
+  mode: NULLABLE
+  description: Notebook name (latest snapshot it appeared in).
+- name: is_scheduled_notebook
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the notebook has a schedule in the latest snapshot.
+- name: trigger
+  type: STRING
+  mode: NULLABLE
+  description: scheduled if the run started within 5 minutes after a fire time of the notebook's current schedule, otherwise api_or_manual.
+- name: runs
+  type: INTEGER
+  mode: NULLABLE
+  description: Scheduled/API runs.
+- name: successful_runs
+  type: INTEGER
+  mode: NULLABLE
+  description: Runs with status success.
+- name: failed_runs
+  type: INTEGER
+  mode: NULLABLE
+  description: Runs with status error or internal_error.
+- name: stopped_runs
+  type: INTEGER
+  mode: NULLABLE
+  description: Runs that were stopped.
+- name: unfinished_runs
+  type: INTEGER
+  mode: NULLABLE
+  description: Runs still pending or running.
+- name: last_run_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the last run of the day.
+- name: last_run_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time of the last run of the day.
+- name: avg_duration_seconds
+  type: FLOAT
+  mode: NULLABLE
+  description: Average run duration from creation to completion.
+- name: max_duration_seconds
+  type: FLOAT
+  mode: NULLABLE
+  description: Longest run duration from creation to completion.

@@ -1,0 +1,73 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date (UTC).
+- name: query_source
+  type: STRING
+  mode: NULLABLE
+  description: sql_block (attributed via query comment), python_client (code blocks/Streamlit apps) or schema_browser.
+- name: submitted_by
+  type: STRING
+  mode: NULLABLE
+  description: 'From the SQL block query comment: user, scheduling, api or detached.'
+- name: gcp_project_id
+  type: STRING
+  mode: NULLABLE
+  description: GCP project the jobs ran in.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID; for runs, the source project (not the temporary run copy) where it could be resolved.
+- name: project_name
+  type: STRING
+  mode: NULLABLE
+  description: Project name (latest snapshot or audit log), or (deleted project) / (unattributed run copy) / (unknown project).
+- name: notebook_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote notebook ID; for runs, the source notebook where it could be resolved.
+- name: notebook_name
+  type: STRING
+  mode: NULLABLE
+  description: Notebook name (latest snapshot it appeared in).
+- name: jobs
+  type: INTEGER
+  mode: NULLABLE
+  description: BigQuery query jobs.
+- name: failed_jobs
+  type: INTEGER
+  mode: NULLABLE
+  description: Jobs that failed.
+- name: cached_jobs
+  type: INTEGER
+  mode: NULLABLE
+  description: Jobs answered from the query cache.
+- name: tib_processed
+  type: FLOAT
+  mode: NULLABLE
+  description: TiB processed.
+- name: tib_billed
+  type: FLOAT
+  mode: NULLABLE
+  description: TiB billed; overstates LIMIT/preview queries on reservations.
+- name: slot_hours
+  type: FLOAT
+  mode: NULLABLE
+  description: Slot hours consumed; the cost driver on reservations.
+- name: cost_usd
+  type: FLOAT
+  mode: NULLABLE
+  description: Estimated cost at BigQuery list prices, same formula as monitoring.bigquery_usage (on-demand $6.25/TiB billed, Enterprise $0.06/slot hour, $0.048 for committed reservations, default-pipeline free).
+- name: p50_duration_seconds
+  type: FLOAT
+  mode: NULLABLE
+  description: Median job duration.
+- name: p90_duration_seconds
+  type: FLOAT
+  mode: NULLABLE
+  description: 90th percentile job duration.
+- name: max_duration_seconds
+  type: FLOAT
+  mode: NULLABLE
+  description: Longest job duration.

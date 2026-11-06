@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the items were created.
+- name: content_type
+  type: STRING
+  mode: NULLABLE
+  description: notebook, streamlit_app, native_app, ask_analysis, packaged_analysis or dashboard_skill_app, see the table description.
+- name: created
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of currently existing items created on submission_date.

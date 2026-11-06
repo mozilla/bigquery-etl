@@ -1,0 +1,30 @@
+friendly_name: Deepnote Content Created Daily
+description: |-
+  Content that currently exists in Mozilla's default Deepnote workspace (latest
+  workspace snapshot), counted on the day it was created, by `content_type`:
+
+  - notebook: notebooks, excluding projects' Init notebooks
+  - streamlit_app: Streamlit apps
+  - native_app: notebooks published as Deepnote apps (dated by first publish)
+  - ask_analysis: projects started with the mozdata plugin's /mozdata:ask (they
+    have an "Exploration log" notebook); dated by project creation
+  - packaged_analysis: projects packaged with /mozdata:package (they contain
+    `_deepnote_static/report.html`); dated by first static site publish
+  - dashboard_skill_app: Streamlit apps built with the mozdata plugin's dashboard
+    skill (an app serving `app.py` in a project that holds the skill's
+    `metadata.yaml`); dated by app creation
+
+  Deleted content is not included. Rebuilt in full daily.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -1,0 +1,181 @@
+fields:
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the workspace snapshot.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: project_name
+  type: STRING
+  mode: NULLABLE
+  description: Project name (latest snapshot it appeared in).
+- name: project_type
+  type: STRING
+  mode: NULLABLE
+  description: standard, notebook or agent.
+- name: folder_path
+  type: STRING
+  mode: NULLABLE
+  description: Folder path of the project.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the project was created.
+- name: project_url
+  type: STRING
+  mode: NULLABLE
+  description: Link to the project.
+- name: notebooks
+  type: INTEGER
+  mode: NULLABLE
+  description: Notebooks (excluding the init notebook).
+- name: streamlit_apps
+  type: INTEGER
+  mode: NULLABLE
+  description: Streamlit apps served by the project.
+- name: running_streamlit_apps
+  type: INTEGER
+  mode: NULLABLE
+  description: Apps whose machine was running at snapshot time.
+- name: is_scheduled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether a notebook in the project has a schedule.
+- name: machine_type_id
+  type: STRING
+  mode: NULLABLE
+  description: Machine type ID of the project, e.g. lake.
+- name: machine_type_name
+  type: STRING
+  mode: NULLABLE
+  description: Machine type name, e.g. "CPU (Basic)".
+- name: machine_vcpus
+  type: FLOAT
+  mode: NULLABLE
+  description: vCPUs of the project machine.
+- name: machine_memory_gib
+  type: FLOAT
+  mode: NULLABLE
+  description: Memory of the project machine in GiB.
+- name: machine_gpu_count
+  type: INTEGER
+  mode: NULLABLE
+  description: GPUs of the project machine.
+- name: machine_idle_shutdown_seconds
+  type: INTEGER
+  mode: NULLABLE
+  description: Idle time after which the project machine shuts down.
+- name: last_viewed_date
+  type: DATE
+  mode: NULLABLE
+  description: Last date with a view.
+- name: last_edited_date
+  type: DATE
+  mode: NULLABLE
+  description: Last date with an edit.
+- name: last_executed_date
+  type: DATE
+  mode: NULLABLE
+  description: Last date with an execution.
+- name: last_activity_date
+  type: DATE
+  mode: NULLABLE
+  description: Last date with any activity.
+- name: last_ui_activity_date
+  type: DATE
+  mode: NULLABLE
+  description: Last date with activity in the Deepnote UI.
+- name: views_7d
+  type: INTEGER
+  mode: NULLABLE
+  description: Views in the last 7 days of the audit log.
+- name: views_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Views in the last 28 days of the audit log.
+- name: ui_views_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: UI views in the last 28 days of the audit log.
+- name: ui_events_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: UI activity in the last 28 days of the audit log.
+- name: edits_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Edits in the last 28 days of the audit log.
+- name: executions_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Executions in the last 28 days of the audit log.
+- name: hardware_starts_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Machine starts in the last 28 days of the audit log.
+- name: distinct_users_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Distinct users active in the project in the last 28 days of the audit log.
+- name: runs_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Scheduled/API runs in the last 28 days.
+- name: failed_runs_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Failed runs in the last 28 days.
+- name: last_run_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time of the last run.
+- name: last_run_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the last run.
+- name: p50_run_seconds_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Median run duration in the last 28 days.
+- name: max_run_seconds_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Maximum run duration in the last 28 days.
+- name: query_jobs_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Attributed BigQuery jobs in the last 28 days.
+- name: failed_query_jobs_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Failed attributed jobs in the last 28 days.
+- name: tib_billed_28d
+  type: FLOAT
+  mode: NULLABLE
+  description: Attributed TiB billed in the last 28 days.
+- name: slot_hours_28d
+  type: FLOAT
+  mode: NULLABLE
+  description: Attributed slot hours in the last 28 days.
+- name: max_query_seconds_28d
+  type: FLOAT
+  mode: NULLABLE
+  description: Longest attributed job in the last 28 days.
+- name: usage_status
+  type: STRING
+  mode: NULLABLE
+  description: active, unused_28d or no_activity_in_audit_log, see table description.
+- name: is_broken
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the last scheduled/API run failed.
+- name: audit_log_start_date
+  type: DATE
+  mode: NULLABLE
+  description: First date covered by the audit log.
+- name: audit_log_end_date
+  type: DATE
+  mode: NULLABLE
+  description: Last date covered by the audit log.

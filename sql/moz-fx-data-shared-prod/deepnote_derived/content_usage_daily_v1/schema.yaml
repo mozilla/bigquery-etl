@@ -1,0 +1,57 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date (UTC).
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: notebook_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote notebook ID; null for project-level events.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: ui for actions in the Deepnote UI, api for actions through the API/MCP.
+- name: events
+  type: INTEGER
+  mode: NULLABLE
+  description: All audit log activity events.
+- name: views
+  type: INTEGER
+  mode: NULLABLE
+  description: Views of the project/notebook, run or block, incl. API/MCP reads.
+- name: edits
+  type: INTEGER
+  mode: NULLABLE
+  description: Notebook, block and file edits.
+- name: executions
+  type: INTEGER
+  mode: NULLABLE
+  description: Notebook executions (notebook_executed events).
+- name: hardware_starts
+  type: INTEGER
+  mode: NULLABLE
+  description: Machine starts and restarts.
+- name: exports
+  type: INTEGER
+  mode: NULLABLE
+  description: File, dataframe and project exports.
+- name: active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Distinct users with any activity (not additive across rows).
+- name: active_users_sketch
+  type: BYTES
+  mode: NULLABLE
+  description: HLL++ sketch of active users; HLL_COUNT.MERGE to count distinct users across rows.
+- name: viewers
+  type: INTEGER
+  mode: NULLABLE
+  description: Distinct users viewing (not additive across rows).
+- name: editors
+  type: INTEGER
+  mode: NULLABLE
+  description: Distinct users editing or executing (not additive across rows).

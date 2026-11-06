@@ -1,0 +1,34 @@
+friendly_name: Deepnote BigQuery Query Jobs
+description: |-
+  BigQuery query jobs originating from Mozilla's default Deepnote workspace, from
+  region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION. Includes jobs run by the
+  external-deepnote service account (mozdata integration) and any job whose query
+  carries the comment Deepnote appends to SQL block queries (including OAuth
+  integrations running as the user).
+
+  `query_source`:
+  - sql_block: attributed to a Deepnote project/notebook via the query comment
+  - schema_browser: Deepnote's schema browser metadata queries
+  - python_client: queries sent from Python code blocks or Streamlit apps with
+    the service account key; not attributable to a project
+
+  The query text is not stored. Contains user emails, so access is restricted to
+  data engineering.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_deepnote
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - query_source
+    - deepnote_project_id

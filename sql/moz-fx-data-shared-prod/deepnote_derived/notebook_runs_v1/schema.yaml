@@ -1,0 +1,29 @@
+fields:
+- name: run_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote run ID.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: notebook_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote notebook ID.
+- name: status
+  type: STRING
+  mode: NULLABLE
+  description: "Run status: pending, running, success, error, internal_error or stopped."
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the run was created.
+- name: completed_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the run completed; null while it is still running.
+- name: last_seen_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Last time the run was returned by the API.

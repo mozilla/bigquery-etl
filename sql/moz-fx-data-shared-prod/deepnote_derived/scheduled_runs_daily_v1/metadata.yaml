@@ -1,0 +1,25 @@
+friendly_name: Deepnote Scheduled Runs Daily
+description: |-
+  Daily notebook runs per notebook and trigger in Mozilla's default Deepnote
+  workspace, from notebook_runs_v1: number of runs, outcome, the status of the day's
+  last run, and duration (created to completion, including queueing and machine
+  start).
+
+  The Deepnote API doesn't report what triggered a run. `trigger` is `scheduled` if
+  the notebook currently has a schedule (notebook_schedules_v1) and the run started
+  within 5 minutes after one of its fire times, otherwise `api_or_manual`. Runs from
+  past schedules that have since changed or been removed count as `api_or_manual`.
+  Rebuilt in full daily.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

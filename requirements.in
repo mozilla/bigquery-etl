@@ -43,7 +43,7 @@ mozilla-schema-generator==0.5.1
 mypy==1.15.0
 openai==2.6.1
 pandas==2.3.3
-paramiko==4.0.0
+paramiko==5.0.0
 pathos==0.3.4
 playwright==1.59.0
 pip-tools==7.6.2

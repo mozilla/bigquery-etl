@@ -146,3 +146,4 @@ This would result in the `lookback` and `rct_overrides` properties to be overwri
 - [bigConfig](https://docs.bigeye.com/docs/bigconfig)
 - [Setting up Bigeye CLI](https://docs.bigeye.com/docs/cli#installation)
 - [Bigeye predefined metrics](https://docs.bigeye.com/docs/available-metrics)
+- [bigconfig-generator skill for AI coding agents](https://github.com/mozilla/bigquery-etl-skills/blob/main/skills/bigconfig-generator/SKILL.md)

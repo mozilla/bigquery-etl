@@ -258,16 +258,6 @@ Usage: bqetl check [OPTIONS] COMMAND [ARGS]...
 
   Commands for managing and running bqetl data checks.
 
-  ––––––––––––––––––––––––––––––––––––––––––––––
-
-  IN ACTIVE DEVELOPMENT
-
-  The current progress can be found under:
-
-          https://mozilla-hub.atlassian.net/browse/DENG-919
-
-  ––––––––––––––––––––––––––––––––––––––––––––––
-
 Options:
   --help  Show this message and exit.
 

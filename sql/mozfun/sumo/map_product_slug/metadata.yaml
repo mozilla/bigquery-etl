@@ -9,6 +9,11 @@ description: |
   values from 'Other'.
   No longer referenced by any production query.
 
+  A daily automated check (checks.sql) on the GA4 engagement derived table
+  scans production SUMO queries (GA4, Zendesk, Kitsune) for raw product values
+  that normalize_product maps to 'Other', surfacing new/unmapped slugs for
+  triage.
+
   Example:
     SELECT sumo.map_product_slug('/firefox/') -- Returns: 'firefox'
     SELECT sumo.map_product_slug('/mozilla-vpn/') -- Returns: 'mozilla-vpn'

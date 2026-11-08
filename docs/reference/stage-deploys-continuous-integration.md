@@ -22,7 +22,7 @@ Deploying artifacts to stage follows the following steps:
     * Artifacts that get deployed are determined from the files that got changed and any artifacts that are referenced in the SQL definitions of these files, as well as their references and so on.
 5. To run the deploy, all artifacts will be copied to `sql/moz-fx-data-integration-tests` into their corresponding temporary datasets.
     * Also if any existing [SQL tests](https://github.com/mozilla/bigquery-etl/tree/main/tests/sql) the are related to changed artifacts will have their referenced artifacts updated and will get copied to a `moz-fx-data-integration-tests` folder
-    * The deploy is executed in the order of: UDFs, tables, views
+    * The deploy is executed in the order of: UDFs, views, tables
     * UDFs and views get deployed in a way that ensures that the right order of deployments (e.g. dependencies need to be deployed before the views referencing them)
 6. Once the deploy has been completed, the CI will use these staged artifacts to run its tests
 7. After checks have succeeded, the deployed artifacts [will be removed from stage](https://github.com/mozilla/bigquery-etl/blob/69c0c1d5fca6d7a50455552c30a331751ef2442b/.circleci/config.yml#L577)

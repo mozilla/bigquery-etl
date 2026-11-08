@@ -82,7 +82,7 @@ When applied, this configuration would result in Bigeye the following metrics be
 
 Those would get bundled under the `My Collection` Bigeye collection, and if any of the metrics fail an alert would be sent to the notification channels configured for that collection in the `monitoring.bigeye_workspaces` section of [bqetl_project.yaml](https://github.com/mozilla/bigquery-etl/blob/main/bqetl_project.yaml).
 
-\* _`is_not_null` is a `saved_metric_id` and is defined inside [sql/bigconfig.yml](https://github.com/mozilla/bigquery-etl/blob/main/sql/bigconfig.yml#L4C5-L19C26)_
+\* _`is_not_null` is a `saved_metric_id` and is defined inside [sql/bigconfig.yml](https://github.com/mozilla/bigquery-etl/blob/main/sql/bigconfig.yml#L4C5-L19C26), which also defines additional saved metrics such as `is_unique`, `is_99_percent_not_null`, `is_valid_client_id`, and composite-key uniqueness checks_
 
 ---
 

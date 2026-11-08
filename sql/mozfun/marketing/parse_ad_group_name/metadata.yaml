@@ -1,2 +1,2 @@
-description: Please provide a description for the routine
+description: Parse an ad group name. Extracts segments like region, country_code, and audience.
 friendly_name: Parse Ad Group Name

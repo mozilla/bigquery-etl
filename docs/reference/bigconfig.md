@@ -17,7 +17,7 @@ Bigeye provides CLI tooling that takes bigConfig files as input, compares it wit
 This includes actions such as creation, update, and deletion of Bigeye metrics. In our case, the [publish_bigeye_monitors](https://github.com/mozilla/telemetry-airflow/blob/main/dags/bqetl_artifact_deployment.py#L204C5-L212) task inside the `bqetl_artifact_deployment` DAG is responsible for pushing any bigConfig changes that have been merged into the main branch.
 
 > [!CAUTION]
-> When working with bigeye CLI be careful and avoid running `bigconfig apply` locally, Bigeye CLI will only work with currently specified bigConfig files. If an apply operation is executed and some configuration files are not included in the plan it would result in Bigeye metrics in those files getting `deleted`. Therefore, it is best to let the artifact_deployment DAG handle publishing Bigeye monitors.
+> When working with bigeye CLI be careful and avoid running `bigconfig apply` locally, Bigeye CLI will only work with currently specified bigConfig files. If an apply operation is executed and some configuration files are not included in the plan it would result in Bigeye metrics in those files getting `deleted`. Therefore, it is best to let the artifact_deployment DAG handle publishing Bigeye monitors. AI coding agents are blocked from running `monitoring deploy` except against an allow-listed dev target while impersonating a sandbox service account.
 
 ---
 

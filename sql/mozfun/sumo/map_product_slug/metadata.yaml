@@ -3,7 +3,10 @@ description: |
   Maps SUMO product slug paths to canonical product names.
 
   Legacy SUMO-specific mapper. Current production SUMO queries (GA4, Zendesk,
-  Kitsune) use mozfun.customer_experience.normalize_product instead.
+  Kitsune) use mozfun.customer_experience.normalize_product instead. A newer
+  UDF, mozfun.customer_experience.cx_normalize_product, is now preferred for
+  new work; it uses different canonical names and distinguishes 'unclassified'
+  values from 'Other'.
   No longer referenced by any production query.
 
   Example:

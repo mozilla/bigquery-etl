@@ -17,6 +17,7 @@ Deploying artifacts to stage follows the following steps:
     * For views, if a view references another view, table or UDF then each of these referenced artifacts needs to be available on stage as well, otherwise the view cannot even be deployed to stage.
     * If artifacts are referenced that are not defined as part of the bigquery-etl repo (like stable or live tables) then their schema will get determined and a placeholder `query.sql` file will be created
     * If an artifact's `metadata.yaml` defines `external_data` (for example a Google Sheets-backed table), the query file is dropped and `external_data` is cleared from the staged metadata so the table deploys from its schema only, since the stage environment cannot reach external data sources
+    * For `materialized_view.sql` files, the `CREATE MATERIALIZED VIEW ... AS` wrapper is stripped and the file is deployed to stage as a plain `query.sql`
     * Also dependencies of dependencies need to be deployed, and so on
 4. Once all artifacts that need to be deployed have been determined, all references to these artifacts in existing SQL files need to be updated. These references will need to point to the stage project and the temporary datasets that artifacts will be published to.
     * Artifacts that get deployed are determined from the files that got changed and any artifacts that are referenced in the SQL definitions of these files, as well as their references and so on.

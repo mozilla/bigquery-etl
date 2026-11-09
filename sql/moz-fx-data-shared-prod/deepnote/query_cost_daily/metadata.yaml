@@ -5,3 +5,9 @@ description: |-
   project.
 owners:
 - ascholtz@mozilla.com
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

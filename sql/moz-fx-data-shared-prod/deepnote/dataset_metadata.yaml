@@ -1,7 +1,8 @@
 friendly_name: Deepnote
 description: |-
-  Views on Deepnote usage monitoring data (deepnote_derived). Restricted to data
-  platform.
+  Views on Deepnote usage monitoring data (deepnote_derived). Views with user
+  information are restricted to data platform, the others are readable by
+  mozilla-confidential.
 dataset_base_acl: view_restricted
 user_facing: true
 labels: {}

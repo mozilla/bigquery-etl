@@ -100,7 +100,6 @@ SELECT
   latest.project_id,
   latest.project_name,
   latest.project_type,
-  latest.folder_path,
   latest.created_at,
   CONCAT('https://deepnote.com/project/', latest.project_id) AS project_url,
   (SELECT COUNTIF(NOT IFNULL(is_init, FALSE)) FROM UNNEST(latest.notebooks)) AS notebooks,

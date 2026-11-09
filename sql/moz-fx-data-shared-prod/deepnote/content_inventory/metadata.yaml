@@ -4,3 +4,9 @@ description: |-
   BigQuery cost and usage_status (active or unused_28d).
 owners:
 - ascholtz@mozilla.com
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

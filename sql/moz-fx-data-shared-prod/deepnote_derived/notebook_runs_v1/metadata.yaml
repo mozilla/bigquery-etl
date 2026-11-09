@@ -38,3 +38,7 @@ bigquery:
     field: created_at
     require_partition_filter: false
     expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

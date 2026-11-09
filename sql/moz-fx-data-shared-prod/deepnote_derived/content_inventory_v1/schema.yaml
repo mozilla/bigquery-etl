@@ -23,10 +23,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: standard, notebook or agent.
-- name: folder_path
-  type: STRING
-  mode: NULLABLE
-  description: Folder path of the project.
 - name: created_at
   type: TIMESTAMP
   mode: NULLABLE

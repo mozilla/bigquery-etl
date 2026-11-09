@@ -119,7 +119,7 @@ dry_run:
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
-  # dry run SA can't read region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION
+  # dry run SA can't list all jobs in mozdata (INFORMATION_SCHEMA.JOBS_BY_PROJECT)
   - sql/moz-fx-data-shared-prod/deepnote_derived/query_jobs_v1/query.sql
   # dry run SA can't read the slot reservation admin project
   - sql/moz-fx-data-shared-prod/monitoring_derived/reservations_timeline_v1/query.sql

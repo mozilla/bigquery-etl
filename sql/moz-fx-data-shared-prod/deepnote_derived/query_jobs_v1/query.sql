@@ -4,6 +4,8 @@
 --     "project_id":"...","notebook_id":"...","project_url":"..."} */
 -- Queries sent from Python (code blocks, Streamlit apps) carry no comment and can
 -- only be attributed to the Deepnote service account.
+-- JOBS_BY_ORGANIZATION has no query text, so jobs are read from JOBS_BY_PROJECT of
+-- mozdata, the project Deepnote runs its queries in.
 WITH jobs AS (
   SELECT
     *,
@@ -11,7 +13,7 @@ WITH jobs AS (
       REGEXP_EXTRACT(query, r'/\*\s*(\{"app"\s*:\s*"deepnote"[^*]*\})\s*\*/')
     ) AS deepnote_comment,
   FROM
-    `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
+    `mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
   WHERE
     DATE(creation_time) = @submission_date
     AND job_type = 'QUERY'

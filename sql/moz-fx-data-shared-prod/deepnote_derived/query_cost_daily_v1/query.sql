@@ -17,14 +17,15 @@ WITH executed_notebooks AS (
 jobs AS (
   SELECT
     jobs.* EXCEPT (deepnote_project_id, deepnote_notebook_id),
+    -- only attribute a job to a scheduled run if no other run of the workspace overlaps
     COALESCE(
       executed_notebooks.project_id,
-      runs.project_id,
+      IF(COUNT(runs.run_id) OVER (PARTITION BY jobs.job_id) = 1, runs.project_id, NULL),
       jobs.deepnote_project_id
     ) AS deepnote_project_id,
     COALESCE(
       executed_notebooks.notebook_id,
-      runs.notebook_id,
+      IF(COUNT(runs.run_id) OVER (PARTITION BY jobs.job_id) = 1, runs.notebook_id, NULL),
       jobs.deepnote_notebook_id
     ) AS deepnote_notebook_id,
   FROM
@@ -35,6 +36,7 @@ jobs AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.deepnote_derived.notebook_runs_v1` AS runs
     ON DATE(runs.created_at) = jobs.submission_date
+    AND runs.workspace_id = jobs.workspace_id
     AND jobs.submitted_by = 'scheduling'
     AND jobs.creation_time
     BETWEEN runs.created_at

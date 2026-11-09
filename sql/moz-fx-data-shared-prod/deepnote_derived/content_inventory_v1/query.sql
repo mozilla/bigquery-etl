@@ -12,6 +12,13 @@ WITH latest AS (
         `moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1`
     )
 ),
+-- windows end on the snapshot date, so reruns and backfills cover the same days
+anchor AS (
+  SELECT
+    MAX(snapshot_date) AS snapshot_date,
+  FROM
+    latest
+),
 usage AS (
   SELECT
     project_id,
@@ -20,46 +27,68 @@ usage AS (
     MAX(IF(executions > 0, submission_date, NULL)) AS last_executed_date,
     MAX(submission_date) AS last_activity_date,
     MAX(IF(channel = 'ui', submission_date, NULL)) AS last_ui_activity_date,
-    SUM(IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY), views, 0)) AS views_7d,
-    SUM(IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), views, 0)) AS views_28d,
+    SUM(IF(submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 7 DAY), views, 0)) AS views_7d,
     SUM(
-      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND channel = 'ui', views, 0)
+      IF(submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY), views, 0)
+    ) AS views_28d,
+    SUM(
+      IF(
+        submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY)
+        AND channel = 'ui',
+        views,
+        0
+      )
     ) AS ui_views_28d,
     SUM(
-      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND channel = 'ui', events, 0)
+      IF(
+        submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY)
+        AND channel = 'ui',
+        events,
+        0
+      )
     ) AS ui_events_28d,
-    SUM(IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), edits, 0)) AS edits_28d,
     SUM(
-      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), executions, 0)
+      IF(submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY), edits, 0)
+    ) AS edits_28d,
+    SUM(
+      IF(submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY), executions, 0)
     ) AS executions_28d,
     SUM(
-      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), hardware_starts, 0)
+      IF(submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY), hardware_starts, 0)
     ) AS hardware_starts_28d,
     -- distinct users can't be summed from the daily table, merge the sketches instead
     IFNULL(
       HLL_COUNT.MERGE(
-        IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), active_users_sketch, NULL)
+        IF(
+          submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY),
+          active_users_sketch,
+          NULL
+        )
       ),
       0
     ) AS distinct_users_28d,
   FROM
     `moz-fx-data-shared-prod.deepnote_derived.content_usage_daily_v1`
+  CROSS JOIN
+    anchor
+  WHERE
+    submission_date <= anchor.snapshot_date
   GROUP BY
     project_id
 ),
 runs AS (
   SELECT
     project_id,
-    COUNTIF(created_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 28 DAY)) AS runs_28d,
+    COUNTIF(DATE(created_at) > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY)) AS runs_28d,
     COUNTIF(
-      created_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 28 DAY)
+      DATE(created_at) > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY)
       AND status IN ('error', 'internal_error')
     ) AS failed_runs_28d,
     MAX(created_at) AS last_run_at,
     ARRAY_AGG(status ORDER BY created_at DESC LIMIT 1)[OFFSET(0)] AS last_run_status,
     APPROX_QUANTILES(
       IF(
-        created_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 28 DAY),
+        DATE(created_at) > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY),
         TIMESTAMP_DIFF(completed_at, created_at, SECOND),
         NULL
       ),
@@ -67,13 +96,17 @@ runs AS (
     )[OFFSET(50)] AS p50_run_seconds_28d,
     MAX(
       IF(
-        created_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 28 DAY),
+        DATE(created_at) > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY),
         TIMESTAMP_DIFF(completed_at, created_at, SECOND),
         NULL
       )
     ) AS max_run_seconds_28d,
   FROM
     `moz-fx-data-shared-prod.deepnote_derived.notebook_runs_v1`
+  CROSS JOIN
+    anchor
+  WHERE
+    DATE(created_at) <= anchor.snapshot_date
   GROUP BY
     project_id
 ),
@@ -87,9 +120,12 @@ queries AS (
     MAX(max_duration_seconds) AS max_query_seconds_28d,
   FROM
     `moz-fx-data-shared-prod.deepnote_derived.query_cost_daily_v1`
+  CROSS JOIN
+    anchor
   WHERE
     project_id IS NOT NULL
-    AND submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY)
+    AND submission_date > DATE_SUB(anchor.snapshot_date, INTERVAL 28 DAY)
+    AND submission_date <= anchor.snapshot_date
   GROUP BY
     project_id
 )

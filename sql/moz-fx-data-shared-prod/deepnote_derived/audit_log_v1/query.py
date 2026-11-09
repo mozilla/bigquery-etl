@@ -9,16 +9,12 @@ The `ip` field of the audit log is never written to BigQuery.
 """
 
 import logging
-import os
 from argparse import ArgumentParser
 from datetime import datetime, timedelta, timezone
 
-import requests
 from google.cloud import bigquery
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
 
-API_URL = "https://api.deepnote.com"
+from bigquery_etl.deepnote import workspaces
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
@@ -45,44 +41,6 @@ THEN
   INSERT
     ROW
 """
-
-
-class Workspace:
-    """Deepnote API session for the workspace an API key belongs to."""
-
-    def __init__(self, api_key):
-        """Create a session that retries rate limited requests and look up the workspace."""
-        self.session = requests.Session()
-        self.session.headers["Authorization"] = f"Bearer {api_key}"
-        retry = Retry(
-            total=5,
-            backoff_factor=2,
-            status_forcelist=[429, 500, 502, 503, 504],
-            respect_retry_after_header=True,
-        )
-        self.session.mount("https://", HTTPAdapter(max_retries=retry))
-        workspace = self.get("/v2/me")["workspace"]
-        self.id = workspace["id"]
-        self.name = workspace["name"]
-
-    def get(self, path, params=None):
-        """GET a Deepnote API path and return the parsed response."""
-        response = self.session.get(f"{API_URL}{path}", params=params, timeout=60)
-        response.raise_for_status()
-        return response.json()
-
-    def paginate(self, path, key, params=None, page_size=100):
-        """Yield the items of a paginated Deepnote API list endpoint."""
-        page_token = None
-        while True:
-            page_params = {"pageSize": page_size, **(params or {})}
-            if page_token:
-                page_params["pageToken"] = page_token
-            page = self.get(path, page_params)
-            yield from page[key]
-            if not page["pagination"].get("hasMore"):
-                return
-            page_token = page["pagination"]["nextPageToken"]
 
 
 def to_row(event, workspace_id, loaded_at):
@@ -132,7 +90,7 @@ def main():
         params["from"] = start.isoformat(timespec="seconds").replace("+00:00", "Z")
     rows = [
         to_row(event, workspace.id, now.isoformat())
-        for workspace in [Workspace(os.environ[name]) for name in args.api_key_env_vars]
+        for workspace in workspaces(args.api_key_env_vars)
         for event in list_events(workspace, params)
     ]
 

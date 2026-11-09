@@ -264,6 +264,13 @@ DELETE_TARGETS: DeleteIndex = {
         table="search_derived.desktop_client_day_dims_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
+    # The Glean id is named glean_client_id
+    # Rows also carry legacy_telemetry_client_id
+    # Deletions should happen regardless of the telemetry system the request is received through
+    DeleteTarget(
+        table="firefox_desktop_derived.urlbar_events_v2",
+        field=("glean_client_id", "legacy_telemetry_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_SRC),
     # Desktop rows only for now; mobile rows will need their apps' deletion sources too.
     client_id_target(
         table="search_derived.search_kpi_clients_daily_v1"

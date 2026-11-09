@@ -1,16 +1,19 @@
 friendly_name: Deepnote Active Users Daily
 description: |-
   Daily active users (DAU), 7-day (WAU) and 28-day (MAU) active users of Mozilla's
-  default Deepnote workspace, based on the audit log. A user is active on a day if
-  they have any audit log event, excluding ephemeral API key creation/deletion.
+  Deepnote workspaces, based on the audit log, plus member counts from the
+  members_v1 snapshots. One row per workspace and day, and one row per day with
+  workspace_id = `all` that counts users across all workspaces (distinct users
+  can't be summed across workspace rows). A user is active on a day if they have
+  any audit log event, excluding ephemeral API key creation/deletion.
 
   total_users is the cumulative number of distinct users seen in the audit log up to
-  that date. dau_ui counts activity from a browser (the Deepnote UI), dau_api activity through the API, MCP or scripts,
-  dau_creators users who edited, executed or created content. first_seen_users is
-  the number of users whose first audit log event is on that date (inflated at
-  the start of the audit log). is_mau_complete is false within the first 28 days
-  of the audit log.
-  Rebuilt in full daily.
+  that date. dau_ui counts activity from a browser (the Deepnote UI), dau_api
+  activity through the API, MCP or scripts, dau_creators users who edited, executed
+  or created content. first_seen_users is the number of users whose first audit log
+  event is on that date (inflated at the start of a workspace's audit log, and WAU
+  and MAU undercount in its first 28 days). members, admins, editors, viewers and
+  guests are null for days before members snapshots began. Rebuilt in full daily.
 owners:
 - ascholtz@mozilla.com
 labels:

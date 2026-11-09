@@ -1,5 +1,5 @@
--- Content that currently exists in the default Deepnote workspace (latest workspace
--- snapshot), counted on the day it was created, by content type.
+-- Content that currently exists in the Deepnote workspaces (latest workspace snapshot),
+-- counted on the day it was created, by workspace and content type.
 WITH latest AS (
   SELECT
     *
@@ -28,6 +28,7 @@ first_published AS (
 ),
 items AS (
   SELECT
+    workspace_id,
     'notebook' AS content_type,
     notebook.created_at,
   FROM
@@ -38,6 +39,7 @@ items AS (
     NOT IFNULL(notebook.is_init, FALSE)
   UNION ALL
   SELECT
+    workspace_id,
     'streamlit_app',
     app.created_at,
   FROM
@@ -47,6 +49,7 @@ items AS (
   UNION ALL
   -- native apps: existing notebooks that were published as Deepnote apps
   SELECT
+    workspace_id,
     'native_app',
     first_published.published_at,
   FROM
@@ -60,6 +63,7 @@ items AS (
   UNION ALL
   -- analyses started with the mozdata plugin's /mozdata:ask, which adds an "Exploration log" notebook
   SELECT
+    workspace_id,
     'ask_analysis',
     latest.created_at,
   FROM
@@ -69,6 +73,7 @@ items AS (
   UNION ALL
   -- analyses packaged with /mozdata:package, which publishes _deepnote_static/report.html
   SELECT
+    latest.workspace_id,
     'packaged_analysis',
     COALESCE(first_published.published_at, latest.created_at),
   FROM
@@ -83,6 +88,7 @@ items AS (
   -- dashboards built with the mozdata plugin's dashboard skill: a Streamlit app serving app.py
   -- in a project that also holds the skill's metadata.yaml
   SELECT
+    workspace_id,
     'dashboard_skill_app',
     app.created_at,
   FROM
@@ -95,10 +101,12 @@ items AS (
 )
 SELECT
   DATE(created_at) AS submission_date,
+  workspace_id,
   content_type,
   COUNT(*) AS created,
 FROM
   items
 GROUP BY
   submission_date,
+  workspace_id,
   content_type

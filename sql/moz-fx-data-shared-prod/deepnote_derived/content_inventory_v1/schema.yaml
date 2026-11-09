@@ -3,6 +3,14 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date of the workspace snapshot.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
+- name: workspace_name
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace name.
 - name: project_id
   type: STRING
   mode: NULLABLE
@@ -35,10 +43,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Streamlit apps served by the project.
-- name: running_streamlit_apps
-  type: INTEGER
-  mode: NULLABLE
-  description: Apps whose machine was running at snapshot time.
 - name: is_scheduled
   type: BOOLEAN
   mode: NULLABLE
@@ -90,35 +94,35 @@ fields:
 - name: views_7d
   type: INTEGER
   mode: NULLABLE
-  description: Views in the last 7 days of the audit log.
+  description: Views in the last 7 days.
 - name: views_28d
   type: INTEGER
   mode: NULLABLE
-  description: Views in the last 28 days of the audit log.
+  description: Views in the last 28 days.
 - name: ui_views_28d
   type: INTEGER
   mode: NULLABLE
-  description: UI views in the last 28 days of the audit log.
+  description: UI views in the last 28 days.
 - name: ui_events_28d
   type: INTEGER
   mode: NULLABLE
-  description: UI activity in the last 28 days of the audit log.
+  description: UI activity in the last 28 days.
 - name: edits_28d
   type: INTEGER
   mode: NULLABLE
-  description: Edits in the last 28 days of the audit log.
+  description: Edits in the last 28 days.
 - name: executions_28d
   type: INTEGER
   mode: NULLABLE
-  description: Executions in the last 28 days of the audit log.
+  description: Executions in the last 28 days.
 - name: hardware_starts_28d
   type: INTEGER
   mode: NULLABLE
-  description: Machine starts in the last 28 days of the audit log.
+  description: Machine starts in the last 28 days.
 - name: distinct_users_28d
   type: INTEGER
   mode: NULLABLE
-  description: Distinct users active in the project in the last 28 days of the audit log.
+  description: Distinct users who viewed, edited or executed the project, started its machine or exported from it in the last 28 days.
 - name: runs_28d
   type: INTEGER
   mode: NULLABLE
@@ -166,16 +170,8 @@ fields:
 - name: usage_status
   type: STRING
   mode: NULLABLE
-  description: active, unused_28d or no_activity_in_audit_log, see table description.
+  description: active or unused_28d, see table description.
 - name: is_broken
   type: BOOLEAN
   mode: NULLABLE
   description: Whether the last scheduled/API run failed.
-- name: audit_log_start_date
-  type: DATE
-  mode: NULLABLE
-  description: First date covered by the audit log.
-- name: audit_log_end_date
-  type: DATE
-  mode: NULLABLE
-  description: Last date covered by the audit log.

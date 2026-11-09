@@ -68,6 +68,7 @@ runs AS (
 SELECT
   DATE(runs.created_at) AS submission_date,
   FORMAT_DATE('%A', DATE(runs.created_at)) AS day_of_week,
+  runs.workspace_id,
   runs.project_id,
   notebooks.project_name,
   runs.notebook_id,
@@ -95,6 +96,7 @@ LEFT JOIN
 GROUP BY
   submission_date,
   day_of_week,
+  workspace_id,
   project_id,
   project_name,
   notebook_id,

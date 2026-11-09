@@ -43,10 +43,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: From the query comment, the Deepnote user that ran the block (or owns the schedule).
-- name: deepnote_workspace_id
+- name: workspace_id
   type: STRING
   mode: NULLABLE
-  description: From the query comment, the Deepnote workspace ID.
+  description: Deepnote workspace ID from the query comment; the default workspace for uncommented service account queries.
 - name: deepnote_project_id
   type: STRING
   mode: NULLABLE

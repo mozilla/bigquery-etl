@@ -7,6 +7,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Day of week of submission_date.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
 - name: project_id
   type: STRING
   mode: NULLABLE

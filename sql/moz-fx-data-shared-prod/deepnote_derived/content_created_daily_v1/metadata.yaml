@@ -1,7 +1,7 @@
 friendly_name: Deepnote Content Created Daily
 description: |-
-  Content that currently exists in Mozilla's default Deepnote workspace (latest
-  workspace snapshot), counted on the day it was created, by `content_type`:
+  Content that currently exists in Mozilla's Deepnote workspaces (latest workspace
+  snapshot), counted on the day it was created, by workspace and `content_type`:
 
   - notebook: notebooks, excluding projects' Init notebooks
   - streamlit_app: Streamlit apps

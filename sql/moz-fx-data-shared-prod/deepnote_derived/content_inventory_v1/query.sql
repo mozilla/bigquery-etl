@@ -12,13 +12,6 @@ WITH latest AS (
         `moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1`
     )
 ),
-coverage AS (
-  SELECT
-    MIN(submission_date) AS audit_log_start_date,
-    MAX(submission_date) AS audit_log_end_date,
-  FROM
-    `moz-fx-data-shared-prod.deepnote_derived.content_usage_daily_v1`
-),
 usage AS (
   SELECT
     project_id,
@@ -27,64 +20,30 @@ usage AS (
     MAX(IF(executions > 0, submission_date, NULL)) AS last_executed_date,
     MAX(submission_date) AS last_activity_date,
     MAX(IF(channel = 'ui', submission_date, NULL)) AS last_ui_activity_date,
-    SUM(IF(submission_date > DATE_SUB(audit_log_end_date, INTERVAL 7 DAY), views, 0)) AS views_7d,
-    SUM(IF(submission_date > DATE_SUB(audit_log_end_date, INTERVAL 28 DAY), views, 0)) AS views_28d,
+    SUM(IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY), views, 0)) AS views_7d,
+    SUM(IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), views, 0)) AS views_28d,
     SUM(
-      IF(
-        submission_date > DATE_SUB(audit_log_end_date, INTERVAL 28 DAY)
-        AND channel = 'ui',
-        views,
-        0
-      )
+      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND channel = 'ui', views, 0)
     ) AS ui_views_28d,
     SUM(
-      IF(
-        submission_date > DATE_SUB(audit_log_end_date, INTERVAL 28 DAY)
-        AND channel = 'ui',
-        events,
-        0
-      )
+      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND channel = 'ui', events, 0)
     ) AS ui_events_28d,
-    SUM(IF(submission_date > DATE_SUB(audit_log_end_date, INTERVAL 28 DAY), edits, 0)) AS edits_28d,
+    SUM(IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), edits, 0)) AS edits_28d,
     SUM(
-      IF(submission_date > DATE_SUB(audit_log_end_date, INTERVAL 28 DAY), executions, 0)
+      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), executions, 0)
     ) AS executions_28d,
     SUM(
-      IF(submission_date > DATE_SUB(audit_log_end_date, INTERVAL 28 DAY), hardware_starts, 0)
+      IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), hardware_starts, 0)
     ) AS hardware_starts_28d,
+    -- distinct users can't be summed from the daily table, merge the sketches instead
+    IFNULL(
+      HLL_COUNT.MERGE(
+        IF(submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), active_users_sketch, NULL)
+      ),
+      0
+    ) AS distinct_users_28d,
   FROM
     `moz-fx-data-shared-prod.deepnote_derived.content_usage_daily_v1`
-  CROSS JOIN
-    coverage
-  GROUP BY
-    project_id
-),
--- distinct users can't be summed from the daily table
-latest_notebooks AS (
-  SELECT
-    notebook.notebook_id,
-    project_id,
-  FROM
-    latest
-  CROSS JOIN
-    UNNEST(notebooks) AS notebook
-),
-users AS (
-  SELECT
-    COALESCE(
-      JSON_VALUE(metadata, '$.projectId'),
-      latest_notebooks.project_id,
-      resource_id
-    ) AS project_id,
-    COUNT(DISTINCT user_id) AS distinct_users_28d,
-  FROM
-    `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1`
-  LEFT JOIN
-    latest_notebooks
-    ON latest_notebooks.notebook_id = resource_id
-  WHERE
-    DATE(created_at) > DATE_SUB((SELECT audit_log_end_date FROM coverage), INTERVAL 28 DAY)
-    AND event_type NOT IN ('api_key_created', 'api_key_deleted', 'api_key_viewed')
   GROUP BY
     project_id
 ),
@@ -136,6 +95,8 @@ queries AS (
 )
 SELECT
   latest.snapshot_date,
+  latest.workspace_id,
+  latest.workspace_name,
   latest.project_id,
   latest.project_name,
   latest.project_type,
@@ -144,8 +105,6 @@ SELECT
   CONCAT('https://deepnote.com/project/', latest.project_id) AS project_url,
   (SELECT COUNTIF(NOT IFNULL(is_init, FALSE)) FROM UNNEST(latest.notebooks)) AS notebooks,
   ARRAY_LENGTH(latest.streamlit_apps) AS streamlit_apps,
-  -- apps whose machine is stopped report "unavailable" until the next viewer starts them
-  (SELECT COUNTIF(status = 'running') FROM UNNEST(latest.streamlit_apps)) AS running_streamlit_apps,
   (SELECT LOGICAL_OR(is_scheduled) FROM UNNEST(latest.notebooks)) AS is_scheduled,
   latest.machine.type_id AS machine_type_id,
   latest.machine.type_name AS machine_type_name,
@@ -153,13 +112,11 @@ SELECT
   latest.machine.memory_gib AS machine_memory_gib,
   latest.machine.gpu_count AS machine_gpu_count,
   latest.machine.idle_shutdown_seconds AS machine_idle_shutdown_seconds,
-  usage.* EXCEPT (project_id),
-  IFNULL(users.distinct_users_28d, 0) AS distinct_users_28d,
+  usage.* EXCEPT (project_id, distinct_users_28d),
+  IFNULL(usage.distinct_users_28d, 0) AS distinct_users_28d,
   runs.* EXCEPT (project_id),
   queries.* EXCEPT (project_id),
   CASE
-    WHEN usage.last_activity_date IS NULL
-      THEN 'no_activity_in_audit_log'
     WHEN IFNULL(usage.ui_events_28d, 0) = 0
       AND IFNULL(usage.executions_28d, 0) = 0
       AND IFNULL(runs.runs_28d, 0) = 0
@@ -167,17 +124,10 @@ SELECT
     ELSE 'active'
   END AS usage_status,
   IFNULL(runs.last_run_status IN ('error', 'internal_error'), FALSE) AS is_broken,
-  coverage.audit_log_start_date,
-  coverage.audit_log_end_date,
 FROM
   latest
-CROSS JOIN
-  coverage
 LEFT JOIN
   usage
-  USING (project_id)
-LEFT JOIN
-  users
   USING (project_id)
 LEFT JOIN
   runs

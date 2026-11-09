@@ -3,6 +3,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Deepnote run ID.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
 - name: project_id
   type: STRING
   mode: NULLABLE

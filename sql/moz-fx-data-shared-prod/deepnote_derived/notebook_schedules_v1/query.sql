@@ -47,6 +47,7 @@ WITH latest AS (
 schedules AS (
   SELECT
     latest.snapshot_date,
+    latest.workspace_id,
     latest.project_id,
     latest.project_name,
     notebook.notebook_id,
@@ -66,6 +67,7 @@ schedules AS (
 )
 SELECT
   snapshot_date,
+  workspace_id,
   project_id,
   project_name,
   notebook_id,

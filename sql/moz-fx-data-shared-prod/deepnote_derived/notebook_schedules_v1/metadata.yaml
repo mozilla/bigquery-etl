@@ -1,6 +1,6 @@
 friendly_name: Deepnote Notebook Schedules
 description: |-
-  Schedules of notebooks in Mozilla's default Deepnote workspace as of the latest
+  Schedules of notebooks in Mozilla's Deepnote workspaces as of the latest
   workspace snapshot, with each cron expression expanded into its weekly fire times
   (`fire_times`, local to the schedule's timezone) and the number of scheduled runs
   per weekday (`runs_per_weekday`). Crons that restrict day of month or month

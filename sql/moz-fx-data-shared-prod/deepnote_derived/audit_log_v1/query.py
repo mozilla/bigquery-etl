@@ -1,31 +1,25 @@
-"""Import the Deepnote audit log from the Deepnote API (GET /v2/audit-logs).
+"""Import the audit logs of Deepnote workspaces from the Deepnote API (GET /v2/audit-logs).
 
-Requires an API key of a workspace admin. Only events created within the lookback
-window are fetched (use --lookback-days 0 to fetch the full history) and merged
-into the table on the event ID, so overlapping runs are idempotent.
+Imports every workspace with a DEEPNOTE_*API_KEY environment variable; the keys
+must belong to workspace admins. Only events created within the lookback window are
+fetched (use --lookback-days 0 to fetch the full history) and merged into the table
+on the event ID, so overlapping runs are idempotent.
 
 The `ip` field of the audit log is never written to BigQuery.
 """
 
 import logging
-import os
 from argparse import ArgumentParser
 from datetime import datetime, timedelta, timezone
 
-import requests
 from google.cloud import bigquery
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
 
-API_URL = "https://api.deepnote.com"
-# Mozilla's default Deepnote workspace
-DEFAULT_WORKSPACE_ID = "5730346c-9297-42b0-80b0-35611206a1d7"
+from bigquery_etl.deepnote import workspaces
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--dataset", default="deepnote_derived")
 parser.add_argument("--table", default="audit_log_v1")
-parser.add_argument("--workspace-id", "--workspace_id", default=DEFAULT_WORKSPACE_ID)
 parser.add_argument("--lookback-days", "--lookback_days", type=int, default=3)
 
 MERGE_QUERY = """
@@ -40,41 +34,6 @@ THEN
   INSERT
     ROW
 """
-
-
-def api_session():
-    """Return a session authenticated with the API key that retries rate limited requests."""
-    session = requests.Session()
-    session.headers["Authorization"] = f"Bearer {os.environ['DEEPNOTE_API_KEY']}"
-    retry = Retry(
-        total=5,
-        backoff_factor=2,
-        status_forcelist=[429, 500, 502, 503, 504],
-        respect_retry_after_header=True,
-    )
-    session.mount("https://", HTTPAdapter(max_retries=retry))
-    return session
-
-
-def api_get(session, path, params=None):
-    """GET a Deepnote API path and return the parsed response."""
-    response = session.get(f"{API_URL}{path}", params=params, timeout=60)
-    response.raise_for_status()
-    return response.json()
-
-
-def list_audit_logs(session, params):
-    """Yield all audit log events matching params."""
-    page_token = None
-    while True:
-        page_params = {"pageSize": 1000, **params}
-        if page_token:
-            page_params["pageToken"] = page_token
-        page = api_get(session, "/v2/audit-logs", page_params)
-        yield from page["auditLogs"]
-        if not page["pagination"].get("hasMore"):
-            return
-        page_token = page["pagination"]["nextPageToken"]
 
 
 def to_row(event, workspace_id, loaded_at):
@@ -94,27 +53,39 @@ def to_row(event, workspace_id, loaded_at):
     }
 
 
-def main():
-    """Fetch recent audit log events and merge them into the table."""
-    args = parser.parse_args()
-    session = api_session()
+def list_events(workspace, params):
+    """Return a workspace's audit log events matching params, deduplicated on the event ID."""
+    events = {}
+    page_events = 0
+    for event in workspace.paginate("/v2/audit-logs", "auditLogs", params, 1000):
+        # the API occasionally returns the same event twice (seen for
+        # workspace_member_added)
+        events[event["id"]] = event
+        page_events += 1
+        if page_events == 1000:
+            logging.info(
+                f"{workspace.name}: fetched {len(events)} events back to "
+                f"{event['createdAt']}"
+            )
+            page_events = 0
+    logging.info(f"{workspace.name}: fetched {len(events)} events")
+    return events.values()
 
-    # API keys are scoped to a workspace; make sure it's the expected one
-    workspace_id = api_get(session, "/v2/me")["workspace"]["id"]
-    if workspace_id != args.workspace_id:
-        raise ValueError(
-            f"API key belongs to workspace {workspace_id}, expected {args.workspace_id}"
-        )
+
+def main():
+    """Fetch recent audit log events of all workspaces and merge them into the table."""
+    args = parser.parse_args()
 
     now = datetime.now(timezone.utc)
     params = {"to": now.isoformat(timespec="seconds").replace("+00:00", "Z")}
     if args.lookback_days:
         start = now - timedelta(days=args.lookback_days)
         params["from"] = start.isoformat(timespec="seconds").replace("+00:00", "Z")
-    # the API occasionally returns the same event twice (seen for
-    # workspace_member_added), so deduplicate on the event ID
-    events = {event["id"]: event for event in list_audit_logs(session, params)}
-    rows = [to_row(event, workspace_id, now.isoformat()) for event in events.values()]
+    rows = [
+        to_row(event, workspace.id, now.isoformat())
+        for workspace in workspaces()
+        for event in list_events(workspace, params)
+    ]
 
     client = bigquery.Client(args.project)
     destination = f"{args.project}.{args.dataset}.{args.table}"

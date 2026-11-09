@@ -1,4 +1,4 @@
--- BigQuery query jobs that originate from Mozilla's default Deepnote workspace.
+-- BigQuery query jobs that originate from Mozilla's Deepnote workspaces.
 -- SQL blocks append a comment with Deepnote metadata to the query, e.g.
 -- /* {"app":"deepnote","submitted_by":"scheduling","user_email":"...","workspace_id":"...",
 --     "project_id":"...","notebook_id":"...","project_url":"..."} */
@@ -41,7 +41,12 @@ SELECT
   END AS query_source,
   JSON_VALUE(deepnote_comment, '$.submitted_by') AS submitted_by,
   JSON_VALUE(deepnote_comment, '$.user_email') AS deepnote_user_email,
-  JSON_VALUE(deepnote_comment, '$.workspace_id') AS deepnote_workspace_id,
+  -- uncommented service account queries are assumed to come from the default workspace,
+  -- whose mozdata integration uses the external-deepnote service account
+  IFNULL(
+    JSON_VALUE(deepnote_comment, '$.workspace_id'),
+    '5730346c-9297-42b0-80b0-35611206a1d7'
+  ) AS workspace_id,
   JSON_VALUE(deepnote_comment, '$.project_id') AS deepnote_project_id,
   JSON_VALUE(deepnote_comment, '$.notebook_id') AS deepnote_notebook_id,
   state,
@@ -56,9 +61,3 @@ SELECT
   query_info.query_hashes.normalized_literals AS query_hash,
 FROM
   jobs
-WHERE
-  -- uncommented service account queries are assumed to come from the default workspace
-  IFNULL(
-    JSON_VALUE(deepnote_comment, '$.workspace_id') = '5730346c-9297-42b0-80b0-35611206a1d7',
-    TRUE
-  )

@@ -1,6 +1,6 @@
 friendly_name: Deepnote Notebook Runs
 description: |-
-  Runs of notebooks in Mozilla's default Deepnote workspace, from the Deepnote API
+  Runs of notebooks in Mozilla's Deepnote workspaces (one DEEPNOTE_*API_KEY secret per workspace), from the Deepnote API
   (GET /v2/notebooks/{id}/runs). Covers scheduled and API-triggered runs, not
   interactive execution in the editor (see audit_log_v1 notebook_executed events).
 
@@ -17,6 +17,16 @@ scheduling:
   secrets:
   - deploy_target: DEEPNOTE_API_KEY
     key: bqetl_deepnote_api_key
+  - deploy_target: DEEPNOTE_ADS_API_KEY
+    key: bqetl_deepnote_ads_api_key
+  - deploy_target: DEEPNOTE_REVENUECAT_1_API_KEY
+    key: bqetl_deepnote_revenuecat_1_api_key
+  - deploy_target: DEEPNOTE_REVENUECAT_2_API_KEY
+    key: bqetl_deepnote_revenuecat_2_api_key
+  - deploy_target: DEEPNOTE_MARKETING_API_KEY
+    key: bqetl_deepnote_marketing_api_key
+  - deploy_target: DEEPNOTE_MONITOR_API_KEY
+    key: bqetl_deepnote_monitor_api_key
 bigquery:
   time_partitioning:
     type: day

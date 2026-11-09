@@ -3,6 +3,10 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date the items were created.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
 - name: content_type
   type: STRING
   mode: NULLABLE

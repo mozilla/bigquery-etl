@@ -1,5 +1,7 @@
 """Import notebook run history (scheduled and API runs) from the Deepnote API.
 
+Imports every workspace with a DEEPNOTE_*API_KEY environment variable.
+
 Runs are listed per notebook, newest first. Only runs created within the lookback
 window are fetched (use --lookback-days 0 to fetch the full history) and merged
 into the table on run_id, so status updates of recent runs are picked up and runs
@@ -7,14 +9,13 @@ of deleted notebooks are kept.
 """
 
 import logging
-import os
 from argparse import ArgumentParser
 from datetime import datetime, timedelta, timezone
 
 import requests
 from google.cloud import bigquery
 
-API_URL = "https://api.deepnote.com"
+from bigquery_etl.deepnote import workspaces
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
@@ -42,31 +43,10 @@ THEN
 """
 
 
-def api_get(session, path, params=None):
-    """GET a Deepnote API path and return the parsed response."""
-    response = session.get(f"{API_URL}{path}", params=params, timeout=60)
-    response.raise_for_status()
-    return response.json()
-
-
-def paginate(session, path, key, params=None):
-    """Yield items of a paginated Deepnote API list endpoint."""
-    page_token = None
-    while True:
-        page_params = {"pageSize": 100, **(params or {})}
-        if page_token:
-            page_params["pageToken"] = page_token
-        page = api_get(session, path, page_params)
-        yield from page[key]
-        if not page["pagination"].get("hasMore"):
-            return
-        page_token = page["pagination"]["nextPageToken"]
-
-
-def list_runs(session, project_id, notebook_id, cutoff, seen_at):
+def list_runs(workspace, project_id, notebook_id, cutoff, seen_at):
     """Return a notebook's runs created after cutoff (all runs if cutoff is None)."""
     rows = []
-    runs = paginate(session, f"/v2/notebooks/{notebook_id}/runs", "runs")
+    runs = workspace.paginate(f"/v2/notebooks/{notebook_id}/runs", "runs")
     try:
         run = next(runs, None)
     except requests.HTTPError as e:
@@ -81,6 +61,7 @@ def list_runs(session, project_id, notebook_id, cutoff, seen_at):
         rows.append(
             {
                 "run_id": run["runId"],
+                "workspace_id": workspace.id,
                 "project_id": project_id,
                 "notebook_id": notebook_id,
                 "status": run.get("status"),
@@ -93,19 +74,17 @@ def list_runs(session, project_id, notebook_id, cutoff, seen_at):
 
 
 def main():
-    """Fetch recent runs of all notebooks and merge them into the table."""
+    """Fetch recent runs of all notebooks of all workspaces and merge them into the table."""
     args = parser.parse_args()
-    session = requests.Session()
-    session.headers["Authorization"] = f"Bearer {os.environ['DEEPNOTE_API_KEY']}"
-
     now = datetime.now(timezone.utc)
     cutoff = now - timedelta(days=args.lookback_days) if args.lookback_days else None
     rows = [
         run
-        for project in paginate(session, "/v2/projects", "projects")
+        for workspace in workspaces()
+        for project in workspace.paginate("/v2/projects", "projects")
         for notebook in project.get("notebooks", [])
         for run in list_runs(
-            session, project["id"], notebook["id"], cutoff, now.isoformat()
+            workspace, project["id"], notebook["id"], cutoff, now.isoformat()
         )
     ]
 

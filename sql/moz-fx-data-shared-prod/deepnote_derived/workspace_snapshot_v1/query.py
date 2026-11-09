@@ -1,16 +1,16 @@
-"""Snapshot projects, notebooks, Streamlit apps and machines of the Deepnote workspace."""
+"""Snapshot projects, notebooks, Streamlit apps and machines of Deepnote workspaces.
+
+Snapshots every workspace with a DEEPNOTE_*API_KEY environment variable.
+"""
 
 import logging
-import os
 from argparse import ArgumentParser
 from datetime import date
 
 import requests
 from google.cloud import bigquery
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
 
-API_URL = "https://api.deepnote.com"
+from bigquery_etl.deepnote import workspaces
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, type=date.fromisoformat)
@@ -19,48 +19,23 @@ parser.add_argument("--dataset", default="deepnote_derived")
 parser.add_argument("--table", default="workspace_snapshot_v1")
 
 
-def api_get(session, path, params=None):
-    """GET a Deepnote API path and return the parsed response."""
-    response = session.get(f"{API_URL}{path}", params=params, timeout=60)
-    response.raise_for_status()
-    return response.json()
+def list_streamlit_apps(workspace, project_id):
+    """Return a project's Streamlit apps."""
+    apps = workspace.get("/v2/streamlit-apps", {"projectId": project_id})
+    return [
+        {
+            "streamlit_app_id": app["id"],
+            "entrypoint": app.get("entrypoint"),
+            "url": app.get("url"),
+            "created_at": app.get("createdAt"),
+        }
+        for app in apps["streamlitApps"]
+    ]
 
 
-def list_projects(session):
-    """Return all projects (with their notebooks) visible to the API key."""
-    projects, page_token = [], None
-    while True:
-        params = {"pageSize": 100}
-        if page_token:
-            params["pageToken"] = page_token
-        page = api_get(session, "/v2/projects", params)
-        projects += page["projects"]
-        if not page["pagination"].get("hasMore"):
-            return projects
-        page_token = page["pagination"]["nextPageToken"]
-
-
-def list_streamlit_apps(session, project_id):
-    """Return a project's Streamlit apps with their current status."""
-    apps = api_get(session, "/v2/streamlit-apps", {"projectId": project_id})
-    rows = []
-    for app in apps["streamlitApps"]:
-        status = api_get(session, f"/v2/streamlit-apps/{app['id']}/status")
-        rows.append(
-            {
-                "streamlit_app_id": app["id"],
-                "entrypoint": app.get("entrypoint"),
-                "url": app.get("url"),
-                "created_at": app.get("createdAt"),
-                "status": status.get("status"),
-            }
-        )
-    return rows
-
-
-def get_schedule(session, notebook_id):
+def get_schedule(workspace, notebook_id):
     """Return a scheduled notebook's schedule (cron, timezone, paused state)."""
-    schedule = api_get(session, f"/v2/notebooks/{notebook_id}/schedule")["schedule"]
+    schedule = workspace.get(f"/v2/notebooks/{notebook_id}/schedule")["schedule"]
     return {
         "cron": schedule.get("cron"),
         "timezone": schedule.get("timezone"),
@@ -70,10 +45,10 @@ def get_schedule(session, notebook_id):
     }
 
 
-def get_machine(session, project_id):
+def get_machine(workspace, project_id):
     """Return the machine of a project's editor/apps."""
     try:
-        machine = api_get(session, f"/v2/projects/{project_id}/machine")["machine"]
+        machine = workspace.get(f"/v2/projects/{project_id}/machine")["machine"]
     except requests.HTTPError as e:
         logging.warning(f"Failed to get machine of project {project_id}: {e}")
         return None
@@ -91,29 +66,19 @@ def get_machine(session, project_id):
     }
 
 
-def get_files(session, project_id):
-    """Return a project's file paths and static site settings."""
-    project = api_get(session, f"/v2/projects/{project_id}")["project"]
-    static = project.get("staticFiles") or {}
-    files = [f["path"] for f in project.get("files") or [] if f.get("type") == "file"]
-    static_site = (
-        {
-            "sharing_enabled": static.get("sharingEnabled"),
-            "published": static.get("published"),
-            "url": static.get("url"),
-        }
-        if static
-        else None
-    )
-    return files, static_site
+def get_files(workspace, project_id):
+    """Return a project's file paths."""
+    project = workspace.get(f"/v2/projects/{project_id}")["project"]
+    return [f["path"] for f in project.get("files") or [] if f.get("type") == "file"]
 
 
-def to_row(session, snapshot_date, project):
+def to_row(workspace, snapshot_date, project):
     """Convert an API project into a table row."""
     folder = project.get("folder") or {}
-    files, static_site = get_files(session, project["id"])
     return {
         "snapshot_date": snapshot_date.isoformat(),
+        "workspace_id": workspace.id,
+        "workspace_name": workspace.name,
         "project_id": project["id"],
         "project_name": project.get("name"),
         "project_type": project.get("projectType"),
@@ -130,38 +95,28 @@ def to_row(session, snapshot_date, project):
                 "is_scheduled": notebook.get("isScheduled"),
                 "last_run_at": notebook.get("lastRunAt"),
                 "schedule": (
-                    get_schedule(session, notebook["id"])
+                    get_schedule(workspace, notebook["id"])
                     if notebook.get("isScheduled")
                     else None
                 ),
             }
             for notebook in project.get("notebooks", [])
         ],
-        "streamlit_apps": list_streamlit_apps(session, project["id"]),
-        "machine": get_machine(session, project["id"]),
-        "files": files,
-        "static_site": static_site,
+        "streamlit_apps": list_streamlit_apps(workspace, project["id"]),
+        "machine": get_machine(workspace, project["id"]),
+        "files": get_files(workspace, project["id"]),
     }
 
 
 def main():
-    """Write today's workspace snapshot into the date partition."""
+    """Write today's snapshot of all workspaces into the date partition."""
     args = parser.parse_args()
-    session = requests.Session()
-    session.headers["Authorization"] = f"Bearer {os.environ['DEEPNOTE_API_KEY']}"
-    session.mount(
-        "https://",
-        HTTPAdapter(
-            max_retries=Retry(
-                total=5,
-                backoff_factor=2,
-                status_forcelist=[429, 500, 502, 503, 504],
-                respect_retry_after_header=True,
-            )
-        ),
-    )
 
-    rows = [to_row(session, args.date, p) for p in list_projects(session)]
+    rows = [
+        to_row(workspace, args.date, project)
+        for workspace in workspaces()
+        for project in workspace.paginate("/v2/projects", "projects")
+    ]
 
     client = bigquery.Client(args.project)
     destination = (

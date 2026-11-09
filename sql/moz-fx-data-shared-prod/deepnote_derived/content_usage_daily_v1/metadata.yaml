@@ -1,7 +1,7 @@
 friendly_name: Deepnote Content Usage Daily
 description: |-
   Daily views, edits, executions, hardware starts and exports per Deepnote project
-  and notebook in Mozilla's default workspace, from the audit log. notebook_id is
+  and notebook in Mozilla's Deepnote workspaces, from the audit log. notebook_id is
   null for project-level events that don't name a notebook (e.g. project_viewed).
 
   channel is `ui` for actions from a browser (the Deepnote UI) and `api` for

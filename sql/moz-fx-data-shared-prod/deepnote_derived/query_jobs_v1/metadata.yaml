@@ -1,9 +1,10 @@
 friendly_name: Deepnote BigQuery Query Jobs
 description: |-
-  BigQuery query jobs originating from Mozilla's default Deepnote workspace, from
+  BigQuery query jobs originating from Mozilla's Deepnote workspaces, from
   region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION. Includes jobs run by the
-  external-deepnote service account (mozdata integration) and any job whose query
-  carries the comment Deepnote appends to SQL block queries (including OAuth
+  external-deepnote service account (the default workspace's mozdata integration)
+  and any job whose query carries the comment Deepnote appends to SQL block
+  queries, from any workspace (including OAuth
   integrations running as the user).
 
   `query_source`:

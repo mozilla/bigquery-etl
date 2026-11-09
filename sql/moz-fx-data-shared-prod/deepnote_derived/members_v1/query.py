@@ -1,14 +1,15 @@
-"""Snapshot the members and guests of the Deepnote workspace (GET /v2/members)."""
+"""Snapshot the members and guests of Deepnote workspaces (GET /v2/members).
+
+Snapshots every workspace with a DEEPNOTE_*API_KEY environment variable.
+"""
 
 import logging
-import os
 from argparse import ArgumentParser
 from datetime import date
 
-import requests
 from google.cloud import bigquery
 
-API_URL = "https://api.deepnote.com"
+from bigquery_etl.deepnote import workspaces
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, type=date.fromisoformat)
@@ -18,22 +19,18 @@ parser.add_argument("--table", default="members_v1")
 
 
 def main():
-    """Write today's member snapshot into the date partition."""
+    """Write today's member snapshot of all workspaces into the date partition."""
     args = parser.parse_args()
-    response = requests.get(
-        f"{API_URL}/v2/members",
-        headers={"Authorization": f"Bearer {os.environ['DEEPNOTE_API_KEY']}"},
-        timeout=60,
-    )
-    response.raise_for_status()
     rows = [
         {
             "snapshot_date": args.date.isoformat(),
+            "workspace_id": workspace.id,
             "user_id": member["userId"],
             "email": member.get("email"),
             "access_level": member.get("accessLevel"),
         }
-        for member in response.json()["members"]
+        for workspace in workspaces()
+        for member in workspace.get("/v2/members")["members"]
     ]
 
     client = bigquery.Client(args.project)

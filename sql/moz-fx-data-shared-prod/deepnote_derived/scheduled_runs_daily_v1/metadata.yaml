@@ -1,7 +1,7 @@
 friendly_name: Deepnote Scheduled Runs Daily
 description: |-
-  Daily notebook runs per notebook and trigger in Mozilla's default Deepnote
-  workspace, from notebook_runs_v1: number of runs, outcome, the status of the day's
+  Daily notebook runs per notebook and trigger in Mozilla's Deepnote workspaces,
+  from notebook_runs_v1: number of runs, outcome, the status of the day's
   last run, and duration (created to completion, including queueing and machine
   start).
 

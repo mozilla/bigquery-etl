@@ -1,4 +1,4 @@
--- Daily BigQuery usage of the default Deepnote workspace by project and notebook.
+-- Daily BigQuery usage of the Deepnote workspaces by project and notebook.
 -- Detached, API and scheduled runs execute in a temporary copy of the project, so the
 -- query comment names the copy. Resolve copies to the source project/notebook via the
 -- audit log (executedNotebookId -> notebookId) and, for scheduled runs, via the run window.
@@ -99,6 +99,7 @@ projects AS (
 )
 SELECT
   submission_date,
+  workspace_id,
   query_source,
   submitted_by,
   gcp_project_id,
@@ -152,6 +153,7 @@ LEFT JOIN
   ON notebooks.notebook_id = deepnote_notebook_id
 GROUP BY
   submission_date,
+  workspace_id,
   query_source,
   submitted_by,
   gcp_project_id,

@@ -3,6 +3,14 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date of the snapshot.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
+- name: workspace_name
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace name.
 - name: project_id
   type: STRING
   mode: NULLABLE
@@ -106,10 +114,6 @@ fields:
     type: TIMESTAMP
     mode: NULLABLE
     description: Time the app was created.
-  - name: status
-    type: STRING
-    mode: NULLABLE
-    description: "App status at snapshot time: `running`, `starting` or `unavailable` (machine stopped, e.g. idle; not an error)."
 - name: machine
   type: RECORD
   mode: NULLABLE
@@ -147,20 +151,3 @@ fields:
   type: STRING
   mode: REPEATED
   description: Paths of the project's files (from GET /v2/projects/{id}), e.g. app.py, _deepnote_static/report.html.
-- name: static_site
-  type: RECORD
-  mode: NULLABLE
-  description: Static website settings of the project (served from _deepnote_static/).
-  fields:
-  - name: sharing_enabled
-    type: BOOLEAN
-    mode: NULLABLE
-    description: Whether the static site is shared.
-  - name: published
-    type: BOOLEAN
-    mode: NULLABLE
-    description: Whether the static site is published.
-  - name: url
-    type: STRING
-    mode: NULLABLE
-    description: URL of the static site.

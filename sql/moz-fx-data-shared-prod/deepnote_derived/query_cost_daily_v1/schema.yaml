@@ -3,6 +3,10 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date (UTC).
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
 - name: query_source
   type: STRING
   mode: NULLABLE

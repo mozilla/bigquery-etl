@@ -1,6 +1,6 @@
 friendly_name: Deepnote Derived
 description: |-
-  Usage monitoring for the Mozilla Deepnote workspace: the workspace audit log,
+  Usage monitoring for Mozilla's Deepnote workspaces: the workspace audit logs,
   snapshots from the Deepnote API, Deepnote-originated BigQuery jobs, and
   aggregates built on top of them.
 

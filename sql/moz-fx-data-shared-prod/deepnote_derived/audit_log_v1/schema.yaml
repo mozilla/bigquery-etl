@@ -22,7 +22,7 @@ fields:
 - name: workspace_id
   type: STRING
   mode: NULLABLE
-  description: Deepnote workspace (team) ID.
+  description: Deepnote workspace ID.
 - name: resource_id
   type: STRING
   mode: NULLABLE

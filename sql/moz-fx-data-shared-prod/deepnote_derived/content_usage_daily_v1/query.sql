@@ -1,4 +1,4 @@
--- Daily usage of Deepnote projects and notebooks, from the audit log.
+-- Daily usage of Deepnote projects and notebooks of all workspaces, from the audit log.
 -- Project-level events (e.g. project_viewed, notebook_executed) have a null notebook_id
 -- unless the event metadata names the notebook.
 WITH snapshot_notebooks AS (
@@ -46,6 +46,7 @@ notebook_projects AS (
 events AS (
   SELECT
     DATE(created_at) AS submission_date,
+    workspace_id,
     user_id,
     -- actor_type is unreliable: server-side echoes of API/MCP edits are logged as "user".
     -- Browser user agents are the Deepnote UI; everything else is the API, MCP or scripts.
@@ -135,6 +136,7 @@ categorized AS (
 )
 SELECT
   submission_date,
+  workspace_id,
   project_id,
   notebook_id,
   channel,
@@ -158,6 +160,7 @@ WHERE
   AND NOT (event_type = 'notebook_edited' AND channel = 'api')
 GROUP BY
   submission_date,
+  workspace_id,
   project_id,
   notebook_id,
   channel

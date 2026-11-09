@@ -8,7 +8,7 @@ description: |-
   fetches the events of the last 3 days and merges new ones on event_id.
 
   The `ip` field of the audit log is not imported. Contains user emails, so access
-  is restricted to data engineering.
+  is restricted to data platform.
 
   `resource_id` refers to different entities depending on `event_type`: the project
   for project_*/file_*/notebook_executed/notebook_viewed events, the notebook for

@@ -5,7 +5,7 @@ description: |-
   secret per workspace). A user can be a member of several workspaces. Pending
   invitations and deactivated users are excluded.
 
-  Contains user emails, so access is restricted to data engineering.
+  Contains user emails, so access is restricted to data platform.
 owners:
 - ascholtz@mozilla.com
 labels:

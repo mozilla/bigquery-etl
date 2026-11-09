@@ -23,7 +23,3 @@ labels:
 scheduling:
   dag_name: bqetl_deepnote
   date_partition_parameter: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential/data-viewers

@@ -14,7 +14,7 @@ description: |-
     the service account key; not attributable to a project
 
   The query text is not stored. Contains user emails, so access is restricted to
-  data engineering.
+  data platform.
 owners:
 - ascholtz@mozilla.com
 labels:

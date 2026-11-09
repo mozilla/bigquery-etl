@@ -62,7 +62,10 @@ fields:
 - name: cost_usd
   type: FLOAT
   mode: NULLABLE
-  description: Estimated cost at BigQuery list prices, same formula as monitoring.bigquery_usage (on-demand $6.25/TiB billed, Enterprise $0.06/slot hour, $0.048 for committed reservations, default-pipeline free).
+  description: >-
+    Estimated cost at BigQuery list prices, same formula as monitoring.bigquery_usage
+    (on-demand $6.25/TiB billed, Enterprise $0.06/slot hour, $0.048 for committed
+    reservations, default-pipeline free).
 - name: p50_duration_seconds
   type: FLOAT
   mode: NULLABLE

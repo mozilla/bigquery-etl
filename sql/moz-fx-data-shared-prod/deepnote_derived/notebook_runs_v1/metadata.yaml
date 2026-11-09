@@ -1,10 +1,7 @@
 friendly_name: Deepnote Notebook Runs
 description: |-
-  Runs of notebooks in Mozilla's Deepnote workspaces (one API key secret per workspace), from the Deepnote API
-  (GET /v2/notebooks/{id}/runs). Covers scheduled and API-triggered runs, not
-  interactive execution in the editor (see audit_log_v1 notebook_executed events).
-
-  Run status is one of pending, running, success, error, internal_error, stopped.
+  Scheduled and API-triggered notebook runs in Mozilla's Deepnote workspaces, from
+  the Deepnote API. Interactive editor runs are not included.
 owners:
 - ascholtz@mozilla.com
 labels:

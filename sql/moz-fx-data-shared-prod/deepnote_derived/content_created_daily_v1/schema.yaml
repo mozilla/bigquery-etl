@@ -10,7 +10,10 @@ fields:
 - name: content_type
   type: STRING
   mode: NULLABLE
-  description: notebook, streamlit_app, native_app, ask_analysis, packaged_analysis or dashboard_skill_app, see the table description.
+  description: >-
+    notebook (excluding Init notebooks), streamlit_app, native_app (notebook published as an app),
+    ask_analysis (/mozdata:ask project), packaged_analysis (/mozdata:package report) or
+    dashboard_skill_app (mozdata dashboard skill app).
 - name: created
   type: INTEGER
   mode: NULLABLE

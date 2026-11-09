@@ -1,18 +1,7 @@
 friendly_name: Deepnote Content Inventory
 description: |-
-  One row per project in the latest snapshot of Mozilla's Deepnote workspaces,
-  with notebooks and Streamlit apps, audit log usage over the last 28 days,
-  scheduled/API runs, BigQuery usage attributed via SQL block query comments
-  (slot_hours_28d is the cost driver on reservations; tib_billed_28d overstates
-  LIMIT/preview queries), and derived flags:
-
-  - usage_status: active, or unused_28d (no activity in the Deepnote UI, no
-    executions and no scheduled/API runs in the last 28 days; API/MCP reads and
-    edits alone don't count)
-  - is_broken: the last scheduled/API run failed
-
-  Streamlit app views and errors are not available from the audit log or API.
-  Rebuilt in full daily.
+  One row per project in the latest workspace snapshot, with 28-day usage, runs,
+  BigQuery cost and usage_status (active or unused_28d).
 owners:
 - ascholtz@mozilla.com
 labels:

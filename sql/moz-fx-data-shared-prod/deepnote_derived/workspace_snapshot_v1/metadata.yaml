@@ -1,12 +1,7 @@
 friendly_name: Deepnote Workspace Snapshot
 description: |-
-  Daily snapshot of the projects, notebooks, Streamlit apps and machines in
-  Mozilla's Deepnote workspaces (one API key secret per workspace), from the Deepnote API (GET /v2/projects,
-  /v2/projects/{id}, /v2/projects/{id}/machine, /v2/streamlit-apps,
-  /v2/notebooks/{id}/schedule).
-
-  Only includes projects visible to the API key. `last_run_at` and `is_scheduled`
-  reflect scheduled and API runs, not interactive execution in the editor.
+  Daily snapshot of projects, notebooks, schedules, Streamlit apps and machines in
+  Mozilla's Deepnote workspaces, from the Deepnote API.
 owners:
 - ascholtz@mozilla.com
 labels:

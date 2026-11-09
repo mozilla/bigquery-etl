@@ -1,20 +1,7 @@
 friendly_name: Deepnote BigQuery Query Jobs
 description: |-
-  BigQuery query jobs originating from Mozilla's Deepnote workspaces, from
-  region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION. Includes jobs run by the
-  external-deepnote service account (the default workspace's mozdata integration)
-  and any job whose query carries the comment Deepnote appends to SQL block
-  queries, from any workspace (including OAuth
-  integrations running as the user).
-
-  `query_source`:
-  - sql_block: attributed to a Deepnote project/notebook via the query comment
-  - schema_browser: Deepnote's schema browser metadata queries
-  - python_client: queries sent from Python code blocks or Streamlit apps with
-    the service account key; not attributable to a project
-
-  The query text is not stored. Contains user emails, so access is restricted to
-  data platform.
+  BigQuery query jobs that originate from Deepnote, from
+  INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION. Query text is not stored.
 owners:
 - ascholtz@mozilla.com
 labels:

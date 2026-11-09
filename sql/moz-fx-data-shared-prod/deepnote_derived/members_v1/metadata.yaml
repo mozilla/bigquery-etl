@@ -1,11 +1,7 @@
 friendly_name: Deepnote Members
 description: |-
-  Daily snapshot of the members and guests of Mozilla's Deepnote workspaces and
-  their access level, from the Deepnote API (GET /v2/members, one API key secret
-  per workspace). A user can be a member of several workspaces. Pending
-  invitations and deactivated users are excluded.
-
-  Contains user emails, so access is restricted to data platform.
+  Daily snapshot of the members and guests of each Deepnote workspace and their
+  access level, from the Deepnote API.
 owners:
 - ascholtz@mozilla.com
 labels:

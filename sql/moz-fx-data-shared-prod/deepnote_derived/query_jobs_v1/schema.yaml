@@ -34,7 +34,9 @@ fields:
 - name: query_source
   type: STRING
   mode: NULLABLE
-  description: sql_block, schema_browser or python_client, see the table description.
+  description: >-
+    sql_block (attributed to a project via the query comment Deepnote adds), schema_browser (schema browser
+    metadata queries) or python_client (Python code blocks and Streamlit apps; not attributable to a project).
 - name: submitted_by
   type: STRING
   mode: NULLABLE

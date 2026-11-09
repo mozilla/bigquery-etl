@@ -1,10 +1,7 @@
 friendly_name: Deepnote Notebook Schedules
 description: |-
-  Schedules of notebooks in Mozilla's Deepnote workspaces as of the latest
-  workspace snapshot, with each cron expression expanded into its weekly fire times
-  (`fire_times`, local to the schedule's timezone) and the number of scheduled runs
-  per weekday (`runs_per_weekday`). Crons that restrict day of month or month
-  (`is_weekly = false`) are expanded as if they ran every week. Rebuilt in full daily.
+  Notebook schedules in the latest workspace snapshot, with each cron expanded
+  into weekly fire times.
 owners:
 - ascholtz@mozilla.com
 labels:

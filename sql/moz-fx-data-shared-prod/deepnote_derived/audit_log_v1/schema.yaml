@@ -26,7 +26,10 @@ fields:
 - name: resource_id
   type: STRING
   mode: NULLABLE
-  description: ID of the affected resource; its type depends on event_type, see the table description.
+  description: >-
+    ID of the affected resource: the project for project_*, file_*, notebook_executed and notebook_viewed,
+    the notebook for notebook_edited and blocks_reordered, the block for block_*, the run for run_viewed.
+    Block and run events carry projectId and notebookId in metadata.
 - name: user_agent
   type: STRING
   mode: NULLABLE

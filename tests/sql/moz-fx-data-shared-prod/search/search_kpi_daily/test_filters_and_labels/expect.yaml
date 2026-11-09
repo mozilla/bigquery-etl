@@ -1,0 +1,31 @@
+- &base
+  submission_date: "2026-10-28"
+  platform: desktop
+  device: desktop
+  country: US
+  normalized_channel: release
+  os: Windows
+  app_version_major: "150"
+  normalized_default_search_engine: Google
+  definition_version: 1
+  component: sap
+  component_label: SAP searches
+  value: 10
+  client_count_by_kpi_component: 2
+- <<: *base
+  component: suggest_sponsored
+  component_label: Sponsored Suggest clicks
+  value: 3
+  client_count_by_kpi_component: 1
+- <<: *base
+  platform: android
+  device: mobile
+  os: Android
+  definition_version: 2
+  value: 7
+  client_count_by_kpi_component: 1
+- <<: *base
+  component: new_component
+  component_label: new_component
+  value: 1
+  client_count_by_kpi_component: 1

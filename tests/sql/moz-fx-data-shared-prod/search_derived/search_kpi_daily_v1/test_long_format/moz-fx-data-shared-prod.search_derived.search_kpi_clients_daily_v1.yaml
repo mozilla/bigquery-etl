@@ -50,3 +50,23 @@
 - <<: *base
   submission_date: "2026-10-27"
   client_id: desktop-a
+# A bot: kept, in its own group.
+- <<: *base
+  client_id: desktop-bot
+  sap: 6
+  suggest_sponsored: 0
+  search_queries: 6
+  is_bot: true
+# NULL country: the two clients group together.
+- <<: *base
+  client_id: desktop-nocountry-a
+  country: null
+  sap: 2
+  suggest_sponsored: 0
+  search_queries: 2
+- <<: *base
+  client_id: desktop-nocountry-b
+  country: null
+  sap: 3
+  suggest_sponsored: 0
+  search_queries: 3

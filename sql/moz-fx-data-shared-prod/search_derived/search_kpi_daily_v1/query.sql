@@ -1,5 +1,5 @@
 -- One row per day, dimension set and component, with client_id removed. A zero value makes
--- no row, so client_count counts clients with value > 0 for that component.
+-- no row, so client_count_by_kpi_component counts clients with value > 0 for that component.
 SELECT
   submission_date,
   platform,
@@ -13,7 +13,7 @@ SELECT
   definition_version,
   unpivoted.name AS component,
   SUM(unpivoted.value) AS value,
-  COUNT(DISTINCT client_id) AS client_count
+  COUNT(DISTINCT client_id) AS client_count_by_kpi_component
 FROM
   `moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1`
 CROSS JOIN

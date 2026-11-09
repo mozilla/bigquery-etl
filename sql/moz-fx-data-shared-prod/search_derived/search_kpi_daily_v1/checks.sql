@@ -63,14 +63,24 @@ FROM
   differences;
 
 #fail
--- A day is built with one definition, so its components can be compared.
+-- A platform's day is built with one definition, so its components can be compared.
+-- definition_version is per platform, so platforms may differ.
 SELECT
   IF(
-    COUNT(DISTINCT definition_version) > 1,
-    ERROR("More than one definition_version in this partition"),
+    COUNT(*) > 0,
+    ERROR(CONCAT("More than one definition_version for: ", STRING_AGG(platform, ", "))),
     NULL
   )
 FROM
-  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE
-  submission_date = @submission_date;
+  (
+    SELECT
+      platform
+    FROM
+      `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    WHERE
+      submission_date = @submission_date
+    GROUP BY
+      platform
+    HAVING
+      COUNT(DISTINCT definition_version) > 1
+  );

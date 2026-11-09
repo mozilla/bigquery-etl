@@ -45,8 +45,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: The component's count for these clients that day, always above 0.
-- name: client_count
+- name: client_count_by_kpi_component
   type: INTEGER
   mode: NULLABLE
   description: Clients with value above 0 for this component. Adds up across dimensions
-    within one day and component, but not across days or components.
+    within one day and component, but not across days or components. A client with both
+    SAP and Suggest clicks is counted once in each, so summing over components counts it
+    twice. Not the number of clients who searched; for that, see
+    search_derived.search_dau_aggregates_glean_v1.

@@ -1,7 +1,9 @@
 friendly_name: Search KPI Daily
 description: |-
   The search KPI's inputs per day, with client_id removed, one row per dimension set and
-  component. Built from search_derived.search_kpi_clients_daily_v1. It never expires and
+  component. Built from search_derived.search_kpi_clients_daily_v1. Observed counts only:
+  synthetic desktop SAP history from before the Firefox 138 probe will be in a separate
+  view. It never expires and
   has no Shredder entry, so it keeps each day's totals after client rows are deleted and
   after the client table expires.
 
@@ -9,11 +11,14 @@ description: |-
   doesn't count: the sap_excluded component, and rows with meets_population_rules FALSE.
   Summing value here without filtering them gives too high a number.
 
-  client_count adds up across dimensions within one day and component. It doesn't add up
-  across days or components.
+  client_count_by_kpi_component adds up across dimensions within one day and component. It
+  doesn't add up across days or components: a client with SAP and Suggest clicks is counted
+  in both.
 
-  Don't rerun old partitions. The client table loses rows as Shredder runs, so a rerun
-  overwrites a day's totals with lower ones.
+  Rerun day D here whenever search_kpi_clients_daily_v1 day D is rerun within a few days of
+  its original run. After that, the client table has lost rows to Shredder, so a rerun
+  would overwrite the day's totals with lower ones: change the definition in a v2 backfilled
+  with shredder_mitigation instead (see docs/cookbooks/backfilling_a_table.md).
 owners:
 - data-search-wg@mozilla.com
 labels:

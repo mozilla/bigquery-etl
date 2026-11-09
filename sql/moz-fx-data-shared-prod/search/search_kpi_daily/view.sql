@@ -4,6 +4,7 @@ AS
 SELECT
   submission_date,
   platform,
+  IF(platform = 'desktop', 'desktop', 'mobile') AS device,
   country,
   normalized_channel,
   os,
@@ -21,9 +22,10 @@ SELECT
       THEN 'Non-sponsored Suggest clicks'
     WHEN 'ai_chat'
       THEN 'AI chat clicks'
+    ELSE component
   END AS component_label,
   value,
-  client_count
+  client_count_by_kpi_component
 FROM
   `moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1`
 WHERE

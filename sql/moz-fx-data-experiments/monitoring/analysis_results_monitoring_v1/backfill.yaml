@@ -1,3 +1,26 @@
+2026-11-09:
+  start_date: 2026-10-20
+  end_date: 2026-11-02
+  reason: Rebuild with metric-config expected cells (skipped/missing statuses, expected column) and the
+    updated jetstream_analysis_errors categories from PR 10127; includes reruns missed by the old schedule.
+    Re-run of 2026-11-05, which skipped 2026-10-21 and 2026-10-24 due to the sys.argv race fixed in PR 10149.
+  watchers:
+  - mwilliams@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: main
+  query_script_date_arg: date
+  query_script_dry_run_arg: --dry-run
+  query_script_args:
+  - --project=moz-fx-data-backfill-slots
+  - --destination_project=moz-fx-data-shared-prod
+  - --destination_dataset=backfills_staging_derived
+  - --destination_table=moz_fx_data_experiments__monitoring__analysis_results_monitoring_v1_2026_11_09
+
 2026-11-05:
   start_date: 2026-10-20
   end_date: 2026-11-02
@@ -5,7 +28,7 @@
     updated jetstream_analysis_errors categories from PR 10127; includes reruns missed by the old schedule.
   watchers:
   - mwilliams@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

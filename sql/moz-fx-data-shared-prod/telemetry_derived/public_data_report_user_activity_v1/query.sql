@@ -33,6 +33,33 @@ sample AS (
     AND subsession_hours_sum < 24 --remove outliers
     AND sample_id = 1
 ),
+-- Legacy active_addons is empty from Firefox 156, so add-ons for 156+ come from the
+-- latest Glean metrics ping of the week for each Glean client in the same 1% sample
+glean_addons AS (
+  SELECT
+    DATE_TRUNC(DATE(submission_timestamp), WEEK(MONDAY)) AS week_start,
+    normalized_country_code,
+    client_info.client_id,
+    ARRAY(
+      SELECT AS STRUCT
+        JSON_VALUE(addon, '$.id') AS addon_id,
+        JSON_VALUE(addon, '$.name') AS name,
+        SAFE_CAST(JSON_VALUE(addon, '$.isSystem') AS BOOL) AS is_system,
+        SAFE_CAST(JSON_VALUE(addon, '$.foreignInstall') AS BOOL) AS foreign_install
+      FROM
+        UNNEST(JSON_QUERY_ARRAY(metrics.object.addons_active_addons)) AS addon
+    ) AS active_addons
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
+  WHERE
+    DATE(submission_timestamp) >= @submission_date
+    AND DATE(submission_timestamp) < DATE_ADD(@submission_date, INTERVAL 7 DAY)
+    AND sample_id = 1
+    AND `mozfun.norm.truncate_version`(client_info.app_display_version, "major") >= 156
+    AND metrics.object.addons_active_addons IS NOT NULL
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp DESC) = 1
+),
 -- active_users_aggregates is used for canonical usage calculations
 active_users_aggregates AS (
   SELECT
@@ -55,10 +82,8 @@ active_users_aggregates AS (
 sample_addons AS (
   SELECT
     week_start,
-    is_last_day_of_week,
     country_name,
     client_id,
-    locale,
     addons.is_system,
     addons.foreign_install,
     addons.addon_id,
@@ -76,6 +101,37 @@ sample_addons AS (
   WHERE
     days_since_seen < 7
     AND is_last_day_of_week
+    AND NOT IFNULL(`mozfun.norm.truncate_version`(app_version, "major") >= 156, FALSE)
+  UNION ALL
+  SELECT
+    week_start,
+    COALESCE(cn.name, country_group) AS country_name,
+    client_id,
+    addons.is_system,
+    addons.foreign_install,
+    addons.addon_id,
+    addons.name AS addon_name
+  FROM
+    glean_addons,
+    UNNEST([normalized_country_code, 'Worldwide']) AS country_group,
+    UNNEST(
+      IF(ARRAY_LENGTH(active_addons) > 0, active_addons, [active_addons[SAFE_OFFSET(0)]])
+    ) AS addons
+  LEFT JOIN
+    countries AS cn
+    ON cn.code = country_group
+),
+-- denominator for add-on ratios, since sample_addons mixes legacy and Glean clients
+addon_clients AS (
+  SELECT
+    week_start,
+    country_name,
+    COUNT(DISTINCT client_id) AS client_count
+  FROM
+    sample_addons
+  GROUP BY
+    week_start,
+    country_name
 ),
 aggregate_mau AS (
   SELECT
@@ -260,11 +316,11 @@ addon_ratios AS (
     week_start,
     country_name,
     addon_name,
-    user_count / wau AS ratio
+    user_count / client_count AS ratio
   FROM
     addon_counts
   JOIN
-    legacy_wau
+    addon_clients
     USING (week_start, country_name)
 ),
 top_addons AS (

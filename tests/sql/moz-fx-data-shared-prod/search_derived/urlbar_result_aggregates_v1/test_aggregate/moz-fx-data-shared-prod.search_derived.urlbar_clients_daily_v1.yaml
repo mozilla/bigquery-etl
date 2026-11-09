@@ -1,5 +1,5 @@
 # a and b share every dimension: one row, summed, client_count 2. a also sees
-# rust_adm_sponsored as a top pick: its own row. c turned sponsored Suggest off: its own
+# rust_adm_sponsored after pasting: its own row. c turned sponsored Suggest off: its own
 # row. d has no dims row: kept with NULL dims.
 - &client
   submission_date: "2026-10-28"
@@ -23,7 +23,7 @@
     sessions_shown_abandoned: 2
     annoyances: 0
   - <<: *result
-    result_group: top_pick
+    interaction: pasted
     clicks: 0
     sessions_shown: 1
     sessions_shown_abandoned: 1

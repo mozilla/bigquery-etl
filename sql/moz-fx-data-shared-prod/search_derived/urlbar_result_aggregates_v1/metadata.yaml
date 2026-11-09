@@ -2,8 +2,8 @@ friendly_name: Urlbar Result Aggregates
 description: |-
   Desktop urlbar results per day, with client_id removed: clicks, sessions shown and
   annoyances for every raw result type, by country, channel, OS, version, default engine,
-  default-browser status, Suggest prefs, bot flag, window mode, search access point,
-  interaction and result group. Built from search_derived.urlbar_clients_daily_v1, with
+  default-browser status, Suggest prefs, bot flag, window mode, search access point and
+  interaction. Built from search_derived.urlbar_clients_daily_v1, with
   dimensions from search_derived.desktop_client_day_dims_v1 (NULL for a client with no
   dims row that day).
 
@@ -15,7 +15,8 @@ description: |-
   once per result type it showed, and client_count, which counts a client once per row.
   Neither adds up across result types or days. Session totals (sessions_total,
   sessions_abandoned) are per client, not per result type, so they aren't here; clicks
-  sum to engaged sessions.
+  sum to engaged sessions. There's no result_group: urlbar_clients_daily_v1 keeps one
+  arbitrary group per client and result key, so it can't be split by group.
 
   Rerun day D here whenever urlbar_clients_daily_v1 or desktop_client_day_dims_v1 day D is
   rerun within a few days of its original run. After that, the client tables have lost

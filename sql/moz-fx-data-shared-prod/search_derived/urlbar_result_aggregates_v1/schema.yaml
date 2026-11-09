@@ -66,10 +66,6 @@ fields:
   new_name: product_result_type
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
-  field: results.result_group
-  new_name: result_group
-- !include-field
-  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
   field: results.clicks
   new_name: clicks
 - !include-field

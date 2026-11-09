@@ -16,14 +16,13 @@
   interaction: typed
   result_type: rust_adm_sponsored
   product_result_type: admarketplace_sponsored
-  result_group: suggest
   clicks: 3
   sessions_shown: 7
   sessions_shown_abandoned: 2
   annoyances: 0
   client_count: 2
 - <<: *row
-  result_group: top_pick
+  interaction: pasted
   clicks: 0
   sessions_shown: 1
   sessions_shown_abandoned: 1
@@ -47,7 +46,6 @@
   interaction: typed
   result_type: rust_adm_sponsored
   product_result_type: admarketplace_sponsored
-  result_group: suggest
   clicks: 1
   sessions_shown: 1
   sessions_shown_abandoned: 0

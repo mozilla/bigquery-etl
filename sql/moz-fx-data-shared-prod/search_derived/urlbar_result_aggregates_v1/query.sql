@@ -60,10 +60,9 @@ SELECT
   r.sap,
   r.interaction,
   r.result_type,
-  -- Follows from result_type, so it doesn't split rows.
-  ANY_VALUE(r.product_result_type) AS product_result_type,
-  -- Doesn't follow from result_type: the same type can be heuristic, suggest or top_pick.
-  r.result_group,
+  -- One value per result_type today, so grouping on it adds no rows. A key rather than
+  -- ANY_VALUE, so a type that ever maps to two product names keeps both.
+  r.product_result_type,
   SUM(r.clicks) AS clicks,
   SUM(r.sessions_shown) AS sessions_shown,
   SUM(r.sessions_shown_abandoned) AS sessions_shown_abandoned,
@@ -97,4 +96,4 @@ GROUP BY
   r.sap,
   r.interaction,
   r.result_type,
-  r.result_group
+  r.product_result_type

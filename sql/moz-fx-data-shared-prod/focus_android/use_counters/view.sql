@@ -3034,7 +3034,13 @@ SELECT
       metrics.counter.use_counter_page_navigationtransition_to_getter,
       metrics.counter.use_counter_page_navigationtransition_to_setter,
       metrics.counter.use_counter_css_doc_css_text_autospace_size,
-      metrics.counter.use_counter_css_page_css_text_autospace_size
+      metrics.counter.use_counter_css_page_css_text_autospace_size,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_hand,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_haptic_actuators,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_pose,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_hand,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_haptic_actuators,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_pose
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -6093,7 +6099,13 @@ SELECT
       metrics.counter.use_counter_page_navigationtransition_to_getter,
       metrics.counter.use_counter_page_navigationtransition_to_setter,
       metrics.counter.use_counter_css_doc_css_text_autospace_size,
-      metrics.counter.use_counter_css_page_css_text_autospace_size
+      metrics.counter.use_counter_css_page_css_text_autospace_size,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_hand,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_haptic_actuators,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_pose,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_hand,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_haptic_actuators,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_pose
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -9152,7 +9164,13 @@ SELECT
       metrics.counter.use_counter_page_navigationtransition_to_getter,
       metrics.counter.use_counter_page_navigationtransition_to_setter,
       metrics.counter.use_counter_css_doc_css_text_autospace_size,
-      metrics.counter.use_counter_css_page_css_text_autospace_size
+      metrics.counter.use_counter_css_page_css_text_autospace_size,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_hand,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_haptic_actuators,
+      metrics.counter.use_counter_deprecated_ops_doc_gamepad_pose,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_hand,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_haptic_actuators,
+      metrics.counter.use_counter_deprecated_ops_page_gamepad_pose
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

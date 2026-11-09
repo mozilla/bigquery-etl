@@ -1,0 +1,56 @@
+# a and b share every dimension: one row, summed, client_count 2. a also sees
+# rust_adm_sponsored as a top pick: its own row. c turned sponsored Suggest off: its own
+# row. d has no dims row: kept with NULL dims.
+- &client
+  submission_date: "2026-10-28"
+  client_id: a
+  sample_id: 1
+  pref_suggest_enabled: true
+  pref_sponsored_enabled: true
+  pref_online_suggest_available: true
+  pref_online_suggest_enabled: false
+  pref_data_collection: false
+  results:
+  - &result
+    window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: rust_adm_sponsored
+    product_result_type: admarketplace_sponsored
+    result_group: suggest
+    clicks: 1
+    sessions_shown: 4
+    sessions_shown_abandoned: 2
+    annoyances: 0
+  - <<: *result
+    result_group: top_pick
+    clicks: 0
+    sessions_shown: 1
+    sessions_shown_abandoned: 1
+    annoyances: 1
+- <<: *client
+  client_id: b
+  results:
+  - <<: *result
+    clicks: 2
+    sessions_shown: 3
+    sessions_shown_abandoned: 0
+- <<: *client
+  client_id: c
+  pref_sponsored_enabled: false
+  results:
+  - <<: *result
+    clicks: 0
+    sessions_shown: 2
+    sessions_shown_abandoned: 2
+- <<: *client
+  client_id: d
+  results:
+  - <<: *result
+    clicks: 1
+    sessions_shown: 1
+    sessions_shown_abandoned: 0
+# Another day: left out.
+- <<: *client
+  submission_date: "2026-10-27"
+  client_id: a

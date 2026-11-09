@@ -1,0 +1,45 @@
+friendly_name: Urlbar Result Aggregates
+description: |-
+  Desktop urlbar results per day, with client_id removed: clicks, sessions shown and
+  annoyances for every raw result type, by country, channel, OS, version, default engine,
+  default-browser status, Suggest prefs, bot flag, window mode, search access point,
+  interaction and result group. Built from search_derived.urlbar_clients_daily_v1, with
+  dimensions from search_derived.desktop_client_day_dims_v1 (NULL for a client with no
+  dims row that day).
+
+  It never expires and has no Shredder entry, so it keeps every result type's history
+  after urlbar_events_v2 and the client tables expire, and lets the search KPI's
+  components be re-cut from raw result types if kpi_component_map_v1 changes.
+
+  Measures add up across rows within a day, except sessions_shown, which counts a session
+  once per result type it showed, and client_count, which counts a client once per row.
+  Neither adds up across result types or days. Session totals (sessions_total,
+  sessions_abandoned) are per client, not per result type, so they aren't here; clicks
+  sum to engaged sessions.
+
+  Rerun day D here whenever urlbar_clients_daily_v1 or desktop_client_day_dims_v1 day D is
+  rerun within a few days of its original run. After that, the client tables have lost
+  rows to Shredder, so a rerun would overwrite the day's totals with lower ones.
+owners:
+- data-search-wg@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_search
+  # desktop_client_day_dims_v1 fills the previous day's partition on each run, so this
+  # table does too.
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - product_result_type
+    - country
+require_column_descriptions: true

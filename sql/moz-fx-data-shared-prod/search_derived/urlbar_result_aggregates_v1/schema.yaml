@@ -1,0 +1,92 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: submission_date
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: country
+  append_description: " NULL for a client with no desktop_client_day_dims_v1 row that day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: normalized_channel
+  append_description: " NULL for a client with no desktop_client_day_dims_v1 row that day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: os
+  append_description: " NULL for a client with no desktop_client_day_dims_v1 row that day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: app_version_major
+  append_description: " NULL for a client with no desktop_client_day_dims_v1 row that day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: normalized_default_search_engine
+  append_description: " NULL for a client with no desktop_client_day_dims_v1 row that day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
+  field: is_default_browser
+  append_description: " NULL for a client with no desktop_client_day_dims_v1 row that day."
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: pref_suggest_enabled
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: pref_sponsored_enabled
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: pref_online_suggest_available
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: pref_online_suggest_enabled
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: pref_data_collection
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: is_bot
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.window_mode
+  new_name: window_mode
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.sap
+  new_name: sap
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.interaction
+  new_name: interaction
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.result_type
+  new_name: result_type
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.product_result_type
+  new_name: product_result_type
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.result_group
+  new_name: result_group
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.clicks
+  new_name: clicks
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.sessions_shown
+  new_name: sessions_shown
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.sessions_shown_abandoned
+  new_name: sessions_shown_abandoned
+  new_description: Completed sessions where this raw type was among the results and the session ended in abandonment.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
+  field: results.annoyances
+  new_name: annoyances
+- name: client_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Clients with this row's combination that day. Diagnostic only. A client is
+    counted once per row, so it doesn't add up across result types or days.

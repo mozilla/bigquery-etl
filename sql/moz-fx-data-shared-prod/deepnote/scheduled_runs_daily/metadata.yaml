@@ -1,0 +1,6 @@
+friendly_name: Deepnote Scheduled Runs Daily
+description: |-
+  Daily notebook runs per notebook with outcome and duration. `trigger` is
+  inferred by matching run times to the notebook's current schedule.
+owners:
+- ascholtz@mozilla.com

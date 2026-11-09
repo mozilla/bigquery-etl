@@ -1,0 +1,11 @@
+friendly_name: Deepnote
+description: |-
+  Views on Deepnote usage monitoring data (deepnote_derived). Restricted to data
+  platform.
+dataset_base_acl: view_restricted
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/developers

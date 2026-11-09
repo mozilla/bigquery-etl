@@ -1,0 +1,6 @@
+friendly_name: Deepnote Content Created Daily
+description: |-
+  Daily count of currently existing Deepnote content (notebooks, apps, mozdata
+  plugin analyses and dashboards) by creation date, workspace and content type.
+owners:
+- ascholtz@mozilla.com

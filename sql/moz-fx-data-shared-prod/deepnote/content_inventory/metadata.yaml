@@ -1,0 +1,6 @@
+friendly_name: Deepnote Content Inventory
+description: |-
+  One row per project in the latest workspace snapshot, with 28-day usage, runs,
+  BigQuery cost and usage_status (active or unused_28d).
+owners:
+- ascholtz@mozilla.com

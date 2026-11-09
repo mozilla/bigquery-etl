@@ -25,14 +25,18 @@ component_map_check AS (
   FROM
     component_map
 ),
--- Over every row started by this date, so closing a row can't lower the version.
+-- Per platform, so a change to one platform's rows doesn't change another's version. Over
+-- every row started by this date, so closing a row can't lower the version.
 definition AS (
   SELECT
+    platform,
     MAX(definition_version) AS definition_version
   FROM
     `moz-fx-data-shared-prod.search_derived.kpi_component_map_v1`
   WHERE
     effective_from <= @submission_date
+  GROUP BY
+    platform
 ),
 urlbar AS (
   SELECT
@@ -114,16 +118,34 @@ mobile_events AS (
 ),
 -- Like urlbar_clients_daily_v1, the mobile sources have no date_partition_offset, so the
 -- partitions read here come from the previous run. Fail rather than write a day without them.
+-- Checks any awesomebar event, not just Suggest clicks: Suggest can be switched off remotely,
+-- so a day with no Suggest clicks is possible, but not one with no awesomebar events.
 mobile_events_check AS (
   SELECT
     IF(
       COUNTIF(platform = 'android') = 0
       OR COUNTIF(platform = 'ios') = 0,
-      ERROR(FORMAT('events_stream has no awesomebar clicks for an app on %t', @submission_date)),
+      ERROR(FORMAT('events_stream has no awesomebar events for an app on %t', @submission_date)),
       TRUE
     ) AS ok
   FROM
-    mobile_events
+    (
+      SELECT
+        'android' AS platform
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_stream`
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        AND event_category = 'awesomebar'
+      UNION ALL
+      SELECT
+        'ios' AS platform
+      FROM
+        `moz-fx-data-shared-prod.firefox_ios.events_stream`
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        AND event_category = 'awesomebar'
+    )
 ),
 mobile_clicked_results AS (
   SELECT
@@ -279,8 +301,13 @@ mobile_search AS (
     submission_date = @submission_date
     AND (
       (normalized_app_name = 'Fenix' AND os = 'Android')
-      -- Firefox iOS is labeled Fennec in this table.
-      OR (normalized_app_name = 'Fennec' AND os = 'iOS')
+      -- Firefox iOS is labeled Fennec in this table. Glean only: versions before 28 are
+      -- legacy core-ping rows, dropped as mobile_search_aggregates_v1 does.
+      OR (
+        normalized_app_name = 'Fennec'
+        AND os = 'iOS'
+        AND mozfun.norm.truncate_version(app_version, 'major') >= 28
+      )
     )
   GROUP BY
     platform,
@@ -309,6 +336,27 @@ mobile_suggest AS (
   GROUP BY
     platform,
     client_id
+),
+-- Shredder doesn't delete Fenix or Firefox iOS deletion requests from
+-- mobile_search_clients_daily_v2 (DENG-4255), and its regular runs here only cover recent
+-- requests. Leave out every client that has ever asked to be deleted, so a backfill can't
+-- bring them back.
+deleted_mobile_clients AS (
+  SELECT
+    'android' AS platform,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.fenix.deletion_request`
+  WHERE
+    DATE(submission_timestamp) >= '2019-01-01'
+  UNION DISTINCT
+  SELECT
+    'ios' AS platform,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.deletion_request`
+  WHERE
+    DATE(submission_timestamp) >= '2019-01-01'
 ),
 mobile AS (
   SELECT
@@ -381,7 +429,8 @@ all_platforms AS (
     normalized_default_search_engine,
     CAST(NULL AS BOOLEAN) AS is_default_browser,
     sap,
-    -- The 10,000-search rule is desktop only: it's for a held-down Enter key.
+    -- mobile_search_clients_daily_v2 already zeroes rows over 10,000 searches, so they
+    -- can't be measured here.
     0 AS sap_excluded,
     suggest_sponsored,
     suggest_nonsponsored,
@@ -392,10 +441,12 @@ all_platforms AS (
     TRUE AS meets_population_rules
   FROM
     mobile
+  LEFT JOIN
+    deleted_mobile_clients AS deleted
+    USING (platform, client_id)
   WHERE
-    sap > 0
-    OR suggest_sponsored > 0
-    OR suggest_nonsponsored > 0
+    deleted.client_id IS NULL
+    AND (sap > 0 OR suggest_sponsored > 0 OR suggest_nonsponsored > 0)
 )
 SELECT
   @submission_date AS submission_date,
@@ -421,8 +472,9 @@ SELECT
   definition.definition_version
 FROM
   all_platforms
-CROSS JOIN
+LEFT JOIN
   definition
+  USING (platform)
 CROSS JOIN
   unmapped_check
 CROSS JOIN

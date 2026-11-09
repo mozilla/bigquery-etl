@@ -107,7 +107,10 @@ FROM
   source;
 
 #fail
--- Every mobile SAP search in the source must land here: a client with SAP is always kept.
+-- Mobile sap must equal mobile_search_aggregates for Firefox Android and Firefox iOS, less the
+-- searches of clients the query leaves out for a deletion request. The aggregate sets the
+-- scope, so a wrong app or version filter in the query fails here. The aggregate drops
+-- NULL-engine rows, which hold 0 searches, so the totals match exactly.
 WITH kpi AS (
   SELECT
     platform,
@@ -120,27 +123,68 @@ WITH kpi AS (
   GROUP BY
     platform
 ),
-source AS (
-  SELECT
-    IF(os = 'iOS', 'ios', 'android') AS platform,
-    SUM(search_count) AS sap
-  FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2`
-  WHERE
-    submission_date = @submission_date
-    AND (
-      (normalized_app_name = 'Fenix' AND os = 'Android')
-      OR (normalized_app_name = 'Fennec' AND os = 'iOS')
-    )
-  GROUP BY
-    platform
-)
+AGGREGATE
+  AS (
+    SELECT
+      IF(os = 'iOS', 'ios', 'android') AS platform,
+      SUM(search_count) AS sap
+    FROM
+      `moz-fx-data-shared-prod.search.mobile_search_aggregates`
+    WHERE
+      submission_date = @submission_date
+      AND (
+        (app_name IN ('Fenix', 'Firefox Preview') AND os = 'Android')
+        OR (app_name = 'Fennec' AND os = 'iOS')
+      )
+    GROUP BY
+      platform
+  ),
+  deleted AS (
+    SELECT
+      'android' AS platform,
+      client_info.client_id
+    FROM
+      `moz-fx-data-shared-prod.fenix.deletion_request`
+    WHERE
+      DATE(submission_timestamp) >= '2019-01-01'
+    UNION DISTINCT
+    SELECT
+      'ios' AS platform,
+      client_info.client_id
+    FROM
+      `moz-fx-data-shared-prod.firefox_ios.deletion_request`
+    WHERE
+      DATE(submission_timestamp) >= '2019-01-01'
+  ),
+  deleted_sap AS (
+    SELECT
+      IF(s.os = 'iOS', 'ios', 'android') AS platform,
+      SUM(s.search_count) AS sap
+    FROM
+      `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2` AS s
+    JOIN
+      deleted AS d
+      ON d.platform = IF(s.os = 'iOS', 'ios', 'android')
+      AND d.client_id = s.client_id
+    WHERE
+      s.submission_date = @submission_date
+      AND (
+        (s.normalized_app_name = 'Fenix' AND s.os = 'Android')
+        OR (
+          s.normalized_app_name = 'Fennec'
+          AND s.os = 'iOS'
+          AND mozfun.norm.truncate_version(s.app_version, 'major') >= 28
+        )
+      )
+    GROUP BY
+      1
+  )
 SELECT
   IF(
     COUNT(*) > 0,
     ERROR(
       CONCAT(
-        'Mobile sap differs from mobile_search_clients_daily_v2 for: ',
+        'Mobile sap differs from mobile_search_aggregates less deleted clients for: ',
         STRING_AGG(platform, ', ' ORDER BY platform)
       )
     ),
@@ -149,13 +193,18 @@ SELECT
 FROM
   kpi
 FULL OUTER JOIN
-  source
+AGGREGATE
+  AS a
+  USING (platform)
+LEFT JOIN
+  deleted_sap AS d
   USING (platform)
 WHERE
-  kpi.sap IS DISTINCT FROM source.sap;
+  kpi.sap IS DISTINCT FROM a.sap - COALESCE(d.sap, 0);
 
 #fail
--- Every counted mobile Suggest click in events_stream must land here.
+-- Every counted mobile Suggest click in events_stream must land here, except those of clients
+-- the query leaves out for a deletion request.
 WITH kpi AS (
   SELECT
     platform,
@@ -181,9 +230,27 @@ component_map AS (
     AND effective_from <= @submission_date
     AND (effective_to IS NULL OR effective_to > @submission_date)
 ),
+deleted AS (
+  SELECT
+    'android' AS platform,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.fenix.deletion_request`
+  WHERE
+    DATE(submission_timestamp) >= '2019-01-01'
+  UNION DISTINCT
+  SELECT
+    'ios' AS platform,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.deletion_request`
+  WHERE
+    DATE(submission_timestamp) >= '2019-01-01'
+),
 events AS (
   SELECT
     'android' AS platform,
+    client_id,
     COALESCE(
       JSON_VALUE(event_extra, '$.provider'),
       JSON_VALUE(event_extra, '$.card_type')
@@ -201,6 +268,7 @@ events AS (
   UNION ALL
   SELECT
     'ios' AS platform,
+    client_id,
     JSON_VALUE(event_extra, '$.type') AS result_type
   FROM
     `moz-fx-data-shared-prod.firefox_ios.events_stream`
@@ -219,6 +287,11 @@ source AS (
   JOIN
     component_map AS m
     USING (platform, result_type)
+  LEFT JOIN
+    deleted
+    USING (platform, client_id)
+  WHERE
+    deleted.client_id IS NULL
   GROUP BY
     platform
 )
@@ -334,3 +407,68 @@ SELECT
   )
 FROM
   new_actions;
+
+#warn
+-- Early warning for mobile: a Suggest type shown but not yet clicked with no map row fails the
+-- run on its first click. The impression events carry the same keys as the clicks.
+WITH component_map AS (
+  SELECT
+    platform,
+    result_type
+  FROM
+    `moz-fx-data-shared-prod.search_derived.kpi_component_map_v1`
+  WHERE
+    platform IN ('android', 'ios')
+),
+shown AS (
+  SELECT DISTINCT
+    'android' AS platform,
+    COALESCE(
+      JSON_VALUE(event_extra, '$.provider'),
+      JSON_VALUE(event_extra, '$.card_type')
+    ) AS result_type
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_stream`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'awesomebar'
+    AND event_name IN (
+      'sponsored_suggestion_impressed',
+      'non_sponsored_suggestion_impressed',
+      'optimized_suggestion_card_displayed'
+    )
+  UNION DISTINCT
+  SELECT DISTINCT
+    'ios' AS platform,
+    JSON_VALUE(event_extra, '$.type') AS result_type
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.events_stream`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'awesomebar'
+    AND event_name = 'search_result_impression'
+)
+SELECT
+  IF(
+    COUNT(*) > 0,
+    ERROR(
+      CONCAT(
+        'Mobile result types shown with no kpi_component_map_v1 row: ',
+        STRING_AGG(
+          CONCAT(platform, ':', COALESCE(result_type, 'NULL')),
+          ', '
+          ORDER BY
+            platform,
+            result_type
+        )
+      )
+    ),
+    NULL
+  )
+FROM
+  shown
+LEFT JOIN
+  component_map AS m
+  USING (platform, result_type)
+WHERE
+  m.result_type IS NULL;

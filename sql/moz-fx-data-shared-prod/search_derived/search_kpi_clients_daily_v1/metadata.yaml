@@ -12,10 +12,16 @@ description: |-
   Dimensions are copied from search_derived.desktop_client_day_dims_v1 so experiments and
   daily totals don't need to join it again.
 
-  On mobile, sap and the dimensions come from search_derived.mobile_search_clients_daily_v2.
-  Suggest clicks come from fenix.events_stream and firefox_ios.events_stream, split by the
-  map's android and ios rows. ai_chat and sap_excluded are 0, and the KPI has no version
-  floor there. profile_group_id, is_default_browser and is_bot are NULL.
+  On mobile, sap and the dimensions come from search_derived.mobile_search_clients_daily_v2,
+  Glean rows only (Firefox iOS before 28 is legacy core-ping data and is left out, as in
+  mobile_search_aggregates_v1). Suggest clicks come from fenix.events_stream and
+  firefox_ios.events_stream, split by the map's android and ios rows. ai_chat and
+  sap_excluded are 0, and the KPI has no version floor there. profile_group_id,
+  is_default_browser and is_bot are NULL. Clients who have ever sent a Fenix or Firefox iOS
+  deletion request are left out: Shredder doesn't remove them from
+  mobile_search_clients_daily_v2 (DENG-4255), so a backfill would otherwise bring them
+  back. normalized_default_search_engine matches desktop_client_day_dims_v1 (case-insensitive),
+  not mobile_search_aggregates_v1.
 
   Desktop rows: every client in urlbar_clients_daily_v1 that day, even with nothing counted
   (in_urlbar), plus clients seen only in search_clients_daily_glean who started at least
@@ -26,8 +32,8 @@ description: |-
   The run fails if a clicked result type has no row in kpi_component_map_v1, so a new
   Suggest type can't silently fall out of the KPI. action_* types (quick actions) are
   excluded in the query and need no row. It also fails if that day's
-  urlbar_clients_daily_v1 partition is empty, if an app is missing from that day's mobile
-  sources, or if the map has overlapping rows.
+  urlbar_clients_daily_v1 partition is empty, if an app has no searches or no awesomebar
+  events in that day's mobile sources, or if the map has overlapping rows.
 
   urlbar_clients_daily_v1, mobile_search_clients_daily_v2 and events_stream have no
   date_partition_offset, so their tasks for the same logical date (in bqetl_search,

@@ -48,3 +48,10 @@
   event_category: awesomebar
   event_name: optimized_suggestion_card_clicked
   event_extra: {card_type: stocks}
+# android-deleted's click is dropped with the client.
+- submission_timestamp: "2026-10-28 10:00:00"
+  client_id: android-deleted
+  sample_id: 19
+  event_category: awesomebar
+  event_name: sponsored_suggestion_clicked
+  event_extra: {provider: amp}

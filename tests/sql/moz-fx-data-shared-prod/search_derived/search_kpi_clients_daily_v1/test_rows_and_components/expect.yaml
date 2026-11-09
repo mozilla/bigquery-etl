@@ -108,7 +108,7 @@
   search_queries: 8
   in_urlbar: false
   meets_population_rules: true
-  definition_version: 2
+  definition_version: 4
 # Clicks with no search row: kept, with no dimensions.
 - submission_date: "2026-10-28"
   platform: android
@@ -122,7 +122,26 @@
   search_queries: 2
   in_urlbar: false
   meets_population_rules: true
-  definition_version: 2
+  definition_version: 4
+# Nightly (app_name Firefox Preview) is Fenix too: kept.
+- submission_date: "2026-10-28"
+  platform: android
+  client_id: android-nightly
+  sample_id: 17
+  country: FR
+  normalized_channel: nightly
+  os: Android
+  app_version_major: "147"
+  normalized_default_search_engine: Google
+  sap: 1
+  sap_excluded: 0
+  suggest_sponsored: 0
+  suggest_nonsponsored: 0
+  ai_chat: 0
+  search_queries: 1
+  in_urlbar: false
+  meets_population_rules: true
+  definition_version: 4
 - submission_date: "2026-10-28"
   platform: ios
   client_id: ios-a
@@ -140,4 +159,4 @@
   search_queries: 5
   in_urlbar: false
   meets_population_rules: true
-  definition_version: 2
+  definition_version: 4

@@ -1,6 +1,8 @@
 # android-a has three rows: SAP is summed, the country on most rows wins, and a real engine
 # beats 'unavailable'. android-b has no SAP and no clicks: dropped. focus-a is another app:
-# dropped. ios-a is labeled Fennec, as Firefox iOS is in this table.
+# dropped. ios-a is labeled Fennec, as Firefox iOS is in this table. android-nightly is
+# Nightly (app_name Firefox Preview): kept. ios-legacy is a core-ping row (before 28):
+# dropped. android-deleted and ios-deleted have sent a deletion request: dropped.
 - submission_date: "2026-10-28"
   client_id: android-a
   sample_id: 11
@@ -44,7 +46,8 @@
 - submission_date: "2026-10-28"
   client_id: focus-a
   sample_id: 13
-  normalized_app_name: Focus Android Glean
+  app_name: Focus Android Glean
+  normalized_app_name: Focus
   os: Android
   search_count: 4
   country: US
@@ -71,3 +74,44 @@
   channel: release
   app_version: "144.0.1"
   default_search_engine: google-b-m
+- submission_date: "2026-10-28"
+  client_id: android-nightly
+  sample_id: 17
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  os: Android
+  search_count: 1
+  country: FR
+  channel: nightly
+  app_version: "147.0a1"
+  default_search_engine: google-b-m
+- submission_date: "2026-10-28"
+  client_id: ios-legacy
+  sample_id: 18
+  normalized_app_name: Fennec
+  os: iOS
+  search_count: 5
+  country: US
+  channel: release
+  app_version: "27.1"
+  default_search_engine: Google
+- submission_date: "2026-10-28"
+  client_id: android-deleted
+  sample_id: 19
+  normalized_app_name: Fenix
+  os: Android
+  search_count: 3
+  country: US
+  channel: release
+  app_version: "144.0.1"
+  default_search_engine: google-b-m
+- submission_date: "2026-10-28"
+  client_id: ios-deleted
+  sample_id: 20
+  normalized_app_name: Fennec
+  os: iOS
+  search_count: 2
+  country: US
+  channel: release
+  app_version: "145.2"
+  default_search_engine: Google

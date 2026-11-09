@@ -2968,7 +2968,7 @@ bqetl_deepnote:
   description: |
     Imports the audit logs and API snapshots of Mozilla's Deepnote workspaces and
     Deepnote-originated BigQuery jobs, and builds usage monitoring aggregates.
-    Each workspace is configured by a DEEPNOTE_*API_KEY secret.
+    Each workspace is configured by an API key secret passed to the import tasks.
   default_args:
     owner: ascholtz@mozilla.com
     email:

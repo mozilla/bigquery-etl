@@ -1,6 +1,6 @@
 """Import notebook run history (scheduled and API runs) from the Deepnote API.
 
-Imports every workspace with a DEEPNOTE_*API_KEY environment variable.
+Imports the workspaces whose API keys are passed with --api-key-env-vars.
 
 Runs are listed per notebook, newest first. Only runs created within the lookback
 window are fetched (use --lookback-days 0 to fetch the full history) and merged
@@ -9,19 +9,29 @@ of deleted notebooks are kept.
 """
 
 import logging
+import os
 from argparse import ArgumentParser
 from datetime import datetime, timedelta, timezone
 
 import requests
 from google.cloud import bigquery
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 
-from bigquery_etl.deepnote import workspaces
+API_URL = "https://api.deepnote.com"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--dataset", default="deepnote_derived")
 parser.add_argument("--table", default="notebook_runs_v1")
 parser.add_argument("--lookback-days", "--lookback_days", type=int, default=7)
+parser.add_argument(
+    "--api-key-env-vars",
+    "--api_key_env_vars",
+    nargs="+",
+    required=True,
+    help="Environment variables holding the API keys, one per workspace",
+)
 
 MERGE_QUERY = """
 MERGE
@@ -41,6 +51,43 @@ THEN
   INSERT
     ROW
 """
+
+
+class Workspace:
+    """Deepnote API session for the workspace an API key belongs to."""
+
+    def __init__(self, api_key):
+        """Create a session that retries rate limited requests and look up the workspace."""
+        self.session = requests.Session()
+        self.session.headers["Authorization"] = f"Bearer {api_key}"
+        retry = Retry(
+            total=5,
+            backoff_factor=2,
+            status_forcelist=[429, 500, 502, 503, 504],
+            respect_retry_after_header=True,
+        )
+        self.session.mount("https://", HTTPAdapter(max_retries=retry))
+        workspace = self.get("/v2/me")["workspace"]
+        self.id = workspace["id"]
+
+    def get(self, path, params=None):
+        """GET a Deepnote API path and return the parsed response."""
+        response = self.session.get(f"{API_URL}{path}", params=params, timeout=60)
+        response.raise_for_status()
+        return response.json()
+
+    def paginate(self, path, key, params=None, page_size=100):
+        """Yield the items of a paginated Deepnote API list endpoint."""
+        page_token = None
+        while True:
+            page_params = {"pageSize": page_size, **(params or {})}
+            if page_token:
+                page_params["pageToken"] = page_token
+            page = self.get(path, page_params)
+            yield from page[key]
+            if not page["pagination"].get("hasMore"):
+                return
+            page_token = page["pagination"]["nextPageToken"]
 
 
 def list_runs(workspace, project_id, notebook_id, cutoff, seen_at):
@@ -80,7 +127,7 @@ def main():
     cutoff = now - timedelta(days=args.lookback_days) if args.lookback_days else None
     rows = [
         run
-        for workspace in workspaces()
+        for workspace in [Workspace(os.environ[name]) for name in args.api_key_env_vars]
         for project in workspace.paginate("/v2/projects", "projects")
         for notebook in project.get("notebooks", [])
         for run in list_runs(

@@ -4,7 +4,7 @@ description: |-
   https://deepnote.com/docs/audit-log).
 
   Imported daily from the Deepnote API (GET /v2/audit-logs) with one workspace
-  admin API key per workspace, configured as DEEPNOTE_*API_KEY secrets. Each run
+  admin API key per workspace, configured as secrets and passed with --api-key-env-vars. Each run
   fetches the events of the last 3 days and merges new ones on event_id.
 
   The `ip` field of the audit log is not imported. Contains user emails, so access
@@ -23,6 +23,14 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_deepnote
+  arguments:
+  - --api-key-env-vars
+  - DEEPNOTE_API_KEY
+  - DEEPNOTE_ADS_API_KEY
+  - DEEPNOTE_REVENUECAT_1_API_KEY
+  - DEEPNOTE_REVENUECAT_2_API_KEY
+  - DEEPNOTE_MARKETING_API_KEY
+  - DEEPNOTE_MONITOR_API_KEY
   date_partition_parameter: null
   secrets:
   - deploy_target: DEEPNOTE_API_KEY

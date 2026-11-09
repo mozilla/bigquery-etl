@@ -1,8 +1,8 @@
 friendly_name: Deepnote Members
 description: |-
   Daily snapshot of the members and guests of Mozilla's Deepnote workspaces and
-  their access level, from the Deepnote API (GET /v2/members, one DEEPNOTE_*API_KEY
-  secret per workspace). A user can be a member of several workspaces. Pending
+  their access level, from the Deepnote API (GET /v2/members, one API key secret
+  per workspace). A user can be a member of several workspaces. Pending
   invitations and deactivated users are excluded.
 
   Contains user emails, so access is restricted to data platform.
@@ -14,7 +14,16 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_deepnote
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - "{{ ds }}"
+  - --api-key-env-vars
+  - DEEPNOTE_API_KEY
+  - DEEPNOTE_ADS_API_KEY
+  - DEEPNOTE_REVENUECAT_1_API_KEY
+  - DEEPNOTE_REVENUECAT_2_API_KEY
+  - DEEPNOTE_MARKETING_API_KEY
+  - DEEPNOTE_MONITOR_API_KEY
   date_partition_parameter: null
   secrets:
   - deploy_target: DEEPNOTE_API_KEY

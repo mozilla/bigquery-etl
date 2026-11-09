@@ -27,18 +27,25 @@ ad_group_status AS (
   WHERE
     _PARTITIONDATE = @submission_date
 ),
--- Fails the query if the asset_status snapshot for @submission_date did not load,
--- so an empty partition is not written. The LEFT JOIN below always keeps this row,
--- so BigQuery must evaluate the ERROR().
+-- Fails the query if @submission_date is before history starts, or if any of the
+-- three snapshots for @submission_date did not load, so an incomplete partition
+-- is not written and the Airflow retries can pick up a late transfer. The LEFT
+-- JOIN below always keeps this row, so BigQuery must evaluate the ERROR().
 snapshot AS (
   SELECT
-    IF(
-      COUNT(*) = 0,
-      ERROR(CONCAT('No asset_status snapshot for ', CAST(@submission_date AS STRING))),
-      @submission_date
-    ) AS `date`,
-  FROM
-    asset_status
+    CASE
+      WHEN @submission_date < '2026-10-21'
+        THEN ERROR(
+            CONCAT(CAST(@submission_date AS STRING), ' is before status history start 2026-10-21')
+          )
+      WHEN (SELECT COUNT(*) FROM asset_status) = 0
+        THEN ERROR(CONCAT('No asset_status snapshot for ', CAST(@submission_date AS STRING)))
+      WHEN (SELECT COUNT(*) FROM campaign_status) = 0
+        THEN ERROR(CONCAT('No campaign_status snapshot for ', CAST(@submission_date AS STRING)))
+      WHEN (SELECT COUNT(*) FROM ad_group_status) = 0
+        THEN ERROR(CONCAT('No ad_group_status snapshot for ', CAST(@submission_date AS STRING)))
+      ELSE @submission_date
+    END AS `date`,
 ),
 assets AS (
   SELECT

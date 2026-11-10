@@ -107,10 +107,13 @@ FROM
   source;
 
 #fail
--- Mobile sap must equal mobile_search_aggregates for Firefox Android and Firefox iOS, less the
--- searches of clients the query leaves out for a deletion request. The aggregate sets the
--- scope, so a wrong app or version filter in the query fails here. The aggregate drops
--- NULL-engine rows, which hold 0 searches, so the totals match exactly.
+-- Mobile sap must not exceed mobile_search_aggregates for Firefox Android and Firefox iOS,
+-- less the searches of clients the query leaves out for a deletion request, and each
+-- platform must be in both. The aggregate sets the scope, so an app or version filter that
+-- lets in too much fails here. The aggregate drops NULL-engine rows, which hold 0 searches.
+-- Shredder only lowers this table's sap (it removes rows from mobile_search_clients_daily_v2
+-- but not from the aggregate, which has no client ID), so this side never fails because of
+-- Shredder.
 WITH kpi AS (
   SELECT
     platform,
@@ -184,7 +187,7 @@ SELECT
     COUNT(*) > 0,
     ERROR(
       CONCAT(
-        'Mobile sap differs from mobile_search_aggregates less deleted clients for: ',
+        'Mobile sap is above mobile_search_aggregates less deleted clients, or a platform is missing, for: ',
         STRING_AGG(platform, ', ' ORDER BY platform)
       )
     ),
@@ -200,7 +203,106 @@ LEFT JOIN
   deleted_sap AS d
   USING (platform)
 WHERE
-  kpi.sap IS DISTINCT FROM a.sap - COALESCE(d.sap, 0);
+  kpi.sap IS NULL
+  OR a.sap IS NULL
+  OR kpi.sap > a.sap - COALESCE(d.sap, 0);
+
+#warn
+-- Mobile sap below mobile_search_aggregates less deleted clients' searches. On a date that
+-- Shredder has not processed yet, such as a nightly run, it means the query dropped clients.
+-- On a rerun or backfill of a date Shredder has already cleaned, it is expected: Shredder has
+-- removed deleted clients' rows from mobile_search_clients_daily_v2, and the aggregate still
+-- counts their searches.
+WITH kpi AS (
+  SELECT
+    platform,
+    SUM(sap) AS sap
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    submission_date = @submission_date
+    AND platform IN ('android', 'ios')
+  GROUP BY
+    platform
+),
+AGGREGATE
+  AS (
+    SELECT
+      IF(os = 'iOS', 'ios', 'android') AS platform,
+      SUM(search_count) AS sap
+    FROM
+      `moz-fx-data-shared-prod.search.mobile_search_aggregates`
+    WHERE
+      submission_date = @submission_date
+      AND (
+        (app_name IN ('Fenix', 'Firefox Preview') AND os = 'Android')
+        OR (app_name = 'Fennec' AND os = 'iOS')
+      )
+    GROUP BY
+      platform
+  ),
+  deleted AS (
+    SELECT
+      'android' AS platform,
+      client_info.client_id
+    FROM
+      `moz-fx-data-shared-prod.fenix.deletion_request`
+    WHERE
+      DATE(submission_timestamp) >= '2019-01-01'
+    UNION DISTINCT
+    SELECT
+      'ios' AS platform,
+      client_info.client_id
+    FROM
+      `moz-fx-data-shared-prod.firefox_ios.deletion_request`
+    WHERE
+      DATE(submission_timestamp) >= '2019-01-01'
+  ),
+  deleted_sap AS (
+    SELECT
+      IF(s.os = 'iOS', 'ios', 'android') AS platform,
+      SUM(s.search_count) AS sap
+    FROM
+      `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2` AS s
+    JOIN
+      deleted AS d
+      ON d.platform = IF(s.os = 'iOS', 'ios', 'android')
+      AND d.client_id = s.client_id
+    WHERE
+      s.submission_date = @submission_date
+      AND (
+        (s.normalized_app_name = 'Fenix' AND s.os = 'Android')
+        OR (
+          s.normalized_app_name = 'Fennec'
+          AND s.os = 'iOS'
+          AND mozfun.norm.truncate_version(s.app_version, 'major') >= 28
+        )
+      )
+    GROUP BY
+      1
+  )
+SELECT
+  IF(
+    COUNT(*) > 0,
+    ERROR(
+      CONCAT(
+        'Mobile sap is below mobile_search_aggregates less deleted clients for: ',
+        STRING_AGG(platform, ', ' ORDER BY platform)
+      )
+    ),
+    NULL
+  )
+FROM
+  kpi
+FULL OUTER JOIN
+AGGREGATE
+  AS a
+  USING (platform)
+LEFT JOIN
+  deleted_sap AS d
+  USING (platform)
+WHERE
+  kpi.sap < a.sap - COALESCE(d.sap, 0);
 
 #fail
 -- Every counted mobile Suggest click in events_stream must land here, except those of clients

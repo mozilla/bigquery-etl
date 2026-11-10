@@ -4,8 +4,6 @@ description: |-
   the Deepnote API. Interactive editor runs are not included.
 owners:
 - ascholtz@mozilla.com
-labels:
-  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

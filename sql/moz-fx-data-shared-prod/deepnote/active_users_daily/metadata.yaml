@@ -5,8 +5,6 @@ description: |-
   workspaces.
 owners:
 - ascholtz@mozilla.com
-labels:
-  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

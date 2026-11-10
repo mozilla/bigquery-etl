@@ -4,8 +4,6 @@ description: |-
   plugin analyses and dashboards) by creation date, workspace and content type.
 owners:
 - ascholtz@mozilla.com
-labels:
-  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

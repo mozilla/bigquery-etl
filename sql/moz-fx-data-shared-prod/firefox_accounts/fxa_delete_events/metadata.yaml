@@ -1,5 +1,6 @@
 friendly_name: FxA Delete Events
-description: Deletion events extracted from FxA auth server logs used as signal for
-  Mozilla to delete analysis data associated with the user
+description: Deletion events extracted from FxA auth server logs and the FxA accounts
+  database, used as signal for Mozilla to delete analysis data associated with the
+  user
 owners:
 - kik@mozilla.com

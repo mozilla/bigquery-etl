@@ -1,0 +1,17 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the account was deleted, from deletedAt in the accounts database mirror
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+  description: Hex SHA-256 of the account uid
+- name: hmac_user_id
+  type: STRING
+  mode: NULLABLE
+  description: Hex HMAC-SHA-256 of the account uid
+- name: user_id_unhashed
+  type: STRING
+  mode: NULLABLE
+  description: Account uid in hexadecimal format

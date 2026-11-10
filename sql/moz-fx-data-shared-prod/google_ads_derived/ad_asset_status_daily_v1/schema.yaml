@@ -1,0 +1,79 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Snapshot date. The status values are the status at the end of this day.
+- name: customer_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads customer (account) ID.
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads campaign ID.
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Campaign name as set in Google Ads, on the snapshot date.
+- name: market
+  type: STRING
+  mode: NULLABLE
+  description: Upper-case country code from the campaign name. UK is mapped to GB. UNKNOWN when the campaign name has no country code.
+- name: region
+  type: STRING
+  mode: NULLABLE
+  description: Region from the campaign name, for example na, eu, apac, latam, afr, expansion.
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language code from the campaign name, for example en, de, fr, jp.
+- name: ad_group_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads ad group ID.
+- name: ad_group_name
+  type: STRING
+  mode: NULLABLE
+  description: Ad group name (the creative theme), on the snapshot date.
+- name: ad_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads ad ID.
+- name: asset_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Google Ads asset ID. Joins to `google_ads_derived.ad_assets_v1.asset_id`.
+- name: field_type
+  type: STRING
+  mode: NULLABLE
+  description: How the asset is used in the ad, for example MARKETING_IMAGE, YOUTUBE_VIDEO, HEADLINE, DESCRIPTION.
+- name: performance_label
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Google rating of the asset (Best, Good, Low, Learning, Pending or Unrated), on the snapshot date.
+    NOT_APPLICABLE, UNSPECIFIED and UNKNOWN are Unrated.
+- name: asset_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the asset is enabled in the ad, on the snapshot date.
+- name: ad_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the ad (ENABLED, PAUSED or REMOVED), on the snapshot date.
+- name: ad_group_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the ad group (ENABLED, PAUSED or REMOVED), on the snapshot date.
+- name: campaign_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the campaign (ENABLED, PAUSED or REMOVED), on the snapshot date.
+- name: campaign_type
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads campaign advertising channel type. Always MULTI_CHANNEL (App campaign) in this table.
+- name: is_live
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the asset is enabled, the ad group is ENABLED and the campaign is ENABLED (an App campaign), on the snapshot date.

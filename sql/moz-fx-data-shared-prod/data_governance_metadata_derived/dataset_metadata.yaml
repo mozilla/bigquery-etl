@@ -9,3 +9,6 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataplatform/data-governance-developers
+- role: roles/bigquery.dataViewer
+  members:
+  - classification-review@moz-data-governance-dev.iam.gserviceaccount.com

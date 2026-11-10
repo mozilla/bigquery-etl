@@ -1,5 +1,7 @@
--- Status snapshots are reliable from 2026-10-21. A transfer backfill writes the
--- current state into older partitions, so those are not history.
+-- Status snapshots are reliable from 2026-10-22. The 2026-10-21 partition was
+-- written by a manual transfer run on 2026-10-22, so it holds the 2026-10-22
+-- state. A transfer backfill writes the current state into older partitions,
+-- so those are not history.
 WITH asset_status AS (
   SELECT
     *,
@@ -7,7 +9,7 @@ WITH asset_status AS (
     `moz-fx-data-marketing-prod.google_ads_dts_mmc.p_ads_asset_status_4813401401`
   WHERE
     _PARTITIONDATE = @submission_date
-    AND @submission_date >= '2026-10-21'
+    AND @submission_date >= '2026-10-22'
     AND campaign_advertising_channel_type = 'MULTI_CHANNEL'
 ),
 campaign_status AS (
@@ -34,9 +36,9 @@ ad_group_status AS (
 snapshot AS (
   SELECT
     CASE
-      WHEN @submission_date < '2026-10-21'
+      WHEN @submission_date < '2026-10-22'
         THEN ERROR(
-            CONCAT(CAST(@submission_date AS STRING), ' is before status history start 2026-10-21')
+            CONCAT(CAST(@submission_date AS STRING), ' is before status history start 2026-10-22')
           )
       WHEN (SELECT COUNT(*) FROM asset_status) = 0
         THEN ERROR(CONCAT('No asset_status snapshot for ', CAST(@submission_date AS STRING)))

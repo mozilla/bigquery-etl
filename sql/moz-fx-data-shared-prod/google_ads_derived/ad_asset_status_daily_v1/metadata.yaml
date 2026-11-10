@@ -18,9 +18,10 @@ description: |-
   `is_live` is true when the asset is enabled, the ad group is ENABLED and
   the campaign is ENABLED.
 
-  History starts on 2026-10-21. Older snapshot partitions are not used,
-  because a transfer backfill writes the current state into them. For dates
-  before 2026-10-21, use impressions > 0 in
+  History starts on 2026-10-22. Older snapshot partitions are not used,
+  because a transfer backfill writes the current state into them (the
+  2026-10-21 partition holds the state from 2026-10-22). For dates before
+  2026-10-22, use impressions > 0 in
   `google_ads_derived.ad_asset_daily_performance_v1` to find live assets.
 
   `market` is the country code from the campaign name (UK is mapped to GB,

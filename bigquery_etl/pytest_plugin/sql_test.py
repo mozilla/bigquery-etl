@@ -12,10 +12,12 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
+from functools import lru_cache
 from io import BytesIO, TextIOWrapper
 from pathlib import Path
 from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
+import google.auth
 import yaml
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
@@ -95,6 +97,22 @@ class JsonDecodeError(Exception):
     """JSON decode error."""
 
     pass
+
+
+@lru_cache(maxsize=1)
+def bq_client() -> bigquery.Client:
+    """Return a BigQuery client shared by all tests in this process.
+
+    Creating a new client per test re-resolves credentials each time. With
+    Workload Identity Federation in CI, every refresh fetches a new GitHub OIDC
+    token, so ~150 parallel tests hammer that endpoint and intermittently fail
+    with RefreshError. Reusing one client means credentials are fetched once per
+    xdist worker and refreshed only when the access token expires.
+    """
+    credentials, project = google.auth.default(
+        scopes=["https://www.googleapis.com/auth/cloud-platform"]
+    )
+    return bigquery.Client(credentials=credentials, project=project)
 
 
 @contextmanager

@@ -16,6 +16,7 @@ from ..util.common import render
 from .sql_test import (
     TABLE_EXTENSIONS,
     Table,
+    bq_client,
     coerce_result,
     dataset,
     default_encoding,
@@ -201,7 +202,7 @@ class SqlTest(pytest.Item, pytest.File):
         if "CI_RUN_ID" in os.environ:
             dataset_id += f"_{os.environ['CI_RUN_ID']}"
 
-        bq = bigquery.Client()
+        bq = bq_client()
         with dataset(bq, dataset_id) as default_dataset:
             with ThreadPool(8) as pool:
                 pool.map(

@@ -172,7 +172,7 @@
   country: FR
   normalized_os: Linux
   normalized_engine: DuckDuckGo
-  partner_code: ddg
+  partner_code: ffab
   distribution_id: null
   is_acer_distribution: false
   sap_kpi: 6
@@ -219,3 +219,105 @@
   partner_code: linux-firefox-us-x
   distribution_id: null
   sap_kpi: 3
+- submission_date: '2026-09-21'
+  is_acer_distribution: false
+  counter_searches_tagged_non_follow_on_sum: 0
+  counter_searches_tagged_follow_on_sum: 0
+  counter_searches_with_ads_tagged_sum: 0
+  counter_ad_clicks_tagged_sum: 0
+  counter_searches_organic_sum: 0
+  counter_ad_clicks_organic_sum: 0
+  counter_searches_with_ads_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_ad_clicks_tagged_sum: 0
+  country: US
+  normalized_os: Windows
+  normalized_engine: Bing
+  partner_code: MOZR
+  distribution_id: null
+  sap_kpi: 2
+- submission_date: '2026-09-21'
+  is_acer_distribution: false
+  counter_searches_tagged_non_follow_on_sum: 0
+  counter_searches_tagged_follow_on_sum: 0
+  counter_searches_with_ads_tagged_sum: 0
+  counter_ad_clicks_tagged_sum: 0
+  counter_searches_organic_sum: 0
+  counter_ad_clicks_organic_sum: 0
+  counter_searches_with_ads_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_ad_clicks_tagged_sum: 0
+  country: US
+  normalized_os: Windows
+  normalized_engine: Bing
+  partner_code: no_code
+  distribution_id: null
+  sap_kpi: 3
+- submission_date: '2026-09-21'
+  is_acer_distribution: false
+  counter_searches_tagged_non_follow_on_sum: 0
+  counter_searches_tagged_follow_on_sum: 0
+  counter_searches_with_ads_tagged_sum: 0
+  counter_ad_clicks_tagged_sum: 0
+  counter_searches_organic_sum: 0
+  counter_ad_clicks_organic_sum: 0
+  counter_searches_with_ads_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_ad_clicks_tagged_sum: 0
+  country: FR
+  normalized_os: Linux
+  normalized_engine: DuckDuckGo
+  partner_code: ftsa
+  distribution_id: null
+  sap_kpi: 3
+- submission_date: '2026-09-21'
+  is_acer_distribution: false
+  counter_searches_tagged_non_follow_on_sum: 0
+  counter_searches_tagged_follow_on_sum: 0
+  counter_searches_with_ads_tagged_sum: 0
+  counter_ad_clicks_tagged_sum: 0
+  counter_searches_organic_sum: 0
+  counter_ad_clicks_organic_sum: 0
+  counter_searches_with_ads_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_ad_clicks_tagged_sum: 0
+  country: FR
+  normalized_os: Linux
+  normalized_engine: DuckDuckGo
+  partner_code: no_code
+  distribution_id: null
+  sap_kpi: 5
+- submission_date: '2026-09-21'
+  is_acer_distribution: false
+  counter_searches_tagged_non_follow_on_sum: 0
+  counter_searches_tagged_follow_on_sum: 0
+  counter_searches_with_ads_tagged_sum: 0
+  counter_ad_clicks_tagged_sum: 0
+  counter_searches_organic_sum: 0
+  counter_ad_clicks_organic_sum: 0
+  counter_searches_with_ads_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_ad_clicks_tagged_sum: 0
+  country: FR
+  normalized_os: Linux
+  normalized_engine: DuckDuckGo
+  partner_code: lm
+  distribution_id: null
+  sap_kpi: 2
+- submission_date: '2026-09-21'
+  is_acer_distribution: false
+  counter_searches_tagged_non_follow_on_sum: 0
+  counter_searches_tagged_follow_on_sum: 0
+  counter_searches_with_ads_tagged_sum: 0
+  counter_ad_clicks_tagged_sum: 0
+  counter_searches_organic_sum: 0
+  counter_ad_clicks_organic_sum: 0
+  counter_searches_with_ads_organic_sum: 0
+  serp_searches_with_ads_tagged_count: 0
+  serp_ad_clicks_tagged_sum: 0
+  country: FR
+  normalized_os: Linux
+  normalized_engine: DuckDuckGo
+  partner_code: xyz
+  distribution_id: null
+  sap_kpi: 1

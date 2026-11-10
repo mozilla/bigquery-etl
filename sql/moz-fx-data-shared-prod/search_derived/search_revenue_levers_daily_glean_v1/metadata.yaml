@@ -20,11 +20,14 @@ description: |-
   * Glean-keyed desktop DAU runs higher than the legacy table's, as copied profiles give several
     Glean ids for one legacy id.
   * Desktop `monetizable_sap` is rewritten on the row's `partner_code`, because the legacy
-    definition reads raw engine codes that Glean does not carry. It is awaiting sign-off from the
-    revenue reviewers. The new Google codes count as not monetized until their rule is settled, and
-    so does any code the rule does not list. Data checks warn when the new codes carry more than 1%
-    of Google desktop SAP, and when the monetizable share of Google desktop SAP falls below 90%.
-    Mobile is always 0.
+    definition reads raw engine strings that Glean carries as `sap_provider_id` plus `partner_code`.
+    It is awaiting sign-off from the revenue reviewers. Bing counts on MOZI and MOZR and
+    DuckDuckGo on ffab and ftsa. Their other codes (`no_code`, which matches the legacy `-addon`
+    engines, and `lm`) are not monetized, so the Bing and DuckDuckGo shares are below 100%. Any code
+    the rule does not list counts as not monetized until its rule is settled, including new Google
+    codes and the Canonical codes `ubuntu` and `ubuntu-sn`. Data checks warn when unlisted Google,
+    Bing or DuckDuckGo codes carry more than 1% of that partner's desktop SAP, and when the
+    monetizable share of Google desktop SAP falls below 90%. Mobile is always 0.
   * Bing desktop leaves out Acer distributions using the `distribution_id` only. The legacy
     `search.acer_cohort` list is keyed on the legacy `client_id` and is not carried.
   * Mobile rows are not split by operating system, so `normalized_os` is NULL on them.

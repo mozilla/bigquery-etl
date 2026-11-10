@@ -84,11 +84,11 @@ fields:
 - name: monetizable_sap
   type: INTEGER
   mode: NULLABLE
-  description: SAP events eligible to earn revenue. On desktop, Bing and DuckDuckGo are always
-    eligible, and Google is eligible on a RoW partner code outside the excluded territories, on a
-    US partner code in the US only, and on a Mint code with the mint-001 distribution. Any other
-    Google code, including no_code, is not eligible. The new Google codes (<os>-firefox-<access
-    point>-re) count as not eligible until their rule is settled. The definition is awaiting
+  description: SAP events eligible to earn revenue. On desktop it is decided by the row's
+    partner_code. Bing is eligible on MOZI and MOZR, and DuckDuckGo on ffab and ftsa. Google is
+    eligible on a RoW code outside the excluded territories, on a US code in the US only, and on a
+    Mint code with the mint-001 distribution. Any other code, including no_code and any
+    new Google code, is not eligible until its rule is settled. The definition is awaiting
     sign-off. Always 0 on mobile.
 - name: search_with_ads_serp
   type: INTEGER

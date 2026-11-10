@@ -9,10 +9,10 @@
 -- The eligible-country lists encode contract terms and are ported verbatim from
 -- search_revenue_levers_daily_v1. The date on which the list changes is part of that term.
 -- How a Google partner_code is monetized: ROW is a RoW code, US is a US code and MINT is a Linux Mint
--- code, all as in today's firefox-b-* codes. NEW is a new Google code
--- (<os>-firefox-<access point>-re, and <os>-firefoxmnt-<access point>-re for Mint), whose rule is not
--- settled yet: it counts as not monetized until it is moved to ROW, US or MINT here. Any other
--- code returns NULL and also counts as not monetized.
+-- code, all as in today's firefox-b-* codes. Any other code returns NULL and counts as not
+-- monetized, including no_code, the Canonical codes (ubuntu, ubuntu-sn) and any new Google code,
+-- until its rule is settled and it is listed here. A data check warns when unlisted codes carry more
+-- than 1% of Google desktop SAP.
 CREATE TEMP FUNCTION google_code_class(partner_code STRING) AS (
   CASE
     WHEN partner_code IN ('firefox-b-d', 'firefox-b-e')
@@ -21,11 +21,24 @@ CREATE TEMP FUNCTION google_code_class(partner_code STRING) AS (
       THEN 'US'
     WHEN partner_code IN ('firefox-b-lm', 'firefox-b-1-lm')
       THEN 'MINT'
-    WHEN REGEXP_CONTAINS(
-        partner_code,
-        r'^(android|ios|linux|macos|windows)-firefox(mnt)?-[a-z]+-re$'
-      )
-      THEN 'NEW'
+  END
+);
+
+-- How a Bing or DuckDuckGo partner_code is monetized. The legacy engine strings split each of these
+-- partners into variants, and only some are monetized: Glean carries the same split in partner_code.
+-- Monetized: Bing MOZI and MOZR, DuckDuckGo ffab and ftsa. Not monetized: no_code (the legacy -addon
+-- engines) and lm (the legacy ddg-lm engine). Any other code is not monetized until it is listed
+-- here, and a data check warns when unlisted codes carry more than 1% of a partner's desktop SAP.
+CREATE TEMP FUNCTION other_partner_code_monetized(
+  normalized_engine STRING,
+  partner_code STRING
+) AS (
+  CASE
+    WHEN normalized_engine = 'Bing'
+      THEN COALESCE(partner_code IN ('MOZI', 'MOZR'), FALSE)
+    WHEN normalized_engine = 'DuckDuckGo'
+      THEN COALESCE(partner_code IN ('ffab', 'ftsa'), FALSE)
+    ELSE FALSE
   END
 );
 
@@ -56,16 +69,17 @@ WITH desktop_search AS (
     SUM(counter_ad_clicks_organic_sum) AS ad_click_organic,
     SUM(counter_searches_with_ads_organic_sum) AS search_with_ads_organic,
     -- DEFINITION AWAITING SIGN-OFF from the revenue reviewers. The legacy value comes from
-    -- `moz-fx-data-shared-prod.udf.monetized_search`, which reads raw engine codes such as google-b-1-d. The partner_code of a
-    -- row names the same variant (firefox-b-1-d), so the rule is rewritten on it, through
-    -- google_code_class. Bing and DuckDuckGo are always monetized. Google is monetized on a MINT code
-    -- with distribution mint-001, and otherwise outside the excluded territories on a ROW code, or on
-    -- a US code in the US only. Any other Google code, including no_code, is not.
+    -- `moz-fx-data-shared-prod.udf.monetized_search`, which reads raw engine strings such as google-b-1-d
+    -- or ddg-addon. Glean carries the same information as sap_provider_id plus partner_code, so the rule
+    -- is rewritten on partner_code. Bing and DuckDuckGo are monetized on the codes listed in
+    -- other_partner_code_monetized. Google is monetized on a MINT code with distribution mint-001, and
+    -- otherwise outside the excluded territories on a ROW code, or on a US code in the US only, through
+    -- google_code_class. Any code the rule does not list, including no_code, is not monetized.
     SUM(
       IF(
         CASE
           WHEN normalized_engine IN ('Bing', 'DuckDuckGo')
-            THEN TRUE
+            THEN other_partner_code_monetized(normalized_engine, partner_code)
           WHEN google_code_class(partner_code) = 'MINT'
             AND distribution_id = 'mint-001'
             THEN TRUE

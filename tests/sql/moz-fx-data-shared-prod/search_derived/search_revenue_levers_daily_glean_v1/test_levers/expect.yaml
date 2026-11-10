@@ -5,9 +5,10 @@
 # The legacy search_dau_aggregates desktop row (99, 99) must not be counted: only its mobile rows are read.
 # monetizable_sap on desktop: Google US = 10 (RoW code) + 5 (US code in the US), the no_code row's 3 is not counted; Google DE =
 # the Mint row's 2 only, since the US code row is outside the US; Google TR has SAP but is an excluded territory, so 0;
-# Bing and DuckDuckGo count all their SAP. Google TR has no DAU rows, so its DAU columns are NULL and omitted.
-# New Google codes count as not monetizable until their rule is settled: windows-firefox-o-re adds 4 to Google US sap (22) but not to
-# monetizable_sap (15), and in Google DE on Linux linux-firefoxmnt-o-re (mint-001) and an unlisted code are both not monetizable (0 of 4).
+# Bing counts MOZI and MOZR but not no_code (6 of 9), DuckDuckGo counts ffab and ftsa but not no_code, lm or an unlisted code (9 of 17).
+# Google TR has no DAU rows, so its DAU columns are NULL and omitted.
+# Unlisted Google codes count as not monetizable: windows-firefox-o-re adds 4 to Google US sap (22) but not to monetizable_sap (15),
+# and in Google DE on Linux linux-firefoxmnt-o-re (mint-001) and linux-firefox-us-x are both not monetizable (0 of 4).
 - submission_date: '2026-09-21'
   partner: Google
   device: desktop
@@ -86,7 +87,7 @@
   dau: 3
   dau_w_engine_as_default: 1
   dau_engaged_w_sap: 0
-  sap: 4
+  sap: 9
   tagged_sap: 3
   tagged_follow_on: 1
   search_with_ads: 1
@@ -96,7 +97,7 @@
   search_with_ads_organic: 0
   search_with_ads_serp: 1
   ad_click_serp: 0
-  monetizable_sap: 4
+  monetizable_sap: 6
 - submission_date: '2026-09-21'
   partner: DuckDuckGo
   device: desktop
@@ -105,7 +106,7 @@
   dau: 1
   dau_w_engine_as_default: 1
   dau_engaged_w_sap: 1
-  sap: 6
+  sap: 17
   tagged_sap: 5
   tagged_follow_on: 0
   search_with_ads: 2
@@ -115,7 +116,7 @@
   search_with_ads_organic: 1
   search_with_ads_serp: 1
   ad_click_serp: 1
-  monetizable_sap: 6
+  monetizable_sap: 9
 - submission_date: '2026-09-21'
   partner: Google
   device: mobile

@@ -1,0 +1,20 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the items were created.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
+- name: content_type
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    notebook (excluding Init notebooks), streamlit_app, native_app (notebook published as an app),
+    ask_analysis (/mozdata:ask project), packaged_analysis (/mozdata:package report) or
+    dashboard_skill_app (mozdata dashboard skill app).
+- name: created
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of currently existing items created on submission_date.

@@ -1,0 +1,16 @@
+friendly_name: Deepnote Audit Log
+description: |-
+  Audit log events of Mozilla's Deepnote workspaces, from the Deepnote API. IP
+  addresses are not imported. The entity `resource_id` refers to depends on
+  `event_type`.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.deepnote_derived.audit_log_v1

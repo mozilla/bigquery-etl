@@ -1,0 +1,15 @@
+friendly_name: Deepnote BigQuery Query Jobs
+description: |-
+  BigQuery query jobs that originate from Deepnote, from mozdata's
+  INFORMATION_SCHEMA.JOBS_BY_PROJECT. Query text is not stored.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.deepnote_derived.query_jobs_v1

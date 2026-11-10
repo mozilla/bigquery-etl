@@ -1,0 +1,15 @@
+friendly_name: Deepnote Workspace Snapshot
+description: |-
+  Daily snapshot of projects, notebooks, schedules, Streamlit apps and machines in
+  Mozilla's Deepnote workspaces, from the Deepnote API.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1

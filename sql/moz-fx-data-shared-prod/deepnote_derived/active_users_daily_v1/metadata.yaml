@@ -1,0 +1,26 @@
+friendly_name: Deepnote Active Users Daily
+description: |-
+  Daily DAU, WAU, MAU and member counts per Deepnote workspace, from the audit log
+  and members_v1. Rows with workspace_id = `all` count distinct users across
+  workspaces.
+owners:
+- ascholtz@mozilla.com
+labels:
+  schedule: daily
+  table_type: aggregate
+  dag: bqetl_deepnote
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.deepnote_derived.audit_log_v1
+  - moz-fx-data-shared-prod.deepnote_derived.members_v1

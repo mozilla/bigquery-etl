@@ -31,7 +31,7 @@
   metadata:
     input_fields: ["title", "content"]
     input_char_count: 60
-    model_version: "gemini-2.5-pro"
+    model_version: "gemini-3.8-flash"
     embedding_version: "gemini-embedding-001"
     prompt_version: "v1"
     analysis_timestamp: "2026-05-01T00:00:00+00:00"

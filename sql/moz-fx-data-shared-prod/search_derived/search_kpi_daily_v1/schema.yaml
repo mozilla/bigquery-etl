@@ -1,0 +1,73 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: desktop, android or ios.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: "The country of the client on this day, one value per client-day. For\
+    \ search_clients_daily rows, the country on the most rows of that client-day in\
+    \ search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the\
+    \ country code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's\
+    \ country.\n From desktop_client_day_dims_v1; null if the client has no row there."
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value.\n From desktop_client_day_dims_v1."
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's normalized_os, with\
+    \ Mac written as Darwin to match.\n From desktop_client_day_dims_v1."
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: "The major version of app_version, from mozfun.norm.browser_version_info.\n\
+    \ From desktop_client_day_dims_v1."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and\
+    \ null for any other. Matches substrings of default_search_engine_provider_id,\
+    \ as search_aggregates_glean_v1 does. Null where the provider id is null or names\
+    \ another engine.\n From desktop_client_day_dims_v1."
+- name: meets_population_rules
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether these rows meet the KPI's population rules. FALSE rows are
+    kept so the rules can be audited or changed after client rows are gone. The KPI
+    counts TRUE rows only.
+- name: is_bot
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether these clients are on the shared bot list. NULL means unknown,
+    so filter with `IS NOT TRUE`, never `NOT is_bot`.
+- name: definition_version
+  type: INTEGER
+  mode: NULLABLE
+  description: The kpi_component_map_v1 definition_version these rows were built with.
+- name: component
+  type: STRING
+  mode: NULLABLE
+  description: One of sap, suggest_sponsored, suggest_nonsponsored, ai_chat or sap_excluded.
+    sap_excluded isn't part of the KPI, so leave it out when summing value.
+- name: value
+  type: INTEGER
+  mode: NULLABLE
+  description: The component's count for these clients that day, always above 0.
+- name: client_count_by_kpi_component
+  type: INTEGER
+  mode: NULLABLE
+  description: Clients with value above 0 for this component. Adds up across dimensions
+    within one day and component, but not across days or components. A client with
+    both SAP and Suggest clicks is counted once in each, so summing over components
+    counts it twice. Not the number of clients who searched; for that, see search_derived.search_dau_aggregates_glean_v1.

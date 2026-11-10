@@ -102,11 +102,8 @@ class JsonDecodeError(Exception):
 def bq_client() -> bigquery.Client:
     """Return a BigQuery client shared by all tests in this process.
 
-    Creating a new client per test re-resolves credentials each time. With
-    Workload Identity Federation in CI, every refresh fetches a new GitHub OIDC
-    token, so ~150 parallel tests hammer that endpoint and intermittently fail
-    with RefreshError. Reusing one client means credentials are fetched once per
-    xdist worker and refreshed only when the access token expires.
+    A client per test fetches a new GitHub OIDC token each time in CI, which
+    intermittently fails with RefreshError under many parallel tests.
     """
     return bigquery.Client()
 

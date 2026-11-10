@@ -1,0 +1,33 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date the client sent the pings that matched a fleet rule.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: The legacy telemetry client ID.
+- name: glean_client_ids
+  type: STRING
+  mode: REPEATED
+  description: Glean client IDs that sent a baseline ping with this legacy client ID on the same day.
+- name: fleet
+  type: STRING
+  mode: NULLABLE
+  description: The fleet the client matched. One of 'aws' or 'bulk'.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: The highest Firefox version the client reported on the day.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The operating system version (the kernel release on Linux).
+- name: isp_name
+  type: STRING
+  mode: NULLABLE
+  description: The ISP name from IP geolocation.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The country code from IP geolocation.

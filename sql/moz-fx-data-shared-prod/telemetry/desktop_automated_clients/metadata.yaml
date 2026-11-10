@@ -1,0 +1,6 @@
+friendly_name: Desktop Automated Clients
+description: |-
+  One row per Firefox Desktop client flagged as part of the automated Linux fleets tracked in
+  DENG-11925. See telemetry_derived.desktop_automated_clients_v1 for the rules.
+owners:
+- phlee@mozilla.com

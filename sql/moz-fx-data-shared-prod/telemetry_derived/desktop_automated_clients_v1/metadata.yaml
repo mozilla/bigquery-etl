@@ -1,0 +1,41 @@
+friendly_name: Desktop Automated Clients
+description: |-
+  Firefox Desktop clients flagged as part of the automated Linux fleets tracked in DENG-11925.
+  One row per flagged legacy client_id per submission_date.
+
+  Two fleets are flagged, by the rules from the Desktop Data Science analysis
+  "Linux Bot Wave, November 2026":
+
+  * `aws`: Linux, launched with `-profile`, kernel `*-aws`, 1 CPU, ISP Amazon.com, US, en-US.
+    Most of these clients never send a new-profile ping, so main pings are read too.
+  * `bulk`: a new-profile ping with `-profile`, a profile count of 0, and the WebRender
+    start-up failure `SoftwareRasterizer_FIRST`.
+
+  The rules do not use a Firefox version or a start date. A second bulk image variant
+  (about 19K new profiles a day since 2026-10-28) is not caught yet.
+
+  This is a separate segment from DENG-11590 (udf.is_desktop_argument_profile_automation).
+  The rules need fields that are not in telemetry_derived.clients_first_seen_v3, so this
+  table reads the raw pings. `glean_client_ids` maps each client to the Glean client IDs that
+  sent a baseline ping with the same legacy client ID on the same day.
+
+  Use telemetry.desktop_automated_clients for one row per client.
+owners:
+- phlee@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_analytics_tables
+  task_name: desktop_automated_clients
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - fleet

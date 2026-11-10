@@ -3,7 +3,7 @@ description: |-
   Usage monitoring for Mozilla's Deepnote workspaces, from the Deepnote API and
   Deepnote-originated BigQuery jobs. Tables with user information are restricted
   to data platform, the others are readable by mozilla-confidential.
-dataset_base_acl: restricted
+dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
 workgroup_access:

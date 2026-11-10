@@ -1,0 +1,6 @@
+friendly_name: Deepnote Members
+description: |-
+  Daily snapshot of the members and guests of each Deepnote workspace and their
+  access level, from the Deepnote API.
+owners:
+- ascholtz@mozilla.com

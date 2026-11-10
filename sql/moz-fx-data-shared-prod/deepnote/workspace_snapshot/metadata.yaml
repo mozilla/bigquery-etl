@@ -1,0 +1,6 @@
+friendly_name: Deepnote Workspace Snapshot
+description: |-
+  Daily snapshot of projects, notebooks, schedules, Streamlit apps and machines in
+  Mozilla's Deepnote workspaces, from the Deepnote API.
+owners:
+- ascholtz@mozilla.com

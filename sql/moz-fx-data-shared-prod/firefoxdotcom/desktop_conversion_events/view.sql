@@ -7,7 +7,7 @@ WITH firefoxdotcom_first_sessions AS (
     gclid,
     MIN(session_date) AS first_session_date
   FROM
-    `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1` AS ga_sessions_v1,
+    `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2` AS ga_sessions_v2,
     UNNEST(gclid_array) AS gclid
   WHERE
     country IN (
@@ -76,7 +76,7 @@ SELECT
     CAST(MIN(activity_datetime) AS TIMESTAMP)
   ) AS activity_date_timestamp
 FROM
-  `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_desktop_conversions_v1`
+  `moz-fx-data-shared-prod.firefoxdotcom_derived.glean_ga_desktop_conversions_v1`
 INNER JOIN
   firefoxdotcom_first_sessions
   USING (gclid)

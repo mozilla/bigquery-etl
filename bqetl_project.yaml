@@ -460,6 +460,8 @@ generate:
     - sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/accounts_backend/events_stream/metadata.yaml
+    - sql/moz-fx-data-shared-prod/accounts_frontend/events_stream/metadata.yaml
     skip_apps:
     - moso_mastodon_android
     - moso_mastodon_web

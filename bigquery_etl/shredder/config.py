@@ -259,6 +259,22 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="search_derived.search_clients_daily_glean_v1"
     ): DESKTOP_GLEAN_SRC,
+    # Keyed on the Glean id, like search_clients_daily_glean_v1 above.
+    client_id_target(
+        table="search_derived.desktop_client_day_dims_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
+    # The Glean id is named glean_client_id
+    # Rows also carry legacy_telemetry_client_id
+    # Deletions should happen regardless of the telemetry system the request is received through
+    DeleteTarget(
+        table="firefox_desktop_derived.urlbar_events_v2",
+        field=("glean_client_id", "legacy_telemetry_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_SRC),
+    # Desktop rows only for now; mobile rows will need their apps' deletion sources too.
+    client_id_target(
+        table="search_derived.search_kpi_clients_daily_v1"
+    ): DESKTOP_GLEAN_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
@@ -283,6 +299,19 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.main_use_counter_1pct_v1"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.desktop_retention_clients_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.desktop_retention_clients_v2"
+    ): DESKTOP_SRC,
+    # Legacy first-seen tables, added in DENG-11876.
+    client_id_target(table="telemetry_derived.clients_first_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v2"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v3"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v3"
     ): DESKTOP_SRC,
     client_id_target(
         table="firefox_desktop_derived.desktop_retention_clients_v1"

@@ -1,0 +1,48 @@
+friendly_name: Search KPI Clients Daily
+description: |-
+  The search KPI per client per day: SAP searches plus eligible Suggest clicks, one column
+  per component, with search_queries as their sum. One row per platform, client_id and
+  submission_date. Desktop only for now; mobile rows will be added.
+
+  sap comes from search.search_clients_daily_glean and leaves out rows with a
+  sap_exclusion_reason (10,000 or more searches); sap_excluded holds those. The Suggest
+  components come from search_derived.urlbar_clients_daily_v1, split into suggest_sponsored,
+  suggest_nonsponsored and ai_chat by search_derived.kpi_component_map_v1 as of that day.
+  Dimensions are copied from search_derived.desktop_client_day_dims_v1 so experiments and
+  daily totals don't need to join it again.
+
+  Rows: every client in urlbar_clients_daily_v1 that day, even with nothing counted
+  (in_urlbar), plus clients seen only in search_clients_daily_glean who started at least
+  one search, counted or excluded. A client missing from the table counted 0 that day. Bots and the
+  version floor are flagged (is_bot, meets_population_rules), not filtered out.
+
+  The run fails if a clicked result type has no row in kpi_component_map_v1, so a new
+  Suggest type can't silently fall out of the KPI. action_* types (quick actions) are
+  excluded in the query and need no row. It also fails if that day's
+  urlbar_clients_daily_v1 partition is empty, or if the map has overlapping rows.
+
+  urlbar_clients_daily_v1 has no date_partition_offset, so its task in this DAG run writes
+  the next day. If its partition for day D is rerun, rerun this table for day D too.
+owners:
+- data-search-wg@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_search
+  # search_clients_daily_glean_v1 and desktop_client_day_dims_v1 fill the previous day's
+  # partition on each run, so this table does too.
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields:
+    - platform
+    - sample_id
+require_column_descriptions: true

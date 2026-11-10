@@ -433,6 +433,7 @@ jobs:
     environment: *job-env
     outputs:
       generated-sql-commit: ${{ steps.generate.outputs.generated-sql-commit }}
+      main-merge-base: ${{ steps.generate.outputs.main-merge-base }}
       generated-sql-changed: ${{ steps.generate.outputs.generated-sql-changed }}
     steps:
       - &checkout-with-creds
@@ -455,6 +456,7 @@ jobs:
           git fetch origin main --no-tags
           MAIN_MERGE_BASE=$(git merge-base origin/main HEAD || true)
           echo "merge base with main: $MAIN_MERGE_BASE"
+          echo "main-merge-base=$MAIN_MERGE_BASE" >> "$GITHUB_OUTPUT"
 
           git clone -b generated-sql https://github.com/mozilla/bigquery-etl ~/remote-generated-sql
           cd ~/remote-generated-sql
@@ -536,6 +538,39 @@ jobs:
 
             cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
             cp -a sql/. /tmp/workspace/generated-sql/sql
+
+            # Incomplete metadata.yaml can be checked in to override values from generated sql,
+            # e.g. workgroup_access. The copy above overwrites the generated-sql metadata.yaml with
+            # the partial one which creates unrelated sql diff changes, so use the generated-sql one
+            # if the checked-in file hasn't changed since the generated-sql commit.
+            # The dataset's dataset_metadata.yaml must also be unchanged, since the generated file
+            # already has the old default_table_workgroup_access merged in and metadata update only
+            # adds members.
+            same_as_base() {
+              # true if the file is missing in both or unchanged since the generated-sql commit
+              if [ -e "sql/$1" ] || [ -e ~/remote-bigquery-etl-main/sql/"$1" ]; then
+                cmp -s "sql/$1" ~/remote-bigquery-etl-main/sql/"$1"
+              fi
+            }
+            # Fail loudly if yq isn't available.
+            if ! command -v yq > /dev/null; then
+              echo "yq is required to restore generated metadata.yaml files"
+              exit 1
+            fi
+            while IFS= read -r -d '' metadata_file; do
+              relative_path=${metadata_file#sql/}
+              generated_file=~/remote-generated-sql/sql/$relative_path
+              dataset_metadata_file=$(dirname "$(dirname "$relative_path")")/dataset_metadata.yaml
+              # grep is only a fast pre-filter to avoid running yq on every file
+              if [ -f "$generated_file" ] \
+                && grep -q sql_generator "$generated_file" \
+                && yq -e '.labels.sql_generator' "$generated_file" > /dev/null 2>&1 \
+                && same_as_base "$relative_path" \
+                && same_as_base "$dataset_metadata_file"; then
+                echo "Restoring generated $relative_path"
+                cp "$generated_file" "/tmp/workspace/generated-sql/sql/$relative_path"
+              fi
+            done < <(find sql -name metadata.yaml -print0)
 
             # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
             # no deleted or renamed SQL file, not a push to main, no manual trigger).
@@ -624,6 +659,11 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
           IS_MERGE_GROUP: ${{ github.event_name == 'merge_group' }}
+          # Private CI builds its diff baseline from the generated sql at this commit and
+          # bigquery-etl code at the merge base, so main changes merged after the PR's
+          # base don't show up in the diff
+          GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
+          MAIN_MERGE_BASE: ${{ needs.generate-sql.outputs.main-merge-base }}
         run: |
           if [[ -z "$TRIGGER_TOKEN" ]]; then
             # Private CI is a required check on PRs and merge groups, so without
@@ -644,10 +684,13 @@ jobs:
               --arg sha "$COMMIT_SHA" \
               --arg pr "$PR_NUMBER" \
               --arg run_id "$RUN_ID" \
+              --arg generated_sql_commit "$GENERATED_SQL_COMMIT" \
+              --arg merge_base "$MAIN_MERGE_BASE" \
               --argjson is_main "${IS_MAIN:-false}" \
               --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
               '{event_type: "bqetl-ci", client_payload: {
                 bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
+                generated_sql_commit: $generated_sql_commit, bqetl_merge_base: $merge_base,
                 is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
 
           if [[ "$HTTP_STATUS" != "204" ]]; then

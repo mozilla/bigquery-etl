@@ -60,6 +60,7 @@ fields:
   mode: NULLABLE
   description: |-
     Classification of what kind of problem this log record represents:
-    library_warning, skipped, resources, data, configuration,
+    library_warning, skipped, resources, insufficient_clients, data,
+    configuration,
     valid_degradation, jetstream_failure, informational, or uncategorized.
     See view.sql for the classification rules.

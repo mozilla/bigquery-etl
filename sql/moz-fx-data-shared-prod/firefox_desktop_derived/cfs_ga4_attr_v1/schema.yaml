@@ -326,3 +326,10 @@ fields:
   description: The profile selection reason recorded for the first subsession or ping
     of a client's activity period. Common values include 'default' and 'profile-selector',
     indicating how Firefox chose which profile to load.
+- name: funnel_derived
+  type: STRING
+  mode: NULLABLE
+  description: A categorical label describing the acquisition channel or funnel through
+    which a user was obtained (e.g. 'mozorg windows funnel', 'mozorg mac funnel',
+    'partner', 'other'). This is used to segment users by how they came to install
+    Firefox.

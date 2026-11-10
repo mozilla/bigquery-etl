@@ -2,6 +2,11 @@ friendly_name: Clients First Seen with GA4 Attributes
 description: |-
   Starts with Glean baseline_clients_first_seen and left joins to GA4 attribution information
   on download token if a match is found.
+
+  `funnel_derived` mirrors the legacy `telemetry.cfs_ga4_attr` column. ESR profiles almost
+  never enter the mozorg funnel on Glean, because ESR versions before Firefox 141 don't
+  report the startup reason, so all-channel mozorg Windows counts are lower than legacy.
+  Release-channel counts match legacy within about 1-2%.
 owners:
 - kik@mozilla.com
 - data-marketing-wg@mozilla.com

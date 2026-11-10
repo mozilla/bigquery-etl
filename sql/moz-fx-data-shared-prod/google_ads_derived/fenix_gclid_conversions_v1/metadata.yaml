@@ -7,6 +7,7 @@ description: |-
 owners:
 - kik@mozilla.com
 - ahe@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik

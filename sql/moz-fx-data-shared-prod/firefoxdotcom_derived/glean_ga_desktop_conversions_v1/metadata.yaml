@@ -3,6 +3,7 @@ description: |-
   Query that pulls conversion event data for marketing campaigns
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik

@@ -328,7 +328,6 @@ with DAG(
         {{ task.task_name }} = bigquery_bigeye_check(
             task_id='{{ task.task_name }}',
             table_id='{{ task.project }}.{{ task.dataset }}.{{ task.table }}_{{ task.version }}',
-            warehouse_id='{{ bigeye_warehouse_id }}',
             owner='{{ task.owner }}',
             {%+ if task.description_markdown -%}
             doc_md={{ task.description_markdown | format_repr }},

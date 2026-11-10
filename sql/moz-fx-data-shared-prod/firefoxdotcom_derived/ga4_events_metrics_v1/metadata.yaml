@@ -1,0 +1,39 @@
+friendly_name: GA4 Events Metrics V1
+description: >-
+  Daily aggregate of GA4 events on firefox.com by event name, page, country and selected event
+  parameters. Use for CTA clicks, scrolls, widgets, newsletter sign-ups and page views.
+
+
+  Always filter on event_date and event_name. For sessions and bounces use ga4_sessions_metrics_v1,
+  and for downloads by source, medium or campaign use ga4_download_metrics_v1.
+
+
+  Overlaps with www_site_events_metrics_v1, which reads www_site_hits_v1 and reports Universal
+  Analytics style event_category, event_action and event_label. This table reads the raw GA4 export
+  instead, so it exposes GA4 event names and native event parameters (such as type, position,
+  link_id, link_url and percent_scrolled) that the older table cannot. Use this table for GA4
+  events, and www_site_events_metrics_v1 for continuity with existing dashboards.
+owners:
+- sherrera@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  depends_on:
+  - task_id: wait_for_firefoxdotcom_events_table
+    dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - event_name
+    - page_type
+    - country
+require_column_descriptions: true

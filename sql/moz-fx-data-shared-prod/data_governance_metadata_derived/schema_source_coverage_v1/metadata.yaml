@@ -1,0 +1,30 @@
+friendly_name: Schema Source Coverage
+description: |-
+  One row per resolved source table per scanned bqetl table. Written by the
+  schema coverage scanner in mozilla/data-shared-llm-agents. Records whether a
+  schema.yaml is defined for each table and whether its upstream source
+  schema is fully described.
+
+  Source tables are traced recursively through views until a versioned (_vN)
+  or raw (_live/_stable) table is reached. Multiple rows per target table are
+  produced when it references more than one leaf source. Each scan appends rows
+  tagged with scan_timestamp; query the latest scan per dataset using
+  MAX(scan_timestamp).
+
+  Not scheduled; populated on demand by the schema enricher pipeline.
+
+  Source:
+  https://github.com/mozilla/data-shared-llm-agents/blob/main/agents/schema_enricher/src/schema_enricher/scanner.py
+owners:
+- cbeck@mozilla.com
+- phlee@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: scan_timestamp
+    require_partition_filter: false
+    expiration_days: 180
+  clustering:
+    fields:
+    - project
+    - dataset

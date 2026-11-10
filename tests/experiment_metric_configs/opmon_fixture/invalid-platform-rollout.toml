@@ -1,0 +1,3 @@
+[project]
+platform = "not_a_platform"
+metrics = ["custom_metric"]

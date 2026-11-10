@@ -1,0 +1,8 @@
+friendly_name: Plausible Download Metrics
+description: |-
+  Daily count of product downloads (Plausible product_download events) on
+  firefox.com. Plausible is only initialized in certain GEOs.
+
+  Always filter on date.
+owners:
+- sherrera@mozilla.com

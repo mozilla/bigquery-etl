@@ -1,0 +1,69 @@
+fields:
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+  - name: content
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: term
+    type: STRING
+    mode: NULLABLE
+- name: distribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: name
+    type: STRING
+    mode: NULLABLE
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE

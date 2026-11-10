@@ -1,0 +1,28 @@
+---
+friendly_name: Gecko Trace Traces Daily
+description: |-
+  Daily counts of trace patterns from Gecko traces.
+
+  Each row has one trace signature, its count and its average duration for one day.
+  Join gecko_trace_traces_v1 on trace_signature to get the stable_trace_id.
+  A re-run of the same day replaces the partition.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - trace_signature

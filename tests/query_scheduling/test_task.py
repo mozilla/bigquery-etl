@@ -514,6 +514,36 @@ class TestTask:
             date_partition_parameter="import_date",
         )
 
+    def test_of_query_backfill_date_partition_parameter(self):
+        """backfill_date_partition_parameter is only read by backfills, but DAG
+        generation must accept it in the scheduling config."""
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+                "date_partition_parameter": None,
+                "backfill_date_partition_parameter": "submission_date",
+            },
+        )
+
+        task = Task.of_query(query_file, metadata)
+
+        assert task.date_partition_parameter is None
+        assert task.backfill_date_partition_parameter == "submission_date"
+
     def test_task_get_dependencies_none(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)

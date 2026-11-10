@@ -469,6 +469,45 @@ def test_context_id_brace_normalization():
     assert "REPLACE(REPLACE(payload.scalars.parent.deletion_request_context_id" in sql
 
 
+def test_select_source_ids_are_deduplicated():
+    """Ensure the anti-join build side selects DISTINCT ids."""
+    mock_client = Mock()
+
+    delete_func = delete_from_partition(
+        dry_run=True,
+        partition=Partition(condition="", id="20260101"),
+        priority="INTERACTIVE",
+        source_condition="",
+        sources=[
+            DeleteSource(
+                project="test_project",
+                field="client_info.client_id",
+                table="firefox.deletion_request_v1",
+            )
+        ],
+        target=DeleteTarget(
+            project="test_project",
+            field="client_info.client_id",
+            table="firefox.metrics_v1",
+        ),
+        use_dml=False,
+        column_removal_backfill=False,
+        task_id="test",
+        states={},
+        state_table=None,
+        start_date=None,
+        end_date=None,
+    )
+
+    delete_func(mock_client)
+
+    sql = mock_client.query.call_args[0][0]
+
+    assert "SELECT DISTINCT" in sql
+    assert "client_info.client_id AS _source_0" in sql
+    assert "_source_0 IS NULL" in sql
+
+
 def test_delete_from_partition_with_column_removal_false():
     """column_removal_backfill=False should execute a SELECT * and write to the target table."""
     mock_client = Mock()

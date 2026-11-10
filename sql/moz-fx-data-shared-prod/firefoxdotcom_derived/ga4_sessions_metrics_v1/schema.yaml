@@ -1,0 +1,73 @@
+fields:
+- name: session_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the sessions started.
+- name: hostname
+  type: STRING
+  mode: NULLABLE
+  description: Host of the landing page, lowercased. Use www.firefox.com for the production site.
+- name: landing_locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale prefix of the landing page, e.g. en-US.
+- name: landing_page
+  type: STRING
+  mode: NULLABLE
+  description: Path of the landing page without host, locale prefix or query string. NULL when the session has no landing page.
+- name: landing_page_type
+  type: STRING
+  mode: NULLABLE
+  description: Category of the landing page from its first path segment, using the same values as page_type in ga4_events_metrics_v1.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country name as reported by GA4.
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device category of the session, e.g. desktop, mobile, tablet.
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.manual_source.
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.manual_medium.
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.manual_campaign_name.
+- name: channel_group
+  type: STRING
+  mode: NULLABLE
+  description: GA4 default channel group of the session.
+- name: ad_platform
+  type: STRING
+  mode: NULLABLE
+  description: From ga_sessions_v2.ad_crosschannel_source_platform.
+- name: sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of sessions.
+- name: engaged_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of engaged sessions. Bounces are sessions minus engaged_sessions.
+- name: sessions_with_download
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of sessions with at least one download event.
+- name: firefox_desktop_downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of firefox_download events in these sessions.
+- name: total_pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: Sum of pageviews across sessions.
+- name: total_time_on_site_seconds
+  type: INTEGER
+  mode: NULLABLE
+  description: Sum of time on site in seconds across sessions.

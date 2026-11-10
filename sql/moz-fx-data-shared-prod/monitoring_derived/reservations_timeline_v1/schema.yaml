@@ -1,0 +1,152 @@
+fields:
+
+- mode: NULLABLE
+  name: period_start
+  type: TIMESTAMP
+  description: (Partitioning column) Start of the one minute period that this row describes.
+
+- mode: NULLABLE
+  name: project_id
+  type: STRING
+  description: ID of the administration project that owns the reservation.
+
+- mode: NULLABLE
+  name: project_number
+  type: INTEGER
+  description: Number of the administration project that owns the reservation.
+
+- mode: NULLABLE
+  name: reservation_name
+  type: STRING
+  description: (Clustering column) Name of the reservation.
+
+- mode: NULLABLE
+  name: ignore_idle_slots
+  type: BOOLEAN
+  description: If true, jobs in the reservation only use the slots assigned to it. If false, they can also use idle slots from other reservations.
+
+- mode: NULLABLE
+  name: slots_assigned
+  type: INTEGER
+  description: Number of slots assigned to the reservation during the period.
+
+- mode: NULLABLE
+  name: slots_max_assigned
+  type: INTEGER
+  description: Maximum number of slots available to the reservation during the period, including idle slots borrowed from other reservations.
+
+- mode: NULLABLE
+  name: reservation_id
+  type: STRING
+  description: ID of the reservation, in the format project_id:location.reservation_name.
+
+- mode: NULLABLE
+  name: autoscale
+  type: RECORD
+  description: Autoscale capacity of the reservation.
+  fields:
+  - mode: NULLABLE
+    name: current_slots
+    type: INTEGER
+    description: Number of slots added to the reservation by autoscaling during the period.
+  - mode: NULLABLE
+    name: max_slots
+    type: INTEGER
+    description: Maximum number of slots that autoscaling can add to the reservation.
+
+- mode: NULLABLE
+  name: edition
+  type: STRING
+  description: BigQuery edition associated with the reservation, for example STANDARD, ENTERPRISE, or ENTERPRISE_PLUS.
+
+- mode: NULLABLE
+  name: scheduling_policy
+  type: RECORD
+  description: Scheduling policy configured for the reservation.
+  fields:
+  - mode: NULLABLE
+    name: max_slots
+    type: INTEGER
+    description: Per job slot limit from the scheduling policy, if one is set.
+  - mode: NULLABLE
+    name: concurrency
+    type: INTEGER
+    description: Job concurrency limit from the scheduling policy, if one is set.
+
+- mode: NULLABLE
+  name: max_slots
+  type: INTEGER
+  description: Maximum number of slots the reservation can use, including baseline and autoscaling slots.
+
+- mode: NULLABLE
+  name: scaling_mode
+  type: STRING
+  description: How the reservation scales beyond its baseline, for example AUTOSCALE_ONLY, IDLE_SLOTS_ONLY, or ALL_SLOTS.
+
+- mode: REPEATED
+  name: labels
+  type: RECORD
+  description: Array of labels applied to the reservation as key-value pairs.
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+    description: Label name.
+  - mode: NULLABLE
+    name: value
+    type: STRING
+    description: Label value.
+
+- mode: REPEATED
+  name: reservation_group_path
+  type: STRING
+  description: Path of reservation groups that the reservation belongs to, if any.
+
+- mode: NULLABLE
+  name: slot_capacity
+  type: INTEGER
+  description: Baseline number of slots for the reservation.
+
+- mode: NULLABLE
+  name: is_creation_region
+  type: BOOLEAN
+  description: Whether this region is the region the reservation was created in. False for the secondary region of a reservation with failover enabled.
+
+- mode: NULLABLE
+  name: period_autoscale_slot_seconds
+  type: INTEGER
+  description: Autoscale slot seconds consumed by the reservation during the period.
+
+- mode: REPEATED
+  name: per_second_details
+  type: RECORD
+  description: Per second breakdown of slot usage within the one minute period. Filled in about 5 minutes after the period it describes.
+  fields:
+  - mode: NULLABLE
+    name: start_time
+    type: TIMESTAMP
+    description: Start of the one second interval.
+  - mode: NULLABLE
+    name: autoscale_current_slots
+    type: INTEGER
+    description: Number of slots added to the reservation by autoscaling during the interval.
+  - mode: NULLABLE
+    name: autoscale_max_slots
+    type: INTEGER
+    description: Maximum number of slots that autoscaling can add to the reservation.
+  - mode: NULLABLE
+    name: slots_assigned
+    type: INTEGER
+    description: Number of slots assigned to the reservation during the interval.
+  - mode: NULLABLE
+    name: slots_max_assigned
+    type: INTEGER
+    description: Maximum number of slots available to the reservation during the interval, including idle slots borrowed from other reservations.
+  - mode: NULLABLE
+    name: borrowed_slots
+    type: INTEGER
+    description: Number of idle slots the reservation borrowed from other reservations during the interval.
+  - mode: NULLABLE
+    name: lent_slots
+    type: INTEGER
+    description: Number of idle slots the reservation lent to other reservations during the interval.

@@ -43,7 +43,7 @@ fields:
 - mode: NULLABLE
   name: query_id
   type: STRING
-  description: The id of the query
+  description: The id of the Redash query. Child jobs of a script inherit it from the parent job.
 
 - mode: NULLABLE
   name: reference_project_id
@@ -83,7 +83,8 @@ fields:
 - mode: NULLABLE
   name: username
   type: STRING
-  description: The name of the user who ran the job
+  description: The name of the Redash user who ran the job. Child jobs of a script inherit it from
+    the parent job.
 
 - mode: NULLABLE
   name: task_duration

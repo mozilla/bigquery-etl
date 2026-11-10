@@ -3,6 +3,7 @@ description: |-
   Each row represents an event where the page_location is a what's new page.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik

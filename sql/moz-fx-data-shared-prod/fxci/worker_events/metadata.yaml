@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Worker Events
+description: Derived Firefox-CI worker-manager events exported from Taskcluster pulse.
+owners:
+- ahalberstadt@mozilla.com

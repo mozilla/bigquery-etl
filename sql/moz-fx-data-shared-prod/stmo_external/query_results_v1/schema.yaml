@@ -1,0 +1,29 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: org_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash organization ID. There is only one organization.
+- name: data_source_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the data source the query ran against, see `data_sources_v1`.
+- name: query_hash
+  type: STRING
+  mode: NULLABLE
+  description: Hash of the query text, used to match rows in `queries_v1`.
+- name: query
+  type: STRING
+  mode: NULLABLE
+  description: SQL text that was run, with parameters applied.
+- name: runtime
+  type: FLOAT
+  mode: NULLABLE
+  description: Query runtime in seconds.
+- name: retrieved_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the result was retrieved.

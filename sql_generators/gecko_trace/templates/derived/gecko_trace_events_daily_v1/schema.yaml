@@ -1,0 +1,14 @@
+---
+fields:
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+    description: Date when the pings were received on the server side.
+  - name: event_signature
+    type: STRING
+    mode: NULLABLE
+    description: FK to gecko_trace_events_v1. Signature of the event type.
+  - name: hit_count
+    type: INT64
+    mode: NULLABLE
+    description: Number of times this event occurred on submission_date.

@@ -1,0 +1,28 @@
+---
+friendly_name: Gecko Trace Events Daily
+description: |-
+  Daily counts of event types from Gecko traces.
+
+  Each row has one event signature and its count for one day.
+  Join gecko_trace_events_v1 on event_signature to get the stable_event_id.
+  A re-run of the same day replaces the partition.
+
+owners:
+  - jjalkanen@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - event_signature

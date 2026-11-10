@@ -1,0 +1,14 @@
+friendly_name: suggest
+description: suggest syndicate views
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-ads-prod"
+    syndicated_dataset: "suggest"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:ads/data-viewers

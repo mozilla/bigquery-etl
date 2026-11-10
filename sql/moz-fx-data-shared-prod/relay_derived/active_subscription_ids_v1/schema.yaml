@@ -2,6 +2,11 @@ fields:
 - name: active_date
   type: DATE
   mode: NULLABLE
+  description: Date on which the subscription was active.
 - name: subscription_id
   type: STRING
   mode: NULLABLE
+  description: Identifier of a Firefox Relay subscription active on the given active_date, taken from
+    `relay.subscriptions.subscription_id`. This is the Stripe subscription ID (e.g., sub_...), with a `-N`
+    suffix added for the Nth plan-change record of the same Stripe subscription; strip the suffix before
+    joining to Stripe tables.

@@ -134,6 +134,13 @@ A missing file fails the task with an explicit message and leaves the
 destination partition untouched, so a late export is fixed by clearing the task
 once the file lands.
 
+`bqetl_plausible_derived` (in `plausible_derived/`) has no partition-existence
+sensor on this data -- it just runs an hour later and retries if the export
+hasn't landed yet. So clearing the `bqetl_plausible` load task only fixes
+`plausible_external`; the `bqetl_plausible_derived` tasks will already be
+failed from exhausting their own retries and need clearing separately once
+the export is in.
+
 The DAG carries `triage/no_triage` because it is expected to fail daily until
 the vendor feed resumes. Drop that tag once the cadence is confirmed.
 

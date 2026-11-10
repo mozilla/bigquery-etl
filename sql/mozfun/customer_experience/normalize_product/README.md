@@ -2,6 +2,8 @@
 
 Maps a raw product identifier to the canonical CX product name. Replaces the static lookup table `moz-fx-data-shared-prod.static.cx_product_mappings_v1`.
 
+Note: the newer [`cx_normalize_product`](../cx_normalize_product/README.md) UDF is now preferred for new work. It differs in one key way: unmatched input here returns `'Other'`, while `cx_normalize_product` splits that case into `'unclassified'` (truly unrecognized) vs `'Other'` (deliberately grouped, e.g. Pocket, Hubs, contributor pages).
+
 ```
 mozfun.customer_experience.normalize_product(raw STRING, source STRING) -> STRING
 ```

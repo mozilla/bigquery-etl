@@ -1,0 +1,11 @@
+---
+friendly_name: Gecko Trace Events Bridge
+description: |-
+  Ordered events of each trace pattern across all Firefox applications.
+
+  Each row has one position in one trace signature, with the stable ids and
+  the source location of the event at that position. Use this view to
+  reconstruct the source locations of a stable_trace_id.
+
+owners:
+  - jjalkanen@mozilla.com

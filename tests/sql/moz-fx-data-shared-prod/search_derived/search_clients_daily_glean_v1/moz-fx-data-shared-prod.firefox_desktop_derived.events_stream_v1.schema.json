@@ -1,0 +1,159 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "time_partitioning_field"
+  },
+  {
+    "name": "event",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "document_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "legacy_telemetry_client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "profile_group_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_country_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_os",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_os_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_info",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "app_display_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "app_channel",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "locale",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "os",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "os_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "windows_build_number",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "first_run_date",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "distribution",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "name",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ping_info",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "start_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "end_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "seq",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "name": "metrics",
+    "type": "JSON",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "event_extra",
+    "type": "JSON",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "experiments",
+    "type": "JSON",
+    "mode": "NULLABLE"
+  }
+]

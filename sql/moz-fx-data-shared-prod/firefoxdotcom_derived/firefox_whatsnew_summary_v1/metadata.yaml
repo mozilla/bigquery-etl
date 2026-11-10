@@ -2,10 +2,9 @@ friendly_name: Firefox Whatsnew Summary V1
 description: |-
   This table aggregates the traffic to Firefox "what's new" pages using Google Analytics 4 data
 owners:
-- mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
 #scheduling:
 #  dag_name: bqetl_ga4_firefoxdotcom
 bigquery:
@@ -19,3 +18,4 @@ bigquery:
     - country
     - version
 deprecated: true
+deletion_date: 2026-10-01

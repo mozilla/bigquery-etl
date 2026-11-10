@@ -1,0 +1,6 @@
+friendly_name: Deprecated Tables
+description: |-
+  Contains tables that are deprecated with deletion date
+owners:
+- ascholtz@mozilla.com
+- mwilliams@mozilla.com

@@ -1,0 +1,29 @@
+friendly_name: STMO Events
+description: >
+  Events from the `events` table in the Redash (sql.telemetry.mozilla.org) metadata database,
+  such as query executions and dashboard views, partitioned by the day they were created.
+# Managed backfills need --query-script-entrypoint=main --query-script-date-arg=date
+# --query-script-dry-run-arg=--dry-run, plus query_script_args setting
+# --destination-table to the staging table and --billing-project to a backfill project.
+owners:
+  - bewu@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_stmo
+  arguments:
+    - "--date"
+    - "{{ ds }}"
+    - "--destination-table"
+    - "moz-fx-data-shared-prod.stmo_external.events_v1"
+bigquery:
+  time_partitioning:
+    type: day
+    field: created_at
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+      - action
+      - object_type

@@ -3,6 +3,7 @@ description: |-
   Blog page engagement metrics by page title and date for blog.mozilla.org pages.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

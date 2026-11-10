@@ -8,6 +8,8 @@ test_data:
       firefox_android_clients: firefox_android_clients.yaml
     firefox_ios:
       firefox_ios_clients: firefox_ios_clients.yaml
+    focus_android:
+      core_clients_last_seen: core_clients_last_seen.yaml
 test_schemas:
   - common:
       active_users: active_users.schema.json
@@ -16,3 +18,5 @@ test_schemas:
       firefox_android_clients: firefox_android_clients.schema.json
     firefox_ios:
       firefox_ios_clients: firefox_ios_clients.schema.json
+    focus_android:
+      core_clients_last_seen: core_clients_last_seen.schema.json

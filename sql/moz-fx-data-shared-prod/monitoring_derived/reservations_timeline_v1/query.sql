@@ -1,0 +1,24 @@
+SELECT
+  period_start,
+  project_id,
+  project_number,
+  reservation_name,
+  ignore_idle_slots,
+  slots_assigned,
+  slots_max_assigned,
+  reservation_id,
+  autoscale,
+  edition,
+  scheduling_policy,
+  max_slots,
+  scaling_mode,
+  labels,
+  reservation_group_path,
+  slot_capacity,
+  is_creation_region,
+  period_autoscale_slot_seconds,
+  per_second_details,
+FROM
+  `moz-fx-bigquery-reserv-global.region-us.INFORMATION_SCHEMA.RESERVATIONS_TIMELINE`
+WHERE
+  DATE(period_start) = @submission_date

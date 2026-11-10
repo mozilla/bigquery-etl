@@ -2,7 +2,7 @@ WITH terminal_queries AS (
   SELECT
     ARRAY_AGG(sanitized ORDER BY sequence_no DESC, `timestamp` DESC LIMIT 1)[SAFE_OFFSET(0)].*
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` sanitized
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4` sanitized
   WHERE
     DATE(`timestamp`) > DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND DATE(`timestamp`) <= @submission_date

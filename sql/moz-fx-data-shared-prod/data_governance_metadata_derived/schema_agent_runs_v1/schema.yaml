@@ -1,0 +1,61 @@
+fields:
+- name: run_id
+  type: STRING
+  mode: REQUIRED
+  description: Unique identifier for the agent run.
+- name: agent_name
+  type: STRING
+  mode: REQUIRED
+  description: Name of the agent that executed this run (e.g. schema_enricher).
+- name: model_id
+  type: STRING
+  mode: REQUIRED
+  description: LLM model identifier used for this run.
+- name: prompt
+  type: STRING
+  mode: REQUIRED
+  description: The prompt or task description provided to the agent.
+- name: final_output
+  type: STRING
+  mode: NULLABLE
+  description: Final text output produced by the agent; null on error.
+- name: status
+  type: STRING
+  mode: REQUIRED
+  description: Run outcome; one of success or error.
+- name: error_message
+  type: STRING
+  mode: NULLABLE
+  description: Error detail when status is error; null on success.
+- name: input_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Total input tokens consumed across all LLM calls in the run.
+- name: output_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Total output tokens produced across all LLM calls in the run.
+- name: total_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Sum of input and output tokens for the run.
+- name: cost_usd
+  type: FLOAT
+  mode: NULLABLE
+  description: Estimated cost in USD for all LLM calls in the run.
+- name: started_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: UTC timestamp when the run started. This is the table's partition column.
+- name: finished_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: UTC timestamp when the run finished.
+- name: duration_seconds
+  type: FLOAT
+  mode: REQUIRED
+  description: Wall-clock duration of the run in seconds.
+- name: run_source
+  type: STRING
+  mode: NULLABLE
+  description: Source or trigger of the run (e.g. ui, api); null when not specified.

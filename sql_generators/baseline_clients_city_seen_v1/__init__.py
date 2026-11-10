@@ -32,10 +32,10 @@ def get_app_info_map() -> Dict[str, List[str]]:
         ],
     }
     """
-    app_info = get_app_info()
+    all_app_info = get_app_info()
     app_info = [
         info
-        for name, info in app_info.items()
+        for name, info in all_app_info.items()
         if name
         in ConfigLoader.get(
             "generate", "baseline_clients_city_seen", "apps", fallback=[]
@@ -82,8 +82,18 @@ def generate(target_project, output_dir, use_cloud_function):
     view_template = env.get_template("view.sql")
     schema_template = "schema.yaml"
     metadata_template = "metadata.yaml"
+    bigconfig_template = env.get_template("bigconfig.yml")
 
     app_info_map = get_app_info_map()
+    low_volume_apps = ConfigLoader.get(
+        "generate", "baseline_clients_city_seen", "low_volume_apps", fallback=[]
+    )
+    skip_freshness_volume_apps = ConfigLoader.get(
+        "generate",
+        "baseline_clients_city_seen",
+        "skip_freshness_volume_apps",
+        fallback=[],
+    )
 
     for app_name, app_id_list in app_info_map.items():
 
@@ -115,6 +125,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 template_folder=THIS_PATH / "templates",
                 app_name=app_name,
                 table_name=TABLE_NAME,
+                skip_freshness_volume=app_name in skip_freshness_volume_apps,
                 format=False,
             ),
             skip_existing=False,
@@ -129,6 +140,21 @@ def generate(target_project, output_dir, use_cloud_function):
                 schema_template,
                 template_folder=THIS_PATH / "templates",
                 format=False,
+            ),
+            skip_existing=False,
+        )
+
+        # Write Bigeye config files.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}_derived.{TABLE_NAME}",
+            basename="bigconfig.yml",
+            sql=bigconfig_template.render(
+                project_id=target_project,
+                app_name=app_name,
+                table_name=TABLE_NAME,
+                low_volume=app_name in low_volume_apps,
+                skip_freshness_volume=app_name in skip_freshness_volume_apps,
             ),
             skip_existing=False,
         )

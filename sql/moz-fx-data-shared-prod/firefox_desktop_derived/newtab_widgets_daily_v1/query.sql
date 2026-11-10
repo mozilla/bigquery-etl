@@ -14,8 +14,8 @@ WITH widget_events AS (
     AND event.category = 'newtab'
     AND event.name IN ('widgets_impression', 'widgets_user_event', 'widgets_enabled')
     AND mozfun.map.get_key(event.extra, 'widget_name') IS NOT NULL
-    -- DENG-11596: exclude crossword keystroke/cursor noise and context menu echoes,
-    -- which were mistakenly emitted as genuine user actions. See DENG-11450.
+    -- Exclude widget events mistakenly recorded as genuine user actions.
+    -- See the newtab_is_noise_widget_event UDF for the current exclusion criteria.
     AND NOT `moz-fx-data-shared-prod.udf.newtab_is_noise_widget_event`(
       event.category,
       event.name,

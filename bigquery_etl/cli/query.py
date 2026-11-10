@@ -35,6 +35,7 @@ from ..backfill.utils import (
     get_effective_retention_days,
     qualified_table_name_matching,
     resolve_date_partition_parameter,
+    resolve_scheduling_parameters,
 )
 from ..cli import check
 from ..cli.format import format
@@ -67,6 +68,7 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     DATASET_METADATA_FILE,
+    DEFAULT_DESCRIPTION_IN_METADATA,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -243,7 +245,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         view_metadata_file = view_path / "metadata.yaml"
         view_metadata = Metadata(
             friendly_name=string.capwords(name.replace("_", " ")),
-            description="Please provide a description for the query",
+            description=DEFAULT_DESCRIPTION_IN_METADATA,
             owners=[owner],
             labels={"owner": safe_owner},
         )
@@ -261,7 +263,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     metadata_file = derived_path / "metadata.yaml"
     metadata = Metadata(
         friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the query",
+        description=DEFAULT_DESCRIPTION_IN_METADATA,
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
@@ -718,7 +720,9 @@ def _backfill_script(
     default="{}",
     help=(
         "Pass overrides as a JSON string for scheduling sections: "
-        "parameters and/or date_partition_parameter as needed."
+        "parameters and/or date_partition_parameter as needed. A "
+        "date_partition_parameter override has no effect on tables that set "
+        "backfill_date_partition_parameter; override that instead."
     ),
 )
 @backfill_options.override_retention()
@@ -910,7 +914,7 @@ def backfill(
         scheduling_metadata = metadata.scheduling.copy()
         scheduling_metadata.update(json.loads(scheduling_overrides))
         date_partition_parameter = resolve_date_partition_parameter(scheduling_metadata)
-        scheduling_parameters = scheduling_metadata.get("parameters", [])
+        scheduling_parameters = resolve_scheduling_parameters(scheduling_metadata)
         date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
         client = bigquery.Client(project=project_id)
@@ -1648,8 +1652,8 @@ def validate(
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    table_dirs = []
     dataset_dirs = set()
-    errors = []
     for query in query_files:
         click.echo(f"Validating metadata for {query}")
         if not skip_format_sql:
@@ -1666,10 +1670,7 @@ def validate(
                 billing_project=billing_project,
             )
 
-        try:
-            validate_metadata.validate(query.parent)
-        except validate_metadata.MetadataValidationError as e:
-            errors.append(str(e))
+        table_dirs.append(query.parent)
         dataset_dirs.add(query.parent.parent)
 
     if no_dryrun:
@@ -1686,11 +1687,7 @@ def validate(
             ):
                 dataset_dirs.add(dataset_path)
 
-    for dataset_dir in dataset_dirs:
-        try:
-            validate_metadata.validate_datasets(dataset_dir)
-        except validate_metadata.MetadataValidationError as e:
-            errors.append(str(e))
+    errors = validate_metadata.validate_directories(table_dirs, dataset_dirs)
 
     if len(errors) > 0:
         click.echo(

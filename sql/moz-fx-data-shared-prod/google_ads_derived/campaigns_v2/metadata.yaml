@@ -6,6 +6,7 @@ description: |-
   take the last campaign name found.
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: false
 scheduling:

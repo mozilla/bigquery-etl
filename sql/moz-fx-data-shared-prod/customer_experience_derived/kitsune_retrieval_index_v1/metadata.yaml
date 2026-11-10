@@ -31,7 +31,7 @@ labels:
 schema:
   allow_field_addition: true
 scheduling:
-  dag_name: bqetl_analytics_tables
+  dag_name: bqetl_customer_experience
 bigquery:
   time_partitioning:
     type: day

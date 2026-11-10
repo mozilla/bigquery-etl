@@ -1,0 +1,101 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: submission_timestamp
+- name: sample_id
+  type: INTEGER
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: sample_id
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: app_version_major
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: client_id
+- name: implementation
+  type: STRING
+  mode: NULLABLE
+  description: Which Remote Settings client emitted the event; "gecko" for the
+    JavaScript implementation in Gecko, "rust" for the Application-Services
+    implementation.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: Platform the event was reported from; one of "desktop", "android",
+    or "ios".
+- name: normalized_app_id
+  type: STRING
+  mode: NULLABLE
+  description: The BigQuery dataset family of the app that sent the ping (e.g.
+    "firefox_desktop", "org_mozilla_firefox_beta", "org_mozilla_ios_fennec").
+    Distinguishes the individual apps behind a single platform and channel, since
+    several Fenix datasets share the "nightly" channel.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: normalized_channel
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: normalized_os
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: normalized_os_version
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: /bigquery_etl/schema/global.yaml
+    field: country_code
+- name: extra_status
+  type: STRING
+  mode: NULLABLE
+  description: Outcome of the synchronization attempt (e.g. "success",
+    "up_to_date", "sign_error", "network_error"). Reported in the event's "value"
+    extra key rather than "status".
+- name: extra_trigger
+  type: STRING
+  mode: NULLABLE
+  description: What initiated the synchronization (e.g. "timer", "manual",
+    "broadcast", "startup").
+- name: extra_source
+  type: STRING
+  mode: NULLABLE
+  description: Remote Settings source the event relates to, usually
+    "settings-sync" or a "<bucket>/<collection>" pair.
+- name: extra_errorname
+  type: STRING
+  mode: NULLABLE
+  description: Name of the error class when the synchronization failed, NULL
+    otherwise.
+- name: extra_timestamp
+  type: STRING
+  mode: NULLABLE
+  description: Collection timestamp reported by the client, as a string. This is
+    the Remote Settings collection version, not a wall-clock time.
+- name: extra_age
+  type: FLOAT64
+  mode: NULLABLE
+  description: Age in seconds of the local data at the time of the event, i.e. how
+    stale the client's copy of the collection was.
+- name: extra_duration
+  type: INTEGER
+  mode: NULLABLE
+  description: Duration of the synchronization in milliseconds.

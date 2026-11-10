@@ -35,7 +35,6 @@ ARTIFACT_TEMPLATES = (
 )
 
 BIGEYE_COLLECTION = "Operational Checks"
-BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"
 
 APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
 
@@ -158,7 +157,6 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
         "project_id": target_project,
         "usage_reporting_stable_table_name": "usage_reporting_v1",
         "bigeye_collection": BIGEYE_COLLECTION,
-        "bigeye_notification_slack_channel": BIGEYE_NOTIFICATION_SLACK_CHANNEL,
     }
 
     for app_name, app_channels in generator_apps_info.items():

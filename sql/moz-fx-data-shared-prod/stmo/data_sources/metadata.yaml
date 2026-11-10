@@ -1,0 +1,6 @@
+friendly_name: STMO Data Sources
+description: A copy of the `data_sources` table from the Redash (sql.telemetry.mozilla.org) metadata database,
+  excluding `encrypted_options`, which holds data source credentials, updated daily to match the current
+  state of the table.
+owners:
+- bewu@mozilla.com

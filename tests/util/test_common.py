@@ -12,6 +12,7 @@ from bigquery_etl.util.common import (
     exit_if_running_under_coding_agent,
     extract_last_group_by_from_query,
     get_table_dir,
+    get_unittests_dir,
     project_dirs,
     qualify_table_references_in_file,
     render,
@@ -555,6 +556,13 @@ class TestUtilCommon:
             output_dir=Path("sql/project1"),
             full_table_id="project1.dataset1.table1",
             parts=3,
+        )
+
+    def test_get_unittests_dir(self):
+        """Test cases using relative and absolute sql directories."""
+        assert Path("tests/sql") == get_unittests_dir("sql")
+        assert Path("/tmp/workspace/generated-sql/tests/sql") == get_unittests_dir(
+            Path("/tmp/workspace/generated-sql/sql/")
         )
 
 

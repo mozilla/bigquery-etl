@@ -1,0 +1,11 @@
+---
+friendly_name: Gecko Trace Events Daily
+description: |-
+  Daily event counts across all Firefox applications, with stable ids.
+
+  Each row has one (app_id, submission_date, event_signature) and its count.
+  Sum hit_count by stable_event_id over a date range to count an event type
+  across Firefox releases.
+
+owners:
+  - jjalkanen@mozilla.com

@@ -26,6 +26,13 @@ scheduling:
   date_partition_parameter: first_seen_date
   parameters:
   - submission_date:DATE:{{ds}}
+monitoring:
+  enabled: true
+  partition_column: first_seen_date
+  volume:
+    blocking: false
+  freshness:
+    blocking: false
 bigquery:
   time_partitioning:
     type: day

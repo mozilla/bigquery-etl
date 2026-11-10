@@ -1,0 +1,55 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: submission_date
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: desktop, android or ios.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: country
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: normalized_channel
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: os
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: app_version_major
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_clients_daily_v1
+  field: normalized_default_search_engine
+- name: meets_population_rules
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether these rows meet the KPI's population rules. FALSE rows are kept so
+    the rules can be audited or changed after client rows are gone. The KPI counts TRUE
+    rows only.
+- name: is_bot
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether these clients are on the shared bot list. NULL means unknown, so
+    filter with `IS NOT TRUE`, never `NOT is_bot`.
+- name: definition_version
+  type: INTEGER
+  mode: NULLABLE
+  description: The kpi_component_map_v1 definition_version these rows were built with.
+- name: component
+  type: STRING
+  mode: NULLABLE
+  description: One of sap, suggest_sponsored, suggest_nonsponsored, ai_chat or sap_excluded.
+    sap_excluded isn't part of the KPI, so leave it out when summing value.
+- name: value
+  type: INTEGER
+  mode: NULLABLE
+  description: The component's count for these clients that day, always above 0.
+- name: client_count_by_kpi_component
+  type: INTEGER
+  mode: NULLABLE
+  description: Clients with value above 0 for this component. Adds up across dimensions
+    within one day and component, but not across days or components. A client with both
+    SAP and Suggest clicks is counted once in each, so summing over components counts it
+    twice. Not the number of clients who searched; for that, see
+    search_derived.search_dau_aggregates_glean_v1.

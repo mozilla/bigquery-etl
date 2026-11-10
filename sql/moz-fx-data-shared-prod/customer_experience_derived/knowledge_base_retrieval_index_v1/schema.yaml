@@ -168,7 +168,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Version identifier of the generative AI model used for analysis (e.g.,
-      gemini-2.5-pro).
+      gemini-3.8-flash).
   - name: embedding_version
     type: STRING
     mode: NULLABLE

@@ -17,7 +17,6 @@ from io import BytesIO, TextIOWrapper
 from pathlib import Path
 from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
-import google.auth
 import yaml
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
@@ -109,10 +108,7 @@ def bq_client() -> bigquery.Client:
     with RefreshError. Reusing one client means credentials are fetched once per
     xdist worker and refreshed only when the access token expires.
     """
-    credentials, project = google.auth.default(
-        scopes=["https://www.googleapis.com/auth/cloud-platform"]
-    )
-    return bigquery.Client(credentials=credentials, project=project)
+    return bigquery.Client()
 
 
 @contextmanager

@@ -1,4 +1,4 @@
-{% set llm_model = 'gemini-2.5-pro' %}
+{% set llm_model = 'gemini-3.8-flash' %}
 {% set embedding_model = 'gemini-embedding-001' %}
 {% set sentiment_bound = 1 %}
 {%- set question_prompt =

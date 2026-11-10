@@ -1,0 +1,12 @@
+# bqetl target for CI stage deploys, the single definition shared by
+# deploy-changes-to-stage (build.yml here and in private-bigquery-etl) and the
+# reset-stage-env reusable workflow. Jobs copy it to bqetl_targets.yaml.
+# reset-stage-env finds the datasets to delete from the same dataset template
+# deploy used, so the two must never diverge.
+stage:
+  project_id: moz-fx-data-integration-tests
+  dataset: "{{ git.branch }}_{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}"
+  artifact_prefix: "{{ artifact.project_id }}__{{ artifact.dataset_id }}__"
+  grant_dryrun_access: true
+  expire_after_hours: 12
+  rewrite_tests: true

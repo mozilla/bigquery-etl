@@ -1,0 +1,95 @@
+# Reusable workflow, called from build.yml here and from mozilla/private-bigquery-etl.
+#
+# Jobs run in the caller's context: the checkout is the caller's repo, and secrets,
+# vars and the dev environment come from it too. A caller other than bigquery-etl sets
+# clone-bigquery-etl so the bqetl tooling is cloned into bigquery-etl/.
+#
+# Deletes the stage datasets this run's deploy-changes-to-stage job created. Both
+# use the stage target in .github/bqetl_targets.ci.yaml (from the bigquery-etl
+# checkout), so the dataset names match.
+name: Reset Stage Environment
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: Python version the caller's build job resolved (the venv cache key includes it)
+        type: string
+        default: '3.11'
+      clone-bigquery-etl:
+        description: >-
+          Clone bigquery-etl, at the commit this workflow was called at, for the bqetl tooling
+          (set by callers other than bigquery-etl)
+        type: boolean
+        default: false
+    secrets:
+      GCP_STAGE_SERVICE_ACCOUNT_EMAIL:
+        description: Service account for the stage project. Not needed if it's a dev environment secret in the caller's repo.
+        required: false
+
+permissions: {}
+
+jobs:
+  reset-stage-env:
+    name: Reset Stage Environment
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: dev
+      deployment: false
+    env:
+      # Where the setup-bqetl action put the bigquery-etl checkout and its venv
+      BQETL_ROOT: ${{ inputs.clone-bigquery-etl && 'bigquery-etl' || '.' }}
+      BQETL_VENV: ${{ inputs.clone-bigquery-etl && 'bigquery-etl/venv' || '.venv' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      # Clone the commit this workflow was called at, so the tooling and the
+      # setup-bqetl action always match the workflow version the caller pinned
+      - name: Clone bigquery-etl
+        if: inputs.clone-bigquery-etl
+        env:
+          BQETL_REPO: ${{ job.workflow_repository }}
+          BQETL_SHA: ${{ job.workflow_sha }}
+        run: |
+          if [ -z "$BQETL_REPO" ] || [ -z "$BQETL_SHA" ]; then
+            echo "::error::job.workflow_repository / job.workflow_sha not set; can't tell which bigquery-etl commit to clone"
+            exit 1
+          fi
+          git init -q bigquery-etl
+          git -C bigquery-etl fetch -q --depth 1 --filter=blob:none \
+            "https://github.com/$BQETL_REPO.git" "$BQETL_SHA"
+          git -C bigquery-etl checkout -q FETCH_HEAD
+          echo "Using $BQETL_REPO at $BQETL_SHA"
+      - name: Set up bqetl
+        if: inputs.clone-bigquery-etl
+        uses: ./bigquery-etl/.github/actions/setup-bqetl
+        with:
+          path: bigquery-etl
+          python-version: ${{ inputs.python-version }}
+      - name: Set up bqetl
+        if: ${{ !inputs.clone-bigquery-etl }}
+        uses: ./.github/actions/setup-bqetl
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Authenticate to GCP for stage
+        id: auth-stage
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093  # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+      - name: Write bqetl_targets.yaml
+        run: cp "$BQETL_ROOT/.github/bqetl_targets.ci.yaml" bqetl_targets.yaml
+      - name: Delete stage datasets
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
+        run: |
+          PATH="$BQETL_VENV/bin:$PATH" "$BQETL_ROOT/script/bqetl" \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            target clean --yes

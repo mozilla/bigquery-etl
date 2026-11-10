@@ -7,6 +7,6 @@ dataset_base_acl: view_restricted
 user_facing: true
 labels: {}
 workgroup_access:
-- role: roles/bigquery.dataViewer
+- role: roles/bigquery.dataEditor
   members:
   - workgroup:dataplatform/developers

@@ -1447,6 +1447,17 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of container configurations read from the user profile.
+    - name: context_length
+      type: INTEGER
+      mode: NULLABLE
+      description: UTF-16 code units in the JSON-serialized compacted messages at
+        turn start, including the system prompt and history but excluding tool schemas.
+        This is a context-size proxy, not a token count.
+    - name: context_message_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of messages in the compacted chat-completions snapshot after
+        prompt preparation and before this turn's first model call.
     - name: cores
       type: INTEGER
       mode: NULLABLE
@@ -1566,6 +1577,9 @@ fields:
 
         * Total time of the run from start to completion, including page extraction
         and the model call.
+
+        * The time from the original response request start to turn completion, including
+        engine and prompt preparation.
 
         * Milliseconds elapsed to reach the step from its start. For end_file_download_*
         this is the time to download a single file; for end_download_* this is the
@@ -1852,7 +1866,9 @@ fields:
 
         * Time in ms to start processing the request
 
-        * Time from response request start to the first rendered assistant character'
+        * Time from response request start to the first rendered assistant character
+
+        * Time from response request start to the first rendered action-log entry'
     - name: latency_ms
       type: INTEGER
       mode: NULLABLE
@@ -2220,7 +2236,13 @@ fields:
     - name: output_tokens
       type: INTEGER
       mode: NULLABLE
-      description: Number of tokens generated
+      description: 'Depending on the type of event:
+
+        * Number of tokens generated
+
+        * The sum of backend completion tokens across chat model responses in the
+        turn, including tool follow-up responses but excluding direct tool answer
+        streams. Omitted if any chat model response lacks completion-token usage.'
     - name: pc_negotiation_count
       type: INTEGER
       mode: NULLABLE
@@ -2721,6 +2743,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Inference throughput in tokens per second (rounded integer)
+    - name: tool_call_count
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of model-requested tool executions attempted during
+        the chat turn.
     - name: total
       type: INTEGER
       mode: NULLABLE
@@ -2833,6 +2860,11 @@ fields:
       mode: NULLABLE
       description: Sampling probability scaled by 1,000. For example, 0.25 is recorded
         as 250.
+    - name: turn_index
+      type: INTEGER
+      mode: NULLABLE
+      description: Zero-based user turn index within the conversation; zero is the
+        first turn.
     - name: turn_number
       type: INTEGER
       mode: NULLABLE
@@ -6615,6 +6647,8 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Which surface the notification was shown on. Value is settingsPage or cwtsDialog.
+
         * Where the terminal action was taken: "panel" for the confirmation panel''s
         own buttons, "dialog" for the clear-data dialog reached either through the
         panel''s "Choose..." link or directly. The "direct" flow has no panel and
@@ -6847,9 +6881,6 @@ fields:
         * The reason why this confirmation was triggered. Values: [cp-connectivity,
         pref-change, context-init, retry, failed-lookups]
 
-        * A label to distinguish what triggered the polling/fetching of remote content
-        (eg. "broadcast", "timer", "forced", "manual")
-
         * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
         ``"timer"``, ``"forced"``, ``"manual"``).
 
@@ -6858,7 +6889,10 @@ fields:
         their own value instead of asrouter
 
         * The reason the Smart Window was opened. One of: switch, menu, new_window,
-        open_browser, undo_close, keyboard...'
+        open_browser, undo_close, keyboard_shortcut, settings, bedrock, asrouter,
+        or other. Messaging surfaces may supply their own value instead of asrouter
+
+        * The caus...'
     - name: triggers
       type: STRING
       mode: NULLABLE

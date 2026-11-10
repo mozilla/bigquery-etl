@@ -16,3 +16,11 @@ SELECT
   user_id_unhashed
 FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_delete_events_v2`
+UNION ALL
+SELECT
+  submission_timestamp,
+  user_id,
+  hmac_user_id,
+  user_id_unhashed
+FROM
+  `moz-fx-data-shared-prod.accounts_backend_derived.delete_events_accounts_db_v1`

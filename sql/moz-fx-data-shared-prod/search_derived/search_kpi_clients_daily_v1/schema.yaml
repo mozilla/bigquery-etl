@@ -68,8 +68,9 @@ fields:
   description: SAP searches left out of sap and search_queries that day, the sum of
     sap_counts_total over rows with a sap_exclusion_reason, mostly runaway counts from a
     held-down Enter key. Kept so the exclusion can be audited here. 0 if none. Always 0 on
-    mobile, where it means not measurable rather than none: mobile_search_clients_daily_v2
-    zeroes search_count on rows over 10,000 before it reaches this table.
+    mobile, where it means not measurable rather than none, because
+    mobile_search_clients_daily_v2 zeroes search_count on rows over 10,000 before it
+    reaches this table.
 - name: suggest_sponsored
   type: INTEGER
   mode: NULLABLE

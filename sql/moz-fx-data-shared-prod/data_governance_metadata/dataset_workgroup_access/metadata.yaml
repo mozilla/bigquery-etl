@@ -1,0 +1,16 @@
+friendly_name: Dataset Workgroup Access
+description: |-
+  Per-dataset inventory of dataset-level BigQuery Data Viewer
+  (roles/bigquery.dataViewer) group grants for every dataset in
+  moz-fx-data-shared-prod, restricted to the most recent collected_at (the
+  latest partition of the underlying table). One row per dataset, listing the
+  Google groups (and workgroups, enriched with sponsor/managers/owners) with
+  read access and a flag for whether the mozilla-confidential data-viewers
+  workgroup is among them.
+
+  Dataset-level grants apply to every table in the dataset; table_workgroup_access
+  covers access set on individual tables beyond these.
+owners:
+- cmorales@mozilla.com
+labels:
+  authorized: true

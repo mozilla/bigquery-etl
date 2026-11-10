@@ -5,9 +5,9 @@ AS
 -- what kind of problem it represents, so that analysis success/failure can be
 -- attributed correctly instead of relying on raw `log_level`/`exception_type`,
 -- which conflate genuine jetstream defects with expected skips and benign
--- fallbacks. Covers all `source` values in `monitoring.logs` (jetstream,
--- jetstream-preview, sizing) -- the classification rules are jetstream-
--- specific, but nothing here filters by source.
+-- fallbacks. Covers all `source` values in `monitoring.logs` (e.g. jetstream,
+-- sizing, or NULL on rows before late 2023) -- the classification rules are
+-- jetstream-specific, but nothing here filters by source.
 --
 -- Attribution rule: a failure is `jetstream_failure` if jetstream named or
 -- created the thing that couldn't be found/computed (its own scratch tables,
@@ -18,23 +18,32 @@ AS
 --   library_warning     -- mozanalysis-internal WARNINGs with no experiment
 --                           attribution (metrics.py/functions.py/segments.py)
 --   skipped             -- experiment intentionally not analyzed this run
---                           (ValidationException family + unsupported app)
+--                           (ValidationException family, unsupported app, or
+--                           skip=true in config)
 --   resources           -- jetstream couldn't run at this scale: BigQuery
 --                           rejected the query (Resources exceeded / Operation
 --                           timed out) or a Dask worker died (KilledWorker)
---   data                -- metric values are all zero (raw or after outlier
---                           trimming), so relative uplift is undefined
---   configuration       -- config named a segment/column/app that jetstream
---                           could not resolve, or the config itself failed to
---                           load
---   valid_degradation   -- any other WARNING: jetstream detected missing
---                           data/config and fell back to a degraded but valid
---                           computation (e.g. covariate adjustment unavailable)
+--   insufficient_clients -- statistic intentionally not computed: the reference
+--                           branch has fewer than MIN_REFERENCE_BRANCH_CLIENTS
+--                           (statistics.py) clients with non-null inputs (tiny
+--                           segment or misconfigured exposures); not a failure
+--   data                -- the reference branch's metric values are all zero
+--                           (raw or after outlier clipping), so a linear-model
+--                           statistic's relative uplift is undefined
+--   configuration       -- config named a segment or column that doesn't
+--                           resolve, or the experiment's config failed to
+--                           load/resolve (e.g. an outcome that doesn't support
+--                           the experiment's platform)
+--   valid_degradation   -- any other WARNING; mostly fallbacks to a degraded
+--                           but valid computation (e.g. covariate adjustment
+--                           unavailable), but also run-scoping notices (e.g.
+--                           skipping periods during a rerun)
 --   jetstream_failure   -- ERROR/CRITICAL rows not otherwise classified above:
 --                           jetstream failed to compute something it should
---                           have been able to
---   informational       -- DEBUG/INFO rows (e.g. jetstream-preview, which
---                           logs at INFO)
+--                           have been able to; plus time-boxed overrides for
+--                           identified jetstream bugs (see below)
+--   informational       -- DEBUG/INFO rows; jetstream only logs WARNING and
+--                           above here, but jetstream-preview logs at INFO
 --   uncategorized       -- doesn't match any rule above; nonzero counts here
 --                           indicate a mismatch between the expected logs
 --                           and what jetstream is producing, which likely
@@ -61,11 +70,31 @@ SELECT
         -- not a ValidationException, but the same "not analyzed" semantics
         'UnsupportedApplicationException'
       )
+      -- same as ExplicitSkipException, logged before analysis without an exception
+      OR (
+        filename = 'cli.py'
+        AND func_name = '_experiment_configs_to_analyse'
+        AND message LIKE '%skip=true in config%'
+      )
       THEN 'skipped'
     WHEN message LIKE '%Resources exceeded%'
       OR message LIKE '%Operation timed out%'
       OR exception_type = 'KilledWorker'
       THEN 'resources'
+    -- Time-boxed override for an upstream bug: the low-client check counted the
+    -- NULL ratio column instead of numerator/denominator, so every population_ratio
+    -- was skipped. Live from jetstream PR 3319 until PR 3331 (merged 2026-10-29)
+    -- reached the 04:00 UTC run on 2026-10-30; bound each such clause likewise.
+    WHEN message LIKE 'Not enough clients in cohort. Skipping computing statistic population_ratio %'
+      AND message LIKE '%has 0 non-null%'
+      AND `timestamp` >= '2026-10-20'
+      AND `timestamp` < '2026-10-30 04:00:00'
+      THEN 'jetstream_failure'
+    -- matched on message: `apply` also logs genuine failures via logger.exception
+    WHEN filename = 'statistics.py'
+      AND exception_type = 'StatisticComputationException'
+      AND message LIKE 'Not enough clients in cohort%'
+      THEN 'insufficient_clients'
     WHEN filename = 'statistics.py'
       AND func_name = 'transform'
       AND exception_type = 'StatisticComputationException'

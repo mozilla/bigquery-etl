@@ -6,6 +6,22 @@ description: |
 
   Built on Glean. Runs alongside `search_clients_daily_v8` rather than replacing it, so the
   legacy_ columns are there to give a v8-comparable number without querying both tables.
+
+  `sap_exclusion_reason` says why a row should be left out of SAP totals, and is NULL for a row
+  to keep. Its only value is `sap_row_ge_10000`, for a row with 10,000 or more SAP events for
+  one client, day, engine, partner_code and source, which is mostly runaway SAP.
+  `search_clients_daily_v8` drops rows with a count of 10,000 or more, so leaving these rows out
+  of SAP totals matches legacy. `sap_counts_total` itself keeps them. A new rule adds a value to
+  this column, so write the filter as `sap_exclusion_reason IS NULL` and not as a list of values.
+
+  To count SAP the way legacy does, sum only the rows that have no reason:
+  `SUM(IF(sap_exclusion_reason IS NULL, sap_counts_total, 0))`. Filtering the whole query with
+  `WHERE sap_exclusion_reason IS NULL` also drops every other measure on those rows, such as the
+  `serp_` and `legacy_` columns, which is usually not what you want when you only need SAP.
+
+  Metric Hub and other consumers outside this repo may read this view. Check them before
+  changing a column or the rule behind `sap_exclusion_reason`, because a change here can shift
+  their numbers.
 owners:
   - akommasani@mozilla.com
   - kbammarito@mozilla.com

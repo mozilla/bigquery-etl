@@ -834,6 +834,9 @@ sensitivity:
         default: [workgroup:fx-enterprise/data-viewers]
       firefox_enterprise_desktop_stable: *firefox_enterprise_desktop
 
+      firefox_enterprise_crashreporter_live: *firefox_enterprise_desktop
+      firefox_enterprise_crashreporter_stable: *firefox_enterprise_desktop
+
       search_terms:
         default: []
       search_terms_derived:

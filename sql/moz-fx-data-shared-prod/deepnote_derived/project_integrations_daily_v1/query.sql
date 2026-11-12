@@ -11,4 +11,4 @@ FROM
 CROSS JOIN
   UNNEST(snapshot.integrations) AS integration
 WHERE
-  snapshot.snapshot_date = @submission_date
+  snapshot.snapshot_date = @snapshot_date

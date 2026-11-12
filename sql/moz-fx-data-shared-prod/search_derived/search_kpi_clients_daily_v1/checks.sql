@@ -419,9 +419,10 @@ WHERE
 
 #warn
 -- Early warning: a result type shown but not yet clicked with no map row fails the run on its
--- first release-channel click. action_* types are excluded by the query; the next check lists
--- clicked ones. A name cut short by the 500-byte limit on the results field is a prefix of a
--- real type, so it isn't a new type.
+-- first release-channel click. Types in the families the query excludes without a row
+-- (action_, autofill_, intervention_, tip_, restrict_keyword_) can't fail it, so they're left
+-- out; the next check lists them once clicked. A name cut short by the 500-byte limit on the
+-- results field is a prefix of a real type, so it isn't a new type.
 WITH component_map AS (
   SELECT
     result_type
@@ -446,7 +447,7 @@ new_types AS (
   FROM
     shown AS s
   WHERE
-    NOT STARTS_WITH(result_type, 'action_')
+    NOT REGEXP_CONTAINS(result_type, r'^(action|autofill|intervention|tip|restrict_keyword)_')
     AND NOT EXISTS (
       SELECT
         1

@@ -12,78 +12,14 @@ WITH latest AS (
         `moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1`
     )
 ),
--- one-way switch
 private_projects AS (
   SELECT
-    COALESCE(JSON_VALUE(metadata, '$.projectId'), resource_id) AS project_id,
-    MIN(created_at) AS private_since,
-  FROM
-    `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1`
-  WHERE
-    event_type = 'project_private_execution_enabled'
-  GROUP BY
-    project_id
-),
-notebook_projects AS (
-  SELECT
-    notebook.notebook_id,
     project_id,
+    private_outputs_enabled_at AS private_since,
   FROM
-    latest
-  CROSS JOIN
-    UNNEST(notebooks) AS notebook
-),
--- people who only viewed a project in the last 28 days
-project_activity AS (
-  SELECT
-    COALESCE(
-      JSON_VALUE(audit_log.metadata, '$.projectId'),
-      notebook_projects.project_id,
-      audit_log.resource_id
-    ) AS project_id,
-    audit_log.user_id,
-    LOGICAL_OR(
-      audit_log.event_type IN (
-        'project_viewed',
-        'notebook_viewed',
-        'published_notebook_viewed',
-        'block_viewed',
-        'run_viewed'
-      )
-    ) AS viewed,
-    LOGICAL_OR(
-      audit_log.event_type IN (
-        'notebook_edited',
-        'block_created',
-        'block_deleted',
-        'blocks_reordered',
-        'notebook_executed',
-        'file_created',
-        'file_edited'
-      )
-    ) AS worked,
-  FROM
-    `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1` AS audit_log
-  LEFT JOIN
-    notebook_projects
-    ON notebook_projects.notebook_id = audit_log.resource_id
+    `moz-fx-data-shared-prod.deepnote_derived.content_inventory_v1`
   WHERE
-    DATE(audit_log.created_at) > DATE_SUB((SELECT MAX(snapshot_date) FROM latest), INTERVAL 28 DAY)
-    AND audit_log.user_id IS NOT NULL
-  GROUP BY
-    project_id,
-    user_id
-),
-viewers AS (
-  SELECT
-    project_id,
-    COUNTIF(viewed AND NOT worked) AS viewer_only_users,
-  FROM
-    project_activity
-  WHERE
-    project_id IS NOT NULL
-  GROUP BY
-    project_id
+    has_private_outputs
 ),
 flags AS (
   -- caches shared between viewers of apps that use the viewer's OAuth (all projects)
@@ -118,39 +54,6 @@ flags AS (
       LOWER(file),
       r'\.(csv|tsv|parquet|xlsx?|feather|arrow|pkl|pickle|h5|hdf5|sqlite3?|db|jsonl|ndjson)$'
     )
-  UNION ALL
-  -- viewers see empty notebooks
-  SELECT
-    project_id,
-    'viewer_audience',
-    FORMAT('%d people only viewed the project in the last 28 days', viewer_only_users),
-  FROM
-    viewers
-  WHERE
-    viewer_only_users > 0
-    AND project_id IN (SELECT project_id FROM private_projects)
-  UNION ALL
-  -- scheduled results and run history are only visible to their owner
-  SELECT
-    project_id,
-    'runs_not_visible',
-    FORMAT('%d scheduled notebook(s)', (SELECT COUNTIF(is_scheduled) FROM UNNEST(notebooks))),
-  FROM
-    latest
-  WHERE
-    project_id IN (SELECT project_id FROM private_projects)
-    AND EXISTS (SELECT 1 FROM UNNEST(notebooks) WHERE is_scheduled)
-  UNION ALL
-  SELECT
-    project_id,
-    'schedule_access_revoked',
-    notebook.name,
-  FROM
-    latest
-  CROSS JOIN
-    UNNEST(notebooks) AS notebook
-  WHERE
-    notebook.schedule.pause_reason = 'access-revoked'
 )
 SELECT
   latest.snapshot_date,

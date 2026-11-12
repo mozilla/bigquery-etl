@@ -26,8 +26,7 @@ fields:
 - name: is_private
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the project has private outputs (project_private_execution_enabled
-    in the audit log).
+  description: Whether the project has private outputs (from content_inventory_v1).
 - name: private_since
   type: TIMESTAMP
   mode: NULLABLE
@@ -36,8 +35,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    streamlit_shared_cache (listed for all projects), saved_data_file, viewer_audience, runs_not_visible or
-    schedule_access_revoked; see the query for details.
+    streamlit_shared_cache (app uses the viewer's OAuth and caches without scope="session"; listed for all projects)
+    or saved_data_file (data file in a private project, visible to all collaborators).
 - name: detail
   type: STRING
   mode: NULLABLE

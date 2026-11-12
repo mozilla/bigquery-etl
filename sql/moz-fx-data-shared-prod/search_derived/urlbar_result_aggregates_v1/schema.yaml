@@ -1,0 +1,131 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: "The country of the client on this day, one value per client-day. For\
+    \ search_clients_daily rows, the country on the most rows of that client-day in\
+    \ search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the\
+    \ country code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's\
+    \ country.\n NULL for a client with no desktop_client_day_dims_v1 row that day."
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value.\n NULL for a\
+    \ client with no desktop_client_day_dims_v1 row that day."
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's normalized_os, with\
+    \ Mac written as Darwin to match.\n NULL for a client with no desktop_client_day_dims_v1\
+    \ row that day."
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: "The major version of app_version, from mozfun.norm.browser_version_info.\n\
+    \ NULL for a client with no desktop_client_day_dims_v1 row that day."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and\
+    \ null for any other. Matches substrings of default_search_engine_provider_id,\
+    \ as search_aggregates_glean_v1 does. Null where the provider id is null or names\
+    \ another engine.\n NULL for a client with no desktop_client_day_dims_v1 row that\
+    \ day."
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "A flag indicating whether the browser is set as the default browser\
+    \ on the client side.\n Resolved to one value per client-day: firefox_desktop.baseline_clients_daily\
+    \ when it has one, then the event-backed side, then the latest ping_end_time.\n\
+    \ NULL for a client with no desktop_client_day_dims_v1 row that day."
+- name: pref_suggest_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether non-sponsored Firefox Suggest suggestions are enabled, latest
+    value that day.
+- name: pref_sponsored_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether sponsored Firefox Suggest suggestions are enabled, latest value
+    that day.
+- name: pref_online_suggest_available
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether online Suggest is available to the client, latest value that
+    day.
+- name: pref_online_suggest_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether online Suggest is enabled by the user, latest value that day.
+- name: pref_data_collection
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the user opted in to Suggest data collection, latest value
+    that day.
+- name: is_bot
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client is on the shared bot list. The flag is kept on the
+    row rather than dropping the client, so the exclusion can be audited. NULL (unknown)
+    on every row until a bot list exists, so filter with `is_bot IS NOT TRUE`, because
+    `NOT is_bot` drops NULL rows.
+- name: window_mode
+  type: STRING
+  mode: NULLABLE
+  description: 'The window the session took place in: classic, private or smartwindow.
+    Taken from the session''s terminal event. NULL on Firefox versions before 151,
+    which don''t report it, so older history can''t be split by window.'
+- name: sap
+  type: STRING
+  mode: NULLABLE
+  description: Search access point of the session, e.g. urlbar, urlbar_newtab, smartbar.
+    Taken from the session's terminal event.
+- name: interaction
+  type: STRING
+  mode: NULLABLE
+  description: How the user interacted with the urlbar, e.g. typed, pasted, topsites.
+    Taken from the session's terminal event.
+- name: result_type
+  type: STRING
+  mode: NULLABLE
+  description: Raw type identifier for the result, as reported in telemetry, e.g.
+    rust_adm_sponsored. Includes input_field and action_* for picks that weren't in
+    the results list (paste-and-go, quick actions).
+- name: product_result_type
+  type: STRING
+  mode: NULLABLE
+  description: Product type identifier for the result, from mozfun.norm.result_type_to_product_name.
+    Several raw types can share one.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Completed engaged sessions whose selected result has this raw type.
+    At most one per session, so clicks sum to sessions_engaged.
+- name: sessions_shown
+  type: INTEGER
+  mode: NULLABLE
+  description: Completed sessions where this raw type was among the results. Doesn't
+    sum across elements; to count sessions by product type, don't sum raw types that
+    share a product name.
+- name: sessions_shown_abandoned
+  type: INTEGER
+  mode: NULLABLE
+  description: Completed sessions where this raw type was among the results and the
+    session ended in abandonment.
+- name: annoyances
+  type: INTEGER
+  mode: NULLABLE
+  description: Dismiss, "show less" and other annoyance actions on this raw type.
+- name: client_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Clients with this row's combination that day. Diagnostic only. A client
+    is counted once per row, so it doesn't add up across result types or days.

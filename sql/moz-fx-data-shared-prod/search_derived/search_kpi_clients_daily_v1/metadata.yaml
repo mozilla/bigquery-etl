@@ -2,27 +2,43 @@ friendly_name: Search KPI Clients Daily
 description: |-
   The search KPI per client per day: SAP searches plus eligible Suggest clicks, one column
   per component, with search_queries as their sum. One row per platform, client_id and
-  submission_date. Desktop only for now; mobile rows will be added.
+  submission_date. platform is desktop, android (Firefox for Android) or ios (Firefox for
+  iOS).
 
-  sap comes from search.search_clients_daily_glean and leaves out rows with a
+  On desktop, sap comes from search.search_clients_daily_glean and leaves out rows with a
   sap_exclusion_reason (10,000 or more searches); sap_excluded holds those. The Suggest
   components come from search_derived.urlbar_clients_daily_v1, split into suggest_sponsored,
   suggest_nonsponsored and ai_chat by search_derived.kpi_component_map_v1 as of that day.
   Dimensions are copied from search_derived.desktop_client_day_dims_v1 so experiments and
   daily totals don't need to join it again.
 
-  Rows: every client in urlbar_clients_daily_v1 that day, even with nothing counted
+  On mobile, sap and the dimensions come from search_derived.mobile_search_clients_daily_v2,
+  Glean rows only (Firefox iOS before 28 is legacy core-ping data and is left out, as in
+  mobile_search_aggregates_v1). Suggest clicks come from fenix.events_stream and
+  firefox_ios.events_stream, split by the map's android and ios rows. ai_chat and
+  sap_excluded are 0, and the KPI has no version floor there. profile_group_id,
+  is_default_browser and is_bot are NULL. Clients who have ever sent a Fenix or Firefox iOS
+  deletion request are left out: Shredder doesn't remove them from
+  mobile_search_clients_daily_v2 (DENG-4255), so a backfill would otherwise bring them
+  back. normalized_default_search_engine matches desktop_client_day_dims_v1 (case-insensitive),
+  not mobile_search_aggregates_v1.
+
+  Desktop rows: every client in urlbar_clients_daily_v1 that day, even with nothing counted
   (in_urlbar), plus clients seen only in search_clients_daily_glean who started at least
-  one search, counted or excluded. A client missing from the table counted 0 that day. Bots and the
-  version floor are flagged (is_bot, meets_population_rules), not filtered out.
+  one search, counted or excluded. Mobile rows: clients with sap > 0 or a counted Suggest
+  click. A client missing from the table counted 0 that day. Bots and the version floor are
+  flagged (is_bot, meets_population_rules), not filtered out.
 
   The run fails if a clicked result type has no row in kpi_component_map_v1, so a new
   Suggest type can't silently fall out of the KPI. action_* types (quick actions) are
   excluded in the query and need no row. It also fails if that day's
-  urlbar_clients_daily_v1 partition is empty, or if the map has overlapping rows.
+  urlbar_clients_daily_v1 partition is empty, if an app has no searches or no awesomebar
+  events in that day's mobile sources, or if the map has overlapping rows.
 
-  urlbar_clients_daily_v1 has no partition_offset, so its task in this DAG run writes
-  the next day. If its partition for day D is rerun, rerun this table for day D too.
+  urlbar_clients_daily_v1, mobile_search_clients_daily_v2 and events_stream have no
+  partition_offset, so their tasks for the same logical date (in bqetl_search,
+  bqetl_mobile_search and bqetl_glean_usage) write the next day. If one of them
+  is rerun for day D, rerun this table for day D too.
 owners:
 - data-search-wg@mozilla.com
 labels:

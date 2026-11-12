@@ -1,0 +1,6 @@
+[
+  {"name": "submission_timestamp", "type": "TIMESTAMP", "mode": "NULLABLE"},
+  {"name": "client_info", "type": "RECORD", "mode": "NULLABLE", "fields": [
+    {"name": "client_id", "type": "STRING", "mode": "NULLABLE"}
+  ]}
+]

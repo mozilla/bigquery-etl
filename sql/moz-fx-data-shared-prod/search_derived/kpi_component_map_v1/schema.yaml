@@ -2,11 +2,12 @@ fields:
 - name: result_type
   type: STRING
   mode: REQUIRED
-  description: Raw urlbar result type, as recorded in urlbar_events_v2 and urlbar_clients_daily_v1 (`results.result_type`).
+  description: Raw result type. On desktop as recorded in urlbar_events_v2 and urlbar_clients_daily_v1 (`results.result_type`);
+    on android the provider or card_type extra of the awesomebar click events; on ios the type extra of awesomebar.search_result_tap.
 - name: platform
   type: STRING
   mode: REQUIRED
-  description: Platform the row applies to. desktop for now; mobile Suggest will add its own rows. At most one row per result_type and platform on any date.
+  description: Platform the row applies to, desktop, android or ios. At most one row per result_type and platform on any date.
 - name: product_result_type
   type: STRING
   mode: REQUIRED

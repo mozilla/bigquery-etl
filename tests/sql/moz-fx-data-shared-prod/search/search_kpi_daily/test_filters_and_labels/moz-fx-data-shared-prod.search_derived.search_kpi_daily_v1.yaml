@@ -1,0 +1,44 @@
+# Kept: counted rows, including is_bot NULL (mobile) and a component with no label.
+- &base
+  submission_date: "2026-10-28"
+  platform: desktop
+  country: US
+  normalized_channel: release
+  os: Windows
+  app_version_major: 150
+  normalized_default_search_engine: Google
+  meets_population_rules: true
+  is_bot: false
+  definition_version: 1
+  component: sap
+  value: 10
+  client_count_by_kpi_component: 2
+- <<: *base
+  component: suggest_sponsored
+  value: 3
+  client_count_by_kpi_component: 1
+- <<: *base
+  platform: android
+  os: Android
+  is_bot: null
+  definition_version: 2
+  value: 7
+  client_count_by_kpi_component: 1
+- <<: *base
+  component: new_component
+  value: 1
+  client_count_by_kpi_component: 1
+# Dropped: excluded searches, the version floor, and bots.
+- <<: *base
+  component: sap_excluded
+  value: 12000
+  client_count_by_kpi_component: 1
+- <<: *base
+  app_version_major: 130
+  meets_population_rules: false
+  value: 4
+  client_count_by_kpi_component: 1
+- <<: *base
+  is_bot: true
+  value: 6
+  client_count_by_kpi_component: 1

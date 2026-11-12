@@ -1,0 +1,11 @@
+friendly_name: Deepnote Query Cost Daily
+description: |-
+  Daily BigQuery usage and estimated cost of Deepnote queries by workspace, query
+  source, project and notebook. Only SQL block queries can be attributed to a
+  project.
+owners:
+- ascholtz@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -6,7 +6,7 @@
     Re-run of 2026-11-05, which skipped 2026-10-21 and 2026-10-24 due to the sys.argv race fixed in PR 10149.
   watchers:
   - mwilliams@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

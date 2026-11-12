@@ -176,20 +176,3 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Integration type, e.g. big-query, snowflake, env, custom-mcp.
-- name: streamlit_requirement
-  type: RECORD
-  mode: NULLABLE
-  description: Streamlit requirement in the project's requirements.txt.
-  fields:
-  - name: file
-    type: STRING
-    mode: NULLABLE
-    description: Path of the requirements file.
-  - name: specifier
-    type: STRING
-    mode: NULLABLE
-    description: Version specifier, e.g. ==1.40.0.
-  - name: excludes_session_cache
-    type: BOOLEAN
-    mode: NULLABLE
-    description: Whether the specifier rules out Streamlit 1.54+.

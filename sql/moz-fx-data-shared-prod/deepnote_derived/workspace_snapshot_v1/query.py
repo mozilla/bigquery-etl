@@ -11,8 +11,6 @@ from datetime import date
 
 import requests
 from google.cloud import bigquery
-from packaging.specifiers import InvalidSpecifier, SpecifierSet
-from packaging.version import Version
 
 from bigquery_etl.deepnote import workspaces
 
@@ -32,10 +30,6 @@ parser.add_argument(
 SERVICE_ACCOUNT = re.compile(
     r"service_account|SERVICE_ACCOUNT|GOOGLE_APPLICATION_CREDENTIALS"
 )
-STREAMLIT_REQUIREMENT = re.compile(
-    r"^[ \t]*streamlit(?![\w.-])[ \t]*([^#;\n]*)", re.M | re.I
-)
-SESSION_CACHE_VERSION = Version("1.54.0")
 
 
 def read_file(workspace, project_id, path):
@@ -87,40 +81,6 @@ def scan_app(content):
         "unscoped_cache_count": sum(is_unscoped_cache(d) for d in decorators),
         "uses_service_account": bool(SERVICE_ACCOUNT.search(content)),
     }
-
-
-def excludes_session_cache(spec):
-    """Return whether a version specifier only allows Streamlit versions before 1.54."""
-    try:
-        specifiers = SpecifierSet(spec)
-    except InvalidSpecifier:
-        return None
-    candidates = [Version(f"1.{minor}.0") for minor in range(54, 100)] + [
-        Version(s.version)
-        for s in specifiers
-        if not s.version.endswith("*") and Version(s.version) >= SESSION_CACHE_VERSION
-    ]
-    return not any(specifiers.contains(v) for v in candidates)
-
-
-def get_streamlit_requirement(workspace, project_id, files):
-    """Return the streamlit requirement of the project's requirements.txt, if any."""
-    for path in files:
-        if path.rsplit("/", 1)[-1].lower() != "requirements.txt":
-            continue
-        match = STREAMLIT_REQUIREMENT.search(
-            read_file(workspace, project_id, path) or ""
-        )
-        if match:
-            spec = match.group(1).replace(" ", "")
-            return {
-                "file": path,
-                "specifier": spec or None,
-                "excludes_session_cache": (
-                    excludes_session_cache(spec) if spec else False
-                ),
-            }
-    return None
 
 
 def list_streamlit_apps(workspace, project_id):
@@ -225,9 +185,6 @@ def to_row(workspace, snapshot_date, project):
         "machine": get_machine(workspace, project["id"]),
         "files": files,
         "integrations": integrations,
-        "streamlit_requirement": get_streamlit_requirement(
-            workspace, project["id"], files
-        ),
     }
 
 

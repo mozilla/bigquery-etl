@@ -35,13 +35,9 @@ fields:
 - name: flag
   type: STRING
   mode: NULLABLE
-  description: streamlit_shared_cache (app uses the viewer's OAuth and caches without
-    scope="session"; listed for all projects), streamlit_before_1_54 (requirements
-    pin Streamlit before session-scoped caches), saved_data_file (data file in a private
-    project, visible to all collaborators), viewer_audience (people who only view
-    a private project see empty notebooks), runs_not_visible (scheduled notebooks
-    in a private project; results and runs only visible to their owner), schedule_access_revoked
-    (schedule paused because its creator lost access).
+  description: >-
+    streamlit_shared_cache (listed for all projects), saved_data_file, viewer_audience, runs_not_visible or
+    schedule_access_revoked; see the query for details.
 - name: detail
   type: STRING
   mode: NULLABLE

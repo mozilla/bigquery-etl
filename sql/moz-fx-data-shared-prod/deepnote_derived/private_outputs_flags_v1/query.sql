@@ -103,16 +103,6 @@ flags AS (
     app.unscoped_cache_count > 0
     AND NOT app.uses_service_account
   UNION ALL
-  -- session-scoped caches need Streamlit 1.54+
-  SELECT
-    project_id,
-    'streamlit_before_1_54',
-    FORMAT('%s: streamlit%s', streamlit_requirement.file, streamlit_requirement.specifier),
-  FROM
-    latest
-  WHERE
-    streamlit_requirement.excludes_session_cache
-  UNION ALL
   -- files are shared with all collaborators
   SELECT
     project_id,

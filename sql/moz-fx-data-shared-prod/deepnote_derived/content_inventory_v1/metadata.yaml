@@ -5,10 +5,9 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  incremental: false
   schedule: daily
   table_type: aggregate
-  dag: bqetl_deepnote
-  owner1: ascholtz
 scheduling:
   dag_name: bqetl_deepnote
   date_partition_parameter: null

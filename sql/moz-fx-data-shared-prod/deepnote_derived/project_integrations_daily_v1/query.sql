@@ -10,3 +10,5 @@ FROM
   `moz-fx-data-shared-prod.deepnote_derived.workspace_snapshot_v1` AS snapshot
 CROSS JOIN
   UNNEST(snapshot.integrations) AS integration
+WHERE
+  snapshot.snapshot_date = @submission_date

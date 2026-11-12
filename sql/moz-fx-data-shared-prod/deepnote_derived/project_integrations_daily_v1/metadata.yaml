@@ -5,12 +5,12 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
-  incremental: false
+  incremental: true
   schedule: daily
   table_type: aggregate
 scheduling:
   dag_name: bqetl_deepnote
-  date_partition_parameter: null
+  date_partition_parameter: snapshot_date
 bigquery:
   time_partitioning:
     type: day

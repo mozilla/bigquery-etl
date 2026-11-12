@@ -3,6 +3,7 @@
 Snapshots the workspaces whose API keys are passed with --api-key-env-vars.
 """
 
+import ast
 import logging
 import re
 from argparse import ArgumentParser
@@ -28,11 +29,6 @@ parser.add_argument(
     help="Environment variables holding the API keys, one per workspace",
 )
 
-# Streamlit caches are shared between viewers unless scope="session" (Streamlit 1.54+)
-CACHE_DECORATOR = re.compile(
-    r"^[ \t]*@(?:st|streamlit)\.cache_(?:data|resource)\b.*$", re.M
-)
-SESSION_SCOPE = re.compile(r"scope\s*=\s*['\"]session['\"]")
 SERVICE_ACCOUNT = re.compile(
     r"service_account|SERVICE_ACCOUNT|GOOGLE_APPLICATION_CREDENTIALS"
 )
@@ -46,20 +42,49 @@ def read_file(workspace, project_id, path):
     """Return a project file's content, or None if it can't be downloaded."""
     try:
         return workspace.download(project_id, path)
-    except requests.HTTPError as e:
+    except requests.RequestException as e:
         logging.warning(f"Failed to download {path} of project {project_id}: {e}")
         return None
 
 
+def is_unscoped_cache(decorator):
+    """Return whether a decorator is st.cache_data/st.cache_resource without scope="session".
+
+    Streamlit caches are shared between viewers unless scoped to the session (1.54+).
+    """
+    call = decorator if isinstance(decorator, ast.Call) else None
+    func = call.func if call else decorator
+    if not (
+        isinstance(func, ast.Attribute)
+        and func.attr in ("cache_data", "cache_resource")
+        and isinstance(func.value, ast.Name)
+        and func.value.id in ("st", "streamlit")
+    ):
+        return False
+    return not any(
+        keyword.arg == "scope"
+        and isinstance(keyword.value, ast.Constant)
+        and keyword.value.value == "session"
+        for keyword in (call.keywords if call else [])
+    )
+
+
 def scan_app(content):
     """Return the cache and credential usage of a Streamlit app's entrypoint."""
-    if content is None:
+    try:
+        tree = ast.parse(content) if content is not None else None
+    except SyntaxError:
+        tree = None
+    if tree is None:
         return {"unscoped_cache_count": None, "uses_service_account": None}
-    decorators = CACHE_DECORATOR.findall(content)
+    decorators = [
+        decorator
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        for decorator in node.decorator_list
+    ]
     return {
-        "unscoped_cache_count": sum(
-            1 for d in decorators if not SESSION_SCOPE.search(d)
-        ),
+        "unscoped_cache_count": sum(is_unscoped_cache(d) for d in decorators),
         "uses_service_account": bool(SERVICE_ACCOUNT.search(content)),
     }
 

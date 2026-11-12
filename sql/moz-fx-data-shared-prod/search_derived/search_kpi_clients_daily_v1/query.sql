@@ -92,7 +92,7 @@ clicked_results AS (
       m.component,
       IF(
         REGEXP_CONTAINS(r.result_type, r'^(action|autofill|intervention|tip|restrict_keyword)_')
-        OR COALESCE(d.normalized_channel, 'release') NOT IN ('release', 'esr'),
+        OR COALESCE(d.normalized_channel, 'release') IN ('nightly','aurora','beta'),
         'excluded',
         NULL
       )

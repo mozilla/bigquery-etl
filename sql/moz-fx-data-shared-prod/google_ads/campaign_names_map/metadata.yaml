@@ -1,4 +1,0 @@
-friendly_name: Campaign Names Map
-description: A mapping from campaign_id to campaign_name for google_ads campaigns.
-owners:
-- frank@mozilla.com

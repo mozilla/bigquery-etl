@@ -40234,6 +40234,20 @@ fields:
         does not keep track of regular PBM teardown (last PBM window exited).
 
         '
+    - name: verification_used_cert_from_pkcs11_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from a third-party PKCS#11 module.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -45569,6 +45583,220 @@ fields:
         Labels: - until_first_attempt: Only answers received before the first\n  connection\
         \ attempt, i.e. while the resolution delay applies.\n- until_end: All answers\
         \ received during the run.\n"
+    - name: dom_fragment_parsing_dom_parser
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time spent by DOMParser.parseFromString() parsing text/html, including
+        the attempt of the fast path (nsHtml5FragmentFastPath) to parse it. Labeled
+        like dom.fragment_parsing.inner_html. Only a random sample of the calls is
+        timed, see dom.html_fragment_fast_path.telemetry_sample_shift.
+
+        '
+    - name: dom_fragment_parsing_dom_parser_fast_path_rejected
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time that the fast path (nsHtml5FragmentFastPath) spent on the
+        input of DOMParser.parseFromString() before leaving it to the full parser,
+        labeled like dom.fragment_parsing.inner_html_fast_path_rejected. Only a random
+        sample of the calls is timed, see dom.html_fragment_fast_path.telemetry_sample_shift.
+
+        '
+    - name: dom_fragment_parsing_inner_html
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time spent parsing the markup that innerHTML is set to, including
+        the attempt of the fast path (nsHtml5FragmentFastPath) to parse it. Labeled
+        by whether the fast path parsed it (fast), left it to the full parser (fallback)
+        or wasn''t tried (full), and by the length of the markup in UTF-16 code units.
+        Short markup without "<" or "&", which innerHTML doesn''t parse, isn''t recorded.
+        Only a random sample of the calls is timed, see dom.html_fragment_fast_path.telemetry_sample_shift.
+
+        '
+    - name: dom_fragment_parsing_inner_html_fast_path_rejected
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time that the innerHTML fast path (nsHtml5FragmentFastPath) spent
+        on markup before leaving it to the full parser, labeled by the length of the
+        markup in UTF-16 code units. Only a random sample of the calls is timed, see
+        dom.html_fragment_fast_path.telemetry_sample_shift.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE

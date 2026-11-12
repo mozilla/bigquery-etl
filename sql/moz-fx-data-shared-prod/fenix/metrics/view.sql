@@ -2081,7 +2081,8 @@ SELECT
       metrics.rate.cert_trust_cache_hits,
       metrics.rate.web_notification_show_safe_browsing_block,
       metrics.rate.javascript_self_hosted_cache_hits,
-      metrics.rate.private_browsing_cleanup_error_rate
+      metrics.rate.private_browsing_cleanup_error_rate,
+      metrics.rate.verification_used_cert_from_pkcs11_module
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -2216,7 +2217,11 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
       metrics.labeled_timing_distribution.dom_gc_in_progress,
       metrics.labeled_timing_distribution.dns_https_rr_lookup_time,
-      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2
+      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_dom_parser,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_dom_parser_fast_path_rejected,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_inner_html,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_inner_html_fast_path_rejected
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4445,7 +4450,8 @@ SELECT
       metrics.rate.cert_trust_cache_hits,
       metrics.rate.web_notification_show_safe_browsing_block,
       metrics.rate.javascript_self_hosted_cache_hits,
-      metrics.rate.private_browsing_cleanup_error_rate
+      metrics.rate.private_browsing_cleanup_error_rate,
+      metrics.rate.verification_used_cert_from_pkcs11_module
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -4580,7 +4586,11 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
       metrics.labeled_timing_distribution.dom_gc_in_progress,
       metrics.labeled_timing_distribution.dns_https_rr_lookup_time,
-      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2
+      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_dom_parser,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_dom_parser_fast_path_rejected,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_inner_html,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_inner_html_fast_path_rejected
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -6829,7 +6839,8 @@ SELECT
       metrics.rate.cert_trust_cache_hits,
       metrics.rate.web_notification_show_safe_browsing_block,
       metrics.rate.javascript_self_hosted_cache_hits,
-      metrics.rate.private_browsing_cleanup_error_rate
+      metrics.rate.private_browsing_cleanup_error_rate,
+      metrics.rate.verification_used_cert_from_pkcs11_module
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -6964,7 +6975,11 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
       metrics.labeled_timing_distribution.dom_gc_in_progress,
       metrics.labeled_timing_distribution.dns_https_rr_lookup_time,
-      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2
+      metrics.labeled_timing_distribution.netwerk_happy_eyeballs_dns_answer_spread_v2,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_dom_parser,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_dom_parser_fast_path_rejected,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_inner_html,
+      metrics.labeled_timing_distribution.dom_fragment_parsing_inner_html_fast_path_rejected
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

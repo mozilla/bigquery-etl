@@ -2735,9 +2735,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Number of tabs open in the window.
-
         * Number of tabs selected
+
+        * Number of tabs open in the window.
 
         * Number of tabs restored
 
@@ -4196,6 +4196,10 @@ fields:
 
         * What was the detected intent for the request: navigate, search, chat, or
         action
+
+        * What was the detected intent for the request: navigate, search, chat, or
+        action. When the smartWindow feature''s smartbarIntent variable pins search
+        or chat, non-navigate requests report the pinned value rather than the classifier''s.
 
         * What was the detected intent for the request navigate, search, chat, or
         action'
@@ -6329,7 +6333,7 @@ fields:
 
         * Current provider id.
 
-        * Which pro...'
+        * Search pr...'
     - name: provider_id
       type: STRING
       mode: NULLABLE
@@ -7110,12 +7114,12 @@ fields:
 
         * How the request was submitted: button, enter, follow-up, starter, or suggestion
 
-        * How the request was submitted: button, enter, follow-up, shortcuts, starter,
-        or suggestion
-
         * How the request was submitted: button, enter, follow-up, fxms, menu, resume,
         retry, shortcuts, starter, or suggestion. Messaging surfaces may supply their
         own value instead of fxms
+
+        * How the request was submitted: button, enter, follow-up, shortcuts, starter,
+        or suggestion
 
         * How the request was submitted: button, enter, follow-up, resume, retry,
         shortcuts, starter, or suggestion

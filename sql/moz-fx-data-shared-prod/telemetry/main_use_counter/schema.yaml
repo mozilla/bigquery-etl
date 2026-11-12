@@ -12639,6 +12639,46 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page set NavigationTransition.to
+    - name: use_counter2_domparserfastpath_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document parses HTML with DOMParser that the innerHTML
+        fast path parses
+    - name: use_counter2_domparserfastpath_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page parses HTML with DOMParser that the innerHTML fast
+        path parses
+    - name: use_counter2_domparserfastpathrejected_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document parses HTML with DOMParser that the innerHTML
+        fast path leaves to the full parser
+    - name: use_counter2_domparserfastpathrejected_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page parses HTML with DOMParser that the innerHTML fast
+        path leaves to the full parser
+    - name: use_counter2_innerhtmlfastpath_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document sets innerHTML to markup that the innerHTML
+        fast path parses
+    - name: use_counter2_innerhtmlfastpath_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page sets innerHTML to markup that the innerHTML fast
+        path parses
+    - name: use_counter2_innerhtmlfastpathrejected_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document sets innerHTML to markup that the innerHTML
+        fast path leaves to the full parser
+    - name: use_counter2_innerhtmlfastpathrejected_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page sets innerHTML to markup that the innerHTML fast
+        path leaves to the full parser
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -25143,6 +25183,46 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page set NavigationTransition.to
+        - name: use_counter2_domparserfastpath_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document parses HTML with DOMParser that the innerHTML
+            fast path parses
+        - name: use_counter2_domparserfastpath_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page parses HTML with DOMParser that the innerHTML
+            fast path parses
+        - name: use_counter2_domparserfastpathrejected_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document parses HTML with DOMParser that the innerHTML
+            fast path leaves to the full parser
+        - name: use_counter2_domparserfastpathrejected_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page parses HTML with DOMParser that the innerHTML
+            fast path leaves to the full parser
+        - name: use_counter2_innerhtmlfastpath_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document sets innerHTML to markup that the innerHTML
+            fast path parses
+        - name: use_counter2_innerhtmlfastpath_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page sets innerHTML to markup that the innerHTML
+            fast path parses
+        - name: use_counter2_innerhtmlfastpathrejected_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document sets innerHTML to markup that the innerHTML
+            fast path leaves to the full parser
+        - name: use_counter2_innerhtmlfastpathrejected_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page sets innerHTML to markup that the innerHTML
+            fast path leaves to the full parser
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

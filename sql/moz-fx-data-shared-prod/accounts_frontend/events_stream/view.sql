@@ -24,6 +24,7 @@ SELECT
       JSON_VALUE(event_extra.cg) AS `cg`,
       JSON_VALUE(event_extra.choice) AS `choice`,
       JSON_VALUE(event_extra.error_reason) AS `error_reason`,
+      JSON_VALUE(event_extra.firefox_version) AS `firefox_version`,
       JSON_VALUE(event_extra.has_passkey_option) AS `has_passkey_option`,
       JSON_VALUE(event_extra.hyb) AS `hyb`,
       JSON_VALUE(event_extra.id) AS `id`,

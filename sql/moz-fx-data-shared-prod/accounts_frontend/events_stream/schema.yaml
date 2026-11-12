@@ -755,6 +755,16 @@ fields:
       mode: NULLABLE
       description: Error or fallback reason when supported=false (e.g., no_getClientCapabilities,
         error)
+    - name: firefox_version
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The Firefox major version from the user agent, or unknown when the browser
+        is not Firefox, which indicates Firefox is not installed or not in use.
+
+        * The Firefox major version from the user agent, or unknown when the browser
+        is not Firefox.'
     - name: has_passkey_option
       type: STRING
       mode: NULLABLE

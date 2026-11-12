@@ -661,7 +661,12 @@ fields:
     - name: hidden
       type: BOOLEAN
       mode: NULLABLE
-      description: The document is hidden.
+      description: 'Depending on the type of event:
+
+        * Whether the section was moved to the sections marked as hidden in the menu,
+        or marked as showing in it.
+
+        * The document is hidden.'
     - name: history_and_downloads
       type: BOOLEAN
       mode: NULLABLE
@@ -1321,6 +1326,10 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: How many countries the refreshed list contained.
+    - name: logins_count
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of logins imported.
     - name: magnitude
       type: INTEGER
       mode: NULLABLE
@@ -1498,7 +1507,11 @@ fields:
 
         * The position of the clicked top site suggestion.
 
-        * The position of the clicked trending search suggestion.'
+        * The position of the clicked trending search suggestion.
+
+        * The position of the section after it was moved, among the sections marked
+        as hidden in the menu if `hidden` is true, among the ones marked as showing
+        in it otherwise. Counted from top to bottom, starting at 1, inclusive.'
     - name: primary_password_deferrals
       type: INTEGER
       mode: NULLABLE
@@ -3105,6 +3118,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The hashed addon id.
+    - name: hidden_sections
+      type: STRING
+      mode: NULLABLE
+      description: 'Comma separated names of the sections marked as hidden in the
+        menu, from top to bottom. Each name is one of: page_controls, reader_view,
+        vpn, tools, library, accounts_and_settings, tabs_controls, quit.'
     - name: hide_reason
       type: STRING
       mode: NULLABLE
@@ -3740,12 +3759,14 @@ fields:
         when a saved location was applied at startup, "reset" when the previous location
         was put back after a failed switch.
 
+        * "user_action" when the user tapped a location in the location list, "restore"
+        when a saved location was applied at startup.
+
         * "add": a new card was being saved. "update": a stored card was being changed.
         "clear": a stored card''s security code was being removed. "read": one or
         all stored cards were being read.
 
-        * The operation being performed when the incompatible format was found (e.g.
-        addLogin, modifyLogin, removeLogin).'
+        * The operation being performed wh...'
     - name: option_clicked
       type: STRING
       mode: NULLABLE
@@ -4017,11 +4038,11 @@ fields:
         the request: the reply is asynchronous, so the two can differ. One of "uninitialized",
         "idle", "activating", "active", "data_limit_reached", "connection_error".
 
-        * Proxy state when the reset was recorded. One of "uninitialized", "idle",
-        "activating", "active", "data_limit_reached", "connection_error".
-
         * Proxy state when the change happened. One of "uninitialized", "idle", "activating",
-        "active", "data_limit_reached", "connection_error".'
+        "active", "data_limit_reached", "connection_error".
+
+        * Proxy state when the reset was recorded. One of "uninitialized", "idle",
+        "activating", "active", "data_limit_reached", "connection_error".'
     - name: psi_full_avg10
       type: STRING
       mode: NULLABLE
@@ -4244,6 +4265,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The Google search domain where the GDPR choice was made.
+    - name: section
+      type: STRING
+      mode: NULLABLE
+      description: 'The name of the moved section. One of: page_controls, reader_view,
+        vpn, tools, library, accounts_and_settings, tabs_controls, quit.'
     - name: selected_total
       type: STRING
       mode: NULLABLE
@@ -4355,6 +4381,12 @@ fields:
       mode: NULLABLE
       description: The key combination pressed. Used only in the case that entrypoint
         === KeyShortcut.
+    - name: shown_sections
+      type: STRING
+      mode: NULLABLE
+      description: 'Comma separated names of the sections marked as showing in the
+        menu, from top to bottom. Each name is one of: page_controls, reader_view,
+        vpn, tools, library, accounts_and_settings, tabs_controls, quit.'
     - name: signature
       type: STRING
       mode: NULLABLE

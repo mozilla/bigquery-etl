@@ -14,32 +14,38 @@ fields:
     \ search_clients_daily rows, the country on the most rows of that client-day in\
     \ search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the\
     \ country code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's\
-    \ country.\n From desktop_client_day_dims_v1; null if the client has no row there."
+    \ country.\n On desktop from desktop_client_day_dims_v1; on mobile the value on\
+    \ most of the client's rows in mobile_search_clients_daily_v2. NULL if the client\
+    \ has no row there."
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
   description: "The normalized channel the application is being distributed on.\n\
     \ Resolved to one value per client-day: the event-backed side first, then the\
-    \ latest ping_end_time. Otherwise baseline_clients_daily's value.\n From desktop_client_day_dims_v1."
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value.\n On desktop\
+    \ from desktop_client_day_dims_v1; on mobile mobile_search_clients_daily_v2's\
+    \ channel."
 - name: os
   type: STRING
   mode: NULLABLE
   description: "The normalized name of the operating system running at the client.\n\
     \ Resolved to one value per client-day: the event-backed side first, then the\
     \ latest ping_end_time. Otherwise baseline_clients_daily's normalized_os, with\
-    \ Mac written as Darwin to match.\n From desktop_client_day_dims_v1."
+    \ Mac written as Darwin to match.\n On desktop from desktop_client_day_dims_v1;\
+    \ on mobile from mobile_search_clients_daily_v2."
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
   description: "The major version of app_version, from mozfun.norm.browser_version_info.\n\
-    \ From desktop_client_day_dims_v1."
+    \ On desktop from desktop_client_day_dims_v1; on mobile from mobile_search_clients_daily_v2."
 - name: normalized_default_search_engine
   type: STRING
   mode: NULLABLE
   description: "The default search engine grouped as Google, Bing or DuckDuckGo, and\
     \ null for any other. Matches substrings of default_search_engine_provider_id,\
     \ as search_aggregates_glean_v1 does. Null where the provider id is null or names\
-    \ another engine.\n From desktop_client_day_dims_v1."
+    \ another engine.\n On desktop from desktop_client_day_dims_v1; on mobile the\
+    \ same match on mobile_search_clients_daily_v2's default_search_engine."
 - name: meets_population_rules
   type: BOOLEAN
   mode: NULLABLE

@@ -63,12 +63,40 @@ urlbar_partition_check AS (
   FROM
     urlbar
 ),
+dims AS (
+  SELECT
+    client_id,
+    profile_group_id,
+    sample_id,
+    country,
+    normalized_channel,
+    os,
+    app_version_major,
+    normalized_default_search_engine,
+    is_default_browser
+  FROM
+    `moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1`
+  WHERE
+    submission_date = @submission_date
+),
+-- A type with no map row is excluded, not failed, when it's in a family that is never search
+-- or Suggest (quick actions, autofill, interventions, tips, @-keywords) or when the client is
+-- on a pre-release channel, where new types turn up first and the clicks are few. Otherwise
+-- component is NULL and unmapped_check fails the run. A client with no channel counts as
+-- release. checks.sql warns on every clicked type with no row, so these still get mapped.
 clicked_results AS (
   SELECT
     u.client_id,
     r.result_type,
-    -- Quick actions are never results; new action_* types are excluded without a map row.
-    COALESCE(m.component, IF(STARTS_WITH(r.result_type, 'action_'), 'excluded', NULL)) AS component,
+    COALESCE(
+      m.component,
+      IF(
+        REGEXP_CONTAINS(r.result_type, r'^(action|autofill|intervention|tip|restrict_keyword)_')
+        OR COALESCE(d.normalized_channel, 'release') NOT IN ('release', 'esr'),
+        'excluded',
+        NULL
+      )
+    ) AS component,
     r.clicks
   FROM
     urlbar AS u
@@ -78,6 +106,9 @@ clicked_results AS (
     component_map AS m
     ON m.platform = 'desktop'
     AND m.result_type = r.result_type
+  LEFT JOIN
+    dims AS d
+    USING (client_id)
   WHERE
     r.clicks > 0
 ),
@@ -161,7 +192,8 @@ mobile_clicked_results AS (
     ON m.platform = e.platform
     AND m.result_type = e.result_type
 ),
--- A clicked result type with no map row must fail the run, not fall out of the KPI.
+-- A clicked result type with no map row must fail the run, not fall out of the KPI, unless
+-- clicked_results excluded it above.
 unmapped_check AS (
   SELECT
     IF(
@@ -230,22 +262,6 @@ sap AS (
     submission_date = @submission_date
   GROUP BY
     client_id
-),
-dims AS (
-  SELECT
-    client_id,
-    profile_group_id,
-    sample_id,
-    country,
-    normalized_channel,
-    os,
-    app_version_major,
-    normalized_default_search_engine,
-    is_default_browser
-  FROM
-    `moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1`
-  WHERE
-    submission_date = @submission_date
 ),
 desktop AS (
   SELECT

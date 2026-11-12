@@ -4,13 +4,7 @@
 --
 -- One row per flagged legacy client_id per submission_date. A client can appear on more than
 -- one day; use telemetry.desktop_automated_clients for one row per client. Downstream tables
--- exclude bots by joining to this table, so that a new fleet changes only this query.
---
--- The rules read the raw pings, because the fields they need (for example kernel release, CPU
--- count, profile count, GPU adapter, screen size) are not in
--- telemetry_derived.clients_first_seen_v3. The rules do not use a Firefox version or a start
--- date, so they do not go stale the way the DENG-11590 predicate
--- (`moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation`) does.
+-- exclude bots by joining to this table, so that a new fleet needs no change to their code.
 --
 -- To add a fleet:
 --   1. Data Science confirms the rule in a Jira ticket.
@@ -18,11 +12,10 @@
 --      Give the rule a comment block with the fleet value, ticket, onset date, approver and a
 --      short description.
 --   3. Add the fleet to the list in metadata.yaml.
---   4. Backfill this table from the fleet's onset date. Downstream tables need no change.
---
--- Current scope: only Linux pings are read (normalized_os = 'Linux'), because all fleets so far
--- run on Linux. This is a filter, not a design limit. The source tables are not clustered by
--- OS, so removing the filter for a Windows or Mac fleet does not read more bytes.
+--   4. Backfill this table from the fleet's onset date.
+--   5. Backfill the downstream tables that are materialized (not views) for the same dates.
+--      Their code does not change, but their old partitions were computed before the new
+--      fleet was in this table. Views pick up the change at once.
 WITH legacy_pings AS (
   SELECT
     client_id,

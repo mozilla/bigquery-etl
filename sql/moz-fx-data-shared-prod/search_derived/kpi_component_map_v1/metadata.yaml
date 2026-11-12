@@ -1,7 +1,8 @@
 friendly_name: Search KPI Component Map
 description: |-
-  Which urlbar result types count toward the search KPI, and as which component. One row per
-  raw result type and platform per period of validity (effective_from to effective_to).
+  Which address bar result types count toward the search KPI, and as which component. One
+  row per raw result type and platform per period of validity (effective_from to
+  effective_to).
 
   search_kpi_clients_daily_v1 joins urlbar_clients_daily_v1 to this table on result_type and
   submission_date to split Suggest clicks into suggest_sponsored, suggest_nonsponsored and
@@ -15,7 +16,10 @@ description: |-
     effective_to on the old row to that date, add a new row with effective_from on that date,
     and backfill from that date. Earlier dates keep the old definition.
 
-  Covers the raw result types clicked or shown in a 1% sample of urlbar_events_v2 since
+  android and ios rows use the mobile events' own names: the provider or card_type extra on
+  Fenix's click events, and the type extra on iOS's search_result_tap.
+
+  The desktop rows cover the raw result types clicked or shown in a 1% sample of urlbar_events_v2 since
   2024-09, those clicked by anyone from 2026-10-13 to 2026-10-26, every name known to
   mozfun.norm.result_type_to_product_name, and the result types in Firefox's urlbar
   metrics.yaml. Truncated result-type fragments that are shown but never clicked are left

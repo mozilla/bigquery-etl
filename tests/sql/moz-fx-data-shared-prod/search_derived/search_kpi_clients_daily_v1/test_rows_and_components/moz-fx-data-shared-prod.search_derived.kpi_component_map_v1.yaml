@@ -1,5 +1,6 @@
 # rust_yelp counted until 2026-10-01 and is excluded after (definition_version 2).
-# The merino_wikipedia row starts after the test date, so definition_version stays 2.
+# The merino_wikipedia row starts after the test date, so desktop's definition_version stays 2.
+# definition_version is per platform: the mobile rows' 4 doesn't raise desktop's.
 # The android row shares a desktop result type's name and must be ignored.
 - result_type: rust_adm_sponsored
   platform: desktop
@@ -58,3 +59,46 @@
   effective_from: "2026-11-01"
   reason: future
   definition_version: 3
+# Mobile rows use the events' own names.
+- result_type: amp
+  platform: android
+  product_result_type: admarketplace_sponsored
+  component: suggest_sponsored
+  effective_from: "1970-01-01"
+  reason: paid
+  definition_version: 4
+- result_type: wikipedia
+  platform: android
+  product_result_type: wikipedia_enhanced
+  component: suggest_nonsponsored
+  effective_from: "1970-01-01"
+  reason: free
+  definition_version: 4
+- result_type: flights
+  platform: android
+  product_result_type: flights
+  component: suggest_nonsponsored
+  effective_from: "1970-01-01"
+  reason: free
+  definition_version: 4
+- result_type: stocks
+  platform: android
+  product_result_type: market
+  component: excluded
+  effective_from: "1970-01-01"
+  reason: already SAP
+  definition_version: 4
+- result_type: amp-suggestion
+  platform: ios
+  product_result_type: admarketplace_sponsored
+  component: suggest_sponsored
+  effective_from: "1970-01-01"
+  reason: paid
+  definition_version: 4
+- result_type: history-item
+  platform: ios
+  product_result_type: history
+  component: excluded
+  effective_from: "1970-01-01"
+  reason: history
+  definition_version: 4

@@ -137,3 +137,15 @@ unit,desktop,unit_converter,excluded,1970-01-01,,"Firefox feature that answers i
 unknown,desktop,other,excluded,1970-01-01,,"Firefox couldn't classify the result, so it can't be shown to be Suggest",1
 url,desktop,url,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 weather,desktop,weather,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping the results page",1
+amp,android,admarketplace_sponsored,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping a search",2
+wikipedia,android,wikipedia_enhanced,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping a search",2
+flights,android,flights,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping a search",2
+stocks,android,market,excluded,1970-01-01,,"A click runs a search that is already counted in SAP",2
+sports,android,sports,excluded,1970-01-01,,"A click runs a search that is already counted in SAP",2
+amp-suggestion,ios,admarketplace_sponsored,suggest_sponsored,1970-01-01,,"Paid suggestion that goes straight to the destination, skipping a search",2
+wikipedia-suggestion,ios,wikipedia_enhanced,suggest_nonsponsored,1970-01-01,,"Suggestion that goes straight to the destination, skipping a search",2
+search-suggestion,ios,search_suggest,excluded,1970-01-01,,"A tap runs a search that is already counted in SAP",2
+history-item,ios,history,excluded,1970-01-01,,"Link to history, not a Suggest result",2
+bookmark-item,ios,bookmark,excluded,1970-01-01,,"Link to a bookmark, not a Suggest result",2
+opened-tab,ios,tabs,excluded,1970-01-01,,"Link to an open tab, not a Suggest result",2
+remote-tab,ios,tabs,excluded,1970-01-01,,"Link to a synced tab, not a Suggest result",2

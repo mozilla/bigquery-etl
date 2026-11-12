@@ -1,0 +1,5 @@
+- submission_timestamp: "2025-01-15 10:00:00"
+  client_info: {client_id: ios-deleted}
+# A Fenix client_id in the iOS stream doesn't remove the Fenix client.
+- submission_timestamp: "2025-01-15 10:00:00"
+  client_info: {client_id: android-a}

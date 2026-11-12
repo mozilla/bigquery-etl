@@ -7,8 +7,9 @@
 -- do not use a Firefox version or a start date, so they do not go stale the way the DENG-11590
 -- predicate (`moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation`) does.
 --
--- The fields the rules need (kernel release, CPU count, profile count, WebRender status) are
--- not in telemetry_derived.clients_first_seen_v3, so the rules read the raw pings.
+-- The fields the rules need (kernel release, CPU count, profile count, WebRender status, GPU
+-- adapter, screen size, system locales) are not in telemetry_derived.clients_first_seen_v3, so
+-- the rules read the raw pings.
 WITH legacy_pings AS (
   SELECT
     client_id,
@@ -21,6 +22,11 @@ WITH legacy_pings AS (
     payload.processes.parent.scalars.startup_profile_selection_reason,
     CAST(NULL AS INT64) AS startup_profile_count,
     environment.system.gfx.features.webrender.status AS webrender_status,
+    environment.system.gfx.adapters[SAFE_OFFSET(0)].description AS gfx_adapter_description,
+    environment.settings.is_default_browser,
+    ARRAY_LENGTH(environment.settings.intl.system_locales) AS system_locales_count,
+    environment.system.gfx.monitors[SAFE_OFFSET(0)].screen_width,
+    environment.system.gfx.monitors[SAFE_OFFSET(0)].screen_height,
     FALSE AS is_new_profile_ping,
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.main_v5`
@@ -39,6 +45,11 @@ WITH legacy_pings AS (
     payload.processes.parent.scalars.startup_profile_selection_reason,
     payload.processes.parent.scalars.startup_profile_count,
     environment.system.gfx.features.webrender.status AS webrender_status,
+    environment.system.gfx.adapters[SAFE_OFFSET(0)].description AS gfx_adapter_description,
+    environment.settings.is_default_browser,
+    ARRAY_LENGTH(environment.settings.intl.system_locales) AS system_locales_count,
+    environment.system.gfx.monitors[SAFE_OFFSET(0)].screen_width,
+    environment.system.gfx.monitors[SAFE_OFFSET(0)].screen_height,
     TRUE AS is_new_profile_ping,
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.new_profile_v4`
@@ -61,14 +72,28 @@ client_signals AS (
       AND country = 'US'
       AND locale = 'en-US'
     ) AS has_aws_environment,
-    -- Bulk fleet: a new-profile ping with a profile count of 0 (which normal profiles never
-    -- report) and the WebRender start-up failure SoftwareRasterizer_FIRST (only 1-10 normal
-    -- Linux profiles a day).
+    -- Bulk fleet (both image variants): a new-profile ping launched with `-profile` and a
+    -- profile count of 0 (which normal profiles never report), plus either:
+    --   * the WebRender start-up failure SoftwareRasterizer_FIRST (only 1-10 normal Linux
+    --     profiles a day), or
+    --   * the environment from the DS rule in DENG-11925 (comment 1912486): llvmpipe software
+    --     GPU, not the default browser, no system locales, and a 1920x1080 screen. This
+    --     condition catches image variant 2, which does not report the WebRender failure.
+    -- Each condition catches profiles that the other misses, so the rule uses both.
     LOGICAL_OR(
       is_new_profile_ping
       AND startup_profile_selection_reason = 'argument-profile'
       AND startup_profile_count = 0
-      AND webrender_status LIKE '%SoftwareRasterizer_FIRST%'
+      AND (
+        webrender_status LIKE '%SoftwareRasterizer_FIRST%'
+        OR (
+          STARTS_WITH(gfx_adapter_description, 'llvmpipe')
+          AND NOT IFNULL(is_default_browser, FALSE)
+          AND IFNULL(system_locales_count, 0) = 0
+          AND screen_width = 1920
+          AND screen_height = 1080
+        )
+      )
     ) AS has_bulk_signature,
     ARRAY_AGG(app_version IGNORE NULLS ORDER BY app_version DESC LIMIT 1)[
       SAFE_OFFSET(0)

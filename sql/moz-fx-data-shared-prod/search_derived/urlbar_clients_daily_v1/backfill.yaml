@@ -1,0 +1,11 @@
+2026-11-02:
+  start_date: 2026-10-03
+  end_date: 2026-11-01
+  reason: Initial backfill of a new table, the first in the search KPI pipeline (PR 10079, DENG-11872). Test month first; the rest follows in a second entry.
+  watchers:
+    - ctroy@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
+from functools import lru_cache
 from io import BytesIO, TextIOWrapper
 from pathlib import Path
 from typing import Any, Callable, Generator, List, Optional, Tuple, Union
@@ -95,6 +96,16 @@ class JsonDecodeError(Exception):
     """JSON decode error."""
 
     pass
+
+
+@lru_cache(maxsize=1)
+def bq_client() -> bigquery.Client:
+    """Return a BigQuery client shared by all tests in this process.
+
+    A client per test fetches a new GitHub OIDC token each time in CI, which
+    intermittently fails with RefreshError under many parallel tests.
+    """
+    return bigquery.Client()
 
 
 @contextmanager

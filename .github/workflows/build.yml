@@ -977,7 +977,9 @@ jobs:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
+          # Rerun only on transient Workload Identity token refresh failures
+          PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine \
+            --reruns 2 --reruns-delay 5 --only-rerun RefreshError
 
   test-routines:
     name: Test Routines
@@ -1002,7 +1004,9 @@ jobs:
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
-          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
+          # Rerun only on transient Workload Identity token refresh failures
+          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8 \
+            --reruns 2 --reruns-delay 5 --only-rerun RefreshError
       - name: Validate doc examples
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}

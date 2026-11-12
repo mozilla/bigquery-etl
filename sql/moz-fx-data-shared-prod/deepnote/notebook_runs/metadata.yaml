@@ -1,0 +1,10 @@
+friendly_name: Deepnote Notebook Runs
+description: |-
+  Scheduled and API-triggered notebook runs in Mozilla's Deepnote workspaces, from
+  the Deepnote API. Interactive editor runs are not included.
+owners:
+- ascholtz@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

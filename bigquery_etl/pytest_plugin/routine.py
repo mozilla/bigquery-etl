@@ -20,7 +20,7 @@ from ..routine.parse_routine import (
     read_routine_files,
     routine_tests_sql,
 )
-from .sql_test import dataset
+from .sql_test import bq_client, dataset
 
 _routine_index_key = pytest.StashKey["_RoutineIndex | Exception"]()
 
@@ -151,7 +151,7 @@ class RoutineTest(pytest.Item):
 
     def runtest(self):
         """Run Test."""
-        bq = bigquery.Client()
+        bq = bq_client()
         dataset_id = self.safe_name()
         if "CI_RUN_ID" in os.environ:
             dataset_id += f"_{os.environ['CI_RUN_ID']}"

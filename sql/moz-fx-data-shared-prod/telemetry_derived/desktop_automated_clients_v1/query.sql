@@ -1,15 +1,28 @@
--- Flags Firefox Desktop clients from the automated Linux fleets tracked in DENG-11925.
+-- Source of truth for confirmed automated (bot) Firefox Desktop clients. Each confirmed fleet
+-- is one rule below, and its value goes into the `fleet` column. The fleet list (value, ticket,
+-- onset, rule summary) is in this table's metadata.yaml.
 --
 -- One row per flagged legacy client_id per submission_date. A client can appear on more than
--- one day; use telemetry.desktop_automated_clients for one row per client.
+-- one day; use telemetry.desktop_automated_clients for one row per client. Downstream tables
+-- exclude bots by joining to this table, so that a new fleet changes only this query.
 --
--- The rules come from the Desktop Data Science analysis "Linux Bot Wave, November 2026". They
--- do not use a Firefox version or a start date, so they do not go stale the way the DENG-11590
--- predicate (`moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation`) does.
+-- The rules read the raw pings, because the fields they need (for example kernel release, CPU
+-- count, profile count, GPU adapter, screen size) are not in
+-- telemetry_derived.clients_first_seen_v3. The rules do not use a Firefox version or a start
+-- date, so they do not go stale the way the DENG-11590 predicate
+-- (`moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation`) does.
 --
--- The fields the rules need (kernel release, CPU count, profile count, WebRender status, GPU
--- adapter, screen size, system locales) are not in telemetry_derived.clients_first_seen_v3, so
--- the rules read the raw pings.
+-- To add a fleet:
+--   1. Data Science confirms the rule in a Jira ticket.
+--   2. Add a signal to client_signals and a WHEN branch to the fleet CASE in flagged_clients.
+--      Give the rule a comment block with the fleet value, ticket, onset date, approver and a
+--      short description.
+--   3. Add the fleet to the list in metadata.yaml.
+--   4. Backfill this table from the fleet's onset date. Downstream tables need no change.
+--
+-- Current scope: only Linux pings are read (normalized_os = 'Linux'), because all fleets so far
+-- run on Linux. This is a filter, not a design limit. The source tables are not clustered by
+-- OS, so removing the filter for a Windows or Mac fleet does not read more bytes.
 WITH legacy_pings AS (
   SELECT
     client_id,
@@ -63,8 +76,10 @@ client_signals AS (
     -- startup_profile_selection_reason is set only on the first session's pings, so it is
     -- evaluated across all of the client's pings for the day.
     LOGICAL_OR(startup_profile_selection_reason = 'argument-profile') AS has_argument_profile,
-    -- AWS fleet: identical 1 CPU EC2 instances, all US, en-US. 87% of these clients never send
-    -- a new-profile ping, so the rule also reads main pings.
+    -- Fleet `aws` | DENG-11925 | onset 2026-11-04 | approved by Desktop DS ("Linux Bot Wave,
+    -- November 2026", Appendix D). Used together with has_argument_profile.
+    -- Identical 1 CPU EC2 instances, all US, en-US. 87% of these clients never send a
+    -- new-profile ping, so the rule also reads main pings.
     LOGICAL_OR(
       os_version LIKE '%-aws'
       AND cpu_count = 1
@@ -72,7 +87,10 @@ client_signals AS (
       AND country = 'US'
       AND locale = 'en-US'
     ) AS has_aws_environment,
-    -- Bulk fleet (both image variants): a new-profile ping launched with `-profile` and a
+    -- Fleet `bulk` | DENG-11925 | onset 2026-10-28 (variant 2), 2026-11-04 (main variant) |
+    -- approved by Desktop DS ("Linux Bot Wave, November 2026", Appendix D, and Jira comment
+    -- 1912486).
+    -- Both image variants: a new-profile ping launched with `-profile` and a
     -- profile count of 0 (which normal profiles never report), plus either:
     --   * the WebRender start-up failure SoftwareRasterizer_FIRST (only 1-10 normal Linux
     --     profiles a day), or
@@ -111,6 +129,8 @@ client_signals AS (
 flagged_clients AS (
   SELECT
     client_id,
+    -- When a client matches more than one rule, the first matching WHEN branch sets the fleet.
+    -- Add new fleets at the end, so that the fleet of already-flagged clients does not change.
     CASE
       WHEN has_argument_profile
         AND has_aws_environment

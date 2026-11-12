@@ -1,26 +1,30 @@
 friendly_name: Desktop Automated Clients
 description: |-
-  Firefox Desktop clients flagged as part of the automated Linux fleets tracked in DENG-11925.
-  One row per flagged legacy client_id per submission_date.
+  Source of truth for confirmed automated (bot) Firefox Desktop clients. One row per flagged
+  legacy client_id per submission_date, with the fleet the client matched and the Glean client
+  IDs that sent a baseline ping with the same legacy client ID on the same day.
 
-  Two fleets are flagged, by the rules from the Desktop Data Science analysis
-  "Linux Bot Wave, November 2026":
+  Downstream tables exclude bots by joining to this table (on client_id, or through
+  glean_client_ids for Glean tables). Use telemetry.desktop_automated_clients for one row per
+  client.
 
-  * `aws`: Linux, launched with `-profile`, kernel `*-aws`, 1 CPU, ISP Amazon.com, US, en-US.
-    Most of these clients never send a new-profile ping, so main pings are read too.
-  * `bulk`: a new-profile ping with `-profile` and a profile count of 0, plus either the
-    WebRender start-up failure `SoftwareRasterizer_FIRST`, or an llvmpipe software GPU, not
-    the default browser, no system locales and a 1920x1080 screen. The second condition
-    catches the second bulk image variant (from 2026-10-28).
+  Each fleet is a rule confirmed by Data Science in a Jira ticket. The rules read the raw pings,
+  because the fields they need are not in telemetry_derived.clients_first_seen_v3. They do not
+  use a Firefox version or a start date. Only Linux pings are read at present, because all
+  fleets so far run on Linux. See the comments in query.sql for how to add a fleet.
 
-  The rules do not use a Firefox version or a start date.
+  Fleets (`fleet` value | ticket | onset | rule):
 
-  This is a separate segment from DENG-11590 (udf.is_desktop_argument_profile_automation).
-  The rules need fields that are not in telemetry_derived.clients_first_seen_v3, so this
-  table reads the raw pings. `glean_client_ids` maps each client to the Glean client IDs that
-  sent a baseline ping with the same legacy client ID on the same day.
+  * `aws` | DENG-11925 | 2026-11-04 | Linux, launched with `-profile`, kernel `*-aws`, 1 CPU,
+    ISP Amazon.com, US, en-US. Main pings are read too, because most of these clients never
+    send a new-profile ping.
+  * `bulk` | DENG-11925 | 2026-10-28 | a new-profile ping with `-profile` and a profile count
+    of 0, plus either the WebRender start-up failure `SoftwareRasterizer_FIRST`, or an llvmpipe
+    software GPU, not the default browser, no system locales and a 1920x1080 screen. The second
+    condition catches image variant 2 (from 2026-10-28). The main variant started 2026-11-04.
 
-  Use telemetry.desktop_automated_clients for one row per client.
+  Not yet in this table: the DENG-11590 segment, which is still flagged by
+  udf.is_desktop_argument_profile_automation.
 owners:
 - phlee@mozilla.com
 labels:

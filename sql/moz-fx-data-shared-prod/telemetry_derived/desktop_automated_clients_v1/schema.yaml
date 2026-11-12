@@ -14,7 +14,7 @@ fields:
 - name: fleet
   type: STRING
   mode: NULLABLE
-  description: The fleet the client matched. One of 'aws' or 'bulk'.
+  description: The confirmed fleet the client matched. See the fleet list in this table's metadata.
 - name: app_version
   type: STRING
   mode: NULLABLE

@@ -1,0 +1,48 @@
+fields:
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the workspace snapshot.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
+- name: workspace_name
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace name.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote project ID.
+- name: project_name
+  type: STRING
+  mode: NULLABLE
+  description: Project name.
+- name: project_url
+  type: STRING
+  mode: NULLABLE
+  description: Link to the project.
+- name: is_private
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the project has private outputs (project_private_execution_enabled
+    in the audit log).
+- name: private_since
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When private outputs were turned on.
+- name: flag
+  type: STRING
+  mode: NULLABLE
+  description: streamlit_shared_cache (app uses the viewer's OAuth and caches without
+    scope="session"; listed for all projects), streamlit_before_1_54 (requirements
+    pin Streamlit before session-scoped caches), saved_data_file (data file in a private
+    project, visible to all collaborators), viewer_audience (people who only view
+    a private project see empty notebooks), runs_not_visible (scheduled notebooks
+    in a private project; results and runs only visible to their owner), schedule_access_revoked
+    (schedule paused because its creator lost access).
+- name: detail
+  type: STRING
+  mode: NULLABLE
+  description: What was flagged, e.g. app entrypoint or file path.

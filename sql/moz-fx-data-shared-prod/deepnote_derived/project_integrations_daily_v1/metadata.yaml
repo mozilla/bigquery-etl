@@ -1,0 +1,26 @@
+friendly_name: Deepnote Project Integrations Daily
+description: |-
+  Integrations attached to Deepnote projects, one row per snapshot date, project
+  and integration.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: snapshot_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - integration_type
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

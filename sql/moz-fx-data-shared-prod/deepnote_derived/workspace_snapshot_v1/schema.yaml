@@ -114,6 +114,14 @@ fields:
     type: TIMESTAMP
     mode: NULLABLE
     description: Time the app was created.
+  - name: unscoped_cache_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Cache decorators in the app's entrypoint without scope="session"; null if unreadable.
+  - name: uses_service_account
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the app's entrypoint uses a service account rather than the viewer's OAuth.
 - name: machine
   type: RECORD
   mode: NULLABLE
@@ -151,3 +159,37 @@ fields:
   type: STRING
   mode: REPEATED
   description: Paths of the project's files (from GET /v2/projects/{id}), e.g. app.py, _deepnote_static/report.html.
+- name: integrations
+  type: RECORD
+  mode: REPEATED
+  description: Integrations attached to the project (from GET /v2/projects/{id}).
+  fields:
+  - name: integration_id
+    type: STRING
+    mode: NULLABLE
+    description: Deepnote integration ID.
+  - name: name
+    type: STRING
+    mode: NULLABLE
+    description: Integration name, e.g. mozdata.
+  - name: type
+    type: STRING
+    mode: NULLABLE
+    description: Integration type, e.g. big-query, snowflake, env, custom-mcp.
+- name: streamlit_requirement
+  type: RECORD
+  mode: NULLABLE
+  description: Streamlit requirement in the project's requirements.txt.
+  fields:
+  - name: file
+    type: STRING
+    mode: NULLABLE
+    description: Path of the requirements file.
+  - name: specifier
+    type: STRING
+    mode: NULLABLE
+    description: Version specifier, e.g. ==1.40.0.
+  - name: excludes_session_cache
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the specifier rules out Streamlit 1.54+.

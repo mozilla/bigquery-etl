@@ -81,9 +81,10 @@ dims AS (
 ),
 -- A type with no map row is excluded, not failed, when it's in a family that is never search
 -- or Suggest (quick actions, autofill, interventions, tips, @-keywords) or when the client is
--- on a pre-release channel, where new types turn up first and the clicks are few. Otherwise
--- component is NULL and unmapped_check fails the run. A client with no channel counts as
--- release. checks.sql warns on every clicked type with no row, so these still get mapped.
+-- on nightly, aurora (Developer Edition) or beta, where new types turn up first and the clicks
+-- are few. Otherwise component is NULL and unmapped_check fails the run: release, esr, Other
+-- (mostly release-like builds) and no channel all fail. checks.sql warns on every clicked type
+-- with no row, so these still get mapped.
 clicked_results AS (
   SELECT
     u.client_id,
@@ -92,7 +93,7 @@ clicked_results AS (
       m.component,
       IF(
         REGEXP_CONTAINS(r.result_type, r'^(action|autofill|intervention|tip|restrict_keyword)_')
-        OR COALESCE(d.normalized_channel, 'release') IN ('nightly','aurora','beta'),
+        OR COALESCE(d.normalized_channel, 'release') IN ('nightly', 'aurora', 'beta'),
         'excluded',
         NULL
       )

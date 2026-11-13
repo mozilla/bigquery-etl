@@ -16,7 +16,7 @@ from ..cli.utils import billing_project_option, is_authenticated
 from ..config import ConfigLoader
 from ..dryrun import DryRun, get_credentials, get_id_token
 
-
+# TODO: remove this comment - CI test change
 @click.command(
     help="""Dry run SQL.
         Uses the dryrun Cloud Function by default which only has access to shared-prod.

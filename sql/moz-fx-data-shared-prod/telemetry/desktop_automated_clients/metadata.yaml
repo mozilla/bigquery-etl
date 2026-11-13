@@ -1,0 +1,17 @@
+friendly_name: Desktop Automated Clients
+description: |-
+  One row per confirmed automated (bot) Firefox Desktop client, with the first date it was
+  flagged, its fleet and its Glean client IDs. Join on client_id for legacy tables, or through
+  UNNEST(glean_client_ids) for Glean tables. See telemetry_derived.desktop_automated_clients_v1
+  for the fleet list and the rules.
+owners:
+- phlee@mozilla.com
+labels:
+  owner1: phlee
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1

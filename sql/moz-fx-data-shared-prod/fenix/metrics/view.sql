@@ -2340,7 +2340,9 @@ SELECT
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
       metrics.dual_labeled_counter.browser_utils_category_consumer_result,
-      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls,
+      metrics.dual_labeled_counter.quotamanager_storage_init_corruption_error,
+      metrics.dual_labeled_counter.rust_component_errors_expected_failures
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -4709,7 +4711,9 @@ SELECT
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
       metrics.dual_labeled_counter.browser_utils_category_consumer_result,
-      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls,
+      metrics.dual_labeled_counter.quotamanager_storage_init_corruption_error,
+      metrics.dual_labeled_counter.rust_component_errors_expected_failures
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -7098,7 +7102,9 @@ SELECT
       metrics.dual_labeled_counter.dns_cache_miss_reason,
       metrics.dual_labeled_counter.dns_negative_eviction,
       metrics.dual_labeled_counter.browser_utils_category_consumer_result,
-      metrics.dual_labeled_counter.dom_register_protocol_handler_calls
+      metrics.dual_labeled_counter.dom_register_protocol_handler_calls,
+      metrics.dual_labeled_counter.quotamanager_storage_init_corruption_error,
+      metrics.dual_labeled_counter.rust_component_errors_expected_failures
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

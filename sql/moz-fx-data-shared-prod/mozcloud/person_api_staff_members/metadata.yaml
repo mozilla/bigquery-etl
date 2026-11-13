@@ -20,6 +20,7 @@ workgroup_access:
   - workgroup:platform/access-events
   - workgroup:platform/backstage-gke
   - workgroup:platform/platform-tf
+  - workgroup:remote-settings/permissions-gha
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozcloud_workgroups_syndicate.person_api_staff_members

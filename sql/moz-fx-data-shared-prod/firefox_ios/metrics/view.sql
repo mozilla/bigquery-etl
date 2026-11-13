@@ -338,7 +338,10 @@ SELECT
       metrics.labeled_string.ads_client_client_error,
       metrics.labeled_string.ads_client_deserialization_error,
       metrics.labeled_string.ads_client_http_cache_outcome
-    ) AS `labeled_string`
+    ) AS `labeled_string`,
+    STRUCT(
+      metrics.dual_labeled_counter.rust_component_errors_expected_failures
+    ) AS `dual_labeled_counter`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -690,7 +693,10 @@ SELECT
       metrics.labeled_string.ads_client_client_error,
       metrics.labeled_string.ads_client_deserialization_error,
       metrics.labeled_string.ads_client_http_cache_outcome
-    ) AS `labeled_string`
+    ) AS `labeled_string`,
+    STRUCT(
+      metrics.dual_labeled_counter.rust_component_errors_expected_failures
+    ) AS `dual_labeled_counter`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -1042,7 +1048,10 @@ SELECT
       metrics.labeled_string.ads_client_client_error,
       metrics.labeled_string.ads_client_deserialization_error,
       metrics.labeled_string.ads_client_http_cache_outcome
-    ) AS `labeled_string`
+    ) AS `labeled_string`,
+    STRUCT(
+      metrics.dual_labeled_counter.rust_component_errors_expected_failures
+    ) AS `dual_labeled_counter`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

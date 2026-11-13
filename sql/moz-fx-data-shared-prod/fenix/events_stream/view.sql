@@ -363,6 +363,7 @@ SELECT
       JSON_VALUE(event_extra.alt_text_type) AS `alt_text_type`,
       JSON_VALUE(event_extra.app_package) AS `app_package`,
       JSON_VALUE(event_extra.app_state_before_click) AS `app_state_before_click`,
+      JSON_VALUE(event_extra.auth_type) AS `auth_type`,
       JSON_VALUE(event_extra.auto_admin) AS `auto_admin`,
       JSON_VALUE(event_extra.autoplay_setting) AS `autoplay_setting`,
       JSON_VALUE(event_extra.backend) AS `backend`,

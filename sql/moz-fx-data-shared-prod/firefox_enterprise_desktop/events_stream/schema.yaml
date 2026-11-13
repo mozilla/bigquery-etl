@@ -3877,8 +3877,14 @@ fields:
     - name: detected_intent
       type: STRING
       mode: NULLABLE
-      description: 'What was the detected intent for the request: navigate, search,
-        chat, or action'
+      description: 'Depending on the type of event:
+
+        * What was the detected intent for the request: navigate, search, chat, or
+        action
+
+        * What was the detected intent for the request: navigate, search, chat, or
+        action. When the smartWindow feature''s smartbarIntent variable pins search
+        or chat, non-navigate requests report the pinned value rather than the classifier''s.'
     - name: detected_language
       type: STRING
       mode: NULLABLE
@@ -5892,9 +5898,9 @@ fields:
 
         * The name of the provider.
 
-        * Current provider id.
-
         * Search provider used in the request
+
+        * Current provider id.
 
         * Which p...'
     - name: provider_id
@@ -6630,6 +6636,10 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * How the request was submitted: button, enter, follow-up, fxms, menu, resume,
+        retry, shortcuts, starter, or suggestion. Messaging surfaces may supply their
+        own value instead of fxms
+
         * How the request was submitted: button, enter, follow-up, shortcuts, starter,
         or suggestion
 
@@ -6637,11 +6647,7 @@ fields:
         shortcuts, starter, or suggestion
 
         * How the request was submitted: button, enter, follow-up, menu, resume, retry,
-        shortcuts, starter, or suggestion
-
-        * How the request was submitted: button, enter, follow-up, fxms, menu, resume,
-        retry, shortcuts, starter, or suggestion. Messaging surfaces may supply their
-        own value instead of fxms'
+        shortcuts, starter, or suggestion'
     - name: surface
       type: STRING
       mode: NULLABLE

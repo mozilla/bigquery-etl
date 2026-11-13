@@ -52954,9 +52954,6 @@ fields:
         by process type and Windows error code. See https://searchfox.org/mozilla-central/search?q=ResultCode++path%3Asandbox_types.h&redirect=true
         for definitions of the error codes.
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram SANDBOX_FAILED_LAUNCH_KEYED.
-
         '
     - name: networking_http_3_slow_start_exit_accuracy
       type: RECORD
@@ -54693,6 +54690,55 @@ fields:
         user activation. The site permission gating the prompt is keyed on the top-level
         origin. Used to judge the web compatibility impact of no longer prompting
         for calls from cross-origin iframes, or without user activation.
+
+        '
+    - name: quotamanager_storage_init_corruption_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Increments when a database corruption error (as defined by IsDatabaseCorruptionError)
+        propagates during QuotaManager initialization with no recovery path, leaving
+        all storage APIs (localStorage, IndexedDB, Cache API) broken until the next
+        initialization attempt. This covers corruption that passes the initial storage.sqlite
+        open and integrity checks but breaks subsequent operations such as schema
+        upgrades, cache setup, or quota loading. Note in some cases we recover from
+        corruption: this metric is here to record missing cases where we didn''t recover.
+        Labeled by the initialization context that failed and by the name of the propagated
+        error, which tells apart real corruption (NS_ERROR_FILE_CORRUPTED) from I/O
+        errors (NS_ERROR_STORAGE_IOERR), which are often transient. See bug 2090041.
+
+        '
+    - name: rust_component_errors_expected_failures
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts expected failures for Rust components
 
         '
   - name: text2

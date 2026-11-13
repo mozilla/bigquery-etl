@@ -55,10 +55,12 @@ SELECT
       LAX_BOOL(event_extra.succeeded) AS `succeeded`
     ) AS `boolean`,
     STRUCT(
+      LAX_INT64(event_extra.actual) AS `actual`,
       LAX_INT64(event_extra.api_query_count) AS `api_query_count`,
       LAX_INT64(event_extra.average_tabs_in_all_groups) AS `average_tabs_in_all_groups`,
       LAX_INT64(event_extra.consecutive_crash) AS `consecutive_crash`,
       LAX_INT64(event_extra.count) AS `count`,
+      LAX_INT64(event_extra.expected) AS `expected`,
       LAX_INT64(event_extra.figures) AS `figures`,
       LAX_INT64(event_extra.from_version) AS `from_version`,
       LAX_INT64(event_extra.groups_two_tabs_only) AS `groups_two_tabs_only`,
@@ -70,6 +72,7 @@ SELECT
       LAX_INT64(event_extra.length_words) AS `length_words`,
       LAX_INT64(event_extra.level) AS `level`,
       LAX_INT64(event_extra.migrated_version) AS `migrated_version`,
+      LAX_INT64(event_extra.missing) AS `missing`,
       LAX_INT64(event_extra.n_chars) AS `n_chars`,
       LAX_INT64(event_extra.n_results) AS `n_results`,
       LAX_INT64(event_extra.n_words) AS `n_words`,
@@ -81,7 +84,8 @@ SELECT
       LAX_INT64(event_extra.to_version) AS `to_version`,
       LAX_INT64(event_extra.total_num_of_groups) AS `total_num_of_groups`,
       LAX_INT64(event_extra.total_tabs_in_all_groups) AS `total_tabs_in_all_groups`,
-      LAX_INT64(event_extra.webview_count) AS `webview_count`
+      LAX_INT64(event_extra.webview_count) AS `webview_count`,
+      LAX_INT64(event_extra.windows) AS `windows`
     ) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,

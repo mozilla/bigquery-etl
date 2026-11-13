@@ -545,6 +545,10 @@ fields:
     mode: NULLABLE
     description: Quantity event extras.
     fields:
+    - name: actual
+      type: INTEGER
+      mode: NULLABLE
+      description: The actual number of tabs.
     - name: api_query_count
       type: INTEGER
       mode: NULLABLE
@@ -565,6 +569,10 @@ fields:
         * The number of recent search suggestions displayed.
 
         * The number of trending search suggestions displayed.'
+    - name: expected
+      type: INTEGER
+      mode: NULLABLE
+      description: The expected number of tabs.
     - name: figures
       type: INTEGER
       mode: NULLABLE
@@ -631,6 +639,10 @@ fields:
       mode: NULLABLE
       description: The version of the database that was migrated to. This field will
         be empty if no migration(s) occurred.
+    - name: missing
+      type: INTEGER
+      mode: NULLABLE
+      description: The missing number of tabs.
     - name: n_chars
       type: INTEGER
       mode: NULLABLE
@@ -698,6 +710,10 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of living WKWebViews at the time of the memory warning.
+    - name: windows
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of windows.
   - name: string
     type: RECORD
     mode: NULLABLE

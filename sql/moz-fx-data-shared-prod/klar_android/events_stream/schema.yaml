@@ -1775,9 +1775,6 @@ fields:
         * The add-on blocklistState (0 not-blocked, 1 soft-blocked, 2 hard-blocked)
         at the time the manage event was being collected.
 
-        * The blocklistState of the add-on. 0 is unblocked, 2 is blocked. 1 is soft
-        blocked (this state does not exist in blocklist v3).
-
         * The blocklistState of the add-on. 0 is unblocked, 1 is soft blocked and
         2 is hard blocked.'
     - name: branch
@@ -4057,11 +4054,10 @@ fields:
 
         * The `value` of the event.
 
-        * The value is the ID of the add-on.
-
         * Flow id of an interaction session with a credit card form
 
-        * The event value. This is either "started", "success", "d...'
+        * The event value. This is either "started", "success", "decryptionError"
+        or "encryptionError"....'
     - name: variant_shown
       type: STRING
       mode: NULLABLE

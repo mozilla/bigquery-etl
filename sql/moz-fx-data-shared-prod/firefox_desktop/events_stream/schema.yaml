@@ -7125,7 +7125,11 @@ fields:
         shortcuts, starter, or suggestion
 
         * How the request was submitted: button, enter, follow-up, menu, resume, retry,
-        shortcuts, starter, or suggestion'
+        shortcuts, starter, or suggestion
+
+        * How the request was submitted: button, enter, follow-up, fxms, menu, resume,
+        retry, shortcuts, starter, suggestion, or toolbar. Messaging surfaces may
+        supply their own value instead of fxms'
     - name: surface
       type: STRING
       mode: NULLABLE
@@ -7359,11 +7363,11 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * How the action was triggered: tab_mention, description, or unsupported.
+
         * The cause of the filter change: error, warn, log, info, debug, css, netxhr,
         net, text or reset and all, html, css, js, xhr, fonts, images, media, ws or
         other for netmonitor
-
-        * How the action was triggered: tab_mention, description, or unsupported.
 
         * The location where the removal occurred (assistant, settings)
 

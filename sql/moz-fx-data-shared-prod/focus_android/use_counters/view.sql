@@ -3048,7 +3048,9 @@ SELECT
       metrics.counter.use_counter_page_domparser_fast_path,
       metrics.counter.use_counter_page_domparser_fast_path_rejected,
       metrics.counter.use_counter_page_inner_html_fast_path,
-      metrics.counter.use_counter_page_inner_html_fast_path_rejected
+      metrics.counter.use_counter_page_inner_html_fast_path_rejected,
+      metrics.counter.use_counter_css_doc_css_border_shape,
+      metrics.counter.use_counter_css_page_css_border_shape
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -6121,7 +6123,9 @@ SELECT
       metrics.counter.use_counter_page_domparser_fast_path,
       metrics.counter.use_counter_page_domparser_fast_path_rejected,
       metrics.counter.use_counter_page_inner_html_fast_path,
-      metrics.counter.use_counter_page_inner_html_fast_path_rejected
+      metrics.counter.use_counter_page_inner_html_fast_path_rejected,
+      metrics.counter.use_counter_css_doc_css_border_shape,
+      metrics.counter.use_counter_css_page_css_border_shape
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -9194,7 +9198,9 @@ SELECT
       metrics.counter.use_counter_page_domparser_fast_path,
       metrics.counter.use_counter_page_domparser_fast_path_rejected,
       metrics.counter.use_counter_page_inner_html_fast_path,
-      metrics.counter.use_counter_page_inner_html_fast_path_rejected
+      metrics.counter.use_counter_page_inner_html_fast_path_rejected,
+      metrics.counter.use_counter_css_doc_css_border_shape,
+      metrics.counter.use_counter_css_page_css_border_shape
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

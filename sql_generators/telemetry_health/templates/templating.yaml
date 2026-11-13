@@ -32,3 +32,5 @@ queries:
     description: "Percentage of sampled clients with sequence gaps in baseline pings (within single day)"
   telemetry_health_glean_metric_errors_v1:
     description: "Counts of metrics with recorded errors and the fraction of clients affected, per day."
+  telemetry_health_glean_network_errors_v1:
+    description: "Counts of network errors and the fraction of clients affected, per day."

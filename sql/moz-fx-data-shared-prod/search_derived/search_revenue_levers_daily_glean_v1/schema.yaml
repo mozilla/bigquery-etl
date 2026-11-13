@@ -1,0 +1,103 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date of the measures.
+- name: partner
+  type: STRING
+  mode: NULLABLE
+  description: The search partner the row is for, Google, Bing or DuckDuckGo. For desktop it is the
+    normalized engine the searches went to.
+- name: device
+  type: STRING
+  mode: NULLABLE
+  description: desktop or mobile.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized operating system of the Firefox Desktop client (Windows, Mac, Linux or
+    Other). Null on mobile rows, which are not split by operating system.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The country of the clients behind the row. Google rows only cover the countries Google
+    is eligible for, and Google's eligible-country list changes on 2023-12-01.
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct DAU clients in the markets the partner is eligible for. For
+    Google that is the eligible countries and for the other partners every country. Not summable
+    across partners. Desktop DAU is keyed on the Glean client_id, so it runs higher than the legacy
+    table's.
+- name: dau_w_engine_as_default
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct DAU clients whose default engine is this row's partner, from
+    search_dau_aggregates_glean on desktop and search_dau_aggregates on mobile. Summing across
+    engines counts a client once for each engine they searched on, as the legacy table does.
+- name: dau_engaged_w_sap
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of distinct DAU clients with at least one search access point event on
+    this row's partner's engine. On desktop only Firefox 138 and later send the event.
+- name: sap
+  type: INTEGER
+  mode: NULLABLE
+  description: Search access point events. On desktop it is sap_kpi from search_aggregates_glean,
+    which leaves out client table rows with a sap_exclusion_reason, the cap the legacy table applies.
+    Only Firefox 138 and later send the event on desktop.
+- name: tagged_sap
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged searches, excluding follow-on searches. On desktop it is the
+    browser.search.content counter in search_aggregates_glean, the series that reconciles to the
+    legacy table.
+- name: tagged_follow_on
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged follow-on searches. On desktop it is the browser.search.content counter in
+    search_aggregates_glean.
+- name: search_with_ads
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged searches whose results page had ads. On desktop it is the
+    browser.search.withads counter, which counts when an ad was served, not when it was visible.
+    search_with_ads_serp is the visible-ad equivalent.
+- name: ad_click
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad clicks on tagged searches. On desktop it is the browser.search.adclicks counter,
+    the series that reconciles to the legacy table. ad_click_serp is the SERP-derived equivalent.
+- name: organic
+  type: INTEGER
+  mode: NULLABLE
+  description: Organic, meaning non-partner, in-content searches. On desktop it does not reconcile
+    exactly with the legacy table.
+- name: ad_click_organic
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad clicks on organic searches.
+- name: search_with_ads_organic
+  type: INTEGER
+  mode: NULLABLE
+  description: Organic searches whose results page had ads. Always 0 on mobile.
+- name: monetizable_sap
+  type: INTEGER
+  mode: NULLABLE
+  description: SAP events eligible to earn revenue. On desktop it is decided by the row's
+    partner_code. Bing is eligible on MOZI and MOZR, and DuckDuckGo on ffab and ftsa. Google is
+    eligible on a RoW code outside the excluded territories, on a US code in the US only, and on a
+    Mint code with the mint-001 distribution. Any other code, including no_code and any
+    new Google code, is not eligible until its rule is settled. The definition is awaiting
+    sign-off. Always 0 on mobile.
+- name: search_with_ads_serp
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged searches whose results page showed at least one visible ad, from SERP
+    events. It runs below search_with_ads, which counts served ads. Desktop only, null on mobile.
+- name: ad_click_serp
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad clicks on tagged searches from SERP events. It steps up at Firefox 157, when the
+    fix for bug 2069054 landed, and the counter series in ad_click does not. Desktop only, null on
+    mobile.

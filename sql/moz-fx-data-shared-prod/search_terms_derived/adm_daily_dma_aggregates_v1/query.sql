@@ -1,3 +1,17 @@
+WITH mls AS (
+  SELECT
+    request_id,
+    dma
+  FROM
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4`
+  WHERE
+    `timestamp` >= TIMESTAMP(@submission_date)
+    AND `timestamp` < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
+  -- Keep one row per request so the join to impressions on request_id cannot fan
+  -- out; Merino logs can be redelivered with the same request_id
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp` DESC, dma) = 1
+)
 SELECT
   DATE(@submission_date) AS submission_date,
   COALESCE(mls.dma, '') AS dma,
@@ -8,10 +22,8 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3` AS sis
 LEFT JOIN
-  `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4` AS mls
-  ON (sis.request_id = mls.request_id)
-  AND mls.timestamp >= TIMESTAMP(@submission_date)
-  AND mls.timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
+  mls
+  USING (request_id)
 WHERE
   sis.submission_timestamp >= TIMESTAMP(@submission_date)
   AND sis.submission_timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))

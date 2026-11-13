@@ -5,11 +5,12 @@ import io
 import json
 import os
 import re
+import sys
 from datetime import datetime
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
-from typing import Optional
+from typing import Optional, cast
 
 import click
 import requests
@@ -24,10 +25,19 @@ from bigquery_etl.datahub.lineage import (
     AuthError,
     DataHubClient,
     LineageTooLargeError,
+    add_usage,
     format_text,
 )
 from bigquery_etl.datahub.lineage import (
     get_downstream_lineage as get_downstream_lineage_from_datahub,
+)
+from bigquery_etl.datahub.lineage import merge_lineage
+from bigquery_etl.deprecation import (
+    INCLUDE_DOWNSTREAM_MODES,
+    downstream_candidates,
+    pick,
+    preselect,
+    selection_summary,
 )
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
@@ -316,10 +326,18 @@ def _publish_metadata(project_id, credentials, metadata_file):
 
 @metadata.command(help="""
     Deprecate BigQuery table by updating metadata.yaml file.
-    Deletion date is by default 3 months from current date if not provided.
+    Deletion date is by default 3 months from current date if not provided;
+    in a terminal it is asked for, with that default.
 
-    Example:
-     ./bqetl metadata deprecate ga_derived.downloads_with_attribution_v2 --deletion_date=2024-03-02
+    In a terminal, offers to show downstream lineage from DataHub and pick
+    downstream tables and views to deprecate too. --include-downstream skips the
+    prompt and pre-selects them; without a terminal the pre-selection is applied.
+
+    Examples:
+
+    \b
+     ./bqetl metadata deprecate firefox_desktop_derived.desktop_retention_aggregates_v1 --deletion_date=2027-03-02
+     ./bqetl metadata deprecate firefox_desktop_derived.desktop_retention_aggregates_v1 --include-downstream=unused
     """)
 @click.argument("name")
 @project_id_option(
@@ -331,24 +349,106 @@ def _publish_metadata(project_id, credentials, metadata_file):
     "--deletion-date",
     help="Date when table is scheduled for deletion. Date format: yyyy-mm-dd",
     type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=datetime.today() + relativedelta(months=+3),
+)
+@click.option(
+    "--include_downstream",
+    "--include-downstream",
+    type=click.Choice(INCLUDE_DOWNSTREAM_MODES),
+    help="Fetch downstream lineage from DataHub without asking and pre-select "
+    "downstream assets to deprecate: all, unused (no queries in 30 days) or none.",
+)
+@click.option(
+    "--since_days",
+    "--since-days",
+    type=click.IntRange(min=1),
+    help="Only follow lineage DataHub has seen in the last N days. Default: all time.",
 )
 def deprecate(
     name: str,
     sql_dir: str,
     project_id: str,
-    deletion_date: datetime,
+    deletion_date: Optional[datetime],
+    include_downstream: Optional[str],
+    since_days: Optional[int],
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""
-    table_metadata_files = list(
+    table_metadata_files = sorted(
         set(
             paths_matching_name_pattern(
                 name, sql_dir, project_id=project_id, files=["metadata.yaml"]
             )
         )
     )
+    if not table_metadata_files:
+        raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
 
-    for metadata_file in table_metadata_files:
+    interactive = _is_interactive()
+    prompted = False
+    if include_downstream is None and interactive:
+        if click.confirm("Show downstream lineage?", default=True):
+            include_downstream = "none"
+            prompted = True
+    if since_days and not include_downstream:
+        click.echo(
+            "Warning: --since-days is ignored without downstream lineage.", err=True
+        )
+
+    downstream: list[Path] = []
+    assets = None
+    if include_downstream:
+        tables = [".".join(extract_from_query_path(f)) for f in table_metadata_files]
+        targets = tables[0] if len(tables) == 1 else f"{len(tables)} tables"
+        try:
+            assets = _fetch_downstream(
+                tables, max_degree_hint=False, since_days=since_days, include_usage=True
+            )
+        except click.ClickException as e:
+            # Lineage was only offered by the prompt, so the tables can still go ahead.
+            if not prompted:
+                raise
+            click.echo(f"Warning: {e.message}", err=True)
+            if not click.confirm(f"Deprecate {targets} without downstream?"):
+                click.echo("Cancelled, nothing was changed.")
+                return
+        if assets is not None:
+            candidates, external = downstream_candidates(
+                assets, sql_dir, exclude={Path(f).parent for f in table_metadata_files}
+            )
+            preselected = preselect(candidates, include_downstream)
+            options = []
+            if since_days:
+                options.append(f"lineage seen in the last {since_days} days")
+            if not prompted:
+                options.append(f"pre-selected: {include_downstream}")
+            note = f" ({'; '.join(options)})" if options else ""
+            if interactive:
+                picked = pick(targets, candidates, external, preselected, note)
+                if picked is None:
+                    click.echo("Cancelled, nothing was changed.")
+                    return
+                downstream = picked
+            else:
+                click.echo(format_text(targets + note, assets, show_usage=True))
+                click.echo(
+                    selection_summary(candidates, preselected, include_downstream)
+                )
+                downstream = sorted(preselected)
+
+    if deletion_date is None:
+        deletion_date = datetime.today() + relativedelta(months=+3)
+        if interactive:
+            deletion_date = cast(
+                datetime,
+                click.prompt(
+                    "Deletion date (default is 3 months from today)",
+                    default=f"{deletion_date:%Y-%m-%d}",
+                    type=click.DateTime(formats=["%Y-%m-%d"]),
+                ),
+            )
+
+    for metadata_file in table_metadata_files + [
+        p / "metadata.yaml" for p in downstream
+    ]:
         metadata = Metadata.from_file(metadata_file)
 
         metadata.deprecated = True
@@ -357,8 +457,51 @@ def deprecate(
         metadata.write(metadata_file)
         click.echo(f"Updated {metadata_file} with deprecation.")
 
-    if not table_metadata_files:
-        raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
+
+def _is_interactive() -> bool:
+    """Return True when prompts can be shown."""
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+def _fetch_downstream(
+    tables: list[str],
+    max_degree_hint: bool = True,
+    include_usage: bool = False,
+    **kwargs,
+) -> list[dict]:
+    """Return the merged downstream lineage of tables, as click errors on failure."""
+    try:
+        client = DataHubClient()
+        assets = merge_lineage(
+            [
+                get_downstream_lineage_from_datahub(client, table, **kwargs)
+                for table in tables
+            ]
+        )
+        # Once after merging, since tables often share downstream assets.
+        if include_usage:
+            add_usage(client, assets)
+        return assets
+    except LoginError as e:
+        raise click.ClickException(str(e))
+    except AuthError as e:
+        raise click.ClickException(
+            f"DataHub rejected the token ({e}). If DATAHUB_GMS_TOKEN is set, check "
+            "it is valid and not expired."
+        )
+    except LineageTooLargeError:
+        raise click.ClickException(
+            "Lineage is too large for one DataHub query (maxRelations limit). "
+            "Re-run with --since-days (e.g. --since-days=90) to only follow recent "
+            "lineage"
+            + (
+                ", or --max-degree=1 or 2 to only list the nearest assets."
+                if max_degree_hint
+                else "."
+            )
+        )
+    except (requests.RequestException, RuntimeError) as e:
+        raise click.ClickException(f"Could not get lineage from DataHub: {e}")
 
 
 @metadata.command(help="""
@@ -587,33 +730,15 @@ def get_downstream_lineage(
             "Expected dataset.table or project.dataset.table", param_hint="NAME"
         )
 
-    try:
-        client = DataHubClient()
-        assets = get_downstream_lineage_from_datahub(
-            client,
-            table,
-            since_days=since_days,
-            include_deleted=include_deleted,
-            include_usage=include_usage,
-            types=set(types),
-            looker_tmp_days=looker_tmp_days,
-            max_degree=DATAHUB_LINEAGE_DEGREES.index(max_degree) + 1,
-        )
-    except LoginError as e:
-        raise click.ClickException(str(e))
-    except AuthError as e:
-        raise click.ClickException(
-            f"DataHub rejected the token ({e}). If DATAHUB_GMS_TOKEN is set, check "
-            "it is valid and not expired."
-        )
-    except LineageTooLargeError:
-        raise click.ClickException(
-            "Lineage is too large for one DataHub query (maxRelations limit). "
-            "Re-run with --since-days (e.g. --since-days=90) to only follow recent "
-            "lineage, or --max-degree=1 or 2 to only list the nearest assets."
-        )
-    except (requests.RequestException, RuntimeError) as e:
-        raise click.ClickException(f"Could not get lineage from DataHub: {e}")
+    assets = _fetch_downstream(
+        [table],
+        since_days=since_days,
+        include_deleted=include_deleted,
+        include_usage=include_usage,
+        types=set(types),
+        looker_tmp_days=looker_tmp_days,
+        max_degree=DATAHUB_LINEAGE_DEGREES.index(max_degree) + 1,
+    )
 
     fields = [
         "degree",

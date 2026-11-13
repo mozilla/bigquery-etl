@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import subprocess
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -2085,7 +2086,12 @@ class TestGetDownstreamLineage:
         return CliRunner()
 
     @pytest.fixture
-    def lineage(self):
+    def add_usage(self):
+        with patch("bigquery_etl.cli.metadata.add_usage") as add_usage:
+            yield add_usage
+
+    @pytest.fixture
+    def lineage(self, add_usage):
         with (
             patch("bigquery_etl.cli.metadata.DataHubClient"),
             patch(
@@ -2220,16 +2226,16 @@ class TestGetDownstreamLineage:
         assert result.exit_code == 1
         assert "access_denied" in result.output
 
-    def test_usage_is_off_by_default(self, runner, lineage):
+    def test_usage_is_off_by_default(self, runner, lineage, add_usage):
         result = runner.invoke(get_downstream_lineage, ["d.a"])
         assert result.exit_code == 0
-        assert lineage.call_args[1]["include_usage"] is False
+        add_usage.assert_not_called()
         assert "QUERIES 30D" not in result.output
 
-    def test_include_usage_adds_columns_and_fields(self, runner, lineage):
+    def test_include_usage_adds_columns_and_fields(self, runner, lineage, add_usage):
         result = runner.invoke(get_downstream_lineage, ["d.a", "--include-usage"])
         assert result.exit_code == 0
-        assert lineage.call_args[1]["include_usage"] is True
+        add_usage.assert_called_once()
         assert "QUERIES 30D" in result.output
 
         result = runner.invoke(
@@ -2238,3 +2244,226 @@ class TestGetDownstreamLineage:
         lines = result.output.splitlines()
         assert lines[0].endswith(",urn,queries_30d,users_30d,last_query")
         assert lines[1].endswith(",0,,")
+
+
+class TestDeprecateDownstream:
+    project = "moz-fx-data-shared-prod"
+
+    def asset(self, table, queries):
+        qualified = f"{self.project}.d.{table}"
+        return {
+            "degree": 1,
+            "type": "DATASET",
+            "subtype": "Table",
+            "platform": "bigquery",
+            "name": table,
+            "qualified_name": qualified,
+            "urn": f"urn:li:dataset:(urn:li:dataPlatform:bigquery,{qualified},PROD)",
+            "deleted": False,
+            "queries_30d": queries,
+            "users_30d": None,
+            "last_query": None,
+            "created": "2020-01-01",
+        }
+
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def sql_dir(self, tmp_path):
+        for table in ("target_v1", "target_v2", "unused_v1", "used_v1"):
+            path = tmp_path / self.project / "d" / table
+            path.mkdir(parents=True)
+            (path / "metadata.yaml").write_text(
+                yaml.dump({"friendly_name": table, "owners": ["test@example.com"]})
+            )
+        subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+        return tmp_path
+
+    @pytest.fixture
+    def add_usage(self):
+        with patch("bigquery_etl.cli.metadata.add_usage") as add_usage:
+            yield add_usage
+
+    @pytest.fixture
+    def lineage(self, add_usage):
+        with (
+            patch("bigquery_etl.cli.metadata.DataHubClient"),
+            patch(
+                "bigquery_etl.cli.metadata.get_downstream_lineage_from_datahub"
+            ) as lineage,
+        ):
+            lineage.return_value = [
+                self.asset("target_v1", 1),
+                self.asset("unused_v1", 0),
+                self.asset("used_v1", 5),
+            ]
+            yield lineage
+
+    @pytest.fixture
+    def pick(self):
+        with patch("bigquery_etl.cli.metadata.pick") as pick:
+            yield pick
+
+    def interactive(self, value):
+        return patch("bigquery_etl.cli.metadata._is_interactive", return_value=value)
+
+    def deprecated(self, sql_dir):
+        return {
+            p.parent.name
+            for p in sql_dir.glob("*/*/*/metadata.yaml")
+            if yaml.safe_load(p.read_text()).get("deprecated")
+        }
+
+    def invoke(self, runner, sql_dir, *args, input=None, name="d.target_v1"):
+        return runner.invoke(
+            deprecate,
+            [name, "--deletion-date=2026-12-01", f"--sql-dir={sql_dir}"] + list(args),
+            input=input,
+        )
+
+    def test_declining_the_prompt_skips_lineage(self, runner, sql_dir, lineage):
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, input="n\n")
+        assert result.exit_code == 0, result.output
+        assert "Show downstream lineage?" in result.output
+        lineage.assert_not_called()
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_prompt_defaults_to_yes(self, runner, sql_dir, lineage, add_usage, pick):
+        pick.return_value = [sql_dir / self.project / "d" / "used_v1"]
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, input="\n")
+        assert result.exit_code == 0, result.output
+        lineage.assert_called_once()
+        add_usage.assert_called_once()
+        targets, candidates, external, preselected, note = pick.call_args.args
+        assert note == ""
+        assert targets == f"{self.project}.d.target_v1"
+        assert [c.path.name for c in candidates] == ["unused_v1", "used_v1"]
+        assert preselected == set()
+        assert self.deprecated(sql_dir) == {"target_v1", "used_v1"}
+
+    def test_flag_skips_the_prompt_and_preselects(self, runner, sql_dir, lineage, pick):
+        pick.return_value = []
+        with self.interactive(True):
+            result = self.invoke(
+                runner, sql_dir, "--include-downstream=unused", "--since-days=90"
+            )
+        assert result.exit_code == 0, result.output
+        assert "Show downstream lineage?" not in result.output
+        assert pick.call_args.args[4] == (
+            " (lineage seen in the last 90 days; pre-selected: unused)"
+        )
+        assert pick.call_args.args[3] == {sql_dir / self.project / "d" / "unused_v1"}
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_cancel_writes_nothing(self, runner, sql_dir, lineage, pick):
+        pick.return_value = None
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, "--include-downstream=all")
+        assert result.exit_code == 0, result.output
+        assert "nothing was changed" in result.output
+        assert self.deprecated(sql_dir) == set()
+
+    def test_non_interactive_without_flag_skips_lineage(self, runner, sql_dir, lineage):
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir)
+        assert result.exit_code == 0, result.output
+        lineage.assert_not_called()
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_non_interactive_applies_preselection(self, runner, sql_dir, lineage, pick):
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir, "--include-downstream=unused")
+        assert result.exit_code == 0, result.output
+        pick.assert_not_called()
+        assert (
+            f"Downstream lineage of {self.project}.d.target_v1 (pre-selected: unused)"
+            in result.output
+        )
+        assert f"Deprecating 1 downstream:\n  {self.project}.d.unused_v1" in (
+            result.output
+        )
+        assert f"{self.project}.d.used_v1 (5 queries in 30 days)" in result.output
+        assert self.deprecated(sql_dir) == {"target_v1", "unused_v1"}
+        metadata = yaml.safe_load(
+            (sql_dir / self.project / "d" / "unused_v1" / "metadata.yaml").read_text()
+        )
+        assert str(metadata["deletion_date"]) == "2026-12-01"
+
+    def test_datahub_errors_write_nothing(self, runner, sql_dir, lineage):
+        lineage.side_effect = AuthError("HTTP 401")
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir, "--include-downstream=all")
+        assert result.exit_code == 1
+        assert "DataHub rejected the token" in result.output
+        assert self.deprecated(sql_dir) == set()
+
+    @pytest.mark.parametrize(
+        "answer,deprecated", [("y", {"target_v1"}), ("n", set()), ("", set())]
+    )
+    def test_datahub_error_after_prompt_offers_tables_only(
+        self, runner, sql_dir, lineage, pick, answer, deprecated
+    ):
+        lineage.side_effect = AuthError("HTTP 401")
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, input=f"\n{answer}\n")
+        assert result.exit_code == 0, result.output
+        assert "DataHub rejected the token" in result.stderr
+        pick.assert_not_called()
+        assert self.deprecated(sql_dir) == deprecated
+
+    @pytest.mark.parametrize("answer", ["", "2027-06-01"])
+    def test_deletion_date_is_asked_last_with_the_default(
+        self, runner, sql_dir, lineage, pick, answer
+    ):
+        used = sql_dir / self.project / "d" / "used_v1"
+        pick.return_value = [used]
+        default = (datetime.today() + relativedelta(months=+3)).date()
+        with self.interactive(True):
+            result = runner.invoke(
+                deprecate,
+                ["d.target_v1", f"--sql-dir={sql_dir}"],
+                input=f"\n{answer}\n",
+            )
+        assert result.exit_code == 0, result.output
+        assert (
+            f"Deletion date (default is 3 months from today) [{default}]"
+            in result.output
+        )
+        expected = answer or str(default)
+        for table in ("target_v1", "used_v1"):
+            metadata = yaml.safe_load(
+                (sql_dir / self.project / "d" / table / "metadata.yaml").read_text()
+            )
+            assert str(metadata["deletion_date"]) == expected
+
+    def test_deletion_date_is_not_asked_without_a_terminal(self, runner, sql_dir):
+        with self.interactive(False):
+            result = runner.invoke(deprecate, ["d.target_v1", f"--sql-dir={sql_dir}"])
+        assert result.exit_code == 0, result.output
+        assert "Deletion date" not in result.output
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_several_tables_merge_lineage_and_fetch_usage_once(
+        self, runner, sql_dir, lineage, add_usage
+    ):
+        with self.interactive(False):
+            result = self.invoke(
+                runner, sql_dir, "--include-downstream=none", name="d.target_v*"
+            )
+        assert result.exit_code == 0, result.output
+        assert lineage.call_count == 2
+        _, assets = add_usage.call_args.args
+        assert [a["name"] for a in assets] == ["target_v1", "unused_v1", "used_v1"]
+        assert self.deprecated(sql_dir) == {"target_v1", "target_v2"}
+
+    def test_since_days_without_lineage_warns(self, runner, sql_dir, lineage):
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, "--since-days=30", input="n\n")
+        assert result.exit_code == 0, result.output
+        assert "--since-days is ignored" in result.stderr
+        assert self.deprecated(sql_dir) == {"target_v1"}

@@ -14,7 +14,7 @@ labels:
 scheduling:
   dag_name: bqetl_marketing_analysis
   depends_on_past: true
-  date_partition_parameter: report_date
+  partition_parameter: report_date
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

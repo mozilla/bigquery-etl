@@ -32,7 +32,7 @@ bigquery:
     - tile_format
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
-  date_partition_parameter: snapshot_date
+  partition_parameter: snapshot_date
   arguments:
   - --date
   - "{{ ds }}"

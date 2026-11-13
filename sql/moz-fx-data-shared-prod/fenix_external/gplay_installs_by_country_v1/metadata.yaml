@@ -11,7 +11,7 @@ labels:
 scheduling:
   dag_name: bqetl_fenix_external
   depends_on_past: false
-  date_partition_parameter: null
+  partition_parameter: null
   depends_on:
   - task_id: play_store_export
     dag_name: play_store_export

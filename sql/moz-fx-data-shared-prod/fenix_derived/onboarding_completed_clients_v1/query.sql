@@ -1,4 +1,4 @@
--- Writes only its own partition: `date_partition_parameter` is set, so a run for
+-- Writes only its own partition: `partition_parameter` is set, so a run for
 -- date D targets `table$D`. Re-running date D rewrites D and reaches no other
 -- day, so it picks up events that landed in the source after D's first run.
 SELECT

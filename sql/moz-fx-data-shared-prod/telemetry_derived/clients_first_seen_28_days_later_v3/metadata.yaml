@@ -10,8 +10,8 @@ labels:
   legacy: true
 scheduling:
   dag_name: bqetl_analytics_tables
-  date_partition_offset: -27
-  date_partition_parameter: null
+  partition_offset: -27d
+  partition_parameter: first_seen_date
   depends_on_past: true
   parameters:
   - submission_date:DATE:{{ds}}

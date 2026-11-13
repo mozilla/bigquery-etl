@@ -10,8 +10,8 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   # destination is the whole table, not a single partition,
-  # so don't use date_partition_parameter
-  date_partition_parameter: null
+  # so don't use partition_parameter
+  partition_parameter: null
 bigquery:
   # Use clustering rather than partitioning because the whole table is being overwritten every time
   # and BigQuery has a limit of 30,000 partition modifications per column-partitioned table per day.

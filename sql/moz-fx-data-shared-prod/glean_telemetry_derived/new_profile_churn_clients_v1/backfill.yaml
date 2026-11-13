@@ -8,4 +8,4 @@
   status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false

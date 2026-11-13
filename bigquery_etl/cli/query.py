@@ -22,6 +22,7 @@ from pathlib import Path
 from traceback import print_exc
 from typing import Callable, Iterable, Optional
 
+import attr
 import google.auth
 import rich_click as click
 import sqlparse
@@ -30,12 +31,17 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
-from ..backfill.date_range import BackfillDateRange, get_backfill_partition
+from ..backfill.date_range import (
+    BackfillDateRange,
+    apply_backfill_date_partition_offset,
+    get_backfill_partition,
+)
 from ..backfill.utils import (
     QUALIFIED_TABLE_NAME_RE,
     get_effective_retention_days,
+    is_script_etl,
     qualified_table_name_matching,
-    resolve_date_partition_parameter,
+    resolve_backfill_partition_parameter,
     resolve_scheduling_parameters,
 )
 from ..cli import check
@@ -80,6 +86,9 @@ from ..metadata.parse_metadata import (
 )
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..query_scheduling.partitioning import get_partition_type
+from ..query_scheduling.task import Task
+from ..query_scheduling.utils import parse_timedelta
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
@@ -503,8 +512,8 @@ def _parse_parameter(parameter: str, param_date: str) -> str:
 def _backfill_query(
     query_file_path,
     project_id,
-    date_partition_parameter,
-    date_partition_offset,
+    partition_parameter,
+    partition_offset,
     max_rows,
     dry_run,
     scheduling_parameters,
@@ -526,8 +535,8 @@ def _backfill_query(
         if (
             partition := get_backfill_partition(
                 backfill_date,
-                date_partition_parameter,
-                date_partition_offset,
+                partition_parameter,
+                partition_offset,
                 partitioning_type,
             )
         ) is not None:
@@ -542,19 +551,21 @@ def _backfill_query(
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
     ]
 
-    # Bind the date partition parameter, unless scheduling_parameters already
+    # Bind the partition parameter, unless scheduling_parameters already
     # supplies it (e.g. a table listing submission_date in `parameters`). bq
     # rejects a parameter bound twice, so skip rather than duplicate.
     scheduling_parameter_names = {
         param.split(":", 1)[0] for param in scheduling_parameters
     }
     if (
-        date_partition_parameter is not None
-        and date_partition_parameter not in scheduling_parameter_names
+        partition_parameter is not None
+        and partition_parameter not in scheduling_parameter_names
     ):
-        offset_param = backfill_date + timedelta(days=date_partition_offset)
+        partition_date = apply_backfill_date_partition_offset(
+            backfill_date, partition_offset
+        )
         query_parameters.append(
-            f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
+            f"--parameter={partition_parameter}:DATE:{partition_date.strftime('%Y-%m-%d')}"
         )
 
     arguments = (
@@ -672,6 +683,17 @@ def _backfill_script(
         )
 
 
+def _validate_scheduling_overrides(ctx, param, scheduling_overrides):
+    """Reject scheduling overrides that aren't supported scheduling keys, rather than silently ignoring them."""
+    if unsupported_overrides := set(json.loads(scheduling_overrides)) - set(
+        attr.fields_dict(Task)
+    ):
+        raise click.BadParameter(
+            f"Unsupported scheduling overrides: {', '.join(sorted(unsupported_overrides))}"
+        )
+    return scheduling_overrides
+
+
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
 
@@ -764,11 +786,12 @@ def _backfill_script(
     required=False,
     type=str,
     default="{}",
+    callback=_validate_scheduling_overrides,
     help=(
         "Pass overrides as a JSON string for scheduling sections: "
-        "parameters and/or date_partition_parameter as needed. A "
-        "date_partition_parameter override has no effect on tables that set "
-        "backfill_date_partition_parameter; override that instead."
+        "parameters and/or partition_parameter as needed. A "
+        "partition_parameter override has no effect on tables that set "
+        "backfill_partition_parameter; override that instead."
     ),
 )
 @backfill_options.override_retention()
@@ -904,7 +927,7 @@ def backfill(
         click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
-    # If date_partition_parameter isn't set it's assumed to be submission_date:
+    # If partition_parameter isn't set it's assumed to be submission_date:
     # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
 
     partitioning_type = None
@@ -964,9 +987,13 @@ def backfill(
         # adding copy logic for cleaner handling of overrides
         scheduling_metadata = metadata.scheduling.copy()
         scheduling_metadata.update(json.loads(scheduling_overrides))
-        date_partition_parameter = resolve_date_partition_parameter(scheduling_metadata)
+        partition_parameter = resolve_backfill_partition_parameter(
+            scheduling_metadata,
+            get_partition_type(metadata),
+            is_script_etl(query_file_path.parent),
+        )
         scheduling_parameters = resolve_scheduling_parameters(scheduling_metadata)
-        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
+        partition_offset = parse_timedelta(scheduling_metadata.get("partition_offset"))
 
         client = bigquery.Client(project=project_id)
         project, dataset, table = extract_from_query_path(query_file_path)
@@ -984,8 +1011,8 @@ def backfill(
             _backfill_query,
             query_file_path,
             project_id,
-            date_partition_parameter,
-            date_partition_offset,
+            partition_parameter,
+            partition_offset,
             max_rows,
             dry_run,
             scheduling_parameters,

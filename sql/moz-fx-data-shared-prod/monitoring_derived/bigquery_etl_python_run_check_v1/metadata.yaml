@@ -9,6 +9,6 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_status_check
-  date_partition_parameter: null
+  partition_parameter: null
   depends_on_past: false
   arguments: ["--task_instance={{ task_instance_key_str }}", "--run_id={{ run_id }}"]

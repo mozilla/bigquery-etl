@@ -15,7 +15,7 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_cohort_retention
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:

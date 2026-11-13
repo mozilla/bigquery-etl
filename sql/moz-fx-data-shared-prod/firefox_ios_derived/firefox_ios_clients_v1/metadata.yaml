@@ -31,7 +31,7 @@ labels:
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

@@ -4,6 +4,7 @@ import copy
 import logging
 import os
 import re
+from datetime import timedelta
 from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
@@ -15,6 +16,10 @@ import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
+from bigquery_etl.query_scheduling.partitioning import (
+    get_partition_type,
+    resolve_partition_parameter_name,
+)
 from bigquery_etl.query_scheduling.utils import (
     ensure_telemetry_alerts_email,
     is_date_string,
@@ -22,6 +27,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_email_or_github_identity,
     is_schedule_interval,
     is_valid_dag_name,
+    parse_timedelta,
     schedule_interval_delta,
     validate_timedelta_string,
 )
@@ -90,7 +96,7 @@ class TaskRef:
     task_id: str = attr.ib()
     execution_delta: Optional[str] = attr.ib(None)
     schedule_interval: Optional[str] = attr.ib(None)
-    date_partition_offset: Optional[int] = attr.ib(None)
+    partition_offset: Optional[timedelta] = attr.ib(None, converter=parse_timedelta)
     task_group: Optional[str] = attr.ib(None)
     poke_interval: Optional[str] = attr.ib(None, kw_only=True)
     timeout: Optional[str] = attr.ib(None, kw_only=True)
@@ -317,13 +323,11 @@ class Task:
     version: str = attr.ib(init=False)
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
-    date_partition_parameter: Optional[str] = "submission_date"
-    # only read by backfills, see resolve_date_partition_parameter
-    backfill_date_partition_parameter: Optional[str] = None
-    table_partition_type: Optional[str] = None
-    table_partition_template: Optional[str] = None
-    # number of days date partition parameter should be offset
-    date_partition_offset: Optional[int] = None
+    partition_parameter: Optional[str] = attr.ib(None)
+    # only read by backfills, see resolve_backfill_partition_parameter
+    backfill_partition_parameter: Optional[str] = attr.ib(None)
+    partition_type: Optional[PartitionType] = attr.ib(None)
+    partition_offset: Optional[timedelta] = attr.ib(None, converter=parse_timedelta)
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
     # manually specified upstream dependencies
@@ -450,7 +454,8 @@ class Task:
             )
 
     def __attrs_post_init__(self):
-        """Extract information from the query file name."""
+        """Post init logic."""
+        # Extract information from the query file name.
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:
             self.project = query_file_re.group(1)
@@ -479,6 +484,27 @@ class Task:
                 "/(query.sql|part1.sql|script.sql|query.py|checks.sql)"
                 f" but is {self.query_file}"
             )
+
+        # TODO srose to restore raising this error instead of dropping the conflicting
+        # parameters after the migration to `partition_parameter`
+        if self.partition_parameter and any(
+            parameter.split(":", 1)[0] == self.partition_parameter
+            for parameter in self.parameters
+        ):
+            logging.warning(
+                f"Partition parameter `{self.partition_parameter}` for {self.query_file}"
+                " conflicts with an explicit parameter of the same name in `parameters`,"
+                " so the explicit parameter is being ignored."
+            )
+            self.parameters = [
+                parameter
+                for parameter in self.parameters
+                if parameter.split(":", 1)[0] != self.partition_parameter
+            ]
+            # raise TaskParseException(
+            #     f"Partition parameter `{self.partition_parameter}` for {self.query_file}"
+            #     " conflicts with an explicit parameter of the same name in `parameters`."
+            # )
 
     @property
     def source_file_path(self):
@@ -574,7 +600,8 @@ class Task:
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """
-        converter = cattrs.BaseConverter()
+        # Make sure field converters handle raw values (e.g. `partition_offset`).
+        converter = cattrs.BaseConverter(prefer_attrib_converters=True)
         if metadata is None:
             metadata = Metadata.of_query_file(query_file)
 
@@ -641,40 +668,12 @@ class Task:
         if metadata.is_public_json():
             task_config["public_json"] = True
 
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            task_config["table_partition_type"] = (
-                metadata.bigquery.time_partitioning.type.value
-            )
-
-            # Override the table_partition_template if there is no `destination_table`
-            # set in the scheduling section of the metadata. If not then pass a jinja
-            # template that reformats the date string used for table partition decorator.
-            # See doc here for formatting conventions:
-            #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
-            if metadata.scheduling.get("destination_table") is None:
-                match metadata.bigquery.time_partitioning.type:
-                    case PartitionType.YEAR:
-                        partition_template = (
-                            '${{ dag_run.logical_date.strftime("%Y") }}'
-                        )
-                    case PartitionType.MONTH:
-                        partition_template = (
-                            '${{ dag_run.logical_date.strftime("%Y%m") }}'
-                        )
-                    case PartitionType.DAY:
-                        # skip for the default case of daily partitioning
-                        partition_template = None
-                    case PartitionType.HOUR:
-                        partition_template = (
-                            '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
-                        )
-                    case _:
-                        raise TaskParseException(
-                            f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
-                        )
-
-                if partition_template:
-                    task_config["table_partition_template"] = partition_template
+        task_config["partition_type"] = get_partition_type(metadata)
+        task_config["partition_parameter"] = resolve_partition_parameter_name(
+            metadata.scheduling,
+            task_config["partition_type"],
+            is_script=Path(query_file).name in ("script.sql", "query.py"),
+        )
 
         try:
             return copy.deepcopy(converter.structure(task_config, cls))
@@ -779,7 +778,7 @@ class Task:
         return TaskRef(
             dag_name=self.dag_name,
             task_id=self.task_name,
-            date_partition_offset=self.date_partition_offset,
+            partition_offset=self.partition_offset,
             execution_delta=execution_delta,
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
@@ -857,7 +856,7 @@ class Task:
 
                     task_ref = upstream_task.to_ref(dag_collection)
                     if not _duplicate_dependency(task_ref):
-                        # Get its upstream dependencies so its date_partition_offset gets set.
+                        # Get its upstream dependencies so its partition_offset gets set.
                         upstream_task.with_upstream_dependencies(dag_collection)
                         task_ref = upstream_task.to_ref(dag_collection)
                         dependencies.append(task_ref)
@@ -869,32 +868,24 @@ class Task:
                             dependencies.append(task_ref)
                         break  # stop after the first match
 
-        if (
-            self.date_partition_parameter is not None
-            and self.date_partition_offset is None
-        ):
-            # adjust submission_date parameter based on whether upstream tasks have
-            # date partition offsets
-            date_partition_offsets = [
-                dependency.date_partition_offset
+        if self.partition_parameter is not None and self.partition_offset is None:
+            # adjust partition parameter based on whether upstream tasks have partition offsets
+            partition_offsets = [
+                dependency.partition_offset
                 for dependency in dependencies
-                if dependency.date_partition_offset
+                if dependency.partition_offset
             ]
 
-            if len(date_partition_offsets) > 0:
-                self.date_partition_offset = min(date_partition_offsets)
-                # unset the table_partition_template property if we have an offset
-                # as that will be overridden in the template via `destination_table`
-                self.table_partition_template = None
-                date_partition_offset_task_keys = [
+            if len(partition_offsets) > 0:
+                self.partition_offset = min(partition_offsets)
+                partition_offset_task_keys = [
                     dependency.task_key
                     for dependency in dependencies
-                    if dependency.date_partition_offset == self.date_partition_offset
+                    if dependency.partition_offset == self.partition_offset
                 ]
                 logging.info(
-                    f"Set {self.task_key} date partition offset"
-                    f" to {self.date_partition_offset}"
-                    f" based on {', '.join(date_partition_offset_task_keys)}."
+                    f"Set {self.task_key} partition offset to {self.partition_offset}"
+                    f" based on {', '.join(partition_offset_task_keys)}."
                 )
 
         self.upstream_dependencies = dependencies

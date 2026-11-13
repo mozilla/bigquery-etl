@@ -41,7 +41,7 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_search_dashboard
-  date_partition_offset: -1
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

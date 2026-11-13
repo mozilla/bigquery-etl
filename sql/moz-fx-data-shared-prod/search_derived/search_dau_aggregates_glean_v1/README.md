@@ -60,6 +60,6 @@ Partitions are as complete as when they were written. Dates filled by the initia
 
 ## Runs
 
-One scheduled run per day in the `bqetl_search_dashboard` DAG, with `date_partition_offset: -1`, so the run for logical date D writes the partition for D-1. The metrics-ping lookback reads one day past the date, which the offset leaves time to land. A rerun before that day has landed can leave more clients without an engine.
+One scheduled run per day in the `bqetl_search_dashboard` DAG, with `partition_offset: -1d`, so the run for logical date D writes the partition for D-1. The metrics-ping lookback reads one day past the date, which the offset leaves time to land. A rerun before that day has landed can leave more clients without an engine.
 
 Re-running a date rewrites that date alone.

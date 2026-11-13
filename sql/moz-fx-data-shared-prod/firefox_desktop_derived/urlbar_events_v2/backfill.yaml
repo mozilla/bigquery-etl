@@ -9,7 +9,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-05-19:
   start_date: 2026-02-22
   end_date: 2026-05-19
@@ -21,7 +21,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-05-14:
   start_date: 2025-01-01
   end_date: 2026-02-21
@@ -33,7 +33,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-03-31:
   start_date: 2025-05-01
   end_date: 2026-03-31
@@ -44,7 +44,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-03-30:
   start_date: 2025-02-01
   end_date: 2025-04-30
@@ -55,7 +55,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-03-27:
   start_date: 2025-02-01
   end_date: 2026-03-26
@@ -67,7 +67,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-03-25:
   start_date: 2025-01-01
   end_date: 2025-01-31
@@ -79,7 +79,7 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-03-20:
   start_date: 2025-01-01
   end_date: 2026-03-20
@@ -92,4 +92,4 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false

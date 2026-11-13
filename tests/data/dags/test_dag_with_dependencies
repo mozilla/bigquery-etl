@@ -68,7 +68,8 @@ with DAG(
         owner="test@example.org",
         doc_md="### test\n\ntest\n\n**Owners:** test@example.org",
         email=["telemetry-alerts@mozilla.com", "test@example.org"],
-        date_partition_parameter="submission_date",
+        partition_parameter="submission_date:DATE:{{ logical_date.format('YYYY-MM-DD') }}",
+        destination_partition="{{ logical_date.format('YYYYMMDD') }}",
         depends_on_past=False,
     )
 
@@ -80,7 +81,8 @@ with DAG(
         owner="test@example.org",
         doc_md="### test\n\ntest\n\n**Owners:** test@example.org",
         email=["telemetry-alerts@mozilla.com", "test@example.org"],
-        date_partition_parameter="submission_date",
+        partition_parameter="submission_date:DATE:{{ logical_date.format('YYYY-MM-DD') }}",
+        destination_partition="{{ logical_date.format('YYYYMMDD') }}",
         depends_on_past=False,
     )
 
@@ -92,7 +94,8 @@ with DAG(
         owner="test@example.org",
         doc_md="### test\n\ntest\n\n**Owners:** test@example.org",
         email=["telemetry-alerts@mozilla.com", "test@example.org"],
-        date_partition_parameter="submission_date",
+        partition_parameter="submission_date:DATE:{{ logical_date.format('YYYY-MM-DD') }}",
+        destination_partition="{{ logical_date.format('YYYYMMDD') }}",
         depends_on_past=False,
     )
 

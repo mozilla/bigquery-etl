@@ -44,6 +44,6 @@ A client's rows on one day can disagree, because the client table builds each ro
 
 ## Runs
 
-One scheduled run per day in the `bqetl_search` DAG, with `date_partition_offset: -1`, so the run for logical date D writes the partition for D-1. A given day's partition here is produced a day later than `search_aggregates_v8`'s partition for the same day, because the client table it reads is.
+One scheduled run per day in the `bqetl_search` DAG, with `partition_offset: -1d`, so the run for logical date D writes the partition for D-1. A given day's partition here is produced a day later than `search_aggregates_v8`'s partition for the same day, because the client table it reads is.
 
 Re-running a date rewrites that date alone.

@@ -7,7 +7,7 @@
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 
 2025-10-03:
   start_date: 2025-05-15

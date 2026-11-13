@@ -29,8 +29,8 @@ scheduling:
   dag_name: bqetl_mobile_kpi_metrics
   depends_on_past: false
   task_group: {{ app_name }}
-  date_partition_parameter: metric_date
-  date_partition_offset: -27
+  partition_parameter: metric_date
+  partition_offset: -27d
   parameters:
     - submission_date:DATE:{% raw %}{{ds}}{% endraw %}
 bigquery:

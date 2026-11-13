@@ -25,7 +25,7 @@ labels:
   owner1: wclouser@mozilla.com
 scheduling:
   dag_name: bqetl_accounts_derived
-  date_partition_parameter: as_of_date
+  partition_parameter: as_of_date
   # Adjust the execution delta for the task dependency in the bqetl_accounts_db
   # DAG so this depends on the latest bqetl_accounts_db DAG run. The emails
   # mirror refreshes every 3h and the query time-travels to 02:30 UTC to read a

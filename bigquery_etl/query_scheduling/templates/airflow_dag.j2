@@ -218,6 +218,9 @@ with DAG(
 {% endfor -%}
 
 {% for task in tasks | sort(attribute='task_name') %}
+    {% set has_plain_destination_table = task.destination_table and '$' not in task.destination_table -%}
+    {# ETLs with no partition decorator, partition parameter, or partition offset are targeting the whole table. -#}
+    {% set targeting_whole_table = has_plain_destination_table and not task.partition_parameter and not task.partition_offset -%}
     {% if task.is_python_script -%}
         {{ task.task_name }} = GKEPodOperator(
             task_id='{{ task.task_name }}',
@@ -257,21 +260,7 @@ with DAG(
     {% elif task.is_dq_check -%}
        {{ task.task_name }} = bigquery_dq_check(
             task_id='{{ task.task_name }}',
-            {%+ if task.date_partition_offset -%}
-            source_table='{{ task.destination_table }}$
-                {%- raw %}{{ {% endraw -%}
-                macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d",
-                    {%- if task.table_partition_type == "year" %} "%Y"
-                    {%- elif task.table_partition_type == "month" %} "%Y%m"
-                    {%- else %} "%Y%m%d"
-                    {%- endif -%}
-                )
-                {%- raw %} }}{% endraw %}',
-            {%+ elif task.destination_table -%}
-            source_table='{{ task.destination_table }}',
-            {%+ else -%}
-            source_table=None,
-            {%+ endif -%}
+            source_table={{ task.destination_table | format_repr }},
             {%+ if task.query_project -%}
             dataset_id='{{ task.project }}:{{ task.dataset }}',
             project_id='{{ task.query_project }}',
@@ -291,29 +280,16 @@ with DAG(
             start_date={{ task.start_date | format_date | format_repr }},
             {%+ endif -%}
             depends_on_past={{ task.depends_on_past }},
-            {%+ if (
-                task.destination_table
-                and not task.date_partition_parameter
-                and not '$' in task.destination_table
-                and not task.depends_on_past
-                and not task.task_concurrency
-            ) -%}
+            {%+ if targeting_whole_table and not task.depends_on_past and not task.task_concurrency -%}
             {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
             task_concurrency=1,
             {%+ endif -%}
             {%+ if task.arguments | length > 0 -%}
             arguments={{ task.arguments }},
             {%+ endif -%}
-            {%+ if task.date_partition_offset and task.date_partition_parameter -%}
-            parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{{% endraw %}macros.ds_add(ds, {{ task.date_partition_offset }}){% raw %}}}{%endraw%}"]{% if task.parameters | length > 0 %} + {{ task.parameters }}{% endif %},
-            {%+ elif task.parameters | length > 0 -%}
-            {%+ if task.date_partition_parameter -%}
-            parameters={{ task.parameters }} + ["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
-            {%+ else -%}
+            partition_parameter={{ task | format_task_partition_parameter | format_repr }},
+            {%+ if task.parameters | length > 0 -%}
             parameters={{ task.parameters }},
-            {%+ endif -%}
-            {%+ elif task.date_partition_parameter -%}
-            parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
             {%+ endif -%}
             {%+ if task.gke_project_id != None -%}
             project_id={{ task.gke_project_id | format_repr }},
@@ -339,13 +315,7 @@ with DAG(
             start_date={{ task.start_date | format_date | format_repr }},
             {%+ endif -%}
             depends_on_past={{ task.depends_on_past }},
-            {%+ if (
-                task.destination_table
-                and not task.date_partition_parameter
-                and not '$' in task.destination_table
-                and not task.depends_on_past
-                and not task.task_concurrency
-            ) -%}
+            {%+ if targeting_whole_table and not task.depends_on_past and not task.task_concurrency -%}
             {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
             task_concurrency=1,
             {%+ endif -%}
@@ -356,21 +326,7 @@ with DAG(
             #### WARNING: This task has been scheduled in the default DAG. It can be moved to a more suitable DAG using `bqetl query schedule`.
             {% endif %}
             task_id='{{ task.task_name }}',
-            {%+ if task.date_partition_offset -%}
-            destination_table='{{ task.destination_table }}$
-                {%- raw %}{{ {% endraw -%}
-                macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d",
-                    {%- if task.table_partition_type == "year" %} "%Y"
-                    {%- elif task.table_partition_type == "month" %} "%Y%m"
-                    {%- else %} "%Y%m%d"
-                    {%- endif -%}
-                )
-                {%- raw %} }}{% endraw %}',
-            {%+ elif task.destination_table -%}
-            destination_table='{{ task.destination_table }}',
-            {%+ else -%}
-            destination_table=None,
-            {%+ endif -%}
+            destination_table={{ task.destination_table | format_repr }},
             {%+ if task.query_project -%}
             dataset_id='{{ task.project }}:{{ task.dataset }}',
             project_id='{{ task.query_project }}',
@@ -391,34 +347,22 @@ with DAG(
             {%+ if task.start_date -%}
             start_date={{ task.start_date | format_date | format_repr }},
             {%+ endif -%}
-            {%+ if task.date_partition_offset -%}
-            date_partition_parameter=None,
-            {%+ elif task.date_partition_parameter == None or task.date_partition_parameter is string -%}
-            date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
-            {%+ endif -%}
-            {%+ if task.date_partition_parameter and task.table_partition_template -%}
-            table_partition_template='{{ task.table_partition_template }}',
+            partition_parameter={{ task | format_task_partition_parameter | format_repr }},
+            {%+ if has_plain_destination_table -%}
+            destination_partition={{ task | format_task_destination_partition | format_repr }},
             {%+ endif -%}
             depends_on_past={{ task.depends_on_past }},
             {%+ if task.trigger_rule -%}
             trigger_rule="{{ task.trigger_rule }}",
             {%+ endif -%}
-            {%+ if (
-                task.destination_table
-                and not task.date_partition_parameter
-                and not '$' in task.destination_table
-                and not task.depends_on_past
-                and not task.task_concurrency
-            ) -%}
+            {%+ if targeting_whole_table and not task.depends_on_past and not task.task_concurrency -%}
             {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
             task_concurrency=1,
             {%+ endif -%}
             {%+ if task.arguments | length > 0 -%}
             arguments={{ task.arguments }},
             {%+ endif -%}
-            {%+ if task.date_partition_offset and task.date_partition_parameter -%}
-            parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{{% endraw %}macros.ds_add(ds, {{ task.date_partition_offset }}){% raw %}}}{%endraw%}"]{% if task.parameters | length > 0 %} + {{ task.parameters }}{% endif %},
-            {%+ elif task.parameters | length > 0 -%}
+            {%+ if task.parameters | length > 0 -%}
             parameters={{ task.parameters }},
             {%+ endif -%}
             {%+ if task.multipart -%}

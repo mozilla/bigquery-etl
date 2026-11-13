@@ -44,9 +44,10 @@ from ..backfill.utils import (
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     get_scheduled_backfills,
+    is_script_etl,
     qualified_table_name_matching,
     query_supports_reinitialize,
-    resolve_date_partition_parameter,
+    resolve_backfill_partition_parameter,
     validate_table_metadata,
 )
 from ..backfill.validate import (
@@ -77,6 +78,8 @@ from ..metadata.validate_metadata import (
     SHREDDER_MITIGATION_LABEL,
     MetadataValidationError,
 )
+from ..query_scheduling.partitioning import get_partition_type
+from ..query_scheduling.utils import parse_timedelta
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import block_coding_agents
 from ..util.target import Target, ensure_dataset_exists, target_ref_for_source
@@ -223,7 +226,7 @@ def backfill(ctx):
     "--override_depends_on_past_null_partition",
     is_flag=True,
     help="If set, allow a custom_query_path backfill on a depends_on_past table with a "
-    "null date_partition_parameter to run per-partition instead of requiring "
+    "null partition_parameter to run per-partition instead of requiring "
     "--reinitialize-table. Only valid with --custom-query-path, since the custom query "
     "must process each partition independently of prior partitions. The custom query "
     "must bind @submission_date (it is the partition parameter for the backfill).",
@@ -235,7 +238,7 @@ def backfill(ctx):
     default=None,
     help="Rebuild the whole table by re-running its is_init() query into a staging table. "
     "Can run in parallel sample_id batches if the query supports it (has @sampling_batch_size "
-    "parameter). Required for depends_on_past tables with a null date_partition_parameter "
+    "parameter). Required for depends_on_past tables with a null partition_parameter "
     "(e.g. first_seen tables), which can't be backfilled one partition at a time.",
 )
 @click.option(
@@ -1016,9 +1019,8 @@ def _initiate_backfill(
     checks = None
     custom_checks_name = None
 
-    metadata = Metadata.from_file(
-        Path("sql") / project / dataset / table / METADATA_FILE
-    )
+    table_dir = Path("sql") / project / dataset / table
+    metadata = Metadata.from_file(table_dir / METADATA_FILE)
 
     # Stop if the metadata contains shredder mitigation label and the backfill doesn't.
     if (
@@ -1065,20 +1067,20 @@ def _initiate_backfill(
         custom_query_path = Path(entry.custom_query_path)
 
     scheduling_overrides_dict: dict[str, object] = {}
-    if entry.ignore_date_partition_offset:
-        scheduling_overrides_dict["date_partition_offset"] = 0
+    if entry.ignore_partition_offset:
+        scheduling_overrides_dict["partition_offset"] = None
     if entry.override_depends_on_past_null_partition:
-        # date_partition_parameter is null here, so backfill would write the whole
+        # partition_parameter is null here, so backfill would write the whole
         # staging table each run and only the last date would survive. Bind
         # submission_date so each run decorates its own staging$YYYYMMDD partition.
-        scheduling_overrides_dict["date_partition_parameter"] = "submission_date"
+        scheduling_overrides_dict["partition_parameter"] = "submission_date"
     scheduling_overrides = json.dumps(scheduling_overrides_dict)
 
     override_retention_limit = entry.override_retention_limit
 
     # Reinitialize path: rebuild the whole table from its is_init() query into staging
     # (parallel per sample_id) instead of replaying the day-by-day query. Used for
-    # depends_on_past tables with a null date_partition_parameter.
+    # depends_on_past tables with a null partition_parameter.
     if entry.reinitialize_table and is_python_script:
         # The reinitialize path reruns query.sql's is_init() branch; a python-script
         # table has no query.sql to reinitialize, so reject rather than silently
@@ -1138,6 +1140,7 @@ def _initiate_backfill(
             backfill_staging_qualified_table_name,
             metadata,
             entry,
+            is_script_etl(table_dir),
         )
 
     # Backfill table
@@ -1236,10 +1239,11 @@ def _initialize_previous_partition(
     staging_table_name: str,
     metadata: Metadata,
     backfill_entry: Backfill,
+    is_script: bool = False,
 ):
     """Initialize initial partition for tables with depends_on_past=true.
 
-    For tables with a null date partition parameter, the entire table is copied
+    For tables with a null partition parameter, the entire table is copied
     """
     if (
         metadata.scheduling is None
@@ -1263,11 +1267,13 @@ def _initialize_previous_partition(
             )
 
     partition_param: Optional[str] = "submission_date"
-    offset = 0
+    offset = None
     if metadata.scheduling:
-        partition_param = resolve_date_partition_parameter(metadata.scheduling)
-        if not backfill_entry.ignore_date_partition_offset:
-            offset = metadata.scheduling.get("date_partition_offset", offset)
+        partition_param = resolve_backfill_partition_parameter(
+            metadata.scheduling, get_partition_type(metadata), is_script
+        )
+        if not backfill_entry.ignore_partition_offset:
+            offset = parse_timedelta(metadata.scheduling.get("partition_offset"))
 
     previous_partition_id = get_backfill_partition(
         previous_partition_date,
@@ -1372,9 +1378,8 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    table_metadata = Metadata.from_file(
-        Path(sql_dir) / project / dataset / table / METADATA_FILE
-    )
+    table_dir = Path(sql_dir) / project / dataset / table
+    table_metadata = Metadata.from_file(table_dir / METADATA_FILE)
 
     _copy_backfill_staging_to_prod(
         backfill_staging_qualified_table_name,
@@ -1382,6 +1387,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         client,
         entry_to_complete,
         table_metadata,
+        is_script_etl(table_dir),
         skip_public_redirect=target is not None,
     )
 
@@ -1402,6 +1408,7 @@ def _copy_backfill_staging_to_prod(
     client: bigquery.Client,
     entry: Backfill,
     table_metadata: Metadata,
+    is_script: bool = False,
     skip_public_redirect: bool = False,
 ):
     """Copy backfill staging table to prod based on table metadata and backfill config.
@@ -1440,18 +1447,22 @@ def _copy_backfill_staging_to_prod(
             excludes=entry.excluded_dates,
             range_type=partitioning_type,
         )
-        # If date_partition_parameter isn't set it's assumed to be submission_date:
+        # If partition_parameter isn't set it's assumed to be submission_date:
         # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
         partition_param: Optional[str] = "submission_date"
-        offset = 0
+        offset = None
         if table_metadata.scheduling:
-            partition_param = resolve_date_partition_parameter(
-                table_metadata.scheduling
+            partition_param = resolve_backfill_partition_parameter(
+                table_metadata.scheduling,
+                get_partition_type(table_metadata),
+                is_script,
             )
-            if not entry.ignore_date_partition_offset:
-                offset = table_metadata.scheduling.get("date_partition_offset", offset)
+            if not entry.ignore_partition_offset:
+                offset = parse_timedelta(
+                    table_metadata.scheduling.get("partition_offset")
+                )
 
-        # The override ran per-partition, but date_partition_parameter is null,
+        # The override ran per-partition, but partition_parameter is null,
         # so get_backfill_partition returns None (treating it as the whole table).
         # Resolve the partition from the partitioning field and copy each individually.
         if (

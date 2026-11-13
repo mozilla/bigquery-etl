@@ -10,8 +10,8 @@ WITH raw_serp_events AS (
     event.category = 'serp'
     -- allow events related to an impression_id to span 2 submission dates
     -- we restrict to event sequences started on a single date below
-    AND DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND DATE(submission_timestamp) <= @submission_date
+    AND DATE(submission_timestamp) >= @submission_date
+    AND DATE(submission_timestamp) <= DATE_ADD(@submission_date, INTERVAL 1 DAY)
 ),
 serp_event_counts AS (
   SELECT
@@ -112,7 +112,7 @@ impressions AS (
   WHERE
     event.name = 'impression'
     -- restrict to sessions that started on the target submission date
-    AND DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    AND DATE(submission_timestamp) = @submission_date
 ),
 abandonments AS (
   SELECT

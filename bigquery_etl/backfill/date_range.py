@@ -71,32 +71,53 @@ class BackfillDateRange:
         return self.excludes is not None and d in self.excludes
 
 
-def _get_offset_date(d: date, date_type: PartitionType, offset: int) -> date:
-    match date_type:
+def apply_backfill_date_partition_offset(
+    backfill_date: date, partition_offset: Optional[timedelta]
+) -> date:
+    """Apply the whole days of a partition offset to a backfill date.
+
+    Sub-day offsets like "-1h" are truncated toward zero so each backfill date still maps to its own partition.
+    """
+    if partition_offset:
+        # We can't simply return `backfill_date + partition_offset` because that'd only take into account the
+        # timedelta's days component, and timedelta normalizes negative values to negative days plus positive seconds
+        # (e.g. "-1h" is normalized as `timedelta(days=-1, seconds=82800)`, which would shift the date back a whole day).
+        return backfill_date + timedelta(days=int(partition_offset / timedelta(days=1)))
+    return backfill_date
+
+
+def _get_partition_date(
+    backfill_date: date,
+    partitioning_type: PartitionType,
+    partition_offset: Optional[timedelta],
+) -> date:
+    match partitioning_type:
         case PartitionType.DAY:
-            return d + timedelta(days=offset)
+            return apply_backfill_date_partition_offset(backfill_date, partition_offset)
         case PartitionType.MONTH:
-            if offset != 0:
+            if partition_offset:
                 raise NotImplementedError("Offsets unsupported for monthly partitions.")
-            return d
+            return backfill_date
         case _:
-            raise NotImplementedError(f"Unsupported date type {date_type}.")
+            raise NotImplementedError(
+                f"Unsupported partitioning type {partitioning_type}."
+            )
 
 
 def get_backfill_partition(
     backfill_date: date,
-    date_partition_parameter: Optional[str],
-    date_partition_offset: int,
+    partition_parameter: Optional[str],
+    partition_offset: Optional[timedelta],
     partitioning_type: PartitionType,
 ) -> Optional[str]:
     """Get the partition to write to for a particular backfill date based on query settings."""
-    # If date_partition_parameter is explicitly set to None the target is the entire table
-    # However if there's a date_partition_offset, the target is still a specific partition
-    if date_partition_parameter is None and date_partition_offset == 0:
+    # If partition_parameter is explicitly set to None the target is the entire table.
+    # However if there's a partition_offset, the target is still a specific partition.
+    if not partition_parameter and not partition_offset:
         return None
 
-    partition_date = _get_offset_date(
-        backfill_date, partitioning_type, date_partition_offset
+    partition_date = _get_partition_date(
+        backfill_date, partitioning_type, partition_offset
     )
 
     partition = None

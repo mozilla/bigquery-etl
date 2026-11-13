@@ -22,9 +22,9 @@ new_profile_activity AS (
     `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
     submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    BETWEEN @first_seen_date
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    AND first_seen_date = @first_seen_date
     AND sample_id = 0
 ),
 new_profile_activity_with_installer AS (

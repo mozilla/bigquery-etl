@@ -34,7 +34,7 @@ The table reaches back 775 days, the partition expiry, and all three partitioned
 
 ## Runs
 
-One scheduled run per day in the `bqetl_search` DAG, with `date_partition_offset: -1`, so the run for logical date D writes the partition for D-1. The offset aligns this table with `serp_events_v2`, which populates the previous day's partition on each run: each run here reads the SERP partition its upstream run has just written.
+One scheduled run per day in the `bqetl_search` DAG, with `partition_offset: -1d`, so the run for logical date D writes the partition for D-1. The offset aligns this table with `serp_events_v2`, which populates the previous day's partition on each run: each run here reads the SERP partition its upstream run has just written.
 
 A consequence when comparing the two tables: a given day's partition here is produced a day later than `search_clients_daily_v8`'s partition for the same day.
 

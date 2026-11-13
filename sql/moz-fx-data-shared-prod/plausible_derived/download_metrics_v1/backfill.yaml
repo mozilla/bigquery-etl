@@ -10,7 +10,7 @@
   override_retention_limit: false
   override_depends_on_past_end_date: false
   override_depends_on_past_null_partition: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
 2026-09-30:
   start_date: 2026-07-30
   end_date: 2026-09-29
@@ -23,4 +23,4 @@
   override_retention_limit: false
   override_depends_on_past_end_date: false
   override_depends_on_past_null_partition: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false

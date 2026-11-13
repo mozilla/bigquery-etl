@@ -589,7 +589,7 @@ class TestQuery:
                 "friendly_name": "test",
                 "description": "test",
                 "owners": ["test@example.org"],
-                "scheduling": {"dag_name": "bqetl_test", "date_partition_offset": -2},
+                "scheduling": {"dag_name": "bqetl_test", "partition_offset": "-2d"},
                 "bigquery": {"time_partitioning": {"type": "day"}},
             }
 
@@ -779,7 +779,7 @@ class TestQuery:
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [
                         "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
                     ],
@@ -800,7 +800,7 @@ class TestQuery:
                     "--start_date=2021-01-05",
                     "--end_date=2021-01-06",
                     "--parallelism=0",
-                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "partition_parameter": "submission_date"}""",
                     "--override-retention-range-limit",
                 ],
             )
@@ -822,13 +822,27 @@ class TestQuery:
                 assert len(test_params) == 1
                 assert test_params[0] == "--parameter=test:INT64:30"
 
+    def test_query_backfill_with_unsupported_scheduling_overrides(self, runner):
+        with patch(
+            "bigquery_etl.cli.query._execute_query", autospec=True
+        ) as execute_query:
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2021-01-05",
+                    """--scheduling_overrides={"date_partition_parameter": null}""",
+                ],
+            )
+        assert result.exit_code == 2
+        assert "date_partition_parameter" in result.output
+        execute_query.assert_not_called()
+
     @patch("bigquery_etl.cli.query._run_query")
-    def test_backfill_query_dedupes_date_partition_parameter(
-        self, mock_run_query, runner
-    ):
-        """A null-date_partition_parameter table that lists submission_date in `parameters`
+    def test_backfill_query_dedupes_partition_parameter(self, mock_run_query, runner):
+        """A null-partition_parameter table that lists submission_date in `parameters`
         (e.g. clients_first_seen_v3) is backfilled per-partition by overriding
-        date_partition_parameter to submission_date. That override decorates the destination
+        partition_parameter to submission_date. That override decorates the destination
         with the partition, but submission_date is already bound via `parameters`. bq rejects a
         parameter bound twice, so _backfill_query must emit submission_date exactly once while
         still decorating the destination."""
@@ -845,8 +859,8 @@ class TestQuery:
                 query_file_path=query_path,
                 project_id="moz-fx-data-shared-prod",
                 # overridden to submission_date so the destination gets decorated
-                date_partition_parameter="submission_date",
-                date_partition_offset=0,
+                partition_parameter="submission_date",
+                partition_offset=None,
                 max_rows=100,
                 dry_run=True,
                 # `parameters` already binds submission_date
@@ -898,7 +912,7 @@ class TestQuery:
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [
                         "submission_date:DATE:{{ds}}",
                         "conversion_window:INT64:30",
@@ -956,10 +970,10 @@ class TestQuery:
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
 
-    def test_query_backfill_backfill_date_partition_parameter(self, runner):
+    def test_query_backfill_backfill_partition_parameter(self, runner):
         """An hourly table that rewrites a daily partition through a templated
         destination_table and parameter is backfilled per partition when it sets
-        backfill_date_partition_parameter. The templated parameter is replaced by the
+        backfill_partition_parameter. The templated parameter is replaced by the
         backfill date instead of failing to parse."""
         with (
             runner.isolated_filesystem(),
@@ -985,8 +999,8 @@ class TestQuery:
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
                     "destination_table": "query_v1${{ (execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d') }}",
                     "parameters": [
                         "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}",
@@ -1729,7 +1743,7 @@ def main():
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [
                         "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
                     ],
@@ -1750,7 +1764,7 @@ def main():
                     f"--start_date={str(date.today() - timedelta(days=10+NBR_DAYS_RETAINED))}",
                     f"--end_date={str(date.today() - timedelta(days=10))}",
                     "--parallelism=0",
-                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "partition_parameter": "submission_date"}""",
                 ],
             )
             assert result.exit_code == 1

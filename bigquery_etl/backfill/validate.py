@@ -13,12 +13,14 @@ from ..backfill.parse import (
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
+from ..query_scheduling.partitioning import get_partition_type
 from ..schema import SCHEMA_FILE, Schema
 from .utils import (
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     NBR_DAYS_RETAINED,
     get_effective_retention_days,
-    resolve_date_partition_parameter,
+    is_script_etl,
+    resolve_backfill_partition_parameter,
 )
 
 
@@ -83,7 +85,7 @@ def validate_shredder_mitigation_partition_field(
     """Check that shredder mitigation can filter the table by its date parameter.
 
     The generated shredder mitigation query and checks filter with
-    `<partition field> = @<partition field>`, but a backfill only binds the date partition
+    `<partition field> = @<partition field>`, but a backfill only binds the partition
     parameter (as a DATE). This only works when the partition field is a DATE column named
     like the date parameter. Tables partitioned on a TIMESTAMP (e.g. hourly tables
     partitioned on submission_hour) or on a differently named column aren't supported yet.
@@ -99,8 +101,10 @@ def validate_shredder_mitigation_partition_field(
         return
 
     partition_field = time_partitioning.field
-    date_partition_parameter = resolve_date_partition_parameter(
-        metadata.scheduling or {}
+    partition_parameter = resolve_backfill_partition_parameter(
+        metadata.scheduling or {},
+        time_partitioning.type,
+        is_script_etl(backfill_file.parent),
     )
 
     field_type = None
@@ -115,12 +119,12 @@ def validate_shredder_mitigation_partition_field(
             None,
         )
 
-    if partition_field != date_partition_parameter or field_type not in (None, "DATE"):
+    if partition_field != partition_parameter or field_type not in (None, "DATE"):
         raise ValueError(
             f"Shredder mitigation isn't supported yet for {backfill_file.parent.name} "
             f"(entry {entry.entry_date}): the partition field `{partition_field}` "
             f"({field_type or 'unknown type'}) must be a DATE column named like the date "
-            f"partition parameter (`{date_partition_parameter}`), because the generated "
+            f"partition parameter (`{partition_parameter}`), because the generated "
             "query filters on the partition field."
         )
 
@@ -222,7 +226,7 @@ def validate_reinitialize_sampling_batch_size(backfill_entry: Backfill) -> None:
 def validate_override_depends_on_past_null_partition(backfill_entry: Backfill) -> None:
     """Check that override_depends_on_past_null_partition is used correctly.
 
-    The override bypasses the depends_on_past + null date_partition_parameter guard. That
+    The override bypasses the depends_on_past + null partition_parameter guard. That
     is only safe for a custom query that processes each partition independently; the
     table's own scheduled query relies on the depends-on-past replay and must not be run
     per-partition.
@@ -270,26 +274,28 @@ def _custom_query_parameters(backfill_entry: Backfill, backfill_file: Path) -> d
     """Resolve the query parameters to bind when dry running a custom query.
 
     Mirrors how `bqetl backfill` binds parameters at run time: the table's
-    date_partition_parameter plus any scheduling `parameters`.
+    partition_parameter plus any scheduling `parameters`.
     """
     parameters: dict = {}
 
     metadata_file = backfill_file.parent / METADATA_FILE
-    scheduling: dict = {}
-    if metadata_file.exists():
-        scheduling = Metadata.from_file(metadata_file).scheduling or {}
+    metadata = Metadata.from_file(metadata_file) if metadata_file.exists() else None
+    scheduling: dict = (metadata.scheduling if metadata else None) or {}
 
     # scheduling parameters are "name:type:value"; bind name -> type
     for parameter in scheduling.get("parameters", []):
         name, parameter_type, _ = parameter.strip().split(":", 2)
         parameters[name] = parameter_type or "STRING"
 
-    date_partition_parameter = resolve_date_partition_parameter(
-        scheduling, backfill_entry.override_depends_on_past_null_partition
+    partition_parameter = resolve_backfill_partition_parameter(
+        scheduling,
+        get_partition_type(metadata),
+        is_script_etl(backfill_file.parent),
+        backfill_entry.override_depends_on_past_null_partition,
     )
 
-    if date_partition_parameter and date_partition_parameter not in parameters:
-        parameters[date_partition_parameter] = "DATE"
+    if partition_parameter and partition_parameter not in parameters:
+        parameters[partition_parameter] = "DATE"
 
     return parameters
 

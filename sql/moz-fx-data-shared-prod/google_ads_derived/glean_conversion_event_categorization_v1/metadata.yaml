@@ -10,8 +10,8 @@ labels:
 scheduling:
   dag_name: bqetl_desktop_conv_evnt_categorization
   depends_on_past: false
-  date_partition_parameter: report_date
-  date_partition_offset: -9
+  partition_parameter: report_date
+  partition_offset: -9d
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

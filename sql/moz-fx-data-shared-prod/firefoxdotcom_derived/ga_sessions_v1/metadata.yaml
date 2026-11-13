@@ -10,7 +10,7 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
   depends_on:
   - task_id: wait_for_firefoxdotcom_events_table

@@ -14,8 +14,8 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
-  date_partition_parameter: submission_date
-  date_partition_offset: 0
+  partition_parameter: submission_date
+  partition_offset: 0d
 bigquery:
   time_partitioning:
     type: day

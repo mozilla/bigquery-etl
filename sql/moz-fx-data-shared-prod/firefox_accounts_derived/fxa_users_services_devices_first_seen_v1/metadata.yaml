@@ -33,7 +33,7 @@ labels:
 scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day

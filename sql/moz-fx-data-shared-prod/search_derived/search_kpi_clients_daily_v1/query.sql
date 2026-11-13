@@ -50,7 +50,7 @@ urlbar AS (
   WHERE
     submission_date = @submission_date
 ),
--- urlbar_clients_daily_v1 has no date_partition_offset, so the urlbar task this run waits on
+-- urlbar_clients_daily_v1 has no partition_offset, so the urlbar task this run waits on
 -- writes the next day. The partition read here comes from the previous run. If that run
 -- didn't land, fail rather than write a day with no Suggest clicks and no urlbar-only clients.
 urlbar_partition_check AS (

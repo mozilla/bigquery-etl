@@ -12,6 +12,7 @@ from bigquery_etl.datahub.lineage import (
     format_text,
     get_downstream_lineage,
     is_stale_looker_tmp,
+    merge_lineage,
     qualified_name,
     sql_path,
     table_urn,
@@ -385,6 +386,7 @@ class TestDataHubClient:
                 "entities": [
                     {
                         "urn": "a",
+                        "properties": {"created": day - 86400000},
                         "statsSummary": {
                             "queryCountLast30Days": 7,
                             "uniqueUserCountLast30Days": 3,
@@ -408,8 +410,18 @@ class TestDataHubClient:
             }
         )
         assert client.usage(["a", "b"]) == {
-            "a": {"queries_30d": 7, "users_30d": 3, "last_query": "2025-10-04"},
-            "b": {"queries_30d": None, "users_30d": None, "last_query": None},
+            "a": {
+                "queries_30d": 7,
+                "users_30d": 3,
+                "last_query": "2025-10-04",
+                "created": "2025-10-03",
+            },
+            "b": {
+                "queries_30d": None,
+                "users_30d": None,
+                "last_query": None,
+                "created": None,
+            },
         }
 
     def test_usage_is_batched(self, client):
@@ -584,3 +596,13 @@ class TestFormatText:
         asset = self.asset(queries_30d=5, users_30d=2, last_query="2026-10-04")
         header, _ = table_rows(format_text("p.d.t", [asset]))
         assert header == ["DEGREE", "TYPE", "NAME"]
+
+
+def test_merge_lineage_keeps_closest_degree_and_sorts():
+    def asset(name, degree):
+        return {"urn": name, "degree": degree, "type": "DATASET", "name": name}
+
+    assert merge_lineage([[asset("b", 3), asset("a", 2)], [asset("b", 1)]]) == [
+        asset("b", 1),
+        asset("a", 2),
+    ]

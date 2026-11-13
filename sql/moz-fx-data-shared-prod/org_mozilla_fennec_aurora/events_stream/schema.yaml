@@ -1838,8 +1838,6 @@ fields:
 
         * The action that was taken by the user, remove or cancel
 
-        * Type of action taken by the user: `impression` or `click`.
-
         * Whether the toggle was used to enable or disable ads. Possible values are
         `enabled` and `disabled`.
 
@@ -1848,7 +1846,8 @@ fields:
 
         * "save" when the card is saved or updated, "save_new" when an existing card
         is saved as a new payment method, "not_now" (new_card) or "no_thanks" (existing_card)
-        when the Dismiss button is ...'
+        when the Dismiss button is clicked, "never_save" when the user stops saving
+        cards, and "...'
     - name: action_source
       type: STRING
       mode: NULLABLE
@@ -2016,13 +2015,6 @@ fields:
         Firefox was running with no browser windows open. `closed` means the click
         launched Firefox because it wasn''t running, and is only reported on Windows,
         as macOS removes Firefox''s notifications when it quits.'
-    - name: auth_type
-      type: STRING
-      mode: NULLABLE
-      description: 'How the account was authenticated: `pairing` (pairing code was
-        scanned), `sign_in` or `sign_up` (the user signed in with email). If the pairing
-        flow fails to start after a scan for some reason, it falls back to an email
-        sign in, which is recorded as `sign_in` or `sign_up`.'
     - name: auto_admin
       type: STRING
       mode: NULLABLE
@@ -2561,12 +2553,7 @@ fields:
     - name: element_type
       type: STRING
       mode: NULLABLE
-      description: 'Depending on the type of event:
-
-        * Type of element that was viewed.
-
-        * Type of element that was viewed or clicked: `onboarding_card` (impression),
-        `primary_button` (scan), `secondary_button` (email) or `skip_button` (skip).'
+      description: Type of element that was viewed.
     - name: email
       type: STRING
       mode: NULLABLE
@@ -2665,10 +2652,6 @@ fields:
 
         * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
         SessionRestore, SystemMenu or SlowScript
-
-        * The `FenixFxAEntryPoint` the scanner was opened from: `onboarding-pairing`
-        from the onboarding pairing sync card, otherwise the entrypoint of the sign
-        in screen (for example `settings-menu` or `newuser-onboarding`).
 
         * The surface from which the user started the flow. Possible values: "onboarding",
         "settings".

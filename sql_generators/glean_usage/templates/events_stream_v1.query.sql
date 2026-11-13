@@ -50,6 +50,10 @@ RETURNS JSON AS (
         metrics.url2
       ),
       '$.url2'
+      {% for path in exclude_metrics %}
+      ,
+      '{{ path }}'
+      {% endfor %}
     ),
     remove_empty => TRUE
   )

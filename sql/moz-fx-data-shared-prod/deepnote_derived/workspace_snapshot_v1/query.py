@@ -3,7 +3,9 @@
 Snapshots the workspaces whose API keys are passed with --api-key-env-vars.
 """
 
+import ast
 import logging
+import re
 from argparse import ArgumentParser
 from datetime import date
 
@@ -25,6 +27,61 @@ parser.add_argument(
     help="Environment variables holding the API keys, one per workspace",
 )
 
+SERVICE_ACCOUNT = re.compile(
+    r"service_account|SERVICE_ACCOUNT|GOOGLE_APPLICATION_CREDENTIALS"
+)
+
+
+def read_file(workspace, project_id, path):
+    """Return a project file's content, or None if it can't be downloaded."""
+    try:
+        return workspace.download(project_id, path)
+    except requests.RequestException as e:
+        logging.warning(f"Failed to download {path} of project {project_id}: {e}")
+        return None
+
+
+def is_unscoped_cache(decorator):
+    """Return whether a decorator is st.cache_data/st.cache_resource without scope="session".
+
+    Streamlit caches are shared between viewers unless scoped to the session (1.54+).
+    """
+    call = decorator if isinstance(decorator, ast.Call) else None
+    func = call.func if call else decorator
+    if not (
+        isinstance(func, ast.Attribute)
+        and func.attr in ("cache_data", "cache_resource")
+        and isinstance(func.value, ast.Name)
+        and func.value.id in ("st", "streamlit")
+    ):
+        return False
+    return not any(
+        keyword.arg == "scope"
+        and isinstance(keyword.value, ast.Constant)
+        and keyword.value.value == "session"
+        for keyword in (call.keywords if call else [])
+    )
+
+
+def scan_app(content):
+    """Return the cache and credential usage of a Streamlit app's entrypoint."""
+    try:
+        tree = ast.parse(content) if content is not None else None
+    except SyntaxError:
+        tree = None
+    if tree is None:
+        return {"unscoped_cache_count": None, "uses_service_account": None}
+    decorators = [
+        decorator
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        for decorator in node.decorator_list
+    ]
+    return {
+        "unscoped_cache_count": sum(is_unscoped_cache(d) for d in decorators),
+        "uses_service_account": bool(SERVICE_ACCOUNT.search(content)),
+    }
+
 
 def list_streamlit_apps(workspace, project_id):
     """Return a project's Streamlit apps."""
@@ -35,6 +92,11 @@ def list_streamlit_apps(workspace, project_id):
             "entrypoint": app.get("entrypoint"),
             "url": app.get("url"),
             "created_at": app.get("createdAt"),
+            **scan_app(
+                read_file(workspace, project_id, app["entrypoint"])
+                if app.get("entrypoint")
+                else None
+            ),
         }
         for app in apps["streamlitApps"]
     ]
@@ -73,15 +135,25 @@ def get_machine(workspace, project_id):
     }
 
 
-def get_files(workspace, project_id):
-    """Return a project's file paths."""
+def get_details(workspace, project_id):
+    """Return a project's file paths and attached integrations."""
     project = workspace.get(f"/v2/projects/{project_id}")["project"]
-    return [f["path"] for f in project.get("files") or [] if f.get("type") == "file"]
+    files = [f["path"] for f in project.get("files") or [] if f.get("type") == "file"]
+    integrations = [
+        {
+            "integration_id": integration["id"],
+            "name": integration.get("name"),
+            "type": integration.get("type"),
+        }
+        for integration in project.get("integrations") or []
+    ]
+    return files, integrations
 
 
 def to_row(workspace, snapshot_date, project):
     """Convert an API project into a table row."""
     folder = project.get("folder") or {}
+    files, integrations = get_details(workspace, project["id"])
     return {
         "snapshot_date": snapshot_date.isoformat(),
         "workspace_id": workspace.id,
@@ -111,7 +183,8 @@ def to_row(workspace, snapshot_date, project):
         ],
         "streamlit_apps": list_streamlit_apps(workspace, project["id"]),
         "machine": get_machine(workspace, project["id"]),
-        "files": get_files(workspace, project["id"]),
+        "files": files,
+        "integrations": integrations,
     }
 
 

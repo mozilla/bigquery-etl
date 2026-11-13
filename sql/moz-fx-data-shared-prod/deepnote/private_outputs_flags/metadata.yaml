@@ -1,0 +1,6 @@
+friendly_name: Deepnote Private Outputs Flags
+description: |-
+  Deepnote projects that break or leak data with private outputs. Restricted to
+  data platform.
+owners:
+- ascholtz@mozilla.com

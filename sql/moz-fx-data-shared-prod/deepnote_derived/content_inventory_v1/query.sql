@@ -110,6 +110,17 @@ runs AS (
   GROUP BY
     project_id
 ),
+private_projects AS (
+  SELECT
+    COALESCE(JSON_VALUE(metadata, '$.projectId'), resource_id) AS project_id,
+    MIN(created_at) AS private_outputs_enabled_at,
+  FROM
+    `moz-fx-data-shared-prod.deepnote_derived.audit_log_v1`
+  WHERE
+    event_type = 'project_private_execution_enabled'
+  GROUP BY
+    project_id
+),
 queries AS (
   SELECT
     project_id,
@@ -159,6 +170,8 @@ SELECT
     ELSE 'active'
   END AS usage_status,
   IFNULL(runs.last_run_status IN ('error', 'internal_error'), FALSE) AS is_broken,
+  private_projects.project_id IS NOT NULL AS has_private_outputs,
+  private_projects.private_outputs_enabled_at,
 FROM
   latest
 LEFT JOIN
@@ -169,4 +182,7 @@ LEFT JOIN
   USING (project_id)
 LEFT JOIN
   queries
+  USING (project_id)
+LEFT JOIN
+  private_projects
   USING (project_id)

@@ -173,3 +173,11 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Whether the last scheduled/API run failed.
+- name: has_private_outputs
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the project has private outputs (run-based columns then undercount).
+- name: private_outputs_enabled_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When private outputs were turned on.

@@ -18,11 +18,11 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: The highest Firefox version the client reported on the day.
+  description: The highest Firefox version the client reported on the day (from legacy pings if any, else from Glean).
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: The operating system version (the kernel release on Linux).
+  description: The OS version. From legacy pings, the full Linux kernel release; from Glean, the normalized version (for example 6.8).
 - name: isp_name
   type: STRING
   mode: NULLABLE

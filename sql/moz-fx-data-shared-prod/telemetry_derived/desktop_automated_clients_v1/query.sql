@@ -8,7 +8,8 @@
 --
 -- To add a fleet:
 --   1. Data Science confirms the rule in a Jira ticket.
---   2. Add a signal to client_signals and a WHEN branch to the fleet CASE in flagged_clients.
+--   2. Add a signal to client_signals (legacy pings) or glean_signals (Glean baseline ping), and
+--      a WHEN branch to the fleet CASE in flagged_clients.
 --      Give the rule a comment block with the fleet value, ticket, onset date, approver and a
 --      short description.
 --   3. Add the fleet to the list in metadata.yaml.
@@ -119,33 +120,36 @@ client_signals AS (
   GROUP BY
     client_id
 ),
-flagged_clients AS (
-  SELECT
-    client_id,
-    -- When a client matches more than one rule, the first matching WHEN branch sets the fleet.
-    -- Add new fleets at the end, so that the fleet of already-flagged clients does not change.
-    CASE
-      WHEN has_argument_profile
-        AND has_aws_environment
-        THEN 'aws'
-      WHEN has_bulk_signature
-        THEN 'bulk'
-    END AS fleet,
-    app_version,
-    os_version,
-    isp_name,
-    country,
-  FROM
-    client_signals
-  WHERE
-    (has_argument_profile AND has_aws_environment)
-    OR has_bulk_signature
-),
--- Glean client IDs for the flagged clients, so Glean DAU/MAU can exclude them too.
-glean_clients AS (
+-- Glean baseline pings, grouped by legacy client ID. They give the Glean client IDs for every
+-- flagged client, so Glean DAU/MAU can exclude them too, and they carry the signals for fleets
+-- that send few or no legacy pings.
+glean_signals AS (
   SELECT
     metrics.uuid.legacy_telemetry_client_id AS client_id,
     ARRAY_AGG(DISTINCT client_info.client_id IGNORE NULLS) AS glean_client_ids,
+    LOGICAL_OR(
+      metrics.string.startup_profile_selection_reason = 'argument-profile'
+    ) AS has_glean_argument_profile,
+    -- Fleet `hetzner` | DENG-11925 | onset 2026-09-27 | approved by Desktop DS (Jira comment
+    -- 1917038). Used together with has_glean_argument_profile.
+    -- Official Mozilla .deb builds on Hetzner Online servers, en-US, kernel 6.8. Almost none of
+    -- these clients send legacy pings, so the rule reads the Glean baseline ping.
+    LOGICAL_OR(
+      STARTS_WITH(metadata.isp.name, 'Hetzner Online')
+      AND metrics.string.usage_distribution_id = 'mozilla-deb'
+      AND COALESCE(client_info.locale, metrics.string.glean_baseline_locale) = 'en-US'
+      AND normalized_os_version = '6.8'
+    ) AS has_hetzner_environment,
+    ARRAY_AGG(
+      client_info.app_display_version IGNORE NULLS
+      ORDER BY
+        client_info.app_display_version DESC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS app_version,
+    ARRAY_AGG(normalized_os_version IGNORE NULLS LIMIT 1)[SAFE_OFFSET(0)] AS os_version,
+    ARRAY_AGG(metadata.isp.name IGNORE NULLS LIMIT 1)[SAFE_OFFSET(0)] AS isp_name,
+    ARRAY_AGG(metadata.geo.country IGNORE NULLS LIMIT 1)[SAFE_OFFSET(0)] AS country,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
   WHERE
@@ -154,18 +158,43 @@ glean_clients AS (
     AND metrics.uuid.legacy_telemetry_client_id IS NOT NULL
   GROUP BY
     client_id
+),
+flagged_clients AS (
+  SELECT
+    client_id,
+    -- When a client matches more than one rule, the first matching WHEN branch sets the fleet.
+    -- Add new fleets at the end, so that the fleet of already-flagged clients does not change.
+    CASE
+      WHEN legacy.has_argument_profile
+        AND legacy.has_aws_environment
+        THEN 'aws'
+      WHEN legacy.has_bulk_signature
+        THEN 'bulk'
+      WHEN glean.has_glean_argument_profile
+        AND glean.has_hetzner_environment
+        THEN 'hetzner'
+    END AS fleet,
+    glean.glean_client_ids,
+    COALESCE(legacy.app_version, glean.app_version) AS app_version,
+    COALESCE(legacy.os_version, glean.os_version) AS os_version,
+    COALESCE(legacy.isp_name, glean.isp_name) AS isp_name,
+    COALESCE(legacy.country, glean.country) AS country,
+  FROM
+    client_signals AS legacy
+  FULL OUTER JOIN
+    glean_signals AS glean
+    USING (client_id)
 )
 SELECT
   @submission_date AS submission_date,
-  flagged_clients.client_id,
-  glean_clients.glean_client_ids,
-  flagged_clients.fleet,
-  flagged_clients.app_version,
-  flagged_clients.os_version,
-  flagged_clients.isp_name,
-  flagged_clients.country,
+  client_id,
+  glean_client_ids,
+  fleet,
+  app_version,
+  os_version,
+  isp_name,
+  country,
 FROM
   flagged_clients
-LEFT JOIN
-  glean_clients
-  USING (client_id)
+WHERE
+  fleet IS NOT NULL

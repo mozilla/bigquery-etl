@@ -3,9 +3,16 @@ description: |
   Maps SUMO product slug paths to canonical product names.
 
   Legacy SUMO-specific mapper. Current production SUMO queries (GA4, Zendesk,
-  Kitsune) use mozfun.customer_experience.normalize_product instead.
-  No longer referenced by any production query; CASE-statement duplication is
-  now avoided via mozfun.customer_experience.normalize_product.
+  Kitsune) use mozfun.customer_experience.normalize_product instead. A newer
+  UDF, mozfun.customer_experience.cx_normalize_product, is now preferred for
+  new work; it uses different canonical names and distinguishes 'unclassified'
+  values from 'Other'.
+  No longer referenced by any production query.
+
+  A daily automated check (checks.sql) on the GA4 engagement derived table
+  scans production SUMO queries (GA4, Zendesk, Kitsune) for raw product values
+  that normalize_product maps to 'Other', surfacing new/unmapped slugs for
+  triage.
 
   Example:
     SELECT sumo.map_product_slug('/firefox/') -- Returns: 'firefox'

@@ -1,5 +1,7 @@
 description: >
   Take output from mozfun.iap.parse_apple_receipt and remove fields or reduce
   their granularity so that the returned value can be exposed to all employees
-  via redash.
+  via redash. Note: active_period.start_date and active_period.end_date (DATE)
+  are deprecated in favor of the active_period.start_time and
+  active_period.end_time (TIMESTAMP) fields.
 friendly_name: Scrub Apple Receipt from IAP

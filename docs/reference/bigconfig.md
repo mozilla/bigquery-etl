@@ -17,7 +17,7 @@ Bigeye provides CLI tooling that takes bigConfig files as input, compares it wit
 This includes actions such as creation, update, and deletion of Bigeye metrics. In our case, the [publish_bigeye_monitors](https://github.com/mozilla/telemetry-airflow/blob/main/dags/bqetl_artifact_deployment.py#L204C5-L212) task inside the `bqetl_artifact_deployment` DAG is responsible for pushing any bigConfig changes that have been merged into the main branch.
 
 > [!CAUTION]
-> When working with bigeye CLI be careful and avoid running `bigconfig apply` locally, Bigeye CLI will only work with currently specified bigConfig files. If an apply operation is executed and some configuration files are not included in the plan it would result in Bigeye metrics in those files getting `deleted`. Therefore, it is best to let the artifact_deployment DAG handle publishing Bigeye monitors.
+> When working with bigeye CLI be careful and avoid running `bigconfig apply` locally, Bigeye CLI will only work with currently specified bigConfig files. If an apply operation is executed and some configuration files are not included in the plan it would result in Bigeye metrics in those files getting `deleted`. Therefore, it is best to let the artifact_deployment DAG handle publishing Bigeye monitors. AI coding agents are blocked from running `monitoring deploy` except against an allow-listed dev target while impersonating a sandbox service account.
 
 ---
 
@@ -82,7 +82,7 @@ When applied, this configuration would result in Bigeye the following metrics be
 
 Those would get bundled under the `My Collection` Bigeye collection, and if any of the metrics fail an alert would be sent to the notification channels configured for that collection in the `monitoring.bigeye_workspaces` section of [bqetl_project.yaml](https://github.com/mozilla/bigquery-etl/blob/main/bqetl_project.yaml).
 
-\* _`is_not_null` is a `saved_metric_id` and is defined inside [sql/bigconfig.yml](https://github.com/mozilla/bigquery-etl/blob/main/sql/bigconfig.yml#L4C5-L19C26)_
+\* _`is_not_null` is a `saved_metric_id` and is defined inside [sql/bigconfig.yml](https://github.com/mozilla/bigquery-etl/blob/main/sql/bigconfig.yml#L4C5-L19C26), which also defines additional saved metrics such as `is_unique`, `is_99_percent_not_null`, `is_valid_client_id`, and composite-key uniqueness checks_
 
 ---
 
@@ -146,3 +146,4 @@ This would result in the `lookback` and `rct_overrides` properties to be overwri
 - [bigConfig](https://docs.bigeye.com/docs/bigconfig)
 - [Setting up Bigeye CLI](https://docs.bigeye.com/docs/cli#installation)
 - [Bigeye predefined metrics](https://docs.bigeye.com/docs/available-metrics)
+- [bigconfig-generator skill for AI coding agents](https://github.com/mozilla/bigquery-etl-skills/blob/main/skills/bigconfig-generator/SKILL.md)

@@ -1,0 +1,41 @@
+friendly_name: Google Analytics Desktop Conversions Feed
+description: |-
+  Query that pulls conversion event data so Census feed can pull and send to Google for marketing campaigns
+owners:
+- kik@mozilla.com
+- data-marketing-wg@mozilla.com
+labels:
+  incremental: true
+  owner1: kik
+  dag: bqetl_census_feed
+  owner2: data-marketing-wg
+scheduling:
+  dag_name: bqetl_census_feed
+  date_partition_parameter: activity_date
+  date_partition_offset: -2
+  parameters:
+  - submission_date:DATE:{{ds}}
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - conversion_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/external-census
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_desktop_conversions_v1
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.gclid_conversions_v1

@@ -1,0 +1,14 @@
+2026-11-16:
+  start_date: 2026-09-27
+  end_date: 2026-11-12
+  reason: DENG-11925 - initial backfill of the new table (https://github.com/mozilla/bigquery-etl/pull/10165)
+    from the hetzner fleet onset (2026-09-27) to the day before the first scheduled run
+    (2026-11-13).
+  watchers:
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

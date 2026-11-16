@@ -242,15 +242,32 @@ CLIENT_ASSOCIATION_MOBILE_APPS = {
     },
 }
 
+# telemetry.core client IDs (legacy core pings, e.g. Firefox iOS before 28) are deleted
+# through LEGACY_MOBILE_SOURCES, not DESKTOP_SRC. DESKTOP_SRC is kept from the old entries.
+MOBILE_SEARCH_SRCS = (
+    DESKTOP_SRC,
+    DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
+    DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
+    DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    *FOCUS_ADDITIONAL_DELETIONS,
+    *LEGACY_MOBILE_SOURCES,
+)
+
 DELETE_TARGETS: DeleteIndex = {
     # Other
     client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
-    client_id_target(
-        table="search_derived.mobile_search_clients_daily_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="search_derived.mobile_search_clients_daily_v2"
-    ): DESKTOP_SRC,
+    # These hold Glean client IDs from the mobile apps and legacy core-ping client IDs.
+    DeleteTarget(
+        table="search_derived.mobile_search_clients_daily_v1",
+        field=(CLIENT_ID,) * len(MOBILE_SEARCH_SRCS),
+    ): MOBILE_SEARCH_SRCS,
+    DeleteTarget(
+        table="search_derived.mobile_search_clients_daily_v2",
+        field=(CLIENT_ID,) * len(MOBILE_SEARCH_SRCS),
+    ): MOBILE_SEARCH_SRCS,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
     # client_id is the Glean id here, so this pairs with the Glean deletion stream while
     # v8 above pairs with the legacy one. The row also carries

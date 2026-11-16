@@ -1,0 +1,15 @@
+friendly_name: Deepnote Private Outputs Flags
+description: |-
+  Deepnote projects that break or leak data with private outputs. Restricted to
+  data platform.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.deepnote_derived.private_outputs_flags_v1

@@ -393,7 +393,7 @@ def to_asset(result: dict[str, Any]) -> dict[str, Any]:
 
 def get_downstream_lineage(
     client: DataHubClient,
-    table: str,
+    tables: list[str],
     since_days: int | None = None,
     include_deleted: bool = False,
     looker_tmp_days: int | None = DEFAULT_LOOKER_TMP_DAYS,
@@ -401,9 +401,10 @@ def get_downstream_lineage(
     include_usage: bool = False,
     types: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Return the downstream assets of a project.dataset.table.
+    """Return the downstream assets of one or more project.dataset.table.
 
-    With include_usage, BigQuery tables and views also get their query count,
+    An asset downstream of several tables is returned once, at its closest
+    degree. With include_usage, BigQuery tables and views also get their query count,
     user count and last query date for the last 30 days (one extra request
     per 100 of them).
 
@@ -429,8 +430,17 @@ def get_downstream_lineage(
     since_ms = int((now - since_days * 86400) * 1000) if since_days else None
     cutoff_ms = int((now - looker_tmp_days * 86400) * 1000) if looker_tmp_days else None
 
-    assets = client.search_downstream(
-        table_urn(table), include_deleted, since_ms, max_degree=max_degree, types=types
+    assets = merge_lineage(
+        [
+            client.search_downstream(
+                table_urn(table),
+                include_deleted,
+                since_ms,
+                max_degree=max_degree,
+                types=types,
+            )
+            for table in tables
+        ]
     )
     assets = [a for a in assets if not is_stale_looker_tmp(a["urn"], cutoff_ms)]
     if not include_deleted:

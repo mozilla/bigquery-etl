@@ -2086,12 +2086,7 @@ class TestGetDownstreamLineage:
         return CliRunner()
 
     @pytest.fixture
-    def add_usage(self):
-        with patch("bigquery_etl.cli.metadata.add_usage") as add_usage:
-            yield add_usage
-
-    @pytest.fixture
-    def lineage(self, add_usage):
+    def lineage(self):
         with (
             patch("bigquery_etl.cli.metadata.DataHubClient"),
             patch(
@@ -2104,14 +2099,14 @@ class TestGetDownstreamLineage:
     def test_dataset_table_gets_the_default_project(self, runner, lineage):
         result = runner.invoke(get_downstream_lineage, ["d.a"])
         assert result.exit_code == 0
-        assert lineage.call_args[0][1] == "moz-fx-data-shared-prod.d.a"
+        assert lineage.call_args[0][1] == ["moz-fx-data-shared-prod.d.a"]
         assert "BIGQUERY (1)" in result.output
         assert "moz-fx-data-shared-prod.d.b" in result.output
 
     def test_fully_qualified_table_is_used_as_is(self, runner, lineage):
         result = runner.invoke(get_downstream_lineage, ["other-project.d.a"])
         assert result.exit_code == 0
-        assert lineage.call_args[0][1] == "other-project.d.a"
+        assert lineage.call_args[0][1] == ["other-project.d.a"]
 
     def test_rejects_a_bare_table_name(self, runner, lineage):
         result = runner.invoke(get_downstream_lineage, ["a"])
@@ -2226,16 +2221,16 @@ class TestGetDownstreamLineage:
         assert result.exit_code == 1
         assert "access_denied" in result.output
 
-    def test_usage_is_off_by_default(self, runner, lineage, add_usage):
+    def test_usage_is_off_by_default(self, runner, lineage):
         result = runner.invoke(get_downstream_lineage, ["d.a"])
         assert result.exit_code == 0
-        add_usage.assert_not_called()
+        assert lineage.call_args[1]["include_usage"] is False
         assert "QUERIES 30D" not in result.output
 
-    def test_include_usage_adds_columns_and_fields(self, runner, lineage, add_usage):
+    def test_include_usage_adds_columns_and_fields(self, runner, lineage):
         result = runner.invoke(get_downstream_lineage, ["d.a", "--include-usage"])
         assert result.exit_code == 0
-        add_usage.assert_called_once()
+        assert lineage.call_args[1]["include_usage"] is True
         assert "QUERIES 30D" in result.output
 
         result = runner.invoke(
@@ -2283,12 +2278,7 @@ class TestDeprecateDownstream:
         return tmp_path
 
     @pytest.fixture
-    def add_usage(self):
-        with patch("bigquery_etl.cli.metadata.add_usage") as add_usage:
-            yield add_usage
-
-    @pytest.fixture
-    def lineage(self, add_usage):
+    def lineage(self):
         with (
             patch("bigquery_etl.cli.metadata.DataHubClient"),
             patch(
@@ -2332,13 +2322,13 @@ class TestDeprecateDownstream:
         lineage.assert_not_called()
         assert self.deprecated(sql_dir) == {"target_v1"}
 
-    def test_prompt_defaults_to_yes(self, runner, sql_dir, lineage, add_usage, pick):
+    def test_prompt_defaults_to_yes(self, runner, sql_dir, lineage, pick):
         pick.return_value = [sql_dir / self.project / "d" / "used_v1"]
         with self.interactive(True):
             result = self.invoke(runner, sql_dir, input="\n")
         assert result.exit_code == 0, result.output
         lineage.assert_called_once()
-        add_usage.assert_called_once()
+        assert lineage.call_args[1]["include_usage"] is True
         targets, candidates, external, preselected, note = pick.call_args.args
         assert note == ""
         assert targets == f"{self.project}.d.target_v1"
@@ -2448,17 +2438,17 @@ class TestDeprecateDownstream:
         assert "Deletion date" not in result.output
         assert self.deprecated(sql_dir) == {"target_v1"}
 
-    def test_several_tables_merge_lineage_and_fetch_usage_once(
-        self, runner, sql_dir, lineage, add_usage
-    ):
+    def test_several_tables_are_fetched_together(self, runner, sql_dir, lineage):
         with self.interactive(False):
             result = self.invoke(
                 runner, sql_dir, "--include-downstream=none", name="d.target_v*"
             )
         assert result.exit_code == 0, result.output
-        assert lineage.call_count == 2
-        _, assets = add_usage.call_args.args
-        assert [a["name"] for a in assets] == ["target_v1", "unused_v1", "used_v1"]
+        lineage.assert_called_once()
+        assert lineage.call_args[0][1] == [
+            f"{self.project}.d.target_v1",
+            f"{self.project}.d.target_v2",
+        ]
         assert self.deprecated(sql_dir) == {"target_v1", "target_v2"}
 
     def test_since_days_without_lineage_warns(self, runner, sql_dir, lineage):

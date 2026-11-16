@@ -25,13 +25,11 @@ from bigquery_etl.datahub.lineage import (
     AuthError,
     DataHubClient,
     LineageTooLargeError,
-    add_usage,
     format_text,
 )
 from bigquery_etl.datahub.lineage import (
     get_downstream_lineage as get_downstream_lineage_from_datahub,
 )
-from bigquery_etl.datahub.lineage import merge_lineage
 from bigquery_etl.deprecation import (
     IncludeDownstream,
     downstream_candidates,
@@ -463,24 +461,11 @@ def _is_interactive() -> bool:
 
 
 def _fetch_downstream(
-    tables: list[str],
-    max_degree_hint: bool = True,
-    include_usage: bool = False,
-    **kwargs,
+    tables: list[str], max_degree_hint: bool = True, **kwargs
 ) -> list[dict]:
-    """Return the merged downstream lineage of tables; failures become click errors."""
+    """Return the downstream lineage of tables; failures become click errors."""
     try:
-        client = DataHubClient()
-        assets = merge_lineage(
-            [
-                get_downstream_lineage_from_datahub(client, table, **kwargs)
-                for table in tables
-            ]
-        )
-        # Fetch usage once, after merging: tables often share downstream assets.
-        if include_usage:
-            add_usage(client, assets)
-        return assets
+        return get_downstream_lineage_from_datahub(DataHubClient(), tables, **kwargs)
     except LoginError as e:
         raise click.ClickException(str(e))
     except AuthError as e:

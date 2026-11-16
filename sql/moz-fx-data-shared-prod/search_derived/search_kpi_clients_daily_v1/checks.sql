@@ -419,8 +419,10 @@ WHERE
 
 #warn
 -- Early warning: a result type shown but not yet clicked with no map row fails the run on its
--- first click. action_* types are excluded by the query. A name cut short by the 500-byte limit
--- on the results field is a prefix of a real type, so it isn't a new type.
+-- first release-channel click. Types in the families the query excludes without a row
+-- (action_, autofill_, intervention_, tip_, restrict_keyword_) can't fail it, so they're left
+-- out; the next check lists them once clicked. A name cut short by the 500-byte limit on the
+-- results field is a prefix of a real type, so it isn't a new type.
 WITH component_map AS (
   SELECT
     result_type
@@ -445,7 +447,7 @@ new_types AS (
   FROM
     shown AS s
   WHERE
-    NOT STARTS_WITH(result_type, 'action_')
+    NOT REGEXP_CONTAINS(result_type, r'^(action|autofill|intervention|tip|restrict_keyword)_')
     AND NOT EXISTS (
       SELECT
         1
@@ -470,8 +472,9 @@ FROM
   new_types;
 
 #warn
--- action_* types are excluded without a map row, so a new one can't fail the run. This lists
--- clicked ones with no row, in case one should count.
+-- The query excludes a clicked type with no map row, without failing, when it's in a family
+-- that never counts (action_, autofill_, intervention_, tip_, restrict_keyword_) or clicked
+-- only on pre-release channels. This lists them so each gets a row, in case one should count.
 WITH component_map AS (
   SELECT
     result_type
@@ -480,7 +483,7 @@ WITH component_map AS (
   WHERE
     platform = 'desktop'
 ),
-new_actions AS (
+unmapped_clicks AS (
   SELECT DISTINCT
     r.result_type
   FROM
@@ -492,7 +495,6 @@ new_actions AS (
     USING (result_type)
   WHERE
     u.submission_date = @submission_date
-    AND STARTS_WITH(r.result_type, 'action_')
     AND r.clicks > 0
     AND m.result_type IS NULL
 )
@@ -501,14 +503,14 @@ SELECT
     COUNT(*) > 0,
     ERROR(
       CONCAT(
-        'Clicked action_* types with no kpi_component_map_v1 row: ',
+        'Clicked result types with no kpi_component_map_v1 row, excluded from the KPI: ',
         STRING_AGG(result_type, ', ' ORDER BY result_type)
       )
     ),
     NULL
   )
 FROM
-  new_actions;
+  unmapped_clicks;
 
 #warn
 -- Early warning for mobile: a Suggest type shown but not yet clicked with no map row fails the

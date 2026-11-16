@@ -29,9 +29,12 @@ description: |-
   click. A client missing from the table counted 0 that day. Bots and the version floor are
   flagged (is_bot, meets_population_rules), not filtered out.
 
-  The run fails if a clicked result type has no row in kpi_component_map_v1, so a new
-  Suggest type can't silently fall out of the KPI. action_* types (quick actions) are
-  excluded in the query and need no row. It also fails if that day's
+  The run fails if a clicked desktop result type has no row in kpi_component_map_v1, so a
+  new Suggest type can't silently fall out of the KPI. Two exceptions are excluded without a
+  row, and a #warn check lists them so they still get one: types starting with action_,
+  autofill_, intervention_, tip_ or restrict_keyword_ (families that are never search or
+  Suggest), and clicks from clients on nightly, aurora or beta (new types appear there first).
+  A map row overrides both. Mobile has no exceptions. It also fails if that day's
   urlbar_clients_daily_v1 partition is empty, if an app has no searches or no awesomebar
   events in that day's mobile sources, or if the map has overlapping rows.
 

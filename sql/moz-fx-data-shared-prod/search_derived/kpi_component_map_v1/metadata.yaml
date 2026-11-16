@@ -8,6 +8,9 @@ description: |-
   submission_date to split Suggest clicks into suggest_sponsored, suggest_nonsponsored and
   ai_chat; everything else is excluded.
 
+  A new result type added as excluded changes no component, so it keeps the platform's
+  current definition_version and needs no backfill.
+
   To change the definition, set definition_version on every row you add or edit to the
   current max + 1, then backfill the KPI tables over the dates the change affects:
   - Correction (a result type was mapped wrong all along, or a new type turns up): edit or

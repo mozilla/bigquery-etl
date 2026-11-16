@@ -7,14 +7,29 @@ permissions: {}
 
 jobs:
   cleanup:
-    # Fork PRs don't have access to secrets and never create diff branches,
-    # so the no-op 401 on fork closures is expected and harmless.
     name: Delete diff branch in private-bigquery-etl
     runs-on: ubuntu-latest
+    # Fork PRs don't have access to secrets and never create diff branches
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      # Dependabot-triggered closures only see Dependabot secrets, so the key must
+      # be set there too. If it's missing anywhere, skip instead of failing the run
+      HAS_CI_BOT_KEY: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY != '' }}
     steps:
+      - name: Generate bigquery-etl-ci-bot token
+        id: app-token
+        if: env.HAS_CI_BOT_KEY == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510  # v3.3.0
+        with:
+          client-id: ${{ secrets.BQETL_CI_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY }}
+          owner: mozilla
+          repositories: private-bigquery-etl
+          permission-contents: write
       - name: Delete bqetl-diff branch
+        if: steps.app-token.outputs.token != ''
         env:
-          TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
+          TRIGGER_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PRIVATE_REPO: mozilla/private-bigquery-etl
         run: |
@@ -33,3 +48,6 @@ jobs:
           else
             echo "::warning::Unexpected status ${HTTP_STATUS} when deleting branch ${BRANCH}"
           fi
+      - name: Report missing key
+        if: steps.app-token.outputs.token == ''
+        run: echo "::warning::BQETL_CI_BOT_PRIVATE_KEY not available to this run, skipping diff branch cleanup"

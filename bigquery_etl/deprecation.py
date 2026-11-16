@@ -8,7 +8,13 @@ from typing import Any, Optional, Sequence
 import attrs
 import click
 
-from bigquery_etl.datahub.lineage import DATAHUB_LINEAGE_DEGREES, sql_path, type_rank
+from bigquery_etl.datahub.lineage import (
+    DATAHUB_LINEAGE_DEGREES,
+    last_query_text,
+    sql_path,
+    type_label,
+    type_rank,
+)
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 INCLUDE_DOWNSTREAM_MODES = ["all", "unused", "none"]
@@ -71,9 +77,7 @@ class Candidate:
     def last_query(self) -> str:
         """Return the latest query date across assets, or none / n/a."""
         dates = [a["last_query"] for a in self.assets if a["last_query"]]
-        if dates:
-            return max(dates)
-        return "none" if self.queries_30d == 0 else "n/a"
+        return last_query_text(max(dates, default=None), self.queries_30d)
 
     @property
     def created(self) -> Optional[str]:
@@ -224,11 +228,10 @@ Rows = list[tuple[Label, Optional[Path]]]
 def external_label(asset: dict[str, Any]) -> Label:
     """Return a read-only row for an asset outside bigquery-etl."""
     platform = asset["platform"] or "unknown"
-    type_ = asset["subtype"] or asset["type"].replace("_", " ").capitalize()
     return [
         ("", f"{degree_label(asset['degree']):>6}  "),
         (PLATFORM_STYLES.get(platform, ""), f"{platform:<8}"),
-        ("", f"  {type_:<10}  {asset['qualified_name']}"),
+        ("", f"  {type_label(asset):<10}  {asset['qualified_name']}"),
     ]
 
 

@@ -263,11 +263,7 @@ class DataHubClient:
                 break
 
         # Paging can return the same asset twice; keep the closest occurrence.
-        found: dict[str, dict[str, Any]] = {}
-        for r in results:
-            if r["urn"] not in found or r["degree"] < found[r["urn"]]["degree"]:
-                found[r["urn"]] = r
-        return sorted(found.values(), key=lambda r: (r["degree"], r["type"], r["name"]))
+        return merge_lineage([results])
 
     def usage(self, urns: list[str]) -> dict[str, dict[str, Any]]:
         """Return query count, user count and last query date (last 30 days) per dataset.
@@ -493,11 +489,16 @@ def sql_path(asset: dict[str, Any], sql_dir: Optional[str] = None) -> Optional[P
     return path if path.is_dir() else None
 
 
-def last_query_text(asset: dict[str, Any]) -> str:
+def last_query_text(last_query: Optional[str], queries_30d: Optional[int]) -> str:
     """Show the last query date, "none" if there was none in 30 days, or "n/a"."""
-    if asset["last_query"]:
-        return asset["last_query"]
-    return "none" if asset["queries_30d"] == 0 else "n/a"
+    if last_query:
+        return last_query
+    return "none" if queries_30d == 0 else "n/a"
+
+
+def type_label(asset: dict[str, Any]) -> str:
+    """Return the DataHub subtype (e.g. View), or else the type as words."""
+    return asset["subtype"] or asset["type"].replace("_", " ").capitalize()
 
 
 def type_rank(type_: str) -> int:
@@ -535,7 +536,7 @@ def format_text(
         cells = [
             [
                 str(a["degree"]),
-                a["subtype"] or a["type"].replace("_", " ").capitalize(),
+                type_label(a),
                 a["qualified_name"],
             ]
             + ([str(a["deleted"])] if show_deleted else [])
@@ -543,7 +544,7 @@ def format_text(
                 [
                     "n/a" if a["queries_30d"] is None else str(a["queries_30d"]),
                     "n/a" if a["users_30d"] is None else str(a["users_30d"]),
-                    last_query_text(a),
+                    last_query_text(a["last_query"], a["queries_30d"]),
                 ]
                 if usage_columns
                 else []

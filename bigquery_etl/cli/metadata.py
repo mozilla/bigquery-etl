@@ -10,7 +10,7 @@ from datetime import datetime
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
-from typing import Optional, cast
+from typing import cast
 
 import click
 import requests
@@ -76,7 +76,6 @@ from ..util.common import block_coding_agents
 @click.pass_context
 def metadata(ctx):
     """Create the CLI group for the metadata command."""
-    pass
 
 
 @metadata.command(
@@ -88,17 +87,17 @@ def metadata(ctx):
     Example:
      ./bqetl metadata update ga_derived.downloads_with_attribution_v2
     """,
-    context_settings=dict(
-        ignore_unknown_options=True,
-        allow_extra_args=True,
-    ),
+    context_settings={
+        "ignore_unknown_options": True,
+        "allow_extra_args": True,
+    },
 )
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
 @parallelism_option()
 def update(
-    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+    name: str, sql_dir: str | None, project_id: str | None, parallelism: int
 ) -> None:
     """Update metadata yaml file."""
     table_metadata_files = paths_matching_name_pattern(
@@ -129,8 +128,6 @@ def update(
             _update_dataset_metadata(
                 retained_dataset_roles, (dataset_path, dataset_table_files)
             )
-
-    return None
 
 
 def _update_dataset_metadata(retained_dataset_roles, dataset_info):
@@ -253,10 +250,10 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
     Example:
      ./bqetl metadata publish ga_derived.downloads_with_attribution_v2
     """,
-    context_settings=dict(
-        ignore_unknown_options=True,
-        allow_extra_args=True,
-    ),
+    context_settings={
+        "ignore_unknown_options": True,
+        "allow_extra_args": True,
+    },
 )
 @block_coding_agents
 @click.argument("name")
@@ -273,8 +270,8 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
 )
 def publish(
     name: str,
-    sql_dir: Optional[str],
-    project_id: Optional[str],
+    sql_dir: str | None,
+    project_id: str | None,
     parallelism: int,
     skip_stable_datasets: bool,
 ) -> None:
@@ -321,17 +318,16 @@ def _publish_metadata(project_id, credentials, metadata_file):
             metadata,
         )
     except FileNotFoundError:
-        print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+        print(f"No metadata file for: {project}.{dataset}.{table}")
 
 
 @metadata.command(help="""
     Deprecate BigQuery table by updating metadata.yaml file.
-    Deletion date defaults to 3 months from today; in a terminal you are asked
-    to confirm it.
+    Deletion date defaults to 3 months from today; TUI asks to confirm.
 
-    In a terminal, offers to show downstream lineage from DataHub and pick
-    downstream tables and views to deprecate too. --include-downstream fetches
-    the lineage without asking and pre-selects all, unused or no downstream assets.
+    TUI offers to show downstream lineage from DataHub and pick
+    downstream tables and views to deprecate. --include-downstream fetches
+    the lineage without asking and pre-selects all/unused/none downstream assets.
 
     Examples:
 
@@ -385,10 +381,13 @@ def deprecate(
 
     interactive = _is_interactive()
     prompted = False
-    if include_downstream is None and interactive:
-        if click.confirm("Show downstream lineage?", default=True):
-            include_downstream = IncludeDownstream.NONE
-            prompted = True
+    if (
+        include_downstream is None
+        and interactive
+        and click.confirm("Show downstream lineage?", default=True)
+    ):
+        include_downstream = IncludeDownstream.NONE
+        prompted = True
     if since_days and not include_downstream:
         click.echo(
             "Warning: --since-days is ignored without downstream lineage.", err=True
@@ -523,7 +522,7 @@ def _fetch_downstream(
 @click.argument("name", required=False)
 @project_id_option()
 @sql_dir_option
-def validate(name: Optional[str], sql_dir: str, project_id: Optional[str]):
+def validate(name: str | None, sql_dir: str, project_id: str | None):
     """Validate table and dataset metadata files."""
     # relative paths are needed to match `metadata.validation.skip` entries
     sql_dir = os.path.relpath(sql_dir)

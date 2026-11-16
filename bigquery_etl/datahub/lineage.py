@@ -5,7 +5,7 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import click
 import requests
@@ -137,7 +137,7 @@ class AuthError(requests.HTTPError):
 class DataHubClient:
     """Authenticated DataHub GraphQL client with retries."""
 
-    def __init__(self, token: Optional[str] = None, url: Optional[str] = None):
+    def __init__(self, token: str | None = None, url: str | None = None):
         """Create a client for DATAHUB_GMS_URL (default: Mozilla's DataHub).
 
         The token is, in order: the token argument, DATAHUB_GMS_TOKEN, or a
@@ -313,7 +313,7 @@ def table_urn(table: str) -> str:
     return f"urn:li:dataset:(urn:li:dataPlatform:bigquery,{table},PROD)"
 
 
-def is_stale_looker_tmp(urn: str, cutoff_ms: Optional[int]) -> bool:
+def is_stale_looker_tmp(urn: str, cutoff_ms: int | None) -> bool:
     """Return True for a Looker aggregate table copy built before cutoff_ms."""
     if cutoff_ms is None:
         return False
@@ -329,13 +329,13 @@ def entity_name(entity: dict[str, Any]) -> str:
     )
 
 
-def entity_platform(entity: dict[str, Any]) -> Optional[str]:
+def entity_platform(entity: dict[str, Any]) -> str | None:
     """Return the platform name of an entity."""
     platform = entity.get("platform") or (entity.get("dataFlow") or {}).get("platform")
     return (platform or {}).get("name")
 
 
-def entity_subtype(entity: dict[str, Any]) -> Optional[str]:
+def entity_subtype(entity: dict[str, Any]) -> str | None:
     """Return the first DataHub subtype of an entity, e.g. Table or Explore."""
     names = (entity.get("subTypes") or {}).get("typeNames") or []
     return names[0] if names else None
@@ -465,7 +465,7 @@ def is_bigquery_dataset(asset: dict[str, Any]) -> bool:
     return asset["platform"] == "bigquery" and asset["type"] == "DATASET"
 
 
-def sql_path(asset: dict[str, Any], sql_dir: Optional[str] = None) -> Optional[Path]:
+def sql_path(asset: dict[str, Any], sql_dir: str | None = None) -> Path | None:
     """Return the sql/ directory defining a BigQuery table or view, or None.
 
     Views published to the user-facing project (mozdata) map to their source

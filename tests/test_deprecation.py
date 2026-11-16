@@ -7,13 +7,10 @@ import pytest
 import yaml
 
 from bigquery_etl.deprecation import (
-    ALREADY_DEPRECATED,
-    GIT_UNAVAILABLE,
-    INVALID_METADATA,
     MAX_READ_ONLY_ROWS,
-    NO_METADATA,
-    UNTRACKED,
     Candidate,
+    DisabledReason,
+    IncludeDownstream,
     downstream_candidates,
     is_unused,
     label_text,
@@ -129,16 +126,18 @@ class TestDownstreamCandidates:
         )
         assert {c.name: c.disabled_reason for c in candidates} == {
             f"{PROJECT}.d.live_v1": None,
-            f"{PROJECT}.d.old_v1": ALREADY_DEPRECATED,
-            f"{PROJECT}.d.invalid_v1": INVALID_METADATA,
-            f"{PROJECT}.d.untracked_v1": UNTRACKED,
-            f"{PROJECT}.d.no_metadata": NO_METADATA,
+            f"{PROJECT}.d.old_v1": DisabledReason.ALREADY_DEPRECATED,
+            f"{PROJECT}.d.invalid_v1": DisabledReason.INVALID_METADATA,
+            f"{PROJECT}.d.untracked_v1": DisabledReason.UNTRACKED,
+            f"{PROJECT}.d.no_metadata": DisabledReason.NO_METADATA,
         }
 
     def test_nothing_is_selectable_when_git_fails(self, sql_dir, capsys):
         with patch("bigquery_etl.deprecation.tracked_files", return_value=None):
             candidates, _ = candidates_for(sql_dir, [bq_asset("d.live_v1")])
-        assert [c.disabled_reason for c in candidates] == [GIT_UNAVAILABLE]
+        assert [c.disabled_reason for c in candidates] == [
+            DisabledReason.GIT_UNAVAILABLE
+        ]
         assert "could not list git-tracked files" in capsys.readouterr().err
 
 
@@ -154,13 +153,21 @@ class TestSelection:
 
     @pytest.mark.parametrize(
         "mode,expected",
-        [("all", {"unused", "used"}), ("unused", {"unused"}), ("none", set())],
+        [
+            (IncludeDownstream.ALL, {"unused", "used"}),
+            (IncludeDownstream.UNUSED, {"unused"}),
+            (IncludeDownstream.NONE, set()),
+        ],
     )
     def test_preselect(self, mode, expected):
         candidates = [
             Candidate(Path("unused"), [bq_asset("d.unused", queries=0)]),
             Candidate(Path("used"), [bq_asset("d.used", queries=5)]),
-            Candidate(Path("old"), [bq_asset("d.old", queries=0)], ALREADY_DEPRECATED),
+            Candidate(
+                Path("old"),
+                [bq_asset("d.old", queries=0)],
+                DisabledReason.ALREADY_DEPRECATED,
+            ),
         ]
         assert preselect(candidates, mode) == {Path(p) for p in expected}
 
@@ -181,9 +188,13 @@ class TestSelection:
         candidates = [
             Candidate(Path("p/d/unused"), [bq_asset("d.unused", queries=0)]),
             Candidate(Path("p/d/used"), [bq_asset("d.used", queries=5)]),
-            Candidate(Path("p/d/old"), [bq_asset("d.old")], ALREADY_DEPRECATED),
+            Candidate(
+                Path("p/d/old"), [bq_asset("d.old")], DisabledReason.ALREADY_DEPRECATED
+            ),
         ]
-        summary = selection_summary(candidates, {Path("p/d/unused")}, "unused")
+        summary = selection_summary(
+            candidates, {Path("p/d/unused")}, IncludeDownstream.UNUSED
+        )
         assert summary.splitlines() == [
             "Deprecating 1 downstream:",
             "  p.d.unused",
@@ -212,8 +223,8 @@ class TestPicker:
         assert [s.title for s in sections] == [
             "Degree 1 (1)",
             "Degree 2 (1)",
-            f"Can't deprecate: {ALREADY_DEPRECATED} (1)",
-            f"Can't deprecate: {NO_METADATA} (1)",
+            f"Can't deprecate: {DisabledReason.ALREADY_DEPRECATED.value} (1)",
+            f"Can't deprecate: {DisabledReason.NO_METADATA.value} (1)",
             "Not in bigquery-etl: looker (1)",
         ]
         assert [path is not None for s in sections for _, path in s.rows] == [

@@ -215,9 +215,9 @@ class DataHubClient:
         self,
         urn: str,
         include_deleted: bool = False,
-        since_ms: Optional[int] = None,
-        max_degree: Optional[int] = None,
-        types: Optional[set[str]] = None,
+        since_ms: int | None = None,
+        max_degree: int | None = None,
+        types: set[str] | None = None,
     ) -> list[dict[str, Any]]:
         """Return the downstream assets of urn, up to max_degree hops.
 
@@ -394,12 +394,12 @@ def to_asset(result: dict[str, Any]) -> dict[str, Any]:
 def get_downstream_lineage(
     client: DataHubClient,
     table: str,
-    since_days: Optional[int] = None,
+    since_days: int | None = None,
     include_deleted: bool = False,
-    looker_tmp_days: Optional[int] = DEFAULT_LOOKER_TMP_DAYS,
-    max_degree: Optional[int] = None,
+    looker_tmp_days: int | None = DEFAULT_LOOKER_TMP_DAYS,
+    max_degree: int | None = None,
     include_usage: bool = False,
-    types: Optional[set[str]] = None,
+    types: set[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Return the downstream assets of a project.dataset.table.
 
@@ -489,7 +489,7 @@ def sql_path(asset: dict[str, Any], sql_dir: Optional[str] = None) -> Optional[P
     return path if path.is_dir() else None
 
 
-def last_query_text(last_query: Optional[str], queries_30d: Optional[int]) -> str:
+def last_query_text(last_query: str | None, queries_30d: int | None) -> str:
     """Show the last query date, "none" if there was none in 30 days, or "n/a"."""
     if last_query:
         return last_query
@@ -497,7 +497,7 @@ def last_query_text(last_query: Optional[str], queries_30d: Optional[int]) -> st
 
 
 def type_label(asset: dict[str, Any]) -> str:
-    """Return the DataHub subtype (e.g. View), or else the type as words."""
+    """Return the DataHub subtype (e.g. View), else the type in words (Data job)."""
     return asset["subtype"] or asset["type"].replace("_", " ").capitalize()
 
 

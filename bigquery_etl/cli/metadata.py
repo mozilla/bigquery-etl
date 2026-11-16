@@ -33,7 +33,7 @@ from bigquery_etl.datahub.lineage import (
 )
 from bigquery_etl.datahub.lineage import merge_lineage
 from bigquery_etl.deprecation import (
-    INCLUDE_DOWNSTREAM_MODES,
+    IncludeDownstream,
     downstream_candidates,
     pick,
     preselect,
@@ -326,12 +326,12 @@ def _publish_metadata(project_id, credentials, metadata_file):
 
 @metadata.command(help="""
     Deprecate BigQuery table by updating metadata.yaml file.
-    Deletion date is by default 3 months from current date if not provided;
-    in a terminal it is asked for, with that default.
+    Deletion date defaults to 3 months from today; in a terminal you are asked
+    to confirm it.
 
     In a terminal, offers to show downstream lineage from DataHub and pick
-    downstream tables and views to deprecate too. --include-downstream skips the
-    prompt and pre-selects them; without a terminal the pre-selection is applied.
+    downstream tables and views to deprecate too. --include-downstream fetches
+    the lineage without asking and pre-selects all, unused or no downstream assets.
 
     Examples:
 
@@ -353,9 +353,10 @@ def _publish_metadata(project_id, credentials, metadata_file):
 @click.option(
     "--include_downstream",
     "--include-downstream",
-    type=click.Choice(INCLUDE_DOWNSTREAM_MODES),
+    type=click.Choice([mode.value for mode in IncludeDownstream]),
     help="Fetch downstream lineage from DataHub without asking and pre-select "
-    "downstream assets to deprecate: all, unused (no queries in 30 days) or none.",
+    "downstream assets to deprecate: all, unused (older than 30 days, no queries "
+    "in the last 30) or none.",
 )
 @click.option(
     "--since_days",
@@ -367,9 +368,9 @@ def deprecate(
     name: str,
     sql_dir: str,
     project_id: str,
-    deletion_date: Optional[datetime],
-    include_downstream: Optional[str],
-    since_days: Optional[int],
+    deletion_date: datetime | None,
+    include_downstream: str | None,
+    since_days: int | None,
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""
     table_metadata_files = sorted(
@@ -386,7 +387,7 @@ def deprecate(
     prompted = False
     if include_downstream is None and interactive:
         if click.confirm("Show downstream lineage?", default=True):
-            include_downstream = "none"
+            include_downstream = IncludeDownstream.NONE
             prompted = True
     if since_days and not include_downstream:
         click.echo(
@@ -403,7 +404,7 @@ def deprecate(
                 tables, max_degree_hint=False, since_days=since_days, include_usage=True
             )
         except click.ClickException as e:
-            # Lineage was only offered by the prompt, so the tables can still go ahead.
+            # Lineage wasn't requested by flag, so offer to continue without it.
             if not prompted:
                 raise
             click.echo(f"Warning: {e.message}", err=True)
@@ -414,12 +415,13 @@ def deprecate(
             candidates, external = downstream_candidates(
                 assets, sql_dir, exclude={Path(f).parent for f in table_metadata_files}
             )
-            preselected = preselect(candidates, include_downstream)
+            mode = IncludeDownstream(include_downstream)
+            preselected = preselect(candidates, mode)
             options = []
             if since_days:
                 options.append(f"lineage seen in the last {since_days} days")
             if not prompted:
-                options.append(f"pre-selected: {include_downstream}")
+                options.append(f"pre-selected: {mode}")
             note = f" ({'; '.join(options)})" if options else ""
             if interactive:
                 picked = pick(targets, candidates, external, preselected, note)
@@ -429,9 +431,7 @@ def deprecate(
                 downstream = picked
             else:
                 click.echo(format_text(targets + note, assets, show_usage=True))
-                click.echo(
-                    selection_summary(candidates, preselected, include_downstream)
-                )
+                click.echo(selection_summary(candidates, preselected, mode))
                 downstream = sorted(preselected)
 
     if deletion_date is None:
@@ -469,7 +469,7 @@ def _fetch_downstream(
     include_usage: bool = False,
     **kwargs,
 ) -> list[dict]:
-    """Return the merged downstream lineage of tables, as click errors on failure."""
+    """Return the merged downstream lineage of tables; failures become click errors."""
     try:
         client = DataHubClient()
         assets = merge_lineage(
@@ -478,7 +478,7 @@ def _fetch_downstream(
                 for table in tables
             ]
         )
-        # Once after merging, since tables often share downstream assets.
+        # Fetch usage once, after merging: tables often share downstream assets.
         if include_usage:
             add_usage(client, assets)
         return assets
@@ -711,7 +711,7 @@ def validate_workgroups(
 def get_downstream_lineage(
     name: str,
     project_id: str,
-    since_days: Optional[int],
+    since_days: int | None,
     max_degree: str,
     types: tuple[str, ...],
     include_deleted: bool,

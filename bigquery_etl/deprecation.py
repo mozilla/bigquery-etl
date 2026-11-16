@@ -2,8 +2,9 @@
 
 import subprocess
 from datetime import date, timedelta
+from enum import Enum, StrEnum
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any, Sequence
 
 import attrs
 import click
@@ -17,17 +18,10 @@ from bigquery_etl.datahub.lineage import (
 )
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
-INCLUDE_DOWNSTREAM_MODES = ["all", "unused", "none"]
 # Read-only picker groups show at most this many rows.
 MAX_READ_ONLY_ROWS = 25
-# Usage counts cover this many days, so newer tables can't be called unused.
+# Days covered by DataHub's usage counts; newer tables never count as unused.
 USAGE_WINDOW_DAYS = 30
-ALREADY_DEPRECATED = "already deprecated"
-NO_METADATA = "no metadata.yaml"
-INVALID_METADATA = "invalid metadata.yaml"
-# Generated SQL isn't committed, but neither is a new table before `git add`.
-UNTRACKED = "not tracked by git (generated SQL, or new and needs `git add`)"
-GIT_UNAVAILABLE = "can't check git for generated SQL"
 # prompt_toolkit styles of the picker. Only selectable rows are colored.
 PICKER_STYLE = [
     ("separator", "bold"),
@@ -40,13 +34,25 @@ PICKER_STYLE = [
 DEGREE_STYLES = {"1": "fg:ansicyan", "2": "fg:ansiyellow", "3+": "fg:ansimagenta"}
 # Color of the platform name in read-only rows, as in PLATFORM_COLORS.
 PLATFORM_STYLES = {"redash": "fg:#ff8700", "looker": "fg:ansigreen"}
-DISABLED_REASONS = (
-    ALREADY_DEPRECATED,
-    UNTRACKED,
-    GIT_UNAVAILABLE,
-    INVALID_METADATA,
-    NO_METADATA,
-)
+
+
+class IncludeDownstream(StrEnum):
+    """Which downstream assets --include-downstream pre-selects."""
+
+    ALL = "all"
+    UNUSED = "unused"  # unqueried and older than USAGE_WINDOW_DAYS
+    NONE = "none"
+
+
+class DisabledReason(Enum):
+    """Why a downstream directory can't be selected, in picker order."""
+
+    ALREADY_DEPRECATED = "already deprecated"
+    # Generated SQL isn't committed, but neither is a new table before `git add`.
+    UNTRACKED = "not tracked by git (generated SQL, or new and needs `git add`)"
+    GIT_UNAVAILABLE = "can't check git for generated SQL"
+    INVALID_METADATA = "invalid metadata.yaml"
+    NO_METADATA = "no metadata.yaml"
 
 
 @attrs.define
@@ -55,7 +61,7 @@ class Candidate:
 
     path: Path
     assets: list[dict[str, Any]]
-    disabled_reason: Optional[str] = None
+    disabled_reason: DisabledReason | None = None
 
     @property
     def name(self) -> str:
@@ -68,19 +74,19 @@ class Candidate:
         return min(a["degree"] for a in self.assets)
 
     @property
-    def queries_30d(self) -> Optional[int]:
+    def queries_30d(self) -> int | None:
         """Return total 30-day queries, or None if any asset lacks usage data."""
         counts = [a["queries_30d"] for a in self.assets]
         return None if None in counts else sum(counts)
 
     @property
     def last_query(self) -> str:
-        """Return the latest query date across assets, or none / n/a."""
+        """Return the latest query date across assets, as last_query_text shows it."""
         dates = [a["last_query"] for a in self.assets if a["last_query"]]
         return last_query_text(max(dates, default=None), self.queries_30d)
 
     @property
-    def created(self) -> Optional[str]:
+    def created(self) -> str | None:
         """Return the latest creation date across assets, or None if any is unknown."""
         dates = [a["created"] for a in self.assets]
         return None if None in dates else max(dates)
@@ -120,24 +126,24 @@ def downstream_candidates(
         candidate = Candidate(path, path_assets)
         metadata_file = path / METADATA_FILE
         if not metadata_file.exists():
-            candidate.disabled_reason = NO_METADATA
+            candidate.disabled_reason = DisabledReason.NO_METADATA
         elif tracked is None:
-            candidate.disabled_reason = GIT_UNAVAILABLE
+            candidate.disabled_reason = DisabledReason.GIT_UNAVAILABLE
         elif metadata_file.resolve() not in tracked:
-            candidate.disabled_reason = UNTRACKED
+            candidate.disabled_reason = DisabledReason.UNTRACKED
         else:
             try:
                 if Metadata.from_file(metadata_file).deprecated:
-                    candidate.disabled_reason = ALREADY_DEPRECATED
+                    candidate.disabled_reason = DisabledReason.ALREADY_DEPRECATED
             except Exception:
-                candidate.disabled_reason = INVALID_METADATA
+                candidate.disabled_reason = DisabledReason.INVALID_METADATA
         candidates.append(candidate)
     candidates.sort(key=lambda c: (c.degree, c.name))
     return candidates, external
 
 
-def tracked_files(sql_dir: str) -> Optional[set[Path]]:
-    """Return the metadata files git tracks in sql_dir; None if git can't tell."""
+def tracked_files(sql_dir: str) -> set[Path] | None:
+    """Return the metadata files git tracks in sql_dir, or None if git fails."""
     root = Path(sql_dir).resolve()
     try:
         result = subprocess.run(
@@ -152,7 +158,7 @@ def tracked_files(sql_dir: str) -> Optional[set[Path]]:
     return {(root / f).resolve() for f in result.stdout.split("\0") if f}
 
 
-def used_reason(candidate: Candidate) -> Optional[str]:
+def used_reason(candidate: Candidate) -> str | None:
     """Return why a candidate isn't unused; unknown usage or age counts as used."""
     if candidate.queries_30d is None:
         return "usage unknown"
@@ -167,22 +173,22 @@ def used_reason(candidate: Candidate) -> Optional[str]:
 
 
 def is_unused(candidate: Candidate) -> bool:
-    """Return True if unqueried for 30 days and older than that."""
+    """Return True if older than the usage window with no queries in it."""
     return used_reason(candidate) is None
 
 
-def preselect(candidates: list[Candidate], mode: str) -> set[Path]:
+def preselect(candidates: list[Candidate], mode: IncludeDownstream) -> set[Path]:
     """Return the directories to pre-check for an --include-downstream mode."""
     selectable = [c for c in candidates if not c.disabled_reason]
-    if mode == "all":
+    if mode == IncludeDownstream.ALL:
         return {c.path for c in selectable}
-    if mode == "unused":
+    if mode == IncludeDownstream.UNUSED:
         return {c.path for c in selectable if is_unused(c)}
     return set()
 
 
 def selection_summary(
-    candidates: list[Candidate], selected: set[Path], mode: str
+    candidates: list[Candidate], selected: set[Path], mode: IncludeDownstream
 ) -> str:
     """List which downstream directories are deprecated and why others aren't."""
     chosen = [c for c in candidates if c.path in selected]
@@ -192,9 +198,12 @@ def selection_summary(
     if skipped:
         lines.append(f"Not deprecating {len(skipped)} downstream:")
     for c in skipped:
-        reason = c.disabled_reason or (
-            used_reason(c) if mode == "unused" else "not selected"
-        )
+        if c.disabled_reason:
+            reason = c.disabled_reason.value
+        else:
+            reason = (
+                used_reason(c) if mode == IncludeDownstream.UNUSED else None
+            ) or "not selected"
         lines.append(f"  {c.name} ({reason})")
     return "\n".join(lines)
 
@@ -222,7 +231,7 @@ EXTERNAL_COLUMNS = f"{'DEGREE':>6}  {'PLATFORM':<8}  {'TYPE':<10}  NAME"
 
 # A row label: plain text, or prompt_toolkit (style, text) fragments.
 Label = str | list[tuple[str, str]]
-Rows = list[tuple[Label, Optional[Path]]]
+Rows = list[tuple[Label, Path | None]]
 
 
 def external_label(asset: dict[str, Any]) -> Label:
@@ -272,12 +281,12 @@ def picker_sections(
             )
         )
 
-    for reason in DISABLED_REASONS:
+    for reason in DisabledReason:
         rows = [c for c in candidates if c.disabled_reason == reason]
         if rows:
             sections.append(
                 Section(
-                    f"Can't deprecate: {reason} ({len(rows)})",
+                    f"Can't deprecate: {reason.value} ({len(rows)})",
                     columns,
                     _capped([candidate_label(c, width) for c in rows]),
                 )
@@ -321,7 +330,7 @@ def pick(
     external: list[dict[str, Any]],
     preselected: set[Path],
     note: str = "",
-) -> Optional[list[Path]]:
+) -> list[Path] | None:
     """Ask which downstream directories to deprecate.
 
     note describes the options the lineage was fetched with, for the title.

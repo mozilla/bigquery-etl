@@ -24,6 +24,10 @@ FROM (
   -- This generates multiple rows based on the `value` field.  This is needed to make the `APPROX_QUANTILES`
   -- weigh `value.key` correctly.
   CROSS JOIN UNNEST(GENERATE_ARRAY(1, `values`.value))
+  -- Filter out values larger than 2^50.
+  -- These are almost certainly erroneous and can cause the queries to fail.
+  -- https://bugzilla.mozilla.org/show_bug.cgi?id=2088506
+  WHERE `values`.value < 1125899906842624
   GROUP BY 1, 2, 3
 )
 WHERE

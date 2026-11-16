@@ -485,6 +485,39 @@ generate:
       - accounts_frontend
       - accounts_backend
       - subscription_platform_backend
+      # Metrics that are also sent on the `events` ping but should only be copied into
+      # the `metrics` struct, not duplicated onto every event row (bug 2087132).
+      exclude_metrics:
+        firefox_desktop:
+        - $.object.addons_theme
+        - $.boolean.browser_backup_scheduler_enabled
+        - $.labeled_counter.cert_verifier_cert_revocation_mechanisms
+        - $.labeled_counter.cert_verifier_crlite_status
+        - $.boolean.fxa_account_enabled
+        - $.boolean.fxa_sync_enabled
+        - $.boolean.genai_chatbot_enabled
+        - $.uuid.legacy_telemetry_session_id
+        - $.labeled_counter.os_environment_invoked_to_handle
+        - $.labeled_boolean.os_environment_is_default_handler
+        - $.boolean.os_environment_is_kept_in_dock
+        - $.boolean.os_environment_is_taskbar_pinned
+        - $.string.os_environment_launch_method
+        - $.string.os_environment_launch_on_login_state
+        - $.labeled_counter.os_environment_launched_to_handle
+        - $.labeled_counter.pdfjs_editing
+        - $.labeled_counter.pdfjs_editing_highlight_kind
+        - $.labeled_counter.pdfjs_organize_action
+        - $.labeled_counter.pdfjs_stamp
+        - $.counter.pdfjs_used
+        - $.counter.power_total_cpu_time_ms
+        - $.counter.power_total_gpu_time_ms
+        - $.counter.power_total_thread_wakeups
+        - $.string.sidebar_tabs_layout
+        - $.labeled_counter.splitview_uri_count
+        - $.quantity.tabgroup_saved_groups
+        - $.labeled_counter.tabgroup_tab_interactions
+        - $.labeled_counter.urlbar_searchmode_searchbutton
+        - $.timing_distribution.web_app_usage_time
       slice_by_sample_id_apps:
       - firefox_desktop
       - firefox_desktop_background_update

@@ -148,7 +148,7 @@ mobile_events AS (
     AND event_category = 'awesomebar'
     AND event_name = 'search_result_tap'
 ),
--- Like urlbar_clients_daily_v1, the mobile sources have no date_partition_offset, so the
+-- Like urlbar_clients_daily_v1, the mobile sources have no partition_offset, so the
 -- partitions read here come from the previous run. Fail rather than write a day without them.
 -- Checks any awesomebar event, not just Suggest clicks: Suggest can be switched off remotely,
 -- so a day with no Suggest clicks is possible, but not one with no awesomebar events.

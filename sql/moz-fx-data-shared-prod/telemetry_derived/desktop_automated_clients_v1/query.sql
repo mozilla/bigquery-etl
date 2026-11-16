@@ -8,8 +8,9 @@
 --
 -- To add a fleet:
 --   1. Data Science confirms the rule in a Jira ticket.
---   2. Add a signal to client_signals (legacy pings) or glean_signals (Glean baseline ping), and
---      a WHEN branch to the fleet CASE in flagged_clients.
+--   2. Add a signal to client_signals (legacy pings) or glean_signals (Glean baseline ping), or
+--      add a separate signals CTE (as deng_11590_signals does) and join it in flagged_clients.
+--      Then add a WHEN branch to the fleet CASE in flagged_clients.
 --      Give the rule a comment block with the fleet value, ticket, onset date, approver and a
 --      short description.
 --   3. Add the fleet to the list in metadata.yaml.

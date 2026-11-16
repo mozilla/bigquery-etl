@@ -1,0 +1,15 @@
+2026-11-16:
+  start_date: 2026-08-27
+  end_date: 2026-11-15
+  reason: DENG-11925 - initial backfill of the new table (https://github.com/mozilla/bigquery-etl/pull/10165),
+    from the onset of the deng_11590 fleet (2026-08-27, added in https://github.com/mozilla/bigquery-etl/pull/10187).
+    The end date covers the scheduled partitions 2026-11-13 to 2026-11-15, which were written
+    before the deng_11590 fleet was added.
+  watchers:
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

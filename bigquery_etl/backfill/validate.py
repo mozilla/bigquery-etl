@@ -19,7 +19,7 @@ from .utils import (
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     NBR_DAYS_RETAINED,
     get_effective_retention_days,
-    is_script_etl,
+    is_sql_script_etl,
     resolve_backfill_partition_parameter,
 )
 
@@ -104,7 +104,7 @@ def validate_shredder_mitigation_partition_field(
     partition_parameter = resolve_backfill_partition_parameter(
         metadata.scheduling or {},
         time_partitioning.type,
-        is_script_etl(backfill_file.parent),
+        is_sql_script_etl(backfill_file.parent),
     )
 
     field_type = None
@@ -290,7 +290,7 @@ def _custom_query_parameters(backfill_entry: Backfill, backfill_file: Path) -> d
     partition_parameter = resolve_backfill_partition_parameter(
         scheduling,
         get_partition_type(metadata),
-        is_script_etl(backfill_file.parent),
+        is_sql_script_etl(backfill_file.parent),
         backfill_entry.override_depends_on_past_null_partition,
     )
 

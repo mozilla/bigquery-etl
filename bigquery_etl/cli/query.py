@@ -39,7 +39,7 @@ from ..backfill.date_range import (
 from ..backfill.utils import (
     QUALIFIED_TABLE_NAME_RE,
     get_effective_retention_days,
-    is_script_etl,
+    is_sql_script_etl,
     qualified_table_name_matching,
     resolve_backfill_partition_parameter,
     resolve_scheduling_parameters,
@@ -990,7 +990,7 @@ def backfill(
         partition_parameter = resolve_backfill_partition_parameter(
             scheduling_metadata,
             get_partition_type(metadata),
-            is_script_etl(query_file_path.parent),
+            is_sql_script_etl(query_file_path.parent),
         )
         scheduling_parameters = resolve_scheduling_parameters(scheduling_metadata)
         partition_offset = parse_timedelta(scheduling_metadata.get("partition_offset"))

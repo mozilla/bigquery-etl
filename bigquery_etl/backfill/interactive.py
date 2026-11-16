@@ -10,7 +10,7 @@ from ..cli.utils import EmailType, QualifiedTableNameType
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from .utils import (
     has_null_partition_parameter,
-    is_script_etl,
+    is_sql_script_etl,
     qualified_table_name_matching,
 )
 
@@ -123,7 +123,7 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
         )
 
     null_date_partition = metadata is not None and has_null_partition_parameter(
-        metadata.scheduling, is_script_etl(table_dir)
+        metadata.scheduling, is_sql_script_etl(table_dir)
     )
     if depends_on_past and null_date_partition:
         result["reinitialize_table"] = click.confirm(

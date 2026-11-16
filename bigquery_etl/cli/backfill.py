@@ -44,7 +44,7 @@ from ..backfill.utils import (
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     get_scheduled_backfills,
-    is_script_etl,
+    is_sql_script_etl,
     qualified_table_name_matching,
     query_supports_reinitialize,
     resolve_backfill_partition_parameter,
@@ -1140,7 +1140,7 @@ def _initiate_backfill(
             backfill_staging_qualified_table_name,
             metadata,
             entry,
-            is_script_etl(table_dir),
+            is_sql_script_etl(table_dir),
         )
 
     # Backfill table
@@ -1239,7 +1239,7 @@ def _initialize_previous_partition(
     staging_table_name: str,
     metadata: Metadata,
     backfill_entry: Backfill,
-    is_script: bool = False,
+    is_sql_script: bool = False,
 ):
     """Initialize initial partition for tables with depends_on_past=true.
 
@@ -1270,7 +1270,7 @@ def _initialize_previous_partition(
     offset = None
     if metadata.scheduling:
         partition_param = resolve_backfill_partition_parameter(
-            metadata.scheduling, get_partition_type(metadata), is_script
+            metadata.scheduling, get_partition_type(metadata), is_sql_script
         )
         if not backfill_entry.ignore_partition_offset:
             offset = parse_timedelta(metadata.scheduling.get("partition_offset"))
@@ -1387,7 +1387,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         client,
         entry_to_complete,
         table_metadata,
-        is_script_etl(table_dir),
+        is_sql_script_etl(table_dir),
         skip_public_redirect=target is not None,
     )
 
@@ -1408,7 +1408,7 @@ def _copy_backfill_staging_to_prod(
     client: bigquery.Client,
     entry: Backfill,
     table_metadata: Metadata,
-    is_script: bool = False,
+    is_sql_script: bool = False,
     skip_public_redirect: bool = False,
 ):
     """Copy backfill staging table to prod based on table metadata and backfill config.
@@ -1455,7 +1455,7 @@ def _copy_backfill_staging_to_prod(
             partition_param = resolve_backfill_partition_parameter(
                 table_metadata.scheduling,
                 get_partition_type(table_metadata),
-                is_script,
+                is_sql_script,
             )
             if not entry.ignore_partition_offset:
                 offset = parse_timedelta(

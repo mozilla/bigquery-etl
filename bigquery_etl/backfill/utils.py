@@ -38,7 +38,7 @@ NBR_DAYS_RETAINED = 775
 BACKFILL_PARTITION_PARAMETER = "backfill_partition_parameter"
 
 
-def is_script_etl(table_dir: Path) -> bool:
+def is_sql_script_etl(table_dir: Path) -> bool:
     """Return True if the ETL is a `script.sql` ETL.
 
     `query.py` ETLs are excluded because their scripts choose their own target partitions,
@@ -50,7 +50,7 @@ def is_script_etl(table_dir: Path) -> bool:
 def resolve_backfill_partition_parameter(
     scheduling: dict,
     partition_type: Optional[PartitionType] = None,
-    is_script: bool = False,
+    is_sql_script: bool = False,
     override_depends_on_past_null_partition: Optional[bool] = False,
 ) -> Optional[str]:
     """Resolve the partition parameter name a backfill binds at run time.
@@ -74,7 +74,7 @@ def resolve_backfill_partition_parameter(
         return "submission_date"
     if backfill_parameter := scheduling.get(BACKFILL_PARTITION_PARAMETER):
         return backfill_parameter
-    return resolve_partition_parameter_name(scheduling, partition_type, is_script)
+    return resolve_partition_parameter_name(scheduling, partition_type, is_sql_script)
 
 
 def resolve_scheduling_parameters(scheduling: dict) -> List[str]:
@@ -94,9 +94,12 @@ def resolve_scheduling_parameters(scheduling: dict) -> List[str]:
     return parameters
 
 
-def has_null_partition_parameter(scheduling: dict, is_script: bool = False) -> bool:
+def has_null_partition_parameter(scheduling: dict, is_sql_script: bool = False) -> bool:
     """Return True if a backfill writes the whole table rather than one partition per date."""
-    return resolve_backfill_partition_parameter(scheduling, is_script=is_script) is None
+    return (
+        resolve_backfill_partition_parameter(scheduling, is_sql_script=is_sql_script)
+        is None
+    )
 
 
 def get_effective_retention_days(metadata: Metadata) -> int:
@@ -326,7 +329,7 @@ def validate_depends_on_past(
             "depends_on_past"
         ] and has_null_partition_parameter(
             table_metadata.scheduling,
-            is_script_etl(table_dir),
+            is_sql_script_etl(table_dir),
         )
         if not depends_on_past_null_partition:
             return True

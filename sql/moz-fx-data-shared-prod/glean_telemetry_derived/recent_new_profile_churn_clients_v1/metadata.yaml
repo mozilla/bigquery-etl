@@ -15,11 +15,6 @@ labels:
   incremental: false
   owner1: bbaird
   owner2: mhirose
-scheduling:
-  dag_name: bqetl_cohort_daily_churn
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
@@ -30,3 +25,5 @@ bigquery:
     fields:
     - sample_id
 require_column_descriptions: true
+deprecated: true
+deletion_date: 2026-11-12

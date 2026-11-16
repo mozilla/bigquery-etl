@@ -89,24 +89,22 @@ def get_bqetl_project_root() -> Path | None:
     return None
 
 
-def resolve_project_file_path(project_file_path: str | Path) -> Path:
-    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
-    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+def resolve_project_subpath(project_subpath: str | Path) -> Path:
+    """Return the absolute path to the project subpath that exists, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_subpath = Path(str(project_subpath).removeprefix("/"))
 
-    bqetl_project_root = get_bqetl_project_root()
-    if bqetl_project_root:
-        absolute_project_file_path = bqetl_project_root / relative_project_file_path
-        if absolute_project_file_path.exists():
-            return absolute_project_file_path
+    if bqetl_project_root := get_bqetl_project_root():
+        absolute_project_subpath = bqetl_project_root / relative_project_subpath
+        if absolute_project_subpath.exists():
+            return absolute_project_subpath
 
     # Fall back to checking the main `bqetl` project if necessary.
-    if (
-        bqetl_project_root != ROOT
-        and (root_project_file_path := ROOT / relative_project_file_path).exists()
-    ):
-        return root_project_file_path
+    if ROOT != bqetl_project_root:
+        root_project_subpath = ROOT / relative_project_subpath
+        if root_project_subpath.exists():
+            return root_project_subpath
 
-    raise FileNotFoundError(f"Project file not found: {project_file_path}")
+    raise FileNotFoundError(f"Project subpath not found: {project_subpath}")
 
 
 def render(
@@ -201,6 +199,12 @@ def render(
 def get_table_dir(output_dir, full_table_id, parts=2):
     """Return the output directory for a given table id."""
     return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-parts:])))
+
+
+def get_unittests_dir(sql_dir):
+    """Return the unittests directory associated to a sql directory."""
+    sql_dir = Path(sql_dir)
+    return sql_dir.parent / "tests" / sql_dir.name
 
 
 def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
@@ -615,12 +619,18 @@ def exit_if_running_under_coding_agent():
         sys.exit(1)
 
 
+# This flag exists so it can be overridden by pytest to allow coding agents to run tests for commands
+# that would otherwise be blocked.  See the `unblock_coding_agents` fixture in the root `conftest.py`.
+_BLOCK_CODING_AGENTS = True
+
+
 def block_coding_agents(function: Callable) -> Callable:
     """Wrap a function so coding agents can only run it against a dev target."""
 
     @wraps(function)
     def wrapper(*args, **kwargs):
-        exit_if_running_under_coding_agent()
+        if _BLOCK_CODING_AGENTS:
+            exit_if_running_under_coding_agent()
         return function(*args, **kwargs)
 
     return wrapper

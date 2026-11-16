@@ -13,13 +13,14 @@ from google.cloud import bigquery
 
 CONNECTION = "moz-fx-data-stmo-prod-33f2.us.stmo-cloudsql-prod"
 
-# events has no index on created_at, so filtering on it alone scans the whole
-# table (about 40M rows and 18 GB). ids are assigned in roughly created_at order,
-# so the recursive CTE binary searches the primary key for an id range that
-# covers the day, and the created_at filter then picks the exact rows out of it.
-# The order isn't strict because created_at is set when the transaction starts:
-# the newest 300k rows had created_at out of id order by up to 200 seconds, so
-# each bound is searched for an hour outside the day.
+# created_at isn't indexed, so filtering on it alone scans the whole table.
+# ids roughly follow created_at, so this binary searches the primary key for an
+# id range around the day, padded by a day on each side for out-of-order rows.
+# additional_properties is parsed here instead of in Postgres because Postgres 9.6 has no
+# safe JSON cast, so one malformed row would fail the whole day. Only the listed properties are
+# kept. The others include IP addresses, query text, and search terms. referer is cut to its
+# origin, since public dashboard URLs contain a share token. api_key is a label such as
+# "ApiKey: Query 123", not the key.
 QUERY = '''
 SELECT
   id,
@@ -28,9 +29,37 @@ SELECT
   action,
   object_type,
   object_id,
-  SAFE.PARSE_JSON(additional_properties, wide_number_mode => 'round')
-    AS additional_properties,
   created_at,
+  IF(
+    properties IS NULL,
+    NULL,
+    JSON_STRIP_NULLS(
+      JSON_OBJECT(
+        -- Set when a request used a query or dashboard API key instead of a login, which is why
+        -- embed and public dashboard views have no user_id
+        'api_key', properties.api_key,
+        -- "hit" or "miss" on execute_query, whether the result came from the cache
+        'cache', properties.cache,
+        -- true on the query and visualization views from a dashboard widget, which tells them
+        -- apart from query page loads
+        'dashboard', properties.dashboard,
+        'embed', properties.embed,
+        -- Download format on api_get, e.g. csv or json
+        'file_type', properties.file_type,
+        -- Set on public dashboard views, true when opened without the Redash header
+        'headless', properties.headless,
+        'public', properties.public,
+        'query_id', properties.query_id,
+        -- Site an embed or public dashboard was loaded from, e.g. Confluence
+        'referer', TO_JSON(REGEXP_EXTRACT(LAX_STRING(properties.referer), r'^[a-zA-Z]+://[^/]+')),
+        -- Only on events logged by the web page, not the server. A dashboard open logs one of
+        -- each, so this picks out one event per open.
+        'screen_resolution', properties.screen_resolution,
+        -- Tells browsers apart from scripts using the API, bots, and headless browsers
+        'user_agent', properties.user_agent
+      )
+    )
+  ) AS additional_properties,
 FROM
   EXTERNAL_QUERY(
     "{connection}",
@@ -61,8 +90,8 @@ FROM
          action,
          object_type,
          object_id,
-         additional_properties,
-         created_at
+         created_at,
+         additional_properties
        FROM
          events
        WHERE
@@ -71,7 +100,8 @@ FROM
          AND created_at >= {start}
          AND created_at < {end}
     """
-  )
+  ) AS events,
+  UNNEST([SAFE.PARSE_JSON(events.additional_properties, wide_number_mode => 'round')]) AS properties
 '''
 
 
@@ -108,8 +138,8 @@ def main(date, billing_project, destination_table, dry_run):
         connection=CONNECTION,
         start=start,
         end=end,
-        lower_target=f"{start} - INTERVAL '1 hour'",
-        upper_target=f"{end} + INTERVAL '1 hour'",
+        lower_target=f"{start} - INTERVAL '1 day'",
+        upper_target=f"{end} + INTERVAL '1 day'",
     )
     partition = f"{destination_table}${date.strftime('%Y%m%d')}"
 

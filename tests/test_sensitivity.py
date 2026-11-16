@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 # Import the bqetl CLI before the data_governance group: the group takes an
@@ -14,8 +15,11 @@ from bigquery_etl.sensitivity import (
     dataset_access,
     effective_access,
     gated_readers,
+    is_gated_family,
     load_codeowners,
+    load_gated_datasets,
     path_owners,
+    restricted_dataset_acl,
     source_access,
 )
 
@@ -408,3 +412,178 @@ class TestSensitivityCommand:
         payload = result.output[: result.output.rindex("]") + 1]
         findings = json.loads(payload)
         assert findings[0]["source"] == f"{PROJECT}.src_external"
+
+
+class TestRestrictedDatasetAcl:
+    def test_inherits_narrow_stable_access(self):
+        assert restricted_dataset_acl(
+            PROJECT, "acme_derived", ["acme"], "derived", GATED
+        ) == (
+            "derived_restricted",
+            [
+                {
+                    "role": "roles/bigquery.dataViewer",
+                    "members": ["workgroup:acme/data-viewers"],
+                }
+            ],
+        )
+
+    def test_broad_or_unlisted_stable_keeps_default(self):
+        # telemetry_stable is broad at the dataset level; table gating doesn't apply
+        assert (
+            restricted_dataset_acl(PROJECT, "telemetry", ["telemetry"], "view", GATED)
+            is None
+        )
+        assert (
+            restricted_dataset_acl(PROJECT, "other", ["other"], "view", GATED) is None
+        )
+
+    def test_explicit_entry_overrides_stable(self):
+        gated = {
+            PROJECT: {
+                **GATED[PROJECT],
+                "acme_derived": {"default": [BROAD]},
+                "telemetry_derived": {"default": []},
+            }
+        }
+        assert (
+            restricted_dataset_acl(PROJECT, "acme_derived", ["acme"], "derived", gated)
+            is None
+        )
+        assert restricted_dataset_acl(
+            PROJECT, "telemetry_derived", ["telemetry"], "derived", gated
+        ) == ("derived_restricted", [])
+
+    def test_broad_family_does_not_narrow_union(self):
+        acme = [
+            {
+                "role": "roles/bigquery.dataViewer",
+                "members": ["workgroup:acme/data-viewers"],
+            }
+        ]
+        assert restricted_dataset_acl(
+            PROJECT, "mixed", ["acme", "telemetry"], "view", GATED
+        ) == ("view_restricted", acme)
+        assert restricted_dataset_acl(
+            PROJECT, "mixed_derived", ["telemetry", "other", "acme"], "derived", GATED
+        ) == ("derived_restricted", acme)
+
+    def test_union_of_disjoint_narrow_families_raises(self):
+        gated = {
+            PROJECT: {
+                **GATED[PROJECT],
+                "beta_stable": {"default": ["workgroup:beta/data-viewers"]},
+            }
+        }
+        with pytest.raises(ValueError, match="no readers in common"):
+            restricted_dataset_acl(PROJECT, "mixed", ["acme", "beta"], "view", gated)
+
+    def test_union_of_overlapping_narrow_families_intersects(self):
+        gated = {
+            PROJECT: {
+                **GATED[PROJECT],
+                "beta_stable": {
+                    "default": [
+                        "workgroup:acme/data-viewers",
+                        "workgroup:beta/data-viewers",
+                    ]
+                },
+            }
+        }
+        assert restricted_dataset_acl(
+            PROJECT, "mixed", ["acme", "beta"], "view", gated
+        ) == (
+            "view_restricted",
+            [
+                {
+                    "role": "roles/bigquery.dataViewer",
+                    "members": ["workgroup:acme/data-viewers"],
+                }
+            ],
+        )
+
+    def test_union_with_nobody_family_is_empty(self):
+        gated = {PROJECT: {**GATED[PROJECT], "nobody_stable": {"default": []}}}
+        assert restricted_dataset_acl(
+            PROJECT, "mixed", ["acme", "nobody"], "view", gated
+        ) == ("view_restricted", [])
+
+    def test_explicit_entry_allows_disjoint_narrow_families(self):
+        gated = {
+            PROJECT: {
+                **GATED[PROJECT],
+                "beta_stable": {"default": ["workgroup:beta/data-viewers"]},
+                "mixed": {"default": []},
+            }
+        }
+        assert restricted_dataset_acl(
+            PROJECT, "mixed", ["acme", "beta"], "view", gated
+        ) == ("view_restricted", [])
+
+    def test_entry_without_body_is_nobody(self):
+        gated = {PROJECT: {**GATED[PROJECT], "acme_derived": None}}
+        assert restricted_dataset_acl(
+            PROJECT, "acme_derived", ["acme"], "derived", gated
+        ) == ("derived_restricted", [])
+        gated = {PROJECT: {"nobody_stable": None}}
+        assert restricted_dataset_acl(PROJECT, "nobody", ["nobody"], "view", gated) == (
+            "view_restricted",
+            [],
+        )
+
+    def test_resolves_per_project(self):
+        assert (
+            restricted_dataset_acl("other-project", "acme", ["acme"], "view", GATED)
+            is None
+        )
+        assert restricted_dataset_acl(
+            "other-project", "glam", ["glam"], "view", GATED
+        ) == (
+            "view_restricted",
+            [
+                {
+                    "role": "roles/bigquery.dataViewer",
+                    "members": ["workgroup:glam/data-viewers"],
+                }
+            ],
+        )
+
+
+class TestGatedDatasetsConfig:
+    def test_every_entry_sets_default(self):
+        # a missing `default` is read as readable by nobody, so require it explicitly
+        # (use `default: []` when that's intended)
+        gated = load_gated_datasets()
+        assert PROJECT in gated
+        missing = [
+            f"{project}.{dataset}"
+            for project, datasets in gated.items()
+            for dataset, entry in (datasets or {}).items()
+            if "default" not in (entry or {})
+        ]
+        assert missing == [], (
+            f"sensitivity.gated_datasets entries in bqetl_project.yaml without a"
+            f" `default`: {missing}"
+        )
+
+
+class TestIsGatedFamily:
+    def test_narrow_stable_is_gated(self):
+        assert is_gated_family(PROJECT, "acme", GATED)
+
+    def test_broad_or_unlisted_stable_is_not_gated(self):
+        # table-level gates on telemetry_stable don't make the family gated
+        assert not is_gated_family(PROJECT, "telemetry", GATED)
+        assert not is_gated_family(PROJECT, "other", GATED)
+
+    def test_nobody_stable_is_gated(self):
+        gated = {PROJECT: {"nobody_stable": {"default": []}}}
+        assert is_gated_family(PROJECT, "nobody", gated)
+
+    def test_entry_without_body_is_gated(self):
+        # `nobody_stable:` with no body parses to None and reads as `default: []`
+        assert is_gated_family(PROJECT, "nobody", {PROJECT: {"nobody_stable": None}})
+
+    def test_resolves_per_project(self):
+        assert not is_gated_family("other-project", "acme", GATED)
+        assert is_gated_family("other-project", "glam", GATED)

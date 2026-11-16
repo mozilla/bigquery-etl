@@ -7,6 +7,7 @@
       subdivision1: AZ
     user_agent:
       os: "Windows 11"
+      version: "130"
   metrics: &click_metrics
     boolean:
       quick_suggest_improve_suggest_experience: true
@@ -39,3 +40,32 @@
       <<: *click_strings
       quick_suggest_country: DE
   normalized_country_code: null
+- <<: *click
+  metadata:
+    geo:
+      subdivision1: BC
+    user_agent:
+      os: "Windows 11"
+      version: "130"
+  metrics:
+    <<: *click_metrics
+    string:
+      <<: *click_strings
+      quick_suggest_country: US
+    uuid:
+      quick_suggest_context_id: c
+  normalized_country_code: CA
+- <<: *click
+  metadata:
+    geo:
+      subdivision1: WA
+    user_agent:
+      os: "Windows 11"
+  metrics:
+    <<: *click_metrics
+    string:
+      <<: *click_strings
+      quick_suggest_country: null
+    uuid:
+      quick_suggest_context_id: d
+  normalized_country_code: US

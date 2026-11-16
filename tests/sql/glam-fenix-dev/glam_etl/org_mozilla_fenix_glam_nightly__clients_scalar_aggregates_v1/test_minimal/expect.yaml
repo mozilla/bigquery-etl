@@ -10,6 +10,11 @@
     metric: metrics_has_recent_pwas
     metric_type: boolean
     value: 1.0
+  - agg_type: avg
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 16.0
   - agg_type: count
     key: ''
     metric: places_manager_write_query_count
@@ -20,8 +25,3 @@
     metric: places_manager_write_query_count
     metric_type: counter
     value: 48.0
-  - agg_type: avg
-    key: ''
-    metric: places_manager_write_query_count
-    metric_type: counter
-    value: 16.0

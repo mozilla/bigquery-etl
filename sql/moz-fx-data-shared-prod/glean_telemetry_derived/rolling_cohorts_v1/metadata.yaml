@@ -34,3 +34,5 @@ bigquery:
     fields:
     - normalized_channel
 require_column_descriptions: false
+monitoring:
+  enabled: false

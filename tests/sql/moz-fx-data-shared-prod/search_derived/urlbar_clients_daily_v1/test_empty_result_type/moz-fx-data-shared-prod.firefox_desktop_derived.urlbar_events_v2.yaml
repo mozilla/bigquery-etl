@@ -1,0 +1,28 @@
+# e1's results extra was empty, so its only result has an empty type. The session counts
+# in the client totals but gets no element. e2 is an ordinary session.
+- submission_date: "2026-10-14"
+  glean_client_id: client-g
+  sample_id: 7
+  event_name: abandonment
+  event_timestamp: 100
+  event_id: e1
+  interaction: typed
+  event_action: abandoned
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 0, result_type: "", product_result_type: "", result_group: ""}
+- submission_date: "2026-10-14"
+  glean_client_id: client-g
+  sample_id: 7
+  event_name: abandonment
+  event_timestamp: 200
+  event_id: e2
+  interaction: typed
+  event_action: abandoned
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}

@@ -38,7 +38,6 @@ TEMPLATES = (
     ("AGGREGATE", "new_profile_activations.query.sql"),
 )
 BIGEYE_COLLECTION = "Operational Checks"
-BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"
 
 
 class AttributionPings(Enum):
@@ -321,7 +320,6 @@ def generate_mobile_kpi_support_metrics(target_project: str, output_dir: click.P
         "version": VERSION,
         "project_id": target_project,
         "bigeye_collection": BIGEYE_COLLECTION,
-        "bigeye_notification_slack_channel": BIGEYE_NOTIFICATION_SLACK_CHANNEL,
     }
 
     query_support_configs = (

@@ -98,6 +98,13 @@ WITH table_counts AS (
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
+    'oauth_account_activity' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_account_activity_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
     'oauth_account_authorizations' AS table_name,
     COUNT(*) AS total_rows
   FROM
@@ -119,17 +126,17 @@ WITH table_counts AS (
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
-    'oauth_tokens' AS table_name,
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_tokens_v1`
-    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
-  UNION ALL
-  SELECT
     'passkeys' AS table_name,
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_passkeys_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
+    'passkey_wraps' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_passkey_wraps_v1`
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
@@ -154,10 +161,38 @@ WITH table_counts AS (
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT
+    'profile_avatar_selected' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_profile_avatar_selected_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
+    'profile_avatars' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_profile_avatars_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
+    'profile_profile' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_profile_profile_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
     'recovery_codes' AS table_name,
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_codes_v1`
+    FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
+  UNION ALL
+  SELECT
+    'recovery_keys' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_keys_v1`
     FOR SYSTEM_TIME AS OF TIMESTAMP(@as_of_date + 1, 'UTC')
   UNION ALL
   SELECT

@@ -34,3 +34,16 @@ bigquery:
   clustering:
     fields:
       - sample_id
+monitoring:
+  enabled: true
+  collection: Operational Checks
+  partition_column: first_seen_city_date
+  partition_column_set: true
+  {#- Stops `bqetl monitoring update` re-adding default freshness/volume. #}
+  {%- if skip_freshness_volume %}
+  freshness: null
+  volume: null
+  {%- else %}
+  volume:
+    blocking: false
+  {%- endif %}

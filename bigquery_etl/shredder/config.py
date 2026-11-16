@@ -259,6 +259,26 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="search_derived.search_clients_daily_glean_v1"
     ): DESKTOP_GLEAN_SRC,
+    # Keyed on the Glean id, like search_clients_daily_glean_v1 above.
+    client_id_target(
+        table="search_derived.desktop_client_day_dims_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
+    # The Glean id is named glean_client_id
+    # Rows also carry legacy_telemetry_client_id
+    # Deletions should happen regardless of the telemetry system the request is received through
+    DeleteTarget(
+        table="firefox_desktop_derived.urlbar_events_v2",
+        field=("glean_client_id", "legacy_telemetry_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_SRC),
+    DeleteTarget(
+        table="search_derived.search_kpi_clients_daily_v1",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_GLEAN_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
@@ -283,6 +303,19 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.main_use_counter_1pct_v1"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.desktop_retention_clients_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.desktop_retention_clients_v2"
+    ): DESKTOP_SRC,
+    # Legacy first-seen tables, added in DENG-11876.
+    client_id_target(table="telemetry_derived.clients_first_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v2"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v3"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v3"
     ): DESKTOP_SRC,
     client_id_target(
         table="firefox_desktop_derived.desktop_retention_clients_v1"
@@ -347,6 +380,19 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
     ),
+    # Firefox Desktop Glean clients only, so only the Desktop Glean stream applies.
+    client_id_target(
+        table="glean_telemetry_derived.new_profile_churn_clients_v2"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.recent_new_profile_churn_clients_v2"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.new_profile_churn_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.recent_new_profile_churn_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_cfs_staging_v1",
         field=(CLIENT_ID,) * 15,
@@ -367,6 +413,14 @@ DELETE_TARGETS: DeleteIndex = {
     ): (
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="remote_settings_derived.clients_uptake_events_v1",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_GLEAN_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     DeleteTarget(
         table="ltv_derived.fenix_client_ltv_v1",

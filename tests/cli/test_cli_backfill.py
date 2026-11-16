@@ -8,7 +8,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 from click.utils import strip_ansi
-from google.api_core.exceptions import NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 
 from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
@@ -29,7 +29,9 @@ from bigquery_etl.backfill.utils import (
     get_scheduled_backfills,
     qualified_table_name_matching,
     query_supports_reinitialize,
+    validate_table_metadata,
 )
+from bigquery_etl.backfill.validate import validate_shredder_mitigation_partition_field
 from bigquery_etl.cli.backfill import (
     _copy_backfill_staging_to_prod,
     _initialize_previous_partition,
@@ -458,6 +460,370 @@ class TestBackfill:
         assert (
             "depends on past and null partition parameter are not supported"
             in result.output
+        )
+
+    def test_create_backfill_backfill_date_partition_parameter(self, runner):
+        """backfill_date_partition_parameter makes a null-date_partition_parameter table
+        backfill per partition, so the depends_on_past null-partition guard doesn't apply.
+        """
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "backfill_date_partition_parameter": "submission_date",
+            "parameters": [self.HOURLY_DATE_PARAMETER],
+            "depends_on_past": True,
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_hour"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+
+    @pytest.mark.parametrize(
+        "scheduling,bigquery",
+        [
+            # date_partition_parameter already selects the partition
+            (
+                {"backfill_date_partition_parameter": "submission_date"},
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # unpartitioned table has no partition to select
+            (
+                {
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "submission_date",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                None,
+            ),
+            # no scheduling parameter to replace
+            (
+                {
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "submission_date",
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # names a parameter that isn't the templated one
+            (
+                {
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "day",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # names a parameter that isn't a DATE
+            (
+                {
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "submission_date",
+                    "parameters": ["submission_date:STRING:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # Airflow ignores the offset when date_partition_parameter is null, but
+            # backfills would apply it
+            (
+                {
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "submission_date",
+                    "date_partition_offset": -27,
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+        ],
+    )
+    def test_create_backfill_backfill_date_partition_parameter_invalid(
+        self, runner, scheduling, bigquery
+    ):
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = scheduling
+        if bigquery:
+            metadata["bigquery"] = bigquery
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "backfill_date_partition_parameter is set" in result.output
+
+    HOURLY_DESTINATION_TABLE = (
+        "test_query_v1${{ (execution_date - macros.timedelta(hours=1))"
+        ".strftime('%Y%m%d') }}"
+    )
+    HOURLY_DATE_PARAMETER = (
+        "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1))"
+        ".strftime('%Y-%m-%d') }}"
+    )
+
+    @pytest.mark.parametrize(
+        "scheduling",
+        [
+            # hourly run rewriting a daily partition
+            {
+                "destination_table": HOURLY_DESTINATION_TABLE,
+                "parameters": [HOURLY_DATE_PARAMETER],
+            },
+            # templated date parameter alone
+            {"parameters": [HOURLY_DATE_PARAMETER]},
+            # templated destination alone, e.g. a monthly table writing the
+            # previous month's partition with a {{ds}} parameter
+            {
+                "destination_table": "test_query_v1${{ (execution_date + "
+                "macros.dateutil.relativedelta.relativedelta(months=-1, day=1))"
+                ".strftime('%Y%m') }}",
+                "parameters": ["submission_date:DATE:{{ds}}"],
+            },
+        ],
+    )
+    def test_create_backfill_templated_partition_without_backfill_date_partition_parameter_fails(
+        self, runner, scheduling
+    ):
+        """A null date_partition_parameter table that picks its partition through Airflow
+        templates is rejected at create unless it sets backfill_date_partition_parameter,
+        instead of failing later in initiate."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {"date_partition_parameter": None, **scheduling}
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_date"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "targets its partition through a templated" in result.output
+        assert "backfill_date_partition_parameter" in result.output
+
+    @pytest.mark.parametrize(
+        "scheduling,bigquery",
+        [
+            # {{ds}} is substituted by backfills
+            (
+                {
+                    "date_partition_parameter": None,
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # templated parameters that aren't DATE don't pick the partition
+            (
+                {
+                    "date_partition_parameter": None,
+                    "parameters": ["run_id:STRING:{{run_id}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # unpartitioned tables are written whole
+            (
+                {
+                    "date_partition_parameter": None,
+                    "parameters": [HOURLY_DATE_PARAMETER],
+                },
+                None,
+            ),
+        ],
+    )
+    def test_create_backfill_untemplated_partition_passes(
+        self, runner, scheduling, bigquery
+    ):
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = scheduling
+        if bigquery:
+            metadata["bigquery"] = bigquery
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert "targets its partition through a templated" not in result.output
+
+    def test_create_backfill_backfill_date_partition_parameter_other_templated_date_fails(
+        self, runner
+    ):
+        """backfill_date_partition_parameter only covers the parameter it names, so
+        another templated DATE parameter is still rejected."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "backfill_date_partition_parameter": "submission_date",
+            "destination_table": self.HOURLY_DESTINATION_TABLE,
+            "parameters": [
+                self.HOURLY_DATE_PARAMETER,
+                "end_date:DATE:{{ macros.ds_add(ds, 1) }}",
+            ],
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_date"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "has a templated DATE parameter other than the one" in result.output
+
+    def test_validate_table_metadata_templated_partition_with_reinitialize_passes(
+        self,
+    ):
+        """reinitialize_table rebuilds the table from its is_init() query without
+        binding scheduling parameters, so templated partition targets don't matter."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "destination_table": self.HOURLY_DESTINATION_TABLE,
+            "parameters": [self.HOURLY_DATE_PARAMETER],
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_date"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        table = "moz-fx-data-shared-prod.test.test_query_v1"
+        assert validate_table_metadata("sql", table, False)
+        assert not validate_table_metadata("sql", table, False, reinitialize_table=True)
+
+    def _write_shredder_table(self, scheduling, partition_field, field_type):
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["labels"] = {"shredder_mitigation": True}
+        metadata["scheduling"] = scheduling
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": partition_field}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "schema.yaml"), "w") as f:
+            f.write(
+                yaml.dump(
+                    {
+                        "fields": [
+                            {"name": partition_field, "type": field_type},
+                            {"name": "metric", "type": "INTEGER"},
+                        ]
+                    }
+                )
+            )
+
+    @pytest.mark.parametrize(
+        "scheduling,partition_field,field_type",
+        [
+            # hourly table in a daily partition, like ads_derived.ad_metrics
+            (
+                {
+                    "date_partition_parameter": None,
+                    "backfill_date_partition_parameter": "submission_date",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                "submission_hour",
+                "TIMESTAMP",
+            ),
+            # TIMESTAMP partition field named like the date parameter
+            ({}, "submission_date", "TIMESTAMP"),
+            # DATE partition field named differently from the date parameter
+            ({}, "date", "DATE"),
+        ],
+    )
+    def test_create_backfill_shredder_mitigation_unsupported_partition_field(
+        self, runner, scheduling, partition_field, field_type
+    ):
+        """The generated shredder mitigation query filters on the partition field, which
+        the backfill doesn't bind unless it's a DATE column named like the date
+        parameter, so create rejects other tables instead of failing in initiate."""
+        self._write_shredder_table(scheduling, partition_field, field_type)
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--shredder_mitigation",
+            ],
+        )
+
+        assert result.exit_code != 0
+        assert "Shredder mitigation isn't supported yet" in str(result.exception)
+        assert not Path(QUERY_DIR, BACKFILL_FILE).exists()
+
+    def test_create_backfill_shredder_mitigation_date_partition_field(self, runner):
+        self._write_shredder_table({}, "submission_date", "DATE")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--shredder_mitigation",
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+
+    @pytest.mark.parametrize(
+        "status,shredder_mitigation",
+        [
+            (BackfillStatus.COMPLETE, True),
+            (BackfillStatus.INITIATE, False),
+        ],
+    )
+    def test_validate_shredder_mitigation_partition_field_skipped(
+        self, status, shredder_mitigation
+    ):
+        """Only active shredder mitigation entries are checked, so existing entries
+        don't fail validation."""
+        self._write_shredder_table({}, "submission_hour", "TIMESTAMP")
+        entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 4),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=status,
+            shredder_mitigation=shredder_mitigation,
+        )
+
+        validate_shredder_mitigation_partition_field(
+            entry, Path(QUERY_DIR, BACKFILL_FILE)
         )
 
     def test_create_backfill_with_exsting_entry(self, runner):
@@ -2038,14 +2404,14 @@ class TestBackfill:
         assert delete_table.call_count == 1
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill(
         self,
         mock_from_query_file,
         mock_deploy_table,
-        check_call,
+        execute_query,
         mock_client,
         runner,
     ):
@@ -2115,26 +2481,83 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_partitioned_backfill_query_error(
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
+    ):
+        """BigQuery client errors are reported like bq errors."""
+        execute_query.side_effect = BadRequest("Syntax error")
+        mock_client().get_table.side_effect = [
+            NotFound("staging backup not found"),
+            None,
+            None,
+        ]
+
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/schema.yaml", "w"
+        ) as f:
+            f.write(yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]}))
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml", "w"
+        ) as f:
+            f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
+            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+          override_retention_limit: True""")
+
+        result = runner.invoke(
+            initiate,
+            ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+        )
+
+        assert result.exit_code == 1
+        assert isinstance(result.exception, ValueError)
+        assert "Backfill initiate resulted in error" in str(result.exception)
+        assert isinstance(result.exception.__cause__, BadRequest)
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill_without_schema_should_pass(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2195,26 +2618,31 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill_with_valid_billing_project_from_entry(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2280,17 +2708,17 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
@@ -3951,6 +4379,61 @@ class TestBackfill:
             call.args[0].split("$")[1] for call in mock_copy_table.call_args_list
         ]
         assert copied_partitions == ["202101", "202102", "202103"]
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_backfill_date_partition_parameter(
+        self, mock_copy_table
+    ):
+        """A table with a null date_partition_parameter that sets
+        backfill_date_partition_parameter (e.g. hourly runs into a daily partition) copies
+        each backfilled partition individually instead of raising on a null partition.
+        """
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "date_partition_parameter": None,
+                "backfill_date_partition_parameter": "submission_date",
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_hour",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 4),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        assert [call.args for call in mock_copy_table.call_args_list] == [
+            (
+                f"moz-fx-data-shared-prod.staging.table${partition}",
+                f"moz-fx-data-shared-prod.dataset.table${partition}",
+                None,
+            )
+            for partition in ("20210103", "20210104")
+        ]
 
     @patch("bigquery_etl.cli.backfill._copy_table")
     def test_copy_backfill_staging_to_prod_null_partition_param_without_override_raises(

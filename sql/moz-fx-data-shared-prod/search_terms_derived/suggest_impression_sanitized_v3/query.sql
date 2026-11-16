@@ -124,11 +124,15 @@ sanitized_queries AS (
     LTRIM(LOWER(query)) AS query,
     * EXCEPT (`timestamp`, query, region, country)
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4`
   WHERE
     DATE(`timestamp`) = @submission_date
+  -- Keep one row per request so the join to impressions on request_id cannot fan
+  -- out; Merino logs can be redelivered with the same request_id. Deduping by
+  -- session_id instead would drop every request but the last of each session,
+  -- leaving impressions shown earlier in the session without a query.
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY sequence_no DESC, `timestamp` DESC) = 1
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp` DESC) = 1
 ),
 sanitized_queries_count AS (
   SELECT
@@ -153,7 +157,7 @@ validated_queries AS (
     IF(
       _n < 1,
       ERROR(
-        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 is empty; retry later or investigate upstream issues"
+        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4 is empty; retry later or investigate upstream issues"
       ),
       TRUE
     )

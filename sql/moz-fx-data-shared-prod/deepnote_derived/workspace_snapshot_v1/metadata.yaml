@@ -1,0 +1,42 @@
+friendly_name: Deepnote Workspace Snapshot
+description: |-
+  Daily snapshot of projects, notebooks, schedules, Streamlit apps and machines in
+  Mozilla's Deepnote workspaces, from the Deepnote API.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  arguments:
+  - --date
+  - "{{ ds }}"
+  - --api-key-env-vars
+  - DEEPNOTE_API_KEY
+  - DEEPNOTE_ADS_API_KEY
+  - DEEPNOTE_REVENUECAT_1_API_KEY
+  - DEEPNOTE_REVENUECAT_2_API_KEY
+  - DEEPNOTE_MARKETING_API_KEY
+  - DEEPNOTE_MONITOR_API_KEY
+  date_partition_parameter: null
+  secrets:
+  - deploy_target: DEEPNOTE_API_KEY
+    key: bqetl_deepnote_api_key
+  - deploy_target: DEEPNOTE_ADS_API_KEY
+    key: bqetl_deepnote_ads_api_key
+  - deploy_target: DEEPNOTE_REVENUECAT_1_API_KEY
+    key: bqetl_deepnote_revenuecat_1_api_key
+  - deploy_target: DEEPNOTE_REVENUECAT_2_API_KEY
+    key: bqetl_deepnote_revenuecat_2_api_key
+  - deploy_target: DEEPNOTE_MARKETING_API_KEY
+    key: bqetl_deepnote_marketing_api_key
+  - deploy_target: DEEPNOTE_MONITOR_API_KEY
+    key: bqetl_deepnote_monitor_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: snapshot_date
+    require_partition_filter: false
+    expiration_days: null

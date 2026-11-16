@@ -12,6 +12,8 @@ labels:
 scheduling:
   dag_name: bqetl_messaging_system_hourly
   date_partition_parameter: null
+  # backfills bind submission_date to each date and write that day's partition
+  backfill_date_partition_parameter: submission_date
   # We reprocess the same day every hour up until 1:00 the following day, to give
   # the live data time to come in
   destination_table: >-

@@ -1,0 +1,20 @@
+friendly_name: Remote Settings
+description: |-
+  Derived tables for Remote Settings, populated from Glean telemetry by
+  scheduled queries in bigquery-etl.
+
+  - `clients_uptake_events_v1`: synchronization uptake events from desktop,
+    Android and iOS, for both the Gecko (JS) and Application-Services (Rust)
+    clients (https://mozilla-hub.atlassian.net/browse/RMST-514).
+    For near real-time data, `monitoring.remote_settings_uptake_live` exposes
+    the same events read from the live tables.
+
+  Query these tables through the views in the user-facing `remote_settings`
+  dataset rather than reading them directly.
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope

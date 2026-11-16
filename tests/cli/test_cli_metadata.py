@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import tempfile
@@ -6,11 +7,16 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+import requests
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
 
-from bigquery_etl.cli.metadata import deprecate, publish, update
+from bigquery_etl.cli.metadata import deprecate, get_downstream_lineage, publish, update
+from bigquery_etl.cli.metadata import validate as validate_command
+from bigquery_etl.config import ConfigLoader
+from bigquery_etl.datahub.auth import LoginError
+from bigquery_etl.datahub.lineage import AuthError, LineageTooLargeError
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     BIGEYE_PREDEFINED_FILE,
@@ -1693,6 +1699,81 @@ class TestMetadata:
             assert result is True
             assert expected_exc in captured.out
 
+    def _write_table(
+        self, root, metadata, project="moz-fx-data-shared-prod", dataset="test_derived"
+    ):
+        table_dir = Path(root) / project / dataset / "test_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "metadata.yaml").write_text(yaml.safe_dump(metadata))
+        (table_dir / "query.sql").write_text("SELECT 1")
+
+    def test_validate_command_valid(self, runner):
+        with runner.isolated_filesystem():
+            self._write_table("sql", {"friendly_name": "Test", "labels": {}})
+            result = runner.invoke(
+                validate_command, ["test_derived.test_v1", "--sql_dir=sql"]
+            )
+            assert result.exit_code == 0, result.output
+            assert "Validated metadata for 1 tables" in result.output
+
+    @property
+    def _invalid_metadata(self):
+        return {
+            "friendly_name": "Test",
+            "labels": {"public_json": True},
+            "owners": ["test@example.org"],
+        }
+
+    def test_validate_command_all_projects(self, runner):
+        with runner.isolated_filesystem():
+            self._write_table("sql", {"friendly_name": "Test"})
+            self._write_table(
+                "sql",
+                self._invalid_metadata,
+                project="moz-fx-data-other",
+            )
+            assert runner.invoke(validate_command, ["--sql_dir=sql"]).exit_code == 1
+            result = runner.invoke(
+                validate_command,
+                ["--sql_dir=sql", "--project-id=moz-fx-data-shared-prod"],
+            )
+            assert result.exit_code == 0, result.output
+
+    def test_validate_command_honors_skip(self, runner):
+        skip = ["sql/moz-fx-data-shared-prod/test_derived/test_v1/metadata.yaml"]
+        real_get = ConfigLoader.get
+        with (
+            runner.isolated_filesystem(),
+            patch.object(
+                ConfigLoader,
+                "get",
+                side_effect=lambda *a, **kw: (
+                    skip
+                    if a == ("metadata", "validation", "skip")
+                    else real_get(*a, **kw)
+                ),
+            ),
+        ):
+            self._write_table("sql", self._invalid_metadata)
+            result = runner.invoke(validate_command, ["--sql_dir=sql"])
+            assert result.exit_code == 0, result.output
+
+    def test_validate_command_dataset_only_directory(self, runner):
+        with runner.isolated_filesystem():
+            dataset_dir = Path("sql/moz-fx-data-shared-prod/bad_live")
+            dataset_dir.mkdir(parents=True)
+            (dataset_dir / "dataset_metadata.yaml").write_text(
+                yaml.safe_dump(
+                    {
+                        "friendly_name": "Bad",
+                        "description": "Bad dataset",
+                        "dataset_base_acl": "derived",
+                        "user_facing": False,
+                    }
+                )
+            )
+            assert runner.invoke(validate_command, ["--sql_dir=sql"]).exit_code == 1
+
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""
         metadata = {
@@ -1969,3 +2050,191 @@ class TestMetadata:
             }
         )
         assert validate_query_parameters(metadata, "") is True
+
+
+class TestGetDownstreamLineage:
+    asset = {
+        "degree": 1,
+        "type": "DATASET",
+        "subtype": "Table",
+        "platform": "bigquery",
+        "name": "b",
+        "qualified_name": "moz-fx-data-shared-prod.d.b",
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:bigquery,moz-fx-data-shared-prod.d.b,PROD)",
+        "deleted": False,
+        "queries_30d": 0,
+        "users_30d": None,
+        "last_query": None,
+    }
+    chart = {
+        "degree": 2,
+        "type": "CHART",
+        "subtype": None,
+        "platform": "redash",
+        "name": "Retention",
+        "qualified_name": "Retention",
+        "urn": "urn:li:chart:(redash,1)",
+        "deleted": False,
+        "queries_30d": None,
+        "users_30d": None,
+        "last_query": None,
+    }
+
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def lineage(self):
+        with (
+            patch("bigquery_etl.cli.metadata.DataHubClient"),
+            patch(
+                "bigquery_etl.cli.metadata.get_downstream_lineage_from_datahub"
+            ) as lineage,
+        ):
+            lineage.return_value = [dict(self.asset), dict(self.chart)]
+            yield lineage
+
+    def test_dataset_table_gets_the_default_project(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[0][1] == "moz-fx-data-shared-prod.d.a"
+        assert "BIGQUERY (1)" in result.output
+        assert "moz-fx-data-shared-prod.d.b" in result.output
+
+    def test_fully_qualified_table_is_used_as_is(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["other-project.d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[0][1] == "other-project.d.a"
+
+    def test_rejects_a_bare_table_name(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["a"])
+        assert result.exit_code == 2
+        assert "dataset.table" in result.output
+        lineage.assert_not_called()
+
+    def test_passes_options_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage,
+            ["d.a", "--since-days=90", "--include-deleted", "--looker-tmp-days=0"],
+        )
+        assert result.exit_code == 0
+        kwargs = lineage.call_args[1]
+        assert kwargs["since_days"] == 90
+        assert kwargs["include_deleted"] is True
+        assert kwargs["looker_tmp_days"] == 0
+
+    def test_type_is_case_insensitive_and_passed_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--type=chart", "--type=Dashboard"]
+        )
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["types"] == {"CHART", "DASHBOARD"}
+
+    @pytest.mark.parametrize("choice,max_degree", [("1", 1), ("2", 2), ("3+", 3)])
+    def test_max_degree_choices(self, runner, lineage, choice, max_degree):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", f"--max-degree={choice}"]
+        )
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["max_degree"] == max_degree
+
+    def test_max_degree_defaults_to_all(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["max_degree"] == 3
+
+    def test_csv_output(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--output-format=csv"])
+        assert result.exit_code == 0
+        lines = result.output.splitlines()
+        assert lines[0] == "degree,type,subtype,platform,name,qualified_name,urn"
+        assert len(lines) == 3
+
+    def test_json_output(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--output-format=json", "--since-days=90"]
+        )
+        assert result.exit_code == 0
+        output = json.loads(result.stdout)
+        assert output["table"] == "moz-fx-data-shared-prod.d.a"
+        assert output["since_days"] == 90
+        assert output["count"] == 2
+        assert list(output["downstream"][0]) == [
+            "degree",
+            "type",
+            "subtype",
+            "platform",
+            "name",
+            "qualified_name",
+            "urn",
+        ]
+
+    def test_include_deleted_adds_the_deleted_field(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--include-deleted", "--output-format=json"]
+        )
+        assert result.exit_code == 0
+        assert json.loads(result.stdout)["downstream"][0]["deleted"] is False
+
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--include-deleted"])
+        assert "DELETED" in result.output
+
+    def test_since_days_note_goes_to_stderr(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--since-days=90"])
+        assert result.exit_code == 0
+        assert "last 90 days" in result.stderr
+        assert "last 90 days" not in result.stdout
+
+    def test_rejected_token_is_reported(self, runner, lineage):
+        lineage.side_effect = AuthError("HTTP 401 from https://datahub.example")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "HTTP 401" in result.output
+        assert "DATAHUB_GMS_TOKEN" in result.output
+
+    @pytest.mark.parametrize(
+        "error",
+        [
+            requests.ConnectionError("down"),
+            RuntimeError("Failed to execute PIT search"),
+        ],
+    )
+    def test_datahub_errors_are_reported(self, runner, lineage, error):
+        lineage.side_effect = error
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert f"Could not get lineage from DataHub: {error}" in result.output
+
+    def test_too_large_lineage_suggests_since_days(self, runner, lineage):
+        lineage.side_effect = LineageTooLargeError("maxRelations")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "--since-days" in result.output
+
+    @patch("bigquery_etl.datahub.lineage.auth.get_token")
+    def test_failed_sign_in_is_reported(self, get_token, runner, monkeypatch):
+        monkeypatch.delenv("DATAHUB_GMS_TOKEN", raising=False)
+        get_token.side_effect = LoginError("DataHub sign-in failed: access_denied")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "access_denied" in result.output
+
+    def test_usage_is_off_by_default(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["include_usage"] is False
+        assert "QUERIES 30D" not in result.output
+
+    def test_include_usage_adds_columns_and_fields(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--include-usage"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["include_usage"] is True
+        assert "QUERIES 30D" in result.output
+
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--include-usage", "--output-format=csv"]
+        )
+        lines = result.output.splitlines()
+        assert lines[0].endswith(",urn,queries_30d,users_30d,last_query")
+        assert lines[1].endswith(",0,,")

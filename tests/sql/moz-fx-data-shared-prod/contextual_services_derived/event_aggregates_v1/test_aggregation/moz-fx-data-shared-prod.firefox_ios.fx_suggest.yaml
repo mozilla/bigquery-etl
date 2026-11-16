@@ -13,6 +13,8 @@
   metadata:
     geo:
       subdivision1: DC
+    user_agent:
+      version: "130"
   normalized_channel: release
   normalized_country_code: US
 - <<: *suggest_base

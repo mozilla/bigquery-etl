@@ -1,5 +1,9 @@
 """bigquery-etl CLI metadata command."""
 
+import csv
+import io
+import json
+import os
 import re
 from datetime import datetime
 from functools import partial
@@ -8,10 +12,25 @@ from pathlib import Path
 from typing import Optional
 
 import click
+import requests
 from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 
+from bigquery_etl.datahub.auth import LoginError
+from bigquery_etl.datahub.lineage import (
+    DATAHUB_LINEAGE_DEGREES,
+    DEFAULT_LOOKER_TMP_DAYS,
+    ENTITY_TYPES,
+    AuthError,
+    DataHubClient,
+    LineageTooLargeError,
+    format_text,
+)
+from bigquery_etl.datahub.lineage import (
+    get_downstream_lineage as get_downstream_lineage_from_datahub,
+)
 from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     DatasetMetadata,
     Metadata,
     WorkgroupAccessMetadata,
@@ -24,7 +43,10 @@ from bigquery_etl.metadata.validate_metadata import (
 from bigquery_etl.metadata.validate_metadata import (
     validate_deprecation as validate_deprecation_metadata,
 )
-from bigquery_etl.metadata.validate_metadata import validate_workgroup_access
+from bigquery_etl.metadata.validate_metadata import (
+    validate_directories,
+    validate_workgroup_access,
+)
 
 from ..cli.utils import (
     parallelism_option,
@@ -340,6 +362,64 @@ def deprecate(
 
 
 @metadata.command(help="""
+    Validate table and dataset metadata files without dry running or formatting queries.
+
+    With no arguments, validates the metadata of every table in all projects under
+    the sql directory, plus every dataset_metadata.yaml (including datasets that
+    have no tables). Pass a name pattern and/or --project-id to narrow the scope.
+    Files listed under metadata.validation.skip in bqetl_project.yaml are skipped.
+
+    Example:
+
+    \b
+     ./bqetl metadata validate
+     ./bqetl metadata validate telemetry_derived.clients_daily_v6
+     ./bqetl metadata validate "telemetry_derived.*"
+     ./bqetl metadata validate --project-id moz-fx-data-shared-prod
+    """)
+@click.argument("name", required=False)
+@project_id_option()
+@sql_dir_option
+def validate(name: Optional[str], sql_dir: str, project_id: Optional[str]):
+    """Validate table and dataset metadata files."""
+    # relative paths are needed to match `metadata.validation.skip` entries
+    sql_dir = os.path.relpath(sql_dir)
+    metadata_files = paths_matching_name_pattern(
+        name or "*.*", sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+    if name and not metadata_files:
+        raise click.ClickException(f"No metadata files found matching: {name}")
+
+    table_dirs = sorted({Path(f).parent for f in metadata_files})
+    dataset_dirs = {d.parent for d in table_dirs}
+
+    # without a name, also cover datasets that have no tables
+    if name is None:
+        project_dirs = (
+            [Path(sql_dir) / project_id]
+            if project_id
+            else [p for p in Path(sql_dir).iterdir() if p.is_dir()]
+        )
+        dataset_dirs.update(
+            d
+            for project_dir in project_dirs
+            if project_dir.is_dir()
+            for d in project_dir.iterdir()
+            if d.is_dir() and (d / DATASET_METADATA_FILE).exists()
+        )
+
+    errors = validate_directories(table_dirs, sorted(dataset_dirs))
+    if errors:
+        click.echo(
+            click.style(f"Metadata validation failed ({len(errors)}):", fg="red")
+        )
+        click.echo("\n".join(errors))
+        raise MetadataValidationError(f"Metadata validation failed for: {errors}")
+
+    click.echo(f"Validated metadata for {len(table_dirs)} tables.")
+
+
+@metadata.command(help="""
     Validate that deprecation metadata is valid.
     Used by CI to ensure that manual metadata edits have all required info.
 
@@ -422,3 +502,158 @@ def validate_workgroups(
         raise MetadataValidationError(
             f"Metadata workgroup validation failed for: {failed_files}"
         )
+
+
+@metadata.command(help="""
+    Get the downstream lineage of a BigQuery table from DataHub.
+
+    Example:
+     ./bqetl metadata get-downstream-lineage telemetry_derived.clients_last_seen_v2 --since-days=90
+    """)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@click.option(
+    "--since_days",
+    "--since-days",
+    type=click.IntRange(min=1),
+    help="Only follow lineage DataHub has seen in the last N days. Default: all time.",
+)
+@click.option(
+    "--max_degree",
+    "--max-degree",
+    type=click.Choice(DATAHUB_LINEAGE_DEGREES),
+    default=DATAHUB_LINEAGE_DEGREES[-1],
+    show_default=True,
+    help="Only list assets up to this many hops away. 3+ lists all of them.",
+)
+@click.option(
+    "--type",
+    "types",
+    multiple=True,
+    type=click.Choice(ENTITY_TYPES, case_sensitive=False),
+    help="Only list this entity type. Repeatable.",
+)
+@click.option(
+    "--include_usage",
+    "--include-usage",
+    is_flag=True,
+    help="Add query count, user count and last query date (last 30 days) for "
+    "BigQuery tables and views.",
+)
+@click.option(
+    "--include_deleted",
+    "--include-deleted",
+    is_flag=True,
+    help="Also list soft-deleted assets.",
+)
+@click.option(
+    "--looker_tmp_days",
+    "--looker-tmp-days",
+    type=click.IntRange(min=0),
+    default=DEFAULT_LOOKER_TMP_DAYS,
+    show_default=True,
+    help="Drop Looker aggregate table copies (looker_tmp.LR_*) built more than "
+    "this many days ago. 0 keeps all.",
+)
+@click.option(
+    "--output_format",
+    "--output-format",
+    type=click.Choice(["text", "json", "csv"]),
+    default="text",
+    show_default=True,
+    help="Output format.",
+)
+def get_downstream_lineage(
+    name: str,
+    project_id: str,
+    since_days: Optional[int],
+    max_degree: str,
+    types: tuple[str, ...],
+    include_deleted: bool,
+    include_usage: bool,
+    looker_tmp_days: int,
+    output_format: str,
+) -> None:
+    """Get the downstream lineage of a BigQuery table from DataHub."""
+    parts = name.split(".")
+    if len(parts) == 2:
+        table = f"{project_id}.{name}"
+    elif len(parts) == 3:
+        table = name
+    else:
+        raise click.BadParameter(
+            "Expected dataset.table or project.dataset.table", param_hint="NAME"
+        )
+
+    try:
+        client = DataHubClient()
+        assets = get_downstream_lineage_from_datahub(
+            client,
+            table,
+            since_days=since_days,
+            include_deleted=include_deleted,
+            include_usage=include_usage,
+            types=set(types),
+            looker_tmp_days=looker_tmp_days,
+            max_degree=DATAHUB_LINEAGE_DEGREES.index(max_degree) + 1,
+        )
+    except LoginError as e:
+        raise click.ClickException(str(e))
+    except AuthError as e:
+        raise click.ClickException(
+            f"DataHub rejected the token ({e}). If DATAHUB_GMS_TOKEN is set, check "
+            "it is valid and not expired."
+        )
+    except LineageTooLargeError:
+        raise click.ClickException(
+            "Lineage is too large for one DataHub query (maxRelations limit). "
+            "Re-run with --since-days (e.g. --since-days=90) to only follow recent "
+            "lineage, or --max-degree=1 or 2 to only list the nearest assets."
+        )
+    except (requests.RequestException, RuntimeError) as e:
+        raise click.ClickException(f"Could not get lineage from DataHub: {e}")
+
+    fields = [
+        "degree",
+        "type",
+        "subtype",
+        "platform",
+        "name",
+        "qualified_name",
+        "urn",
+    ]
+    if include_usage:
+        fields += ["queries_30d", "users_30d", "last_query"]
+    if include_deleted:
+        fields.append("deleted")
+    assets = [{f: a[f] for f in fields} for a in assets]
+
+    if output_format == "json":
+        click.echo(
+            json.dumps(
+                {
+                    "table": table,
+                    "since_days": since_days,
+                    "count": len(assets),
+                    "downstream": assets,
+                },
+                indent=2,
+            )
+        )
+    elif output_format == "csv":
+        out = io.StringIO()
+        writer = csv.DictWriter(out, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(assets)
+        click.echo(out.getvalue(), nl=False)
+    else:
+        click.echo(
+            format_text(
+                table, assets, show_deleted=include_deleted, show_usage=include_usage
+            )
+        )
+
+    if since_days:
+        click.echo(f"Note: only lineage seen in the last {since_days} days.", err=True)

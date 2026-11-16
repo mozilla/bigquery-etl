@@ -42,6 +42,16 @@ class DeepnoteWorkspace:
         response.raise_for_status()
         return response.json()
 
+    def download(self, project_id: str, path: str) -> str:
+        """Return the text content of a project file."""
+        response = self.session.get(
+            f"{API_URL}/v2/files/download",
+            params={"projectId": project_id, "path": path},
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        return response.content.decode("utf-8", errors="replace")
+
     def paginate(
         self, path: str, key: str, params: Optional[dict] = None, page_size=100
     ) -> Iterator[dict]:

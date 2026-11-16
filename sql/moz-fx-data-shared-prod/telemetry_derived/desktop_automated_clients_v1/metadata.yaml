@@ -8,12 +8,15 @@ description: |-
   glean_client_ids for Glean tables). Use telemetry.desktop_automated_clients for one row per
   client.
 
-  Each fleet is a rule confirmed by Data Science in a Jira ticket. The rules read the raw legacy
-  pings and the Glean baseline ping, because the fields they need are not in
-  telemetry_derived.clients_first_seen_v3. A rule on the Glean baseline ping flags the client by
-  the legacy client ID that the ping reports, so clients without one cannot be flagged. They do not
-  use a Firefox version or a start date. Only Linux pings are read at present, because all
-  fleets so far run on Linux. See the comments in query.sql for how to add a fleet.
+  Each fleet is a rule confirmed by Data Science in a Jira ticket. The `aws`, `bulk` and
+  `hetzner` rules read the raw legacy pings and the Glean baseline ping, because the fields they
+  need are not in telemetry_derived.clients_first_seen_v3, and they do not use a Firefox version
+  or a start date. A rule on the Glean baseline ping flags the client by the legacy client ID
+  that the ping reports, so clients without one cannot be flagged. The exception is
+  `deng_11590`: it reads telemetry_derived.clients_first_seen_v3 and keeps the Firefox version
+  (151.0) and start date (2026-08-27) of the UDF it replaces. Only Linux pings are read at
+  present, because all fleets so far run on Linux. See the comments in query.sql for how to add
+  a fleet.
 
   Fleets (`fleet` value | ticket | onset | rule):
 
@@ -24,12 +27,19 @@ description: |-
     of 0, plus either the WebRender start-up failure `SoftwareRasterizer_FIRST`, or an llvmpipe
     software GPU, not the default browser, no system locales and a 1920x1080 screen. The second
     condition catches image variant 2 (from 2026-10-28). The main variant started 2026-11-04.
+    The rule also matches most of the DENG-11590 segment from late August 2026 (see below).
   * `hetzner` | DENG-11925 | 2026-09-27 | from the Glean baseline ping: Linux, launched with
     `-profile`, ISP Hetzner Online, distribution `mozilla-deb`, en-US, OS version 6.8. Almost
     none of these clients send legacy pings, so they affect Glean metrics only.
+  * `deng_11590` | DENG-11590 | 2026-08-27 | the logic of
+    udf.is_desktop_argument_profile_automation (Linux, Fx 151.0, launched with `-profile`, first
+    seen on or after 2026-08-27), applied to telemetry_derived.clients_first_seen_v3. Each client
+    is flagged once, on its first_seen_date.
 
-  Not yet in this table: the DENG-11590 segment, which is still flagged by
-  udf.is_desktop_argument_profile_automation.
+  The `fleet` value is the first rule that matched, not the operator. The `bulk` rule also
+  matches most of the DENG-11590 segment (for example 2.33M of 2.53M clients on 2026-09-06),
+  so those clients have `fleet = 'bulk'`. Every client that the UDF flags is in this table under
+  some fleet, so to exclude bots, exclude all fleets.
 owners:
 - phlee@mozilla.com
 labels:
@@ -58,5 +68,6 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
   - moz-fx-data-shared-prod.telemetry_stable.new_profile_v4

@@ -7373,6 +7373,9 @@ fields:
 
         * Which user interaction triggered the event.
 
+        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
+        ``"timer"``, ``"forced"``, ``"manual"``).
+
         * The reason the Smart Window was opened. One of: switch, menu, new_window,
         open_browser, or undo_close
 
@@ -7381,9 +7384,6 @@ fields:
 
         * A label to distinguish what triggered the polling/fetching of remote content
         (eg. "broadcast", "timer", "forced", "manual")
-
-        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
-        ``"timer"``, ``"forced"``, ``"manual"``).
 
         * What triggered the sync.
 

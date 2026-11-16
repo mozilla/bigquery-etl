@@ -3945,14 +3945,14 @@ fields:
 
         * Which user interaction triggered the event.
 
+        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
+        ``"timer"``, ``"forced"``, ``"manual"``).
+
         * The reason why this confirmation was triggered. Values: [cp-connectivity,
         pref-change, context-init, retry, failed-lookups]
 
         * A label to distinguish what triggered the polling/fetching of remote content
         (eg. "broadcast", "timer", "forced", "manual")
-
-        * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
-        ``"timer"``, ``"forced"``, ``"manual"``).
 
         * What triggered the OS Keystore Popup. "edit" - when editing credit cards
         "autofill" - when autofilling credit cards
@@ -4050,10 +4050,9 @@ fields:
 
         * The `value` of the event.
 
-        * Flow id of an interaction session with a credit card form
-
-        * The event value. This is either "started", "success", "decryptionError"
-        or "encryptionError"....'
+        * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
+        parameter. Reported statuses are: - `up_to_date`: Local content was already
+        up-...'
     - name: variant_shown
       type: STRING
       mode: NULLABLE

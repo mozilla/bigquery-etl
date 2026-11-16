@@ -62075,6 +62075,26 @@ fields:
         errors (NS_ERROR_STORAGE_IOERR), which are often transient. See bug 2090041.
 
         '
+    - name: rust_component_errors_expected_failures
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts expected failures for Rust components
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

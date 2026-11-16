@@ -6647,7 +6647,11 @@ fields:
         shortcuts, starter, or suggestion
 
         * How the request was submitted: button, enter, follow-up, menu, resume, retry,
-        shortcuts, starter, or suggestion'
+        shortcuts, starter, or suggestion
+
+        * How the request was submitted: button, enter, follow-up, fxms, menu, resume,
+        retry, shortcuts, starter, suggestion, or toolbar. Messaging surfaces may
+        supply their own value instead of fxms'
     - name: surface
       type: STRING
       mode: NULLABLE
@@ -6876,19 +6880,19 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * How the action was triggered: tab_mention, description, or unsupported.
+
         * The cause of the filter change: error, warn, log, info, debug, css, netxhr,
         net, text or reset and all, html, css, js, xhr, fonts, images, media, ws or
         other for netmonitor
 
-        * How the action was triggered: tab_mention, description, or unsupported.
-
         * Which user interaction triggered the event.
-
-        * The reason why this confirmation was triggered. Values: [cp-connectivity,
-        pref-change, context-init, retry, failed-lookups]
 
         * The element that triggered the polling/fetching of remote content (eg. ``"broadcast"``,
         ``"timer"``, ``"forced"``, ``"manual"``).
+
+        * The reason why this confirmation was triggered. Values: [cp-connectivity,
+        pref-change, context-init, retry, failed-lookups]
 
         * The entry point that requested the launch. One of: switch, menu, keyboard_shortcut,
         startup, settings, bedrock, asrouter, or other. Messaging surfaces may supply
@@ -7009,9 +7013,8 @@ fields:
 
         * The `value` of the event.
 
-        * Either "extension" or "server". Mapped to Legacy Telemetry''s `value` parameter.
-
-        * The `value` of the event...'
+        * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
+        parameter. Reported statuses are...'
     - name: variant_shown
       type: STRING
       mode: NULLABLE

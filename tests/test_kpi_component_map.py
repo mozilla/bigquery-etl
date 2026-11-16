@@ -21,7 +21,7 @@ DATA_PATH = (TABLE_DIR / "data.csv").relative_to(ROOT)
 METADATA_PATH = (TABLE_DIR / "metadata.yaml").relative_to(ROOT)
 UDF_PATH = ROOT / "sql" / "mozfun" / "norm" / "result_type_to_product_name" / "udf.sql"
 COMPONENTS = {"suggest_sponsored", "suggest_nonsponsored", "ai_chat", "excluded"}
-PLATFORMS = {"desktop"}
+PLATFORMS = {"desktop", "android", "ios"}
 FAR_FUTURE = datetime.date(9999, 12, 31)
 
 

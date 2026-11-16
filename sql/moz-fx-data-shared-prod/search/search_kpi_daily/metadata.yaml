@@ -1,0 +1,14 @@
+---
+friendly_name: Search KPI Daily
+description: |-
+  The search KPI per day, with client_id removed. Every row counts toward the KPI, so
+  SUM(value) is the KPI for any slice. Rows that fail the population rules, bots, and
+  sap_excluded are filtered out; search_derived.search_kpi_daily_v1 keeps them. Observed
+  counts only: synthetic desktop SAP history from before the Firefox 138 probe will be in a
+  separate view. device is desktop or mobile (android and ios).
+
+  client_count_by_kpi_component adds up across dimensions within one day and component. It
+  doesn't add up across days or components: a client with SAP and Suggest clicks is counted
+  in both.
+owners:
+- data-search-wg@mozilla.com

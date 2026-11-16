@@ -74,6 +74,8 @@ class EventsStreamTable(GleanTable):
             fallback=[],
         )
 
+        exclude_metrics = get_exclude_metrics(app_name, metrics_as_struct)
+
         # Separate apps with legacy telemetry client ID vs those that don't have it
         if app_name == "firefox_desktop":
             has_legacy_telemetry_client_id = True
@@ -96,6 +98,7 @@ class EventsStreamTable(GleanTable):
                 app_id_info["bq_dataset_family"], unversioned_table_name
             ),
             "slice_by_sample_id": slice_by_sample_id,
+            "exclude_metrics": exclude_metrics,
             "extras_by_type": get_glean_app_event_extras_by_type(
                 app_id_info["v1_name"]
             ),
@@ -157,6 +160,25 @@ class EventsStreamTable(GleanTable):
             all_base_tables_exist=all_base_tables_exist,
             custom_render_kwargs=custom_render_kwargs,
         )
+
+
+def get_exclude_metrics(app_name: str, metrics_as_struct: bool) -> list[str]:
+    """Return the app's configured `metrics` JSON paths to drop from events_stream."""
+    exclude_metrics = ConfigLoader.get(
+        "generate",
+        "glean_usage",
+        "events_stream",
+        "exclude_metrics",
+        fallback={},
+    ).get(app_name, [])
+
+    if exclude_metrics and metrics_as_struct:
+        raise Exception(
+            f"`exclude_metrics` is only supported for the JSON `metrics` representation, "
+            f"but `{app_name}` uses `metrics_as_struct`."
+        )
+
+    return exclude_metrics
 
 
 @cache

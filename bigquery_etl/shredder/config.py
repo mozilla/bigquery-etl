@@ -271,10 +271,14 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_derived.urlbar_events_v2",
         field=("glean_client_id", "legacy_telemetry_client_id"),
     ): (DESKTOP_GLEAN_SRC, DESKTOP_SRC),
-    # Desktop rows only for now; mobile rows will need their apps' deletion sources too.
-    client_id_target(
-        table="search_derived.search_kpi_clients_daily_v1"
-    ): DESKTOP_GLEAN_SRC,
+    DeleteTarget(
+        table="search_derived.search_kpi_clients_daily_v1",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_GLEAN_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,

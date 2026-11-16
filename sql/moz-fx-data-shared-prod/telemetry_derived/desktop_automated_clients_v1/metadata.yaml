@@ -28,8 +28,15 @@ description: |-
     `-profile`, ISP Hetzner Online, distribution `mozilla-deb`, en-US, OS version 6.8. Almost
     none of these clients send legacy pings, so they affect Glean metrics only.
 
-  Not yet in this table: the DENG-11590 segment, which is still flagged by
-  udf.is_desktop_argument_profile_automation.
+  * `deng_11590` | DENG-11590 | 2026-08-27 | the logic of
+    udf.is_desktop_argument_profile_automation (Linux, Fx 151.0, launched with `-profile`, first
+    seen on or after 2026-08-27), applied to telemetry_derived.clients_first_seen_v3. Each client
+    is flagged once, on its first_seen_date.
+
+  The `fleet` value is the first rule that matched, not the operator. The `bulk` rule also
+  matches most of the DENG-11590 segment (for example 2.33M of 2.53M clients on 2026-09-06),
+  so those clients have `fleet = 'bulk'`. Every client that the UDF flags is in this table under
+  some fleet, so to exclude bots, exclude all fleets.
 owners:
 - phlee@mozilla.com
 labels:

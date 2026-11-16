@@ -159,6 +159,30 @@ glean_signals AS (
   GROUP BY
     client_id
 ),
+-- Fleet `deng_11590` | DENG-11590 | onset 2026-08-27 | moved here from
+-- `moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation` in DENG-11925, with the same logic, so that the
+-- downstream tables flag the same clients after they switch to this table.
+-- Linux, Fx 151.0, launched with `-profile`, first seen on or after 2026-08-27. The UDF is
+-- applied to the client's first-seen attributes, so this rule reads clients_first_seen_v3 and
+-- flags each client once, on its first_seen_date.
+deng_11590_signals AS (
+  SELECT
+    client_id,
+    app_version,
+    normalized_os_version AS os_version,
+    isp_name,
+    country,
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
+  WHERE
+    first_seen_date = @submission_date
+    AND `moz-fx-data-shared-prod.udf.is_desktop_argument_profile_automation`(
+      normalized_os,
+      app_version,
+      startup_profile_selection_reason,
+      first_seen_date
+    )
+),
 flagged_clients AS (
   SELECT
     client_id,
@@ -173,16 +197,21 @@ flagged_clients AS (
       WHEN glean.has_glean_argument_profile
         AND glean.has_hetzner_environment
         THEN 'hetzner'
+      WHEN deng_11590.client_id IS NOT NULL
+        THEN 'deng_11590'
     END AS fleet,
     glean.glean_client_ids,
-    COALESCE(legacy.app_version, glean.app_version) AS app_version,
-    COALESCE(legacy.os_version, glean.os_version) AS os_version,
-    COALESCE(legacy.isp_name, glean.isp_name) AS isp_name,
-    COALESCE(legacy.country, glean.country) AS country,
+    COALESCE(legacy.app_version, glean.app_version, deng_11590.app_version) AS app_version,
+    COALESCE(legacy.os_version, glean.os_version, deng_11590.os_version) AS os_version,
+    COALESCE(legacy.isp_name, glean.isp_name, deng_11590.isp_name) AS isp_name,
+    COALESCE(legacy.country, glean.country, deng_11590.country) AS country,
   FROM
     client_signals AS legacy
   FULL OUTER JOIN
     glean_signals AS glean
+    USING (client_id)
+  FULL OUTER JOIN
+    deng_11590_signals AS deng_11590
     USING (client_id)
 )
 SELECT

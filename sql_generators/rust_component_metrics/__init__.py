@@ -122,6 +122,14 @@ class Counter(Metric):
     template_dir = Path("counter")
 
 @dataclass
+class LabeledCounter(Metric):
+    template_dir = Path("labeled-counter")
+
+@dataclass
+class DualLabeledCounter(Metric):
+    template_dir = Path("dual-labeled-counter")
+
+@dataclass
 class Distribution(Metric):
     template_dir = Path("distribution")
     type: DistributionType

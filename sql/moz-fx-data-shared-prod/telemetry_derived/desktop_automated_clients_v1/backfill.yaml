@@ -1,9 +1,10 @@
 2026-11-16:
-  start_date: 2026-09-27
-  end_date: 2026-11-12
-  reason: DENG-11925 - initial backfill of the new table (https://github.com/mozilla/bigquery-etl/pull/10165)
-    from the hetzner fleet onset (2026-09-27) to the day before the first scheduled run
-    (2026-11-13).
+  start_date: 2026-08-27
+  end_date: 2026-11-15
+  reason: DENG-11925 - initial backfill of the new table (https://github.com/mozilla/bigquery-etl/pull/10165),
+    from the onset of the deng_11590 fleet (2026-08-27, added in https://github.com/mozilla/bigquery-etl/pull/10187).
+    The end date covers the scheduled partitions 2026-11-13 to 2026-11-15, which were written
+    before the deng_11590 fleet was added.
   watchers:
   - phlee@mozilla.com
   status: Initiate

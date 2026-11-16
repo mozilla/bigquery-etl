@@ -47,12 +47,15 @@ autofill_about,desktop,about_autofill,excluded,1970-01-01,,"Going to a place the
 autofill_adaptive,desktop,adaptive_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 autofill_adaptive_origin,desktop,adaptive_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 autofill_adaptive_url,desktop,adaptive_autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+autofill_duplicate,desktop,other,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 autofill_origin,desktop,autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 autofill_unknown,desktop,other,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 autofill_url,desktop,autofill,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 bookmark,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 bookmark_adaptive,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 bookmark_adaptive_serp,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+bookmark_semantic,desktop,other,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
+bookmark_semantic_serp,desktop,other,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 bookmark_serp,desktop,bookmark,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1
 calc,desktop,calculator,excluded,1970-01-01,,"Firefox feature that answers in the address bar; not a Suggest result",1
 clipboard,desktop,clipboard,excluded,1970-01-01,,"Going to a place the user already knows: navigation, not search",1

@@ -634,7 +634,8 @@ jobs:
       commit-sha: ${{ steps.context.outputs.commit_sha }}
     environment: *job-env
     env:
-      # Secrets can't be referenced in step `if:`, so expose whether the key exists
+      # Secrets can't be referenced in step `if:`, so expose whether the key exists.
+      # Dependabot-triggered runs get it from the Dependabot secret of the same name
       HAS_CI_BOT_KEY: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY != '' }}
     steps:
       - name: Generate bigquery-etl-ci-bot token
@@ -643,7 +644,7 @@ jobs:
         if: env.HAS_CI_BOT_KEY == 'true'
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510  # v3.3.0
         with:
-          client-id: ${{ vars.BQETL_CI_BOT_CLIENT_ID }}
+          client-id: ${{ secrets.BQETL_CI_BOT_CLIENT_ID }}
           private-key: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY }}
           owner: mozilla
           repositories: private-bigquery-etl

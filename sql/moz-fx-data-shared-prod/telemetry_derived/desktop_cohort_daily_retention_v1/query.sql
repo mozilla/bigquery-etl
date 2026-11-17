@@ -64,10 +64,13 @@ cohorts_in_range AS (
     -- outright rather than flagged. They come from telemetry.desktop_automated_clients
     -- (DENG-11925), which includes the DENG-11590 segment. Exclude every fleet.
     AND client_id NOT IN (
+      -- NOT IN is NULL for every row if the subquery returns a NULL, so drop NULLs.
       SELECT
         client_id
       FROM
         `moz-fx-data-shared-prod.telemetry.desktop_automated_clients`
+      WHERE
+        client_id IS NOT NULL
     )
 ),
 activity_cohort_match AS (

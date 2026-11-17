@@ -32,10 +32,13 @@ WITH clients_first_seen AS (
     -- (DENG-11925), which includes the DENG-11590 segment. Exclude every fleet. The flag lives on
     -- telemetry.desktop_new_profiles_clients instead.
     AND cfs.client_id NOT IN (
+      -- NOT IN is NULL for every row if the subquery returns a NULL, so drop NULLs.
       SELECT
         client_id
       FROM
         `moz-fx-data-shared-prod.telemetry.desktop_automated_clients`
+      WHERE
+        client_id IS NOT NULL
     )
 ),
 active_users AS (

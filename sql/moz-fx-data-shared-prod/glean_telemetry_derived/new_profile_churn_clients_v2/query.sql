@@ -1,4 +1,12 @@
-WITH activity_range AS (
+WITH automated_clients AS (
+  -- Membership test only, so read the table directly rather than the per-client view.
+  SELECT
+    client_id,
+    glean_client_ids,
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1`
+),
+activity_range AS (
   SELECT
     last_seen.client_id,
     last_seen.sample_id,
@@ -105,18 +113,13 @@ client_attributes AS (
           SELECT
             glean_client_id
           FROM
-            `moz-fx-data-shared-prod.telemetry.desktop_automated_clients`,
+            automated_clients,
             UNNEST(glean_client_ids) AS glean_client_id
         ),
         FALSE
       )
       OR COALESCE(
-        first_seen.legacy_telemetry_client_id IN (
-          SELECT
-            client_id
-          FROM
-            `moz-fx-data-shared-prod.telemetry.desktop_automated_clients`
-        ),
+        first_seen.legacy_telemetry_client_id IN (SELECT client_id FROM automated_clients),
         FALSE
       )
     ) AS is_desktop_argument_profile_automation,

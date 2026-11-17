@@ -1,0 +1,42 @@
+---
+fields: !flatten-lists
+- !include-fields
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1
+  field_names:
+  - submission_date
+  - platform
+- name: device
+  type: STRING
+  mode: NULLABLE
+  description: desktop, or mobile for android and ios.
+- !include-fields
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1
+  field_names:
+  - country
+  - normalized_channel
+  - os
+  - app_version_major
+  - normalized_default_search_engine
+  - definition_version
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1
+  field: component
+  new_description: One of sap, suggest_sponsored, suggest_nonsponsored or ai_chat.
+- name: component_label
+  type: STRING
+  mode: NULLABLE
+  description: A readable name for component, for charts.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1
+  field: value
+  new_name: searches
+  new_description: Count for this component that day. SAP rows are searches; Suggest and AI
+    chat rows are clicks that replace a search. `SUM(searches)` is the KPI for any slice.
+- !include-field
+  table: moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1
+  field: client_count_by_kpi_component
+  new_name: clients
+  new_description: Distinct clients with `searches` above 0 for this component. Sums across
+    dimensions within one day and component only. It does not sum across days (the same client is
+    counted again each day) or components (a client with both SAP and Suggest activity is
+    counted in each). For distinct searching clients, use search.search_dau_aggregates_glean.

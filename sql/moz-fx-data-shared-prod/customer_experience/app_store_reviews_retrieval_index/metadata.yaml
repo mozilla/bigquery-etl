@@ -1,0 +1,26 @@
+friendly_name: App Store Reviews Retrieval Index
+description: |-
+  Apple App Store reviews of Mozilla apps joined with their AI-enriched retrieval fields
+  (embeddings and semantic features) to support grounded question answering over app store reviews.
+
+  Grain: one row per review id.
+
+  Review fields (id, app_id, territory, rating, title, body, creation_date) come from
+  `app_store_v2_syndicate.app_store_review`. LLM fields, embedding and metadata come from
+  `customer_experience_derived.app_store_reviews_retrieval_index_v1`, LEFT JOINed on id:
+  reviews not yet processed by the index have NULL LLM fields, embedding and metadata.
+
+  LLM generated fields:
+  - review_summary_llm
+  - review_category_llm (one of: complaint, bug, request, praise, question)
+  - review_language_llm
+  - review_entities_llm
+  - review_topics_llm
+  - embedding based on [title, body]
+  - review_sentiment_score based on [title, body]
+
+  Usage
+  - Rows without an embedding are included. Filter `WHERE embedding IS NOT NULL` for vector search.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience

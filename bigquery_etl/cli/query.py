@@ -3,12 +3,12 @@
 import concurrent.futures
 import copy
 import datetime
-import importlib.util
 import json
 import logging
 import multiprocessing
 import os
 import re
+import runpy
 import string
 import subprocess
 import sys
@@ -610,11 +610,17 @@ def _backfill_query(
     return True
 
 
+# Directory containing the bigquery_etl package, for script subprocesses.
+_PACKAGE_ROOT = str(Path(__file__).resolve().parents[2])
+
+
 def _backfill_script(
     backfill_date: date,
     entrypoint_command: Callable,
     query_script_date_arg: str,
     query_script_args: Iterable[str],
+    query_file: str,
+    entrypoint_name: str,
 ):
     script_args = [
         f"--{query_script_date_arg}",
@@ -624,13 +630,46 @@ def _backfill_script(
     print(f"Backfilling script for {backfill_date} with {' '.join(script_args)}")
     if isinstance(entrypoint_command, click.Command):
         entrypoint_command(script_args, standalone_mode=False)
-    else:
-        original_argv = sys.argv.copy()
-        try:
-            sys.argv = ["query.py"] + script_args
-            entrypoint_command()
-        finally:
-            sys.argv = original_argv
+        return
+
+    # Plain functions read the process-global sys.argv, which races across
+    # backfill threads, so each date runs in its own interpreter.
+    # stdout streams straight through; stderr is relayed live, keeping the last
+    # line for the error message.
+    sys.stdout.flush()
+    with subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "bigquery_etl.backfill.run_script",
+            query_file,
+            entrypoint_name,
+            str(logging.root.level),
+            *script_args,
+        ],
+        stderr=subprocess.PIPE,
+        text=True,
+        env={
+            **os.environ,
+            "PYTHONUNBUFFERED": "1",
+            # Make this bigquery_etl importable even when it isn't installed
+            # (e.g. run from a checkout, as in CI).
+            "PYTHONPATH": os.pathsep.join(
+                filter(None, [_PACKAGE_ROOT, os.environ.get("PYTHONPATH")])
+            ),
+        },
+    ) as process:
+        last_error_line = ""
+        assert process.stderr is not None
+        for line in process.stderr:
+            sys.stderr.write(line)
+            if line.strip():
+                last_error_line = line.strip()
+    if process.returncode != 0:
+        raise RuntimeError(
+            f"Query script exited with code {process.returncode} for "
+            f"{backfill_date}: {last_error_line}"
+        )
 
 
 @query.command(
@@ -899,12 +938,15 @@ def backfill(
                 "e.g. --query-script-arg '--dry-run'"
             )
 
-        # attempt to import the query script using the file path
-        query_spec = importlib.util.spec_from_file_location("query", str(query_file))
-        query_module = importlib.util.module_from_spec(query_spec)
-        query_spec.loader.exec_module(query_module)
-        entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
+        # load the query script without running its __main__ block
+        entrypoint_command = runpy.run_path(str(query_file)).get(
+            query_script_entrypoint
+        )
 
+        if entrypoint_command is None:
+            raise click.ClickException(
+                f"Script entrypoint `{query_script_entrypoint}` not found in {query_file}."
+            )
         if not isinstance(entrypoint_command, Callable):
             raise click.ClickException(
                 f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
@@ -915,6 +957,8 @@ def backfill(
             entrypoint_command=entrypoint_command,
             query_script_date_arg=query_script_date_arg,
             query_script_args=query_script_arg,
+            query_file=str(query_file),
+            entrypoint_name=query_script_entrypoint,
         )
     else:
         # adding copy logic for cleaner handling of overrides

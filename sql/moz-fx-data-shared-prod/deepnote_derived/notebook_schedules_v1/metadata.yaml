@@ -1,0 +1,17 @@
+friendly_name: Deepnote Notebook Schedules
+description: |-
+  Notebook schedules in the latest workspace snapshot, with each cron expanded
+  into weekly fire times.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

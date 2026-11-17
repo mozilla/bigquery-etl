@@ -183,7 +183,7 @@ the Airflow image, then delete its staging table so the next hourly run re-initi
 fix is deployed re-runs the old arguments.
 
 Required parameters:
-- `query_script_entrypoint`: The name of the main function inside the python script.
+- `query_script_entrypoint`: The name of the main function inside the python script. A Click command is called in-process with the arguments; any other function (e.g. one using `argparse`) runs in its own Python process per date and reads them from `sys.argv`.
 - `query_script_date_arg`: The name of the CLI argument that the entrypoint accepts for the backfill date, formatted as `YYYY-MM-DD`
 (e.g. `submission_date`). The backfill will pass each backfilled date to the script via this argument.
 
@@ -191,7 +191,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to point the script at the staging table above, in whatever form its arguments expect, e.g.
 `--destination_dataset=backfills_staging_derived` and `--destination_table={prefix}dataset__table_v1_YYYY_MM_DD`.
-If no `--query-script-arg` is passed, `bqetl backfill create` defaults to a single
+If `--query-script-entrypoint` is set and no `--query-script-arg` is passed, `bqetl backfill create` defaults to a single
 `--destination-table=<fully qualified staging table>` argument. That only works for scripts that accept exactly that
 option; argparse treats `--destination-table` and `--destination_table` as different options.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.

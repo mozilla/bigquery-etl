@@ -7,7 +7,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: desktop, android or ios. Part of the row key, because each platform has its
-    own client ID space. Only desktop for now.
+    own client ID space.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -18,7 +18,7 @@ fields:
   mode: NULLABLE
   description: The profile group identifier, the ID experiment analyses join on.
     urlbar_clients_daily_v1's value when the client has one, otherwise
-    desktop_client_day_dims_v1's.
+    desktop_client_day_dims_v1's. NULL on mobile.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -27,54 +27,66 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
   field: country
-  append_description: " From desktop_client_day_dims_v1; null if the client has no row there."
+  append_description: " On desktop from desktop_client_day_dims_v1; on mobile the value on
+    most of the client's rows in mobile_search_clients_daily_v2. NULL if the client has no
+    row there."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
   field: normalized_channel
-  append_description: " From desktop_client_day_dims_v1."
+  append_description: " On desktop from desktop_client_day_dims_v1; on mobile
+    mobile_search_clients_daily_v2's channel."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
   field: os
-  append_description: " From desktop_client_day_dims_v1."
+  append_description: " On desktop from desktop_client_day_dims_v1; on mobile from
+    mobile_search_clients_daily_v2."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
   field: app_version_major
-  append_description: " From desktop_client_day_dims_v1."
+  append_description: " On desktop from desktop_client_day_dims_v1; on mobile from
+    mobile_search_clients_daily_v2."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
   field: normalized_default_search_engine
-  append_description: " From desktop_client_day_dims_v1."
+  append_description: " On desktop from desktop_client_day_dims_v1; on mobile the same
+    match on mobile_search_clients_daily_v2's default_search_engine."
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1
   field: is_default_browser
-  append_description: " From desktop_client_day_dims_v1."
+  append_description: " From desktop_client_day_dims_v1. NULL on mobile."
 - name: sap
   type: INTEGER
   mode: NULLABLE
-  description: The KPI's SAP searches that day, the sum of sap_counts_total over the client's
-    rows in search.search_clients_daily_glean with no sap_exclusion_reason, so rows of 10,000
-    or more are left out. 0 if none.
+  description: The KPI's SAP searches that day. On desktop, the sum of sap_counts_total over
+    the client's rows in search.search_clients_daily_glean with no sap_exclusion_reason, so
+    rows of 10,000 or more are left out. On mobile, the sum of search_count in
+    mobile_search_clients_daily_v2's Glean rows (Firefox iOS 28 and later), where rows over
+    10,000 are already zeroed. 0 if none.
 - name: sap_excluded
   type: INTEGER
   mode: NULLABLE
   description: SAP searches left out of sap and search_queries that day, the sum of
     sap_counts_total over rows with a sap_exclusion_reason, mostly runaway counts from a
-    held-down Enter key. Kept so the exclusion can be audited here. 0 if none.
+    held-down Enter key. Kept so the exclusion can be audited here. 0 if none. Always 0 on
+    mobile, where it means not measurable rather than none, because
+    mobile_search_clients_daily_v2 zeroes search_count on rows over 10,000 before it
+    reaches this table.
 - name: suggest_sponsored
   type: INTEGER
   mode: NULLABLE
   description: Clicks on result types kpi_component_map_v1 maps to suggest_sponsored that
-    day (AMP, weather, Yelp). 0 if none.
+    day (AMP, weather, Yelp; AMP only on mobile). 0 if none.
 - name: suggest_nonsponsored
   type: INTEGER
   mode: NULLABLE
   description: Clicks on result types kpi_component_map_v1 maps to suggest_nonsponsored
-    that day (Wikipedia, MDN, add-ons, market, sports and others). 0 if none.
+    that day (Wikipedia, MDN, add-ons, market, sports and others; Wikipedia and flights on
+    mobile). 0 if none.
 - name: ai_chat
   type: INTEGER
   mode: NULLABLE
   description: Clicks on result types kpi_component_map_v1 maps to ai_chat that day (Smart
-    Window "Ask"). 0 if none.
+    Window "Ask"). 0 if none, and always 0 on mobile.
 - name: search_queries
   type: INTEGER
   mode: NULLABLE
@@ -83,23 +95,25 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1
   field: is_bot
-  append_description: " NULL too for clients not in urlbar_clients_daily_v1. NULL = unknown;
+  append_description: " NULL too for clients not in urlbar_clients_daily_v1, so on all mobile rows. NULL = unknown;
     filter with `IS NOT TRUE`, never `NOT is_bot`."
 - name: in_urlbar
   type: BOOLEAN
   mode: NULLABLE
   description: TRUE when the client has a urlbar_clients_daily_v1 row that day. Every such
     client is kept, so a row with search_queries = 0 is an urlbar user whose picks didn't
-    count. FALSE rows always have sap > 0 or sap_excluded > 0.
+    count. Desktop FALSE rows always have sap > 0 or sap_excluded > 0. Always FALSE on
+    mobile, which has no such table, even for a client with Suggest clicks.
 - name: meets_population_rules
   type: BOOLEAN
   mode: NULLABLE
   description: TRUE when the row meets the KPI's population rules, currently Firefox 138 or
-    later (the SAP probe floor), applied to SAP and Suggest alike. FALSE when
-    app_version_major is below 138 or unknown. Daily totals and experiment metrics filter
-    on it.
+    later on desktop (the SAP probe floor), applied to SAP and Suggest alike. FALSE when
+    a desktop app_version_major is below 138 or unknown. Always TRUE on mobile, where the
+    KPI has no floor. Daily totals and experiment metrics filter on it.
 - name: definition_version
   type: INTEGER
   mode: NULLABLE
   description: The kpi_component_map_v1 definition_version this row was built with, the
-    highest among map rows started on or before that day.
+    highest among that platform's map rows started on or before that day. Per platform, so a
+    change to one platform's rows leaves the others' version as it was.

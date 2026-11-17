@@ -964,26 +964,6 @@ bqetl_analytics_tables:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
-bqetl_fivetran_google_ads:
-  default_args:
-    owner: data-marketing-wg@mozilla.com
-    email:
-      - telemetry-alerts@mozilla.com
-      - data-marketing-wg@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    depends_on_past: false
-    end_date: null
-    retries: 2
-    retry_delay: 30m
-    start_date: '2023-01-01'
-  description: Queries for Google Ads data
-      coming from Fivetran. Fivetran
-      updates these tables every hour.
-  schedule_interval: 0 2 * * *
-  tags:
-    - impact/tier_2
-    - repo/bigquery-etl
 bqetl_campaign_cost_breakdowns:
   default_args:
     depends_on_past: false
@@ -1510,40 +1490,6 @@ bqetl_mobile_kpi_metrics:
     retry_delay: 30m
   tags:
     - impact/tier_1
-
-bqetl_desktop_conv_evnt_categorization:
-  schedule_interval: 0 12 * * *
-  description: Loads the desktop conversion event tables
-  default_args:
-    owner: data-marketing-wg@mozilla.com
-    email:
-      - telemetry-alerts@mozilla.com
-      - data-marketing-wg@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    depends_on_past: false
-    start_date: "2024-06-04"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2
-
-bqetl_census_feed:
-  schedule_interval: 0 17 * * *
-  description: Loads the desktop conversion event tables
-  default_args:
-    depends_on_past: false
-    owner: data-marketing-wg@mozilla.com
-    email:
-      - telemetry-alerts@mozilla.com
-      - data-marketing-wg@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2024-06-10"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2
 
 bqetl_cloudflare_os_market_share:
   default_args:
@@ -2962,3 +2908,19 @@ bqetl_remote_settings_uptake:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_deepnote:
+  schedule_interval: 0 4 * * *
+  description: |
+    Imports the audit logs and API snapshots of Mozilla's Deepnote workspaces and
+    Deepnote-originated BigQuery jobs, and builds usage monitoring aggregates.
+    Each workspace is configured by an API key secret passed to the import tasks.
+  default_args:
+    owner: ascholtz@mozilla.com
+    email:
+      - ascholtz@mozilla.com
+    start_date: "2026-10-29"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

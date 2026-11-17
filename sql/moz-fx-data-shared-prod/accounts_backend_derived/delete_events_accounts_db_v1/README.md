@@ -11,7 +11,7 @@ One row per account deleted on the submission date, read from the FxA accounts d
 
 ## Dates
 
-`submission_timestamp` is the account's `deletedAt` time, and each partition is its UTC date. The mirror holds only the current state of the FxA table, so this table keeps a deletion even if FxA later removes it from the source.
+`submission_timestamp` is the account's `deletedAt` time, and each partition is its UTC date. The mirror holds only the current state of the FxA table, so this table keeps a deletion even if FxA later removes it from the source. That holds only until the partition is re-run or backfilled after the source row is gone.
 
 ## Runs
 

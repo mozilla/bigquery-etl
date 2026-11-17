@@ -1,0 +1,102 @@
+fields:
+- name: creation_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when the App Store review was created, truncated to seconds.
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: Unique identifier of the App Store review.
+- name: app_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Apple App Store identifier of the Mozilla app the review is for.
+- name: territory
+  type: STRING
+  mode: NULLABLE
+  description: App Store territory (country or region) where the review was posted.
+- name: rating
+  type: INTEGER
+  mode: NULLABLE
+  description: Star rating given by the reviewer.
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: Title of the App Store review, as currently stored in the source table.
+- name: body
+  type: STRING
+  mode: NULLABLE
+  description: Body text of the App Store review, as currently stored in the source table.
+- name: review_summary_llm
+  type: STRING
+  mode: NULLABLE
+  description: AI-generated summary of the review, limited to a maximum of 8 words.
+- name: review_category_llm
+  type: STRING
+  mode: NULLABLE
+  description: AI-generated category of the review, requested as exactly one of complaint, bug, request, praise,
+    question. Any other value is tagged `review_category_llm_not_allowed` in `metadata.failure_reasons`.
+    Stored lowercase.
+- name: review_language_llm
+  type: STRING
+  mode: NULLABLE
+  description: AI-detected BCP 47 language tag (e.g., en-US, es-MX) for the review text.
+- name: review_entities_llm
+  type: STRING
+  mode: REPEATED
+  description: Array of up to three AI-extracted normalized entities from the review (e.g. product names, features,
+    error codes, companies, websites).
+- name: review_topics_llm
+  type: STRING
+  mode: REPEATED
+  description: Array of up to three AI-generated broad product areas for the review (e.g. ui, updates, privacy,
+    tabs, performance). Stored lowercase.
+- name: review_sentiment_score
+  type: FLOAT
+  mode: NULLABLE
+  description: AI-generated sentiment score ranging from -1.0 (very negative) to 1.0 (very positive), with 0 as
+    neutral. Values returned by the model outside [-1, 1] are set to NULL and tracked in `metadata.failure_reasons`.
+- name: embedding
+  type: FLOAT
+  mode: REPEATED
+  description: Vector embedding of the concatenated title and body.
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  description: Technical metadata about the AI analysis pipeline, including model versions and processing status.
+  fields:
+  - name: input_fields
+    type: STRING
+    mode: REPEATED
+    description: List of source field names used as input for the AI analysis (title, body).
+  - name: input_char_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Total character count of the input text provided to the AI model.
+  - name: model_version
+    type: STRING
+    mode: NULLABLE
+    description: Version identifier of the generative AI model used for analysis.
+  - name: embedding_version
+    type: STRING
+    mode: NULLABLE
+    description: Version identifier of the embedding model used to generate the vector embedding.
+  - name: prompt_version
+    type: STRING
+    mode: NULLABLE
+    description: Version identifier of the prompt used for the AI analysis, managed by the developer.
+  - name: analysis_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Timestamp when this row was produced by the data pipeline, calculated at runtime.
+  - name: embedding_succeeded
+    type: BOOLEAN
+    mode: NULLABLE
+    description: TRUE when `embedding IS NOT NULL`.
+  - name: failure_reasons
+    type: STRING
+    mode: REPEATED
+    description: Diagnostic tags for any quality check that failed on this row. Empty array when every check passes.
+      Possible tags - `embedding_missing`, `review_summary_llm_missing`, `review_category_llm_missing`, `review_category_llm_not_allowed`,
+      `review_language_llm_missing`, `review_sentiment_score_missing`, `review_sentiment_score_out_of_range`, `review_entities_llm_missing`,
+      `review_entities_llm_has_empty_elements`, `review_topics_llm_missing`, `review_topics_llm_has_empty_elements`.

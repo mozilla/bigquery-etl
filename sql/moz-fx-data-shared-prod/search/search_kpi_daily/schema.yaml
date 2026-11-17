@@ -39,4 +39,4 @@ fields: !flatten-lists
   new_description: Distinct clients with `searches` above 0 for this component. Sums across
     dimensions within one day and component only. It does not sum across days (the same client is
     counted again each day) or components (a client with both SAP and Suggest activity is
-    counted in each). For distinct searching clients, use search_dau_aggregates_glean_v1.
+    counted in each). For distinct searching clients, use search.search_dau_aggregates_glean.

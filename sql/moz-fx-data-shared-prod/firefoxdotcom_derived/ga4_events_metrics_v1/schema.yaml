@@ -114,3 +114,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Sum of engagement time in milliseconds. Divide by event_count within a single event_name for an average.
+- name: partner
+  type: STRING
+  mode: NULLABLE
+  description: From the partner event parameter. Only filled for the download events and partner_download_unavailable. NULL for non-partner downloads.
+- name: partner_download
+  type: STRING
+  mode: NULLABLE
+  description: From the partner_download event parameter, e.g. repack or fallback. Only filled for the download events. NULL for non-partner downloads.

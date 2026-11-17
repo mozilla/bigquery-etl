@@ -1,0 +1,43 @@
+friendly_name: App Store Reviews Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from Apple App Store reviews of Mozilla apps, containing
+  embeddings and semantic features to support grounded question answering over app store reviews.
+
+  Grain: one row per review id.
+
+  Only the fields the LLM needs are stored here (id, creation_date, title, body). All other review
+  fields are joined from `app_store_v2_syndicate.app_store_review` on `id` in the
+  `customer_experience.app_store_reviews_retrieval_index` view.
+
+  LLM generated fields:
+  - review_summary_llm
+  - review_category_llm (one of: complaint, bug, request, praise, question)
+  - review_language_llm
+  - review_entities_llm
+  - review_topics_llm
+  - embedding based on [title, body]
+  - review_sentiment_score based on [title, body]
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience
+labels:
+  incremental: true
+  change_controlled: true
+schema:
+  allow_field_addition: true
+scheduling:
+  dag_name: bqetl_customer_experience
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'creation_date'
+    require_partition_filter: false
+    expiration_days: null
+require_column_descriptions: true
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review

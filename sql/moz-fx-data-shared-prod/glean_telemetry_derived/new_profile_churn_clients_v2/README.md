@@ -28,7 +28,7 @@ Each churn flag:
 
 In `recent_new_profile_churn_clients_v2` and the `glean_telemetry.new_profile_churn_clients` view, a cohort too young for a churn flag has no value for it. Counts and rates of a churn flag cover only the clients whose flag has a value, so those cohorts drop out; counting them as not churned understates churn.
 
-`is_desktop_argument_profile_automation` is `TRUE` for the automated segment tracked in DENG-11590, per `udf.is_desktop_argument_profile_automation`. Those profiles stay in this table for ad hoc analysis; exclude them from counts with `WHERE NOT is_desktop_argument_profile_automation`, as the aggregate (DENG-11664) will by default.
+`is_desktop_argument_profile_automation` is `TRUE` for confirmed automated (bot) profiles: the DENG-11590 segment, per `udf.is_desktop_argument_profile_automation`, and every fleet in `telemetry.desktop_automated_clients` (DENG-11925), matched by Glean or legacy client ID. The name is kept for compatibility. Cohorts written before DENG-11979 flag only the DENG-11590 segment. Those profiles stay in this table for ad hoc analysis; exclude them from counts with `WHERE NOT is_desktop_argument_profile_automation`, as the aggregate (DENG-11664) will by default.
 
 `is_default_browser` is whether Firefox was the default browser on the client's first-seen day, the most common value across that day's baseline pings. It is `NULL` when none of that day's pings reported it, or when `baseline_clients_daily_v1` has no row for the client that day, as for a client it drops for sending over 150,000 pings.
 

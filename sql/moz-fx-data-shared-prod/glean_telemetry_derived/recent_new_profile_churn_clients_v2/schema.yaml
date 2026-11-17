@@ -291,8 +291,10 @@ fields:
 - name: is_desktop_argument_profile_automation
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether the profile matches the automated segment tracked in DENG-11590, per
-    udf.is_desktop_argument_profile_automation. FALSE when an input is unknown.
+  description: Whether the profile is a confirmed automated (bot) profile. TRUE if it matches
+    udf.is_desktop_argument_profile_automation (DENG-11590), or its Glean or legacy client ID is in
+    telemetry.desktop_automated_clients (DENG-11925, every fleet). FALSE otherwise. The name is
+    kept for compatibility. Cohorts written before DENG-11979 flag only the DENG-11590 segment.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE

@@ -218,7 +218,7 @@
   app_name: Firefox Desktop
   first_seen_year: 2026
   is_desktop: true
-  is_desktop_argument_profile_automation: false
+  is_desktop_argument_profile_automation: true
   churn_risk_after_5_days: true
   day_0: true
   day_1: false

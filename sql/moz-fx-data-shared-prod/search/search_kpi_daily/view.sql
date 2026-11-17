@@ -24,8 +24,8 @@ SELECT
       THEN 'AI chat clicks'
     ELSE component
   END AS component_label,
-  value,
-  client_count_by_kpi_component
+  value AS searches,
+  client_count_by_kpi_component AS clients
 FROM
   `moz-fx-data-shared-prod.search_derived.search_kpi_daily_v1`
 WHERE

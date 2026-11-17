@@ -1,0 +1,77 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: desktop, android or ios.
+- name: device
+  type: STRING
+  mode: NULLABLE
+  description: desktop, or mobile for android and ios.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: "The country of the client on this day, one value per client-day. For\
+    \ search_clients_daily rows, the country on the most rows of that client-day in\
+    \ search_clients_daily_glean_v1, ties to the latest ping_end_time, then to the\
+    \ country code, as in search_aggregates_glean_v1. Otherwise baseline_clients_daily's\
+    \ country.\n On desktop from desktop_client_day_dims_v1; on mobile the value on\
+    \ most of the client's rows in mobile_search_clients_daily_v2. NULL if the client\
+    \ has no row there."
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized channel the application is being distributed on.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's value.\n On desktop\
+    \ from desktop_client_day_dims_v1; on mobile mobile_search_clients_daily_v2's\
+    \ channel."
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: "The normalized name of the operating system running at the client.\n\
+    \ Resolved to one value per client-day: the event-backed side first, then the\
+    \ latest ping_end_time. Otherwise baseline_clients_daily's normalized_os, with\
+    \ Mac written as Darwin to match.\n On desktop from desktop_client_day_dims_v1;\
+    \ on mobile from mobile_search_clients_daily_v2."
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: "The major version of app_version, from mozfun.norm.browser_version_info.\n\
+    \ On desktop from desktop_client_day_dims_v1; on mobile from mobile_search_clients_daily_v2."
+- name: normalized_default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: "The default search engine grouped as Google, Bing or DuckDuckGo, and\
+    \ null for any other. Matches substrings of default_search_engine_provider_id,\
+    \ as search_aggregates_glean_v1 does. Null where the provider id is null or names\
+    \ another engine.\n On desktop from desktop_client_day_dims_v1; on mobile the\
+    \ same match on mobile_search_clients_daily_v2's default_search_engine."
+- name: definition_version
+  type: INTEGER
+  mode: NULLABLE
+  description: The kpi_component_map_v1 definition_version these rows were built with.
+- name: component
+  type: STRING
+  mode: NULLABLE
+  description: One of sap, suggest_sponsored, suggest_nonsponsored or ai_chat.
+- name: component_label
+  type: STRING
+  mode: NULLABLE
+  description: A readable name for component, for charts.
+- name: searches
+  type: INTEGER
+  mode: NULLABLE
+  description: Count for this component that day. SAP rows are searches; Suggest and
+    AI chat rows are clicks that replace a search. `SUM(searches)` is the KPI for
+    any slice.
+- name: clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Distinct clients with `searches` above 0 for this component. Sums across
+    dimensions within one day and component only. It does not sum across days (the
+    same client is counted again each day) or components (a client with both SAP and
+    Suggest activity is counted in each). For distinct searching clients, use search.search_dau_aggregates_glean.

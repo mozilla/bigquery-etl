@@ -2,7 +2,7 @@
 
 ## Stage Deploys in Continuous Integration
 
-Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. 
+Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. The GitHub Actions workflow also supports a manual `workflow_dispatch` input, `skip-stage-deploys`, to skip stage deployments for a given run. 
 
 Currently, the `moz-fx-data-integration-tests` project serves as the stage environment. CI does have read and write access, but does at no point publish actual data to this project. Only UDFs, table schemas and views are published. The project itself does not have access to any production project, like `mozdata`, so stage artifacts cannot reference any other artifacts that live in production.
 
@@ -17,12 +17,13 @@ Deploying artifacts to stage follows the following steps:
     * For views, if a view references another view, table or UDF then each of these referenced artifacts needs to be available on stage as well, otherwise the view cannot even be deployed to stage.
     * If artifacts are referenced that are not defined as part of the bigquery-etl repo (like stable or live tables) then their schema will get determined and a placeholder `query.sql` file will be created
     * If an artifact's `metadata.yaml` defines `external_data` (for example a Google Sheets-backed table), the query file is dropped and `external_data` is cleared from the staged metadata so the table deploys from its schema only, since the stage environment cannot reach external data sources
+    * For `materialized_view.sql` files, the `CREATE MATERIALIZED VIEW ... AS` wrapper is stripped and the file is deployed to stage as a plain `query.sql`
     * Also dependencies of dependencies need to be deployed, and so on
 4. Once all artifacts that need to be deployed have been determined, all references to these artifacts in existing SQL files need to be updated. These references will need to point to the stage project and the temporary datasets that artifacts will be published to.
     * Artifacts that get deployed are determined from the files that got changed and any artifacts that are referenced in the SQL definitions of these files, as well as their references and so on.
 5. To run the deploy, all artifacts will be copied to `sql/moz-fx-data-integration-tests` into their corresponding temporary datasets.
     * Also if any existing [SQL tests](https://github.com/mozilla/bigquery-etl/tree/main/tests/sql) the are related to changed artifacts will have their referenced artifacts updated and will get copied to a `moz-fx-data-integration-tests` folder
-    * The deploy is executed in the order of: UDFs, tables, views
+    * The deploy is executed in the order of: UDFs, views, tables
     * UDFs and views get deployed in a way that ensures that the right order of deployments (e.g. dependencies need to be deployed before the views referencing them)
 6. Once the deploy has been completed, the CI will use these staged artifacts to run its tests
 7. After checks have succeeded, the deployed artifacts [will be removed from stage](https://github.com/mozilla/bigquery-etl/blob/69c0c1d5fca6d7a50455552c30a331751ef2442b/.circleci/config.yml#L577)

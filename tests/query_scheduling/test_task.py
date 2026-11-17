@@ -788,6 +788,70 @@ class TestTask:
         # The task targets the whole table, so the upstream partition offset doesn't apply.
         assert task.partition_offset is None
 
+    @pytest.mark.parametrize(
+        "upstream_partition_offset,partition_type,expected_partition_offset",
+        [
+            ("-1d", PartitionType.DAY, timedelta(days=-1)),
+            ("-1h", PartitionType.DAY, None),
+            ("-1h", PartitionType.HOUR, timedelta(hours=-1)),
+            ("-1d", PartitionType.MONTH, None),
+        ],
+    )
+    def test_task_ignores_upstream_partition_offset_smaller_than_partitions(
+        self,
+        tmp_path,
+        upstream_partition_offset,
+        partition_type,
+        expected_partition_offset,
+    ):
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
+        query_file.write_text("SELECT * FROM `test-project.test.upstream_v1`")
+
+        metadata = Metadata(
+            "query",
+            "query",
+            ["test@example.org"],
+            {},
+            self.default_scheduling,
+            bigquery=BigQueryMetadata(
+                time_partitioning=PartitionMetadata(type=partition_type)
+            ),
+        )
+        upstream_metadata = Metadata(
+            "upstream",
+            "upstream",
+            ["test@example.org"],
+            {},
+            {
+                **self.default_scheduling,
+                **{"partition_offset": upstream_partition_offset},
+            },
+        )
+
+        task = Task.of_query(query_file, metadata)
+
+        upstream_file = tmp_path / "test-project" / "test" / "upstream_v1" / "query.sql"
+        os.makedirs(upstream_file.parent)
+        upstream_file.write_text("SELECT 1")
+        upstream_task = Task.of_query(upstream_file, upstream_metadata)
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([task, upstream_task])
+
+        task.with_upstream_dependencies(dags)
+
+        assert task.partition_offset == expected_partition_offset
+
     def test_task_partition_offset_recursive(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)

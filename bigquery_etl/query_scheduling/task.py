@@ -17,6 +17,7 @@ import click
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.partitioning import (
+    get_partition_granularity,
     get_partition_type,
     resolve_partition_parameter_name,
 )
@@ -869,11 +870,15 @@ class Task:
                         break  # stop after the first match
 
         if self.partition_parameter is not None and self.partition_offset is None:
-            # adjust partition parameter based on whether upstream tasks have partition offsets
+            # Adjust partition parameter based on whether upstream tasks have partition offsets,
+            # ignoring offsets smaller than this ETL's partitions (e.g. an upstream -1h offset
+            # shouldn't change a day partitioned ETL that happens to be scheduled at midnight).
+            partition_granularity = get_partition_granularity(self.partition_type)
             partition_offsets = [
                 dependency.partition_offset
                 for dependency in dependencies
                 if dependency.partition_offset
+                and abs(dependency.partition_offset) >= partition_granularity
             ]
 
             if len(partition_offsets) > 0:

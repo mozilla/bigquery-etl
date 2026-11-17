@@ -1,5 +1,6 @@
 """Shared logic for getting ETL partitioning info."""
 
+from datetime import timedelta
 from typing import Optional
 
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
@@ -10,6 +11,22 @@ def get_partition_type(metadata: Optional[Metadata]) -> Optional[PartitionType]:
     if metadata and metadata.bigquery and metadata.bigquery.time_partitioning:
         return metadata.bigquery.time_partitioning.type
     return None
+
+
+def get_partition_granularity(partition_type: Optional[PartitionType]) -> timedelta:
+    """Return the approximate days/hours granularity of one partition of the partition type."""
+    match partition_type:
+        case PartitionType.YEAR:
+            return timedelta(days=365)
+        case PartitionType.MONTH:
+            return timedelta(days=28)
+        # If there's no partitioning metadata then assume day partitioning to preserve historical behavior.
+        case PartitionType.DAY | None:
+            return timedelta(days=1)
+        case PartitionType.HOUR:
+            return timedelta(hours=1)
+        case _:
+            raise NotImplementedError(f"Unsupported partition type: {partition_type}")
 
 
 def resolve_partition_parameter_name(

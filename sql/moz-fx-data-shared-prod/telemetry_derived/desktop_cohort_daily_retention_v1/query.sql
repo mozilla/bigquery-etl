@@ -61,16 +61,19 @@ cohorts_in_range AS (
     BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- This table feeds retention dashboards, so confirmed automated (bot) clients are excluded
-    -- outright rather than flagged. They come from telemetry.desktop_automated_clients
+    -- outright rather than flagged. They come from telemetry_derived.desktop_automated_clients_v1
     -- (DENG-11925), which includes the DENG-11590 segment. Exclude every fleet.
     AND client_id NOT IN (
-      -- NOT IN is NULL for every row if the subquery returns a NULL, so drop NULLs.
+      -- Only flags up to @submission_date, so a rerun or backfill gives the same result as the
+      -- daily run. The table is read directly because a membership test needs no per-client
+      -- grouping. NOT IN is NULL for every row if the subquery returns a NULL, so drop NULLs.
       SELECT
         client_id
       FROM
-        `moz-fx-data-shared-prod.telemetry.desktop_automated_clients`
+        `moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1`
       WHERE
-        client_id IS NOT NULL
+        submission_date <= @submission_date
+        AND client_id IS NOT NULL
     )
 ),
 activity_cohort_match AS (

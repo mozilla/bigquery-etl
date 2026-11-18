@@ -1,0 +1,58 @@
+# Expected output of search_revenue_levers_dau_daily_glean_v1 for 2026-09-21 (7 rows). A NULL column is omitted.
+# Desktop DAU is the Glean DAU: f2 is not DAU and f3 is MozillaOnline, so Linux in FR has 1.
+# Mobile DAU has no operating system, so normalized_os is NULL and omitted on mobile rows.
+# The legacy search_dau_aggregates desktop row (99, 99) must not be counted: only its mobile rows are read.
+# Rows come from the DAU aggregates, not from search rows.
+- submission_date: '2026-09-21'
+  partner: Google
+  device: desktop
+  normalized_os: Mac
+  country: DE
+  dau: 2
+  dau_w_engine_as_default: 1
+  dau_engaged_w_sap: 1
+- submission_date: '2026-09-21'
+  partner: DuckDuckGo
+  device: desktop
+  normalized_os: Linux
+  country: FR
+  dau: 1
+  dau_w_engine_as_default: 1
+  dau_engaged_w_sap: 1
+- submission_date: '2026-09-21'
+  partner: DuckDuckGo
+  device: mobile
+  country: GB
+  dau: 1
+  dau_w_engine_as_default: 1
+  dau_engaged_w_sap: 1
+- submission_date: '2026-09-21'
+  partner: Bing
+  device: mobile
+  country: US
+  dau: 2
+  dau_w_engine_as_default: 1
+  dau_engaged_w_sap: 0
+- submission_date: '2026-09-21'
+  partner: Google
+  device: mobile
+  country: US
+  dau: 2
+  dau_w_engine_as_default: 2
+  dau_engaged_w_sap: 1
+- submission_date: '2026-09-21'
+  partner: Bing
+  device: desktop
+  normalized_os: Windows
+  country: US
+  dau: 3
+  dau_w_engine_as_default: 1
+  dau_engaged_w_sap: 0
+- submission_date: '2026-09-21'
+  partner: Google
+  device: desktop
+  normalized_os: Windows
+  country: US
+  dau: 3
+  dau_w_engine_as_default: 3
+  dau_engaged_w_sap: 1

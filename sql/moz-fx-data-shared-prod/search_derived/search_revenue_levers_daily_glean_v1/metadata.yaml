@@ -1,14 +1,14 @@
 ---
 friendly_name: Search Revenue Levers Daily Glean
 description: |-
-  Daily search revenue levers per partner, device, operating system and country: eligible DAU,
-  DAU with the partner as default engine, DAU engaged with SAP, SAP, tagged and follow-on
-  searches, searches with ads, ad clicks and their organic equivalents.
+  Daily search measures per partner, device, operating system, search access point and country:
+  SAP, tagged and follow-on searches, searches with ads, ad clicks and their organic equivalents,
+  and the SAP eligible to earn revenue.
 
-  The Glean counterpart of `search_revenue_levers_daily_v1`, and it runs alongside it. Desktop
-  search comes from `search_aggregates_glean`, desktop DAU from `search_dau_aggregates_glean` and
-  `firefox_desktop.baseline_active_users`. Mobile already reads Glean in the legacy table, so the
-  mobile rows are built the same way as there.
+  The access-point version of the Glean levers table. It has no DAU columns: a client counts once
+  in DAU but can use several access points in a day, so DAU cannot be split by access point and
+  would repeat and overcount when summed. Desktop search comes from `search_aggregates_glean`
+  and mobile from `mobile_search_aggregates`.
 
   Things to know when reading it:
   * Desktop `sap` is `sap_kpi`, which leaves out runaway-SAP rows, the cap the legacy table applies.
@@ -18,8 +18,6 @@ description: |-
     are the Glean counter series that reconcile to the legacy table. `search_with_ads_serp` and
     `ad_click_serp` are the SERP-derived equivalents and are lower. `ad_click_serp` steps up at
     Firefox 157.
-  * Glean-keyed desktop DAU runs higher than the legacy table's, as copied profiles give several
-    Glean ids for one legacy id.
   * Desktop `monetizable_sap` is rewritten on the row's `partner_code`, because the legacy
     definition reads raw engine strings that Glean carries as `sap_provider_id` plus `partner_code`.
     It is awaiting sign-off from the revenue reviewers. Bing counts on MOZI and MOZR and
@@ -27,15 +25,19 @@ description: |-
     engines, and `lm`) are not monetized, so the Bing and DuckDuckGo shares are below 100%. Any code
     the rule does not list counts as not monetized until its rule is settled, including new Google
     codes and the Canonical codes `ubuntu` and `ubuntu-sn`. Data checks warn when unlisted Google,
-    Bing or DuckDuckGo codes carry more than 1% of that partner's desktop SAP, and when the
-    monetizable share of Google desktop SAP falls below 90%. Mobile is always 0.
+    Bing or DuckDuckGo codes carry more than 1% of that partner's desktop SAP, when `no_code` carries
+    more than 2% of Google desktop SAP in the eligible countries, and when the monetizable share of
+    Google desktop SAP falls below 90%. A failing check requires desktop SAP for all three partners.
+    Mobile is always 0.
   * Bing and DuckDuckGo desktop include custom engines installed by extensions, such as
     `Bing (New Tab Search)`, which the legacy table left as `other`. Their overall SAP therefore runs
     above the legacy table's, while the SAP that carries a partner code, and so `monetizable_sap`, is at
     parity. Per-SAP ratios for these two partners change accordingly.
   * Bing desktop leaves out Acer distributions using the `distribution_id` only. The legacy
     `search.acer_cohort` list is keyed on the legacy `client_id` and is not carried.
-  * Mobile rows are not split by operating system, so `normalized_os` is NULL on them.
+  * `source` is the access point as reported upstream. It is not one clean list: desktop SAP uses access
+    points such as `urlbar` and `searchbar`, other measures use labels such as `unknown`, and mobile has
+    its own labels. Mapping it to the access points of the new Google codes is not done here.
 owners:
 - mozilla/revenue_forecasting_data_reviewers
 - lmcfall@mozilla.com

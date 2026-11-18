@@ -15,6 +15,7 @@
   counter_searches_with_ads_organic_sum: 2
   serp_searches_with_ads_tagged_count: 3
   serp_ad_clicks_tagged_sum: 2
+  source: urlbar
 - submission_date: '2026-09-21'
   country: US
   normalized_os: Windows
@@ -32,6 +33,7 @@
   counter_searches_with_ads_organic_sum: 1
   serp_searches_with_ads_tagged_count: 1
   serp_ad_clicks_tagged_sum: 1
+  source: urlbar
 - submission_date: '2026-09-21'
   country: US
   normalized_os: Windows
@@ -49,6 +51,7 @@
   counter_searches_with_ads_organic_sum: 0
   serp_searches_with_ads_tagged_count: 0
   serp_ad_clicks_tagged_sum: 0
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -66,6 +69,7 @@
   partner_code: windows-firefox-o-re
   distribution_id: null
   sap_kpi: 4
+  source: contextmenu
 - submission_date: '2026-09-21'
   country: RU
   normalized_os: Windows
@@ -83,6 +87,7 @@
   counter_searches_with_ads_organic_sum: 100
   serp_searches_with_ads_tagged_count: 100
   serp_ad_clicks_tagged_sum: 100
+  source: urlbar
 - submission_date: '2026-09-21'
   country: DE
   normalized_os: Mac
@@ -100,6 +105,7 @@
   counter_searches_with_ads_organic_sum: 1
   serp_searches_with_ads_tagged_count: 1
   serp_ad_clicks_tagged_sum: 1
+  source: urlbar
 - submission_date: '2026-09-21'
   country: DE
   normalized_os: Mac
@@ -117,6 +123,7 @@
   counter_searches_with_ads_organic_sum: 0
   serp_searches_with_ads_tagged_count: 0
   serp_ad_clicks_tagged_sum: 0
+  source: urlbar
 - submission_date: '2026-09-21'
   country: TR
   normalized_os: Windows
@@ -134,6 +141,7 @@
   counter_searches_with_ads_organic_sum: 0
   serp_searches_with_ads_tagged_count: 0
   serp_ad_clicks_tagged_sum: 0
+  source: urlbar
 - submission_date: '2026-09-21'
   country: US
   normalized_os: Windows
@@ -151,6 +159,7 @@
   counter_searches_with_ads_organic_sum: 0
   serp_searches_with_ads_tagged_count: 1
   serp_ad_clicks_tagged_sum: 0
+  source: urlbar
 - submission_date: '2026-09-21'
   country: US
   normalized_os: Windows
@@ -168,6 +177,7 @@
   counter_searches_with_ads_organic_sum: 50
   serp_searches_with_ads_tagged_count: 50
   serp_ad_clicks_tagged_sum: 50
+  source: urlbar
 - submission_date: '2026-09-21'
   country: FR
   normalized_os: Linux
@@ -185,6 +195,7 @@
   counter_searches_with_ads_organic_sum: 1
   serp_searches_with_ads_tagged_count: 1
   serp_ad_clicks_tagged_sum: 1
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -202,6 +213,7 @@
   partner_code: linux-firefoxmnt-o-re
   distribution_id: mint-001
   sap_kpi: 1
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -219,6 +231,7 @@
   partner_code: linux-firefox-us-x
   distribution_id: null
   sap_kpi: 3
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -236,6 +249,7 @@
   partner_code: MOZR
   distribution_id: null
   sap_kpi: 2
+  source: searchbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -253,6 +267,7 @@
   partner_code: no_code
   distribution_id: null
   sap_kpi: 3
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -270,6 +285,7 @@
   partner_code: ftsa
   distribution_id: null
   sap_kpi: 3
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -287,6 +303,7 @@
   partner_code: no_code
   distribution_id: null
   sap_kpi: 5
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -304,6 +321,7 @@
   partner_code: lm
   distribution_id: null
   sap_kpi: 2
+  source: urlbar
 - submission_date: '2026-09-21'
   is_acer_distribution: false
   counter_searches_tagged_non_follow_on_sum: 0
@@ -321,3 +339,4 @@
   partner_code: xyz
   distribution_id: null
   sap_kpi: 1
+  source: urlbar

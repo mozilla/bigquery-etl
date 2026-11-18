@@ -1,10 +1,10 @@
 -- Query for search_derived.search_revenue_levers_daily_glean_v1
 --
--- Glean counterpart of search_revenue_levers_daily_v1. Desktop search comes from
--- search.search_aggregates_glean, desktop DAU from search.search_dau_aggregates_glean and
--- firefox_desktop.baseline_active_users. Mobile already reads Glean in the legacy table, so the
--- mobile arms are carried over unchanged and mobile DAU is still read from
--- search.search_dau_aggregates under device = 'mobile'.
+-- Access-point version of the Glean levers table: the search measures split by access point
+-- (source), with no DAU columns. A client counts once in DAU but can use several access points
+-- in a day, so DAU cannot be split by access point and is not in this table.
+-- Desktop search comes from search.search_aggregates_glean and mobile from
+-- search.mobile_search_aggregates.
 --
 -- The eligible-country lists encode contract terms and are ported verbatim from
 -- search_revenue_levers_daily_v1. The date on which the list changes is part of that term.
@@ -58,6 +58,7 @@ WITH desktop_search AS (
     submission_date,
     country,
     normalized_os,
+    source,
     normalized_engine AS partner,
     'desktop' AS device,
     SUM(sap_kpi) AS sap,
@@ -115,16 +116,19 @@ WITH desktop_search AS (
     submission_date,
     country,
     normalized_os,
+    source,
     partner,
     device
 ),
--- Mobile search measures, unchanged from search_revenue_levers_daily_v1. Google and Bing are limited
--- to the listed apps; DuckDuckGo is not. OS and the serp_ columns are not carried for mobile.
+-- Mobile search measures, as in search_revenue_levers_daily_v1 with the OS and source columns added.
+-- Google and Bing are limited to the listed apps; DuckDuckGo is not. The serp_ columns are not carried
+-- for mobile.
 mobile_search AS (
   SELECT
     submission_date,
     country,
-    CAST(NULL AS STRING) AS normalized_os,
+    os AS normalized_os,
+    source,
     normalized_engine AS partner,
     'mobile' AS device,
     SUM(sap) AS sap,
@@ -152,6 +156,8 @@ mobile_search AS (
   GROUP BY
     submission_date,
     country,
+    os,
+    source,
     partner,
     device
 ),
@@ -165,145 +171,25 @@ combined_search_data AS (
     *
   FROM
     mobile_search
-),
--- DAU in the markets a partner is eligible for. Desktop is the Glean DAU population, one row per
--- client-day, limited to Firefox Desktop (which leaves out MozillaOnline and BrowserStack).
--- baseline_active_users.os already holds Windows, Mac, Linux or Other.
-eligible_markets_dau AS (
-  SELECT
-    'desktop' AS device,
-    submission_date,
-    country,
-    os AS normalized_os,
-    COUNT(DISTINCT client_id) AS global_eligible_dau,
-    COUNT(
-      DISTINCT IF(google_eligible_country(submission_date, country), client_id, NULL)
-    ) AS google_eligible_dau
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
-  WHERE
-    submission_date = @submission_date
-    AND is_dau
-    AND app_name = 'Firefox Desktop'
-  GROUP BY
-    device,
-    submission_date,
-    country,
-    normalized_os
-  UNION ALL
-  SELECT
-    'mobile' AS device,
-    submission_date,
-    country,
-    CAST(NULL AS STRING) AS normalized_os,
-    COUNT(DISTINCT client_id) AS global_eligible_dau,
-    COUNT(
-      DISTINCT IF(google_eligible_country(submission_date, country), client_id, NULL)
-    ) AS google_eligible_dau
-  FROM
-    `moz-fx-data-shared-prod.telemetry.mobile_active_users`
-  WHERE
-    submission_date = @submission_date
-    AND is_dau
-    -- not including Fenix MozillaOnline, BrowserStack, Klar
-    AND app_name IN ('Focus iOS', 'Firefox iOS', 'Fenix', 'Focus Android')
-  GROUP BY
-    device,
-    submission_date,
-    country
-),
--- DAU by search behavior. Desktop comes from the Glean table. Mobile still comes from the legacy
--- table, and the device = 'mobile' filter is load-bearing: without it the legacy desktop rows would
--- be counted as well as the Glean ones.
-desktop_mobile_search_dau AS (
-  SELECT
-    submission_date,
-    partner,
-    device,
-    country,
-    normalized_os,
-    SUM(dau_w_engine_as_default) AS dau_w_engine_as_default,
-    SUM(dau_engaged_w_sap) AS dau_engaged_w_sap
-  FROM
-    `moz-fx-data-shared-prod.search.search_dau_aggregates_glean`
-  WHERE
-    submission_date = @submission_date
-  GROUP BY
-    submission_date,
-    partner,
-    device,
-    country,
-    normalized_os
-  UNION ALL
-  SELECT
-    submission_date,
-    partner,
-    device,
-    country,
-    CAST(NULL AS STRING) AS normalized_os,
-    SUM(dau_w_engine_as_default) AS dau_w_engine_as_default,
-    SUM(dau_engaged_w_sap) AS dau_engaged_w_sap
-  FROM
-    `moz-fx-data-shared-prod.search.search_dau_aggregates`
-  WHERE
-    submission_date = @submission_date
-    AND device = 'mobile'
-  GROUP BY
-    submission_date,
-    partner,
-    device,
-    country
-),
-combined_search_dau AS (
-  SELECT
-    sd.submission_date,
-    sd.partner,
-    sd.device,
-    sd.country,
-    sd.normalized_os,
-    CASE
-      WHEN sd.partner = 'Google'
-        THEN emd.google_eligible_dau
-      ELSE emd.global_eligible_dau
-    END AS dau_eligible_markets,
-    sd.dau_w_engine_as_default,
-    sd.dau_engaged_w_sap
-  FROM
-    desktop_mobile_search_dau AS sd
-  LEFT JOIN
-    eligible_markets_dau AS emd
-    ON sd.submission_date = emd.submission_date
-    AND sd.device = emd.device
-    AND sd.country = emd.country
-    AND sd.normalized_os IS NOT DISTINCT FROM emd.normalized_os
 )
 SELECT
-  cd.submission_date,
-  cd.partner,
-  cd.device,
-  cd.normalized_os,
-  cd.country,
-  du.dau_eligible_markets AS dau,
-  du.dau_w_engine_as_default,
-  du.dau_engaged_w_sap,
-  cd.sap,
-  cd.tagged_sap,
-  cd.tagged_follow_on,
-  cd.search_with_ads,
-  cd.ad_click,
-  cd.organic,
-  cd.ad_click_organic,
-  cd.search_with_ads_organic,
-  cd.monetizable_sap,
-  cd.search_with_ads_serp,
-  cd.ad_click_serp,
+  submission_date,
+  partner,
+  device,
+  normalized_os,
+  source,
+  country,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  search_with_ads,
+  ad_click,
+  organic,
+  ad_click_organic,
+  search_with_ads_organic,
+  monetizable_sap,
+  search_with_ads_serp,
+  ad_click_serp,
   CAST(NULL AS STRING) AS channel
 FROM
-  combined_search_data AS cd
-LEFT JOIN
-  combined_search_dau AS du
-  ON cd.partner = du.partner
-  AND cd.submission_date = du.submission_date
-  AND cd.country = du.country
-  AND cd.device = du.device
-  AND cd.normalized_os IS NOT DISTINCT FROM du.normalized_os
+  combined_search_data

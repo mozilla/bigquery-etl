@@ -26,8 +26,8 @@ labels:
   dag: bqetl_google_search_console
 scheduling:
   dag_name: bqetl_google_search_console
-  date_partition_parameter: date
-  date_partition_offset: -2
+  partition_parameter: date
+  partition_offset: -2d
   depends_on_table_partitions_existing:
   - task_id: wait_for_google_search_console_addons_site_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_addons.searchdata_site_impression

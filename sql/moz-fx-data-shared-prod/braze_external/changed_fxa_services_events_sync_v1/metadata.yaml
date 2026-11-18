@@ -24,7 +24,7 @@ labels:
   owner1: sherrera
 scheduling:
   dag_name: bqetl_braze
-  date_partition_parameter: null
+  partition_parameter: null
   arguments:
   - --append_table
   - --noreplace

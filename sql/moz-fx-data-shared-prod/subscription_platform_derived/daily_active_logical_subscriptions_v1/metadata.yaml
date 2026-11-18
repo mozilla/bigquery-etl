@@ -21,8 +21,8 @@ labels:
   owner2: srose
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
-  date_partition_offset: -7
+  partition_parameter: date
+  partition_offset: -7d
   depends_on:
   - dag_name: bqetl_subplat_hourly
     task_id: subscription_platform_derived__logical_subscriptions_history__v1

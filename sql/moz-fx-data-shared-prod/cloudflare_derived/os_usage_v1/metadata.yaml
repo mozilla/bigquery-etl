@@ -11,7 +11,7 @@ labels:
   dag: bqetl_cloudflare_os_market_share
 scheduling:
   dag_name: bqetl_cloudflare_os_market_share
-  date_partition_parameter: dte
+  partition_parameter: dte
   arguments:
   - --date
   - '{{ds}}'

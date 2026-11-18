@@ -17,7 +17,7 @@ labels:
   owner2: kik
 scheduling:
   dag_name: bqetl_firefox_ios
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
   depends_on_past: false
 bigquery:
   time_partitioning:

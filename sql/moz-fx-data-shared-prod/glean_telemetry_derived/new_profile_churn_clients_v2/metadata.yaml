@@ -20,7 +20,7 @@ labels:
   dag: bqetl_new_profile_churn
 scheduling:
   dag_name: bqetl_new_profile_churn
-  date_partition_offset: -30
+  partition_offset: -30d
 bigquery:
   time_partitioning:
     type: day

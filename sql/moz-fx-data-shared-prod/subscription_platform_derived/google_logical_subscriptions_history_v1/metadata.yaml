@@ -15,7 +15,7 @@ labels:
   owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   clustering:
     fields:

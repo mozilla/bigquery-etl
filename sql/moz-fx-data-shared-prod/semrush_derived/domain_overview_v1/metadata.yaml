@@ -11,7 +11,7 @@ labels:
   dag: bqetl_semrush
 scheduling:
   dag_name: bqetl_semrush
-  date_partition_parameter: null
+  partition_parameter: null
   secrets:
   - deploy_target: SEMRUSH_API_KEY
     key: bqetl_semrush_api_key

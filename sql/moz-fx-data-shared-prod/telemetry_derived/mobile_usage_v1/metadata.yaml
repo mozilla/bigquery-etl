@@ -24,7 +24,7 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_nondesktop
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

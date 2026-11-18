@@ -34,7 +34,7 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_aggregations
   task_name: focus_android_active_users_aggregates_v3
-  date_partition_offset: -1
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

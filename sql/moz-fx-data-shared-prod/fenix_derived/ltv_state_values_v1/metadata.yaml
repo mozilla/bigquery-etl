@@ -8,7 +8,7 @@ labels:
   owner1: frank
 scheduling:
   depends_on_past: false
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   clustering:
     fields:

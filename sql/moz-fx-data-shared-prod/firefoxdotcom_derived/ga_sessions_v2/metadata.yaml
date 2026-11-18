@@ -14,7 +14,7 @@ labels:
   owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
   depends_on:

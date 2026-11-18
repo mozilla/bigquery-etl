@@ -12,7 +12,7 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_deepnote
-  date_partition_parameter: snapshot_date
+  partition_parameter: snapshot_date
 bigquery:
   time_partitioning:
     type: day

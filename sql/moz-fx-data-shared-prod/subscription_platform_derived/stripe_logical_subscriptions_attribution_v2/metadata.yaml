@@ -12,7 +12,7 @@ labels:
   owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
-  date_partition_parameter: date
+  partition_parameter: date
 bigquery:
   time_partitioning:
     type: day

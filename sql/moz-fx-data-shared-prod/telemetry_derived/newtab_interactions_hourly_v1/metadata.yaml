@@ -17,14 +17,7 @@ labels:
   dag: bqetl_newtab_interactions_hourly
 scheduling:
   dag_name: bqetl_newtab_interactions_hourly
-  date_partition_parameter: null
-  backfill_date_partition_parameter: submission_date
-  destination_table: newtab_interactions_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
-    }}
-  parameters:
-  - submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
-    }}
-  query_file_path: sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql
+  partition_offset: -1h
   referenced_tables: []
   depends_on:
   - task_id: ads_derived__interaction_aggregates_hourly__v1

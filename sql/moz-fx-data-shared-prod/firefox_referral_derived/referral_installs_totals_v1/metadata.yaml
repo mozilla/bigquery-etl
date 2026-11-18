@@ -27,7 +27,7 @@ labels:
   dag: bqetl_firefox_referral
 scheduling:
   dag_name: bqetl_firefox_referral
-  date_partition_parameter: null
+  partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

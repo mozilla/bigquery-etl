@@ -10,8 +10,8 @@ labels:
   owner1: phlee
   owner2: srose
 scheduling:
-  date_partition_offset: -8
-  date_partition_parameter: date
+  partition_offset: -8d
+  partition_parameter: date
 bigquery:
   time_partitioning:
     type: day

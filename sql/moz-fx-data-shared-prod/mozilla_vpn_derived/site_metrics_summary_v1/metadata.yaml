@@ -11,7 +11,7 @@ labels:
   owner1: phlee
   owner2: srose
 scheduling:
-  date_partition_parameter: date
+  partition_parameter: date
   depends_on:
   - task_id: mozilla_vpn_derived__site_metrics_empty_check__v1
     dag_name: bqetl_mozilla_vpn_site_metrics

@@ -29,7 +29,7 @@ labels:
   owner3: mlplyler
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
-  date_partition_parameter: snapshot_date
+  partition_parameter: snapshot_date
   arguments:
   - --date
   - '{{ ds }}'

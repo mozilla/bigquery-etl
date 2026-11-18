@@ -7,13 +7,7 @@ labels:
   incremental: true
   owner1: cbeck
 scheduling:
-  date_partition_parameter: null
-  destination_table: native_desktop_ad_metrics_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
-    }}
-  parameters:
-  - submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
-    }}
-  query_file_path: sql/moz-fx-data-shared-prod/ads_derived/native_desktop_ad_metrics_hourly_v1/query.sql
+  partition_offset: -1h
 bigquery:
   time_partitioning:
     type: day

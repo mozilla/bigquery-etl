@@ -11,7 +11,7 @@ labels:
   dag: bqetl_content_ml_hourly
 scheduling:
   dag_name: bqetl_content_ml_hourly
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   clustering:
     fields:

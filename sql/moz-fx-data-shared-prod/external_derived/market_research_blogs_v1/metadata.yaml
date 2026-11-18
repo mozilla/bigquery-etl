@@ -15,7 +15,7 @@ labels:
   dag: bqetl_market_research
 scheduling:
   dag_name: bqetl_market_research
-  date_partition_parameter: null
+  partition_parameter: null
   arguments:
   - --date
   - '{{ds}}'

@@ -20,7 +20,7 @@ labels:
   dag: bqetl_firefox_ios
 scheduling:
   dag_name: bqetl_firefox_ios
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

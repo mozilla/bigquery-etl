@@ -23,7 +23,7 @@ scheduling:
   dag_name: bqetl_baseline_clients_city_seen
   task_name: fenix_baseline_clients_city_seen_v1
   depends_on_past: true
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

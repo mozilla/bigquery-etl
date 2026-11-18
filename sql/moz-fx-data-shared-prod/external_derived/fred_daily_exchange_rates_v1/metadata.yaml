@@ -10,7 +10,7 @@ labels:
   dag: bqetl_fred_daily_exchange_rate
 scheduling:
   dag_name: bqetl_fred_daily_exchange_rate
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
   arguments:
   - --date
   - '{{ds}}'

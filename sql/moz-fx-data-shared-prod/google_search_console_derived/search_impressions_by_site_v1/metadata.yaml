@@ -23,8 +23,8 @@ labels:
   incremental: true
   owner1: srose
 scheduling:
-  date_partition_parameter: date
-  date_partition_offset: -7
+  partition_parameter: date
+  partition_offset: -7d
 bigquery:
   time_partitioning:
     type: day

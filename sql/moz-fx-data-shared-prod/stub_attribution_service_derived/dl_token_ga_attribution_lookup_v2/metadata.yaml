@@ -20,7 +20,7 @@ labels:
   owner2: data-marketing-wg
 scheduling:
   dag_name: bqetl_mozilla_org_derived
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - download_date:DATE:{{ds}}
   depends_on_past: true

@@ -15,13 +15,7 @@ labels:
   dag: bqetl_monitoring_hourly
 scheduling:
   dag_name: bqetl_monitoring_hourly
-  date_partition_parameter: null
-  backfill_date_partition_parameter: submission_date
-  destination_table: reservations_timeline_v1${{ (logical_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
-    }}
-  parameters:
-  - submission_date:DATE:{{ (logical_date - macros.timedelta(hours=1)).strftime("%Y-%m-%d")
-    }}
+  partition_offset: -1h
 bigquery:
   time_partitioning:
     type: day

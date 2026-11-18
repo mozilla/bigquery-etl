@@ -9,11 +9,11 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
+  partition_parameter: null
   referenced_tables:
   - - moz-fx-data-shared-prod
     - '*_live'
     - '*'
-  date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

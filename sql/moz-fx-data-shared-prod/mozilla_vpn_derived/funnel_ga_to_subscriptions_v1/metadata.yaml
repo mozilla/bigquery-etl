@@ -10,7 +10,7 @@ labels:
   owner1: phlee
   owner2: srose
 scheduling:
-  date_partition_parameter: date
+  partition_parameter: date
 bigquery:
   time_partitioning:
     type: day

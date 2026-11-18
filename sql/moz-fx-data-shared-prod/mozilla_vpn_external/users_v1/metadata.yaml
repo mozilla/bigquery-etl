@@ -12,7 +12,7 @@ labels:
   owner2: srose
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: null
+  partition_parameter: null
   depends_on_past: true
   parameters:
   - "external_database_query:STRING: SELECT\n  id,\n  email,\n  fxa_uid,\n  fxa_profile_json,\n\

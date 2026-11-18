@@ -8,7 +8,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_monitoring_airflow
-  date_partition_parameter: null
+  partition_parameter: null
   depends_on_fivetran:
   - task_id: fivetran_airflow_metadata_import
 workgroup_access:

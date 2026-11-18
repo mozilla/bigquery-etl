@@ -11,7 +11,7 @@ labels:
   owner1: akomar
 scheduling:
   dag_name: bqetl_accounts_db_daily
-  date_partition_parameter: null
+  partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -12,7 +12,7 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_deepnote
-  date_partition_parameter: null
+  partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

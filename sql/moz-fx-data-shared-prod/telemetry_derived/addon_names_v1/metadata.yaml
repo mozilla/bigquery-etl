@@ -13,7 +13,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_addons
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
 workgroup_access:

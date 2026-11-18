@@ -16,8 +16,8 @@ labels:
   owner3: data-marketing-wg
 scheduling:
   dag_name: bqetl_marketing_analysis
-  date_partition_offset: -27
-  date_partition_parameter: null
+  partition_offset: -27d
+  partition_parameter: first_seen_date
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

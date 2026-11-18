@@ -8,7 +8,7 @@ labels:
   dag: bqetl_telemetry_dev_cycle
 scheduling:
   dag_name: bqetl_telemetry_dev_cycle
-  date_partition_parameter: null
+  partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

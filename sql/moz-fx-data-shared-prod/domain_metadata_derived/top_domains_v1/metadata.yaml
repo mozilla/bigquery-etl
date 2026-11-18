@@ -13,6 +13,7 @@ labels:
   owner1: wstuckey
 scheduling:
   dag_name: bqetl_domain_meta
+  partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: month

@@ -4,7 +4,7 @@ WITH new_profiles AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.new_profile_clients`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    first_seen_date = @first_seen_date
 ),
 profile_activation AS (
   SELECT
@@ -14,8 +14,8 @@ profile_activation AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.new_profile_activation_clients`
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 21 DAY)
-    AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    submission_date = DATE_ADD(@first_seen_date, INTERVAL 6 DAY)
+    AND first_seen_date = @first_seen_date
 ),
 profile_retention AS (
   SELECT
@@ -26,8 +26,8 @@ profile_retention AS (
     `moz-fx-data-shared-prod.firefox_ios.retention_clients`
   WHERE
     submission_date = @submission_date
-    AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND metric_date = @first_seen_date
+    AND first_seen_date = @first_seen_date
 )
 SELECT
   first_seen_date,

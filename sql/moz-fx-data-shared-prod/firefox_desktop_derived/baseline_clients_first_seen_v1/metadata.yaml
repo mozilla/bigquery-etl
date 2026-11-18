@@ -20,7 +20,7 @@ scheduling:
   dag_name: bqetl_glean_usage
   task_group: firefox_desktop
   depends_on_past: true
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
   depends_on:

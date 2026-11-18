@@ -423,10 +423,6 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     DeleteTarget(
-        table="ltv_derived.fenix_client_ltv_v1",
-        field=(),
-    ): (),  # Does not need to be shredded https://mozilla-hub.atlassian.net/browse/DENG-6169
-    DeleteTarget(
         table="ltv_derived.fenix_new_profile_ltv_v1",
         field=(CLIENT_ID),
     ): (DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)),
@@ -785,19 +781,56 @@ DELETE_TARGETS: DeleteIndex = {
     ): FXA_UNHASHED_SRC,
 }
 
+# Tables with a client id that are intentionally not shredded, keyed by
+# project.dataset.table with the reason as the value. find_glean_targets and the
+# shredder_targets_v1 monitoring job skip these.
+NOT_SHREDDED: dict[str, str] = {
+    f"{SHARED_PROD}.{table}": reason
+    for table, reason in {
+        "firefox_desktop_derived.migration_esr_incorrect_deletion_request_v1": (
+            "Deletion request table."
+        ),
+        "firefox_desktop_derived.pageload_1pct_v1": (
+            "Subset of firefox_desktop_stable.pageload_v1, which doesn't have client ids."
+        ),
+        "firefox_desktop_derived.pageload_nightly_v1": (
+            "Subset of firefox_desktop_stable.pageload_v1, which doesn't have client ids."
+        ),
+        "ltv_derived.fenix_client_ltv_v1": (
+            "Does not need to be shredded, see "
+            "https://mozilla-hub.atlassian.net/browse/DENG-6169"
+        ),
+        **{
+            f"{channel}_stable.migration_v1": "Glean migration ping, not yet supported."
+            for channel in (
+                "org_mozilla_fenix_nightly",
+                "org_mozilla_fenix",
+                "org_mozilla_fennec_aurora",
+                "org_mozilla_firefox_beta",
+                "org_mozilla_firefox",
+            )
+        },
+    }.items()
+}
+
+
+def not_shredded_tables(project: str) -> set[str]:
+    """Return NOT_SHREDDED tables in the given project in dataset.table form."""
+    return {
+        table.removeprefix(f"{project}.")
+        for table in NOT_SHREDDED
+        if table.startswith(f"{project}.")
+    }
+
+
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
 SEARCH_IGNORE_TABLES |= {target.table for target in DELETE_TARGETS}
+SEARCH_IGNORE_TABLES |= not_shredded_tables(SHARED_PROD)
 # these tables have a known user identifier, but do not yet have associated
 # deletion requests, or do not keep data for older than 30 days
 SEARCH_IGNORE_TABLES |= {
     target.table
     for target in [
-        # glean migration
-        glean_target(table="org_mozilla_fenix_nightly_stable.migration_v1"),
-        glean_target(table="org_mozilla_fenix_stable.migration_v1"),
-        glean_target(table="org_mozilla_fennec_aurora_stable.migration_v1"),
-        glean_target(table="org_mozilla_firefox_beta_stable.migration_v1"),
-        glean_target(table="org_mozilla_firefox_stable.migration_v1"),
         # pocket
         DeleteTarget(table="pocket_stable.fire_tv_events_v1", field=POCKET_ID),
         # mobile
@@ -829,15 +862,6 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.optout_v4", ID),
     ("telemetry_stable.pre_account_v4", ID),
     ("telemetry_stable.prio_v4", ID),
-}
-
-# list of dataset_id.table_id to ignore in find_glean_targets function
-GLEAN_IGNORE_LIST = {
-    # deletion request table
-    "firefox_desktop_derived.migration_esr_incorrect_deletion_request_v1",
-    # subset of firefox_desktop_stable.pageload_v1 which doesn't have client ids
-    "firefox_desktop_derived.pageload_1pct_v1",
-    "firefox_desktop_derived.pageload_nightly_v1",
 }
 
 
@@ -957,9 +981,9 @@ def find_glean_targets(
             if app_name is not None and app_name != channel_name:
                 sources[app_name + "_derived"] += (source,)
 
-    # skip tables already added to DELETE_TARGETS
+    # skip tables already added to DELETE_TARGETS or intentionally not shredded
     manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
-    skipped_tables = manually_added_tables | GLEAN_IGNORE_LIST
+    skipped_tables = manually_added_tables | not_shredded_tables(project)
 
     # Handle custom deletion requests for usage_reporting pings
     glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID_PREFIX)
@@ -1005,8 +1029,6 @@ def find_glean_targets(
             for table in glean_stable_tables
             if table.dataset_id in sources
             and not table.table_id.startswith(source_doctype)
-            # migration tables not yet supported
-            and not table.table_id.startswith("migration")
             # skip tables with explicitly excluded client ids
             and table.labels.get("include_client_id", "true").lower() != "false"
             and qualified_table_id(table) not in skipped_tables
@@ -1053,6 +1075,7 @@ def find_glean_targets(
             for table in glean_min_stable_tables
             if table.table_id == "usage_reporting_v1"
             and table.dataset_id in usage_reporting_sources
+            and qualified_table_id(table) not in skipped_tables
         },
         **{
             # usage_reporting derived tables that contain usage_profile_id

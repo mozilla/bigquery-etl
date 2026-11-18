@@ -685,6 +685,11 @@ fields:
 
         * Whether a verified Mozilla account is signed in. Reflects the Mozilla account
         only, so it is false by default for guest users; see auth_provider'
+    - name: generation_triggered
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True when the scheduler found enough new evidence to generate memories.
+        False when it found none; every other extra is then absent.
     - name: had_errors
       type: BOOLEAN
       mode: NULLABLE
@@ -885,6 +890,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether this was the final write at shutdown
+    - name: is_first_run
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True the first time memories are generated for a user.
     - name: is_first_startup
       type: BOOLEAN
       mode: NULLABLE
@@ -1573,6 +1582,17 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of characters generated for text generation tasks.
+    - name: chat_messages_kept
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of those chat messages left after removing blocked or sensitive
+        messages. Absent when generating memories from chats is turned off.
+    - name: chat_messages_pulled
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of the user's chat messages read since the last activity
+        an earlier run processed. Absent when generating memories from chats is turned
+        off.
     - name: check_weekday
       type: INTEGER
       mode: NULLABLE
@@ -1683,6 +1703,18 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of deleted comments.
+    - name: demoted_to_long_term
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of aged memories whose type changed from durable to long
+        term. Memories deleted by decay in the same run are not counted. Absent when
+        the run failed before ageing finished.
+    - name: demoted_to_short_term
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of aged memories whose type changed from durable or long
+        term to short term. Memories deleted by decay in the same run are not counted.
+        Absent when the run failed before ageing finished.
     - name: diverged
       type: INTEGER
       mode: NULLABLE
@@ -1856,6 +1888,11 @@ fields:
         is the value as approved in the review dialog, which is not necessarily the
         value the model generated. Sent alongside final_length to give that count
         something to be read against, so only sent when the outcome is edited.
+    - name: filter_dropped
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of candidate memories dropped by the quality and sensitivity
+        filter. Absent when the filter did not run or did not finish.
     - name: final_length
       type: INTEGER
       mode: NULLABLE
@@ -1880,6 +1917,35 @@ fields:
       mode: NULLABLE
       description: Character count of the value the model generated. Only sent when
         the outcome is edited.
+    - name: generation_batches
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of batches of processed memories that were attempted, each one model
+        request plus any retries. Lower than the number of batches planned when the
+        run stopped early on an error. Absent when no memory was processed.
+
+        * Number of batches of processed sessions that were attempted, each one model
+        request plus any retries. Lower than the number of batches planned when the
+        run stopped early on an error. Absent when no session was processed.'
+    - name: generation_batches_skipped
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of batches skipped because their request failed in a way that retrying
+        will not fix. The run continues with the remaining batches. Absent when no
+        memory was processed.
+
+        * Number of batches skipped because their request failed in a way that retrying
+        will not fix. The run continues with the remaining batches. Absent when no
+        session was processed.'
+    - name: generation_candidates
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of initial candidate memories generated before filtering.
+        Absent when generation did not finish.
     - name: grouped_id
       type: INTEGER
       mode: NULLABLE
@@ -1914,6 +1980,17 @@ fields:
         * The height that the window was created at
 
         * The height that the window was resize to'
+    - name: history_rows_kept
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of those history rows left after removing blocked or sensitive
+        pages. Absent when generating memories from history is turned off.
+    - name: history_rows_pulled
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of browsing history rows (page visits and searches) read
+        since the last activity an earlier run processed. Absent when generating memories
+        from history is turned off.
     - name: http_status
       type: INTEGER
       mode: NULLABLE
@@ -1996,6 +2073,43 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Count of items larger than QUOTA_BYTES_PER_ITEM.
+    - name: journey_memory_candidates
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of those memories sent for journey generation: the most
+        recent eligible memories, up to the per-run limit, that still have at least
+        one linked browsing history page. When the run stopped early on an error,
+        only the batches reached are counted. Absent when the run failed before selecting
+        memories.'
+    - name: journeys_after
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of stored journeys when the run ended, counted the same
+        way as journeys_before. Recorded on errors too. Absent when counting them
+        failed.
+    - name: journeys_before
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of stored journeys when maintenance started, including dismissed
+        or snoozed journeys. Absent when counting them failed.
+    - name: journeys_eligible_after
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of stored journeys that can be suggested when the run ended:
+        not dismissed or snoozed, and their memory still exists. Recorded on errors
+        too. Absent when counting them failed.'
+    - name: journeys_generated
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of valid journeys the model returned for the processed memories.
+        A response that could not be read counts as none. Absent when generation did
+        not finish.
+    - name: journeys_removed
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of stored journeys deleted because their memory no longer
+        exists or was deleted by the user. Absent when the run failed before deleting
+        finished.
     - name: last_install
       type: INTEGER
       mode: NULLABLE
@@ -2101,6 +2215,44 @@ fields:
         * Number of memories available
 
         * Number of memories included'
+    - name: memories_after
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of stored memories when the run ended.
+
+        * Number of stored memories when the run ended, counted the same way as memories_before.
+        Recorded on errors too. Absent when counting them failed.'
+    - name: memories_aged
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of remaining stored memories whose usage counts were aged
+        and whose strength and type were updated, including those then deleted by
+        decay. When the run stopped early on an error, only the memories reached are
+        counted. Absent when the run failed before ageing.
+    - name: memories_before
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of stored memories when generation started.
+
+        * Number of stored memories when maintenance started, including memories the
+        user deleted via natural language command. Absent when counting them failed.'
+    - name: memories_decayed
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of aged memories permanently deleted because their strength
+        decayed below the retention threshold. Absent when the run failed before ageing
+        finished.
+    - name: memories_eligible
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of stored memories that can have a journey and do not have
+        one yet: memories that are not sensitive and are linked to browsing history.
+        Counted before the limit on how many memories one run processes. Absent when
+        the run failed before selecting memories.'
     - name: memories_similarity_avg
       type: INTEGER
       mode: NULLABLE
@@ -2117,6 +2269,12 @@ fields:
       description: Lowest similarity score of memories included as context, as a percentage
         rounded to the nearest whole one. The score is what memory retrieval ranked
         the memory as. Absent when no memory was included.
+    - name: memories_skipped
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of remaining stored memories not aged because they were
+        aged less than a day ago. When the run stopped early on an error, only the
+        memories reached are counted. Absent when the run failed before ageing.
     - name: memories_used
       type: INTEGER
       mode: NULLABLE
@@ -2169,6 +2327,24 @@ fields:
         * Number of mention suggestions available
 
         * Number of mention suggestions shown'
+    - name: merge_components_removed
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of stored memories deleted because they were combined into
+        a merged memory. A memory in more than one group is counted once. Absent unless
+        merge_status is ran or when merging failed before deleting finished.
+    - name: merge_groups_proposed
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of groups of stored memories the model proposed combining
+        before invalid groups were dropped. Absent unless merge_status is ran or when
+        merging failed before the model responded.
+    - name: merge_groups_saved
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of proposed groups that were valid and saved, each as one
+        merged memory. Absent unless merge_status is ran or when merging failed before
+        saving finished.
     - name: message_seq
       type: INTEGER
       mode: NULLABLE
@@ -2526,6 +2702,18 @@ fields:
         who has a single profile.
 
         * The number of profiles in the database at the time.'
+    - name: promoted_to_durable
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of aged memories whose type changed from short term or long
+        term to durable. Memories deleted by decay in the same run are not counted.
+        Absent when the run failed before ageing finished.
+    - name: promoted_to_long_term
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of aged memories whose type changed from short term to long
+        term. Memories deleted by decay in the same run are not counted. Absent when
+        the run failed before ageing finished.
     - name: prompts
       type: INTEGER
       mode: NULLABLE
@@ -2579,6 +2767,26 @@ fields:
       description: Character count of the value the user submitted. Read against generated_length
         it says whether the user cut the generated value down or added to it. Only
         sent when the outcome is edited, as above.
+    - name: save_new
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of those journeys saved. Every saved journey is new, since memories
+        that already have a journey are not processed. When the run stopped early
+        on an error, only the batches reached are counted. Absent when no journey
+        was generated to save.
+
+        * Number of candidate memories that passed the filter and were saved as new
+        memories, increasing the number of stored memories. Candidates saved as an
+        update to a stored memory are counted in save_updated instead. Absent when
+        saving did not run or did not finish.'
+    - name: save_updated
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of candidate memories that passed the filter but matched
+        the summary, and so same ID, of a stored memory and were saved as an update
+        to it instead of a new memory. Absent when saving did not run or did not finish.
     - name: saved_count
       type: INTEGER
       mode: NULLABLE
@@ -2628,6 +2836,36 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The session sequence number (monotonically increasing across restarts).
+    - name: sessions_built
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of sessions the kept history rows and chat messages were
+        grouped into. Absent when the run failed before grouping.
+    - name: sessions_processed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of sessions eligible for memory generation: those not skipped.
+        Absent when the run failed before grouping.'
+    - name: sessions_processed_events
+      type: INTEGER
+      mode: NULLABLE
+      description: Total number of page visits, searches and chat messages across
+        the processed sessions. Absent when no session was processed.
+    - name: sessions_processed_events_max
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of page visits, searches and chat messages in the largest
+        processed session. Absent when no session was processed.
+    - name: sessions_processed_events_min
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of page visits, searches and chat messages in the smallest
+        processed session. Absent when no session was processed.
+    - name: sessions_skipped
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of those sessions dropped as too trivial to generate memories
+        from. Absent when the run failed before grouping.
     - name: single_tabs_restored
       type: INTEGER
       mode: NULLABLE
@@ -2660,6 +2898,12 @@ fields:
         cap, summed across the results handed to the assistant. A length only, never
         the text itself. 0 when nothing was cut and on any failure. A large value
         means the assistant is answering from material the cap shortened.
+    - name: soft_deleted_removed
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of stored memories permanently deleted because the user
+        had deleted them via natural language command. Absent when the run failed
+        before deleting finished.
     - name: source_line
       type: INTEGER
       mode: NULLABLE
@@ -4585,6 +4829,20 @@ fields:
 
         * A string describing the error that occurred. Reasons include: - "unknown":
         an unknown exception occurred.'
+    - name: error_stage
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * The step that failed when outcome is error: sources (reading the browsing
+        history pages or chats linked to memories), generation (including every batch
+        being skipped), save (including every generated journey being rejected), or
+        other (anything else in the run, such as reading stored journeys). Absent
+        otherwise.
+
+        * The step that failed when outcome is error: sources (reading history or
+        chats), generation, filter, save, merge, or other (anything else in the run,
+        such as grouping sessions or saving run bookkeeping). Absent otherwise.'
     - name: error_string
       type: STRING
       mode: NULLABLE
@@ -4610,10 +4868,8 @@ fields:
         the error object did not have a `name` property and it wasn''t detected as
         a "too much recursion" error.
 
-        * Type of non-HTTP error. One of "invalid-schema-error", "generic-error",
-        or "max-retry-attempts-error".
-
-        * The UniFFI error variant the store threw...'
+        * The kind of failure when outcome is error. One of: firefox_internal (an
+        exception in Firefox; maintenance makes no request to the model service)....'
     - name: errorName
       type: STRING
       mode: NULLABLE
@@ -5446,6 +5702,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The menu action the user has selected for a given tab
+    - name: merge_status
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether the merge step ran. One of: not_reached (the run ended
+        on an error before merging), not_run (no memories were saved, so there was
+        nothing new to merge), below_threshold (too few memories to merge), or ran
+        (merging was attempted; when it failed, error_stage is merge).'
     - name: message
       type: STRING
       mode: NULLABLE

@@ -1,0 +1,33 @@
+fields: !flatten-lists
+- !include-fields
+  table: moz-fx-data-shared-prod.customer_experience_derived.app_store_reviews_retrieval_index_v1
+  field_names:
+  - creation_date
+  - id
+- name: app_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Apple App Store identifier of the Mozilla app the review is for.
+- name: territory
+  type: STRING
+  mode: NULLABLE
+  description: App Store territory (country or region) where the review was posted.
+- name: rating
+  type: INTEGER
+  mode: NULLABLE
+  description: Star rating given by the reviewer.
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: Title of the App Store review, as currently stored in the source table.
+- name: body
+  type: STRING
+  mode: NULLABLE
+  description: Body text of the App Store review, as currently stored in the source table.
+- !include-fields
+  table: moz-fx-data-shared-prod.customer_experience_derived.app_store_reviews_retrieval_index_v1
+  exclude_field_names:
+  - creation_date
+  - id
+  - title
+  - body

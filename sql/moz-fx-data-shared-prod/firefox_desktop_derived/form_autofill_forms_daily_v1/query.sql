@@ -21,7 +21,7 @@ SELECT
   SUM(modified_fields) AS modified_fields,
   SUM(net_kept_fields) AS net_kept_fields,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows`
+  `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows_daily`
 WHERE
   submission_date = @submission_date
 GROUP BY

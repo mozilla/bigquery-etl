@@ -9,7 +9,7 @@
 -- Do not add joins: a join stops a submission_date filter on this view from
 -- pruning the events_stream partitions.
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows`
+  `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows_daily`
 AS
 WITH autofill_events AS (
   SELECT

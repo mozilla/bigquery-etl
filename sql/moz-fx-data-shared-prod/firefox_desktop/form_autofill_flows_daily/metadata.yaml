@@ -1,4 +1,4 @@
-friendly_name: Form Autofill Flows
+friendly_name: Form Autofill Flows Daily
 description: |-
   One row per client, day and form autofill interaction ("flow") on Firefox
   Desktop, for address and credit card forms. Each row has the per-field

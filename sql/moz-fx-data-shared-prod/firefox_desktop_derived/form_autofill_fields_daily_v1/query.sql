@@ -19,7 +19,7 @@ SELECT
   COUNTIF(f.is_popup_shown AND has_autofill) AS popup_autofilled_flows,
   COUNTIF(is_form_submitted) AS submitted_flows,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows`,
+  `moz-fx-data-shared-prod.firefox_desktop.form_autofill_flows_daily`,
   UNNEST(fields) AS f
 WHERE
   submission_date = @submission_date

@@ -4,7 +4,6 @@ This only needs the shredder config, mozilla-pipeline-schemas, and the probeinfo
 listing, so it can run without BigQuery access.
 """
 
-import logging
 from collections.abc import Iterable, Mapping
 from typing import Optional
 

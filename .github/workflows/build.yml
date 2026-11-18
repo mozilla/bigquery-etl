@@ -633,7 +633,23 @@ jobs:
       pr-number: ${{ steps.context.outputs.pr_number }}
       commit-sha: ${{ steps.context.outputs.commit_sha }}
     environment: *job-env
+    env:
+      # Secrets can't be referenced in step `if:`, so expose whether the key exists.
+      # Dependabot-triggered runs get it from the Dependabot secret of the same name
+      HAS_CI_BOT_KEY: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY != '' }}
     steps:
+      - name: Generate bigquery-etl-ci-bot token
+        id: app-token
+        # Without the key (e.g. on forks) the dispatch step reports the missing token
+        if: env.HAS_CI_BOT_KEY == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510  # v3.3.0
+        with:
+          client-id: ${{ secrets.BQETL_CI_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY }}
+          owner: mozilla
+          repositories: private-bigquery-etl
+          # repository_dispatch needs contents: write
+          permission-contents: write
       - name: Determine context
         id: context
         env:
@@ -653,7 +669,7 @@ jobs:
       - name: Trigger private-bigquery-etl CI
         id: dispatch
         env:
-          TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
+          TRIGGER_TOKEN: ${{ steps.app-token.outputs.token }}
           COMMIT_SHA: ${{ steps.context.outputs.commit_sha }}
           PR_NUMBER: ${{ steps.context.outputs.pr_number }}
           RUN_ID: ${{ github.run_id }}

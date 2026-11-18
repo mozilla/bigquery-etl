@@ -60,16 +60,20 @@ cohorts_in_range AS (
     first_seen_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
-    -- outright rather than flagged. Unlike the desktop_retention_clients tables this one has no
-    -- 27-day lag, so it has carried the segment since 2026-08-28 and needs a backfill.
-    -- clients_first_seen_v2.normalized_os is only partly normalized (rows sourced from
-    -- clients_daily carry the raw environment.system.os.name), so normalize before comparing.
-    AND NOT `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
-      mozfun.norm.os(normalized_os),
-      app_version,
-      startup_profile_selection_reason,
-      first_seen_date
+    -- This table feeds retention dashboards, so confirmed automated (bot) clients are excluded
+    -- outright rather than flagged. They come from telemetry_derived.desktop_automated_clients_v1
+    -- (DENG-11925), which includes the DENG-11590 segment. Exclude every fleet.
+    AND client_id NOT IN (
+      -- Only flags up to @submission_date, so a rerun or backfill gives the same result as the
+      -- daily run. The table is read directly because a membership test needs no per-client
+      -- grouping. NOT IN is NULL for every row if the subquery returns a NULL, so drop NULLs.
+      SELECT
+        client_id
+      FROM
+        `moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1`
+      WHERE
+        submission_date <= @submission_date
+        AND client_id IS NOT NULL
     )
 ),
 activity_cohort_match AS (

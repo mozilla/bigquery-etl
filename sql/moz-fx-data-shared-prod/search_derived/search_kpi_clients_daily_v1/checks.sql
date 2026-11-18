@@ -422,7 +422,8 @@ WHERE
 -- first release-channel click. Types in the families the query excludes without a row
 -- (action_, autofill_, intervention_, tip_, restrict_keyword_) can't fail it, so they're left
 -- out; the next check lists them once clicked. A name cut short by the 500-byte limit on the
--- results field is a prefix of a real type, so it isn't a new type.
+-- results field is a prefix of a real type, so it isn't a new type. A name with a control
+-- character is corrupted on the client (e.g. 8 bytes of a real name zeroed out), not a new type.
 WITH component_map AS (
   SELECT
     result_type
@@ -448,6 +449,7 @@ new_types AS (
     shown AS s
   WHERE
     NOT REGEXP_CONTAINS(result_type, r'^(action|autofill|intervention|tip|restrict_keyword)_')
+    AND NOT REGEXP_CONTAINS(result_type, r'[\x00-\x1f]')
     AND NOT EXISTS (
       SELECT
         1

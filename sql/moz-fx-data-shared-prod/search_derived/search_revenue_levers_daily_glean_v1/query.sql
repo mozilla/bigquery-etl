@@ -296,7 +296,8 @@ SELECT
   cd.search_with_ads_organic,
   cd.monetizable_sap,
   cd.search_with_ads_serp,
-  cd.ad_click_serp
+  cd.ad_click_serp,
+  CAST(NULL AS STRING) AS channel
 FROM
   combined_search_data AS cd
 LEFT JOIN

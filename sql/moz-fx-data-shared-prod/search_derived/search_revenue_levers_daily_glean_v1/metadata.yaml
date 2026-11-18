@@ -12,7 +12,8 @@ description: |-
 
   Things to know when reading it:
   * Desktop `sap` is `sap_kpi`, which leaves out runaway-SAP rows, the cap the legacy table applies.
-    It only covers Firefox 138 and later, so filter both sides to 138+ when comparing.
+  * The desktop search columns cover Firefox 138 and later. Clients on earlier versions send little
+    of the data, so filter the legacy table to 138 and later when comparing.
   * Desktop `tagged_sap`, `tagged_follow_on`, `search_with_ads`, `ad_click` and the organic columns
     are the Glean counter series that reconcile to the legacy table. `search_with_ads_serp` and
     `ad_click_serp` are the SERP-derived equivalents and are lower. `ad_click_serp` steps up at
@@ -28,6 +29,10 @@ description: |-
     codes and the Canonical codes `ubuntu` and `ubuntu-sn`. Data checks warn when unlisted Google,
     Bing or DuckDuckGo codes carry more than 1% of that partner's desktop SAP, and when the
     monetizable share of Google desktop SAP falls below 90%. Mobile is always 0.
+  * Bing and DuckDuckGo desktop include custom engines installed by extensions, such as
+    `Bing (New Tab Search)`, which the legacy table left as `other`. Their overall SAP therefore runs
+    above the legacy table's, while the SAP that carries a partner code, and so `monetizable_sap`, is at
+    parity. Per-SAP ratios for these two partners change accordingly.
   * Bing desktop leaves out Acer distributions using the `distribution_id` only. The legacy
     `search.acer_cohort` list is keyed on the legacy `client_id` and is not carried.
   * Mobile rows are not split by operating system, so `normalized_os` is NULL on them.

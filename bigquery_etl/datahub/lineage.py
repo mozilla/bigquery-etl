@@ -5,7 +5,7 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import click
 import requests
@@ -136,7 +136,7 @@ class AuthError(requests.HTTPError):
 class DataHubClient:
     """Authenticated DataHub GraphQL client with retries."""
 
-    def __init__(self, token: Optional[str] = None, url: Optional[str] = None):
+    def __init__(self, token: str | None = None, url: str | None = None):
         """Create a client for DATAHUB_GMS_URL (default: Mozilla's DataHub).
 
         The token is, in order: the token argument, DATAHUB_GMS_TOKEN, or a
@@ -214,9 +214,9 @@ class DataHubClient:
         self,
         urn: str,
         include_deleted: bool = False,
-        since_ms: Optional[int] = None,
-        max_degree: Optional[int] = None,
-        types: Optional[set[str]] = None,
+        since_ms: int | None = None,
+        max_degree: int | None = None,
+        types: set[str] | None = None,
     ) -> list[dict[str, Any]]:
         """Return the downstream assets of urn, up to max_degree hops.
 
@@ -262,11 +262,7 @@ class DataHubClient:
                 break
 
         # Paging can return the same asset twice; keep the closest occurrence.
-        found: dict[str, dict[str, Any]] = {}
-        for r in results:
-            if r["urn"] not in found or r["degree"] < found[r["urn"]]["degree"]:
-                found[r["urn"]] = r
-        return sorted(found.values(), key=lambda r: (r["degree"], r["type"], r["name"]))
+        return merge_lineage([results])
 
     def usage(self, urns: list[str]) -> dict[str, dict[str, Any]]:
         """Return query count, user count and last query date (last 30 days) per dataset.
@@ -307,7 +303,7 @@ def table_urn(table: str) -> str:
     return f"urn:li:dataset:(urn:li:dataPlatform:bigquery,{table},PROD)"
 
 
-def is_stale_looker_tmp(urn: str, cutoff_ms: Optional[int]) -> bool:
+def is_stale_looker_tmp(urn: str, cutoff_ms: int | None) -> bool:
     """Return True for a Looker aggregate table copy built before cutoff_ms."""
     if cutoff_ms is None:
         return False
@@ -323,13 +319,13 @@ def entity_name(entity: dict[str, Any]) -> str:
     )
 
 
-def entity_platform(entity: dict[str, Any]) -> Optional[str]:
+def entity_platform(entity: dict[str, Any]) -> str | None:
     """Return the platform name of an entity."""
     platform = entity.get("platform") or (entity.get("dataFlow") or {}).get("platform")
     return (platform or {}).get("name")
 
 
-def entity_subtype(entity: dict[str, Any]) -> Optional[str]:
+def entity_subtype(entity: dict[str, Any]) -> str | None:
     """Return the first DataHub subtype of an entity, e.g. Table or Explore."""
     names = (entity.get("subTypes") or {}).get("typeNames") or []
     return names[0] if names else None
@@ -386,17 +382,18 @@ def to_asset(result: dict[str, Any]) -> dict[str, Any]:
 
 def get_downstream_lineage(
     client: DataHubClient,
-    table: str,
-    since_days: Optional[int] = None,
+    tables: list[str],
+    since_days: int | None = None,
     include_deleted: bool = False,
-    looker_tmp_days: Optional[int] = DEFAULT_LOOKER_TMP_DAYS,
-    max_degree: Optional[int] = None,
+    looker_tmp_days: int | None = DEFAULT_LOOKER_TMP_DAYS,
+    max_degree: int | None = None,
     include_usage: bool = False,
-    types: Optional[set[str]] = None,
+    types: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Return the downstream assets of a project.dataset.table.
+    """Return the downstream assets of one or more project.dataset.table.
 
-    With include_usage, BigQuery tables and views also get their query count,
+    An asset downstream of several tables is returned once, at its closest
+    degree. With include_usage, BigQuery tables and views also get their query count,
     user count and last query date for the last 30 days (one extra request
     per 100 of them).
 
@@ -422,20 +419,43 @@ def get_downstream_lineage(
     since_ms = int((now - since_days * 86400) * 1000) if since_days else None
     cutoff_ms = int((now - looker_tmp_days * 86400) * 1000) if looker_tmp_days else None
 
-    assets = client.search_downstream(
-        table_urn(table), include_deleted, since_ms, max_degree=max_degree, types=types
+    assets = merge_lineage(
+        [
+            client.search_downstream(
+                table_urn(table),
+                include_deleted,
+                since_ms,
+                max_degree=max_degree,
+                types=types,
+            )
+            for table in tables
+        ]
     )
     assets = [a for a in assets if not is_stale_looker_tmp(a["urn"], cutoff_ms)]
     if not include_deleted:
         assets = [a for a in assets if not a["deleted"]]
 
     if include_usage:
-        # Usage is only recorded for BigQuery tables and views.
-        bigquery = [a["urn"] for a in assets if is_bigquery_dataset(a)]
-        usage = client.usage(bigquery) if bigquery else {}
-        for a in assets:
-            a.update(usage.get(a["urn"], {}))
+        add_usage(client, assets)
     return assets
+
+
+def add_usage(client: DataHubClient, assets: list[dict[str, Any]]) -> None:
+    """Fill in 30-day usage of the BigQuery tables and views in assets."""
+    bigquery = [a["urn"] for a in assets if is_bigquery_dataset(a)]
+    usage = client.usage(bigquery) if bigquery else {}
+    for a in assets:
+        a.update(usage.get(a["urn"], {}))
+
+
+def merge_lineage(lineages: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    """Merge lineage of several tables, keeping each asset's closest degree."""
+    found: dict[str, dict[str, Any]] = {}
+    for assets in lineages:
+        for a in assets:
+            if a["urn"] not in found or a["degree"] < found[a["urn"]]["degree"]:
+                found[a["urn"]] = a
+    return sorted(found.values(), key=lambda a: (a["degree"], a["type"], a["name"]))
 
 
 def is_bigquery_dataset(asset: dict[str, Any]) -> bool:
@@ -443,7 +463,7 @@ def is_bigquery_dataset(asset: dict[str, Any]) -> bool:
     return asset["platform"] == "bigquery" and asset["type"] == "DATASET"
 
 
-def sql_path(asset: dict[str, Any], sql_dir: Optional[str] = None) -> Optional[Path]:
+def sql_path(asset: dict[str, Any], sql_dir: str | None = None) -> Path | None:
     """Return the sql/ directory defining a BigQuery table or view, or None.
 
     Views published to the user-facing project (mozdata) map to their source
@@ -467,11 +487,16 @@ def sql_path(asset: dict[str, Any], sql_dir: Optional[str] = None) -> Optional[P
     return path if path.is_dir() else None
 
 
-def last_query_text(asset: dict[str, Any]) -> str:
+def last_query_text(last_query: str | None, queries_30d: int | None) -> str:
     """Show the last query date, "none" if there was none in 30 days, or "n/a"."""
-    if asset["last_query"]:
-        return asset["last_query"]
-    return "none" if asset["queries_30d"] == 0 else "n/a"
+    if last_query:
+        return last_query
+    return "none" if queries_30d == 0 else "n/a"
+
+
+def type_label(asset: dict[str, Any]) -> str:
+    """Return the DataHub subtype (e.g. View), else the type in words (Data job)."""
+    return asset["subtype"] or asset["type"].replace("_", " ").capitalize()
 
 
 def type_rank(type_: str) -> int:
@@ -509,7 +534,7 @@ def format_text(
         cells = [
             [
                 str(a["degree"]),
-                a["subtype"] or a["type"].replace("_", " ").capitalize(),
+                type_label(a),
                 a["qualified_name"],
             ]
             + ([str(a["deleted"])] if show_deleted else [])
@@ -517,7 +542,7 @@ def format_text(
                 [
                     "n/a" if a["queries_30d"] is None else str(a["queries_30d"]),
                     "n/a" if a["users_30d"] is None else str(a["users_30d"]),
-                    last_query_text(a),
+                    last_query_text(a["last_query"], a["queries_30d"]),
                 ]
                 if usage_columns
                 else []

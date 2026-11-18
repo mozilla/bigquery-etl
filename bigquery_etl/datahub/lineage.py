@@ -117,7 +117,6 @@ query usage($urns: [String!]!) {
   entities(urns: $urns) {
     urn
     ... on Dataset {
-      properties { created }
       statsSummary { queryCountLast30Days uniqueUserCountLast30Days }
       usageStats(range: MONTH) { buckets { bucket metrics { totalSqlQueries } } }
     }
@@ -270,8 +269,7 @@ class DataHubClient:
 
         Counts come from DataHub's usage summary and are None when DataHub has
         no usage data for the dataset. The last query date is the latest day
-        with queries in the last 30 days, or None. Also returns the date the
-        table was created, or None.
+        with queries in the last 30 days, or None.
         """
         usage = {}
         for i in range(0, len(urns), USAGE_BATCH_SIZE):
@@ -280,7 +278,6 @@ class DataHubClient:
                 if not entity:
                     continue
                 summary = entity.get("statsSummary") or {}
-                created = (entity.get("properties") or {}).get("created")
                 buckets = (entity.get("usageStats") or {}).get("buckets") or []
                 days = [
                     b["bucket"]
@@ -295,13 +292,6 @@ class DataHubClient:
                         .date()
                         .isoformat()
                         if days
-                        else None
-                    ),
-                    "created": (
-                        datetime.fromtimestamp(created / 1000, timezone.utc)
-                        .date()
-                        .isoformat()
-                        if created
                         else None
                     ),
                 }
@@ -387,7 +377,6 @@ def to_asset(result: dict[str, Any]) -> dict[str, Any]:
         "queries_30d": None,
         "users_30d": None,
         "last_query": None,
-        "created": None,
     }
 
 
@@ -453,7 +442,6 @@ def get_downstream_lineage(
 
 def add_usage(client: DataHubClient, assets: list[dict[str, Any]]) -> None:
     """Fill in 30-day usage of the BigQuery tables and views in assets."""
-    # Usage is only recorded for BigQuery tables and views.
     bigquery = [a["urn"] for a in assets if is_bigquery_dataset(a)]
     usage = client.usage(bigquery) if bigquery else {}
     for a in assets:

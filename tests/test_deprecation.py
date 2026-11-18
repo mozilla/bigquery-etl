@@ -1,5 +1,5 @@
+import os
 import subprocess
-from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -11,6 +11,7 @@ from bigquery_etl.deprecation import (
     Candidate,
     DisabledReason,
     IncludeDownstream,
+    candidate_label,
     downstream_candidates,
     is_unused,
     label_text,
@@ -24,9 +25,7 @@ from bigquery_etl.deprecation import (
 PROJECT = "moz-fx-data-shared-prod"
 
 
-def bq_asset(
-    name, degree=1, queries=0, last_query=None, project=PROJECT, created="2020-01-01"
-):
+def bq_asset(name, degree=1, queries=0, last_query=None, project=PROJECT):
     qualified = f"{project}.{name}"
     return {
         "degree": degree,
@@ -40,7 +39,6 @@ def bq_asset(
         "queries_30d": queries,
         "users_30d": None,
         "last_query": last_query,
-        "created": created,
     }
 
 
@@ -56,28 +54,52 @@ LOOKER = {
     "queries_30d": None,
     "users_30d": None,
     "last_query": None,
-    "created": None,
 }
+
+
+BASE = {"friendly_name": "x", "owners": ["test@example.com"]}
+
+
+def add_table(sql_dir, name, metadata=BASE, view_of=None):
+    """Create a table directory, or a view of view_of when given."""
+    path = sql_dir / PROJECT / "d" / name
+    path.mkdir(parents=True)
+    if metadata is not None:
+        (path / "metadata.yaml").write_text(yaml.dump(metadata))
+    if view_of:
+        (path / "view.sql").write_text(
+            f"CREATE OR REPLACE VIEW `{PROJECT}.d.{name}` AS SELECT * FROM `{view_of}`"
+        )
+
+
+def commit(sql_dir, when="2020-01-01T00:00:00"):
+    """Commit everything in sql_dir, dated long ago unless when is None."""
+    env = dict(os.environ)
+    if when:
+        env.update(GIT_AUTHOR_DATE=when, GIT_COMMITTER_DATE=when)
+    identity = ["-c", "user.name=test", "-c", "user.email=test@example.com"]
+    subprocess.run(["git", "add", "."], cwd=sql_dir, check=True)
+    subprocess.run(
+        ["git", *identity, "-c", "commit.gpgsign=false", "commit", "-q", "-m", "x"],
+        cwd=sql_dir,
+        check=True,
+        env=env,
+    )
 
 
 @pytest.fixture
 def sql_dir(tmp_path):
-    def table(name, metadata=None):
-        path = tmp_path / PROJECT / "d" / name
-        path.mkdir(parents=True)
-        if metadata is not None:
-            (path / "metadata.yaml").write_text(yaml.dump(metadata))
-
-    base = {"friendly_name": "x", "owners": ["test@example.com"]}
-    table("target_v1", base)
-    table("live_v1", base)
-    table("used_v1", base)
-    table("old_v1", {**base, "deprecated": True, "deletion_date": "2026-01-01"})
-    table("invalid_v1", {**base, "owners": "not a list"})
-    table("no_metadata")
+    add_table(tmp_path, "target_v1")
+    add_table(tmp_path, "live_v1")
+    add_table(tmp_path, "used_v1")
+    add_table(
+        tmp_path, "old_v1", {**BASE, "deprecated": True, "deletion_date": "2026-01-01"}
+    )
+    add_table(tmp_path, "invalid_v1", {**BASE, "owners": "not a list"})
+    add_table(tmp_path, "no_metadata", None)
     subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
-    subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
-    table("untracked_v1", base)
+    commit(tmp_path)
+    add_table(tmp_path, "untracked_v1")
     return tmp_path
 
 
@@ -142,14 +164,21 @@ class TestDownstreamCandidates:
 
 
 class TestSelection:
-    def test_unknown_usage_counts_as_used(self):
-        assert is_unused(Candidate(Path("a"), [bq_asset("d.a", queries=0)]))
-        assert not is_unused(Candidate(Path("a"), [bq_asset("d.a", queries=None)]))
-        assert not is_unused(
-            Candidate(
-                Path("a"), [bq_asset("d.a", queries=0), bq_asset("d.a", queries=None)]
-            )
-        )
+    @pytest.mark.parametrize(
+        "counts,total,unused",
+        [
+            ([0], 0, True),
+            ([None], None, True),
+            ([0, None], 0, True),
+            ([None, 1], 1, False),
+        ],
+    )
+    def test_missing_usage_counts_as_no_queries(self, counts, total, unused):
+        candidate = Candidate(Path("a"), [bq_asset("d.a", queries=q) for q in counts])
+        assert candidate.queries_30d == total
+        assert is_unused(candidate) == unused
+        if total:
+            assert used_reason(candidate) == "1 query in 30 days"
 
     @pytest.mark.parametrize(
         "mode,expected",
@@ -171,18 +200,50 @@ class TestSelection:
         ]
         assert preselect(candidates, mode) == {Path(p) for p in expected}
 
-    @pytest.mark.parametrize(
-        "created,reason",
-        [
-            (date.today().isoformat(), "created in the last 30 days"),
-            (None, "creation date unknown"),
-            ((date.today() - timedelta(days=31)).isoformat(), None),
-        ],
-    )
-    def test_new_tables_are_not_unused(self, created, reason):
-        candidate = Candidate(Path("a"), [bq_asset("d.a", created=created)])
-        assert used_reason(candidate) == reason
-        assert is_unused(candidate) == (reason is None)
+    def test_recently_added_tables_are_not_unused(self, sql_dir):
+        add_table(sql_dir, "new_v1")
+        commit(sql_dir, when=None)
+        old, new = candidates_for(
+            sql_dir, [bq_asset("d.live_v1"), bq_asset("d.new_v1")]
+        )[0]
+        assert (old.is_new, new.is_new) == (False, True)
+        assert is_unused(old)
+        assert used_reason(new) == "added in the last 30 days"
+
+    def test_age_is_unknown_without_git_history(self, sql_dir):
+        with patch("bigquery_etl.deprecation.recently_added", return_value=None):
+            (candidate,) = candidates_for(sql_dir, [bq_asset("d.live_v1")])[0]
+        assert candidate.is_new
+
+    @pytest.mark.parametrize("view_queries,unused", [(5, set()), (0, {"all"})])
+    def test_tables_are_used_through_their_views(self, sql_dir, view_queries, unused):
+        # live_v1 <- live (fully qualified) <- live_top (via the user-facing project)
+        add_table(sql_dir, "live", view_of=f"{PROJECT}.d.live_v1")
+        add_table(sql_dir, "live_top", view_of="mozdata.d.live")
+        commit(sql_dir)
+        candidates, _ = candidates_for(
+            sql_dir,
+            [
+                bq_asset("d.live_v1"),
+                bq_asset("d.live", degree=2),
+                bq_asset("d.live_top", degree=3, queries=view_queries),
+            ],
+        )
+        table, view, top = candidates
+        dependents = [c.dependent_views for c in (table, view, top)]
+        assert dependents == [[view], [top], []]
+        selected = preselect(candidates, IncludeDownstream.UNUSED)
+        if unused:
+            assert selected == {c.path for c in candidates}
+            assert candidate_label(table, 0).endswith("none")
+        else:
+            assert selected == set()
+            reason = (
+                f"via view {PROJECT}.d.live: via view {PROJECT}.d.live_top: "
+                "5 queries in 30 days"
+            )
+            assert used_reason(table) == reason
+            assert candidate_label(table, 0).endswith(reason)
 
     def test_selection_summary_gives_reasons(self):
         candidates = [
@@ -240,7 +301,7 @@ class TestPicker:
             columns, rows = section.columns, section.rows
             # The last column is left-aligned, so it starts where its header does.
             last = columns.rindex("  ") + 2
-            if columns.endswith("LAST QUERY"):
+            if "LAST QUERY" in columns:
                 last = columns.index("LAST QUERY")
             for label, _ in rows:
                 text = label_text(label)
@@ -279,7 +340,15 @@ class TestPicker:
         assert "Shared / Retention" in label_text(rows[-1].title)
         headers = [c.title for c in choices if c.__class__.__name__ == "Separator"]
         assert headers[0] == "── Degree 1 (1) ──"
-        assert headers[1].split() == ["NAME", "TYPE", "QUERIES", "30D", "LAST", "QUERY"]
+        assert headers[1].split() == [
+            "NAME",
+            "TYPE",
+            "QUERIES",
+            "30D",
+            "LAST",
+            "QUERY",
+            "NOTE",
+        ]
 
     @pytest.mark.parametrize("answer", [[], None])
     def test_empty_selection_and_ctrl_c(self, picker_input, checkbox, answer):

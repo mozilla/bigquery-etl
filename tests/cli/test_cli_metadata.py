@@ -2258,7 +2258,6 @@ class TestDeprecateDownstream:
             "queries_30d": queries,
             "users_30d": None,
             "last_query": None,
-            "created": "2020-01-01",
         }
 
     @pytest.fixture
@@ -2273,8 +2272,20 @@ class TestDeprecateDownstream:
             (path / "metadata.yaml").write_text(
                 yaml.dump({"friendly_name": table, "owners": ["test@example.com"]})
             )
-        subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
-        subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+        # Committed long ago, so the tables aren't treated as recently added.
+        old = "2020-01-01T00:00:00"
+        for command in (
+            ["init", "-q"],
+            ["add", "."],
+            ["-c", "user.name=test", "-c", "user.email=test@example.com"]
+            + ["-c", "commit.gpgsign=false", "commit", "-q", "-m", "x"],
+        ):
+            subprocess.run(
+                ["git", *command],
+                cwd=tmp_path,
+                check=True,
+                env={**os.environ, "GIT_AUTHOR_DATE": old, "GIT_COMMITTER_DATE": old},
+            )
         return tmp_path
 
     @pytest.fixture

@@ -1,7 +1,6 @@
 """Select downstream assets to deprecate along with a table."""
 
 import subprocess
-from datetime import date, timedelta
 from enum import Enum, StrEnum
 from pathlib import Path
 from typing import Any, Sequence
@@ -9,6 +8,7 @@ from typing import Any, Sequence
 import attrs
 import click
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.datahub.lineage import (
     DATAHUB_LINEAGE_DEGREES,
     last_query_text,
@@ -16,11 +16,13 @@ from bigquery_etl.datahub.lineage import (
     type_label,
     type_rank,
 )
+from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 # Read-only picker groups show at most this many rows.
 MAX_READ_ONLY_ROWS = 25
-# Days covered by DataHub's usage counts; newer tables never count as unused.
+# DataHub counts queries over this many days. Tables added to git more recently
+# than that are never treated as unused.
 USAGE_WINDOW_DAYS = 30
 # prompt_toolkit styles of the picker. Only selectable rows are colored.
 PICKER_STYLE = [
@@ -48,7 +50,7 @@ class DisabledReason(Enum):
     """Why a downstream directory can't be selected, in picker order."""
 
     ALREADY_DEPRECATED = "already deprecated"
-    # Generated SQL isn't committed, but neither is a new table before `git add`.
+    # Either generated SQL, or a new table that hasn't been added to git yet.
     UNTRACKED = "not tracked by git (generated SQL, or new and needs `git add`)"
     GIT_UNAVAILABLE = "can't check git for generated SQL"
     INVALID_METADATA = "invalid metadata.yaml"
@@ -62,6 +64,10 @@ class Candidate:
     path: Path
     assets: list[dict[str, Any]]
     disabled_reason: DisabledReason | None = None
+    # Added to git in the last USAGE_WINDOW_DAYS days.
+    is_new: bool = False
+    # Downstream views whose SQL reads from this table or view.
+    dependent_views: list["Candidate"] = attrs.field(factory=list)
 
     @property
     def name(self) -> str:
@@ -75,21 +81,15 @@ class Candidate:
 
     @property
     def queries_30d(self) -> int | None:
-        """Return total 30-day queries, or None if any asset lacks usage data."""
-        counts = [a["queries_30d"] for a in self.assets]
-        return None if None in counts else sum(counts)
+        """Return total 30-day queries, or None if no asset has usage data."""
+        counts = [a["queries_30d"] for a in self.assets if a["queries_30d"] is not None]
+        return sum(counts) if counts else None
 
     @property
     def last_query(self) -> str:
         """Return the latest query date across assets, as last_query_text shows it."""
         dates = [a["last_query"] for a in self.assets if a["last_query"]]
         return last_query_text(max(dates, default=None), self.queries_30d)
-
-    @property
-    def created(self) -> str | None:
-        """Return the latest creation date across assets, or None if any is unknown."""
-        dates = [a["created"] for a in self.assets]
-        return None if None in dates else max(dates)
 
     @property
     def subtype(self) -> str:
@@ -121,6 +121,7 @@ def downstream_candidates(
             "SQL can't be told apart and no downstream can be selected.",
             err=True,
         )
+    recent = recently_added(sql_dir) if tracked else set()
     candidates = []
     for path, path_assets in by_path.items():
         candidate = Candidate(path, path_assets)
@@ -137,17 +138,44 @@ def downstream_candidates(
                     candidate.disabled_reason = DisabledReason.ALREADY_DEPRECATED
             except Exception:
                 candidate.disabled_reason = DisabledReason.INVALID_METADATA
+        # Without git history the age is unknown, which counts as new.
+        candidate.is_new = recent is None or metadata_file.resolve() in recent
         candidates.append(candidate)
     candidates.sort(key=lambda c: (c.degree, c.name))
+    link_views(candidates)
     return candidates, external
 
 
-def tracked_files(sql_dir: str) -> set[Path] | None:
-    """Return the metadata files git tracks in sql_dir, or None if git fails."""
+def link_views(candidates: list[Candidate]) -> None:
+    """Fill in Candidate.dependent_views by reading each candidate view's SQL."""
+    user_facing = ConfigLoader.get("default", "user_facing_project", fallback="mozdata")
+    default = ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+    by_name = {c.name: c for c in candidates}
+    for view in candidates:
+        view_file = view.path / "view.sql"
+        if not view_file.exists():
+            continue
+        try:
+            references = extract_table_references(view_file.read_text())
+        except Exception:  # e.g. templated SQL that can't be parsed
+            continue
+        for reference in references:
+            parts = reference.split(".")
+            if len(parts) == 2:
+                parts.insert(0, view.path.parts[-3])
+            if parts[0] == user_facing:
+                parts[0] = default
+            source = by_name.get(".".join(parts))
+            if source is not None and source is not view:
+                source.dependent_views.append(view)
+
+
+def _git_metadata_files(sql_dir: str, *command: str) -> set[Path] | None:
+    """Return the metadata files a git command lists, or None if git fails."""
     root = Path(sql_dir).resolve()
     try:
         result = subprocess.run(
-            ["git", "ls-files", "-z", "--", f"*/{METADATA_FILE}"],
+            ["git", *command, "-z", "--", f"*/{METADATA_FILE}"],
             cwd=root,
             capture_output=True,
             text=True,
@@ -155,25 +183,47 @@ def tracked_files(sql_dir: str) -> set[Path] | None:
         )
     except (OSError, subprocess.CalledProcessError):
         return None
-    return {(root / f).resolve() for f in result.stdout.split("\0") if f}
+    files = (f.strip() for f in result.stdout.split("\0"))
+    return {(root / f).resolve() for f in files if f}
+
+
+def tracked_files(sql_dir: str) -> set[Path] | None:
+    """Return the metadata files git tracks in sql_dir, or None if git fails."""
+    return _git_metadata_files(sql_dir, "ls-files")
+
+
+def recently_added(sql_dir: str) -> set[Path] | None:
+    """Return the metadata files first committed within USAGE_WINDOW_DAYS."""
+    return _git_metadata_files(
+        sql_dir,
+        "log",
+        f"--since={USAGE_WINDOW_DAYS}.days",
+        "--diff-filter=A",
+        "--name-only",
+        "--relative",
+        "--format=",
+    )
 
 
 def used_reason(candidate: Candidate) -> str | None:
-    """Return why a candidate isn't unused; unknown usage or age counts as used."""
-    if candidate.queries_30d is None:
-        return "usage unknown"
+    """Return why a candidate counts as used, or None if it is unused.
+
+    No usage data counts as no queries. A candidate is used if any view of it is.
+    """
     if candidate.queries_30d:
-        return f"{candidate.queries_30d} queries in {USAGE_WINDOW_DAYS} days"
-    if candidate.created is None:
-        return "creation date unknown"
-    cutoff = date.today() - timedelta(days=USAGE_WINDOW_DAYS)
-    if date.fromisoformat(candidate.created) > cutoff:
-        return f"created in the last {USAGE_WINDOW_DAYS} days"
+        noun = "query" if candidate.queries_30d == 1 else "queries"
+        return f"{candidate.queries_30d} {noun} in {USAGE_WINDOW_DAYS} days"
+    if candidate.is_new:
+        return f"added in the last {USAGE_WINDOW_DAYS} days"
+    for view in candidate.dependent_views:
+        reason = used_reason(view)
+        if reason:
+            return f"via view {view.name}: {reason}"
     return None
 
 
 def is_unused(candidate: Candidate) -> bool:
-    """Return True if older than the usage window with no queries in it."""
+    """Return True if nothing queried it, or a view of it, in the usage window."""
     return used_reason(candidate) is None
 
 
@@ -216,15 +266,17 @@ def degree_label(degree: int) -> str:
 def candidate_label(candidate: Candidate, width: int) -> str:
     """Return a checkbox row for a bigquery-etl directory."""
     queries = "n/a" if candidate.queries_30d is None else candidate.queries_30d
+    # Say why a row with no queries of its own still isn't unused.
+    note = "" if candidate.queries_30d else used_reason(candidate) or ""
     return (
         f"{candidate.name.ljust(width)}  {candidate.subtype:<7}  "
-        f"{queries:>11}  {candidate.last_query}"
-    )
+        f"{queries:>11}  {candidate.last_query:<10}  {note}"
+    ).rstrip()
 
 
 def candidate_columns(width: int) -> str:
     """Return the column header of candidate_label rows."""
-    return f"{'NAME'.ljust(width)}  {'TYPE':<7}  {'QUERIES 30D':>11}  LAST QUERY"
+    return f"{'NAME'.ljust(width)}  {'TYPE':<7}  {'QUERIES 30D':>11}  LAST QUERY  NOTE"
 
 
 EXTERNAL_COLUMNS = f"{'DEGREE':>6}  {'PLATFORM':<8}  {'TYPE':<10}  NAME"
@@ -331,9 +383,7 @@ def pick(
     preselected: set[Path],
     note: str = "",
 ) -> list[Path] | None:
-    """Ask which downstream directories to deprecate.
-
-    note describes the options the lineage was fetched with, for the title.
+    """Ask which downstream directories to deprecate; note is appended to the title.
 
     Returns the selected directories, [] to skip downstream, or None to cancel.
     """

@@ -386,7 +386,6 @@ class TestDataHubClient:
                 "entities": [
                     {
                         "urn": "a",
-                        "properties": {"created": day - 86400000},
                         "statsSummary": {
                             "queryCountLast30Days": 7,
                             "uniqueUserCountLast30Days": 3,
@@ -414,13 +413,11 @@ class TestDataHubClient:
                 "queries_30d": 7,
                 "users_30d": 3,
                 "last_query": "2025-10-04",
-                "created": "2025-10-03",
             },
             "b": {
                 "queries_30d": None,
                 "users_30d": None,
                 "last_query": None,
-                "created": None,
             },
         }
 

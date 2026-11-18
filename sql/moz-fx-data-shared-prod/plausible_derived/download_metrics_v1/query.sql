@@ -29,7 +29,9 @@ SELECT
   JSON_VALUE(e.props, '$.release_channel') AS release_channel,
   JSON_VALUE(e.props, '$.download_language') AS download_language,
   JSON_VALUE(e.props, '$.method') AS method,
-  COUNT(*) AS download_count
+  COUNT(*) AS download_count,
+  JSON_VALUE(e.props, '$.partner') AS partner,
+  JSON_VALUE(e.props, '$.partner_download') AS partner_download
 FROM
   `moz-fx-data-shared-prod.plausible_external.events_v1` AS e
 LEFT JOIN
@@ -52,4 +54,6 @@ GROUP BY
   platform,
   release_channel,
   download_language,
-  method
+  method,
+  partner,
+  partner_download

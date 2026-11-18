@@ -4,7 +4,7 @@ For background, see [Accessing Public Data](https://docs.telemetry.mozilla.org/c
 on `docs.telemetry.mozilla.org`.
 
 - To make query results publicly available, the `public_bigquery` flag must be set under
-  `labels` in `metadata.yaml`, along with a `review_bugs` entry recording the data review
+  `labels` in `metadata.yaml`, along with a `review_bugs` entry recording the data review (this is required; validation fails if missing)
   - Tables will get published in the `mozilla-public-data` GCP project which is accessible
     by everyone, also external users
 - To make query results publicly available as JSON, `public_json` flag must be set in

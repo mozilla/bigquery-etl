@@ -31,6 +31,7 @@ Commands:
   alchemer    Commands for importing alchemer data.
   dag         Commands for managing DAGs.
   dependency  Build and use query dependency graphs.
+  deploy      Commands for deploying queries and UDFs to production.
   dryrun      Dry run SQL.
   format      Format SQL.
   glam        Tools for GLAM ETL.

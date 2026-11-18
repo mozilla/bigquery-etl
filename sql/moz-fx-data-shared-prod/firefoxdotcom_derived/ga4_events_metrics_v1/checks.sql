@@ -59,6 +59,7 @@ WITH unexpected_keys AS (
       'term',
       'content',
       'gclid',
+      'dclid',
       'gclsrc',
       'gad_source',
       'gad_campaignid',
@@ -72,7 +73,7 @@ WITH unexpected_keys AS (
   GROUP BY
     clean_key
   HAVING
-    record_count >= 100
+    record_count >= 500
 )
 SELECT
   IF(

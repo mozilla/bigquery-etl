@@ -19,8 +19,9 @@ fields:
   mode: NULLABLE
   description: |-
     Which window of analysis_period this row is for (e.g., 7 for the
-    "day_7" table). NULL on most failed rows, since most failure log sites
-    don't record which window they were computing.
+    "day_7" table). Many log sites don't record the window; their rows take
+    the windows observed for that experiment/period, and stay NULL only when
+    none were observed.
 - name: analysis_basis
   type: STRING
   mode: NULLABLE
@@ -52,16 +53,21 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    One of "succeeded", "failed", or "partial" (both a logged failure and
-    output in the statistics table exist for this cell, e.g. one statistic
-    or reference branch errored while another for the same metric didn't).
+    One of "succeeded"; "partial" (both a logged failure and output in the
+    statistics table exist for this cell, e.g. one statistic or reference
+    branch errored while another for the same metric didn't); "failed";
+    "skipped" (intentionally not computed: explained by a log row such as
+    insufficient_clients, or in a basis/segment whose identity count is 0);
+    or "missing" (expected per metric_config, but neither output nor a log
+    row explains its absence).
 - name: error_category
   type: STRING
   mode: NULLABLE
   description: |-
-    Set when status = "failed" or "partial": resources, data, configuration,
-    or jetstream_failure. See jetstream_analysis_errors/view.sql for
-    definitions.
+    Set when status = "failed" or "partial" (resources, data, configuration,
+    or jetstream_failure) or "skipped" (insufficient_clients, also used
+    without a log row when the basis/segment had zero clients). See
+    jetstream_analysis_errors/view.sql for definitions.
 - name: exception_type
   type: STRING
   mode: NULLABLE
@@ -72,3 +78,12 @@ fields:
   mode: NULLABLE
   description: |-
     The original exception message from Jetstream's logs.
+- name: expected
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the experiment's metric_config expects this cell. FALSE for
+    output or log rows outside it (e.g. the `identity` count, ratio-metric
+    dependencies). NULL when the experiment has no resolved metric_config,
+    or on a log row that doesn't identify a cell (NULL metric, segment, or
+    analysis_basis).

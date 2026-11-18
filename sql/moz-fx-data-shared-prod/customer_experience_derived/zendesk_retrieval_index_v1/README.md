@@ -238,7 +238,7 @@ WHERE creation_date BETWEEN DATE('2026-04-01') AND DATE('2026-04-30')
 | What changed | Field to update in `query.sql` |
 |---|---|
 | Prompt text or `output_schema` in `AI.GENERATE` | `prompt_version` — increment to `v2`, `v3`, … |
-| Generative model (currently `gemini-2.5-pro`) | `{% set llm_model = '...' %}` at the top of the file |
+| Generative model (currently `gemini-3.8-flash`) | `{% set llm_model = '...' %}` at the top of the file |
 | Embedding model (currently `gemini-embedding-001`) | `{% set embedding_model = '...' %}` + re-embed full history |
 
 `prompt_version` is stored per row in `metadata.prompt_version`, so rows written under different prompts can be identified and re-processed during backfills. Add a row to this table for every change.

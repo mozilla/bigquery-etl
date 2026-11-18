@@ -1,0 +1,18 @@
+friendly_name: Deepnote Content Usage Daily
+description: |-
+  Daily views, edits, executions, machine starts and exports per Deepnote project,
+  notebook and channel (`ui` for the browser, `api` for API/MCP/scripts), from the
+  audit log.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

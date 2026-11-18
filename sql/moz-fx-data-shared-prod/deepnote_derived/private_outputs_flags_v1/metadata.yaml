@@ -1,0 +1,13 @@
+friendly_name: Deepnote Private Outputs Flags
+description: |-
+  Deepnote projects that break or leak data with private outputs, one row per
+  project and flag. Restricted to data platform.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_deepnote
+  date_partition_parameter: null

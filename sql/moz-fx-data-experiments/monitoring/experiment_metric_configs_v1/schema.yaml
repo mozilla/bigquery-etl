@@ -173,7 +173,7 @@ fields:
       - name: analysis_periods
         type: STRING
         mode: REPEATED
-        description: Analysis periods (daily, weekly, days28, overall, preenrollment_weekly, preenrollment_days28) this statistic is computed for.
+        description: Analysis periods (day, week, days28, overall, preenrollment_week, preenrollment_days28) this statistic is computed for.
   - name: unresolved_metrics
     type: RECORD
     mode: REPEATED

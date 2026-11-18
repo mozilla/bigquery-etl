@@ -7,8 +7,11 @@ description: |-
 
   The access-point version of the Glean levers table. It has no DAU columns: a client counts once
   in DAU but can use several access points in a day, so DAU cannot be split by access point and
-  would repeat and overcount when summed. Desktop search comes from `search_aggregates_glean`
-  and mobile from `mobile_search_aggregates`.
+  would repeat and overcount when summed. The DAU measures are in
+  `search_revenue_levers_dau_glean_v1`: join the two tables on submission_date, partner,
+  device and country, and on normalized_os for desktop only, since mobile DAU has no operating
+  system. Desktop search comes from `search_aggregates_glean` and mobile from
+  `mobile_search_aggregates`.
 
   Things to know when reading it:
   * Desktop `sap` is `sap_kpi`, which leaves out runaway-SAP rows, the cap the legacy table applies.
@@ -48,8 +51,7 @@ labels:
   dag: bqetl_search_dashboard
 scheduling:
   dag_name: bqetl_search_dashboard
-  # search_aggregates_glean_v1 and search_dau_aggregates_glean_v1 fill the previous day's
-  # partition on each run, so this table does too.
+  # search_aggregates_glean_v1 fills the previous day's partition on each run, so this table does too.
   date_partition_offset: -1
 bigquery:
   time_partitioning:

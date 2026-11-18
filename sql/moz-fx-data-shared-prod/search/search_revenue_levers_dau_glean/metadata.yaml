@@ -1,5 +1,5 @@
 ---
-friendly_name: Search Revenue Levers DAU Daily Glean
+friendly_name: Search Revenue Levers DAU Glean
 description: |
   Daily active users per partner, device, operating system and country, the DAU measures of the
   Glean levers table. Built on Glean, and kept apart from the access-point search measures in

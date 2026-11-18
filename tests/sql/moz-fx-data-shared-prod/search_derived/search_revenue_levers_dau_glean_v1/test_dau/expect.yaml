@@ -1,4 +1,4 @@
-# Expected output of search_revenue_levers_dau_daily_glean_v1 for 2026-09-21 (7 rows). A NULL column is omitted.
+# Expected output of search_revenue_levers_dau_glean_v1 for 2026-09-21 (7 rows). A NULL column is omitted.
 # Desktop DAU is the Glean DAU: f2 is not DAU and f3 is MozillaOnline, so Linux in FR has 1.
 # Mobile DAU has no operating system, so normalized_os is NULL and omitted on mobile rows.
 # The legacy search_dau_aggregates desktop row (99, 99) must not be counted: only its mobile rows are read.

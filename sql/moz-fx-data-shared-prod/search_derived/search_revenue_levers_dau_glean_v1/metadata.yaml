@@ -1,5 +1,5 @@
 ---
-friendly_name: Search Revenue Levers DAU Daily Glean
+friendly_name: Search Revenue Levers DAU Glean
 description: |-
   Daily active users per partner, device, operating system and country: eligible DAU, DAU with the
   partner as default engine, and DAU engaged with SAP.

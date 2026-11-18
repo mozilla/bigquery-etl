@@ -1,4 +1,4 @@
--- Query for search_derived.search_revenue_levers_dau_daily_glean_v1
+-- Query for search_derived.search_revenue_levers_dau_glean_v1
 --
 -- The DAU measures of the Glean levers table, split out of it so the search measures can be split by
 -- access point. A client counts once in DAU but can use several access points in a day, so DAU

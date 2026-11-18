@@ -86,3 +86,17 @@ fields:
   description: |-
     Count of product_download events for this combination of dimensions on
     this date.
+- name: partner
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Distribution partner the download was attributed to. Parsed directly
+    from events_v1.props's `partner` key, raw vendor value, not normalized.
+    NULL for regular, non-partner downloads.
+- name: partner_download
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of partner download served (observed values: "repack", "fallback").
+    Parsed directly from events_v1.props's `partner_download` key, raw
+    vendor value, not normalized. NULL for regular, non-partner downloads.

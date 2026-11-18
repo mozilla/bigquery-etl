@@ -10,7 +10,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
-  date_partition_parameter: null
+  partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

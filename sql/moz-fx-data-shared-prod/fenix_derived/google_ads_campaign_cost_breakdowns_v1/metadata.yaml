@@ -10,7 +10,7 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_campaign_cost_breakdowns
-  date_partition_parameter: null
+  partition_parameter: null
   depends_on_past: false
 bigquery:
   time_partitioning:

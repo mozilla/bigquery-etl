@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 
@@ -59,8 +59,28 @@ def test_get_backfill_partition():
     assert (
         get_backfill_partition(
             backfill_date=date.fromisoformat("2020-01-03"),
-            date_partition_parameter="submission_date",
-            date_partition_offset=-1,
+            partition_parameter="submission_date",
+            partition_offset=timedelta(days=-1),
+            partitioning_type=PartitionType.DAY,
+        )
+        == "20200102"
+    )
+
+    # Sub-day offsets only apply their whole days to backfill dates.
+    assert (
+        get_backfill_partition(
+            backfill_date=date.fromisoformat("2020-01-03"),
+            partition_parameter="submission_date",
+            partition_offset=timedelta(hours=-1),
+            partitioning_type=PartitionType.DAY,
+        )
+        == "20200103"
+    )
+    assert (
+        get_backfill_partition(
+            backfill_date=date.fromisoformat("2020-01-03"),
+            partition_parameter="submission_date",
+            partition_offset=timedelta(days=-1, hours=-1),
             partitioning_type=PartitionType.DAY,
         )
         == "20200102"
@@ -69,17 +89,47 @@ def test_get_backfill_partition():
     assert (
         get_backfill_partition(
             backfill_date=date.fromisoformat("2020-01-01"),
-            date_partition_parameter="submission_date",
-            date_partition_offset=0,
+            partition_parameter="submission_date",
+            partition_offset=None,
             partitioning_type=PartitionType.MONTH,
         )
         == "202001"
     )
 
+    # A null partition parameter targets the whole table, unless there's a partition offset.
+    assert (
+        get_backfill_partition(
+            backfill_date=date.fromisoformat("2020-01-01"),
+            partition_parameter=None,
+            partition_offset=None,
+            partitioning_type=PartitionType.DAY,
+        )
+        is None
+    )
+    # An explicit zero partition offset is the same as no partition offset.
+    assert (
+        get_backfill_partition(
+            backfill_date=date.fromisoformat("2020-01-01"),
+            partition_parameter=None,
+            partition_offset=timedelta(0),
+            partitioning_type=PartitionType.DAY,
+        )
+        is None
+    )
+    assert (
+        get_backfill_partition(
+            backfill_date=date.fromisoformat("2020-01-03"),
+            partition_parameter=None,
+            partition_offset=timedelta(days=-1),
+            partitioning_type=PartitionType.DAY,
+        )
+        == "20200102"
+    )
+
     with pytest.raises(NotImplementedError):
         get_backfill_partition(
             backfill_date=date.fromisoformat("2020-01-01"),
-            date_partition_parameter="submission_date",
-            date_partition_offset=-1,
+            partition_parameter="submission_date",
+            partition_offset=timedelta(days=-1),
             partitioning_type=PartitionType.MONTH,
         )

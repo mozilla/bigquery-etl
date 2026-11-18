@@ -288,7 +288,8 @@ class PublicDataJsonDag(Dag):
         if not task.public_json:
             raise ValueError(f"Task {task.task_name} not marked as public JSON.")
 
-        converter = cattrs.BaseConverter()
+        # Make sure field converters handle raw values (e.g. `partition_offset`).
+        converter = cattrs.BaseConverter(prefer_attrib_converters=True)
         task_dict = converter.unstructure(task)
 
         del task_dict["dataset"]

@@ -8,4 +8,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_stmo
-  date_partition_parameter: null
+  partition_parameter: null

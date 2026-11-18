@@ -14,12 +14,8 @@ labels:
   shredder_mitigation: true
 scheduling:
   dag_name: bqetl_search_dashboard
-  # Prevent inheriting the -1d partition offset from `firefox_desktop_derived.serp_events_v2`
-  # for now to preserve existing behavior.
-  # TODO srose to follow up with the owners about the `serp_events` metrics always being null
-  # because this reads the `serp_events` partition for @submission_date before it's populated.
-  # Inheriting the -1d partition offset would fix that, but would delay all metrics by a day.
-  partition_offset: 0d
+  # `firefox_desktop_derived.serp_events_v2` uses a -1d offset, so this ETL does too.
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

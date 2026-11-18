@@ -1,0 +1,7 @@
+# never_active is a confirmed bot only through its Glean client ID, so the flag comes from
+# desktop_automated_clients_v1, not from udf.is_desktop_argument_profile_automation.
+- submission_date: "2026-01-01"
+  client_id: legacy_bot_never_active
+  glean_client_ids:
+  - never_active
+  fleet: bulk

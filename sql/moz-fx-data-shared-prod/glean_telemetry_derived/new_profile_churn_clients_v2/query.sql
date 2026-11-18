@@ -1,4 +1,12 @@
-WITH activity_range AS (
+WITH automated_clients AS (
+  -- Membership test only, so read the table directly rather than the per-client view.
+  SELECT
+    client_id,
+    glean_client_ids,
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1`
+),
+activity_range AS (
   SELECT
     last_seen.client_id,
     last_seen.sample_id,
@@ -89,11 +97,31 @@ client_attributes AS (
       FALSE
     ) AS is_desktop,
     first_seen.policies_is_enterprise,
-    `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
-      first_seen.normalized_os,
-      first_seen.app_display_version,
-      first_seen.startup_profile_selection_reason_first,
-      first_seen.first_seen_date
+    -- Confirmed automated (bot) clients. The column name is kept for compatibility, but it now
+    -- covers every fleet in telemetry.desktop_automated_clients (DENG-11925), matched by Glean or
+    -- legacy client ID. The UDF stays for the DENG-11590 segment: about half of the Glean
+    -- clients it flags send no legacy pings, so desktop_automated_clients does not have them.
+    (
+      `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
+        first_seen.normalized_os,
+        first_seen.app_display_version,
+        first_seen.startup_profile_selection_reason_first,
+        first_seen.first_seen_date
+      )
+      OR COALESCE(
+        first_seen.client_id IN (
+          SELECT
+            glean_client_id
+          FROM
+            automated_clients,
+            UNNEST(glean_client_ids) AS glean_client_id
+        ),
+        FALSE
+      )
+      OR COALESCE(
+        first_seen.legacy_telemetry_client_id IN (SELECT client_id FROM automated_clients),
+        FALSE
+      )
     ) AS is_desktop_argument_profile_automation,
     clients_daily.is_default_browser,
     first_seen.sample_id

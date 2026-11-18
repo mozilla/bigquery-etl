@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: glean_client_ids
+  type: STRING
+  mode: REPEATED
+- name: fleet
+  type: STRING
+  mode: NULLABLE
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+- name: isp_name
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE

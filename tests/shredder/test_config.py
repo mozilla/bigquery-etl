@@ -11,6 +11,7 @@ from bigquery_etl.shredder.config import (
     CLIENT_ID,
     DELETE_TARGETS,
     GLEAN_CLIENT_ID,
+    NOT_SHREDDED,
     DeleteSource,
     DeleteTarget,
     _list_tables,
@@ -254,6 +255,12 @@ def test_glean_targets(mock_requests):
                     field=("client_info.client_id",) * 2,
                     project="moz-fx-data-shared-prod",
                 ),
+                # migration_v1 is only skipped for the channels in NOT_SHREDDED
+                DeleteTarget(
+                    table="org_mozilla_focus_stable.migration_v1",
+                    field=("client_info.client_id",) * 2,
+                    project="moz-fx-data-shared-prod",
+                ),
                 DeleteTarget(
                     table="org_mozilla_focus_derived.clients_daily_v1",
                     field=("client_id",) * 2,
@@ -279,6 +286,12 @@ def test_glean_targets(mock_requests):
             for target in [
                 DeleteTarget(
                     table="org_mozilla_focus_beta_stable.metrics_v1",
+                    field=("client_info.client_id",) * 2,
+                    project="moz-fx-data-shared-prod",
+                ),
+                # migration_v1 is only skipped for the channels in NOT_SHREDDED
+                DeleteTarget(
+                    table="org_mozilla_focus_beta_stable.migration_v1",
                     field=("client_info.client_id",) * 2,
                     project="moz-fx-data-shared-prod",
                 ),
@@ -561,6 +574,15 @@ def test_delete_target_fields_match_sources():
             f"Invalid delete target for {target.table}: number of fields in target "
             f"(found {field_count}) must match number of sources (found {source_count})"
         )
+
+
+def test_not_shredded_is_not_a_delete_target():
+    """NOT_SHREDDED keys are fully qualified and can't also be configured targets."""
+    configured = {f"{target.project}.{target.table}" for target in DELETE_TARGETS}
+    for table, reason in NOT_SHREDDED.items():
+        assert len(table.split(".")) == 3, f"{table} must be project.dataset.table"
+        assert reason, f"{table} needs a reason"
+        assert table not in configured, f"{table} is in NOT_SHREDDED and DELETE_TARGETS"
 
 
 def test_delete_source_invalid():

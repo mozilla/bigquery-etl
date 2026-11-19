@@ -8,7 +8,7 @@ labels:
   shredder_mitigation: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  date_partition_offset: -1
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

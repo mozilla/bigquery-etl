@@ -1,36 +1,70 @@
 """Utility functions for scheduling queries."""
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import Optional
 
 TIMEDELTA_RE = re.compile(
-    r"^-?((?P<weeks>\d+)w)?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
+    r"^-?(?=\d)((?P<weeks>\d+)w)?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
 )
 
 TELEMETRY_ALERTS_EMAIL = "telemetry-alerts@mozilla.com"
 
 
+class InvalidTimedeltaError(ValueError):
+    """Raised for invalid timedelta values (i.e. non-strings or in the wrong format)."""
+
+    def __init__(self, value):
+        """Initialize the error with the invalid value."""
+        super().__init__(
+            f"Invalid timedelta value {value!r}."
+            " Timedelta values should be strings like '-1d', '1h', '45m', or '1h30m', with the supported units"
+            " being weeks (w), days (d), hours (h), minutes (m), and seconds (s), in that order."
+        )
+
+
 def is_timedelta_string(s):
     """
-    Check whether a provided string is in a timedelta format.
+    Check whether a provided value is a string in a timedelta format.
 
     Timedeltas in configs are specified like: 1h, 30m, 1h15m, ...
     """
-    return TIMEDELTA_RE.match(s)
+    return isinstance(s, str) and TIMEDELTA_RE.match(s) is not None
 
 
 def validate_timedelta_string(s):
     """Raise an error if the provided string is not in a valid timedelta format."""
     if not is_timedelta_string(s):
-        raise ValueError(
-            f"Invalid timedelta value '{s}'."
-            " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
-        )
+        raise InvalidTimedeltaError(s)
 
 
 def negate_timedelta_string(s: str) -> str:
     """Negate the provided timedelta string."""
     return s[1:] if s.startswith("-") else ("-" + s)
+
+
+# https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
+def parse_timedelta(td: Optional[str | timedelta]) -> Optional[timedelta]:
+    """Parse a timedelta string into a timedelta object, passing through timedelta objects and `None`."""
+    if isinstance(td, timedelta):
+        return td
+    if td is None or td == "":
+        return None
+    if not isinstance(td, str):
+        raise InvalidTimedeltaError(td)
+
+    match = TIMEDELTA_RE.match(td)
+    if not match:
+        raise InvalidTimedeltaError(td)
+
+    parts = match.groupdict()
+    is_negative = td.startswith("-")
+    time_params = {}
+    for name, param in parts.items():
+        if param:
+            time_params[name] = int(param) * (-1 if is_negative else 1)
+
+    return timedelta(**time_params)
 
 
 def is_date_string(s):

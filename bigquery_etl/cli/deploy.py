@@ -39,6 +39,7 @@ from bigquery_etl.deploy import (
 )
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.publish_metadata import MANAGED_LABEL
 from bigquery_etl.routine.parse_routine import ROUTINE_FILES, RawRoutine
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
@@ -167,6 +168,13 @@ log = logging.getLogger(__name__)
     "Tables with allow_field_addition=true will still be updated.",
 )
 @click.option(
+    "--table-add-managed-label",
+    "--table_add_managed_label",
+    is_flag=True,
+    default=False,
+    help='Add a label "managed" to tables for lifecycle management',
+)
+@click.option(
     "--view-force",
     "--view_force",
     is_flag=True,
@@ -260,6 +268,7 @@ def deploy(
     table_skip_existing,
     table_skip_external_data,
     table_skip_existing_schemas,
+    table_add_managed_label,
     view_force,
     view_target_project,
     view_add_managed_label,
@@ -508,6 +517,7 @@ def deploy(
         "table_skip_existing": table_skip_existing,
         "table_skip_external_data": table_skip_external_data,
         "table_skip_existing_schemas": table_skip_existing_schemas,
+        "table_add_managed_label": table_add_managed_label,
         # View options
         "view_force": view_force,
         "view_target_project": view_target_project,
@@ -1316,6 +1326,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
         credentials=options["credentials"],
         id_token=options["id_token"],
         isolated=options.get("isolated", False),
+        add_managed_label=options.get("table_add_managed_label", False),
     )
 
 
@@ -1326,7 +1337,7 @@ def _deploy_view_artifact(file_path: Path, options: dict):
 
     # Add managed label if requested
     if options.get("view_add_managed_label", False):
-        view.labels["managed"] = ""
+        view.labels[MANAGED_LABEL] = ""
 
     if options["dry_run"]:
         if not view.is_valid():

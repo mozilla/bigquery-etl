@@ -1,7 +1,13 @@
+from unittest.mock import patch
+
+from click.testing import CliRunner
+
 from bigquery_etl.cli.deploy import (
     _build_dependency_graph,
+    _deploy_table_artifact,
     _discover_artifacts,
     _needs_schema_update,
+    deploy,
 )
 
 
@@ -438,3 +444,41 @@ class TestSchemaUpdate:
             _needs_schema_update(table_dir / "query.sql", skip_existing_schemas=False)
             is True
         )
+
+
+class TestDeployManagedLabel:
+    @patch("bigquery_etl.cli.deploy.deploy_table")
+    @patch("bigquery_etl.cli.deploy._report_results")
+    @patch("bigquery_etl.cli.deploy._execute_deployment", return_value={})
+    @patch("bigquery_etl.cli.deploy.get_id_token", return_value=None)
+    @patch("bigquery_etl.cli.deploy.is_authenticated", return_value=True)
+    def test_table_add_managed_label_reaches_deploy_table(
+        self, _auth, _token, mock_execute, _report, mock_deploy_table, tmp_path
+    ):
+        sql_dir = tmp_path / "sql"
+        table_dir = sql_dir / "moz-fx-data-shared-prod/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 AS value")
+        (table_dir / "schema.yaml").write_text(
+            "fields:\n- name: value\n  type: INTEGER"
+        )
+
+        result = CliRunner().invoke(
+            deploy,
+            [
+                "--tables",
+                f"--sql-dir={sql_dir}",
+                "--project-id=moz-fx-data-shared-prod",
+                "--table-skip-existing-schemas",  # avoids a schema dry run
+                "--table-add-managed-label",
+            ],
+            catch_exceptions=False,
+        )
+        assert result.exit_code == 0, result.output
+
+        # Deploy the artifact with the options the command actually built.
+        artifacts, _, options, _ = mock_execute.call_args.args
+        file_path, _ = next(iter(artifacts.values()))
+        _deploy_table_artifact(file_path, options)
+
+        assert mock_deploy_table.call_args.kwargs["add_managed_label"] is True

@@ -42,6 +42,24 @@ class TestDeploy:
 
         client.create_table.assert_called_once()
         assert client.update_table.call_count == 0
+        assert "managed" not in client.create_table.call_args[0][0].labels
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.dryrun.DryRun")
+    def test_deploy_new_table_with_managed_label(
+        self, mock_dryrun, mock_client, query_path
+    ):
+        mock_dryrun().get_schema.return_value = {
+            "fields": [{"name": "f0_", "type": "INTEGER"}]
+        }
+        client = mock_client.return_value
+        client.get_table.side_effect = NotFound("table not found")
+
+        deploy.deploy_table(
+            artifact_file=query_path / "query.sql", add_managed_label=True
+        )
+
+        assert client.create_table.call_args[0][0].labels == {"managed": ""}
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.dryrun.DryRun")

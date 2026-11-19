@@ -13,7 +13,6 @@ SELECT
     ) AS `boolean`,
     STRUCT(
       LAX_INT64(event_extra.current_item) AS `current_item`,
-      LAX_INT64(event_extra.flow_seq) AS `flow_seq`,
       LAX_INT64(event_extra.from_version) AS `from_version`,
       LAX_INT64(event_extra.initial_version) AS `initial_version`,
       LAX_INT64(event_extra.migrated_version) AS `migrated_version`,
@@ -30,7 +29,6 @@ SELECT
       JSON_VALUE(event_extra.experiment) AS `experiment`,
       JSON_VALUE(event_extra.experiment_type) AS `experiment_type`,
       JSON_VALUE(event_extra.feature_id) AS `feature_id`,
-      JSON_VALUE(event_extra.flow_name) AS `flow_name`,
       JSON_VALUE(event_extra.item) AS `item`,
       JSON_VALUE(event_extra.migration_error) AS `migration_error`,
       JSON_VALUE(event_extra.part_id) AS `part_id`,
@@ -40,7 +38,6 @@ SELECT
       JSON_VALUE(event_extra.slug) AS `slug`,
       JSON_VALUE(event_extra.source_of_change) AS `source_of_change`,
       JSON_VALUE(event_extra.status) AS `status`,
-      JSON_VALUE(event_extra.terminating_event) AS `terminating_event`,
       JSON_VALUE(event_extra.tracker_changed) AS `tracker_changed`
     ) AS `string`
   ) AS extras

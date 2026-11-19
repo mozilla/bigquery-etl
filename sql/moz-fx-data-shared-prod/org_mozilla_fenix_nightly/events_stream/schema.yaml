@@ -1219,11 +1219,6 @@ fields:
       description: How long (in milliseconds) does the our media pipeline take to
         load the first video frame from "the creation of MDSM" to "the first frame
         loaded".
-    - name: flow_seq
-      type: INTEGER
-      mode: NULLABLE
-      description: The instance's sequence number within its session. Matches `seq`
-        in the `flows` entries of the instance's tagged events.
     - name: from_version
       type: INTEGER
       mode: NULLABLE
@@ -3067,10 +3062,6 @@ fields:
 
         * An id generated when the dropdown opened, letting this event be correlated
         with the matching dropdown_c...'
-    - name: flow_name
-      type: STRING
-      mode: NULLABLE
-      description: The name of the flow, as declared in `flows.yaml`.
     - name: form_action_origin_error
       type: STRING
       mode: NULLABLE
@@ -4391,9 +4382,6 @@ fields:
         across a day boundary and lets an outcome be cross-tabulated against `lang`.
         Freshly generated per session and stored nowhere.
 
-        * The session that owned the instance. Only present when `reason` is "abnormal",
-        since that `flow_end` is recorded outside any session.
-
         * The unique UUID of the ended session.
 
         * The unique UUID of the started session.'
@@ -4720,11 +4708,6 @@ fields:
         * telephone
 
         * tel result'
-    - name: terminating_event
-      type: STRING
-      mode: NULLABLE
-      description: The event that closed the instance (`category.name`). Only present
-        when `reason` is "exit".
     - name: text_source
       type: STRING
       mode: NULLABLE

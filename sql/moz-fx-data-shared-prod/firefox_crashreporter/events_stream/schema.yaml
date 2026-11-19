@@ -376,11 +376,6 @@ fields:
     mode: NULLABLE
     description: Quantity event extras.
     fields:
-    - name: flow_seq
-      type: INTEGER
-      mode: NULLABLE
-      description: The instance's sequence number within its session. Matches `seq`
-        in the `flows` entries of the instance's tagged events.
     - name: session_seq
       type: INTEGER
       mode: NULLABLE
@@ -390,10 +385,6 @@ fields:
     mode: NULLABLE
     description: String event extras.
     fields:
-    - name: flow_name
-      type: STRING
-      mode: NULLABLE
-      description: The name of the flow, as declared in `flows.yaml`.
     - name: id
       type: STRING
       mode: NULLABLE
@@ -404,11 +395,6 @@ fields:
       description: 'Depending on the type of event:
 
         * The reason why the crash failed to be submitted.
-
-        * Why the instance ended: - "exit": an event in the flow''s `ends_on` was
-        recorded - "timeout": the flow''s `auto_close_timeout` elapsed - "session_end":
-        the session ended while the instance was active - "abnormal": the app ended
-        abnormally while the instance was active
 
         * Why the session ended. When in MANUAL mode, the reason can optionally be
         set by the application. Possible values set by Glean in AUTO or LIFECYCLE
@@ -422,9 +408,6 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * The session that owned the instance. Only present when `reason` is "abnormal",
-        since that `flow_end` is recorded outside any session.
-
         * The unique UUID of the ended session.
 
         * The unique UUID of the started session.'
@@ -433,8 +416,3 @@ fields:
       mode: NULLABLE
       description: Wall-clock timestamp at session start (RFC 3339). Auxiliary only;
         per-event timestamps remain authoritative for time-based analysis.
-    - name: terminating_event
-      type: STRING
-      mode: NULLABLE
-      description: The event that closed the instance (`category.name`). Only present
-        when `reason` is "exit".

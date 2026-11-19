@@ -1,0 +1,6 @@
+[project]
+platform = "firefox_desktop"
+metrics = ["not_defined"]
+
+[project.population]
+data_source = "test_source"

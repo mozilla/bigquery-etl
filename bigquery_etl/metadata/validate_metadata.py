@@ -16,8 +16,17 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 from ..util import extract_from_query_path, standard_args
-from ..util.common import extract_last_group_by_from_query, project_dirs
-from .parse_metadata import DatasetMetadata, Metadata
+from ..util.common import (
+    extract_last_group_by_from_query,
+    get_unittests_dir,
+    project_dirs,
+)
+from .parse_metadata import (
+    DEFAULT_DESCRIPTION_IN_METADATA,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
 
 parser = ArgumentParser(description=__doc__)
 
@@ -334,7 +343,7 @@ def validate_asset_level(query_dir, metadata):
         # Check table description.
         results["description"] = (
             metadata.description
-            and metadata.description != "Please provide a description for the query"
+            and metadata.description != DEFAULT_DESCRIPTION_IN_METADATA
         )
 
         # Check unittest.
@@ -342,6 +351,19 @@ def validate_asset_level(query_dir, metadata):
         results["unittests"] = os.path.exists(unittest_path) and any(
             name.startswith("test_") for name in os.listdir(unittest_path)
         )
+
+        # `os.path.join("tests", query_dir)` collapses to `query_dir` when it is
+        # absolute (e.g. `--sql-dir=/tmp/workspace/private-generated-sql/sql`), so
+        # resolve the tests dir relative to the sql dir root instead.
+        if not results["unittests"]:
+            query_path = Path(query_dir)
+            if len(query_path.parents) >= 4:
+                new_unittest_path = get_unittests_dir(query_path.parents[2]) / Path(
+                    *query_path.parts[-3:]
+                )
+                results["unittests"] = new_unittest_path.exists() and any(
+                    name.startswith("test_") for name in os.listdir(new_unittest_path)
+                )
 
         # Check scheduler.
         results["scheduler"] = (
@@ -413,11 +435,23 @@ def validate_col_desc_enforced(query_dir, metadata):
 
 
 def validate_deprecation(metadata, path):
-    """Check that deprecated is True when deletion date exists."""
+    """Check that deprecated and deletion_date are set together.
+
+    Tables of deprecated apps (`deprecated_app: true`) are exempt from
+    requiring a deletion_date.
+    """
     if metadata.deletion_date and not metadata.deprecated:
         click.echo(
             f"Deletion date should only be added when table is deprecated in {path}"
         )
+        return False
+
+    if (
+        metadata.deprecated
+        and metadata.deletion_date is None
+        and not metadata.deprecated_app
+    ):
+        click.echo(f"deletion_date required for deprecated table in {path}")
         return False
 
     return True
@@ -449,6 +483,117 @@ def validate_exclusion_list_expiration_days(metadata, path):
                 )
             )
             is_valid = False
+
+    return is_valid
+
+
+def validate_external_sharing(dataset_name, dataset_metadata, dataset_path):
+    """Validate external_sharing config on a dataset.
+
+    Subscriber identities are validated at parse time (must be `group:` or
+    `workgroup:`).
+    Enforces that:
+    * only `_shared` datasets may be shared (they are published to the
+      user-facing project and the BigQuery Sharing listing points there), and
+    * every view in a shared dataset is an authorized view
+      (`labels: {authorized: true}`), so the shared listing can read through it.
+    """
+    if not dataset_metadata.external_sharing:
+        return True
+
+    is_valid = True
+
+    if not dataset_name.endswith("_shared"):
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures external_sharing but "
+                "is not suffixed with '_shared'.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    # Iterate views (not just those with a metadata file): metadata.yaml is
+    # optional for views, so globbing metadata files would skip view.sql-only
+    # views and let them publish as non-authorized.
+    for view_file in sorted(Path(dataset_path).glob("*/view.sql")):
+        view_metadata_file = view_file.parent / METADATA_FILE
+        authorized = False
+        if view_metadata_file.exists():
+            metadata = Metadata.from_file(view_metadata_file)
+            # labels with boolean true are translated to "" by Metadata.from_file
+            authorized = metadata.labels.get("authorized") == ""
+        if not authorized:
+            click.echo(
+                click.style(
+                    f"ERROR: view '{view_file.parent.name}' in shared dataset "
+                    f"'{dataset_name}' must set 'labels: {{authorized: true}}' in "
+                    "metadata.yaml.",
+                    fg="red",
+                )
+            )
+            is_valid = False
+
+    return is_valid
+
+
+def validate_external_data_subscription(dataset_name, dataset_metadata, dataset_path):
+    """Validate external_data_subscription config on a dataset.
+
+    The source exchange/listing ID charset is validated at parse time. Read
+    access to the linked dataset is granted via the dataset's own
+    `workgroup_access`. Enforces that:
+    * only `_external` datasets may subscribe to external data (the linked
+      dataset is externally-sourced, matching the repo's `_external` convention),
+      and
+    * the dataset defines no tables/views: a subscription links a read-only
+      dataset provisioned by BigQuery Sharing, so no ETL can be defined in it.
+      This includes schema-only tables (a `metadata.yaml`/`schema.yaml` with no
+      query), which deploy without a query file.
+    """
+    if not dataset_metadata.external_data_subscription:
+        return True
+
+    is_valid = True
+
+    if not dataset_name.endswith("_external"):
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but is not suffixed with '_external'.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    # a table/view lives in a subdirectory and is defined by any of these; the
+    # metadata/schema files catch schema-only tables that have no query file
+    table_definition_files = sorted(
+        definition_file
+        for pattern in (
+            "query.sql",
+            "query.py",
+            "view.sql",
+            "materialized_view.sql",
+            "script.sql",
+            "init.sql",
+            "metadata.yaml",
+            "schema.yaml",
+        )
+        for definition_file in Path(dataset_path).glob(f"*/{pattern}")
+    )
+    for definition_file in table_definition_files:
+        click.echo(
+            click.style(
+                f"ERROR: dataset '{dataset_name}' configures "
+                "external_data_subscription but defines "
+                f"'{definition_file.parent.name}/{definition_file.name}'. A "
+                "subscription links a read-only dataset; it cannot contain tables "
+                "or views.",
+                fg="red",
+            )
+        )
+        is_valid = False
 
     return is_valid
 
@@ -727,6 +872,16 @@ def validate_datasets(target):
                         dataset_name, dataset_metadata
                     ):
                         failed = True
+
+                    if not validate_external_sharing(
+                        dataset_name, dataset_metadata, root
+                    ):
+                        failed = True
+
+                    if not validate_external_data_subscription(
+                        dataset_name, dataset_metadata, root
+                    ):
+                        failed = True
     else:
         raise ValueError(f"Invalid target: {target}, target must be a directory.")
 
@@ -734,6 +889,22 @@ def validate_datasets(target):
         raise MetadataValidationError(
             f"Dataset metadata validation failed for {target}"
         )
+
+
+def validate_directories(table_dirs, dataset_dirs):
+    """Validate table and dataset metadata directories, returning error messages."""
+    errors = []
+    for table_dir in table_dirs:
+        try:
+            validate(table_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    for dataset_dir in dataset_dirs:
+        try:
+            validate_datasets(dataset_dir)
+        except MetadataValidationError as e:
+            errors.append(str(e))
+    return errors
 
 
 def main():

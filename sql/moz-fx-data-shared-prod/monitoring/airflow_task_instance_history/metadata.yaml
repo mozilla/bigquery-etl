@@ -1,0 +1,5 @@
+friendly_name: Airflow task instance history
+description: |-
+  https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dag-run.html#task-instance-history
+owners:
+- srose@mozilla.com

@@ -2,7 +2,8 @@ SELECT
     DATE(submission_timestamp) AS submission_date,
     "{{ application }}" as application,
     normalized_channel AS channel,
-    SUM(metrics.counter.{{ category }}_{{ metric.name }}) as count
+    SUM(metrics.counter.{{ category }}_{{ metric.name }}) as count,
+    COUNT(DISTINCT client_info.client_id) as client_count
 FROM `moz-fx-data-shared-prod.{{ dataset_name }}.metrics`
 WHERE
   DATE(submission_timestamp) = @submission_date AND

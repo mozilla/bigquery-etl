@@ -10,10 +10,19 @@ import rich_click as click
 
 from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.util.common import resolve_project_subpath
 
-SQL_GENERATORS_DIR = "sql_generators"
 GENERATE_COMMAND = "generate"
-ROOT = Path(__file__).parent.parent.parent
+
+SQL_GENERATORS_DIR = Path(
+    ConfigLoader.get("default", "sql_generators_dir", fallback="sql_generators")
+)
+if not SQL_GENERATORS_DIR.is_absolute():
+    SQL_GENERATORS_DIR = (
+        SQL_GENERATORS_DIR.absolute()
+        if SQL_GENERATORS_DIR.exists()
+        else resolve_project_subpath(SQL_GENERATORS_DIR)
+    )
 
 
 def generate_group(sql_generators_dir):
@@ -59,17 +68,7 @@ def generate_group(sql_generators_dir):
 
 
 # expose click command group
-generate = generate_group(
-    Path(
-        ConfigLoader.get(
-            "default",
-            "sql_generators_dir",
-            fallback=ConfigLoader.get(
-                "default", "sql_generators_dir", fallback=ROOT / SQL_GENERATORS_DIR
-            ),
-        )
-    )
-)
+generate = generate_group(SQL_GENERATORS_DIR)
 
 
 @generate.command(help="Run all query generators", name="all")
@@ -99,7 +98,7 @@ generate = generate_group(
 def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
     """Run all SQL generators."""
     click.echo(f"Generating SQL content in {output_dir}.")
-    click.echo(ROOT / SQL_GENERATORS_DIR)
+    click.echo(SQL_GENERATORS_DIR)
 
     def generator_command_sort_key(command):
         match command.name:

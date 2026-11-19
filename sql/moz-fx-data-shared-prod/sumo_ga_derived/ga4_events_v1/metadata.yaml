@@ -3,6 +3,7 @@ description: |-
   GA4 Events Data for SUMO (support.mozilla.org)
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
   owner1: kik

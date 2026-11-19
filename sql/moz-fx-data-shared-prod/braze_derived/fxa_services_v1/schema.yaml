@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: uid
+  type: STRING
+  description: FxA account ID in hexadecimal format.
+- mode: NULLABLE
+  name: email
+  type: STRING
+  description: The primary email.
+- mode: NULLABLE
+  name: service
+  type: STRING
+  description: An FxA OAuth service the user authorized the Terms of Service for. One row per authorized service.
+- mode: NULLABLE
+  name: first_authorized_tos_at
+  type: TIMESTAMP
+  description: Earliest timestamp at which the user first authorized the ToS for this service. Synced to Braze as the per-service authorization time.

@@ -8,7 +8,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 from click.utils import strip_ansi
-from google.api_core.exceptions import NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 
 from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
@@ -20,18 +20,25 @@ from bigquery_etl.backfill.parse import (
 from bigquery_etl.backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
     BACKFILL_DESTINATION_PROJECT,
+    copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
+    get_scheduled_backfills,
     qualified_table_name_matching,
-    validate_metadata_workgroups,
+    query_supports_reinitialize,
+    validate_table_metadata,
 )
+from bigquery_etl.backfill.validate import validate_shredder_mitigation_partition_field
 from bigquery_etl.cli.backfill import (
     _copy_backfill_staging_to_prod,
     _initialize_previous_partition,
     _initiate_backfill,
+    _reinitialize_into_staging,
+    _resolve_backfill_table,
+    _staging_client_project,
     complete,
     create,
     info,
@@ -44,6 +51,7 @@ from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException, SkippedDeployException
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.util.target import Target
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -335,6 +343,487 @@ class TestBackfill:
         assert backfill.watchers == [VALID_WATCHER]
         assert backfill.reason == DEFAULT_REASON
         assert backfill.status == DEFAULT_STATUS
+
+    def test_create_backfill_reinitialize_table(self, runner):
+        """--reinitialize-table is persisted and allows the depends_on_past null-partition combo."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--reinitialize-table",
+            ],
+        )
+
+        assert result.exit_code == 0
+        backfill_file = QUERY_DIR + "/" + BACKFILL_FILE
+        backfill = Backfill.entries_from_file(backfill_file)[0]
+        assert backfill.reinitialize_table is True
+        # batch size is left unset (resolved to the default at initiate time) and so
+        # is not written to backfill.yaml when the flag isn't passed
+        assert backfill.reinitialize_sampling_batch_size is None
+        assert "reinitialize_sampling_batch_size" not in Path(backfill_file).read_text()
+
+    def test_create_backfill_reinitialize_custom_batch_size(self, runner):
+        """--reinitialize-sampling-batch-size is persisted on the entry."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--reinitialize-table",
+                "--reinitialize-sampling-batch-size=25",
+            ],
+        )
+
+        assert result.exit_code == 0
+        backfill_file = QUERY_DIR + "/" + BACKFILL_FILE
+        backfill = Backfill.entries_from_file(backfill_file)[0]
+        assert backfill.reinitialize_sampling_batch_size == 25
+
+    def test_create_backfill_override_depends_on_past_null_partition(self, runner):
+        """--override-depends-on-past-null-partition is persisted and allows a custom_query_path backfill
+        on the depends_on_past null-partition combo without reinitializing."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                f"--custom-query-path={custom_query_path}",
+                "--override-depends-on-past-null-partition",
+            ],
+        )
+
+        assert result.exit_code == 0
+        backfill_file = QUERY_DIR + "/" + BACKFILL_FILE
+        backfill = Backfill.entries_from_file(backfill_file)[0]
+        assert backfill.override_depends_on_past_null_partition is True
+        assert backfill.custom_query_path == custom_query_path
+        assert (
+            "override_depends_on_past_null_partition: true"
+            in Path(backfill_file).read_text()
+        )
+
+    def test_create_backfill_depends_on_past_null_partition_without_override_fails(
+        self, runner
+    ):
+        """Without --override-depends-on-past-null-partition (or --reinitialize-table), create still
+        rejects the depends_on_past null-partition combo."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert (
+            "depends on past and null partition parameter are not supported"
+            in result.output
+        )
+
+    def test_create_backfill_backfill_partition_parameter(self, runner):
+        """backfill_partition_parameter makes a null-partition_parameter table
+        backfill per partition, so the depends_on_past null-partition guard doesn't apply.
+        """
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "backfill_partition_parameter": "submission_date",
+            "parameters": [self.HOURLY_DATE_PARAMETER],
+            "depends_on_past": True,
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_hour"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+
+    @pytest.mark.parametrize(
+        "scheduling,bigquery",
+        [
+            # partition_parameter already selects the partition
+            (
+                {"backfill_partition_parameter": "submission_date"},
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # unpartitioned table has no partition to select
+            (
+                {
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                None,
+            ),
+            # no scheduling parameter to replace
+            (
+                {
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # names a parameter that isn't the templated one
+            (
+                {
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "day",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # names a parameter that isn't a DATE
+            (
+                {
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
+                    "parameters": ["submission_date:STRING:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # a partition offset already targets a specific partition
+            (
+                {
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
+                    "partition_offset": "-27d",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+        ],
+    )
+    def test_create_backfill_backfill_partition_parameter_invalid(
+        self, runner, scheduling, bigquery
+    ):
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = scheduling
+        if bigquery:
+            metadata["bigquery"] = bigquery
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "backfill_partition_parameter is set" in result.output
+
+    HOURLY_DESTINATION_TABLE = (
+        "test_query_v1${{ (execution_date - macros.timedelta(hours=1))"
+        ".strftime('%Y%m%d') }}"
+    )
+    HOURLY_DATE_PARAMETER = (
+        "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1))"
+        ".strftime('%Y-%m-%d') }}"
+    )
+
+    @pytest.mark.parametrize(
+        "scheduling",
+        [
+            # hourly run rewriting a daily partition
+            {
+                "destination_table": HOURLY_DESTINATION_TABLE,
+                "parameters": [HOURLY_DATE_PARAMETER],
+            },
+            # templated date parameter alone
+            {"parameters": [HOURLY_DATE_PARAMETER]},
+            # templated destination alone, e.g. a monthly table writing the
+            # previous month's partition with a {{ds}} parameter
+            {
+                "destination_table": "test_query_v1${{ (execution_date + "
+                "macros.dateutil.relativedelta.relativedelta(months=-1, day=1))"
+                ".strftime('%Y%m') }}",
+                "parameters": ["submission_date:DATE:{{ds}}"],
+            },
+        ],
+    )
+    def test_create_backfill_templated_partition_without_backfill_partition_parameter_fails(
+        self, runner, scheduling
+    ):
+        """A null partition_parameter table that picks its partition through Airflow
+        templates is rejected at create unless it sets backfill_partition_parameter,
+        instead of failing later in initiate."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {"partition_parameter": None, **scheduling}
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_date"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "targets its partition through a templated" in result.output
+        assert "backfill_partition_parameter" in result.output
+
+    @pytest.mark.parametrize(
+        "scheduling,bigquery",
+        [
+            # {{ds}} is substituted by backfills
+            (
+                {
+                    "partition_parameter": None,
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # templated parameters that aren't DATE don't pick the partition
+            (
+                {
+                    "partition_parameter": None,
+                    "parameters": ["run_id:STRING:{{run_id}}"],
+                },
+                {"time_partitioning": {"type": "day", "field": "submission_date"}},
+            ),
+            # unpartitioned tables are written whole
+            (
+                {
+                    "partition_parameter": None,
+                    "parameters": [HOURLY_DATE_PARAMETER],
+                },
+                None,
+            ),
+        ],
+    )
+    def test_create_backfill_untemplated_partition_passes(
+        self, runner, scheduling, bigquery
+    ):
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = scheduling
+        if bigquery:
+            metadata["bigquery"] = bigquery
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert "targets its partition through a templated" not in result.output
+
+    def test_create_backfill_backfill_partition_parameter_other_templated_date_fails(
+        self, runner
+    ):
+        """backfill_partition_parameter only covers the parameter it names, so
+        another templated DATE parameter is still rejected."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "backfill_partition_parameter": "submission_date",
+            "destination_table": self.HOURLY_DESTINATION_TABLE,
+            "parameters": [
+                self.HOURLY_DATE_PARAMETER,
+                "end_date:DATE:{{ macros.ds_add(ds, 1) }}",
+            ],
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_date"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "has a templated DATE parameter other than the one" in result.output
+
+    def test_validate_table_metadata_templated_partition_with_reinitialize_passes(
+        self,
+    ):
+        """reinitialize_table rebuilds the table from its is_init() query without
+        binding scheduling parameters, so templated partition targets don't matter."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "destination_table": self.HOURLY_DESTINATION_TABLE,
+            "parameters": [self.HOURLY_DATE_PARAMETER],
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "submission_date"}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+
+        table = "moz-fx-data-shared-prod.test.test_query_v1"
+        assert validate_table_metadata("sql", table, False)
+        assert not validate_table_metadata("sql", table, False, reinitialize_table=True)
+
+    def _write_shredder_table(self, scheduling, partition_field, field_type):
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["labels"] = {"shredder_mitigation": True}
+        metadata["scheduling"] = scheduling
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": partition_field}
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "schema.yaml"), "w") as f:
+            f.write(
+                yaml.dump(
+                    {
+                        "fields": [
+                            {"name": partition_field, "type": field_type},
+                            {"name": "metric", "type": "INTEGER"},
+                        ]
+                    }
+                )
+            )
+
+    @pytest.mark.parametrize(
+        "scheduling,partition_field,field_type",
+        [
+            # hourly table in a daily partition, like ads_derived.ad_metrics
+            (
+                {
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
+                    "parameters": ["submission_date:DATE:{{ds}}"],
+                },
+                "submission_hour",
+                "TIMESTAMP",
+            ),
+            # TIMESTAMP partition field named like the date parameter
+            ({}, "submission_date", "TIMESTAMP"),
+            # DATE partition field named differently from the date parameter
+            ({}, "date", "DATE"),
+        ],
+    )
+    def test_create_backfill_shredder_mitigation_unsupported_partition_field(
+        self, runner, scheduling, partition_field, field_type
+    ):
+        """The generated shredder mitigation query filters on the partition field, which
+        the backfill doesn't bind unless it's a DATE column named like the date
+        parameter, so create rejects other tables instead of failing in initiate."""
+        self._write_shredder_table(scheduling, partition_field, field_type)
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--shredder_mitigation",
+            ],
+        )
+
+        assert result.exit_code != 0
+        assert "Shredder mitigation isn't supported yet" in str(result.exception)
+        assert not Path(QUERY_DIR, BACKFILL_FILE).exists()
+
+    def test_create_backfill_shredder_mitigation_date_partition_field(self, runner):
+        self._write_shredder_table({}, "submission_date", "DATE")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--shredder_mitigation",
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+
+    @pytest.mark.parametrize(
+        "status,shredder_mitigation",
+        [
+            (BackfillStatus.COMPLETE, True),
+            (BackfillStatus.INITIATE, False),
+        ],
+    )
+    def test_validate_shredder_mitigation_partition_field_skipped(
+        self, status, shredder_mitigation
+    ):
+        """Only active shredder mitigation entries are checked, so existing entries
+        don't fail validation."""
+        self._write_shredder_table({}, "submission_hour", "TIMESTAMP")
+        entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 4),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=status,
+            shredder_mitigation=shredder_mitigation,
+        )
+
+        validate_shredder_mitigation_partition_field(
+            entry, Path(QUERY_DIR, BACKFILL_FILE)
+        )
 
     def test_create_backfill_with_exsting_entry(self, runner):
         backfill_entry_1 = Backfill(
@@ -704,7 +1193,7 @@ class TestBackfill:
         """Validation should fail if partition param is null on a table with depends on past."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -728,6 +1217,331 @@ class TestBackfill:
             "depends on past and null partition parameter are not supported"
             in result.output
         )
+
+    def test_validate_backfill_depends_on_past_null_partition_param_reinitialize_passes(
+        self, runner, mock_date
+    ):
+        """Validation should pass for the depends_on_past null-partition combo when the
+        entry sets reinitialize_table and the query uses is_init()."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        # depends_on_past tables also require the end date to be on or after the entry
+        # date (or an override), which is unrelated to the reinitialize bypass.
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE
+            + "  reinitialize_table: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_backfill_reinitialize_without_is_init_fails(self, runner):
+        """reinitialize_table doesn't bypass the check if the query has no is_init()."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        # query.sql has no is_init() (default "SELECT 1" from setup_files)
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE + "  reinitialize_table: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 1
+        assert (
+            "depends on past and null partition parameter are not supported"
+            in result.output
+        )
+
+    def test_validate_backfill_override_depends_on_past_null_partition_passes(
+        self, runner, mock_date
+    ):
+        """Validation passes for the depends_on_past null-partition combo when the entry
+        sets override_depends_on_past_null_partition and points at a custom_query_path.
+        """
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        # depends_on_past also requires end_date >= entry_date (or override).
+        # Unrelated to the override_depends_on_past_null_partition bypass.
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE
+            + "  override_depends_on_past_null_partition: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+            + f"  custom_query_path: {custom_query_path}\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_backfill_override_depends_on_past_null_partition_complete_passes(
+        self, runner, mock_date
+    ):
+        """A completed override entry must still pass re-validation, not just Initiate ones."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE.replace("status: Initiate", "status: Complete")
+            + "  override_depends_on_past_null_partition: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+            + f"  custom_query_path: {custom_query_path}\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_backfill_override_depends_on_past_null_partition_complete_does_not_mask_initiate(
+        self, runner, mock_date
+    ):
+        """A stale Complete override must not let a new override-less Initiate entry pass."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        # Complete entry has the override; the Initiate entry initiate acts on does not.
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-03:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-05-02\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Complete\n"
+            "  override_depends_on_past_null_partition: true\n"
+            "  override_depends_on_past_end_date: true\n"
+            f"  custom_query_path: {custom_query_path}\n"
+            + BACKFILL_YAML_TEMPLATE
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code != 0
+        assert "depends on past and null partition" in str(result.output) + str(
+            result.exception
+        )
+
+    def test_validate_backfill_override_depends_on_past_null_partition_without_custom_query_fails(
+        self, runner, mock_date
+    ):
+        """override_depends_on_past_null_partition is only allowed alongside a custom_query_path; without
+        one, validation fails even though the metadata guard itself is bypassed."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE
+            + "  override_depends_on_past_null_partition: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 1
+        assert "custom_query_path" in result.output
+
+    def test_validate_backfill_override_depends_on_past_null_partition_with_reinitialize_fails(
+        self, runner, mock_date
+    ):
+        """override_depends_on_past_null_partition and reinitialize_table are mutually exclusive: setting
+        both must fail rather than silently letting the override win."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        with open(custom_query_path, "w") as f:
+            f.write("SELECT 1 WHERE submission_date = @submission_date")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE
+            + "  override_depends_on_past_null_partition: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+            + "  reinitialize_table: true\n"
+            + f"  custom_query_path: {custom_query_path}\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 1
+        assert "mutually exclusive" in result.output
+
+    def test_validate_backfill_reinitialize_reads_initiate_entry_not_newest(
+        self, runner, mock_date
+    ):
+        """The reinitialize flag is read from the Initiate-status entry (which initiate
+        acts on), not whichever entry happens to be newest by entry date."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        # Newest entry is a Complete backfill without reinitialize_table; the older
+        # entry is the Initiate one that does reinitialize. Validation must read the
+        # Initiate entry's flag (and pass), not the newest entry's (which would fail).
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-05:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-05-03\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Complete\n"
+            "  override_depends_on_past_end_date: true\n"
+            + BACKFILL_YAML_TEMPLATE
+            + "  reinitialize_table: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_query_supports_reinitialize_matches_jinja_if_block_forms(self):
+        """is_init() is recognized in if-blocks (including whitespace-trim and compound
+        conditions) but not in comments or non-if uses."""
+        query_path = Path(QUERY_DIR) / "query.sql"
+
+        supported = [
+            "SELECT 1 {% if is_init() %} {% endif %}",
+            "SELECT 1 {%- if is_init() %} {% endif %}",
+            "SELECT 1 {% if is_init() and foo %} {% endif %}",
+            "SELECT 1 {% if not is_init() %} {% endif %}",
+        ]
+        for sql in supported:
+            query_path.write_text(sql)
+            assert query_supports_reinitialize(
+                "sql", "moz-fx-data-shared-prod.test.test_query_v1"
+            ), sql
+
+        unsupported = [
+            "SELECT 1 -- is_init()",
+            "SELECT 1 {% set x = is_init() %}",
+            "SELECT 1",
+        ]
+        for sql in unsupported:
+            query_path.write_text(sql)
+            assert not query_supports_reinitialize(
+                "sql", "moz-fx-data-shared-prod.test.test_query_v1"
+            ), sql
 
     def test_validate_backfill_invalid_table_name(self, runner):
         result = runner.invoke(
@@ -1359,189 +2173,6 @@ class TestBackfill:
 
         assert actual_backfill_staging == expected_backfill_backup
 
-    def test_validate_metadata_workgroups_invalid_table_workgroup_and_valid_dataset_workgroup(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        invalid_workgroup_access = [
-            dict(
-                role="roles/bigquery.dataViewer",
-                members=["workgroup:invalid_workgroup"],
-            )
-        ]
-
-        metadata_conf = {
-            "friendly_name": "test",
-            "description": "test",
-            "owners": ["test@example.org"],
-            "workgroup_access": invalid_workgroup_access,
-        }
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(metadata_conf))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_empty_table_workgroup_and_valid_dataset_workgroups(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_valid_table_workgroup_and_invalid_dataset_workgroup(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        invalid_workgroup_access = [
-            dict(
-                role="roles/bigquery.dataViewer",
-                members=["workgroup:invalid_workgroup"],
-            )
-        ]
-
-        dataset_metadata_conf = {
-            "friendly_name": "test",
-            "description": "test",
-            "dataset_base_acl": "derived",
-            "user_facing": False,
-            "workgroup_access": invalid_workgroup_access,
-        }
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(dataset_metadata_conf))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_valid_table_workgroup_and_empty_dataset_workgroup(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        assert "dataset_metadata.yaml" in os.listdir("sql/moz-fx-data-shared-prod/test")
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_missing_table_metadata(self, runner):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_missing_dataset_metadata(self, runner):
-        with pytest.raises(ValueError) as e:
-            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-            # remove dataset metdata file
-            Path("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml").unlink(
-                missing_ok=False
-            )
-
-            validate_metadata_workgroups("sql", qualified_table_name)
-
-        assert e.type == ValueError
-
-    def test_validate_metadata_workgroups_empty_workgroups(self, runner):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert not result
-
-    def test_validate_metadata_workgroups_dataset_valid_superset(self, runner):
-        """Dataset access containing mozilla-confidential and something else should be valid."""
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
-
-        dataset_metadata_conf = {
-            "friendly_name": "test",
-            "description": "test",
-            "dataset_base_acl": "derived",
-            "user_facing": False,
-            "workgroup_access": [
-                dict(
-                    role="roles/bigquery.dataViewer",
-                    members=[
-                        "workgroup:mozilla-confidential/data-viewers",
-                        "workgroup:something-else",
-                    ],
-                )
-            ],
-        }
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(dataset_metadata_conf))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_table_valid_superset(self, runner):
-        """Table access containing mozilla-confidential and something else should be valid."""
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(
-                yaml.dump(
-                    {
-                        "friendly_name": "test",
-                        "description": "test",
-                        "owners": ["test@example.org"],
-                        "workgroup_access": [
-                            dict(
-                                role="roles/bigquery.dataViewer",
-                                members=[
-                                    "workgroup:mozilla-confidential/data-viewers",
-                                    "workgroup:something-else",
-                                ],
-                            )
-                        ],
-                    }
-                ),
-            )
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
     def test_qualified_table_name_matching(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         project_id, dataset_id, table_id = qualified_table_name_matching(
@@ -1772,14 +2403,14 @@ class TestBackfill:
         assert delete_table.call_count == 1
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill(
         self,
         mock_from_query_file,
         mock_deploy_table,
-        check_call,
+        execute_query,
         mock_client,
         runner,
     ):
@@ -1849,26 +2480,83 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_partitioned_backfill_query_error(
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
+    ):
+        """BigQuery client errors are reported like bq errors."""
+        execute_query.side_effect = BadRequest("Syntax error")
+        mock_client().get_table.side_effect = [
+            NotFound("staging backup not found"),
+            None,
+            None,
+        ]
+
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/schema.yaml", "w"
+        ) as f:
+            f.write(yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]}))
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml", "w"
+        ) as f:
+            f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
+            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+          override_retention_limit: True""")
+
+        result = runner.invoke(
+            initiate,
+            ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+        )
+
+        assert result.exit_code == 1
+        assert isinstance(result.exception, ValueError)
+        assert "Backfill initiate resulted in error" in str(result.exception)
+        assert isinstance(result.exception.__cause__, BadRequest)
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill_without_schema_should_pass(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -1929,26 +2617,31 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._execute_query")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill_with_valid_billing_project_from_entry(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        execute_query,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2014,17 +2707,17 @@ class TestBackfill:
             for day in range(3, 9)
         ]
 
-        # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
-        assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
-        for call in check_call.call_args_list:
+        # this is inspecting calls to the underlying _execute_query(query_text, query_arguments)
+        assert execute_query.call_count == 12  # 6 for dry run, 6 for backfill
+        for call in execute_query.call_args_list:
             submission_date_params = [
-                arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                arg for arg in call.args[1] if "--parameter=submission_date" in arg
             ]
             assert len(submission_date_params) == 1
             assert submission_date_params[0] in expected_submission_date_params
-            assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+            assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[1]
             destination_table_params = [
-                arg for arg in call.args[0] if "--destination_table" in arg
+                arg for arg in call.args[1] if "--destination_table" in arg
             ]
             assert destination_table_params[0] in expected_destination_table_params
 
@@ -2082,6 +2775,342 @@ class TestBackfill:
         )
         assert result.exit_code == 1
         assert "Backfill initiate failed to deploy" in str(result.exception)
+
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_with_copy_permissions_fails_if_prod_table_missing(
+        self, mock_client, mock_deploy_table, runner
+    ):
+        mock_client().get_table.side_effect = NotFound("prod table not found")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+        """)
+
+        result = runner.invoke(
+            initiate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Cannot use --copy-table-permissions" in str(result.exception)
+        mock_deploy_table.assert_not_called()
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_cleans_up_staging_on_permissions_failure(
+        self,
+        mock_client,
+        mock_from_query_file,
+        mock_deploy_table,
+        mock_copy_perms,
+        runner,
+    ):
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03"
+
+        def get_table(name, *args, **kwargs):
+            if name == staging_table:
+                raise NotFound("staging table not found")
+            if name == prod_table:
+                return MagicMock()
+            raise AssertionError(f"unexpected get_table call: {name}")
+
+        mock_client().get_table.side_effect = get_table
+        permissions_error = Exception("IAM policy denied")
+        mock_copy_perms.side_effect = permissions_error
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+        """)
+
+        result = runner.invoke(
+            initiate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Failed to copy permissions" in str(result.exception)
+        assert result.exception.__cause__ is permissions_error
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_copies_permissions_on_failure(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """A failed python-script backfill should still copy prod permissions to the staging table so it stays manageable."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is propagated
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # prod permissions were copied so the staging table stays manageable
+        mock_copy_perms.assert_called_once_with(
+            mock_client(), prod_table, staging_table
+        )
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_deletes_staging_on_permission_copy_failure(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """If permission copying fails after a python-script backfill failure, the staging table is deleted and the original failure is still raised."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+        mock_copy_perms.side_effect = Exception("IAM policy denied")
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is still raised
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # the staging table is deleted because copying its permissions failed
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_skips_permission_copy_when_staging_missing(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """If a python-script backfill fails before creating its staging table, there are no permissions to copy."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        def get_table(name, *args, **kwargs):
+            if name == staging_table:
+                raise NotFound("staging table not found")
+            if name == prod_table:
+                return MagicMock()
+            raise AssertionError(f"unexpected get_table call: {name}")
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.side_effect = get_table
+        backfill_error = RuntimeError("script execution failed")
+        mock_query_backfill.side_effect = backfill_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the original backfill failure is propagated unobscured
+        assert result.exit_code == 1
+        assert isinstance(result.exception, RuntimeError)
+        assert "script execution failed" in str(result.exception)
+        # no staging table exists, so no permissions copy and no delete are attempted
+        mock_copy_perms.assert_not_called()
+        mock_client().delete_table.assert_not_called()
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.query_backfill")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_permission_copy_failure_raises_once(
+        self,
+        mock_client,
+        mock_is_authenticated,
+        mock_deploy_table,
+        mock_should_initiate,
+        mock_query_backfill,
+        mock_copy_perms,
+        runner,
+    ):
+        """When only the permissions copy fails, it raises directly and isn't retried against the deleted staging table."""
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table = get_backfill_staging_qualified_table_name(
+            prod_table, date(2026, 1, 1)
+        )
+
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+        mock_client().get_table.return_value = MagicMock()
+        permissions_error = Exception("IAM policy denied")
+        mock_copy_perms.side_effect = permissions_error
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        result = runner.invoke(
+            initiate,
+            [
+                prod_table,
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        # the permissions error surfaces since the backfill itself succeeded
+        assert result.exit_code == 1
+        assert "Failed to copy permissions" in str(result.exception)
+        assert result.exception.__cause__ is permissions_error
+        # copying is attempted once, not retried against the table cleanup just deleted
+        mock_copy_perms.assert_called_once_with(
+            mock_client(), prod_table, staging_table
+        )
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
 
     @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_from_entry_should_fail(
@@ -2269,6 +3298,66 @@ class TestBackfill:
         assert call_kwargs["query_script_arg"] == ["--dataset=staging"]
 
     @patch("google.cloud.bigquery.Client")
+    def test_initiate_backfill_skips_query_target_resolution(self, mock_client, runner):
+        """When initiate calls query.backfill, the original --target should be used, not overidden by query.backfill."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging = "sandbox.backfills_staging_derived.test__test_query_v1_2026_01_01"
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name=staging,
+            entry=entry,
+            effective_table_name="sandbox.dev_test.test_query_v1",
+        )
+
+        call_kwargs = mock_context.invoke.call_args[1]
+        assert call_kwargs["destination_table"] == staging
+        assert call_kwargs["skip_target_resolution"] is True
+
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_with_target_should_be_rejected(
+        self, mock_client, mock_should_initiate, runner
+    ):
+        """initiate for a query.py backfill under --target should be rejected, not silently target prod staging."""
+        mock_should_initiate.return_value = True
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-03:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-01-03\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Initiate\n"
+            "  query_script_entrypoint: main\n"
+            "  query_script_date_arg: date\n"
+        )
+
+        result = runner.invoke(
+            initiate,
+            ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+            obj={"target": Target(name="dev", project_id="sandbox")},
+        )
+
+        assert result.exit_code != 0
+        assert "not supported for query.py" in result.output
+
+    @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
     def test_initiate_backfill_script_skips_depends_on_past(
         self, mock_initialize_partition, mock_client, runner
@@ -2305,6 +3394,298 @@ class TestBackfill:
 
         assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
         assert mock_initialize_partition.call_count == 0
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_reinitialize_skips_day_by_day(
+        self, mock_reinitialize, mock_initialize_partition, mock_client, runner
+    ):
+        """reinitialize_table should rebuild via is_init() and skip the day-by-day path."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            "SELECT 1 {% if is_init() %} {% endif %}"
+        )
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            reinitialize_table=True,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+            entry=entry,
+        )
+
+        assert mock_reinitialize.call_count == 1
+        # the day-by-day query backfill and previous-partition seeding are skipped
+        assert mock_context.invoke.call_count == 0
+        assert mock_initialize_partition.call_count == 0
+        assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
+
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_override_depends_on_past_null_partition_runs_per_partition(
+        self,
+        mock_reinitialize,
+        mock_initialize_partition,
+        mock_client,
+        mock_auth,
+        runner,
+    ):
+        """An override_depends_on_past_null_partition entry (custom_query_path, no reinitialize)
+        runs the day-by-day per-partition path and does NOT rebuild via is_init().
+
+        Unlike a normal depends_on_past backfill, it must SKIP the staging ref-rewrite and the
+        previous-partition seed: the custom query reads its own prod partition (`* REPLACE`), so
+        repointing that read at the empty staging table would copy empty partitions over prod,
+        and _initialize_previous_partition would raise on the null partition_parameter.
+        Uses real time_partitioning metadata and does not mock _initialize_previous_partition,
+        so a regression that re-enables the block surfaces here instead of being hidden.
+        """
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        # Real first_seen-style partitioning; a null partition_parameter
+        # means the previous-partition seed cannot resolve a partition id.
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "first_seen_date"}
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        # Reads its own prod partition to carry columns forward -- must stay pointed at prod.
+        with open(custom_query_path, "w") as f:
+            f.write(
+                "SELECT * FROM `moz-fx-data-shared-prod.test.test_query_v1` "
+                "WHERE first_seen_date = @submission_date"
+            )
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            custom_query_path=custom_query_path,
+            override_depends_on_past_null_partition=True,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+            entry=entry,
+        )
+
+        # Not reinitialized; runs the per-partition query backfill once.
+        assert mock_reinitialize.call_count == 0
+        assert mock_context.invoke.call_count == 1
+        # The depends_on_past block is skipped: no seed, no ref-rewrite.
+        # The original prod-reading custom query is handed through.
+        assert mock_initialize_partition.call_count == 0
+        assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
+        assert mock_context.invoke.call_args.kwargs["custom_query_path"] == Path(
+            custom_query_path
+        )
+        # partition_parameter is null, so backfill would truncate the whole
+        # staging table each run, leaving only the last date. The override binds
+        # submission_date so each run writes its own staging$YYYYMMDD partition.
+        scheduling_overrides = json.loads(
+            mock_context.invoke.call_args.kwargs["scheduling_overrides"]
+        )
+        assert scheduling_overrides["partition_parameter"] == "submission_date"
+
+    @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill.query_supports_reinitialize")
+    @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_override_depends_on_past_null_partition_keeps_prod_reference(
+        self,
+        mock_reinitialize,
+        mock_initialize_partition,
+        mock_supports_reinitialize,
+        mock_client,
+        mock_auth,
+        runner,
+    ):
+        """The override path must hand query_backfill a custom query that still reads PROD.
+
+        The data-loss bug being guarded against: the depends_on_past ref-rewrite repoints the
+        table's self-reference at the empty staging table, so `WHERE <field> = @submission_date`
+        returns no rows and complete copies empty partitions over prod. This asserts the custom
+        query handed downstream still references prod (not staging). It also proves the override
+        is independent of init logic: the table has no init files (query.sql has no is_init()),
+        and query_supports_reinitialize is never consulted because reinitialize is bypassed.
+        """
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        metadata["bigquery"] = {
+            "time_partitioning": {"type": "day", "field": "first_seen_date"}
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        # query.sql has no is_init() branch; the override must not depend on one.
+        (Path(QUERY_DIR) / "query.sql").write_text("SELECT 1")
+        custom_query_path = os.path.join(QUERY_DIR, "backfill_custom.sql")
+        prod_reading_query = (
+            f"SELECT * FROM `{prod_table_name}` "
+            "WHERE first_seen_date = @submission_date"
+        )
+        with open(custom_query_path, "w") as f:
+            f.write(prod_reading_query)
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            custom_query_path=custom_query_path,
+            override_depends_on_past_null_partition=True,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name=staging_table_name,
+            entry=entry,
+        )
+
+        # The override never probes is_init() support: reinitialize is bypassed entirely.
+        assert mock_supports_reinitialize.call_count == 0
+        assert mock_reinitialize.call_count == 0
+        # The query handed to query_backfill still reads prod, not the empty staging table.
+        passed_query_path = mock_context.invoke.call_args.kwargs["custom_query_path"]
+        passed_query_text = Path(passed_query_path).read_text()
+        assert f"`{prod_table_name}`" in passed_query_text
+        assert staging_table_name not in passed_query_text
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_reinitialize_python_script_fails(
+        self, mock_reinitialize, mock_client, runner
+    ):
+        """reinitialize_table is rejected for python-script tables, which have no
+        query.sql is_init() branch to rerun (rather than silently falling through)."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "partition_parameter": None,
+            "depends_on_past": True,
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        # A python-script table is identified by the presence of query.py.
+        (Path(QUERY_DIR) / "query.py").write_text("# script")
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            reinitialize_table=True,
+        )
+
+        with pytest.raises(ValueError, match="not supported for python-script tables"):
+            _initiate_backfill(
+                ctx=MagicMock(),
+                qualified_table_name=prod_table_name,
+                backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+                entry=entry,
+                is_python_script=True,
+            )
+
+        # the reinitialize path is never entered for a python-script table
+        assert mock_reinitialize.call_count == 0
+
+    @patch("bigquery_etl.cli.query._initialize_in_parallel")
+    def test_reinitialize_into_staging_batches_sample_ids(self, mock_init_parallel):
+        """The is_init() query runs into staging, batched over sample_ids."""
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            "SELECT 1 {% if is_init() %} "
+            "AND sample_id >= @sample_id "
+            "AND sample_id < @sample_id + @sampling_batch_size "
+            "{% endif %}"
+        )
+        staging = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
+        _reinitialize_into_staging(
+            qualified_table_name="moz-fx-data-shared-prod.test.test_query_v1",
+            backfill_staging_qualified_table_name=staging,
+            billing_project=DEFAULT_BILLING_PROJECT,
+        )
+
+        assert mock_init_parallel.call_count == 1
+        kwargs = mock_init_parallel.call_args.kwargs
+        # destination is the staging table, not prod
+        assert kwargs["table"] == staging
+        # batched by 20 => 5 jobs
+        assert kwargs["sample_ids"] == [0, 20, 40, 60, 80]
+        assert "--parameter=sampling_batch_size:INT64:20" in kwargs["arguments"]
+        # don't redirect a public-dataset table's writes away from staging
+        assert kwargs["ignore_public_dataset"] is True
+
+    @patch("bigquery_etl.cli.query._initialize_in_parallel")
+    def test_reinitialize_into_staging_custom_batch_size(self, mock_init_parallel):
+        """A non-default sampling_batch_size changes the batching and the parameter."""
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            "SELECT 1 {% if is_init() %} "
+            "AND sample_id >= @sample_id "
+            "AND sample_id < @sample_id + @sampling_batch_size "
+            "{% endif %}"
+        )
+        staging = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
+        _reinitialize_into_staging(
+            qualified_table_name="moz-fx-data-shared-prod.test.test_query_v1",
+            backfill_staging_qualified_table_name=staging,
+            billing_project=DEFAULT_BILLING_PROJECT,
+            sampling_batch_size=25,
+        )
+
+        kwargs = mock_init_parallel.call_args.kwargs
+        # batched by 25 => 4 jobs
+        assert kwargs["sample_ids"] == [0, 25, 50, 75]
+        assert "--parameter=sampling_batch_size:INT64:25" in kwargs["arguments"]
 
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.backfill.utils._should_initiate")
@@ -2655,7 +4036,7 @@ class TestBackfill:
         """Partition offset should be used to copy the correct partition."""
         metadata = TABLE_METADATA_CONF_DEPENDS_ON_PAST.copy()
         metadata["bigquery"] = {"time_partitioning": {"type": "day"}}
-        metadata["scheduling"] = {"date_partition_offset": -7, "depends_on_past": True}
+        metadata["scheduling"] = {"partition_offset": "-7d", "depends_on_past": True}
         with open(METADATA_FILE, "w") as f:
             f.write(yaml.dump(metadata))
 
@@ -2783,3 +4164,887 @@ class TestBackfill:
                 f'moz-fx-data-shared-prod.dataset.table${d.strftime("%Y%m%d")}'
             )
             assert call.args == (expected_staging, expected_prod, None)
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_reinitialize(self, mock_copy_table):
+        """A reinitialized table is copied whole, not partition-by-partition."""
+        # Partitioned table that would otherwise be copied per-partition.
+        partitioned_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "first_seen_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(partitioned_metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days, but a full rebuild ignores the range
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            reinitialize_table=True,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # Single whole-table copy, not 3 per-partition copies.
+        assert mock_copy_table.call_count == 1
+        assert mock_copy_table.call_args.args == (
+            "moz-fx-data-shared-prod.staging.table",
+            "moz-fx-data-shared-prod.dataset.table",
+            None,
+        )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_override_depends_on_past_null_partition_param(
+        self, mock_copy_table
+    ):
+        """An override_depends_on_past_null_partition backfill ran per-partition against a table whose
+        partition_parameter is null. The partition must be resolved from the
+        partitioning field so each partition copies individually, rather than returning a
+        null partition (which raises) or copying the whole table."""
+        # Like clients_first_seen_v3: depends_on_past, null partition_parameter,
+        # day-partitioned on first_seen_date.
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "depends_on_past": True,
+                "partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "first_seen_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            override_depends_on_past_null_partition=True,
+            custom_query_path="sql/moz-fx-data-shared-prod/dataset/table/backfill_custom.sql",
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # 3 per-partition copies (one per day), not a single whole-table copy.
+        assert mock_copy_table.call_count == 3
+        for i, call in enumerate(mock_copy_table.call_args_list):
+            d = date(2021, 1, 3) + timedelta(days=i)
+            assert call.args == (
+                f'moz-fx-data-shared-prod.staging.table${d.strftime("%Y%m%d")}',
+                f'moz-fx-data-shared-prod.dataset.table${d.strftime("%Y%m%d")}',
+                None,
+            )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_override_depends_on_past_null_partition_excludes(
+        self, mock_copy_table
+    ):
+        """Excluded dates are skipped under the override: a 3-day range with the middle day
+        excluded copies only the two remaining partitions (the override only changes how the
+        partition id is resolved, not the date-range iteration)."""
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "depends_on_past": True,
+                "partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "first_seen_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days
+            excluded_dates=[date(2021, 1, 4)],  # middle day excluded
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            override_depends_on_past_null_partition=True,
+            custom_query_path="sql/moz-fx-data-shared-prod/dataset/table/backfill_custom.sql",
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # Only the 2 non-excluded days are copied.
+        assert mock_copy_table.call_count == 2
+        copied_partitions = [
+            call.args[0].split("$")[1] for call in mock_copy_table.call_args_list
+        ]
+        assert copied_partitions == ["20210103", "20210105"]
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_override_depends_on_past_null_partition_month(
+        self, mock_copy_table
+    ):
+        """The override resolves the partition from the partitioning field for MONTH-partitioned
+        tables too, copying one partition per month in the range."""
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "depends_on_past": True,
+                "partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "month",
+                    "field": "first_seen_month",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 1),
+            end_date=date(2021, 3, 1),  # 3 months
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            override_depends_on_past_null_partition=True,
+            custom_query_path="sql/moz-fx-data-shared-prod/dataset/table/backfill_custom.sql",
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # One partition per month (month partitions use the YYYYMM prefix).
+        assert mock_copy_table.call_count == 3
+        copied_partitions = [
+            call.args[0].split("$")[1] for call in mock_copy_table.call_args_list
+        ]
+        assert copied_partitions == ["202101", "202102", "202103"]
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_backfill_partition_parameter(
+        self, mock_copy_table
+    ):
+        """A table with a null partition_parameter that sets
+        backfill_partition_parameter (e.g. hourly runs into a daily partition) copies
+        each backfilled partition individually instead of raising on a null partition.
+        """
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "partition_parameter": None,
+                "backfill_partition_parameter": "submission_date",
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_hour",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 4),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        assert [call.args for call in mock_copy_table.call_args_list] == [
+            (
+                f"moz-fx-data-shared-prod.staging.table${partition}",
+                f"moz-fx-data-shared-prod.dataset.table${partition}",
+                None,
+            )
+            for partition in ("20210103", "20210104")
+        ]
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_null_partition_param_without_override_raises(
+        self, mock_copy_table
+    ):
+        """Without the override, a partitioned table with a null partition_parameter
+        cannot resolve a per-partition target: get_backfill_partition returns None and
+        complete raises. This is the pre-existing gap that override_depends_on_past_null_partition closes.
+        """
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "scheduling": {
+                "depends_on_past": True,
+                "partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "first_seen_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata_conf))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 3),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        with pytest.raises(ValueError, match="Null partition found"):
+            _copy_backfill_staging_to_prod(
+                backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+                qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+                client=None,
+                entry=backfill_entry,
+                table_metadata=metadata,
+            )
+        assert mock_copy_table.call_count == 0
+
+
+class TestCopyPermissionsToStagingTable:
+    PROD_TABLE = "moz-fx-data-shared-prod.test_dataset.test_table"
+    STAGING_TABLE = (
+        "moz-fx-data-shared-prod.backfills_staging_derived.test_dataset__test_table"
+    )
+
+    @classmethod
+    def build_client(
+        cls,
+        prod_table_bindings,
+        dataset_access_entries,
+        staging_bindings,
+    ):
+        """Make a mock bigquery client."""
+        client = MagicMock()
+        prod_table_policy = MagicMock(bindings=list(prod_table_bindings))
+        staging_policy = MagicMock(bindings=list(staging_bindings))
+        client.get_iam_policy.side_effect = lambda table: (
+            prod_table_policy if table == cls.PROD_TABLE else staging_policy
+        )
+
+        prod_dataset = MagicMock()
+        prod_dataset.access_entries = dataset_access_entries
+        client.get_dataset.return_value = prod_dataset
+
+        return client
+
+    def test_unions_table_and_dataset_bindings(self):
+        """Permission copy should apply the union of the prod table's and dataset's permissions."""
+        prod_table_bindings = [
+            {
+                "role": "roles/bigquery.dataViewer",
+                "members": {"user:abc@example.com"},
+            }
+        ]
+        dataset_access_entries = [
+            MagicMock(
+                role="READER",
+                entity_type="iamMember",
+                entity_id="workgroup:def/data-viewers",
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings, dataset_access_entries, staging_bindings=[]
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        client.set_iam_policy.assert_called_once()
+        applied_table, applied_policy = client.set_iam_policy.call_args.args
+        assert applied_table == self.STAGING_TABLE
+
+        applied = {b["role"]: set(b["members"]) for b in applied_policy.bindings}
+        assert applied == {
+            "roles/bigquery.dataViewer": {
+                "user:abc@example.com",
+                "workgroup:def/data-viewers",
+            }
+        }
+
+    def test_skips_non_principal_access_entries(self):
+        """Permission copy should skip access entries that aren't principals."""
+        dataset_access_entries = [
+            MagicMock(
+                role="READER", entity_type="userByEmail", entity_id="abc@mozilla.com"
+            ),
+            MagicMock(
+                role="READER", entity_type="groupByEmail", entity_id="team@mozilla.com"
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="iamMember",
+                entity_id="workgroup:foo/data-viewers",
+            ),
+            MagicMock(
+                role="READER", entity_type="specialGroup", entity_id="projectOwners"
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="view",
+                entity_id="moz-fx-data-shared-prod.x.y",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="routine",
+                entity_id="moz-fx-data-shared-prod.x.r",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="dataset",
+                entity_id="moz-fx-data-shared-prod.x",
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings=[],
+            dataset_access_entries=dataset_access_entries,
+            staging_bindings=[],
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        applied_policy = client.set_iam_policy.call_args.args[1]
+        members = set()
+        for b in applied_policy.bindings:
+            members.update(b["members"])
+        assert members == {
+            "user:abc@mozilla.com",
+            "group:team@mozilla.com",
+            "workgroup:foo/data-viewers",
+        }
+
+    def test_translate_legacy_dataset_roles(self):
+        """Permission copy should translate legacy dataset role names into IAM roles."""
+        dataset_access_entries = [
+            MagicMock(
+                role="READER", entity_type="userByEmail", entity_id="reader@mozilla.com"
+            ),
+            MagicMock(
+                role="WRITER", entity_type="userByEmail", entity_id="writer@mozilla.com"
+            ),
+            MagicMock(
+                role="OWNER", entity_type="userByEmail", entity_id="owner@mozilla.com"
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings=[],
+            dataset_access_entries=dataset_access_entries,
+            staging_bindings=[],
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        applied_policy = client.set_iam_policy.call_args.args[1]
+        applied = {b["role"]: set(b["members"]) for b in applied_policy.bindings}
+        assert applied == {
+            "roles/bigquery.dataViewer": {"user:reader@mozilla.com"},
+            "roles/bigquery.dataEditor": {"user:writer@mozilla.com"},
+            "roles/bigquery.dataOwner": {"user:owner@mozilla.com"},
+        }
+
+    def test_userbyemail_service_accounts_get_serviceaccount_prefix(self):
+        """Permission copy should use the `serviceAccount:` prefix for service accounts."""
+        dataset_access_entries = [
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="abc@mozilla.com",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="airflow@project.iam.gserviceaccount.com",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="123-compute@developer.gserviceaccount.com",
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings=[],
+            dataset_access_entries=dataset_access_entries,
+            staging_bindings=[],
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        applied_policy = client.set_iam_policy.call_args.args[1]
+        applied = {b["role"]: set(b["members"]) for b in applied_policy.bindings}
+        assert applied == {
+            "roles/bigquery.dataViewer": {
+                "user:abc@mozilla.com",
+                "serviceAccount:airflow@project.iam.gserviceaccount.com",
+                "serviceAccount:123-compute@developer.gserviceaccount.com",
+            },
+        }
+
+
+class TestBackfillTargetSupport:
+    """Backfill commands should redirect into the target environment when --target is set."""
+
+    PROD_TABLE = "moz-fx-data-shared-prod.test_derived.test_table_v1"
+
+    def _target(self):
+        return Target(
+            name="dev",
+            project_id="sandbox",
+            dataset_prefix="dev_mybranch__{{ artifact.project_id }}__",
+        )
+
+    def test_resolve_backfill_table_without_target_should_return_source_unchanged(self):
+        """_resolve_backfill_table without a target should return the source table and no destination project."""
+        table, dest_project = _resolve_backfill_table(None, self.PROD_TABLE)
+        assert table == self.PROD_TABLE
+        assert dest_project is None
+
+    def test_resolve_backfill_table_with_target_should_map_to_target_table(self):
+        """_resolve_backfill_table with a target should map the source to the target-deployed table and project."""
+        table, dest_project = _resolve_backfill_table(self._target(), self.PROD_TABLE)
+        # dataset_prefix renders artifact.project_id (sanitized) and prefixes the
+        # dataset; table name is unchanged (no artifact_prefix configured).
+        assert table == (
+            "sandbox."
+            "dev_mybranch__moz_fx_data_shared_prod__test_derived."
+            "test_table_v1"
+        )
+        assert dest_project == "sandbox"
+
+    def test_staging_name_with_destination_project_should_use_target_project(self):
+        """get_backfill_staging_qualified_table_name should place staging in the destination project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.PROD_TABLE,
+            date(2021, 5, 3),
+            destination_project="sandbox",
+        )
+        assert name == (
+            "sandbox.backfills_staging_derived."
+            "test_derived__test_table_v1_2021_05_03"
+        )
+
+    def test_backup_name_with_destination_project_should_use_target_project(self):
+        """get_backfill_backup_table_name should place the backup in the destination project."""
+        name = get_backfill_backup_table_name(
+            self.PROD_TABLE,
+            date(2021, 5, 3),
+            destination_project="sandbox",
+        )
+        assert name == (
+            "sandbox.backfills_staging_derived."
+            "test_derived__test_table_v1_backup_2021_05_03"
+        )
+
+    def test_staging_name_without_destination_project_should_default_to_prod(self):
+        """get_backfill_staging_qualified_table_name without a destination should default to the prod staging project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.PROD_TABLE, date(2021, 5, 3)
+        )
+        assert name.startswith(
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+        )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_with_skip_public_redirect_should_keep_target_destination(
+        self, mock_copy_table
+    ):
+        """_copy_backfill_staging_to_prod with skip_public_redirect should keep the target table as the destination."""
+        public_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
+            "bigquery": {
+                "time_partitioning": {"type": "day", "field": "submission_date"}
+            },
+        }
+        # isolate the filesystem so the temporary metadata.yaml isn't written to cwd
+        with CliRunner().isolated_filesystem():
+            with open(METADATA_FILE, "w") as f:
+                f.write(yaml.dump(public_metadata))
+            metadata = Metadata.from_file(METADATA_FILE)
+
+        entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 3),  # single day
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="sandbox.backfills_staging_derived.tbl",
+            qualified_table_name="sandbox.dev_ds.tbl",
+            client=None,
+            entry=entry,
+            table_metadata=metadata,
+            skip_public_redirect=True,
+        )
+
+        # destination stays the target table; no redirect to mozilla-public-data
+        assert mock_copy_table.call_count == 1
+        staging_arg, prod_arg = mock_copy_table.call_args.args[:2]
+        assert prod_arg.startswith("sandbox.dev_ds.tbl$")
+        assert "mozilla-public-data" not in prod_arg
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_with_destination_project_should_check_target_staging(
+        self, mock_client, mock_table_exists
+    ):
+        """get_scheduled_backfills with a destination_project should check staging existence in the target project."""
+        with CliRunner().isolated_filesystem():
+            table_dir = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(table_dir)
+            with open(f"{table_dir}/query.sql", "w") as f:
+                f.write("SELECT 1")
+            with open(f"{table_dir}/metadata.yaml", "w") as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+            with open(f"{table_dir}/{BACKFILL_FILE}", "w") as f:
+                f.write(
+                    "2021-05-03:\n"
+                    "  start_date: 2021-01-03\n"
+                    "  end_date: 2021-01-03\n"
+                    "  reason: test_reason\n"
+                    "  watchers:\n"
+                    "  - test@example.org\n"
+                    "  status: Complete\n"
+                )
+
+            # staging exists, backup does not -> eligible to complete
+            mock_table_exists.side_effect = [True, False]
+
+            from bigquery_etl.backfill.utils import get_scheduled_backfills
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-shared-prod",
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                status=BackfillStatus.COMPLETE.value,
+                destination_project="sandbox",
+            )
+
+            assert "moz-fx-data-shared-prod.test.test_query_v1" in result
+            # the staging existence check used the target project, not prod
+            checked_staging = mock_table_exists.call_args_list[0].args[1]
+            assert checked_staging.startswith("sandbox.backfills_staging_derived.")
+
+
+class TestBackfillNonSharedProdProject:
+    """Backfills for queries outside moz-fx-data-shared-prod.
+
+    Staging and backup tables stay in the staging project no matter which project
+    the query is in, so everything lives in one place.
+    """
+
+    EXPERIMENTS_TABLE = "moz-fx-data-experiments.monitoring.analysis_results_v1"
+
+    def _write_backfill_entry(self, project, status="Complete"):
+        table_dir = f"sql/{project}/monitoring/analysis_results_v1"
+        os.makedirs(table_dir)
+        with open(f"{table_dir}/query.sql", "w") as f:
+            f.write("SELECT 1")
+        with open(f"{table_dir}/metadata.yaml", "w") as f:
+            f.write(yaml.dump(TABLE_METADATA_CONF))
+        with open(f"{table_dir}/{BACKFILL_FILE}", "w") as f:
+            f.write(
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-01-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                f"  status: {status}\n"
+            )
+
+    def test_staging_name_for_non_shared_prod_table_should_use_staging_project(self):
+        """Staging tables for a non-shared-prod query still live in the staging project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.EXPERIMENTS_TABLE, date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "moz_fx_data_experiments__monitoring__analysis_results_v1_2021_05_03"
+        )
+
+    def test_backup_name_for_non_shared_prod_table_should_use_staging_project(self):
+        """Backup tables for a non-shared-prod query still live in the staging project."""
+        name = get_backfill_backup_table_name(self.EXPERIMENTS_TABLE, date(2021, 5, 3))
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "moz_fx_data_experiments__monitoring__analysis_results_v1_backup_2021_05_03"
+        )
+
+    def test_staging_name_for_shared_prod_table_should_not_be_prefixed(self):
+        """Tables in the staging project keep their existing unprefixed names."""
+        name = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-shared-prod.test_derived.test_table_v1", date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "test_derived__test_table_v1_2021_05_03"
+        )
+
+    def test_backup_name_for_shared_prod_table_should_not_be_prefixed(self):
+        """Backups in the staging project keep their existing unprefixed names."""
+        name = get_backfill_backup_table_name(
+            "moz-fx-data-shared-prod.test_derived.test_table_v1", date(2021, 5, 3)
+        )
+        assert name == (
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            "test_derived__test_table_v1_backup_2021_05_03"
+        )
+
+    def test_staging_names_for_same_table_in_different_projects_should_differ(self):
+        """The prefix is what keeps same-named tables from colliding in one dataset."""
+        shared_prod = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-shared-prod.monitoring.analysis_results_v1", date(2021, 5, 3)
+        )
+        experiments = get_backfill_staging_qualified_table_name(
+            "moz-fx-data-experiments.monitoring.analysis_results_v1", date(2021, 5, 3)
+        )
+        assert shared_prod != experiments
+
+    def test_staging_client_project_without_target_should_be_staging_project(self):
+        """Without a target the client runs in the staging project, not the query's project."""
+        assert _staging_client_project(None) == BACKFILL_DESTINATION_PROJECT
+
+    def test_staging_client_project_with_target_should_be_target_project(self):
+        """A target redirects the client to the target project."""
+        target = Target(name="dev", project_id="sandbox")
+        assert _staging_client_project(target) == "sandbox"
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_should_use_staging_project_for_client(
+        self, mock_client, mock_table_exists
+    ):
+        """The staging existence check runs in the staging project, not the query's project."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+
+            # staging exists, backup does not -> eligible to complete
+            mock_table_exists.side_effect = [True, False]
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-experiments",
+                self.EXPERIMENTS_TABLE,
+                status=BackfillStatus.COMPLETE.value,
+            )
+
+            assert self.EXPERIMENTS_TABLE in result
+            assert (
+                mock_client.call_args.kwargs["project"] == BACKFILL_DESTINATION_PROJECT
+            )
+            checked_staging = mock_table_exists.call_args_list[0].args[1]
+            assert checked_staging.startswith(
+                f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            )
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_without_project_should_scan_all_projects(
+        self, mock_client, mock_table_exists
+    ):
+        """project=None scans every project so non-shared-prod entries are picked up."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            # no staging table exists yet -> both entries are eligible to initiate
+            mock_table_exists.return_value = False
+
+            result = get_scheduled_backfills(
+                "sql",
+                None,
+                status=BackfillStatus.INITIATE.value,
+            )
+
+            assert set(result) == {
+                self.EXPERIMENTS_TABLE,
+                "moz-fx-data-shared-prod.monitoring.analysis_results_v1",
+            }
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_with_project_should_restrict_scan(
+        self, mock_client, mock_table_exists
+    ):
+        """Passing a project restricts the scan to that project."""
+        with CliRunner().isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            mock_table_exists.return_value = False
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-experiments",
+                status=BackfillStatus.INITIATE.value,
+            )
+
+            assert set(result) == {self.EXPERIMENTS_TABLE}
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_scheduled_json_should_include_staging_and_backup_tables(
+        self, mock_client, mock_table_exists
+    ):
+        """The JSON output carries the table names so consumers don't rebuild them."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments", status="Initiate")
+            self._write_backfill_entry("moz-fx-data-shared-prod", status="Initiate")
+
+            mock_table_exists.return_value = False
+
+            result = runner.invoke(
+                scheduled,
+                ["--status=Initiate", "--json_path=out.json"],
+            )
+
+            assert result.exit_code == 0
+
+            entries = {
+                e["qualified_table_name"]: e
+                for e in json.loads(Path("out.json").read_text())
+            }
+
+            staging_prefix = (
+                f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+            )
+
+            experiments = entries[self.EXPERIMENTS_TABLE]
+            assert experiments["staging_table"] == (
+                f"{staging_prefix}moz_fx_data_experiments__monitoring"
+                "__analysis_results_v1_2021_05_03"
+            )
+            assert experiments["backup_table"] == (
+                f"{staging_prefix}moz_fx_data_experiments__monitoring"
+                "__analysis_results_v1_backup_2021_05_03"
+            )
+
+            shared_prod = entries[
+                "moz-fx-data-shared-prod.monitoring.analysis_results_v1"
+            ]
+            assert shared_prod["staging_table"] == (
+                f"{staging_prefix}monitoring__analysis_results_v1_2021_05_03"
+            )
+            assert shared_prod["backup_table"] == (
+                f"{staging_prefix}monitoring__analysis_results_v1_backup_2021_05_03"
+            )
+
+    def test_info_without_project_should_scan_all_projects(self):
+        """info with no project lists entries from every project."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+            self._write_backfill_entry("moz-fx-data-shared-prod")
+
+            result = runner.invoke(info, [])
+
+            assert result.exit_code == 0
+            assert self.EXPERIMENTS_TABLE in result.output
+            assert "moz-fx-data-shared-prod.monitoring.analysis_results_v1" in (
+                result.output
+            )
+            assert "total of 2 backfill(s)" in result.output
+
+    def test_info_with_project_should_restrict_to_that_project(self):
+        """info with a project only lists that project's entries."""
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            self._write_backfill_entry("moz-fx-data-experiments")
+            self._write_backfill_entry("moz-fx-data-shared-prod")
+
+            result = runner.invoke(info, ["--project-id=moz-fx-data-experiments"])
+
+            assert result.exit_code == 0
+            assert self.EXPERIMENTS_TABLE in result.output
+            assert "moz-fx-data-shared-prod.monitoring.analysis_results_v1" not in (
+                result.output
+            )
+            assert "total of 1 backfill(s)" in result.output

@@ -2,54 +2,94 @@ fields:
 - mode: NULLABLE
   name: status
   type: STRING
+  description: Outcome of the sanitization job run, either "SUCCESS" or "FAILURE". Failed runs typically
+    have a corresponding error message in the failure_reason column.
 - mode: NULLABLE
   name: started_at
   type: TIMESTAMP
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_terms_derived/dataset_schema.yaml
+    field: started_at
 - mode: NULLABLE
   name: finished_at
   type: TIMESTAMP
+  description: Timestamp at which the sanitization job completed, whether successfully or with a failure.
+    Together with started_at, this allows computing total job duration.
 - mode: NULLABLE
   name: contained_at
   type: INTEGER
+  description: Count of search terms in the analyzed batch that contained an '@' character, which may be
+    indicative of email addresses or other personally identifiable information.
 - mode: NULLABLE
   name: contained_numbers
   type: INTEGER
+  description: Count of search terms in the analyzed batch that contained numeric digits, used as a signal
+    during sanitization to identify potentially sensitive queries.
 - mode: NULLABLE
   name: contained_name
   type: INTEGER
+  description: Count of search terms in the analyzed batch that were identified as containing a person's
+    name, based on name-detection heuristics or lookup lists used by the sanitization pipeline.
 - mode: NULLABLE
   name: total_search_terms_removed_by_sanitization_job
   type: INTEGER
+  description: Total number of search terms removed from the dataset by the sanitization job during this
+    run, across all removal criteria (e.g. containing names, numbers, or other sensitive signals).
 - mode: NULLABLE
   name: total_search_terms_analyzed
   type: INTEGER
+  description: Total number of search terms that were evaluated by the sanitization job during this run,
+    regardless of whether they were ultimately retained or removed.
 - mode: NULLABLE
   name: sum_chars_all_search_terms
   type: INTEGER
+  description: Sum of character lengths across all search terms analyzed in this job run. Provides a measure
+    of total textual volume processed.
 - mode: NULLABLE
   name: sum_words_all_search_terms
   type: INTEGER
+  description: Sum of word counts across all search terms analyzed in this job run, giving a measure of
+    the total lexical volume of queries processed.
 - mode: NULLABLE
   name: sum_uppercase_chars_all_search_terms
   type: INTEGER
+  description: Sum of uppercase character counts across all search terms analyzed in this job run. This
+    signal may be used to detect anomalous or potentially sensitive queries.
 - mode: NULLABLE
   name: sum_terms_containing_us_census_surname
   type: INTEGER
+  description: Count of search terms in the analyzed batch that contained a surname appearing in the US
+    Census surname list, used to detect and remove queries that may contain personal names.
 - mode: NULLABLE
   name: approximate_language_proportions_json
   type: STRING
+  description: JSON-encoded mapping of detected language codes (e.g. "en", "fr") to the count of search
+    terms identified as belonging to that language in this job run. Provides an approximate breakdown of
+    the language distribution of analyzed queries.
 - mode: NULLABLE
   name: failure_reason
   type: STRING
+  description: Error message or exception text describing why the sanitization job failed. Populated only
+    when status is "FAILURE"; null for successful runs.
 - mode: NULLABLE
   name: implementation_notes
   type: STRING
+  description: Free-text notes describing implementation details of the job run, such as the page size used
+    when processing search terms in batches. Null when no notes were recorded.
 - mode: NULLABLE
   name: total_search_terms_appearing_in_allow_list
   type: INTEGER
+  description: Count of search terms in the analyzed batch that matched an entry in the sanitization allow
+    list, meaning they were explicitly permitted to pass through regardless of other signals. Null when
+    the allow list was not applied or the job did not complete.
 - mode: NULLABLE
   name: contained_blank
   type: INTEGER
+  description: Count of search terms in the analyzed batch that were blank or whitespace-only. Null when
+    the job did not complete successfully or this metric was not collected.
 - mode: NULLABLE
   name: total_search_terms
   type: INTEGER
+  description: Total number of search terms present in the source data processed by this job run, before
+    any sanitization filtering is applied. Null when the job did not complete successfully or this metric
+    was not collected.

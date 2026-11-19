@@ -2,7 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: release_channel_stub_installs_count
   type: INTEGER
   mode: NULLABLE
@@ -10,8 +12,12 @@ fields:
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of release channel uninstalls for a specific set of countries
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uninstalls_count
 - name: uninstall_to_install_ratio
   type: FLOAT
   mode: NULLABLE
-  description: Ratio resulting from dividing uninstalls_count by release_channel_stub_installs_count
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uninstall_to_install_ratio

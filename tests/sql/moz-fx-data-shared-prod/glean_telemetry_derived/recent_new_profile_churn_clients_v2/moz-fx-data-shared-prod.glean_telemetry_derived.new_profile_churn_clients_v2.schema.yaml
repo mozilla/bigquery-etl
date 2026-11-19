@@ -1,0 +1,4 @@
+fields:
+- name: cohort_date
+  type: DATE
+  mode: NULLABLE

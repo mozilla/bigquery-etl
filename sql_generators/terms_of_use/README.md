@@ -22,26 +22,22 @@ generate:
   terms_of_use:
     bigeye_defaults:
       collection: Operational Checks
-      notification_channel: '#de-bigeye-triage'
     apps:
       fenix:
         templates:
         - terms_of_use_status_v1
         bigeye:  # optional, bigeye_defaults will be used if not specified
           collection: Operational Checks  # optional
-          notification_channel: '#de-bigeye-triage'  # optional
       firefox_ios:
         templates:
         - terms_of_use_status_v1
         bigeye:  # optional
           collection: Operational Checks  # optional
-          notification_channel: '#de-bigeye-triage'  # optional
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
         bigeye:  # optional
           collection: Operational Checks  # optional
-          notification_channel: '#de-bigeye-triage'  # optional
 ```
 
 ## Running the generator

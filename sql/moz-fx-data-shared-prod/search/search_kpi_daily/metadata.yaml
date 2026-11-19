@@ -1,0 +1,23 @@
+---
+friendly_name: Search KPI Daily
+description: |-
+  This view is used for reporting the daily search KPI broken down by a number of
+  relevant dimensions such as platform, device, country, KPI component etc.
+  SUM(searches) gives you the KPI for any combination of these. SAP rows are searches.
+  Suggest and AI chat rows are clicks that replace a search.
+
+  Desktop SAP counts start with Firefox 138, when the probe was added. History from
+  before that will be included in a separate view.
+
+  To make it easier to manage what's included in the KPI, the view query filters out
+  rows from the upstream table that shouldn't count such as bots, rows that don't meet the
+  population rules, and the sap_excluded component.
+
+  The clients metric is also included to make it easier to derive metrics such as
+  searches per client. Within one day and component, clients adds up across
+  dimensions to the total number of clients for that day and component. However,
+  clients won't add up across days or components. e.g. A client with SAP searches and Suggest
+  clicks is counted in both. For the same reason, calculate searches per client
+  within a single day and component.
+owners:
+- data-search-wg@mozilla.com

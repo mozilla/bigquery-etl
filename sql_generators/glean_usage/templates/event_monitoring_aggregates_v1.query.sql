@@ -1,10 +1,12 @@
 -- Generated via ./bqetl generate glean_usage
 WITH
+{% set cte = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"]
    and dataset['bq_dataset_family'] in event_tables_per_dataset %}
+  {% if not cte.first %},{% endif %}
+  {% set cte.first = false %}
   {% if dataset['bq_dataset_family'] in manual_refresh_apps -%}
     {{ dataset['bq_dataset_family'] }}_aggregated AS (
       -- Use event_monitoring_live_v1 for apps that use manual refreshes
@@ -62,7 +64,32 @@ WITH
             AND (
               event.category = "uptake.remotecontent.result"
               AND event.name IN ("uptake_remotesettings", "uptake_normandy")
-              AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+              AND sample_id != 0
+              AND (
+                -- client-side sampling started on version 145 on Desktop, for uptake_remotesettings only
+                mozfun.norm.extract_version(client_info.app_display_version, 'major') <= 144
+                OR event.name = "uptake_normandy"
+                -- sampling lowered from 1% to 0.03% on 2026-10-20. Earlier dates stay filtered so backfills match.
+                OR (normalized_channel = 'release' AND DATE(submission_timestamp) <= '2026-10-21')
+              )
+            ) IS NOT TRUE
+          {% elif dataset['bq_dataset_family'] == "org_mozilla_ios_firefox" and events_table == "events_v1" %}
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-504
+            -- Server knobs are not available on iOS yet, so sample here instead.
+            -- iOS only has the Rust implementation, hence the `remote_settings` category.
+            AND (
+              event.category = "remote_settings"
+              AND event.name = "uptake_remotesettings"
+              AND sample_id != 0
+            ) IS NOT TRUE
+          {% elif dataset['bq_dataset_family'] == "org_mozilla_firefox" and events_table == "events_v1" %}
+            -- See https://mozilla-hub.atlassian.net/browse/RMST-553
+            -- Server knobs were introduced in 145, so sample earlier versions here instead.
+            -- Android has both the Gecko and the Rust implementations.
+            AND (
+              event.category IN ("uptake.remotecontent.result", "remote_settings")
+              AND event.name = "uptake_remotesettings"
+              AND mozfun.norm.extract_version(client_info.app_display_version, 'major') <= 144
               AND sample_id != 0
             ) IS NOT TRUE
           {% endif %}
@@ -120,25 +147,21 @@ WITH
         experiment_branch
     )
   {% endif %}
-  {% if not outer_loop.last -%}
-  ,
-  {% endif -%}
 {% endif %}
 {% endfor %}
 {% endfor %}
 
+{% set union = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"]
    and dataset['bq_dataset_family'] in event_tables_per_dataset %}
+  {% if not union.first %}UNION ALL{% endif %}
+  {% set union.first = false %}
   SELECT
     *
   FROM
     {{ dataset['bq_dataset_family'] }}_aggregated
-  {% if not outer_loop.last -%}
-  UNION ALL
-  {% endif -%}
 {% endif %}
 {% endfor %}
 {% endfor %}

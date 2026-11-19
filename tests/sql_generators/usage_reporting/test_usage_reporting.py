@@ -16,9 +16,7 @@ from sql_generators.usage_reporting.usage_reporting import (
 TEST_DIR = Path(__file__).parent
 TEST_CONFIG_FILE = "test_config.yaml"
 
-CONFIG_LOADER = _ConfigLoader()
-CONFIG_LOADER.set_project_dir(TEST_DIR)
-CONFIG_LOADER.set_config_file(TEST_CONFIG_FILE)
+CONFIG_LOADER = _ConfigLoader(TEST_DIR / TEST_CONFIG_FILE)
 
 PROBE_SCRAPER_APP_INFO_MOCK_VALUE = CONFIG_LOADER.get(
     "probe_scraper_app_info_mock_response"

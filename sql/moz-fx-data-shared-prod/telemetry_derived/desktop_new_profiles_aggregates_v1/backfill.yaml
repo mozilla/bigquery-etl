@@ -1,0 +1,32 @@
+2026-11-18:
+  start_date: 2026-10-01
+  end_date: 2026-11-17
+  reason: DENG-11979 - exclude all confirmed bot fleets in telemetry_derived.desktop_automated_clients_v1
+    (aws, bulk, hetzner, deng_11590) from new profiles. Code changed in https://github.com/mozilla/bigquery-etl/pull/10197,
+    live from partition 2026-11-18. Starts 2026-10-01, the first first_seen_date where the new
+    exclusion differs from the DENG-11590 UDF by more than 2 profiles. shredder_mitigation is
+    off for this backfill (as for DENG-11590) and is restored after the backfill is complete.
+  watchers:
+  - phlee@mozilla.com
+  - rbaffourawuah@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false
+
+2026-09-14:
+  start_date: 2026-08-27
+  end_date: 2026-09-09
+  reason: DENG-11590 - remove automated new profiles (Linux/151.0/argument-profile)
+    that inflated new-profile reporting from 2026-08-27. Filter added in https://github.com/mozilla/bigquery-etl/pull/9854,
+    live for partitions from 2026-09-10.
+  watchers:
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false

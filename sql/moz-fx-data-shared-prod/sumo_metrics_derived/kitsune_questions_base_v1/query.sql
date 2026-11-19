@@ -2,14 +2,13 @@ WITH questions AS (
   SELECT
     DATE(TIMESTAMP(q.created_utc), "UTC") AS date_utc,
     -- Normalize product names to match other SUMO datasets
-    COALESCE(m.product_mapping, q.product) AS product,
+    mozfun.customer_experience.normalize_product(q.product, 'Kitsune') AS product,
     q.question_id
   FROM
-    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions` q
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
-    ON m.product = q.product
-    AND m.source = 'Kitsune'
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
+  WHERE
+    q.is_spam = FALSE
+    AND q.is_locked = FALSE
 ),
 deduped AS (
   SELECT

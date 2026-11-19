@@ -2,9 +2,8 @@
 """clients_daily_scalar_aggregates query generator."""
 
 import argparse
-import sys
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader
 
@@ -12,7 +11,12 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .client_side_sampled_metrics import get as get_sampled_metrics
-from .utils import get_schema, ping_type_from_table
+from .utils import (
+    emit_query,
+    get_schema,
+    is_static_labeled_counter,
+    ping_type_from_table,
+)
 
 ATTRIBUTES = ",".join(
     [
@@ -25,6 +29,11 @@ ATTRIBUTES = ",".join(
         "channel",
     ]
 )
+
+# Population the sampling rollout targets; drives the lookup and query routing.
+CLIENT_SAMPLED_CHANNEL = "release"
+CLIENT_SAMPLED_OS = "Windows"
+CLIENT_SAMPLED_MAX_SAMPLE_ID = 99  # sample_id buckets are 0-99
 
 
 def render_main(**kwargs):
@@ -96,7 +105,7 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
 
 
 def get_scalar_metrics(
-    schema: Dict, scalar_type: str
+    schema: Dict, scalar_type: str, product: Optional[str] = None
 ) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all scalar probes in a Glean table.
 
@@ -114,8 +123,13 @@ def get_scalar_metrics(
     }
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
-    # Metrics that are already sampled
-    sampled_metrics = get_sampled_metrics(metric_type_set[scalar_type])
+    # Metrics sampled on the rollout's target population.
+    sampled_metrics = get_sampled_metrics(
+        metric_type_set[scalar_type],
+        product=product,
+        channel=CLIENT_SAMPLED_CHANNEL,
+        os=CLIENT_SAMPLED_OS,
+    )
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
@@ -128,6 +142,12 @@ def get_scalar_metrics(
             if metric_type not in metric_type_set[scalar_type]:
                 continue
             for field in metric_field["fields"]:
+                # Static labeled_counters are categorical histograms; they move to
+                # the histogram pipeline. Dynamic (open-ended) ones stay scalar.
+                if metric_type == "labeled_counter" and is_static_labeled_counter(
+                    product, field["name"]
+                ):
+                    continue
                 if field["name"] in sampled_metrics.get(metric_type, []):
                     found_sampled_metrics[metric_type].append(field["name"])
                 elif field["name"] not in excluded_metrics:
@@ -137,7 +157,7 @@ def get_scalar_metrics(
 
 
 def main():
-    """Print a clients_daily_scalar_aggregates query to stdout."""
+    """Generate a clients_daily_scalar_aggregates query."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--no-parameterize",
@@ -149,6 +169,15 @@ def main():
         "--product",
         type=str,
         default="org_mozilla_fenix",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help=(
+            "Directory to write query.sql into. Created when the ping has probes "
+            "and removed when it has none. Defaults to writing to stdout."
+        ),
     )
     args = parser.parse_args()
 
@@ -167,10 +196,14 @@ def main():
 
     schema = get_schema(args.source_table)
     unlabeled_metric_names, unlabeled_sampled_metric_names = get_scalar_metrics(
-        schema, "unlabeled"
+        schema, "unlabeled", product=args.product
     )
-    labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
-    dual_labeled_metric_names, _ = get_scalar_metrics(schema, "dual_labeled")
+    labeled_metric_names, _ = get_scalar_metrics(
+        schema, "labeled", product=args.product
+    )
+    dual_labeled_metric_names, _ = get_scalar_metrics(
+        schema, "dual_labeled", product=args.product
+    )
     metrics_with_too_many_labels = get_etl_excluded_probes_quickfix("desktop")
     dual_labeled_metric_names["dual_labeled_counter"] = [
         name
@@ -186,10 +219,9 @@ def main():
             unlabeled_sampled_metric_names
         ).strip()
     if not unlabeled_metrics and not labeled_metrics:
-        print(header)
-        print("-- Empty query: no probes found!")
-        sys.exit(1)
-    print(
+        emit_query(None, args.output_dir, args.source_table)
+        return
+    emit_query(
         render_main(
             header=header,
             source_table=args.source_table,
@@ -201,10 +233,12 @@ def main():
             ping_type=ping_type_from_table(args.source_table),
             client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
             client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],
-            client_sampled_channel="release",
-            client_sampled_os="Windows",
-            client_sampled_max_sample_id=100,
-        )
+            client_sampled_channel=CLIENT_SAMPLED_CHANNEL,
+            client_sampled_os=CLIENT_SAMPLED_OS,
+            client_sampled_max_sample_id=CLIENT_SAMPLED_MAX_SAMPLE_ID,
+        ),
+        args.output_dir,
+        args.source_table,
     )
 
 

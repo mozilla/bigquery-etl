@@ -4,7 +4,6 @@ from functools import cache, partial
 from pathlib import Path
 
 import click
-from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import (
     is_valid_project,
@@ -13,6 +12,8 @@ from bigquery_etl.cli.utils import (
 )
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.sensitivity import is_gated_family
+from bigquery_etl.util.process_pool import process_pool
 from sql_generators.glean_usage import (
     baseline_clients_daily,
     baseline_clients_first_seen,
@@ -48,6 +49,24 @@ GLEAN_TABLES = [
     events_first_seen.EventsFirstSeenTable(),
     events_stream.EventsStreamTable(),
 ]
+
+
+def unrestricted_app_info(project, app_info):
+    """Drop app datasets that are not mozilla-confidential.
+
+    Cross-app tables are written to broadly readable datasets, so restricted data
+    must not be unioned into them. Apps left with no datasets are dropped.
+    """
+    ungated = {}
+    for name, app_ids_info in app_info.items():
+        kept = [
+            app_id_info
+            for app_id_info in app_ids_info
+            if not is_gated_family(project, app_id_info["bq_dataset_family"])
+        ]
+        if kept:
+            ungated[name] = kept
+    return ungated
 
 
 @click.command()
@@ -200,11 +219,12 @@ def generate(
     ]
 
     # Parameters to generate datasets that union all app datasets
+    cross_app_info = unrestricted_app_info(target_project, app_info)
     generate_across_apps = [
         partial(
             table.generate_across_apps,
             target_project,
-            app_info,
+            cross_app_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,
@@ -212,8 +232,7 @@ def generate(
         for table in GLEAN_TABLES
     ]
 
-    with ProcessingPool(parallelism) as pool:
-        pool.map(
-            lambda f: f(),
-            generate_per_app_id + generate_per_app + generate_across_apps,
-        )
+    tasks = generate_per_app_id + generate_per_app + generate_across_apps
+
+    with process_pool(parallelism, task_count=len(tasks)) as pool:
+        pool.map(lambda f: f(), tasks)

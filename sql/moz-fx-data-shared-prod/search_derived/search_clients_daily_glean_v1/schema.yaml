@@ -1,0 +1,501 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: legacy_telemetry_client_id
+    append: " Carried alongside client_id, the Glean identifier this table is keyed on,
+      so a row can be joined to legacy telemetry tables."
+- name: normalized_engine
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: normalized_engine
+    append: " Part of the grain of this table. The SAP and SERP sides normalize their own
+      engine values the same way, so the two join on it."
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: The source for the searches. Note that sources differ between SAP and
+    SERP. See the Glean dictionary for details.
+- name: partner_code
+  type: STRING
+  mode: NULLABLE
+  description: The partner code reported by the search event, and part of this table's
+    grain. Never null - searches whose partner code is absent or an empty string are
+    reported as the literal "no_code".
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the application.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: app_major_version
+  type: NUMERIC
+  mode: NULLABLE
+  description: Major or first part of the browser version. E.g. for version "100.9.11",
+    the major is 100.
+- name: app_minor_version
+  type: NUMERIC
+  mode: NULLABLE
+  description: Minor part of the browser version. E.g. for version "100.9.11", the
+    minor is 9.
+- name: app_patch_revision
+  type: NUMERIC
+  mode: NULLABLE
+  description: Patch revision part of the browser version. E.g. for version "100.9.11",
+    the patch revision is 11.
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_build_number
+    append: " One of the three inputs to os_version_major and os_version_minor, which on
+      Windows are derived from os, os_version and this column together."
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: home_region
+  type: STRING
+  mode: NULLABLE
+  description: The region code of the user as identified by the client.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the operating system version running at the client. E.g.
+    "100.9.11".
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the operating system version running at the client. E.g.
+    "100.9.11".
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
+- name: profile_creation_date
+  type: INTEGER
+  mode: NULLABLE
+  description: The date of the profile's first run, as days since 1970-01-01. The client
+    records that date on its own calendar with a trailing UTC offset, and this column keeps
+    the date as the client wrote it.
+- name: default_search_engine_display_name
+  type: STRING
+  mode: NULLABLE
+  description: The display name of the default search engine. This should not be relied
+    upon to identify users with application provided engines - use the provider id.
+- name: default_search_engine_data_load_path
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_load_path
+- name: default_search_engine_data_submission_url
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: default_search_engine_data_submission_url
+- name: default_search_engine_partner_code
+  type: STRING
+  mode: NULLABLE
+  description: The partner code configured on the client's default search engine. It
+    describes the engine's configuration rather than any one search, so it need not agree
+    with this row's partner_code, which comes from the search event itself.
+- name: default_search_engine_provider_id
+  type: STRING
+  mode: NULLABLE
+  description: The unique identifier for application provided engines. For third-party
+    engines, this will be "other".
+- name: default_search_engine_overridden
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether a third party had overridden the client's default search engine.
+    Describes the engine's configuration, so it is distinct from
+    sap_overridden_by_third_party, which the SAP side reports per search event.
+- name: default_private_search_engine_display_name
+  type: STRING
+  mode: NULLABLE
+  description: The display name of the default private search engine. This should
+    not be relied upon to identify users with application provided engines - use the
+    provider id.
+- name: default_private_search_engine_data_load_path
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_load_path
+- name: default_private_search_engine_data_submission_url
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: default_private_search_engine_data_submission_url
+- name: default_private_search_engine_partner_code
+  type: STRING
+  mode: NULLABLE
+  description: The partner code configured on the engine set as the default for private
+    browsing mode. It describes that engine's configuration rather than any one search,
+    so it need not agree with this row's partner_code, which comes from the search event
+    itself. Null when no distinct private browsing default engine is configured.
+- name: default_private_search_engine_provider_id
+  type: STRING
+  mode: NULLABLE
+  description: The unique identifier for application provided engines. For third-party
+    engines, this will be "other".
+- name: default_private_search_engine_overridden
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether a third party had overridden the engine set as the default for
+    private browsing mode. Describes that engine's configuration, so it is distinct from
+    sap_overridden_by_third_party, which the SAP side reports per search event. Null when
+    no distinct private browsing default engine is configured.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+- name: ping_start_time
+  type: STRING
+  mode: NULLABLE
+  description: The start of the interval covered by the ping these searches were reported
+    in, as the client wrote it - a local date and time with a trailing UTC offset, kept as
+    a string rather than converted to a timestamp. Taken from whichever source supplied
+    the row, so it describes that source's ping.
+- name: ping_end_time
+  type: STRING
+  mode: NULLABLE
+  description: The end of the interval covered by the ping these searches were reported
+    in, in the same client-local string form as ping_start_time.
+- name: ping_seq
+  type: INTEGER
+  mode: NULLABLE
+  description: The sequence number of the ping these searches were reported in. From the
+    SAP and legacy sides this is the per-client counter for that ping type, which is
+    monotonic and so orders a client's pings even when they are submitted out of order;
+    from the SERP side it is the subsession counter.
+- name: max_concurrent_tab_count_max
+  type: INTEGER
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/search_derived/dataset_schema.yaml
+    field: max_concurrent_tab_count_max
+    append: " Zero, not null, where no source reported a value."
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  description: The experiments the client was enrolled in when these searches were
+    reported, one element per enrollment and empty for a client enrolled in none. Taken
+    from whichever source recorded enrollments for this row rather than from whichever
+    source supplied the row, so an enrollment is not lost to a SERP impression that
+    predates it.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: The slug identifying the experiment.
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    description: The enrollment in the experiment named by key.
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+      description: The branch of the experiment the client was enrolled in.
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      description: Additional properties of the enrollment.
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+        description: The kind of enrollment.
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+        description: The identifier of the enrollment.
+- name: profile_age_in_days
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of days between the profile's first run and this row's submission_date,
+    derived from the profile_creation_date this row publishes, so the two columns always
+    agree. submission_date is UTC while the first run is recorded on the client's own
+    calendar, so the count can sit a day either side of the client's. Can be negative,
+    because the first run is client-reported and a device whose clock was wrong at
+    install can report one later than the day it reports into.
+- name: serp_searches_organic_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of organic SERP impressions for this key, meaning those
+    carrying no partner code. Zero, not null, on a row with no SERP activity.
+- name: serp_searches_tagged_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of tagged SERP impressions for this key, meaning those carrying
+    a partner code. Zero, not null, on a row with no SERP activity.
+- name: serp_follow_on_searches_tagged_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of tagged SERP impressions reached by refining a search
+    from the results page rather than from a browser search access point. Because
+    the access point is part of this table's grain, this equals serp_searches_tagged_count
+    on a row
+    whose source is a follow-on access point and is zero on every other row.
+- name: sap_counts_total
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of search access point events for this key. This is a count
+    of events, not a sum of a counter, so it does not reproduce the v8 column named
+    "sap". Zero, not null, on a row with no SAP activity.
+- name: serp_counts_total
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of SERP impressions for this key, tagged and organic together.
+    Zero, not null, on a row with no SERP activity.
+- name: serp_ad_click_target
+  type: STRING
+  mode: NULLABLE
+  description: The distinct ad components the client clicked on this key's SERP impressions,
+    comma separated and ordered by component name. Null where there were no ad clicks
+    and on a row with no SERP activity.
+- name: serp_ad_clicks_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ad clicks on this key's SERP impressions, tagged and
+    organic together. Not guaranteed to equal serp_ad_clicks_tagged_sum plus serp_ad_clicks_organic_sum,
+    because those two split on a flag that can be null while this counts every impression.
+    Zero, not null, on a row with no SERP activity.
+- name: serp_ad_clicks_tagged_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ad clicks on this key's tagged SERP impressions. Zero,
+    not null, on a row with no SERP activity.
+- name: serp_ad_clicks_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ad clicks on this key's organic SERP impressions. Zero,
+    not null, on a row with no SERP activity.
+- name: serp_searches_with_ads_tagged_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's tagged SERP impressions that had at least
+    one ad visible. Counts impressions rather than ads. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_searches_with_ads_organic_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's organic SERP impressions that had at least
+    one ad visible. Counts impressions rather than ads. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_ad_blocker_inferred
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True where an ad blocker was inferred on every one of this key's SERP
+    impressions. Inferred from the page itself, so it is independent of has_adblocker_addon,
+    which reports an installed add-on. Null on a row with no SERP activity.
+- name: serp_non_ad_link_clicks_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of clicks on non-ad links across this key's SERP impressions.
+    Zero, not null, on a row with no SERP activity.
+- name: serp_other_engagements_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of engagements with the results page that were neither an
+    ad click nor a non-ad link click, across this key's SERP impressions. Zero, not
+    null, on a row with no SERP activity.
+- name: serp_ads_loaded_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ads loaded across this key's SERP impressions, whether
+    or not they were shown. Zero, not null, on a row with no SERP activity.
+- name: serp_ads_visible_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ads visible to the client across this key's SERP impressions.
+    Zero, not null, on a row with no SERP activity.
+- name: serp_ads_blocked_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ads blocked across this key's SERP impressions. Zero,
+    not null, on a row with no SERP activity.
+- name: serp_ads_notshowing_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of ads that loaded but were not shown across this key's
+    SERP impressions, for reasons other than blocking. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_abandonments_navigation_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned by navigating away,
+    meaning the impression saw no engagement before it stopped being tracked. Abandonment
+    and engagement are mutually exclusive per impression. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_abandonments_tab_close_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned by closing the tab,
+    with no engagement. Zero, not null, on a row with no SERP activity.
+- name: serp_abandonments_window_close_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned by closing the window,
+    with no engagement. Zero, not null, on a row with no SERP activity.
+- name: serp_abandonments_reason_absent_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned with the reason absent.
+    The client sends an empty reason for searchTermChanged and pageTypeChanged, which is
+    a distinct state from not having been abandoned at all. Zero, not null, on a row with
+    no SERP activity.
+- name: serp_abandonments_other_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of this key's SERP impressions abandoned for a reason outside
+    the four above, so that no abandonment is dropped from the counts. Zero against the
+    client's current vocabulary; a sustained non-zero value means a new reason is being
+    emitted and should get its own column.
+- name: has_adblocker_addon
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client had at least one enabled ad-blocking add-on installed
+    on this day. False rather than null where the client reported no such add-on,
+    matching v8. Reports an installed add-on, where serp_ad_blocker_inferred is inferred
+    from the results page.
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client was under enterprise policy on this day, taken as
+    the most common value across the day's events with ties broken toward the latest
+    event.
+- name: os_version_major
+  type: STRING
+  mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
+- name: os_version_minor
+  type: STRING
+  mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
+- name: sap_provider_id
+  type: STRING
+  mode: NULLABLE
+  description: The raw provider_id extra from the sap.counts event, before normalization
+    into normalized_engine. Null on rows built only from SERP impressions, since the
+    SERP side has no counterpart to fall back to.
+- name: sap_provider_name
+  type: STRING
+  mode: NULLABLE
+  description: The raw provider_name extra from the sap.counts event, used in place
+    of provider_id when that value is "other". Null on rows built only from SERP impressions,
+    since the SERP side has no counterpart to fall back to.
+- name: sap_overridden_by_third_party
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the search engine used for this search had been overridden
+    by a third party, as reported on the sap.counts event. Taken from the SAP side
+    only, so it is null on rows built only from SERP impressions or from the legacy
+    counters.
+- name: legacy_searches_tagged_non_follow_on_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged searches from the browser.search.content Glean labeled counter,
+    excluding follow-on searches, which the counter labels as a separate tag type and
+    legacy_searches_tagged_follow_on_sum carries. The two ads families do not make that
+    split and include follow-on. Zero, not null, where the metrics ping carried nothing
+    for this key. It is the counterpart of v8's tagged_sap; serp_searches_tagged_count
+    measures the same searches from SERP impressions and includes follow-on.
+- name: legacy_searches_tagged_follow_on_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged follow-on searches from the browser.search.content Glean labeled
+    counter. Zero, not null, where the metrics ping carried nothing for this key.
+- name: legacy_searches_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Organic, meaning non-partner, in-content searches from the browser.search.content
+    Glean labeled counter. Runs below v8's organic column by a margin that is not yet
+    root-caused, so prefer v8 for organic levels. Zero, not null, where the metrics ping
+    carried nothing for this key.
+- name: legacy_searches_with_ads_tagged_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged SERPs with ads from the browser.search.withads Glean labeled counter,
+    counted when the ad was served rather than when it rendered. Includes follow-on. The
+    withads labels carry no partner code, so the value is attributed to the key's
+    highest-volume partner code and is zero on the others - a plain SUM is correct, a
+    per-partner_code slice is not. Zero, not null, where the metrics ping carried nothing
+    for this key.
+- name: legacy_searches_with_ads_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Organic SERPs with ads from the browser.search.withads Glean labeled counter,
+    counted when the ad was served rather than when it rendered. Attributed to the key's
+    highest-volume partner code and zero on the others, as the withads labels carry no
+    partner code - a plain SUM is correct, a per-partner_code slice is not. Zero, not null,
+    where the metrics ping carried nothing for this key.
+- name: legacy_ad_clicks_tagged_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Tagged ad clicks from the browser.search.adclicks Glean labeled counter,
+    counted by matching the outgoing request URL against ad-server patterns. Includes
+    follow-on. Attributed to the key's highest-volume partner code and zero on the others -
+    a plain SUM is correct, a per-partner_code slice is not. Zero, not null, where the
+    metrics ping carried nothing for this key.
+- name: legacy_ad_clicks_organic_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Organic ad clicks from the browser.search.adclicks Glean labeled counter,
+    counted by matching the outgoing request URL against ad-server patterns. Attributed to
+    the key's highest-volume partner code and zero on the others, as the adclicks labels
+    carry no partner code - a plain SUM is correct, a per-partner_code slice is not. Zero,
+    not null, where the metrics ping carried nothing for this key.

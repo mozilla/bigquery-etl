@@ -60,6 +60,21 @@ cohorts_in_range AS (
     first_seen_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    -- This table feeds retention dashboards, so confirmed automated (bot) clients are excluded
+    -- outright rather than flagged. They come from telemetry_derived.desktop_automated_clients_v1
+    -- (DENG-11925), which includes the DENG-11590 segment. Exclude every fleet.
+    AND client_id NOT IN (
+      -- Only flags up to @submission_date, so a rerun or backfill gives the same result as the
+      -- daily run. The table is read directly because a membership test needs no per-client
+      -- grouping. NOT IN is NULL for every row if the subquery returns a NULL, so drop NULLs.
+      SELECT
+        client_id
+      FROM
+        `moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1`
+      WHERE
+        submission_date <= @submission_date
+        AND client_id IS NOT NULL
+    )
 ),
 activity_cohort_match AS (
   SELECT
@@ -117,10 +132,6 @@ SELECT
   ) AS num_clients_active_on_day,
   COUNTIF(
     (active_client_id IS NOT NULL)
-    AND (dau_clients_days_since_seen = 0)
-  ) AS num_clients_dau_on_day,
-  COUNTIF(
-    (active_client_id IS NOT NULL)
     AND (
       COALESCE(
         BIT_COUNT(
@@ -172,7 +183,14 @@ SELECT
         FALSE
       )
     )
-  ) AS num_clients_dau_repeat_first_month_users
+  ) AS num_clients_dau_repeat_first_month_users,
+  -- Kept last to match the deployed table's field order. The backfill swap copies
+  -- partitions into the production table, so the query, schema.yaml and the deployed
+  -- table must agree on column positions. See DENG-11590.
+  COUNTIF(
+    (active_client_id IS NOT NULL)
+    AND (dau_clients_days_since_seen = 0)
+  ) AS num_clients_dau_on_day
 FROM
   activity_cohort_match
 GROUP BY

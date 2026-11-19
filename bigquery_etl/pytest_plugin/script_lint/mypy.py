@@ -14,10 +14,10 @@ def pytest_configure(config):
 
 
 # adapted from
-# https://github.com/dbader/pytest-mypy/blob/v0.7.0/src/pytest_mypy.py#L100-L111
-def pytest_collect_file(parent, path):
+# https://github.com/realpython/pytest-mypy/blob/v1.0.1/src/pytest_mypy/__init__.py#L202-L217
+def pytest_collect_file(file_path, parent):
     """Collect mypy tests."""
     if any(
         [parent.config.option.mypy, parent.config.option.mypy_ignore_missing_imports]
-    ) and is_python_executable(path):
-        return MypyFile.from_parent(parent=parent, fspath=path)
+    ) and is_python_executable(file_path):
+        return MypyFile.from_parent(parent=parent, path=file_path)

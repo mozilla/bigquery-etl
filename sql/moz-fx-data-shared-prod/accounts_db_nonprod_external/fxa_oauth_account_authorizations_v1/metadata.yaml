@@ -1,0 +1,21 @@
+---
+friendly_name: accountAuthorizations table from nonprod (stage) fxa_oauth database
+description: >
+  A mirror of the `accountAuthorizations` table from the nonprod (stage) `fxa_oauth`
+  CloudSQL database, updated daily to match the current state of the table.
+
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa_oauth
+owners:
+  - wclouser@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:fxa/rp-active-accounts-stage
+labels:
+  application: accounts_backend
+  schedule: daily
+scheduling:
+  dag_name: bqetl_accounts_db_daily
+  # destination is the whole table, not a single partition,
+  # so don't use partition_parameter
+  partition_parameter: null

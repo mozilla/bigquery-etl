@@ -3,3 +3,5 @@ description: |-
   Addon usage by client, partitioned by day
 owners:
 - kik@mozilla.com
+labels:
+  legacy: true

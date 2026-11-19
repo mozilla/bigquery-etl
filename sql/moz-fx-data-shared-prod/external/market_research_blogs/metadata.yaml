@@ -1,0 +1,7 @@
+friendly_name: Market Research Browser Blog Posts
+description: |-
+  Browser and product vendor blog posts scraped from RSS/Atom feeds, for
+  competitive intelligence on what other browser vendors are announcing.
+  One row per scraped blog post, refreshed weekly as a full reload.
+owners:
+- lmcfall@mozilla.com

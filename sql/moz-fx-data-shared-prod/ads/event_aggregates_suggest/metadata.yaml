@@ -1,0 +1,9 @@
+friendly_name: Ads Event Aggregates for Suggest
+description: |-
+  Aggregated event counts for suggest.
+
+  Migrated from `contextual_services.event_aggregates_suggest`, which reads the
+  legacy `contextual_services_derived.event_aggregates_suggest_v1` table.
+owners:
+  - cmorales@mozilla.com
+  - mozilla/ads_data_team

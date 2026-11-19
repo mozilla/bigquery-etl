@@ -1,0 +1,119 @@
+fields:
+- name: classified_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: Timestamp when this row was written by the classification pipeline.
+- name: run_id
+  type: STRING
+  mode: REQUIRED
+  description: >-
+    Identifier of the pipeline run that produced this row, so the rows of a single
+    run can be grouped and traced back to it. The Airflow run id when run from the
+    DAG.
+- name: source_project
+  type: STRING
+  mode: REQUIRED
+  description: GCP project of the classified table.
+- name: source_dataset
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset of the classified table.
+- name: source_table
+  type: STRING
+  mode: REQUIRED
+  description: Table name (without project or dataset).
+- name: column_name
+  type: STRING
+  mode: REQUIRED
+  description: Field path using dot notation for nested fields (e.g. client_info.app_channel).
+- name: data_type
+  type: STRING
+  mode: NULLABLE
+  description: BigQuery data type as reported by INFORMATION_SCHEMA.
+- name: primary_label
+  type: STRING
+  mode: NULLABLE
+  description: Most specific matching taxonomy label (e.g. user.unique_id.client_id).
+- name: secondary_labels
+  type: STRING
+  mode: REPEATED
+  description: Additional taxonomy labels that also apply.
+- name: confidence
+  type: STRING
+  mode: NULLABLE
+  description: high | medium | low - the model's self-reported confidence.
+- name: reasoning
+  type: STRING
+  mode: NULLABLE
+  description: 1-2 sentence justification referencing the signals used.
+- name: needs_review
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True when confidence is low or signals conflict.
+- name: matched_probe
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Probe or metric name matched to this column by name, whose definition was
+    shown to the model. Null when no probe matched.
+- name: data_sensitivity
+  type: STRING
+  mode: REPEATED
+  description: Glean data_sensitivity labels from the matched probe, if any.
+- name: model
+  type: STRING
+  mode: NULLABLE
+  description: Full LLM model name that produced the row (e.g. gemini-3.5-flash-lite).
+- name: taxonomy_version
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Version of the data taxonomy the labels were drawn from, so a classification
+    stays tied to the label set that produced it.
+- name: input_hash
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Hash over the column schema, description, sample fingerprint and taxonomy
+    version. Not populated yet: it is here from the start so that content-based
+    change detection can be turned on later without a schema migration.
+- name: evidence
+  type: RECORD
+  mode: NULLABLE
+  description: >-
+    Compact summary of what the model was actually shown, kept permanently so a
+    classification remains auditable after the 90-day profiling tables expire.
+  fields:
+  - name: null_rate
+    type: FLOAT
+    mode: NULLABLE
+    description: Percentage of rows where this column is NULL. Null when the column was not profiled.
+  - name: distinct_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Approximate distinct non-null values. Null for STRUCT/ARRAY types and for unprofiled columns.
+  - name: is_high_cardinality
+    type: BOOLEAN
+    mode: NULLABLE
+    description: >-
+      True if distinct_count exceeds 50. Samples for these columns are suppressed
+      before classification, so sanitized_samples is empty: their values are
+      almost always opaque identifiers, which carry no aggregate signal and are
+      what DLP is least able to detect.
+  - name: column_tier
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Profiling tier of the column: scalar, leaf, nested_leaf, scalar_array,
+      undocumented, or pii_suppressed (column name matched a known PII pattern,
+      so no values were collected).
+  - name: existing_description
+    type: STRING
+    mode: NULLABLE
+    description: The BigQuery column description shown to the model. Null when the column had none.
+  - name: sanitized_samples
+    type: STRING
+    mode: REPEATED
+    description: >-
+      Sample column values shown to the model, after DLP sanitization. Raw
+      sample values are never written here.

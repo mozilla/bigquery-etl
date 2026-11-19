@@ -1,0 +1,125 @@
+---
+- submission_timestamp: 2026-05-04 12:00:00 UTC
+  normalized_os: Windows
+  normalized_os_version: "10.0"
+  normalized_channel: release
+  normalized_country_code: US
+  sample_id: 42
+  client_info:
+    client_id: client_id_1
+    app_display_version: "138.0.0"
+    locale: en-US
+    windows_build_number: 22631
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy_id_1
+      legacy_telemetry_profile_group_id: profile_group_id_1
+    string:
+      newtab_homepage_category: enabled
+      newtab_newtab_category: enabled
+      newtab_locale: en-US
+    string_list:
+      newtab_widgets_enabled_list:
+        - lists
+        - focus_timer
+  events:
+    - category: newtab
+      name: opened
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: source
+          value: about:newtab
+    - category: newtab
+      name: widgets_impression
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+    - category: newtab
+      name: widgets_impression
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+        - key: user_action
+          value: list_copy
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+        - key: user_action
+          value: change_size
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+        - key: user_action
+          value: learn_more
+    - category: newtab
+      name: widgets_enabled
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+        - key: enabled
+          value: "true"
+    - category: newtab
+      name: widgets_impression
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: focus_timer
+        - key: widget_size
+          value: small
+    - category: newtab
+      name: widgets_user_event
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: focus_timer
+        - key: widget_size
+          value: small
+        - key: user_action
+          value: timer_set
+    - category: newtab
+      name: widgets_enabled
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: focus_timer
+        - key: widget_size
+          value: small
+        - key: enabled
+          value: "false"

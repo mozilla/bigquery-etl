@@ -248,6 +248,60 @@ metrics_ping AS (
     client_id,
     sample_id,
     normalized_channel
+),
+adjust_attribution_ping_base AS (
+  SELECT
+    client_info.client_id AS client_id,
+    sample_id,
+    normalized_channel,
+    submission_timestamp,
+    ping_info.seq AS ping_seq,
+    NULLIF(metrics.string.adjust_attribution_adgroup, "") AS adjust_ad_group,
+    NULLIF(metrics.string.adjust_attribution_campaign, "") AS adjust_campaign,
+    NULLIF(metrics.string.adjust_attribution_creative, "") AS adjust_creative,
+    NULLIF(metrics.string.adjust_attribution_network, "") AS adjust_network,
+  FROM
+    `moz-fx-data-shared-prod.fenix.adjust_attribution`
+  WHERE
+    DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    AND client_info.client_id IS NOT NULL
+    -- Date when adjust_attribution ping was added as a data source in this query
+    AND DATE(submission_timestamp) >= "2026-08-18"
+),
+adjust_attribution_ping AS (
+  SELECT
+    client_id,
+    sample_id,
+    normalized_channel,
+    ARRAY_AGG(
+      IF(
+        adjust_ad_group IS NOT NULL
+        OR adjust_campaign IS NOT NULL
+        OR adjust_creative IS NOT NULL
+        OR adjust_network IS NOT NULL,
+        STRUCT(
+          adjust_ad_group,
+          adjust_campaign,
+          adjust_creative,
+          adjust_network,
+          submission_timestamp AS adjust_attribution_timestamp
+        ),
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC,
+        submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS adjust_info,
+  FROM
+    adjust_attribution_ping_base
+  GROUP BY
+    client_id,
+    sample_id,
+    normalized_channel
 )
 SELECT
   @submission_date AS submission_date,
@@ -255,7 +309,11 @@ SELECT
   sample_id,
   normalized_channel,
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
-  COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
+  COALESCE(
+    adjust_attribution_ping.adjust_info,
+    first_session_ping.adjust_info,
+    metrics_ping.adjust_info
+  ) AS adjust_info,
   COALESCE(
     play_store_attribution_ping.play_store_info,
     first_session_ping.play_store_info
@@ -276,4 +334,7 @@ LEFT JOIN
   USING (client_id, sample_id, normalized_channel)
 LEFT JOIN
   metrics_ping
+  USING (client_id, sample_id, normalized_channel)
+LEFT JOIN
+  adjust_attribution_ping
   USING (client_id, sample_id, normalized_channel)

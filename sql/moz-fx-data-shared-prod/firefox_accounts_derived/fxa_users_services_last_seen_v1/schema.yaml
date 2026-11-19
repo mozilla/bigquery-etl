@@ -2,6 +2,9 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: !include-field-description
+    field: submission_date
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -20,21 +23,39 @@ fields:
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: user_id
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: service
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: service
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: country
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: country
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: language
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: language
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: app_version
   type: STRING
   mode: NULLABLE
 - name: os_name
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: os_name
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    field: os_version
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml

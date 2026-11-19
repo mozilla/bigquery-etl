@@ -1,0 +1,8 @@
+- answer_id: 1
+  creator_username: "testuser"
+  question_id: 1
+  answer_content: "Test answer"
+  created_date: "2026-04-01T00:00:00+00:00"
+  num_helpful_votes: 0
+  num_unhelpful_votes: 0
+  is_spam: true

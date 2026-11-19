@@ -10,6 +10,7 @@ labels:
   shredder_mitigation: true
   table_type: aggregate
   dag: bqetl_desktop_engagement_model
+  legacy: true
 scheduling:
   dag_name: bqetl_desktop_engagement_model
 bigquery:

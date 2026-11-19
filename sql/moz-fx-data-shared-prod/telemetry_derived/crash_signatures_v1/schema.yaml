@@ -3,11 +3,18 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: REQUIRED
-  description: Timestamp when the ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_timestamp
 - name: document_id
   type: STRING
   mode: REQUIRED
-  description: The document ID specified in the URI when the client sent this message.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: document_id
 - name: signature
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: signature

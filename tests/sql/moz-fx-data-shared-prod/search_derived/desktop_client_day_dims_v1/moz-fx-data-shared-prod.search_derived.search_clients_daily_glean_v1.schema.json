@@ -1,0 +1,107 @@
+[
+  {
+    "name": "submission_date",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "profile_group_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "country",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "ping_end_time",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sap_counts_total",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "serp_counts_total",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "is_default_browser",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "app_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "default_search_engine_provider_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "default_search_engine_display_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "default_private_search_engine_display_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "home_region",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "policies_is_enterprise",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "os_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "locale",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "distribution_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "channel",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "os",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

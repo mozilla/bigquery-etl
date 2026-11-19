@@ -1,0 +1,14 @@
+friendly_name: Data Governance Metadata
+description: |-
+  Views for accessing Mozilla data governance metadata.
+
+  Contains views to selected tables and columns from the
+  `data_governance_metadata_derived` dataset that are safe to expose to
+  mozilla-confidential.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -2,134 +2,225 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: activity_segment
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_app_name
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: country
   type: STRING
-  description: An ISO 3166-1 alpha-2 country code
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: city
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: city
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_seen_bits
 - mode: NULLABLE
   name: days_since_first_seen
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_since_first_seen
 - mode: NULLABLE
   name: device_model
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: device_model
 - mode: NULLABLE
   name: is_new_profile
   type: BOOLEAN
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_new_profile
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: first_seen_date
 - mode: NULLABLE
   name: days_since_seen
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_since_seen
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Major or first part of the operating system version running at the
-    client. E.g. for version "100.9.11", the major is 100.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version_major
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Minor part of the operating system version running at the client. E.g.
-    for version "100.9.11", the minor is 9.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version_minor
 - mode: NULLABLE
   name: os_version_patch
   type: INTEGER
+  description: The patch version component of the normalized OS version string (e.g., 11 for macOS 14.0.11).
 - mode: NULLABLE
   name: durations
   type: NUMERIC
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: durations
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uri_count
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_default_browser
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: The distribution id associated with the install of Firefox.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - mode: NULLABLE
   name: attribution_content
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_content
 - mode: NULLABLE
   name: attribution_source
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_source
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_medium
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_campaign
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_experiment
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: attribution_variation
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
+  description: Number of ad clicks on search engine result pages originating from Firefox searches on this
+    submission date. Null when no search data is available.
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: organic_search_count
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_count
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: search_with_ads
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_hours_sum
 - mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: days_created_profile_bits
 - mode: NULLABLE
   name: isp
   type: STRING
-  description: The name of the internet service provider associated with the client's
-    IP address.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp

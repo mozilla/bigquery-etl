@@ -20,13 +20,22 @@ combined AS (
       "impression"
     ) AS event_type,
     'desktop' AS form_factor,
-    -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
-    -- receives geo information from the client rather than from Glean ingestion's
-    -- IP geolocation. We no longer send subdivision, only country.
-    COALESCE(normalized_country_code, metrics.string.quick_suggest_country) AS country,
-    metadata.geo.subdivision1 AS subdivision1,
+    -- The quick_suggest ping moved to OHTTP, which resolves geo from the forwarding
+    -- server's IP (US) instead of the client's. On OHTTP pings (identified by a
+    -- missing User-Agent version) use the client-reported country, leaving it NULL
+    -- when the client sent none; on direct pings the ingestion IP is the
+    -- client, so use normalized_country_code.
+    CASE
+      WHEN metadata.user_agent.version IS NULL
+        THEN NULLIF(metrics.string.quick_suggest_country, '')
+      ELSE normalized_country_code
+    END AS country,
+    -- Subdivision is only the forwarding server's on OHTTP pings (no client
+    -- subdivision is sent), so it is meaningful only for direct pings.
+    IF(metadata.user_agent.version IS NULL, NULL, metadata.geo.subdivision1) AS subdivision1,
     metrics.string.quick_suggest_advertiser AS advertiser,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.quick_suggest_position AS position,
     CASE
       WHEN NULLIF(metrics.string.quick_suggest_request_id, "") IS NULL
@@ -120,11 +129,20 @@ combined AS (
       "impression"
     ) AS event_type,
     'phone' AS form_factor,
-    -- With shift to OHTTP, we expect to stop receiving normalized_country_code soon
-    COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
-    metadata.geo.subdivision1 AS subdivision1,
+    -- fx_suggest moved to OHTTP, which resolves geo from the gateway's IP (US)
+    -- instead of the client's. On OHTTP pings (missing User-Agent version) use the
+    -- client-reported country, leaving it NULL when the client sent none; on direct
+    -- pings the ingestion IP is the client.
+    CASE
+      WHEN metadata.user_agent.version IS NULL
+        THEN NULLIF(metrics.string.fx_suggest_country, '')
+      ELSE normalized_country_code
+    END AS country,
+    -- Subdivision is only the gateway's on OHTTP pings, so keep it for direct pings only.
+    IF(metadata.user_agent.version IS NULL, NULL, metadata.geo.subdivision1) AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,
@@ -153,10 +171,20 @@ combined AS (
       "impression"
     ) AS event_type,
     'phone' AS form_factor,
-    COALESCE(metrics.string.fx_suggest_country, normalized_country_code) AS country,
-    metadata.geo.subdivision1 AS subdivision1,
+    -- fx_suggest moved to OHTTP, which resolves geo from the gateway's IP (US)
+    -- instead of the client's. On OHTTP pings (missing User-Agent version) use the
+    -- client-reported country, leaving it NULL when the client sent none; on direct
+    -- pings the ingestion IP is the client.
+    CASE
+      WHEN metadata.user_agent.version IS NULL
+        THEN NULLIF(metrics.string.fx_suggest_country, '')
+      ELSE normalized_country_code
+    END AS country,
+    -- Subdivision is only the gateway's on OHTTP pings, so keep it for direct pings only.
+    IF(metadata.user_agent.version IS NULL, NULL, metadata.geo.subdivision1) AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
-    client_info.app_channel AS release_channel,
+    -- This ping moved to OHTTP, which drops client_info; use the ingestion-derived channel.
+    normalized_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,
@@ -426,8 +454,11 @@ FROM
   with_event_count
 WHERE
   submission_date = @submission_date
-  -- Filter out events associated with suspiciously active clients.
-  AND NOT (user_event_count > 50 AND event_type = 'click')
+  -- Filter out events associated with suspiciously active clients. Rows with a
+  -- NULL context_id (the field was removed from the quick_suggest ping) all
+  -- collapse into a single window partition and would otherwise be dropped
+  -- wholesale, so the filter is skipped for them.
+  AND NOT (user_event_count > 50 AND event_type = 'click' AND context_id IS NOT NULL)
   AND IF(
     DATE_DIFF(CURRENT_DATE(), @submission_date, DAY) > 30,
     ERROR("Data older than 30 days has been removed"),

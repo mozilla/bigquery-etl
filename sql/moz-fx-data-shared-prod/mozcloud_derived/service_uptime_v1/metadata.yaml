@@ -7,6 +7,10 @@ description: |-
   error rate threshold.
 owners:
 - wstuckey@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloud-engineering/quick-example-scheduled-report
 labels:
   incremental: true
   schedule: daily

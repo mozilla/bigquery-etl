@@ -1,0 +1,9 @@
+friendly_name: Market Research Browser Releases
+description: |-
+  Browser and product release-note records scraped from vendor release-note
+  pages, for competitive intelligence on what other browser vendors are
+  shipping. One row per release; use `source_type` to distinguish
+  developer_release_notes from user_release_notes. Refreshed weekly as a
+  full reload.
+owners:
+- lmcfall@mozilla.com

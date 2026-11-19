@@ -2,7 +2,9 @@ fields:
 - name: addon_id
   type: STRING
   mode: NULLABLE
-  description: Unique identifier for the add-on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: addon_id
 - name: addon_name
   type: STRING
   mode: NULLABLE

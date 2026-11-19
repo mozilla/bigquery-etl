@@ -1,0 +1,168 @@
+# Checks, with submission_date 2026-10-30:
+# - Counts cover only non-bot clients: bot client d is not in its group's counts
+# - Churn counts read the right flags: a, b and c each count in one churn group
+# - Cumulative sums add the churn counts: 2 after 1 day, 3 after 2 days
+# - NULL audience values form their own group: e, with NULL is_default_browser, has its own row
+# - Young cohorts read NULL: the 10-day cohort's 28 to 30-day counts and cumulative sums are NULL
+# - Rows cover only cohorts from the last 775 days: h's 2024-01-01 cohort has no row
+- client_id: a
+  cohort_date: 2026-09-01
+  days_data_available: 31
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  is_desktop_argument_profile_automation: false
+  # Never active
+  churn_risk_after_5_days: true
+  churn_risk_after_7_days: true
+  churned_after_1_day: false
+  churned_after_2_days: false
+  immediately_churned: true
+  day_0: false
+- client_id: b
+  cohort_date: 2026-09-01
+  days_data_available: 31
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  is_desktop_argument_profile_automation: false
+  # Active on day 0 only
+  churn_risk_after_5_days: true
+  churn_risk_after_7_days: true
+  churned_after_1_day: true
+  churned_after_2_days: false
+  immediately_churned: false
+  day_0: true
+- client_id: c
+  cohort_date: 2026-09-01
+  days_data_available: 31
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  is_desktop_argument_profile_automation: false
+  # Active on days 0 and 1 only
+  churn_risk_after_5_days: false
+  churn_risk_after_7_days: true
+  churned_after_1_day: false
+  churned_after_2_days: true
+  immediately_churned: false
+  day_0: true
+- client_id: d
+  cohort_date: 2026-09-01
+  days_data_available: 31
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  # Bot-flagged, never active
+  is_desktop_argument_profile_automation: true
+  churn_risk_after_5_days: true
+  churn_risk_after_7_days: true
+  churned_after_1_day: false
+  churned_after_2_days: false
+  immediately_churned: true
+  day_0: false
+- client_id: e
+  cohort_date: 2026-09-01
+  days_data_available: 31
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  # is_default_browser NULL; active every day
+  is_desktop_argument_profile_automation: false
+  churn_risk_after_5_days: false
+  churn_risk_after_7_days: false
+  churned_after_1_day: false
+  churned_after_2_days: false
+  immediately_churned: false
+  day_0: true
+- client_id: f
+  cohort_date: 2026-10-21
+  days_data_available: 10
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  is_desktop_argument_profile_automation: false
+  # Never active; the 28 to 30-day flags are NULL at 10 days
+  churn_risk_after_5_days: true
+  churn_risk_after_7_days: true
+  day_0: false
+- client_id: g
+  cohort_date: 2026-10-21
+  days_data_available: 10
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  is_desktop_argument_profile_automation: false
+  # Active every day; the 28 to 30-day flags are NULL at 10 days
+  churn_risk_after_5_days: false
+  churn_risk_after_7_days: false
+  day_0: true
+- client_id: h
+  cohort_date: 2024-01-01
+  days_data_available: 31
+  country: US
+  locale: en
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: '10.0'
+  os_version_major: 10
+  os_version_minor: 0
+  app_display_version: '150.0'
+  app_name: Firefox Desktop
+  is_default_browser: true
+  is_desktop_argument_profile_automation: false
+  # Cohort older than 775 days before 2026-10-30
+  churn_risk_after_5_days: true
+  churn_risk_after_7_days: true
+  churned_after_1_day: false
+  churned_after_2_days: false
+  immediately_churned: true
+  day_0: false

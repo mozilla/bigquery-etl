@@ -6,6 +6,7 @@ owners:
 labels:
   owner1: data-platform-infra-wg
   table_type: client_level
+  legacy: true
 bigquery:
   time_partitioning:
     type: day

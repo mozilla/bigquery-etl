@@ -1,0 +1,48 @@
+fields:
+- name: event_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Audit log event ID assigned by Deepnote.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the event happened.
+- name: actor_type
+  type: STRING
+  mode: NULLABLE
+  description: "`user` for actions in the Deepnote UI, `api` for actions through the API (including MCP)."
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote user ID of the actor (the API key owner for API actions).
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: Email of the actor.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
+- name: resource_id
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    ID of the affected resource: the project for project_*, file_*, notebook_executed and notebook_viewed,
+    the notebook for notebook_edited and blocks_reordered, the block for block_*, the run for run_viewed.
+    Block and run events carry projectId and notebookId in metadata.
+- name: user_agent
+  type: STRING
+  mode: NULLABLE
+  description: User agent of the request.
+- name: event_type
+  type: STRING
+  mode: NULLABLE
+  description: Audit log event type, e.g. project_viewed, notebook_executed, block_created.
+- name: metadata
+  type: JSON
+  mode: NULLABLE
+  description: Event-specific metadata.
+- name: loaded_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was imported.

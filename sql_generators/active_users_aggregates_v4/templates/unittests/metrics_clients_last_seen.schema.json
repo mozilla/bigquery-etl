@@ -1,0 +1,34 @@
+[
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "INTEGER",
+    "name": "n_metrics_ping"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_sent_metrics_ping_bits"
+  },
+  {
+    "type": "INTEGER",
+    "name": "uri_count"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_default_browser"
+  }
+]

@@ -1,0 +1,20 @@
+friendly_name: Sync Mobile
+description: |-
+  Daily aggregated sync metrics for mobile
+labels:
+  incremental: true
+owners:
+  - sync-team@mozilla.com
+scheduling:
+  dag_name: bqetl_sync_metrics
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+      - application
+      - channel
+require_column_descriptions: false

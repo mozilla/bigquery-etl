@@ -2,11 +2,15 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the client, from the Firefox Account ping
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: legacy_telemetry_client_id
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
@@ -19,15 +23,21 @@ fields:
 - name: app_channel
   type: STRING
   mode: NULLABLE
-  description: The channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_channel
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_display_version
 - name: architecture
   type: STRING
   mode: NULLABLE
-  description: The architecture of the device, (e.g. "arm", "x86").
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: architecture
 - name: build_date
   type: STRING
   mode: NULLABLE
@@ -35,7 +45,9 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
@@ -43,7 +55,9 @@ fields:
 - name: device_model
   type: STRING
   mode: NULLABLE
-  description: The model of the device the application is running on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: device_model
 - name: first_run_date
   type: STRING
   mode: NULLABLE
@@ -51,15 +65,21 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - name: os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
 - name: session_count
   type: INTEGER
   mode: NULLABLE
@@ -67,7 +87,9 @@ fields:
 - name: session_id
   type: STRING
   mode: NULLABLE
-  description: An optional UUID uniquely identifying the client's current session.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: session_id
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
@@ -75,8 +97,9 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: The optional Windows build number, reported by Windows (e.g. 22000)
-    and not set for other platforms
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: windows_build_number
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -90,20 +113,27 @@ fields:
     - name: city
       type: STRING
       mode: NULLABLE
-      description: City
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: city
     - name: country
       type: STRING
       mode: NULLABLE
-      description: An ISO 3166-1 alpha-2 country code
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: country
     - name: db_version
       type: STRING
       mode: NULLABLE
-      description: The specific geo database version used for this lookup
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: db_version
     - name: subdivision1
       type: STRING
       mode: NULLABLE
-      description: First major country subdivision, typically a state, province, or
-        county
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: subdivision1
     - name: subdivision2
       type: STRING
       mode: NULLABLE
@@ -116,7 +146,9 @@ fields:
     - name: date
       type: STRING
       mode: NULLABLE
-      description: Date HTTP header
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: date
     - name: dnt
       type: STRING
       mode: NULLABLE
@@ -169,16 +201,22 @@ fields:
   - name: isp
     type: RECORD
     mode: NULLABLE
-    description: Results of ISP lookup based on the client's IP address
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: isp
     fields:
     - name: db_version
       type: STRING
       mode: NULLABLE
-      description: The specific geo ISP database version used for this lookup
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: db_version
     - name: name
       type: STRING
       mode: NULLABLE
-      description: The name of the ISP associated with the client's IP address
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: name
     - name: organization
       type: STRING
       mode: NULLABLE
@@ -189,7 +227,9 @@ fields:
   - name: user_agent
     type: RECORD
     mode: NULLABLE
-    description: User Agent
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: user_agent
     fields:
     - name: browser
       type: STRING
@@ -198,11 +238,15 @@ fields:
     - name: os
       type: STRING
       mode: NULLABLE
-      description: Operating System
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: os
     - name: version
       type: STRING
       mode: NULLABLE
-      description: Version
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: version
 - name: labeled_counter
   type: RECORD
   mode: NULLABLE
@@ -218,11 +262,15 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
   - name: glean_error_invalid_overflow
     type: RECORD
     mode: REPEATED
@@ -233,11 +281,15 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
   - name: glean_error_invalid_state
     type: RECORD
     mode: REPEATED
@@ -248,11 +300,15 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
   - name: glean_error_invalid_value
     type: RECORD
     mode: REPEATED
@@ -263,11 +319,15 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description: Key
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: key
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description: Value
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: value
 - name: glean_client_annotation_experimentation_id
   type: STRING
   mode: NULLABLE
@@ -278,21 +338,29 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
-  description: Experiments
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: Key
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: key
   - name: value
     type: RECORD
     mode: NULLABLE
-    description: Value
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: value
     fields:
     - name: branch
       type: STRING
       mode: NULLABLE
-      description: Branch
+      description: !include-field-description
+        file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+        field: branch
     - name: extra
       type: RECORD
       mode: NULLABLE
@@ -305,47 +373,63 @@ fields:
       - name: type
         type: STRING
         mode: NULLABLE
-        description: Type
+        description: !include-field-description
+          file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+          field: type
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-  description: Normalized App Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_app_name
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
-  description: The major version of the user visible app version string for the browser,
-    e.g. "142.1.3", has major version 142
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version_major
 - name: app_version_minor
   type: NUMERIC
   mode: NULLABLE
-  description: The minor version of the user visible app version string for the browser,
-    e.g. "142.1.3" has minor version 1
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version_minor
 - name: app_version_patch
   type: NUMERIC
   mode: NULLABLE
-  description: App Version - Patch Version Number
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: app_version_patch
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System Version
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_country_code
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -354,19 +438,27 @@ fields:
   - name: campaign
     type: STRING
     mode: NULLABLE
-    description: The attribution campaign (e.g. 'mozilla-org').
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: campaign
   - name: content
     type: STRING
     mode: NULLABLE
-    description: The attribution content (e.g. 'firefoxview').
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: content
   - name: medium
     type: STRING
     mode: NULLABLE
-    description: The atttribution medium (e.g. 'organic' for a search engine).
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: medium
   - name: source
     type: STRING
     mode: NULLABLE
-    description: The attribution source (e.g. 'google-play').
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: source
   - name: term
     type: STRING
     mode: NULLABLE
@@ -383,7 +475,9 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
-    description: The distribution name (e.g. 'MozillaOnline')
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: name
   - name: ext
     type: JSON
     mode: NULLABLE

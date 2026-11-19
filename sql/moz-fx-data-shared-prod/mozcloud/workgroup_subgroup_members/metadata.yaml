@@ -1,0 +1,8 @@
+friendly_name: Workgroup Subgroup Members
+description: |-
+  MozCloud workgroup memberships exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a membership in a MozCloud workgroup. The `member_type`
+  column can be one of: user, workgroup, google-group, service-account.
+owners:
+- wstuckey@mozilla.com
+- wdawson@mozilla.com

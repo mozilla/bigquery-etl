@@ -1,0 +1,4 @@
+description: |-
+  Extracts every parameter in a URL or query string as key/value/depth structs.
+  Handles nested and wholly encoded forms; read one with mozfun.map.get_key.
+friendly_name: Extract Params From URL

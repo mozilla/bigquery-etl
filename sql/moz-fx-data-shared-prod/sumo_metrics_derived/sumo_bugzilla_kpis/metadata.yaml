@@ -1,0 +1,20 @@
+friendly_name: SUMO Bugzilla KPIs
+description: |
+  View aggregating weekly KPIs for SUMO Bugzilla tickets (Knowledge Base Content
+  component) over the trailing 1 year, with 6-week moving averages and 6-week
+  lagged moving averages.
+
+  Grain: Weekly (week starts Sunday)
+
+  Metrics:
+  - bugs_created, bugs_resolved
+  - bug_inventory: created - resolved for the week
+  - running_backlog: cumulative inventory over the window
+  - *_6w_ma: 6-week trailing moving averages
+  - lagged_*_6w_ma: the same MA shifted back 6 weeks (for QoQ-style comparison)
+
+  Source: sumo_metrics_derived.bugzilla_tickets_base_v1
+
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience

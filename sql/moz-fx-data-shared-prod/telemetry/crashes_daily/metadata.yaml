@@ -8,3 +8,5 @@ description: |-
   query dimensions.
 owners:
 - ascholtz@mozilla.com
+labels:
+  legacy: true

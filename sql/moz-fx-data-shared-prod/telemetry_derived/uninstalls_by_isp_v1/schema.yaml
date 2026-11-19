@@ -2,13 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's
-    IP address.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: isp_name
 - name: nbr_clients_uninstalling
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: nbr_clients_uninstalling

@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
 - name: nbr_unique_clients_uninstalling
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique Clients Uninstalling Firefox
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: nbr_unique_clients_uninstalling

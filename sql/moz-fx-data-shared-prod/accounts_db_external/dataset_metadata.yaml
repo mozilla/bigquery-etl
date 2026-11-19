@@ -12,3 +12,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential/data-viewers
+  - workgroup:fxa/fraud-bot

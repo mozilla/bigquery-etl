@@ -1,0 +1,5 @@
+friendly_name: Classify Appbot Group
+description: >
+  Classify a Zendesk ticket by its aggregated tag set into an Appbot reporting group.
+  Returns a STRUCT<ticket_group STRING, is_bot BOOL, is_english BOOL>.
+  See README for usage and details.

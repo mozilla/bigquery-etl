@@ -6,9 +6,15 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: channel
 - name: country
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: country
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
@@ -73,3 +79,6 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: app_version

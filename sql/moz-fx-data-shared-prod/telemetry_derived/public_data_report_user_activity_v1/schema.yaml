@@ -1,0 +1,79 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The Monday-aligned week start date for this row, derived from DATE_TRUNC(submission_date,
+    WEEK(MONDAY)).
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_name
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
+- name: avg_hours_usage_daily
+  type: NUMERIC
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: avg_hours_usage_daily
+- name: intensity
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: intensity
+- name: new_profile_rate
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profile_rate
+- name: latest_version_ratio
+  type: FLOAT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: latest_version_ratio
+- name: top_addons
+  type: RECORD
+  mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: top_addons
+  fields:
+  - name: addon_name
+    type: STRING
+    mode: NULLABLE
+    description: Within each top_addons entry, the display name of the user-installed Firefox add-on.
+  - name: ratio
+    type: FLOAT64
+    mode: NULLABLE
+    description: Within each top_addons entry, the fraction of weekly active users who have this add-on installed.
+- name: has_addon_ratio
+  type: FLOAT64
+  mode: NULLABLE
+  description: The fraction of weekly active users (distinct clients) who had at least one qualifying add-on
+    installed.
+- name: top_locales
+  type: RECORD
+  mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: top_locales
+  fields:
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: Within each top_locales entry, the BCP 47 locale code (e.g., 'en-US', 'de') representing
+      the Firefox application locale.
+  - name: ratio
+    type: FLOAT64
+    mode: NULLABLE
+    description: Within each top_locales entry, the fraction of weekly active users using this application
+      locale.

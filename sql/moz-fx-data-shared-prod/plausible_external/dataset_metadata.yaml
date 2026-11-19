@@ -1,0 +1,18 @@
+friendly_name: Plausible External
+description: |-
+  Raw daily exports from Plausible Analytics, the EU-hosted web analytics
+  vendor used for firefox.com (site_id 86997652).
+
+  Plausible delivers two parquet files per day to the GCS bucket provisioned
+  in DENG-11379 (gs://moz-fx-data-prod-external-plausible-data/firefox-com/),
+  one row per event and one row per session. The tables in this dataset are
+  faithful landings of those files; see README.md in this directory for the
+  partitioning semantics and for the midnight window-split caveat that
+  applies before any session-level aggregation.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

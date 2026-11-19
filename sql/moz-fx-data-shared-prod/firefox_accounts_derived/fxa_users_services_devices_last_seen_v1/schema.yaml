@@ -79,48 +79,49 @@ fields:
 - mode: NULLABLE
   name: entrypoint
   type: STRING
-  description: |
-    The entrypoint of the flow session.
-    Typically a UI touchpoint like "preferences".
+  description: !include-field-description
+    field: entrypoint
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
 
 - mode: NULLABLE
   name: utm_term
   type: STRING
-  description: |
-    Marketing campaign search term
-    for the flow session.
-    Not stored if the DNT request header was 1.
+  description: !include-field-description
+    field: utm_term
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
+    append: Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
   name: utm_medium
   type: STRING
-  description: |
-    Marketing campaign medium for the flow session.
-    Not stored if the DNT request header was 1.
+  description: !include-field-description
+    field: utm_medium
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
+    append: Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
   name: utm_source
   type: STRING
-  description: |
-    Marketing campaign source for
-    the flow session.
-    Not stored if the DNT request header was 1.
+  description: !include-field-description
+    field: utm_source
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
+    append: Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
   name: utm_campaign
   type: STRING
-  description: |
-    Marketing campaign identifier
-    for the flow session.
-    Not stored if the DNT request header was 1.
+  description: !include-field-description
+    field: utm_campaign
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
+    append: Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
   name: utm_content
   type: STRING
-  description: |
-    Marketing campaign content identifier
-    for the flow session.
-    Not stored if the DNT request header was 1.
+  description: !include-field-description
+    field: utm_content
+    file: bigquery_etl/schema/firefox_accounts_derived.yaml
+    append: Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
   name: ua_version

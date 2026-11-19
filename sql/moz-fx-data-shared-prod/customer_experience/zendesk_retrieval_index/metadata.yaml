@@ -1,0 +1,40 @@
+friendly_name: Zendesk Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from Zendesk customer support tickets, containing embeddings
+  and semantic features to support grounded question answering over Mozilla support data.
+
+  Grain: one row per Zendesk ticket.
+
+  LLM generated fields:
+  - summary_llm
+  - category_llm
+  - language_llm
+  - entities_llm
+  - topics_llm
+  - embedding based on [title, description]
+  - sentiment_score based on [title, description]
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+
+  Usage
+  - The underlying table requires a partition filter. Always include
+    `WHERE creation_date >= ...` (or an equivalent range) when querying
+    this view, otherwise BigQuery will reject the query.
+
+  Read-time fields (computed by this view, not stored in the underlying table):
+  - product = `mozfun.customer_experience.cx_normalize_product(product, 'Zendesk')` — canonical
+    product name; returns 'unclassified' for raw slugs the UDF cannot map (monitored, see below).
+
+  Monitoring
+  - A Bigeye metric `has_no_unclassified_value` alerts when the `product` contains
+    'unclassified' values over a rolling 7-day `creation_date` window, surfacing raw
+    values that need a mapping added to the UDF.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience
+monitoring:
+  enabled: true
+  partition_column: creation_date
+  collection: Customer Experience

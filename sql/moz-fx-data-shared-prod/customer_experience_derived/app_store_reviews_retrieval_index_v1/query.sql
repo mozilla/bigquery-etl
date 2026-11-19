@@ -20,7 +20,7 @@ Always prefer the interpretation that is best supported by the evidence.
 Extract the following fields and return them as structured data:
 review_summary_llm: maximum 8 words, clear, factual, in English, describing the main point of the review.
 review_category_llm: exactly one of [{{ review_categories | join(', ') }}], written exactly as shown, lowercase. Return only one of these values and no other value. Use "bug" for something that does not work, including problems that started after an update.
-review_language_llm: BCP 47 language tag of the review, including region, e.g. en-US.
+review_language_llm: BCP 47 tag with language and region, e.g. en-US, zh-CN. When the region cannot be determined, use the most common region for that language. For an unknown language use und.
 review_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes, companies, websites) that the review is about, short, deduplicated.
 review_topics_llm: array of up to 3 broad product areas, preferably 1 word, maximum 2 words each, reusable across similar texts, suitable as classification labels (e.g. ui, updates, privacy, tabs, performance).
 review_sentiment_score: float from -{{ sentiment_bound }} to {{ sentiment_bound }} where -{{ sentiment_bound }} is very negative, 0 is neutral, {{ sentiment_bound }} is very positive.
@@ -78,12 +78,13 @@ SELECT
   TRIM(reviews_llm.llm_result.review_language_llm) AS review_language_llm,
   ARRAY(
     SELECT
-      TRIM(e)
+      LOWER(TRIM(e))
     FROM
       UNNEST(reviews_llm.llm_result.review_entities_llm) AS e
       WITH OFFSET AS pos
     WHERE
       e IS NOT NULL
+      AND pos < 3
     ORDER BY
       pos
   ) AS review_entities_llm,
@@ -95,6 +96,7 @@ SELECT
       WITH OFFSET AS pos
     WHERE
       t IS NOT NULL
+      AND pos < 3
     ORDER BY
       pos
   ) AS review_topics_llm,
@@ -117,6 +119,22 @@ SELECT
     CURRENT_TIMESTAMP() AS analysis_timestamp,
     embedding IS NOT NULL AS embedding_succeeded,
     ARRAY_CONCAT(
+      IF(
+        LENGTH(reviews_llm.llm_result.status) > 0
+        OR reviews_llm.llm_result.review_summary_llm IS NULL
+        OR reviews_llm.llm_result.review_category_llm IS NULL
+        OR reviews_llm.llm_result.review_language_llm IS NULL
+        OR reviews_llm.llm_result.review_sentiment_score IS NULL,
+        [
+          CONCAT(
+            'Error ',
+            IFNULL(reviews_llm.llm_result.status, ''),
+            ':',
+            TO_JSON_STRING(reviews_llm.llm_result.full_response)
+          )
+        ],
+        []
+      ),
       IF(embedding IS NULL, ['embedding_missing'], []),
       IF(
         reviews_llm.llm_result.review_summary_llm IS NULL
@@ -183,6 +201,11 @@ SELECT
         reviews_llm.llm_result.review_topics_llm IS NULL
         OR ARRAY_LENGTH(reviews_llm.llm_result.review_topics_llm) = 0,
         ['review_topics_llm_missing'],
+        []
+      ),
+      IF(
+        ARRAY_LENGTH(reviews_llm.llm_result.review_topics_llm) > 3,
+        ['review_topics_llm_over_limit'],
         []
       ),
       IF(

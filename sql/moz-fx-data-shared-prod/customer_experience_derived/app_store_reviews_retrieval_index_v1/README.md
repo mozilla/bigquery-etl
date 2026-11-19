@@ -56,6 +56,25 @@ flowchart TD
 
 ---
 
+## ⏱️ Date Partition Offset
+
+Data is updated to 3 days before the run (`date_partition_offset: -3`) in order to process most of the reviews that arrive late.
+The query below returns the ranges and excludes Fivetran backfill sync dates 2024-11-05, 2025-08-08 and 2025-09-29.
+Reviews that take longer than 72 hours (about 2% of reviews) may be missed.
+
+```sql
+WITH delay_ranges AS (SELECT range_index FROM UNNEST(GENERATE_ARRAY(0, 6)) AS range_index), review_delays AS (SELECT LEAST(DIV(TIMESTAMP_DIFF(_fivetran_synced, created_date, HOUR), 24), 6) AS review_range_index FROM `moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review` WHERE DATE(_fivetran_synced) NOT IN ("2025-08-08", "2024-11-05", "2025-09-29")) SELECT IF(range_index = 6, "more than 144 hours", FORMAT("%d-%d hours", range_index * 24, (range_index + 1) * 24)) AS sync_delay_range, ROUND(100 * COUNT(review_range_index) / (SELECT COUNT(*) FROM review_delays), 2) AS review_percentage FROM delay_ranges LEFT JOIN review_delays ON review_range_index = range_index GROUP BY range_index ORDER BY range_index
+```
+
+| Delay after creation | Reviews |
+|----------------------|---------|
+| 0-24 hours           | 0.00%   |
+| 24-48 hours          | 83.83%  |
+| 48-72 hours          | 14.20%  |
+| > 72h                | 1.96%   |
+
+---
+
 ## 🧩 Example Queries
 
 ```sql

@@ -20,7 +20,7 @@ scheduling:
   - DEEPNOTE_REVENUECAT_2_API_KEY
   - DEEPNOTE_MARKETING_API_KEY
   - DEEPNOTE_MONITOR_API_KEY
-  date_partition_parameter: null
+  partition_parameter: null
   secrets:
   - deploy_target: DEEPNOTE_API_KEY
     key: bqetl_deepnote_api_key

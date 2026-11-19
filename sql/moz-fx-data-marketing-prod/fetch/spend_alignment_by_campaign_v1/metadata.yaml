@@ -7,4 +7,4 @@ labels:
 owners:
   - bewu@mozilla.com
 scheduling:
-  date_partition_parameter: null
+  partition_parameter: null

@@ -59,6 +59,7 @@ pytest-rerunfailures==16.7
 pytest-xdist==3.8.0
 pytest==8.4.2
 PyYAML==6.0.3
+questionary==2.1.1
 rich-click==1.9.7
 smart_open==6.4.0
 sqlglot==28.5.0

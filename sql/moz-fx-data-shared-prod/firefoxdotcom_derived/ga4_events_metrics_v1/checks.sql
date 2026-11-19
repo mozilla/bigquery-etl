@@ -5,7 +5,7 @@
 {{ not_null(["event_date", "event_name"], "event_date = @submission_date") }}
 
 #fail
-{{ is_unique(["event_date", "event_name", "hostname", "locale", "page_path", "page_type", "whatsnew_version", "country", "cta_uid", "cta_type", "link_position", "link_id", "link_classes", "link_text", "link_url", "gtm_tag_name", "product", "platform", "release_channel", "download_language", "method", "widget_type", "widget_action", "widget_name", "newsletter_id", "percent_scrolled"], "event_date = @submission_date") }}
+{{ is_unique(["event_date", "event_name", "hostname", "locale", "page_path", "page_type", "whatsnew_version", "country", "cta_uid", "cta_type", "link_position", "link_id", "link_classes", "link_text", "link_url", "gtm_tag_name", "product", "platform", "release_channel", "download_language", "method", "widget_type", "widget_action", "widget_name", "newsletter_id", "percent_scrolled", "partner", "partner_download"],"event_date = @submission_date") }}
 -- Warns on event_params keys that are neither promoted nor on the ignore list.
 
 #warn
@@ -39,6 +39,8 @@ WITH unexpected_keys AS (
       'newsletter_id',
       'percent_scrolled',
       'name',
+      'partner',
+      'partner_download',
       -- Intentionally not promoted
       'batch_ordering_id',
       'batch_page_id',
@@ -125,7 +127,8 @@ WITH unexpected_events AS (
       'dimension_set',
       'send_to_device',
       'default_browser_set',
-      'experiment_view'
+      'experiment_view',
+      'partner_download_unavailable'
     )
   GROUP BY
     event_name

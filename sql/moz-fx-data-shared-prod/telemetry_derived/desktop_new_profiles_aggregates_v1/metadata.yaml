@@ -20,6 +20,7 @@ owners:
 labels:
   application: firefox
   incremental: true
+  shredder_mitigation: true
   schedule: daily
   depends_on_past: false
   owner1: mhirose
@@ -27,7 +28,7 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: desktop_new_profiles_aggregates
-  date_partition_parameter: first_seen_date
+  partition_parameter: first_seen_date
   parameters:
   - submission_date:DATE:{{ds}}
 monitoring:

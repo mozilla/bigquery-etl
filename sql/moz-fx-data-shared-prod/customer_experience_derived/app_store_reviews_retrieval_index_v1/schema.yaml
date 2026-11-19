@@ -33,7 +33,7 @@ fields:
   type: STRING
   mode: REPEATED
   description: Array of up to three AI-extracted normalized entities from the review (e.g. product names, features,
-    error codes, companies, websites).
+    error codes, companies, websites). Stored lowercase.
 - name: review_topics_llm
   type: STRING
   mode: REPEATED
@@ -87,4 +87,6 @@ fields:
     description: Diagnostic tags for any quality check that failed on this row. Empty array when every check passes.
       Possible tags - `embedding_missing`, `review_summary_llm_missing`, `review_category_llm_missing`, `review_category_llm_not_allowed`,
       `review_language_llm_missing`, `review_sentiment_score_missing`, `review_sentiment_score_out_of_range`, `review_entities_llm_missing`,
-      `review_entities_llm_has_empty_elements`, `review_topics_llm_missing`, `review_topics_llm_has_empty_elements`.
+      `review_entities_llm_over_limit`, `review_entities_llm_has_empty_elements`,
+      `review_topics_llm_missing`, `review_topics_llm_over_limit`, `review_topics_llm_has_empty_elements`.
+      `Error <status>:<full_response>` when the `AI.GENERATE` call returns a non-empty status or an LLM field is NULL.

@@ -60,6 +60,10 @@ monitoring:
       - name: Ads Client
         notification_channels:
         - slack: '#ads-client-owners'
+      - name: Ads Interactions Hourly
+        notification_channels:
+        - slack: '#ads-eng'
+      - name: Ads Interactions Hourly - No Alerts
     509: # Mozilla Revenue - Cat 1
       warehouse: 1977
       collections: []

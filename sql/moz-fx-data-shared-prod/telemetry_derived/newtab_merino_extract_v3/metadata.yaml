@@ -13,7 +13,7 @@ bigquery:
   time_partitioning: null
 scheduling:
   dag_name: bqetl_merino_newtab_extract_to_gcs
-  date_partition_parameter: null
+  partition_parameter: null
   priority: 2
   # This dag runs more frequently than upstream propensity table calculation
   referenced_tables: []

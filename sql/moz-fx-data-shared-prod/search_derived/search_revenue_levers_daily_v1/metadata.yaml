@@ -14,6 +14,8 @@ labels:
   shredder_mitigation: true
 scheduling:
   dag_name: bqetl_search_dashboard
+  # `firefox_desktop_derived.serp_events_v2` uses a -1d offset, so this ETL does too.
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

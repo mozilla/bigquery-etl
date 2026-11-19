@@ -22,6 +22,7 @@ from pathlib import Path
 from traceback import print_exc
 from typing import Callable, Iterable, Optional
 
+import attr
 import google.auth
 import rich_click as click
 import sqlparse
@@ -30,12 +31,17 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
-from ..backfill.date_range import BackfillDateRange, get_backfill_partition
+from ..backfill.date_range import (
+    BackfillDateRange,
+    apply_backfill_date_partition_offset,
+    get_backfill_partition,
+)
 from ..backfill.utils import (
     QUALIFIED_TABLE_NAME_RE,
     get_effective_retention_days,
+    is_sql_script_etl,
     qualified_table_name_matching,
-    resolve_date_partition_parameter,
+    resolve_backfill_partition_parameter,
     resolve_scheduling_parameters,
 )
 from ..cli import check
@@ -80,6 +86,9 @@ from ..metadata.parse_metadata import (
 )
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..query_scheduling.partitioning import get_partition_type
+from ..query_scheduling.task import Task
+from ..query_scheduling.utils import parse_timedelta
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
@@ -87,7 +96,7 @@ from ..util.bq_query_args import UnsupportedQueryArgumentsError, parse_bq_query_
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files
+from ..util.target import ensure_dataset_exists, prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -503,8 +512,8 @@ def _parse_parameter(parameter: str, param_date: str) -> str:
 def _backfill_query(
     query_file_path,
     project_id,
-    date_partition_parameter,
-    date_partition_offset,
+    partition_parameter,
+    partition_offset,
     max_rows,
     dry_run,
     scheduling_parameters,
@@ -526,8 +535,8 @@ def _backfill_query(
         if (
             partition := get_backfill_partition(
                 backfill_date,
-                date_partition_parameter,
-                date_partition_offset,
+                partition_parameter,
+                partition_offset,
                 partitioning_type,
             )
         ) is not None:
@@ -542,19 +551,21 @@ def _backfill_query(
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
     ]
 
-    # Bind the date partition parameter, unless scheduling_parameters already
+    # Bind the partition parameter, unless scheduling_parameters already
     # supplies it (e.g. a table listing submission_date in `parameters`). bq
     # rejects a parameter bound twice, so skip rather than duplicate.
     scheduling_parameter_names = {
         param.split(":", 1)[0] for param in scheduling_parameters
     }
     if (
-        date_partition_parameter is not None
-        and date_partition_parameter not in scheduling_parameter_names
+        partition_parameter is not None
+        and partition_parameter not in scheduling_parameter_names
     ):
-        offset_param = backfill_date + timedelta(days=date_partition_offset)
+        partition_date = apply_backfill_date_partition_offset(
+            backfill_date, partition_offset
+        )
         query_parameters.append(
-            f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
+            f"--parameter={partition_parameter}:DATE:{partition_date.strftime('%Y-%m-%d')}"
         )
 
     arguments = (
@@ -672,6 +683,17 @@ def _backfill_script(
         )
 
 
+def _validate_scheduling_overrides(ctx, param, scheduling_overrides):
+    """Reject scheduling overrides that aren't supported scheduling keys, rather than silently ignoring them."""
+    if unsupported_overrides := set(json.loads(scheduling_overrides)) - set(
+        attr.fields_dict(Task)
+    ):
+        raise click.BadParameter(
+            f"Unsupported scheduling overrides: {', '.join(sorted(unsupported_overrides))}"
+        )
+    return scheduling_overrides
+
+
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
 
@@ -764,11 +786,12 @@ def _backfill_script(
     required=False,
     type=str,
     default="{}",
+    callback=_validate_scheduling_overrides,
     help=(
         "Pass overrides as a JSON string for scheduling sections: "
-        "parameters and/or date_partition_parameter as needed. A "
-        "date_partition_parameter override has no effect on tables that set "
-        "backfill_date_partition_parameter; override that instead."
+        "parameters and/or partition_parameter as needed. A "
+        "partition_parameter override has no effect on tables that set "
+        "backfill_partition_parameter; override that instead."
     ),
 )
 @backfill_options.override_retention()
@@ -904,7 +927,7 @@ def backfill(
         click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
-    # If date_partition_parameter isn't set it's assumed to be submission_date:
+    # If partition_parameter isn't set it's assumed to be submission_date:
     # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
 
     partitioning_type = None
@@ -964,9 +987,13 @@ def backfill(
         # adding copy logic for cleaner handling of overrides
         scheduling_metadata = metadata.scheduling.copy()
         scheduling_metadata.update(json.loads(scheduling_overrides))
-        date_partition_parameter = resolve_date_partition_parameter(scheduling_metadata)
+        partition_parameter = resolve_backfill_partition_parameter(
+            scheduling_metadata,
+            get_partition_type(metadata),
+            is_sql_script_etl(query_file_path.parent),
+        )
         scheduling_parameters = resolve_scheduling_parameters(scheduling_metadata)
-        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
+        partition_offset = parse_timedelta(scheduling_metadata.get("partition_offset"))
 
         client = bigquery.Client(project=project_id)
         project, dataset, table = extract_from_query_path(query_file_path)
@@ -984,8 +1011,8 @@ def backfill(
             _backfill_query,
             query_file_path,
             project_id,
-            date_partition_parameter,
-            date_partition_offset,
+            partition_parameter,
+            partition_offset,
             max_rows,
             dry_run,
             scheduling_parameters,
@@ -2669,7 +2696,7 @@ def _update_query_schema(
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
+    if respect_dryrun_skip and DryRun.is_skipped(query_file):
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -2876,9 +2903,13 @@ def _update_query_schema(
 
     Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
+    With --target, the schema is deployed to the target project instead.
+
     Examples:
 
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
+
+    ./bqetl --target dev query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
 @block_coding_agents
@@ -2942,6 +2973,13 @@ def deploy(
         )
         sys.exit(1)
 
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
     query_files = []
     metadata_files = []
     for project_id in project_ids:
@@ -2972,6 +3010,9 @@ def deploy(
             )
         if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
+        artifact_dir = ctx.obj["TMP_DIR"]
+    else:
+        artifact_dir = sql_dir
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
@@ -2987,6 +3028,52 @@ def deploy(
             if file.is_file()
         )
     ]
+
+    artifact_files = [
+        artifact_file
+        for artifact_file in query_files + metadata_files_without_query_file
+        if str(artifact_file) not in skip_schema_deploy()
+    ]
+
+    # with --target, deploy copies of the artifacts in the target project
+    # instead of the production tables they were defined for
+    if target:
+        # artifacts already defined in the target project are deployed as they are
+        source_files = [
+            artifact_file
+            for artifact_file in artifact_files
+            if extract_from_query_path(artifact_file)[0] != target.project_id
+        ]
+        artifact_files = [
+            artifact_file
+            for artifact_file in artifact_files
+            if artifact_file not in source_files
+        ] + prepare_target_files(
+            source_files,
+            artifact_dir,
+            target.project_id,
+            target,
+            defer_to_target=False,
+            isolated=False,
+            auto_deploy=False,
+        )
+
+        client = bigquery.Client(project=target.project_id, credentials=credentials)
+        for dataset_ref in sorted(
+            {
+                ".".join(extract_from_query_path(artifact_file)[:2])
+                for artifact_file in artifact_files
+            }
+        ):
+            ensure_dataset_exists(
+                client,
+                dataset_ref,
+                expiration_hours=target.expire_after_hours,
+                grant_dryrun_access=target.grant_dryrun_access,
+            )
+
+        # the dry run cloud function doesn't have access to the target project
+        use_cloud_function = False
 
     _deploy = partial(
         deploy_table,
@@ -3005,8 +3092,7 @@ def deploy(
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
             executor.submit(_deploy, artifact_file): artifact_file
-            for artifact_file in query_files + metadata_files_without_query_file
-            if str(artifact_file) not in skip_schema_deploy()
+            for artifact_file in artifact_files
         }
         for future in futures.as_completed(future_to_query):
             artifact_file = future_to_query[future]

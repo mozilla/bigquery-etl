@@ -30,6 +30,7 @@ owners:
   - ykhurana@mozilla.com
 labels:
   owner1: nimbus
+  sql_generator: experiment_monitoring
 scheduling:
   dag_name: bqetl_experiments_daily
   referenced_tables:

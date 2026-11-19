@@ -31,6 +31,8 @@ schema:
   allow_field_addition: true
 scheduling:
   dag_name: bqetl_customer_experience
+  # Data is updated 3 days before the run to process reviews that arrive late. README for details.
+  partition_offset: -3d
 bigquery:
   time_partitioning:
     type: day

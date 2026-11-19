@@ -1,0 +1,13 @@
+2026-11-19:
+  start_date: 2025-01-01
+  end_date: 2026-11-18
+  reason: DENG-11996. Initial backfill of the retrieval index table used to make 
+    App Store data available in Cowork.
+  watchers:
+  - lvargas@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_date_partition_offset: false

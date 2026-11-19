@@ -1,0 +1,77 @@
+fields: !flatten-lists
+- !include-fields
+  table: moz-fx-data-shared-prod.glean_telemetry_derived.new_profile_churn_clients_v2
+  field_names:
+  - cohort_date
+  - country
+  - locale
+  - distribution_id
+  - normalized_channel
+  - normalized_os
+  - normalized_os_version
+  - os_version_major
+  - os_version_minor
+  - app_display_version
+  - app_name
+  - first_seen_attribution_campaign
+  - first_seen_attribution_content
+  - first_seen_attribution_medium
+  - first_seen_attribution_source
+  - is_default_browser
+  - days_data_available
+  field_replacements:
+  - !include-field
+    table: moz-fx-data-shared-prod.glean_telemetry_derived.new_profile_churn_clients_v2
+    field: days_data_available
+    append_description: Taken from the client tables; a complete cohort reads 31.
+- name: cohort_clients_size
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group, excluding bot-flagged profiles.
+- name: clients_churned_immediately
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive on days 0 to 27
+    after their first seen date (day 0), 28 consecutive days without activity. NULL until the cohort
+    has 28 days of data.
+- name: clients_churned_after_1_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were active on day 0, then
+    inactive on days 1 to 28, 28 consecutive days without activity. NULL until the cohort has 29
+    days of data.
+- name: clients_churned_after_2_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were active on day 1, then
+    inactive on days 2 to 29, 28 consecutive days without activity. NULL until the cohort has 30
+    days of data.
+- name: clients_churn_risk_after_5_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive on days 1 to 4
+    after their first seen date (day 0), marking them at risk of churning by day 5. NULL until the
+    cohort has 5 days of data.
+- name: clients_churn_risk_after_7_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive on days 2 to 6
+    after their first seen date (day 0), marking them at risk of churning by day 7. NULL until the
+    cohort has 7 days of data.
+- name: clients_inactive_first_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group who were inactive on their first
+    seen date (day 0).
+- name: cumulative_clients_churned_after_1_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group whose 28 consecutive days without
+    activity start on day 0 or 1, clients_churned_immediately plus clients_churned_after_1_day. NULL
+    until the cohort has 29 days of data.
+- name: cumulative_clients_churned_after_2_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients in this cohort and audience group whose 28 consecutive days without
+    activity start on day 0, 1 or 2, cumulative_clients_churned_after_1_day plus
+    clients_churned_after_2_days. NULL until the cohort has 30 days of data.

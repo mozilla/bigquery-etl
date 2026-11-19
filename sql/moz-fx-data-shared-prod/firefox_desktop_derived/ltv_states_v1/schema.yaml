@@ -69,6 +69,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Attribution User Agent
+  - mode: NULLABLE
+    name: msstoresignedin
+    type: BOOLEAN
+    description: Whether the user was signed in to the Microsoft Store at install time, when Firefox was installed via the Microsoft Store
 - description: Days Seen Bytes
   mode: NULLABLE
   name: days_seen_bytes

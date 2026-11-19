@@ -1,0 +1,10 @@
+friendly_name: Newtab Is Noise Widget Event
+description: |-
+  Identifies widget events that were mistakenly recorded as genuine user actions and
+  must not contribute to any interaction or engagement count.
+
+  Covers two collection regressions:
+  1. crossword keystroke/cursor noise and context menu echoes
+  2. privacy widget impressions emitted as `widgets_user_event` `user_action`s
+
+  Returns: TRUE for events that should be excluded.

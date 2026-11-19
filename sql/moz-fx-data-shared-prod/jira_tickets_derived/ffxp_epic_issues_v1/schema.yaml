@@ -20,3 +20,7 @@ fields:
 - name: resolved
   type: TIMESTAMP
   mode: NULLABLE
+- name: updated
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the issue was last modified, normalized to UTC.

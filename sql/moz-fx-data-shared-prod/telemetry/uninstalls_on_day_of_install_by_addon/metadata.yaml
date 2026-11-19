@@ -3,3 +3,5 @@ description: Uninstalls by addon split by if the uninstall was on date of instal
   or not
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

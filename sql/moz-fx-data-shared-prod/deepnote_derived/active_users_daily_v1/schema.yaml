@@ -1,0 +1,69 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date (UTC).
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID, or `all` for users across all workspaces (a user active in several workspaces is counted once).
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Users with any audit log activity on the day (excluding ephemeral API key churn).
+- name: dau_ui
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active in the Deepnote UI on the day.
+- name: dau_api
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active through the API/MCP on the day.
+- name: dau_creators
+  type: INTEGER
+  mode: NULLABLE
+  description: Users who edited, executed or created content on the day.
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active in the 7 days ending on submission_date.
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: Users active in the 28 days ending on submission_date.
+- name: first_seen_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Users whose first audit log event in the workspace is on this date.
+- name: members_added
+  type: INTEGER
+  mode: NULLABLE
+  description: Workspace members added (workspace_member_added events).
+- name: members_removed
+  type: INTEGER
+  mode: NULLABLE
+  description: Workspace members removed (workspace_member_deleted events).
+- name: members
+  type: INTEGER
+  mode: NULLABLE
+  description: Workspace members (excluding guests) in that day's members snapshot; null before members snapshots began.
+- name: admins
+  type: INTEGER
+  mode: NULLABLE
+  description: Members with the admin role.
+- name: editors
+  type: INTEGER
+  mode: NULLABLE
+  description: Members with the editor role.
+- name: viewers
+  type: INTEGER
+  mode: NULLABLE
+  description: Members with the viewer or restricted_user role.
+- name: guests
+  type: INTEGER
+  mode: NULLABLE
+  description: "Guests: not workspace members, but collaborators on a workspace project."
+- name: total_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Cumulative distinct users seen in the workspace's audit log up to submission_date.

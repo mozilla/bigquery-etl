@@ -2,6 +2,15 @@ friendly_name: Jira IIM Incident Issues
 description: |-
   Jira issues pulled from Jira API v3 (/rest/api/3/search/jql) for project
   IIM and issue type Incident.
+
+  USE AT YOUR OWN RISK. The Jira leg of the incident pipeline is expected to be
+  replaced by a parser writing the incident doc to PostgreSQL and loading from
+  there, at which point this table may change shape or go away without a
+  migration or deprecation period. Incident fields here mirror the Jira data
+  model (see the Incident data model and pipeline page in the MIR Confluence
+  space), not a stable contract.
+
+  The timing fields are recorded in UTC.
 owners:
 - mcastelluccio@mozilla.com
 labels:

@@ -2,13 +2,14 @@
 -- This table aggregates event collection errors across Glean applications.
 -- For details on the error types, see
 -- https://mozilla.github.io/glean/book/reference/metrics/event.html#recorded-errors
+{% set union = namespace(first=true) %}
 {% for app in apps %}
-{% set outer_loop = loop -%}
 {% for dataset in app -%}
 {% if dataset['bq_dataset_family'] not in ["telemetry"] %}
-  {% if not outer_loop.first -%}
+  {% if not union.first -%}
   UNION ALL
   {% endif -%}
+  {% set union.first = false %}
   (
   WITH event_counters AS (
     SELECT

@@ -5,3 +5,5 @@ description: |-
 owners:
   - kbammarito@mozilla.com
   - vsabino@mozilla.com
+labels:
+  sql_generator: glean_usage

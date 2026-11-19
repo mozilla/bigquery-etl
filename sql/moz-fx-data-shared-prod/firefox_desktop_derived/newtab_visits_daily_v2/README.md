@@ -24,6 +24,7 @@ The query processes telemetry events from the Firefox Desktop new tab ping, filt
 - Visit duration tracking (opened to closed)
 - Browser window dimensions
 - Default UI detection
+- Scroll engagement (`newtab_scroll`: whether the user scrolled past the scroll telemetry threshold during the visit)
 
 ### Content Interaction Tracking
 - **Pocket Content**: Clicks, impressions, dismissals, and thumbs up/down voting

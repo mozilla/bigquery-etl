@@ -1,0 +1,65 @@
+fields:
+- name: company
+  type: STRING
+  mode: NULLABLE
+  description: Company the job posting belongs to.
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: 'Scraper source: "greenhouse" or "teamtailor".'
+- name: scraped_date
+  type: DATE
+  mode: NULLABLE
+  description: Date this snapshot of the job posting was scraped.
+- name: job_id
+  type: STRING
+  mode: NULLABLE
+  description: Source-specific identifier for the job posting.
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: Job title.
+- name: department
+  type: STRING
+  mode: NULLABLE
+  description: Department the job posting belongs to.
+- name: location
+  type: STRING
+  mode: NULLABLE
+  description: Primary location listed on the job posting.
+- name: offices
+  type: STRING
+  mode: REPEATED
+  description: Office names associated with the job posting. Empty when the
+    source record has no offices listed.
+- name: url
+  type: STRING
+  mode: NULLABLE
+  description: URL of the job posting.
+- name: first_published
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Date/time the job posting was first published, as returned by the
+    source (format varies by source, so this is kept as a string rather
+    than parsed).
+- name: updated_at
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Date/time the job posting was last updated, as returned by the source
+    (format varies by source, so this is kept as a string rather than
+    parsed).
+- name: description_html
+  type: STRING
+  mode: NULLABLE
+  description: Job posting description as raw HTML.
+- name: description_text
+  type: STRING
+  mode: NULLABLE
+  description: Job posting description as plain text.
+- name: blob_name
+  type: STRING
+  mode: NULLABLE
+  description: Full GCS object path this row was loaded from, for traceability
+    back to the source file.

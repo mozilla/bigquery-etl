@@ -14,3 +14,4 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
 deprecated: true
+deletion_date: 2026-10-01

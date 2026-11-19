@@ -1,0 +1,15 @@
+friendly_name: Marketing Metrics
+description: |-
+  Aggregated marketing and web analytics metrics, built
+  for answering marketing specific questions.
+  Each view's description says what it counts and how to
+  aggregate it. Sources are not reconciled with each other; do not add or
+  compare numbers across sources.
+
+  Every view requires a filter on the date column.
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

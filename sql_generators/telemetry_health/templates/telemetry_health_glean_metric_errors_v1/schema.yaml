@@ -1,0 +1,34 @@
+fields:
+  - name: submission_date
+    type: DATE
+    description: Date this data was submitted
+  - name: app_id
+    type: STRING
+    mode: NULLABLE
+    description: Application ID this data came from
+  - name: application
+    type: STRING
+    mode: NULLABLE
+    description: Human-friendly application name
+  - name: normalized_channel
+    type: STRING
+    mode: NULLABLE
+    description: Normalized channel the application is being distributed on
+  - name: error_type
+    type: STRING
+    description: "One of the Glean error types. See https://mozilla.github.io/glean/book/user/metrics/error-reporting.html"
+  - name: metric
+    type: STRING
+    description: Full identifier of the metric with errors
+  - name: counts
+    type: INTEGER
+    description: Total count of errors for this metric and error type
+  - name: affected_clients
+    type: INTEGER
+    description: Number of clients affected with at least one error
+  - name: fraction_affected_clients
+    type: FLOAT
+    description: Fraction of the total clients that are affected by erros for this metric
+  - name: total_clients
+    type: INTEGER
+    description: Total number of clients for this submission date

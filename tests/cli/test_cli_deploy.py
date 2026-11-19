@@ -117,6 +117,35 @@ class TestDependencyGraph:
         )
         assert len(graph["test-project.test_dataset.test_table_v1"]) == 0
 
+    def test_view_depends_on_wildcard_stub(self, tmp_path):
+        # A view referencing `events_*` must depend on the stub keyed
+        # `events_wildcard` so the stub table deploys before the view.
+        stub_dir = tmp_path / "sql/test-project/test_dataset/events_wildcard"
+        stub_dir.mkdir(parents=True)
+        (stub_dir / "query.py").write_text("# stub")
+        (stub_dir / "schema.yaml").write_text("fields:\n- name: value\n  type: INTEGER")
+
+        view_dir = tmp_path / "sql/test-project/test_dataset/events_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `test-project.test_dataset.events_view` AS\n"
+            "SELECT * FROM `test-project.test_dataset.events_*`"
+        )
+
+        artifacts = {
+            "test-project.test_dataset.events_wildcard": (
+                stub_dir / "query.py",
+                "table",
+            ),
+            "test-project.test_dataset.events_view": (view_dir / "view.sql", "view"),
+        }
+
+        graph = _build_dependency_graph(artifacts)
+
+        assert graph["test-project.test_dataset.events_view"] == {
+            "test-project.test_dataset.events_wildcard"
+        }
+
     def test_query_without_schema_depends_on_view(self, tmp_path):
         # Test that query without schema.yaml depends on view, which depends on table.
         base_table_dir = tmp_path / "sql/test-project/test_dataset/base_table_v1"

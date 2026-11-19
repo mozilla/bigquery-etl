@@ -20,22 +20,57 @@ default:
   - moz-fx-glam-prod
   public_project: mozilla-public-data
 
+coding_agents:
+  # Non-prod projects coding agents may set as --target. Advisory guardrail only
+  # (not checked against --project-id); the impersonated SA's IAM is the real
+  # write boundary. See exit_if_running_under_coding_agent in util/common.py.
+  dev_project_allowlist:
+  - moz-fx-data-proto
+
 monitoring:
-  bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
-  bigeye_workspace_ids:
-  - 463
-  - 508
-  - 509
-  # Per-workspace BigQuery warehouse IDs. Required for tables whose
-  # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
-  # single workspace, so an API call to one workspace's warehouse ID won't
-  # see metrics in another workspace. Falls back to bigeye_warehouse_id
-  # when a workspace isn't listed here (preserves single-workspace behavior).
-  bigeye_warehouses:
-    463: 1939
-    508: 2014
-    509: 1977
+  # Bigeye warehouses belong to a single workspace, so an API call to one workspace's warehouse ID
+  # won't see metrics in another workspace.
+  bigeye_workspaces:
+    463: # Mozilla default
+      warehouse: 1939
+      collections:
+      - name: Operational Checks
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+      - name: Customer Experience
+        notification_channels:
+        - slack: '#cx-de-collaboration'
+      - name: Home Newtab
+        notification_channels:
+        - slack: '#hnt-dev-be-alerts'
+      - name: Marketing Metrics
+        notification_channels:
+        - slack: '#marketing-data-alerts'
+      - name: Subscription Platform
+        notification_channels:
+        - slack: '#de-bigeye-triage'
+        - email: 'phlee@mozilla.com, srose@mozilla.com'
+      - name: Test
+        notification_channels:
+        - slack: '#ds-bigeye-triage'
+    508: # Mozilla Ads
+      warehouse: 2014
+      collections:
+      - name: Ads Client
+        notification_channels:
+        - slack: '#ads-client-owners'
+      - name: Ads Interactions Hourly
+        notification_channels:
+        - slack: '#ads-eng'
+      - name: Ads Interactions Hourly - No Alerts
+    509: # Mozilla Revenue - Cat 1
+      warehouse: 1977
+      collections: []
+    661: # Marketing
+      warehouse: 2846
+      collections: []
+  default_bigeye_workspace: 463
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:
@@ -88,13 +123,13 @@ dry_run:
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
+  # dry run SA can't list all jobs in mozdata (INFORMATION_SCHEMA.JOBS_BY_PROJECT)
+  - sql/moz-fx-data-shared-prod/deepnote_derived/query_jobs_v1/query.sql
+  # dry run SA can't read the slot reservation admin project
+  - sql/moz-fx-data-shared-prod/monitoring_derived/reservations_timeline_v1/query.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
   - sql/moz-fx-data-shared-prod/app_store_v2_syndicate/apple_store_territory_report/view.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_by_experiment/view.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
@@ -105,10 +140,13 @@ dry_run:
   - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_locale_base_v1/query.sql
   - sql/moz-fx-data-shared-prod/sumo_metrics_derived/freshness_metrics_base_v1/query.sql
   # uses time travel, will error on dates prior to the time travel window
+  - sql/moz-fx-data-shared-prod/accounts_backend_derived/fxa_email_domain_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  # dry run SA can't use the STMO Cloud SQL connection
+  - sql/moz-fx-data-shared-prod/stmo_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
   - sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_funnel_v1/query.sql
@@ -194,6 +232,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
+  - sql/moz-fx-data-shared-prod/ads_derived/event_aggregates_suggest_v1/query.sql
   - sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql
   - sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql
@@ -279,6 +318,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_prod_v1/view.sql
+  # Source tables are in fxa projects
+  - sql/moz-fx-data-shared-prod/fxa_fastly_logs/*/view.sql
   # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
@@ -288,7 +329,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
-  default_projects:  # projects to use for query dry run jobs
+  default_billing_project: mozdata  # billing project to use for authenticated query dry run jobs
+  cloud_function_billing_projects:  # billing projects to use for query dry run jobs from the cloud function
   - moz-fx-data-backfill-10
   - moz-fx-data-backfill-11
   - moz-fx-data-backfill-12
@@ -422,8 +464,9 @@ generate:
     - sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/accounts_backend/events_stream/metadata.yaml
+    - sql/moz-fx-data-shared-prod/accounts_frontend/events_stream/metadata.yaml
     skip_apps:
-    - mlhackweek_search
     - moso_mastodon_android
     - moso_mastodon_web
     - moso_mastodon_backend
@@ -446,12 +489,47 @@ generate:
       - accounts_frontend
       - accounts_backend
       - subscription_platform_backend
+      # Metrics that are also sent on the `events` ping but should only be copied into
+      # the `metrics` struct, not duplicated onto every event row (bug 2087132).
+      exclude_metrics:
+        firefox_desktop:
+        - $.object.addons_theme
+        - $.boolean.browser_backup_scheduler_enabled
+        - $.labeled_counter.cert_verifier_cert_revocation_mechanisms
+        - $.labeled_counter.cert_verifier_crlite_status
+        - $.boolean.fxa_account_enabled
+        - $.boolean.fxa_sync_enabled
+        - $.boolean.genai_chatbot_enabled
+        - $.uuid.legacy_telemetry_session_id
+        - $.labeled_counter.os_environment_invoked_to_handle
+        - $.labeled_boolean.os_environment_is_default_handler
+        - $.boolean.os_environment_is_kept_in_dock
+        - $.boolean.os_environment_is_taskbar_pinned
+        - $.string.os_environment_launch_method
+        - $.string.os_environment_launch_on_login_state
+        - $.labeled_counter.os_environment_launched_to_handle
+        - $.labeled_counter.pdfjs_editing
+        - $.labeled_counter.pdfjs_editing_highlight_kind
+        - $.labeled_counter.pdfjs_organize_action
+        - $.labeled_counter.pdfjs_stamp
+        - $.counter.pdfjs_used
+        - $.counter.power_total_cpu_time_ms
+        - $.counter.power_total_gpu_time_ms
+        - $.counter.power_total_thread_wakeups
+        - $.string.sidebar_tabs_layout
+        - $.labeled_counter.splitview_uri_count
+        - $.quantity.tabgroup_saved_groups
+        - $.labeled_counter.tabgroup_tab_interactions
+        - $.labeled_counter.urlbar_searchmode_searchbutton
+        - $.timing_distribution.web_app_usage_time
       slice_by_sample_id_apps:
       - firefox_desktop
       - firefox_desktop_background_update
     events_monitoring:
       skip_apps:
-      - ads_backend  # restricted dataset, we don't want to include it aggregate view
+      # Apps whose stable datasets are gated in sensitivity.gated_datasets are
+      # excluded from the cross-app aggregates automatically (e.g. event_monitoring_aggregates).
+      - ads_backend  # restricted dataset
       # event pings for this app were removed but still high volume due to nimbus bugs in versions 138 to 140
       # events are still sent in the background-update ping, but they are being skipped
       # See: https://mozilla-hub.atlassian.net/browse/DENG-9715
@@ -595,7 +673,6 @@ generate:
     dag_name: bqetl_terms_of_use
     bigeye_defaults:
       collection: Operational Checks
-      notification_channel: '#de-bigeye-triage'
     apps:
       fenix:
         templates:
@@ -603,21 +680,18 @@ generate:
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_ios:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
         - terms_of_use_messages_v1
         bigeye:
           collection: Operational Checks
-          notification_channel: '#de-bigeye-triage'
   stable_views_redacted:
     pings:
       firefox_desktop:
@@ -634,6 +708,14 @@ generate:
     - firefox_desktop_background_update
     - firefox_desktop_background_defaultagent
     - firefox_desktop_background_tasks
+    # Bigeye freshness/volume only see new clients (first_seen_city_date).
+    # Apps with sparse new clients get a 28-day lookback.
+    low_volume_apps:
+    - focus_ios
+    - klar_android
+    # New clients too rare (months apart); freshness/volume disabled.
+    skip_freshness_volume_apps:
+    - klar_ios
 
 geo_deprecation:
   skip_apps:
@@ -745,3 +827,100 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/onboarding_completed_clients_v1
+
+sensitivity:
+  # Configuration for the sensitive-data-flow check (bigquery_etl/sensitivity.py),
+  # which flags queries that read narrowly-gated data and write it somewhere more
+  # broadly readable.
+
+  # Also used by glean_usage to set workgroup access for workgroup-restricted derived datasets.
+
+  # Roles that grant the ability to read row-level data. dataEditor/dataOwner are
+  # rare in workgroup_access here but also confer read, so count them as readers
+  # (omitting them would understate a source's readers -> false positives).
+  read_roles:
+  - roles/bigquery.dataViewer
+  - roles/bigquery.dataEditor
+  - roles/bigquery.dataOwner
+  broad_readers:
+  - workgroup:mozilla-confidential/data-viewers
+  safe_projects:
+  - mozfun
+  ingestion_suffixes:
+  - _stable
+  - _live
+  codeowners_file: CODEOWNERS
+
+  # Datasets/tables whose read access is narrower than the broad_readers above.
+  # Omitted/empty means restricted (no broad read access).
+  gated_datasets:
+    moz-fx-data-shared-prod:
+      ads_backend_live: &ads_backend
+        default: [workgroup:ads/data-viewers]
+      ads_backend_stable: *ads_backend
+
+      contextual_services_live: &contextual_services
+        default: [workgroup:contextual-services/data-viewers]
+        tables:
+          quicksuggest_impression:
+          - workgroup:contextual-services/data-viewers
+          - workgroup:search-terms/sanitized-writer
+          - workgroup:search-terms/unsanitized
+      contextual_services_stable: *contextual_services
+
+      firefox_enterprise_desktop_live: &firefox_enterprise_desktop
+        default: [workgroup:fx-enterprise/data-viewers]
+      firefox_enterprise_desktop_stable: *firefox_enterprise_desktop
+
+      search_terms:
+        default: []
+      search_terms_derived:
+        default: []
+
+      telemetry_live: &telemetry
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          xfocsp_error_report: []
+          account_ecosystem: []
+      telemetry_stable: *telemetry
+
+      firefox_desktop_live: &firefox_desktop
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          microsurvey: [workgroup:microsurvey/data-viewers]
+          fx_accounts: [workgroup:client-association/data-viewers]
+          quick_suggest: [workgroup:contextual-services/data-viewers]
+          top_sites: [workgroup:contextual-services/data-viewers]
+          serp_categorization: [workgroup:revenue/cat2]
+          user_characteristics: [workgroup:user-characteristics/data-viewers]
+      firefox_desktop_stable: *firefox_desktop
+
+      org_mozilla_firefox_live: &glean_client
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          fx_accounts: [workgroup:client-association/data-viewers]
+          fx_suggest: [workgroup:contextual-services/data-viewers]
+          topsites_impression: [workgroup:contextual-services/data-viewers]
+          client_deduplication: []
+          user_characteristics: [workgroup:user-characteristics/data-viewers]
+      org_mozilla_firefox_stable: *glean_client
+      org_mozilla_firefox_beta_live: *glean_client
+      org_mozilla_firefox_beta_stable: *glean_client
+      org_mozilla_fenix_live: *glean_client
+      org_mozilla_fenix_stable: *glean_client
+      org_mozilla_fenix_nightly_live: *glean_client
+      org_mozilla_fenix_nightly_stable: *glean_client
+      org_mozilla_fennec_aurora_live: *glean_client
+      org_mozilla_fennec_aurora_stable: *glean_client
+
+      org_mozilla_ios_firefox_live: &ios_client
+        default: [workgroup:mozilla-confidential/data-viewers]
+        tables:
+          fx_accounts: [workgroup:client-association/data-viewers]
+          topsites_impression: [workgroup:contextual-services/data-viewers]
+      org_mozilla_ios_firefox_stable: *ios_client
+      org_mozilla_ios_firefoxbeta_live: *ios_client
+      org_mozilla_ios_firefoxbeta_stable: *ios_client
+      org_mozilla_ios_fennec_live: *ios_client
+      org_mozilla_ios_fennec_stable: *ios_client

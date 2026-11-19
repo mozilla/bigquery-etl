@@ -9,3 +9,5 @@ description: 'This query creates a table based on clients_last_seen containing
 owners:
 - cmorales@mozilla.com
 - akommasani@mozilla.com
+labels:
+  legacy: true

@@ -1,11 +1,14 @@
 friendly_name: Firefox-CI Task Run Costs
 description: |-
-  Derived Firefox-CI task run cost data.
+  Derived Firefox-CI task run cost data attributed from GCP and Azure worker
+  cost and usage data.
 owners:
 - ahalberstadt@mozilla.com
+- jmoss@mozilla.com
 labels:
   incremental: true
   owner1: ahalberstadt
+  owner2: jmoss
   dag: bqetl_fxci
 scheduling:
   dag_name: bqetl_fxci

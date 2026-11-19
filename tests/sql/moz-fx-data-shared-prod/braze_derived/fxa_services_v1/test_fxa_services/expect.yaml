@@ -1,0 +1,14 @@
+# expect: one row per (uid, service) for users with a primary email; null services
+# and users without a primary email are excluded; duplicate (uid, service) rows
+# collapse to the earliest first_authorized_tos_at
+---
+# uid_1 / sync -> MIN(2026-05-01, 2026-05-03)
+- uid: uid_1
+  email: user_1@mail.com
+  service: sync
+  first_authorized_tos_at: 2026-05-01 10:00:00+00:00
+# uid_1 / smartwindow
+- uid: uid_1
+  email: user_1@mail.com
+  service: smartwindow
+  first_authorized_tos_at: 2026-05-05 10:00:00+00:00

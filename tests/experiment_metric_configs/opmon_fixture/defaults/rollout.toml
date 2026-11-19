@@ -1,0 +1,10 @@
+[project]
+platform = "firefox_desktop"
+xaxis = "submission_date"
+metrics = ["rollout_metric"]
+
+[project.population]
+data_source = "test_source"
+
+[metrics.rollout_metric.statistics]
+sum = {}

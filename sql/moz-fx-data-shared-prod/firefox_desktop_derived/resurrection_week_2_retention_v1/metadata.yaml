@@ -19,6 +19,7 @@ labels:
   shredder_mitigation: false
   owner1: rbaffourawuah@mozilla.com
   owner2: mhirose@mozilla.com
+  legacy: true
 scheduling:
   dag_name: bqetl_desktop_retention_model
 bigquery:
@@ -28,3 +29,5 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
 require_column_descriptions: true
+monitoring:
+  enabled: false

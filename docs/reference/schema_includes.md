@@ -4,7 +4,9 @@ The [YAML tags](#yaml-tags) listed below can be used in `schema.yaml` files to i
 
 - stable table schemas (i.e. telemetry tables in `*_stable` datasets)
 - `schema.yaml` files for tables or views
-- arbitrary YAML files (e.g. [`bigquery_etl/schema/global.yaml`](https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/schema/global.yaml))
+- arbitrary YAML files (e.g. [`bigquery_etl/schema/global.yaml`](https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/schema/global.yaml), or a shared dataset-level YAML file under `sql/<project>/<dataset>/`)
+
+> Note: Field descriptions can also be applied by a separate base-schema mechanism that is easy to confuse with these include tags. Passing `--use_dataset_schema` and/or `--use_global_schema` to `bqetl query schema update` overwrites a query's `schema.yaml` column descriptions with those from `bigquery_etl/schema/<dataset>.yaml` and `bigquery_etl/schema/global.yaml` respectively, matching columns by name or alias (and, for an alias match, printing a recommendation to adopt the base schema's canonical column name). That mechanism requires the base schema to live in `bigquery_etl/schema/`. The `!include*` tags documented here are different: they are resolved whenever the `schema.yaml` is loaded (rendering, deploying, validating, etc.), and their `file:` paths can point to any YAML file in the repo (resolved relative to the repo root), not just files in `bigquery_etl/schema/`.
 
 ## Recommendations
 
@@ -259,6 +261,17 @@ fields:
   description: !include-field-description
     file: /bigquery_etl/schema/global.yaml
     field: app_version
+```
+```yaml
+# Include a field description from a shared YAML file under sql/ (e.g. a dataset-level base
+# schema). Any repo-root-relative file path works, not just files in bigquery_etl/schema/.
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: /sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: client_id
 ```
 
 ### `!include`

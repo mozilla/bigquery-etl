@@ -7,3 +7,9 @@ description: 'Sanitized version of docker_fxa_admin_server from FxA.
   (contains events coming from the GCP deployment of this service)'
 owners:
 - kik@mozilla.com
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fxa/alert-bot-prod

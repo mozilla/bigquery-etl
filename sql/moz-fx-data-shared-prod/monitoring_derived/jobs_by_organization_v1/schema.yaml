@@ -246,3 +246,17 @@ fields:
     name: message
     type: STRING
     description: Human-readable explanation of the reason.
+
+- mode: REPEATED
+  name: labels
+  type: RECORD
+  description: Array of labels applied to the job as key-value pairs.
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+    description: Label name.
+  - mode: NULLABLE
+    name: value
+    type: STRING
+    description: Label value.

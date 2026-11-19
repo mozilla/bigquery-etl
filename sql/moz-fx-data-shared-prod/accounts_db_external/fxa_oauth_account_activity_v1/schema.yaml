@@ -1,0 +1,19 @@
+fields:
+- name: userId
+  type: STRING
+  mode: NULLABLE
+  description: userId in hexadecimal format.
+- name: clientId
+  type: STRING
+  mode: NULLABLE
+  description: clientId in hexadecimal format.
+- name: scopeId
+  type: INTEGER
+  mode: NULLABLE
+  description: Foreign key to the `scopes` table.
+- name: firstSeenAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: lastSeenAt
+  type: TIMESTAMP
+  mode: NULLABLE

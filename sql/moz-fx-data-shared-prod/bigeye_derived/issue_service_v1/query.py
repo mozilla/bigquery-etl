@@ -1,5 +1,6 @@
 """Pull from BigEye API from Issue service and upload to Big Query."""
 
+import json
 import logging
 import os
 import re
@@ -13,7 +14,7 @@ from google.cloud import bigquery
 from bigquery_etl.config import ConfigLoader
 
 BIGEYE_API_KEY = os.environ["BIGEYE_API_KEY"]
-WORKSPACE_IDS = ConfigLoader.get("monitoring", "bigeye_workspace_ids")
+WORKSPACES = ConfigLoader.get("monitoring", "bigeye_workspaces")
 API_URL = "https://app.bigeye.com/api/v1/issues/fetch"
 
 
@@ -55,8 +56,16 @@ def process_response(response_data: Dict[str, Any]) -> pd.DataFrame:
         snake_case_name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
         df = df.rename(columns={f"{column_name}": f"{snake_case_name}"})
 
-    df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
+    for col in df.columns:
+        if (
+            df[col].dtype == object
+            and df[col].apply(lambda x: isinstance(x, (dict, list))).any()
+        ):
+            df[col] = df[col].apply(
+                lambda x: json.dumps(x) if isinstance(x, (dict, list)) else x
+            )
 
+    df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
     return df
 
 
@@ -64,10 +73,10 @@ def get_bigeye_data() -> pd.DataFrame:
     """Fetch data from Bigeye API for all workspaces and combine into a single DataFrame."""
     all_data = []
 
-    if not isinstance(WORKSPACE_IDS, list):
-        raise Exception("WORKSPACE_IDS is not a list")
+    if not isinstance(WORKSPACES, dict):
+        raise Exception("WORKSPACES is not a dict")
 
-    for workspace_id in WORKSPACE_IDS:
+    for workspace_id in WORKSPACES.keys():
         try:
             response_data = make_api_request(workspace_id)
             df = process_response(response_data)

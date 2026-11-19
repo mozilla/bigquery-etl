@@ -6,3 +6,6 @@ fields:
 - name: createdAt
   type: TIMESTAMP
   mode: NULLABLE
+- name: verificationMethod
+  type: INTEGER
+  mode: NULLABLE

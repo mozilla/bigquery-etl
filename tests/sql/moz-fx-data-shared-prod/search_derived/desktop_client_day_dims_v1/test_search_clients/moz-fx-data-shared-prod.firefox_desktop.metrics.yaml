@@ -1,0 +1,9 @@
+# Ignored: the metrics ping only fills clients with no search row.
+- submission_timestamp: "2026-10-20T15:00:00Z"
+  sample_id: 1
+  client_info:
+    client_id: s
+  metrics:
+    string:
+      search_engine_default_provider_id: ddg
+      region_home_region: NL

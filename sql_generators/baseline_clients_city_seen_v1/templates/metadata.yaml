@@ -13,6 +13,7 @@ description: |-
 owners:
   - wichan@mozilla.com
 labels:
+  sql_generator: baseline_clients_city_seen_v1
   incremental: true
   schedule: daily
   table_type: client_level
@@ -21,7 +22,7 @@ scheduling:
   dag_name: bqetl_baseline_clients_city_seen
   task_name: {{ app_name }}_{{ table_name }}
   depends_on_past: true
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
     - {% raw %}submission_date:DATE:{{ds}}{% endraw %}
 bigquery:
@@ -33,3 +34,16 @@ bigquery:
   clustering:
     fields:
       - sample_id
+monitoring:
+  enabled: true
+  collection: Operational Checks
+  partition_column: first_seen_city_date
+  partition_column_set: true
+  {#- Stops `bqetl monitoring update` re-adding default freshness/volume. #}
+  {%- if skip_freshness_volume %}
+  freshness: null
+  volume: null
+  {%- else %}
+  volume:
+    blocking: false
+  {%- endif %}

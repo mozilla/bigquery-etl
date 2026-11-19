@@ -2,144 +2,212 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_code
 - name: pocket_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pocket_enabled
 - name: pocket_sponsored_stories_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: pocket_sponsored_stories_enabled
 - name: topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: topsites_enabled
 - name: total_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Total number of distinct clients with any newtab activity on this submission date across
+    all conditions.
 - name: total_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Total number of newtab visits across all clients and conditions on this submission date.
 - name: client_count
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_count
 - name: visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits matching the specific dimension combination (country, pocket/topsites
+    settings) for this row.
 - name: homepage_category_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients for which the home page falls into this row's homepage category
+    classification.
 - name: homepage_category_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits for which the home page falls into this row's homepage category classification.
 - name: newtab_category_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients for which the newtab page falls into this row's newtab category
+    classification.
 - name: newtab_category_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits for which the newtab page falls into this row's newtab category classification.
 - name: home_default_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients whose about:home page was in the default (Firefox) configuration.
 - name: home_default_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of about:home visits where the page was in the default Firefox configuration.
 - name: newtab_default_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients whose about:newtab page was in the default (Firefox) configuration.
 - name: newtab_default_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of about:newtab visits where the page was in the default Firefox configuration.
 - name: home_nondefault_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients whose about:home page was overridden by a third-party extension
+    or custom URL.
 - name: home_nondefault_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of about:home visits where the page was in a non-default (e.g., extension-replaced)
+    configuration.
 - name: newtab_nondefault_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients whose about:newtab page was overridden by an extension or custom
+    setting.
 - name: newtab_nondefault_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of about:newtab visits where the page was in a non-default configuration.
 - name: welcome_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who had an about:welcome page visit on this submission date.
 - name: welcome_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of about:welcome page visits on this submission date, representing onboarding page
+    views.
 - name: searched_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who performed at least one search from the newtab on this submission
+    date.
 - name: searched_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits from which at least one search was initiated.
 - name: sponsored_topsite_impressed_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who saw at least one sponsored top-site tile impression on the
+    newtab.
 - name: sponsored_topsite_impressed_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which at least one sponsored top-site tile was shown.
 - name: sponsored_topsite_clicked_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who clicked a sponsored top-site tile on the newtab.
 - name: sponsored_topsite_clicked_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which at least one sponsored top-site tile was clicked.
 - name: topsite_impressed_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who saw at least one top-site tile impression (sponsored or organic)
+    on the newtab.
 - name: topsite_impressed_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which at least one top-site tile was shown.
 - name: topsite_clicked_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who clicked any top-site tile (sponsored or organic) on the newtab.
 - name: topsite_clicked_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which any top-site tile was clicked.
 - name: sponsored_pocket_impressed_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who saw at least one sponsored Pocket story impression on the
+    newtab.
 - name: sponsored_pocket_impressed_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which at least one sponsored Pocket story was shown.
 - name: sponsored_pocket_clicked_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who clicked a sponsored Pocket story on the newtab.
 - name: sponsored_pocket_clicked_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which a sponsored Pocket story was clicked.
 - name: organic_pocket_impressed_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who saw at least one organic (non-sponsored) Pocket story impression.
 - name: organic_pocket_impressed_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which at least one organic Pocket story was shown.
 - name: organic_pocket_clicked_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who clicked an organic Pocket story on the newtab.
 - name: organic_pocket_clicked_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which an organic Pocket story was clicked.
 - name: pocket_impressed_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who saw at least one Pocket story impression (sponsored or organic).
 - name: pocket_impressed_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which at least one Pocket story was shown.
 - name: pocket_clicked_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who clicked any Pocket story (sponsored or organic).
 - name: pocket_clicked_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits during which any Pocket story was clicked.
 - name: pocket_signed_in_client_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients who were signed in to a Pocket account during their newtab visits.
 - name: pocket_signed_in_visit_count
   type: INTEGER
   mode: NULLABLE
+  description: Number of newtab visits where the client was signed in to a Pocket account.

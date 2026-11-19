@@ -12,10 +12,10 @@ from google.cloud import bigquery
 from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
-from .. import ConfigLoader
 from ..cli.query import render_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..config import ConfigLoader
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
@@ -48,7 +48,7 @@ def stage():
     Deploy artifacts to the configured stage project. The order of deployment is:
     UDFs, views, tables.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
     ./bqetl stage deploy sql/moz-fx-data-shared-prod/telemetry_derived/
@@ -673,7 +673,7 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
 @stage.command(help="""
     Remove deployed artifacts from stage environment
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
     ./bqetl stage clean

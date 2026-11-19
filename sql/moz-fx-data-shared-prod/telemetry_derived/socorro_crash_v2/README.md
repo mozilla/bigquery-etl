@@ -1,0 +1,83 @@
+# socorro_crash_v2
+
+Daily import of Socorro crash reports from GCS newline JSON into
+`moz-fx-data-shared-prod.telemetry_derived.socorro_crash_v2`, partitioned by `crash_date`.
+
+`query.py` loads one day of JSON from
+`gs://moz-fx-socorro-prod-prod-telemetry/v1/crash_report/<yyyymmdd>/` and writes
+the corresponding `crash_date` partition. This replaces the Spark/Dataproc job
+that used to do this (`https://github.com/mozilla/telemetry-airflow/blob/main/jobs/socorro_import_crash_data.py`).
+
+## How it works
+
+1. Load the day's JSON into a temporary table using a schema derived
+   from `schema.yaml` at runtime
+2. Run `transform.sql` to reshape the temp table into the destination table's
+   layout and write the `crash_date` partition with `WRITE_TRUNCATE`
+
+## Usage
+
+```sh
+python3 query.py --date 2026-01-01 --project mozdata --dry-run
+```
+
+Options: `--date` (required), `--project`, `--source-bucket`, `--source-prefix`,
+`--destination-dataset`, `--destination-table`, `--dry-run`. `--dry-run` pulls files from GCS, loads
+into a temporary table, and then prints the planned load (source URI, destination partition) without
+writing to the production table. Requires read access to the GCS bucket and write access to the
+specified temp table.
+
+## Migration notes
+
+The original Spark job read GCS JSON, coerced it into a Spark `StructType`
+derived from the JSON (`telemetry_socorro_crash.json`), and wrote
+partitioned parquet to `gs://moz-fx-data-prod-socorro-data/socorro_crash/v2/`. A
+separate `parquet2bigquery` GKE pod then loaded that parquet into this table.
+
+Moving the job here removes the Spark cluster, the intermediate parquet, and the
+separate load job. The load is a single BigQuery load plus one transform query.
+
+Output was compared against the old table for 2026-07-28 and 2026-07-29 and is
+identical for every record Spark parsed successfully. The one
+significant difference was that Spark inferred integer fields (notably `memory_measures.*`)
+as 32-bit, so reports with a value above 2^31-1 overflowed and were dropped to
+all-NULL rows (about 2% of daily volume). The new job loads with an explicit INT64
+schema and keeps those records.
+
+### Schema
+
+`schema.yaml` is a copy of the current production table schema, so the
+migrated job targets the existing table shape without redefining it.  The schema is based on
+https://github.com/mozilla-services/socorro/blob/main/socorro/schemas/telemetry_socorro_crash.json.
+
+Differences from the upstream schema:
+  - `crash_date` (DATE) is the partition column. It is not present in
+    the crash report JSON. The old pipeline derived it from the GCS folder name
+    (`crash_date=<yyyymmdd>`); here it comes from `--date`.
+  - Arrays are stored as `RECORD<list: ARRAY<RECORD<element>>>` rather than
+    plain `REPEATED` fields. This is the encoding Spark's parquet writer
+    produced, and downstream consumers (for example the symbolication jobs that
+    read `json_dump.modules.list`) depend on it. `transform.sql` rewraps the
+    following arrays to match:
+    - `additional_minidumps` (element: STRING)
+    - `addons` (element: STRING)
+    - `json_dump.crashing_thread.frames`
+    - `json_dump.modules`
+    - `json_dump.threads` (and the nested `frames` inside each thread)
+    - `memory_report.reports`
+
+The upstream schema is unlikely to change, so it's static instead of dynamically built.
+
+### Fields loaded as STRING
+
+`install_age`, `last_crash`, and `uptime` (`LOOSE_INT_FIELDS` in `query.py`) are
+`INT64` on the table but load as STRING and are `SAFE_CAST` back in
+`transform.sql`. Crash reports occasionally carry an `install_age` that wrapped
+in unsigned 64-bit arithmetic, e.g. `-18446744071923804046`, which does not fit
+in `INT64`; since `max_bad_records` is 0, one such report would otherwise fail
+the whole day's load. The cast only nulls that value and keeps the record.
+
+This means a fully populated row can now have a NULL `install_age`, which
+previously only happened on the all-NULL rows Spark produced.
+
+Only works on top-level columns, not fields nested in structs.

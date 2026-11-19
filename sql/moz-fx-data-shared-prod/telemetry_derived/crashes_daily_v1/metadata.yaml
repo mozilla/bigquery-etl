@@ -10,6 +10,7 @@ owners:
 - ascholtz@mozilla.com
 labels:
   incremental: true
+  legacy: true
 scheduling:
   dag_name: bqetl_main_summary
   task_name: crashes_daily_v1

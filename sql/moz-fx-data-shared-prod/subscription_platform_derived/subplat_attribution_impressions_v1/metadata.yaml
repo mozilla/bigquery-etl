@@ -13,14 +13,14 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
-  date_partition_offset: -1
+  partition_parameter: date
+  partition_offset: -1d
   # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG:
   #   * -23h for upstream ETLs which overwrite the entire table, to wait for the hourly ETL that
   #     started at the same time as this daily ETL, so the upstream table is in a consistent state.
   #   * 2h for upstream ETLs which write to a specific date partition, to wait for the last hourly
   #     ETL that will have written to the date partition this daily ETL will be reading from,
-  #     taking into consideration the date_partition_offset.
+  #     taking into consideration the partition_offset.
   depends_on:
   - dag_name: bqetl_subplat_hourly
     task_id: subscription_platform_derived__services__v1

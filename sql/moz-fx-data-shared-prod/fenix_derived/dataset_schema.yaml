@@ -1,0 +1,248 @@
+fields:
+- name: activated
+  description: Indicates whether the client has been considered activated. True means the client has met the activation criteria; false means
+    it has not.
+- name: ad_clicks
+  description: The cumulative number of ad clicks attributed to the client. Null indicates no ad click data is available for this record.
+- name: ad_clicks_on_date
+  description: The number of ad clicks recorded for the client on a specific date. Null indicates no ad clicks were observed on that date.
+- name: adjust_ad_group
+  description: The Adjust ad group name and identifier associated with the client's install attribution. Empty or null values indicate the install
+    was not attributed to a specific ad group.
+- name: adjust_adgroup
+  description: The Adjust ad group name and identifier associated with the client's install attribution, as reported directly from the Adjust
+    SDK. An empty string indicates no ad group attribution was recorded.
+- name: adjust_attribution_timestamp
+  description: The timestamp at which Adjust recorded the install attribution event for the client. Null indicates attribution data was not available.
+- name: adjust_campaign
+  description: The Adjust campaign name and identifier used to attribute the client's install. Empty or null values indicate the install was not
+    attributed to a specific campaign.
+- name: adjust_creative
+  description: The Adjust creative name or identifier associated with the client's install attribution. Empty or null values indicate no specific
+    creative was attributed.
+- name: adjust_network
+  description: The advertising network through which the client's install was attributed via Adjust, such as 'Organic', 'Google Ads ACI', or 'Unknown'.
+    Null indicates the network could not be determined.
+- name: android_sdk_version
+  description: The Android SDK (API) level running on the client's device, represented as a numeric string (e.g., '33' for Android 13). Higher
+    values correspond to newer Android versions.
+- name: app_build
+  description: The internal build identifier for the version of the Fenix application installed on the client's device. This is a unique numeric
+    string that identifies the specific build.
+- name: app_channel
+  description: The release channel of the Fenix application, such as 'release', 'beta', or 'nightly'. This indicates the maturity and intended
+    audience of the build.
+- name: app_display_version
+  description: The human-readable version string of the Fenix application as displayed to users, such as '152.0.5' or a nightly build label. This
+    corresponds to the publicly visible version number.
+- name: app_name
+  description: The name of the Fenix-based application, distinguishing variants such as 'Fenix', 'Fenix MozillaOnline', or 'Fenix BrowserStack'.
+    This identifies which application distribution the client is using.
+- name: app_version
+  description: The version string of the Fenix application reported by the client, used to identify which release the client is running. Multiple
+    builds may share the same version string.
+- name: architecture
+  description: The CPU architecture of the client's device, such as 'arm64-v8a', 'armeabi-v7a', or 'x86_64'. This identifies the instruction set
+    supported by the device hardware.
+- name: category
+  description: The telemetry event category grouping associated with a recorded event or metric, such as 'onboarding' or 'tabs_tray'. This organizes
+    events into logical feature areas within the application.
+- name: channel
+  description: The release channel of the application reported at the dataset level, such as 'release', 'beta', or 'nightly'. This reflects the
+    build train the client is subscribed to.
+- name: city
+  description: The city derived from the client's IP address at the time of submission. Null indicates the city could not be determined from the
+    available geolocation data.
+- name: client_id
+  description: A UUID that uniquely identifies an individual Fenix client installation. This identifier persists across sessions for the same
+    installation and is used to link records to a specific device profile.
+- name: consecutive_days_seen
+  description: The number of consecutive days the client has been observed active up to and including the current date. A value of 0 indicates
+    the client was not seen on the immediately preceding day.
+- name: country
+  description: The two-letter ISO 3166-1 alpha-2 country code derived from the client's IP address at the time of ping submission. This represents
+    the client's detected geographic location.
+- name: daily_users
+  description: The count of unique daily active users associated with a given dimension or segment on a given day. A value of 0 indicates no active
+    users were recorded for that combination.
+- name: dau
+  description: The number of distinct clients considered daily active users (DAU) for a given date and dimension. A value of 0 indicates no qualifying
+    active clients were observed.
+- name: days_seen_bytes
+  description: A compact binary (BYTES) bitfield representing the days within a rolling window on which the client was observed. Each bit corresponds
+    to a specific day relative to the current date.
+- name: days_seen_session_end_bits
+  description: An integer bitfield where each bit represents a day in a rolling window on which a session end event was recorded for the client.
+    Higher bit positions correspond to more recent days.
+- name: days_seen_session_start_bits
+  description: An integer bitfield where each bit represents a day in a rolling window on which a session start event was recorded for the client.
+    A value of 0 indicates no session starts were observed in the window.
+- name: days_sent_metrics_ping_bits
+  description: An integer bitfield representing the days within a rolling window on which the client sent a metrics ping. Each bit corresponds
+    to a specific day relative to the current date.
+- name: days_since_first_seen
+  description: The number of days elapsed between the client's first seen date and the current record date. Larger values indicate longer-tenured
+    clients.
+- name: days_since_seen
+  description: The number of days elapsed since the client was last observed active prior to the current record date. A value of 0 indicates the
+    client was seen on the current date.
+- name: device_manufacturer
+  description: The manufacturer of the client's Android device, such as 'samsung' or 'Xiaomi', as reported by the device. Null indicates the manufacturer
+    was not available or reported.
+- name: device_model
+  description: The model identifier of the client's Android device as reported by the device hardware, such as 'SM-S918B'. Null indicates the
+    model could not be determined.
+- name: device_type
+  description: The type of device on which the application is running. In this dataset, the value is always 'Android', reflecting that Fenix is
+    an Android-only application.
+- name: distribution_id
+  description: An identifier representing the distribution partner or channel through which the Fenix application was distributed, such as 'Mozilla',
+    'MozillaOnline', or OEM-specific identifiers. Null indicates an unknown or unset distribution.
+- name: durations
+  description: The total session or usage duration in seconds recorded for the client in a given period. A value of 0 indicates the client was
+    active but no measurable duration was recorded.
+- name: first_reported_country
+  description: The two-letter ISO 3166-1 alpha-2 country code from the first ping ever submitted by the client. This represents the client's country
+    of origin at initial install or first contact.
+- name: first_reported_isp
+  description: The name of the internet service provider detected when the client first submitted a ping. This reflects the ISP associated with
+    the client's initial contact with Mozilla's servers.
+- name: first_run_date
+  description: The calendar date on which the Fenix application was first run on the client's device. This is derived from the application's own
+    first-run signal and may differ slightly from first_seen_date.
+- name: first_seen_date
+  description: The calendar date on which the client was first observed in Mozilla's data pipeline. This serves as a proxy for the install date
+    and is used to compute client tenure.
+- name: first_seen_year
+  description: The calendar year in which the client was first observed in Mozilla's data pipeline. This is derived from first_seen_date and is
+    useful for cohort-level analysis.
+- name: geo_subdivision
+  description: The subdivision code (e.g., state, province, or region) derived from the client's IP address, using ISO 3166-2 subdivision notation
+    where applicable. Null indicates the subdivision could not be determined.
+- name: install_source
+  description: The Android package name of the app store or installer that was used to install Fenix on the client's device, such as 'com.android.vending'
+    for the Google Play Store. Null indicates the install source could not be determined.
+- name: is_default_browser
+  description: Indicates whether Fenix is set as the default browser on the client's device. True means it is the default; false means it is not;
+    null indicates this information was not reported.
+- name: is_large_device
+  description: Indicates whether the client's device is classified as a large-form-factor device (e.g., a tablet).
+- name: is_mobile
+  description: Indicates whether the client's device is classified as a mobile device. True means the device is mobile; false means it is not,
+    such as a tablet or other non-phone form factor.
+- name: is_new_profile
+  description: Indicates whether the client record corresponds to a newly created profile. True means the profile was created recently; false
+    means it is an existing, returning profile.
+- name: isp
+  description: The name of the internet service provider associated with the client's IP address at the time of ping submission. This is used
+    for network-level demographic analysis.
+- name: isp_name
+  description: The name of the internet service provider associated with the client, typically derived from IP geolocation data. This field may
+    differ from 'isp' in source or normalization methodology.
+- name: locale
+  description: The language locale code set on the client's device or within the application, such as 'en', 'fr', or 'de'. This reflects the user's
+    preferred language for the application interface.
+- name: marketing_notifications_allowed
+  description: Indicates whether the client has allowed marketing notifications.
+- name: mau
+  description: Monthly Active Users count representing the number of distinct active users observed over a rolling 28-day window ending on the
+    relevant date. A value of 0 indicates the client was not active during that period.
+- name: meta_attribution_app
+  description: The Meta (Facebook) app identifier associated with the install attribution, sourced from Meta's attribution system. Null indicates
+    the client was not attributed via Meta.
+- name: meta_attribution_timestamp
+  description: The timestamp at which the Meta attribution event was recorded. This field is null for clients who have no Meta attribution data.
+- name: monthly_users
+  description: The count of distinct users active during a given calendar month. Higher values indicate a client was active across multiple tracked
+    units within the month.
+- name: n_metrics_ping
+  description: The number of metrics pings submitted by the client within the relevant time period. A value of 1 indicates a single metrics ping
+    was received.
+- name: new_profile
+  description: The count of new profiles created, typically representing fresh installations or first-time activations. A null value indicates
+    no new profile was observed for the row's grouping.
+- name: normalized_channel
+  description: The release channel of the browser normalized to a standard set of values such as 'release', 'beta', or 'nightly'. This is used
+    to distinguish production users from those on pre-release builds.
+- name: normalized_os
+  description: The operating system name, normalized to a standard label. For this dataset, the value is consistently 'Android', reflecting that
+    Fenix is an Android browser.
+- name: normalized_os_version
+  description: The version of the operating system, normalized to a standard format (e.g., Android API level or major version number). This field
+    enables segmentation of users by OS version.
+- name: notifications_allowed
+  description: A boolean indicating whether the user has granted the application permission to send notifications. A true value means notifications
+    are enabled; false means they are disabled.
+- name: os
+  description: The name of the operating system on the client device. For this dataset, the value is consistently 'Android', as Fenix is an Android-only
+    application.
+- name: os_version
+  description: The version of the operating system running on the client device, typically expressed as a major version number (e.g., Android
+    API level). This field enables analysis of usage across different OS versions.
+- name: paid_vs_organic_gclid
+  description: Classifies the install or attribution as either 'Paid' (driven by a paid advertising campaign identified via a Google Click ID)
+    or 'Organic' (not attributed to a paid campaign). Null values indicate attribution could not be determined.
+- name: play_store_attribution_campaign
+  description: The UTM campaign name from the Google Play Store install referrer, identifying the marketing campaign that drove the app install.
+    Common values include campaign slugs such as 'download' or 'mozilla-org'; null indicates no campaign attribution was available.
+- name: play_store_attribution_content
+  description: The UTM content parameter from the Google Play Store install referrer, often used to distinguish specific ad creatives or referral
+    links within a campaign. Values are frequently URL-encoded strings; null indicates this parameter was not present.
+- name: play_store_attribution_install_referrer_response
+  description: The raw install referrer string returned by the Google Play Store at the time of installation, containing UTM parameters and other
+    attribution signals. This field provides the full, unparsed attribution payload and can include gclid, utm_source, utm_medium, and other tracking
+    parameters.
+- name: play_store_attribution_medium
+  description: The UTM medium parameter from the Google Play Store install referrer, indicating the marketing channel through which the install
+    was driven (e.g., 'organic', 'preload', 'referral'). Null values indicate the medium parameter was absent from the referrer data.
+- name: play_store_attribution_source
+  description: The UTM source parameter from the Google Play Store install referrer, identifying the platform or origin of the install (e.g.,
+    'google-play', 'eea-browser-choice', 'google'). Null values indicate no source attribution was available.
+- name: play_store_attribution_term
+  description: The UTM term parameter from the Google Play Store install referrer, typically capturing the search keyword that led to the install.
+    Null values indicate this parameter was not present in the referrer string.
+- name: play_store_attribution_timestamp
+  description: The timestamp at which the Google Play Store install referrer attribution data was recorded. Null values indicate the attribution
+    timestamp was not available for the client.
+- name: predicted_ad_clicks
+  description: A model-generated prediction of the expected number of ad clicks a client will produce over a future time horizon. Higher values
+    indicate a greater predicted likelihood of ad click activity.
+- name: sample_id
+  description: A stable integer identifier (0–99) derived from hashing the client ID, used to partition clients into reproducible samples for
+    analysis or experimentation. All rows in a given table may share the same sample_id if the table is pre-filtered to a specific sample.
+- name: searches
+  description: The count of search events performed by the client within the relevant time period. Null values indicate no search activity was
+    recorded for the given row.
+- name: searches_with_ads
+  description: The count of searches that returned a search results page containing advertisements. Null values indicate no such search events
+    were observed for the given row.
+- name: state
+  description: An encoded string representing a client's behavioral and engagement state at a point in time, combining attributes such as days
+    of use, day of week, acquisition type, and activity indicators. This field is used in lifecycle and churn modeling.
+- name: state_function
+  description: The name of the function or model version used to compute the client's state value. Values such as 'android_states_with_paid_v1'
+    or 'android_states_v1' identify which state-encoding logic was applied.
+- name: submission_date
+  description: The calendar date on which the ping or record was submitted to the Mozilla data pipeline. This field is commonly used as the primary
+    partitioning and filtering dimension.
+- name: submission_timestamp
+  description: The precise UTC timestamp at which the ping or record was received by the Mozilla data ingestion pipeline. This provides finer-grained
+    timing information than submission_date.
+- name: telemetry_sdk_build
+  description: The version string of the Glean telemetry SDK used to collect and submit the ping. This field helps identify which SDK version
+    was in use on the client at the time of data collection.
+- name: time_horizon
+  description: The number of days into the future over which predictions or projections are computed for a given client. A value of 729 indicates
+    predictions are made over approximately a two-year horizon.
+- name: total_historic_ad_clicks
+  description: The cumulative count of ad clicks recorded for a client over their entire observed history. Null values indicate no historical
+    ad click data was available for the client.
+- name: uri_count
+  description: The total number of URIs (page loads) recorded for the client within the relevant time period. Null values indicate no browsing
+    activity was observed; higher values reflect greater browsing engagement.
+- name: wau
+  description: Weekly Active Users count representing the number of distinct active users observed over a rolling 7-day window ending on the relevant
+    date. A value of 0 indicates the client was not active during that period.
+- name: weekly_users
+  description: The count of distinct users active during a given calendar week. Higher values indicate a client was active across multiple tracked
+    units within the week.

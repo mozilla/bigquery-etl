@@ -11,6 +11,7 @@ labels:
   table_type: client_level
   dag: bqetl_addons
   owner1: kik
+  legacy: true
 scheduling:
   dag_name: bqetl_addons
 bigquery:

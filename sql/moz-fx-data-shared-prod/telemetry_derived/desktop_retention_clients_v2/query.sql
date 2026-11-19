@@ -56,6 +56,16 @@ new_profiles AS (
     AND cfs.client_id = au.client_id
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    -- This table feeds retention dashboards, so the DENG-11590 automated segment is excluded
+    -- outright rather than flagged. Its 0.016% day-1 return rate would otherwise flatten
+    -- Linux retention curves. The UDF is called here rather than reading a flag column so that
+    -- telemetry.clients_first_seen stays unchanged.
+    AND NOT `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
+      cfs.normalized_os,
+      cfs.app_version,
+      cfs.startup_profile_selection_reason,
+      cfs.first_seen_date
+    )
 ),
 clients_data AS (
   SELECT

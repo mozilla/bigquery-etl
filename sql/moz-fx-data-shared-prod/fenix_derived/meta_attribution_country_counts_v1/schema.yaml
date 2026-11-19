@@ -18,3 +18,5 @@ fields:
 - name: ping_count
   type: INTEGER
   mode: NULLABLE
+  description: The number of first-session pings received for this dimension combination on the submission
+    date, used to measure attribution volume by country and channel.

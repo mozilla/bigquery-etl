@@ -1,0 +1,7 @@
+friendly_name: Is Automated
+description: >
+  Returns TRUE when a tag set contains any of the automation / autosolve / experiment-macro tags
+  maintained by the Zendesk / Customer Experience teams.
+  FALSE when tags exist but none match (including the empty array). NULL when
+  the input array itself is NULL (input data missing).
+  See README for the full tag list and usage.

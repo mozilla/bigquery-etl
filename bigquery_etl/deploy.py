@@ -1,6 +1,7 @@
 """Utilities for deploying BigQuery tables from bigquery-etl queries."""
 
 import logging
+from datetime import date
 from pathlib import Path
 from typing import Optional
 
@@ -40,9 +41,14 @@ def deploy_table(
     sql_dir=ConfigLoader.get("default", "sql_dir"),
     credentials=None,
     id_token=None,
+    isolated: bool = False,
 ) -> None:
     """Deploy a query to a destination."""
-    if respect_dryrun_skip and str(artifact_file) in DryRun.skipped_files():
+    # Under --isolated, schema.yaml is authoritative and the table must
+    # still be created so downstream views can reference it. Skip the
+    # dryrun-based validation but proceed with the deploy.
+    dryrun_skipped = respect_dryrun_skip and DryRun.is_skipped(artifact_file)
+    if dryrun_skipped and not isolated:
         raise SkippedDeployException(f"Dry run skipped for {artifact_file}.")
 
     metadata = None
@@ -71,6 +77,16 @@ def deploy_table(
             raise SkippedDeployException(
                 f"Skipping deploy for {artifact_file}, null destination_table configured."
             )
+
+        # Don't deploy deprecated tables once their deletion date has passed to allow for them to be manually deleted.
+        if (
+            metadata.deprecated
+            and metadata.deletion_date
+            and metadata.deletion_date <= date.today()
+        ):
+            raise SkippedDeployException(
+                f"Skipping deploy for {artifact_file}, deprecated with deletion_date {metadata.deletion_date}."
+            )
     except FileNotFoundError:
         log.warning(f"No metadata found for {artifact_file}.")
 
@@ -88,10 +104,16 @@ def deploy_table(
         raise SkippedDeployException(f"Schema missing for {artifact_file}.") from e
 
     client = bigquery.Client(credentials=credentials)
-    if not force and str(artifact_file).endswith("query.sql"):
+    # Skip the query-vs-schema dryrun check only in the isolated + skip-listed
+    # case (rewritten refs in the target tree won't resolve in prod). Tying
+    # this to isolated rather than dryrun_skipped alone keeps the bypass
+    # scoped if the early bail above is ever loosened.
+    skip_schema_check = isolated and dryrun_skipped
+    if not force and not skip_schema_check and str(artifact_file).endswith("query.sql"):
         query_schema = Schema.from_query_file(
             artifact_file,
             use_cloud_function=use_cloud_function,
+            billing_project=(project_name if not use_cloud_function else None),
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,
             client=client,

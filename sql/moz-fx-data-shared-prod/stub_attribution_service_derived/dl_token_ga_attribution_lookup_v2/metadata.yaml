@@ -10,6 +10,7 @@ description: |-
   download_source - Available in Stub Attribution Service
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true
@@ -17,7 +18,7 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_mozilla_org_derived
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["download_date:DATE:{{ds}}"]
   depends_on_past: true
 bigquery:

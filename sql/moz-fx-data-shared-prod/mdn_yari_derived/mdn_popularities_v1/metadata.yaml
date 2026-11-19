@@ -11,6 +11,6 @@ labels:
 bigquery: {}
 scheduling:
   dag_name: bqetl_mdn_yari
+  partition_parameter: null
   arguments: ["--date", "{{ ds }}"]
-  date_partition_parameter: null
   referenced_tables: []

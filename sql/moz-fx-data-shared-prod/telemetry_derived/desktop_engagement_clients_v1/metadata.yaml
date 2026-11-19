@@ -9,6 +9,7 @@ labels:
   owner1: kwindau
   table_type: client_level
   dag: bqetl_desktop_engagement_model
+  legacy: true
 scheduling:
   dag_name: bqetl_desktop_engagement_model
 bigquery:

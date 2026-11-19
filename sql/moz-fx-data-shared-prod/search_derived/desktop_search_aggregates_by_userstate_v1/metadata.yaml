@@ -15,6 +15,7 @@ labels:
   owner2: akommasani
   shredder_mitigation: true
   table_type: aggregate
+  legacy: true
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false

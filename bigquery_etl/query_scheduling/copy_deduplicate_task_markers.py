@@ -103,7 +103,7 @@ def build_markers_context(dag_collection) -> dict:
         "owner": TELEMETRY_ALERTS_EMAIL,
         "email": [TELEMETRY_ALERTS_EMAIL],
         "tags": [
-            "impact/tier_1",
+            "impact/tier_0",
             "repo/bigquery-etl",
         ],
         "sources": sources,

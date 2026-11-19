@@ -2,31 +2,52 @@ fields:
 - mode: NULLABLE
   name: external_id
   type: STRING
+  description: The Braze external identifier for this user, corresponding to their
+    Basket email_id (UUID). Used to join to users_v1 and other Braze-derived tables.
 - fields:
   - mode: NULLABLE
     name: waitlist_name
     type: STRING
+    description: The name of the Mozilla product waitlist (e.g. 'vpn', 'relay', 'monitor')
+      as recorded in the CTMS waitlists table.
   - mode: NULLABLE
     name: waitlist_geo
     type: STRING
+    description: The geographic region the user indicated when joining the waitlist
+      (extracted from the CTMS waitlist fields JSON), stored in lowercase.
   - mode: NULLABLE
     name: waitlist_platform
     type: STRING
+    description: The platform or device type the user selected when joining the waitlist
+      (extracted from the CTMS waitlist fields JSON), stored in lowercase.
   - mode: NULLABLE
     name: waitlist_source
     type: STRING
+    description: The source or channel through which the user joined the waitlist,
+      stored in lowercase.
   - mode: NULLABLE
     name: create_timestamp
     type: TIMESTAMP
+    description: Timestamp when this waitlist record was first created in CTMS.
   - mode: NULLABLE
     name: subscribed
     type: BOOLEAN
+    description: Whether the user is currently on this waitlist. True means actively
+      signed up; false means the user has unsubscribed.
   - mode: NULLABLE
     name: unsub_reason
     type: STRING
+    description: The reason provided when unsubscribing from the waitlist. Null if
+      the user is still subscribed or no reason was given.
   - mode: NULLABLE
     name: update_timestamp
     type: TIMESTAMP
+    description: Timestamp when this waitlist record was most recently updated in
+      CTMS.
   mode: REPEATED
   name: waitlists
   type: RECORD
+  description: Array of product waitlist records for the user, sourced from the CTMS
+    waitlists table. Each element captures the waitlist name, geo/platform preferences,
+    source channel, subscription status, unsubscribe reason, and timestamps. Only
+    users with at least one active waitlist signup are included.

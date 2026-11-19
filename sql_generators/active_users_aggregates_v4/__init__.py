@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import render, write_sql, get_table_dir
+from bigquery_etl.util.common import get_table_dir, get_unittests_dir, render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
 MOBILE_UNITTESTS_PATH = THIS_PATH / "templates/unittests/mobile"
@@ -68,6 +68,7 @@ class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
     firefox_desktop = "Firefox Desktop"
+    focus_android = "Focus Android"
 
 
 @click.command()
@@ -98,7 +99,6 @@ def generate(target_project, output_dir, use_cloud_function):
     focus_android_query_template = env.get_template("focus_android_query.sql")
     # view templates
     focus_android_view_template = env.get_template("focus_android_view.sql")
-    mobile_view_template = env.get_template("mobile_view.sql")
     view_template = env.get_template("view.sql")
     # metadata template
     metadata_template = "metadata.yaml"
@@ -122,8 +122,7 @@ def generate(target_project, output_dir, use_cloud_function):
         """Load, render and output unitest template."""
         test_folder = ""
         parts = 2
-        # Handle absolute and relative paths for tests
-        output_path = Path("tests").joinpath(*output_dir.parts[output_dir.is_absolute():])
+        output_path = get_unittests_dir(output_dir.parent) / output_dir.name
 
         for group in templates[template_type]:
             try:
@@ -138,6 +137,10 @@ def generate(target_project, output_dir, use_cloud_function):
                         if (
                             dataset == "firefox_desktop"
                             and file_name == "desktop_active_users"
+                        )
+                        or (
+                            dataset == "focus_android"
+                            and file_name == "core_clients_last_seen"
                         )
                         else dataset
                     )

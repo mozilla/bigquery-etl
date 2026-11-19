@@ -1,0 +1,364 @@
+[
+  {
+    "type": "STRING",
+    "name": "segment"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_app_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_since_seen"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_since_active"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_since_created_profile"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_since_seen_session_start"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_since_seen_session_end"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_since_visited_1_uri"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_seen_bits"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_active_bits"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_created_profile_bits"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_run_date"
+  },
+  {
+    "type": "INTEGER",
+    "name": "durations"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_seen_session_start_bits"
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_seen_session_end_bits"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version"
+  },
+  {
+    "type": "STRING",
+    "name": "android_sdk_version"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "STRING",
+    "name": "city"
+  },
+  {
+    "type": "STRING",
+    "name": "country"
+  },
+  {
+    "type": "STRING",
+    "name": "app_build"
+  },
+  {
+    "type": "STRING",
+    "name": "app_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "app_display_version"
+  },
+  {
+    "type": "STRING",
+    "name": "architecture"
+  },
+  {
+    "type": "STRING",
+    "name": "device_manufacturer"
+  },
+  {
+    "type": "STRING",
+    "name": "device_model"
+  },
+  {
+    "type": "STRING",
+    "name": "telemetry_sdk_build"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_new_profile"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id"
+  },
+  {
+    "type": "STRING",
+    "name": "geo_subdivision"
+  },
+  {
+    "type": "STRING",
+    "name": "profile_group_id"
+  },
+  {
+    "type": "STRING",
+    "name": "install_source"
+  },
+  {
+    "type": "INTEGER",
+    "name": "windows_build_number"
+  },
+  {
+    "type": "INTEGER",
+    "name": "browser_engagement_uri_count"
+  },
+  {
+    "type": "INTEGER",
+    "name": "browser_engagement_active_ticks"
+  },
+  {
+    "type": "STRING",
+    "name": "legacy_telemetry_client_id"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_default_browser"
+  },
+  {
+    "type": "RECORD",
+    "name": "attribution",
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "campaign"
+      },
+      {
+        "type": "STRING",
+        "name": "content"
+      },
+      {
+        "type": "STRING",
+        "name": "medium"
+      },
+      {
+        "type": "STRING",
+        "name": "source"
+      },
+      {
+        "type": "STRING",
+        "name": "term"
+      }
+    ]
+  },
+  {
+    "type": "RECORD",
+    "name": "distribution",
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "name"
+      }
+    ]
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_dltoken"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_dlsource"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_experiment"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_variation"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_ua"
+  },
+  {
+    "type": "RECORD",
+    "name": "experiments",
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key"
+      },
+      {
+        "type": "RECORD",
+        "name": "value",
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "branch"
+          },
+          {
+            "type": "RECORD",
+            "name": "extra",
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "type"
+              },
+              {
+                "type": "STRING",
+                "name": "enrollment_id"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "INTEGER",
+    "name": "days_visited_1_uri_bits"
+  },
+  {
+    "type": "FLOAT",
+    "name": "active_hours_sum"
+  },
+  {
+    "type": "STRING",
+    "name": "startup_profile_selection_reason_first"
+  },
+  {
+    "type": "STRING",
+    "name": "app_name"
+  },
+  {
+    "type": "STRING",
+    "name": "activity_segment"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_dau"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_wau"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_mau"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_daily_user"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_weekly_user"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_monthly_user"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_mobile"
+  },
+  {
+    "type": "STRING",
+    "name": "isp"
+  },
+  {
+    "type": "STRING",
+    "name": "device_type"
+  },
+  {
+    "type": "INTEGER",
+    "name": "first_seen_year"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version"
+  },
+  {
+    "type": "NUMERIC",
+    "name": "app_version_major"
+  },
+  {
+    "type": "NUMERIC",
+    "name": "app_version_minor"
+  },
+  {
+    "type": "NUMERIC",
+    "name": "app_version_patch_revision"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "app_version_is_major_release"
+  },
+  {
+    "type": "STRING",
+    "name": "os"
+  },
+  {
+    "type": "STRING",
+    "name": "os_version"
+  },
+  {
+    "type": "INTEGER",
+    "name": "os_version_major"
+  },
+  {
+    "type": "INTEGER",
+    "name": "os_version_minor"
+  },
+  {
+    "type": "STRING",
+    "name": "channel"
+  }
+]
